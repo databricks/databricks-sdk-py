@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
@@ -38,7 +38,7 @@ class AccountsCreateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastore:
         """Deserializes the AccountsCreateMetastore from a dictionary."""
         return cls(metastore_info=_from_dict(d, "metastore_info", CreateMetastore))
 
@@ -76,7 +76,7 @@ class AccountsCreateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastoreAssignment:
         """Deserializes the AccountsCreateMetastoreAssignment from a dictionary."""
         return cls(
             metastore_assignment=_from_dict(d, "metastore_assignment", CreateMetastoreAssignment),
@@ -111,7 +111,7 @@ class AccountsCreateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateStorageCredential:
         """Deserializes the AccountsCreateStorageCredential from a dictionary."""
         return cls(
             credential_info=_from_dict(d, "credential_info", CreateStorageCredential),
@@ -138,7 +138,7 @@ class AccountsMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsMetastoreAssignment:
         """Deserializes the AccountsMetastoreAssignment from a dictionary."""
         return cls(metastore_assignment=_from_dict(d, "metastore_assignment", MetastoreAssignment))
 
@@ -162,7 +162,7 @@ class AccountsMetastoreInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsMetastoreInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsMetastoreInfo:
         """Deserializes the AccountsMetastoreInfo from a dictionary."""
         return cls(metastore_info=_from_dict(d, "metastore_info", MetastoreInfo))
 
@@ -186,7 +186,7 @@ class AccountsStorageCredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsStorageCredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsStorageCredentialInfo:
         """Deserializes the AccountsStorageCredentialInfo from a dictionary."""
         return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
 
@@ -217,7 +217,7 @@ class AccountsUpdateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastore:
         """Deserializes the AccountsUpdateMetastore from a dictionary."""
         return cls(
             metastore_id=d.get("metastore_id", None), metastore_info=_from_dict(d, "metastore_info", UpdateMetastore)
@@ -257,7 +257,7 @@ class AccountsUpdateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastoreAssignment:
         """Deserializes the AccountsUpdateMetastoreAssignment from a dictionary."""
         return cls(
             metastore_assignment=_from_dict(d, "metastore_assignment", UpdateMetastoreAssignment),
@@ -299,7 +299,7 @@ class AccountsUpdateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateStorageCredential:
         """Deserializes the AccountsUpdateStorageCredential from a dictionary."""
         return cls(
             credential_info=_from_dict(d, "credential_info", UpdateStorageCredential),
@@ -349,7 +349,7 @@ class ArtifactAllowlistInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ArtifactAllowlistInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactAllowlistInfo:
         """Deserializes the ArtifactAllowlistInfo from a dictionary."""
         return cls(
             artifact_matchers=_repeated_dict(d, "artifact_matchers", ArtifactMatcher),
@@ -386,7 +386,7 @@ class ArtifactMatcher:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ArtifactMatcher:
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactMatcher:
         """Deserializes the ArtifactMatcher from a dictionary."""
         return cls(artifact=d.get("artifact", None), match_type=_enum(d, "match_type", MatchType))
 
@@ -412,7 +412,7 @@ class AssignResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AssignResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AssignResponse:
         """Deserializes the AssignResponse from a dictionary."""
         return cls()
 
@@ -462,7 +462,7 @@ class AwsCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsCredentials:
         """Deserializes the AwsCredentials from a dictionary."""
         return cls(
             access_key_id=d.get("access_key_id", None),
@@ -509,7 +509,7 @@ class AwsIamRole:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsIamRole:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsIamRole:
         """Deserializes the AwsIamRole from a dictionary."""
         return cls(
             external_id=d.get("external_id", None),
@@ -538,7 +538,7 @@ class AwsIamRoleRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsIamRoleRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsIamRoleRequest:
         """Deserializes the AwsIamRoleRequest from a dictionary."""
         return cls(role_arn=d.get("role_arn", None))
 
@@ -578,7 +578,7 @@ class AwsIamRoleResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsIamRoleResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsIamRoleResponse:
         """Deserializes the AwsIamRoleResponse from a dictionary."""
         return cls(
             external_id=d.get("external_id", None),
@@ -612,7 +612,7 @@ class AzureActiveDirectoryToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureActiveDirectoryToken:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureActiveDirectoryToken:
         """Deserializes the AzureActiveDirectoryToken from a dictionary."""
         return cls(aad_token=d.get("aad_token", None))
 
@@ -660,7 +660,7 @@ class AzureManagedIdentity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureManagedIdentity:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureManagedIdentity:
         """Deserializes the AzureManagedIdentity from a dictionary."""
         return cls(
             access_connector_id=d.get("access_connector_id", None),
@@ -701,7 +701,7 @@ class AzureManagedIdentityRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureManagedIdentityRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureManagedIdentityRequest:
         """Deserializes the AzureManagedIdentityRequest from a dictionary."""
         return cls(
             access_connector_id=d.get("access_connector_id", None),
@@ -748,7 +748,7 @@ class AzureManagedIdentityResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureManagedIdentityResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureManagedIdentityResponse:
         """Deserializes the AzureManagedIdentityResponse from a dictionary."""
         return cls(
             access_connector_id=d.get("access_connector_id", None),
@@ -793,7 +793,7 @@ class AzureServicePrincipal:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureServicePrincipal:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureServicePrincipal:
         """Deserializes the AzureServicePrincipal from a dictionary."""
         return cls(
             application_id=d.get("application_id", None),
@@ -825,7 +825,7 @@ class AzureUserDelegationSas:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureUserDelegationSas:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureUserDelegationSas:
         """Deserializes the AzureUserDelegationSas from a dictionary."""
         return cls(sas_token=d.get("sas_token", None))
 
@@ -843,7 +843,7 @@ class CancelRefreshResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRefreshResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRefreshResponse:
         """Deserializes the CancelRefreshResponse from a dictionary."""
         return cls()
 
@@ -1023,7 +1023,7 @@ class CatalogInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CatalogInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CatalogInfo:
         """Deserializes the CatalogInfo from a dictionary."""
         return cls(
             browse_only=d.get("browse_only", None),
@@ -1103,7 +1103,7 @@ class CloudflareApiToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloudflareApiToken:
+    def from_dict(cls, d: Dict[str, Any]) -> CloudflareApiToken:
         """Deserializes the CloudflareApiToken from a dictionary."""
         return cls(
             access_key_id=d.get("access_key_id", None),
@@ -1207,7 +1207,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1254,7 +1254,7 @@ class ColumnMask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnMask:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
         return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
 
@@ -1423,7 +1423,7 @@ class ConnectionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConnectionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionInfo:
         """Deserializes the ConnectionInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1502,7 +1502,7 @@ class ContinuousUpdateStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContinuousUpdateStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousUpdateStatus:
         """Deserializes the ContinuousUpdateStatus from a dictionary."""
         return cls(
             initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", PipelineProgress),
@@ -1582,7 +1582,7 @@ class CreateCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCatalog:
         """Deserializes the CreateCatalog from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1651,7 +1651,7 @@ class CreateConnection:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateConnection:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateConnection:
         """Deserializes the CreateConnection from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1741,7 +1741,7 @@ class CreateCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialRequest:
         """Deserializes the CreateCredentialRequest from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
@@ -1834,7 +1834,7 @@ class CreateExternalLocation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExternalLocation:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExternalLocation:
         """Deserializes the CreateExternalLocation from a dictionary."""
         return cls(
             access_point=d.get("access_point", None),
@@ -2011,7 +2011,7 @@ class CreateFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFunction:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFunction:
         """Deserializes the CreateFunction from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -2064,7 +2064,7 @@ class CreateFunctionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFunctionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFunctionRequest:
         """Deserializes the CreateFunctionRequest from a dictionary."""
         return cls(function_info=_from_dict(d, "function_info", CreateFunction))
 
@@ -2129,7 +2129,7 @@ class CreateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastore:
         """Deserializes the CreateMetastore from a dictionary."""
         return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
 
@@ -2169,7 +2169,7 @@ class CreateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastoreAssignment:
         """Deserializes the CreateMetastoreAssignment from a dictionary."""
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
@@ -2295,7 +2295,7 @@ class CreateMonitor:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMonitor:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMonitor:
         """Deserializes the CreateMonitor from a dictionary."""
         return cls(
             assets_dir=d.get("assets_dir", None),
@@ -2363,7 +2363,7 @@ class CreateRegisteredModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRegisteredModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRegisteredModelRequest:
         """Deserializes the CreateRegisteredModelRequest from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -2387,7 +2387,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls()
 
@@ -2440,7 +2440,7 @@ class CreateSchema:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateSchema:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateSchema:
         """Deserializes the CreateSchema from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -2527,7 +2527,7 @@ class CreateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateStorageCredential:
         """Deserializes the CreateStorageCredential from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
@@ -2572,7 +2572,7 @@ class CreateTableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTableConstraint:
         """Deserializes the CreateTableConstraint from a dictionary."""
         return cls(constraint=_from_dict(d, "constraint", TableConstraint), full_name_arg=d.get("full_name_arg", None))
 
@@ -2631,7 +2631,7 @@ class CreateVolumeRequestContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVolumeRequestContent:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVolumeRequestContent:
         """Deserializes the CreateVolumeRequestContent from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -2785,7 +2785,7 @@ class CredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
@@ -2849,7 +2849,7 @@ class CredentialValidationResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CredentialValidationResult:
+    def from_dict(cls, d: Dict[str, Any]) -> CredentialValidationResult:
         """Deserializes the CredentialValidationResult from a dictionary."""
         return cls(message=d.get("message", None), result=_enum(d, "result", ValidateCredentialResult))
 
@@ -2876,7 +2876,7 @@ class CurrentWorkspaceBindings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CurrentWorkspaceBindings:
+    def from_dict(cls, d: Dict[str, Any]) -> CurrentWorkspaceBindings:
         """Deserializes the CurrentWorkspaceBindings from a dictionary."""
         return cls(workspaces=d.get("workspaces", None))
 
@@ -2947,7 +2947,7 @@ class DatabricksGcpServiceAccount:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccount:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccount:
         """Deserializes the DatabricksGcpServiceAccount from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
@@ -2969,7 +2969,7 @@ class DatabricksGcpServiceAccountRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountRequest:
         """Deserializes the DatabricksGcpServiceAccountRequest from a dictionary."""
         return cls()
 
@@ -3001,7 +3001,7 @@ class DatabricksGcpServiceAccountResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get("credential_id", None), email=d.get("email", None))
 
@@ -3019,7 +3019,7 @@ class DeleteAliasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAliasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAliasResponse:
         """Deserializes the DeleteAliasResponse from a dictionary."""
         return cls()
 
@@ -3037,7 +3037,7 @@ class DeleteCredentialResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCredentialResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCredentialResponse:
         """Deserializes the DeleteCredentialResponse from a dictionary."""
         return cls()
 
@@ -3055,7 +3055,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -3083,7 +3083,7 @@ class DeltaRuntimePropertiesKvPairs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaRuntimePropertiesKvPairs:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaRuntimePropertiesKvPairs:
         """Deserializes the DeltaRuntimePropertiesKvPairs from a dictionary."""
         return cls(delta_runtime_properties=d.get("delta_runtime_properties", None))
 
@@ -3118,7 +3118,7 @@ class Dependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dependency:
+    def from_dict(cls, d: Dict[str, Any]) -> Dependency:
         """Deserializes the Dependency from a dictionary."""
         return cls(
             function=_from_dict(d, "function", FunctionDependency), table=_from_dict(d, "table", TableDependency)
@@ -3147,7 +3147,7 @@ class DependencyList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DependencyList:
+    def from_dict(cls, d: Dict[str, Any]) -> DependencyList:
         """Deserializes the DependencyList from a dictionary."""
         return cls(dependencies=_repeated_dict(d, "dependencies", Dependency))
 
@@ -3165,7 +3165,7 @@ class DisableResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DisableResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DisableResponse:
         """Deserializes the DisableResponse from a dictionary."""
         return cls()
 
@@ -3190,7 +3190,7 @@ class EffectivePermissionsList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePermissionsList:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePermissionsList:
         """Deserializes the EffectivePermissionsList from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", EffectivePrivilegeAssignment))
 
@@ -3231,7 +3231,7 @@ class EffectivePredictiveOptimizationFlag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePredictiveOptimizationFlag:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePredictiveOptimizationFlag:
         """Deserializes the EffectivePredictiveOptimizationFlag from a dictionary."""
         return cls(
             inherited_from_name=d.get("inherited_from_name", None),
@@ -3284,7 +3284,7 @@ class EffectivePrivilege:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePrivilege:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePrivilege:
         """Deserializes the EffectivePrivilege from a dictionary."""
         return cls(
             inherited_from_name=d.get("inherited_from_name", None),
@@ -3320,7 +3320,7 @@ class EffectivePrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePrivilegeAssignment:
         """Deserializes the EffectivePrivilegeAssignment from a dictionary."""
         return cls(principal=d.get("principal", None), privileges=_repeated_dict(d, "privileges", EffectivePrivilege))
 
@@ -3346,7 +3346,7 @@ class EnableResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnableResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EnableResponse:
         """Deserializes the EnableResponse from a dictionary."""
         return cls()
 
@@ -3373,7 +3373,7 @@ class EncryptionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EncryptionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> EncryptionDetails:
         """Deserializes the EncryptionDetails from a dictionary."""
         return cls(sse_encryption_details=_from_dict(d, "sse_encryption_details", SseEncryptionDetails))
 
@@ -3512,7 +3512,7 @@ class ExternalLocationInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalLocationInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLocationInfo:
         """Deserializes the ExternalLocationInfo from a dictionary."""
         return cls(
             access_point=d.get("access_point", None),
@@ -3568,7 +3568,7 @@ class FailedStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FailedStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> FailedStatus:
         """Deserializes the FailedStatus from a dictionary."""
         return cls(
             last_processed_commit_version=d.get("last_processed_commit_version", None),
@@ -3617,7 +3617,7 @@ class ForeignKeyConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForeignKeyConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> ForeignKeyConstraint:
         """Deserializes the ForeignKeyConstraint from a dictionary."""
         return cls(
             child_columns=d.get("child_columns", None),
@@ -3650,7 +3650,7 @@ class FunctionDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionDependency:
         """Deserializes the FunctionDependency from a dictionary."""
         return cls(function_full_name=d.get("function_full_name", None))
 
@@ -3881,7 +3881,7 @@ class FunctionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionInfo:
         """Deserializes the FunctionInfo from a dictionary."""
         return cls(
             browse_only=d.get("browse_only", None),
@@ -4043,7 +4043,7 @@ class FunctionParameterInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionParameterInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfo:
         """Deserializes the FunctionParameterInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -4081,7 +4081,7 @@ class FunctionParameterInfos:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionParameterInfos:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfos:
         """Deserializes the FunctionParameterInfos from a dictionary."""
         return cls(parameters=_repeated_dict(d, "parameters", FunctionParameterInfo))
 
@@ -4121,7 +4121,7 @@ class GcpOauthToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpOauthToken:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpOauthToken:
         """Deserializes the GcpOauthToken from a dictionary."""
         return cls(oauth_token=d.get("oauth_token", None))
 
@@ -4150,7 +4150,7 @@ class GenerateTemporaryServiceCredentialAzureOptions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryServiceCredentialAzureOptions:
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryServiceCredentialAzureOptions:
         """Deserializes the GenerateTemporaryServiceCredentialAzureOptions from a dictionary."""
         return cls(resources=d.get("resources", None))
 
@@ -4179,7 +4179,7 @@ class GenerateTemporaryServiceCredentialGcpOptions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryServiceCredentialGcpOptions:
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryServiceCredentialGcpOptions:
         """Deserializes the GenerateTemporaryServiceCredentialGcpOptions from a dictionary."""
         return cls(scopes=d.get("scopes", None))
 
@@ -4218,7 +4218,7 @@ class GenerateTemporaryServiceCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryServiceCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryServiceCredentialRequest:
         """Deserializes the GenerateTemporaryServiceCredentialRequest from a dictionary."""
         return cls(
             azure_options=_from_dict(d, "azure_options", GenerateTemporaryServiceCredentialAzureOptions),
@@ -4256,7 +4256,7 @@ class GenerateTemporaryTableCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryTableCredentialRequest:
         """Deserializes the GenerateTemporaryTableCredentialRequest from a dictionary."""
         return cls(operation=_enum(d, "operation", TableOperation), table_id=d.get("table_id", None))
 
@@ -4330,7 +4330,7 @@ class GenerateTemporaryTableCredentialResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryTableCredentialResponse:
         """Deserializes the GenerateTemporaryTableCredentialResponse from a dictionary."""
         return cls(
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
@@ -4502,7 +4502,7 @@ class GetMetastoreSummaryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetastoreSummaryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetastoreSummaryResponse:
         """Deserializes the GetMetastoreSummaryResponse from a dictionary."""
         return cls(
             cloud=d.get("cloud", None),
@@ -4556,7 +4556,7 @@ class GetQuotaResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetQuotaResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetQuotaResponse:
         """Deserializes the GetQuotaResponse from a dictionary."""
         return cls(quota_info=_from_dict(d, "quota_info", QuotaInfo))
 
@@ -4588,7 +4588,7 @@ class ListAccountMetastoreAssignmentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAccountMetastoreAssignmentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountMetastoreAssignmentsResponse:
         """Deserializes the ListAccountMetastoreAssignmentsResponse from a dictionary."""
         return cls(workspace_ids=d.get("workspace_ids", None))
 
@@ -4613,7 +4613,7 @@ class ListAccountStorageCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAccountStorageCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountStorageCredentialsResponse:
         """Deserializes the ListAccountStorageCredentialsResponse from a dictionary."""
         return cls(storage_credentials=_repeated_dict(d, "storage_credentials", StorageCredentialInfo))
 
@@ -4646,7 +4646,7 @@ class ListCatalogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCatalogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCatalogsResponse:
         """Deserializes the ListCatalogsResponse from a dictionary."""
         return cls(catalogs=_repeated_dict(d, "catalogs", CatalogInfo), next_page_token=d.get("next_page_token", None))
 
@@ -4679,7 +4679,7 @@ class ListConnectionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListConnectionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListConnectionsResponse:
         """Deserializes the ListConnectionsResponse from a dictionary."""
         return cls(
             connections=_repeated_dict(d, "connections", ConnectionInfo), next_page_token=d.get("next_page_token", None)
@@ -4713,7 +4713,7 @@ class ListCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(
             credentials=_repeated_dict(d, "credentials", CredentialInfo), next_page_token=d.get("next_page_token", None)
@@ -4748,7 +4748,7 @@ class ListExternalLocationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExternalLocationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExternalLocationsResponse:
         """Deserializes the ListExternalLocationsResponse from a dictionary."""
         return cls(
             external_locations=_repeated_dict(d, "external_locations", ExternalLocationInfo),
@@ -4784,7 +4784,7 @@ class ListFunctionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListFunctionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListFunctionsResponse:
         """Deserializes the ListFunctionsResponse from a dictionary."""
         return cls(
             functions=_repeated_dict(d, "functions", FunctionInfo), next_page_token=d.get("next_page_token", None)
@@ -4811,7 +4811,7 @@ class ListMetastoresResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListMetastoresResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListMetastoresResponse:
         """Deserializes the ListMetastoresResponse from a dictionary."""
         return cls(metastores=_repeated_dict(d, "metastores", MetastoreInfo))
 
@@ -4843,7 +4843,7 @@ class ListModelVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListModelVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelVersionsResponse:
         """Deserializes the ListModelVersionsResponse from a dictionary."""
         return cls(
             model_versions=_repeated_dict(d, "model_versions", ModelVersionInfo),
@@ -4879,7 +4879,7 @@ class ListQuotasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListQuotasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListQuotasResponse:
         """Deserializes the ListQuotasResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), quotas=_repeated_dict(d, "quotas", QuotaInfo))
 
@@ -4911,7 +4911,7 @@ class ListRegisteredModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRegisteredModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRegisteredModelsResponse:
         """Deserializes the ListRegisteredModelsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -4947,7 +4947,7 @@ class ListSchemasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSchemasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSchemasResponse:
         """Deserializes the ListSchemasResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), schemas=_repeated_dict(d, "schemas", SchemaInfo))
 
@@ -4979,7 +4979,7 @@ class ListStorageCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListStorageCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListStorageCredentialsResponse:
         """Deserializes the ListStorageCredentialsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -5015,7 +5015,7 @@ class ListSystemSchemasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSystemSchemasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSystemSchemasResponse:
         """Deserializes the ListSystemSchemasResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), schemas=_repeated_dict(d, "schemas", SystemSchemaInfo)
@@ -5050,7 +5050,7 @@ class ListTableSummariesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTableSummariesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTableSummariesResponse:
         """Deserializes the ListTableSummariesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), tables=_repeated_dict(d, "tables", TableSummary))
 
@@ -5083,7 +5083,7 @@ class ListTablesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTablesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTablesResponse:
         """Deserializes the ListTablesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), tables=_repeated_dict(d, "tables", TableInfo))
 
@@ -5116,7 +5116,7 @@ class ListVolumesResponseContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListVolumesResponseContent:
+    def from_dict(cls, d: Dict[str, Any]) -> ListVolumesResponseContent:
         """Deserializes the ListVolumesResponseContent from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), volumes=_repeated_dict(d, "volumes", VolumeInfo))
 
@@ -5161,7 +5161,7 @@ class MetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> MetastoreAssignment:
         """Deserializes the MetastoreAssignment from a dictionary."""
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
@@ -5321,7 +5321,7 @@ class MetastoreInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MetastoreInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MetastoreInfo:
         """Deserializes the MetastoreInfo from a dictionary."""
         return cls(
             cloud=d.get("cloud", None),
@@ -5504,7 +5504,7 @@ class ModelVersionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionInfo:
         """Deserializes the ModelVersionInfo from a dictionary."""
         return cls(
             aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
@@ -5575,7 +5575,7 @@ class MonitorCronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorCronSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorCronSchedule:
         """Deserializes the MonitorCronSchedule from a dictionary."""
         return cls(
             pause_status=_enum(d, "pause_status", MonitorCronSchedulePauseStatus),
@@ -5611,7 +5611,7 @@ class MonitorDataClassificationConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorDataClassificationConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorDataClassificationConfig:
         """Deserializes the MonitorDataClassificationConfig from a dictionary."""
         return cls(enabled=d.get("enabled", None))
 
@@ -5637,7 +5637,7 @@ class MonitorDestination:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorDestination:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorDestination:
         """Deserializes the MonitorDestination from a dictionary."""
         return cls(email_addresses=d.get("email_addresses", None))
 
@@ -5714,7 +5714,7 @@ class MonitorInferenceLog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorInferenceLog:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorInferenceLog:
         """Deserializes the MonitorInferenceLog from a dictionary."""
         return cls(
             granularities=d.get("granularities", None),
@@ -5882,7 +5882,7 @@ class MonitorInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorInfo:
         """Deserializes the MonitorInfo from a dictionary."""
         return cls(
             assets_dir=d.get("assets_dir", None),
@@ -5974,7 +5974,7 @@ class MonitorMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorMetric:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorMetric:
         """Deserializes the MonitorMetric from a dictionary."""
         return cls(
             definition=d.get("definition", None),
@@ -6026,7 +6026,7 @@ class MonitorNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorNotifications:
         """Deserializes the MonitorNotifications from a dictionary."""
         return cls(
             on_failure=_from_dict(d, "on_failure", MonitorDestination),
@@ -6089,7 +6089,7 @@ class MonitorRefreshInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorRefreshInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorRefreshInfo:
         """Deserializes the MonitorRefreshInfo from a dictionary."""
         return cls(
             end_time_ms=d.get("end_time_ms", None),
@@ -6138,7 +6138,7 @@ class MonitorRefreshListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorRefreshListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorRefreshListResponse:
         """Deserializes the MonitorRefreshListResponse from a dictionary."""
         return cls(refreshes=_repeated_dict(d, "refreshes", MonitorRefreshInfo))
 
@@ -6156,7 +6156,7 @@ class MonitorSnapshot:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorSnapshot:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorSnapshot:
         """Deserializes the MonitorSnapshot from a dictionary."""
         return cls()
 
@@ -6194,7 +6194,7 @@ class MonitorTimeSeries:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorTimeSeries:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorTimeSeries:
         """Deserializes the MonitorTimeSeries from a dictionary."""
         return cls(granularities=d.get("granularities", None), timestamp_col=d.get("timestamp_col", None))
 
@@ -6219,7 +6219,7 @@ class NamedTableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NamedTableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> NamedTableConstraint:
         """Deserializes the NamedTableConstraint from a dictionary."""
         return cls(name=d.get("name", None))
 
@@ -6276,7 +6276,7 @@ class OnlineTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTable:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTable:
         """Deserializes the OnlineTable from a dictionary."""
         return cls(
             name=d.get("name", None),
@@ -6357,7 +6357,7 @@ class OnlineTableSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpec:
         """Deserializes the OnlineTableSpec from a dictionary."""
         return cls(
             perform_full_copy=d.get("perform_full_copy", None),
@@ -6383,7 +6383,7 @@ class OnlineTableSpecContinuousSchedulingPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecContinuousSchedulingPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpecContinuousSchedulingPolicy:
         """Deserializes the OnlineTableSpecContinuousSchedulingPolicy from a dictionary."""
         return cls()
 
@@ -6401,7 +6401,7 @@ class OnlineTableSpecTriggeredSchedulingPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecTriggeredSchedulingPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpecTriggeredSchedulingPolicy:
         """Deserializes the OnlineTableSpecTriggeredSchedulingPolicy from a dictionary."""
         return cls()
 
@@ -6483,7 +6483,7 @@ class OnlineTableStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableStatus:
         """Deserializes the OnlineTableStatus from a dictionary."""
         return cls(
             continuous_update_status=_from_dict(d, "continuous_update_status", ContinuousUpdateStatus),
@@ -6529,7 +6529,7 @@ class PermissionsChange:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsChange:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
         return cls(
             add=_repeated_enum(d, "add", Privilege),
@@ -6558,7 +6558,7 @@ class PermissionsList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsList:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsList:
         """Deserializes the PermissionsList from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment))
 
@@ -6614,7 +6614,7 @@ class PipelineProgress:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineProgress:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineProgress:
         """Deserializes the PipelineProgress from a dictionary."""
         return cls(
             estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
@@ -6652,7 +6652,7 @@ class PrimaryKeyConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrimaryKeyConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> PrimaryKeyConstraint:
         """Deserializes the PrimaryKeyConstraint from a dictionary."""
         return cls(child_columns=d.get("child_columns", None), name=d.get("name", None))
 
@@ -6733,7 +6733,7 @@ class PrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
@@ -6762,7 +6762,7 @@ class ProvisioningInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProvisioningInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProvisioningInfo:
         """Deserializes the ProvisioningInfo from a dictionary."""
         return cls(state=_enum(d, "state", ProvisioningInfoState))
 
@@ -6801,7 +6801,7 @@ class ProvisioningStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProvisioningStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ProvisioningStatus:
         """Deserializes the ProvisioningStatus from a dictionary."""
         return cls(initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", PipelineProgress))
 
@@ -6861,7 +6861,7 @@ class QuotaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QuotaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> QuotaInfo:
         """Deserializes the QuotaInfo from a dictionary."""
         return cls(
             last_refreshed_at=d.get("last_refreshed_at", None),
@@ -6910,7 +6910,7 @@ class R2Credentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> R2Credentials:
+    def from_dict(cls, d: Dict[str, Any]) -> R2Credentials:
         """Deserializes the R2Credentials from a dictionary."""
         return cls(
             access_key_id=d.get("access_key_id", None),
@@ -6947,7 +6947,7 @@ class RegenerateDashboardRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegenerateDashboardRequest:
         """Deserializes the RegenerateDashboardRequest from a dictionary."""
         return cls(table_name=d.get("table_name", None), warehouse_id=d.get("warehouse_id", None))
 
@@ -6979,7 +6979,7 @@ class RegenerateDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RegenerateDashboardResponse:
         """Deserializes the RegenerateDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None), parent_folder=d.get("parent_folder", None))
 
@@ -7013,7 +7013,7 @@ class RegisteredModelAlias:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAlias:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAlias:
         """Deserializes the RegisteredModelAlias from a dictionary."""
         return cls(alias_name=d.get("alias_name", None), version_num=d.get("version_num", None))
 
@@ -7130,7 +7130,7 @@ class RegisteredModelInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelInfo:
         """Deserializes the RegisteredModelInfo from a dictionary."""
         return cls(
             aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
@@ -7289,7 +7289,7 @@ class SchemaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SchemaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaInfo:
         """Deserializes the SchemaInfo from a dictionary."""
         return cls(
             browse_only=d.get("browse_only", None),
@@ -7368,7 +7368,7 @@ class SetArtifactAllowlist:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetArtifactAllowlist:
+    def from_dict(cls, d: Dict[str, Any]) -> SetArtifactAllowlist:
         """Deserializes the SetArtifactAllowlist from a dictionary."""
         return cls(
             artifact_matchers=_repeated_dict(d, "artifact_matchers", ArtifactMatcher),
@@ -7410,7 +7410,7 @@ class SetRegisteredModelAliasRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetRegisteredModelAliasRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetRegisteredModelAliasRequest:
         """Deserializes the SetRegisteredModelAliasRequest from a dictionary."""
         return cls(
             alias=d.get("alias", None), full_name=d.get("full_name", None), version_num=d.get("version_num", None)
@@ -7446,7 +7446,7 @@ class SseEncryptionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SseEncryptionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> SseEncryptionDetails:
         """Deserializes the SseEncryptionDetails from a dictionary."""
         return cls(
             algorithm=_enum(d, "algorithm", SseEncryptionDetailsAlgorithm),
@@ -7599,7 +7599,7 @@ class StorageCredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StorageCredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> StorageCredentialInfo:
         """Deserializes the StorageCredentialInfo from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleResponse),
@@ -7653,7 +7653,7 @@ class SystemSchemaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SystemSchemaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SystemSchemaInfo:
         """Deserializes the SystemSchemaInfo from a dictionary."""
         return cls(schema=d.get("schema", None), state=_enum(d, "state", SystemSchemaInfoState))
 
@@ -7703,7 +7703,7 @@ class TableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> TableConstraint:
         """Deserializes the TableConstraint from a dictionary."""
         return cls(
             foreign_key_constraint=_from_dict(d, "foreign_key_constraint", ForeignKeyConstraint),
@@ -7735,7 +7735,7 @@ class TableDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> TableDependency:
         """Deserializes the TableDependency from a dictionary."""
         return cls(table_full_name=d.get("table_full_name", None))
 
@@ -7760,7 +7760,7 @@ class TableExistsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableExistsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TableExistsResponse:
         """Deserializes the TableExistsResponse from a dictionary."""
         return cls(table_exists=d.get("table_exists", None))
 
@@ -8006,7 +8006,7 @@ class TableInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TableInfo:
         """Deserializes the TableInfo from a dictionary."""
         return cls(
             access_point=d.get("access_point", None),
@@ -8082,7 +8082,7 @@ class TableRowFilter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableRowFilter:
+    def from_dict(cls, d: Dict[str, Any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
         return cls(function_name=d.get("function_name", None), input_column_names=d.get("input_column_names", None))
 
@@ -8113,7 +8113,7 @@ class TableSummary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableSummary:
+    def from_dict(cls, d: Dict[str, Any]) -> TableSummary:
         """Deserializes the TableSummary from a dictionary."""
         return cls(full_name=d.get("full_name", None), table_type=_enum(d, "table_type", TableType))
 
@@ -8176,7 +8176,7 @@ class TemporaryCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TemporaryCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> TemporaryCredentials:
         """Deserializes the TemporaryCredentials from a dictionary."""
         return cls(
             aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
@@ -8225,7 +8225,7 @@ class TriggeredUpdateStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggeredUpdateStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggeredUpdateStatus:
         """Deserializes the TriggeredUpdateStatus from a dictionary."""
         return cls(
             last_processed_commit_version=d.get("last_processed_commit_version", None),
@@ -8247,7 +8247,7 @@ class UnassignResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UnassignResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UnassignResponse:
         """Deserializes the UnassignResponse from a dictionary."""
         return cls()
 
@@ -8265,7 +8265,7 @@ class UpdateAssignmentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAssignmentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAssignmentResponse:
         """Deserializes the UpdateAssignmentResponse from a dictionary."""
         return cls()
 
@@ -8347,7 +8347,7 @@ class UpdateCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalog:
         """Deserializes the UpdateCatalog from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -8402,7 +8402,7 @@ class UpdateConnection:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateConnection:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateConnection:
         """Deserializes the UpdateConnection from a dictionary."""
         return cls(
             name=d.get("name", None),
@@ -8511,7 +8511,7 @@ class UpdateCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialRequest:
         """Deserializes the UpdateCredentialRequest from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
@@ -8634,7 +8634,7 @@ class UpdateExternalLocation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExternalLocation:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExternalLocation:
         """Deserializes the UpdateExternalLocation from a dictionary."""
         return cls(
             access_point=d.get("access_point", None),
@@ -8681,7 +8681,7 @@ class UpdateFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateFunction:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateFunction:
         """Deserializes the UpdateFunction from a dictionary."""
         return cls(name=d.get("name", None), owner=d.get("owner", None))
 
@@ -8760,7 +8760,7 @@ class UpdateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastore:
         """Deserializes the UpdateMetastore from a dictionary."""
         return cls(
             delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
@@ -8811,7 +8811,7 @@ class UpdateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastoreAssignment:
         """Deserializes the UpdateMetastoreAssignment from a dictionary."""
         return cls(
             default_catalog_name=d.get("default_catalog_name", None),
@@ -8861,7 +8861,7 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(comment=d.get("comment", None), full_name=d.get("full_name", None), version=d.get("version", None))
 
@@ -8969,7 +8969,7 @@ class UpdateMonitor:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMonitor:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMonitor:
         """Deserializes the UpdateMonitor from a dictionary."""
         return cls(
             baseline_table_name=d.get("baseline_table_name", None),
@@ -9021,7 +9021,7 @@ class UpdatePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissions:
         """Deserializes the UpdatePermissions from a dictionary."""
         return cls(
             changes=_repeated_dict(d, "changes", PermissionsChange),
@@ -9071,7 +9071,7 @@ class UpdateRegisteredModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRegisteredModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegisteredModelRequest:
         """Deserializes the UpdateRegisteredModelRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -9094,7 +9094,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -9154,7 +9154,7 @@ class UpdateSchema:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateSchema:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSchema:
         """Deserializes the UpdateSchema from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -9269,7 +9269,7 @@ class UpdateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateStorageCredential:
         """Deserializes the UpdateStorageCredential from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
@@ -9331,7 +9331,7 @@ class UpdateVolumeRequestContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateVolumeRequestContent:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateVolumeRequestContent:
         """Deserializes the UpdateVolumeRequestContent from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -9375,7 +9375,7 @@ class UpdateWorkspaceBindings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceBindings:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindings:
         """Deserializes the UpdateWorkspaceBindings from a dictionary."""
         return cls(
             assign_workspaces=d.get("assign_workspaces", None),
@@ -9425,7 +9425,7 @@ class UpdateWorkspaceBindingsParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceBindingsParameters:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsParameters:
         """Deserializes the UpdateWorkspaceBindingsParameters from a dictionary."""
         return cls(
             add=_repeated_dict(d, "add", WorkspaceBinding),
@@ -9499,7 +9499,7 @@ class ValidateCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateCredentialRequest:
         """Deserializes the ValidateCredentialRequest from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
@@ -9540,7 +9540,7 @@ class ValidateCredentialResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateCredentialResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateCredentialResponse:
         """Deserializes the ValidateCredentialResponse from a dictionary."""
         return cls(is_dir=d.get("isDir", None), results=_repeated_dict(d, "results", CredentialValidationResult))
 
@@ -9629,7 +9629,7 @@ class ValidateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateStorageCredential:
         """Deserializes the ValidateStorageCredential from a dictionary."""
         return cls(
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
@@ -9673,7 +9673,7 @@ class ValidateStorageCredentialResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredentialResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateStorageCredentialResponse:
         """Deserializes the ValidateStorageCredentialResponse from a dictionary."""
         return cls(is_dir=d.get("isDir", None), results=_repeated_dict(d, "results", ValidationResult))
 
@@ -9712,7 +9712,7 @@ class ValidationResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidationResult:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidationResult:
         """Deserializes the ValidationResult from a dictionary."""
         return cls(
             message=d.get("message", None),
@@ -9869,7 +9869,7 @@ class VolumeInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VolumeInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> VolumeInfo:
         """Deserializes the VolumeInfo from a dictionary."""
         return cls(
             access_point=d.get("access_point", None),
@@ -9923,7 +9923,7 @@ class WorkspaceBinding:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceBinding:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBinding:
         """Deserializes the WorkspaceBinding from a dictionary."""
         return cls(
             binding_type=_enum(d, "binding_type", WorkspaceBindingBindingType), workspace_id=d.get("workspace_id", None)
@@ -9966,7 +9966,7 @@ class WorkspaceBindingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
         return cls(
             bindings=_repeated_dict(d, "bindings", WorkspaceBinding), next_page_token=d.get("next_page_token", None)

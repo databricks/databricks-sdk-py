@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -40,7 +40,7 @@ class CancelQueryExecutionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponse:
         """Deserializes the CancelQueryExecutionResponse from a dictionary."""
         return cls(status=_repeated_dict(d, "status", CancelQueryExecutionResponseStatus))
 
@@ -82,7 +82,7 @@ class CancelQueryExecutionResponseStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponseStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponseStatus:
         """Deserializes the CancelQueryExecutionResponseStatus from a dictionary."""
         return cls(
             data_token=d.get("data_token", None),
@@ -124,7 +124,7 @@ class CronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(quartz_cron_expression=d.get("quartz_cron_expression", None), timezone_id=d.get("timezone_id", None))
 
@@ -221,7 +221,7 @@ class Dashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dashboard:
+    def from_dict(cls, d: Dict[str, Any]) -> Dashboard:
         """Deserializes the Dashboard from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -276,7 +276,7 @@ class DeleteScheduleResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteScheduleResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScheduleResponse:
         """Deserializes the DeleteScheduleResponse from a dictionary."""
         return cls()
 
@@ -294,7 +294,7 @@ class DeleteSubscriptionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteSubscriptionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSubscriptionResponse:
         """Deserializes the DeleteSubscriptionResponse from a dictionary."""
         return cls()
 
@@ -315,7 +315,7 @@ class Empty:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Empty:
+    def from_dict(cls, d: Dict[str, Any]) -> Empty:
         """Deserializes the Empty from a dictionary."""
         return cls()
 
@@ -360,7 +360,7 @@ class ExecutePublishedDashboardQueryRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExecutePublishedDashboardQueryRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExecutePublishedDashboardQueryRequest:
         """Deserializes the ExecutePublishedDashboardQueryRequest from a dictionary."""
         return cls(
             dashboard_name=d.get("dashboard_name", None),
@@ -382,7 +382,7 @@ class ExecuteQueryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExecuteQueryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExecuteQueryResponse:
         """Deserializes the ExecuteQueryResponse from a dictionary."""
         return cls()
 
@@ -414,7 +414,7 @@ class GenieAttachment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieAttachment:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieAttachment:
         """Deserializes the GenieAttachment from a dictionary."""
         return cls(query=_from_dict(d, "query", QueryAttachment), text=_from_dict(d, "text", TextAttachment))
 
@@ -474,7 +474,7 @@ class GenieConversation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieConversation:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
         return cls(
             created_timestamp=d.get("created_timestamp", None),
@@ -520,7 +520,7 @@ class GenieCreateConversationMessageRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieCreateConversationMessageRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieCreateConversationMessageRequest:
         """Deserializes the GenieCreateConversationMessageRequest from a dictionary."""
         return cls(
             content=d.get("content", None),
@@ -550,7 +550,7 @@ class GenieGetMessageQueryResultResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieGetMessageQueryResultResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGetMessageQueryResultResponse:
         """Deserializes the GenieGetMessageQueryResultResponse from a dictionary."""
         return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
 
@@ -657,7 +657,7 @@ class GenieMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieMessage:
         """Deserializes the GenieMessage from a dictionary."""
         return cls(
             attachments=_repeated_dict(d, "attachments", GenieAttachment),
@@ -701,7 +701,7 @@ class GenieStartConversationMessageRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieStartConversationMessageRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieStartConversationMessageRequest:
         """Deserializes the GenieStartConversationMessageRequest from a dictionary."""
         return cls(content=d.get("content", None), space_id=d.get("space_id", None))
 
@@ -745,7 +745,7 @@ class GenieStartConversationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenieStartConversationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GenieStartConversationResponse:
         """Deserializes the GenieStartConversationResponse from a dictionary."""
         return cls(
             conversation=_from_dict(d, "conversation", GenieConversation),
@@ -768,7 +768,7 @@ class GetPublishedDashboardEmbeddedResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedDashboardEmbeddedResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
         """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
         return cls()
 
@@ -806,7 +806,7 @@ class ListDashboardsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListDashboardsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListDashboardsResponse:
         """Deserializes the ListDashboardsResponse from a dictionary."""
         return cls(
             dashboards=_repeated_dict(d, "dashboards", Dashboard), next_page_token=d.get("next_page_token", None)
@@ -840,7 +840,7 @@ class ListSchedulesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSchedulesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSchedulesResponse:
         """Deserializes the ListSchedulesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), schedules=_repeated_dict(d, "schedules", Schedule))
 
@@ -872,7 +872,7 @@ class ListSubscriptionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSubscriptionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSubscriptionsResponse:
         """Deserializes the ListSubscriptionsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -905,7 +905,7 @@ class MessageError:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MessageError:
+    def from_dict(cls, d: Dict[str, Any]) -> MessageError:
         """Deserializes the MessageError from a dictionary."""
         return cls(error=d.get("error", None), type=_enum(d, "type", MessageErrorType))
 
@@ -1024,7 +1024,7 @@ class MigrateDashboardRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MigrateDashboardRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> MigrateDashboardRequest:
         """Deserializes the MigrateDashboardRequest from a dictionary."""
         return cls(
             display_name=d.get("display_name", None),
@@ -1055,7 +1055,7 @@ class PendingStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PendingStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> PendingStatus:
         """Deserializes the PendingStatus from a dictionary."""
         return cls(data_token=d.get("data_token", None))
 
@@ -1079,7 +1079,7 @@ class PollQueryStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponse:
         """Deserializes the PollQueryStatusResponse from a dictionary."""
         return cls(data=_repeated_dict(d, "data", PollQueryStatusResponseData))
 
@@ -1103,7 +1103,7 @@ class PollQueryStatusResponseData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponseData:
+    def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponseData:
         """Deserializes the PollQueryStatusResponseData from a dictionary."""
         return cls(status=_from_dict(d, "status", QueryResponseStatus))
 
@@ -1143,7 +1143,7 @@ class PublishRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishRequest:
         """Deserializes the PublishRequest from a dictionary."""
         return cls(
             dashboard_id=d.get("dashboard_id", None),
@@ -1193,7 +1193,7 @@ class PublishedDashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishedDashboard:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishedDashboard:
         """Deserializes the PublishedDashboard from a dictionary."""
         return cls(
             display_name=d.get("display_name", None),
@@ -1277,7 +1277,7 @@ class QueryAttachment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryAttachment:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryAttachment:
         """Deserializes the QueryAttachment from a dictionary."""
         return cls(
             cached_query_schema=_from_dict(d, "cached_query_schema", QuerySchema),
@@ -1342,7 +1342,7 @@ class QueryResponseStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryResponseStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryResponseStatus:
         """Deserializes the QueryResponseStatus from a dictionary."""
         return cls(
             canceled=_from_dict(d, "canceled", Empty),
@@ -1380,7 +1380,7 @@ class QuerySchema:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QuerySchema:
+    def from_dict(cls, d: Dict[str, Any]) -> QuerySchema:
         """Deserializes the QuerySchema from a dictionary."""
         return cls(columns=_repeated_dict(d, "columns", QuerySchemaColumn), statement_id=d.get("statement_id", None))
 
@@ -1418,7 +1418,7 @@ class QuerySchemaColumn:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QuerySchemaColumn:
+    def from_dict(cls, d: Dict[str, Any]) -> QuerySchemaColumn:
         """Deserializes the QuerySchemaColumn from a dictionary."""
         return cls(
             data_type=_enum(d, "data_type", DataType), name=d.get("name", None), type_text=d.get("type_text", None)
@@ -1460,7 +1460,7 @@ class Result:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Result:
+    def from_dict(cls, d: Dict[str, Any]) -> Result:
         """Deserializes the Result from a dictionary."""
         return cls(
             is_truncated=d.get("is_truncated", None),
@@ -1547,7 +1547,7 @@ class Schedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Schedule:
+    def from_dict(cls, d: Dict[str, Any]) -> Schedule:
         """Deserializes the Schedule from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -1597,7 +1597,7 @@ class Subscriber:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Subscriber:
+    def from_dict(cls, d: Dict[str, Any]) -> Subscriber:
         """Deserializes the Subscriber from a dictionary."""
         return cls(
             destination_subscriber=_from_dict(d, "destination_subscriber", SubscriptionSubscriberDestination),
@@ -1676,7 +1676,7 @@ class Subscription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Subscription:
+    def from_dict(cls, d: Dict[str, Any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -1710,7 +1710,7 @@ class SubscriptionSubscriberDestination:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberDestination:
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberDestination:
         """Deserializes the SubscriptionSubscriberDestination from a dictionary."""
         return cls(destination_id=d.get("destination_id", None))
 
@@ -1735,7 +1735,7 @@ class SubscriptionSubscriberUser:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberUser:
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
         return cls(user_id=d.get("user_id", None))
 
@@ -1768,7 +1768,7 @@ class SuccessStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SuccessStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> SuccessStatus:
         """Deserializes the SuccessStatus from a dictionary."""
         return cls(data_token=d.get("data_token", None), truncated=d.get("truncated", None))
 
@@ -1799,7 +1799,7 @@ class TextAttachment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TextAttachment:
+    def from_dict(cls, d: Dict[str, Any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
         return cls(content=d.get("content", None), id=d.get("id", None))
 
@@ -1817,7 +1817,7 @@ class TrashDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TrashDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TrashDashboardResponse:
         """Deserializes the TrashDashboardResponse from a dictionary."""
         return cls()
 
@@ -1835,7 +1835,7 @@ class UnpublishDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UnpublishDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UnpublishDashboardResponse:
         """Deserializes the UnpublishDashboardResponse from a dictionary."""
         return cls()
 

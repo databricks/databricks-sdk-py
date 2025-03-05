@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
@@ -227,7 +227,7 @@ class CreatePipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePipeline:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePipeline:
         """Deserializes the CreatePipeline from a dictionary."""
         return cls(
             allow_duplicate_names=d.get("allow_duplicate_names", None),
@@ -286,7 +286,7 @@ class CreatePipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePipelineResponse:
         """Deserializes the CreatePipelineResponse from a dictionary."""
         return cls(
             effective_settings=_from_dict(d, "effective_settings", PipelineSpec), pipeline_id=d.get("pipeline_id", None)
@@ -318,7 +318,7 @@ class CronTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CronTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> CronTrigger:
         """Deserializes the CronTrigger from a dictionary."""
         return cls(quartz_cron_schedule=d.get("quartz_cron_schedule", None), timezone_id=d.get("timezone_id", None))
 
@@ -350,7 +350,7 @@ class DataPlaneId:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataPlaneId:
+    def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get("instance", None), seq_no=d.get("seq_no", None))
 
@@ -381,7 +381,7 @@ class DeletePipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePipelineResponse:
         """Deserializes the DeletePipelineResponse from a dictionary."""
         return cls()
 
@@ -608,7 +608,7 @@ class EditPipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPipeline:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPipeline:
         """Deserializes the EditPipeline from a dictionary."""
         return cls(
             allow_duplicate_names=d.get("allow_duplicate_names", None),
@@ -654,7 +654,7 @@ class EditPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPipelineResponse:
         """Deserializes the EditPipelineResponse from a dictionary."""
         return cls()
 
@@ -686,7 +686,7 @@ class ErrorDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ErrorDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> ErrorDetail:
         """Deserializes the ErrorDetail from a dictionary."""
         return cls(exceptions=_repeated_dict(d, "exceptions", SerializedException), fatal=d.get("fatal", None))
 
@@ -720,7 +720,7 @@ class FileLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> FileLibrary:
         """Deserializes the FileLibrary from a dictionary."""
         return cls(path=d.get("path", None))
 
@@ -752,7 +752,7 @@ class Filters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Filters:
+    def from_dict(cls, d: Dict[str, Any]) -> Filters:
         """Deserializes the Filters from a dictionary."""
         return cls(exclude=d.get("exclude", None), include=d.get("include", None))
 
@@ -777,7 +777,7 @@ class GetPipelinePermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPipelinePermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPipelinePermissionLevelsResponse:
         """Deserializes the GetPipelinePermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", PipelinePermissionsDescription))
 
@@ -879,7 +879,7 @@ class GetPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPipelineResponse:
         """Deserializes the GetPipelineResponse from a dictionary."""
         return cls(
             cause=d.get("cause", None),
@@ -924,7 +924,7 @@ class GetUpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetUpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetUpdateResponse:
         """Deserializes the GetUpdateResponse from a dictionary."""
         return cls(update=_from_dict(d, "update", UpdateInfo))
 
@@ -963,7 +963,7 @@ class IngestionConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IngestionConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionConfig:
         """Deserializes the IngestionConfig from a dictionary."""
         return cls(
             report=_from_dict(d, "report", ReportSpec),
@@ -1024,7 +1024,7 @@ class IngestionGatewayPipelineDefinition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IngestionGatewayPipelineDefinition:
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionGatewayPipelineDefinition:
         """Deserializes the IngestionGatewayPipelineDefinition from a dictionary."""
         return cls(
             connection_id=d.get("connection_id", None),
@@ -1079,7 +1079,7 @@ class IngestionPipelineDefinition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IngestionPipelineDefinition:
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
@@ -1123,7 +1123,7 @@ class ListPipelineEventsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPipelineEventsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPipelineEventsResponse:
         """Deserializes the ListPipelineEventsResponse from a dictionary."""
         return cls(
             events=_repeated_dict(d, "events", PipelineEvent),
@@ -1159,7 +1159,7 @@ class ListPipelinesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPipelinesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPipelinesResponse:
         """Deserializes the ListPipelinesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), statuses=_repeated_dict(d, "statuses", PipelineStateInfo)
@@ -1200,7 +1200,7 @@ class ListUpdatesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListUpdatesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListUpdatesResponse:
         """Deserializes the ListUpdatesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -1222,7 +1222,7 @@ class ManualTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ManualTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> ManualTrigger:
         """Deserializes the ManualTrigger from a dictionary."""
         return cls()
 
@@ -1255,7 +1255,7 @@ class NotebookLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookLibrary:
         """Deserializes the NotebookLibrary from a dictionary."""
         return cls(path=d.get("path", None))
 
@@ -1292,7 +1292,7 @@ class Notifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Notifications:
+    def from_dict(cls, d: Dict[str, Any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
         return cls(alerts=d.get("alerts", None), email_recipients=d.get("email_recipients", None))
 
@@ -1430,7 +1430,7 @@ class Origin:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Origin:
+    def from_dict(cls, d: Dict[str, Any]) -> Origin:
         """Deserializes the Origin from a dictionary."""
         return cls(
             batch_id=d.get("batch_id", None),
@@ -1494,7 +1494,7 @@ class PipelineAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlRequest:
         """Deserializes the PipelineAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -1552,7 +1552,7 @@ class PipelineAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlResponse:
         """Deserializes the PipelineAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", PipelinePermission),
@@ -1752,7 +1752,7 @@ class PipelineCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineCluster:
         """Deserializes the PipelineCluster from a dictionary."""
         return cls(
             apply_policy_default_values=d.get("apply_policy_default_values", None),
@@ -1816,7 +1816,7 @@ class PipelineClusterAutoscale:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineClusterAutoscale:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineClusterAutoscale:
         """Deserializes the PipelineClusterAutoscale from a dictionary."""
         return cls(
             max_workers=d.get("max_workers", None),
@@ -1862,7 +1862,7 @@ class PipelineDeployment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineDeployment:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineDeployment:
         """Deserializes the PipelineDeployment from a dictionary."""
         return cls(kind=_enum(d, "kind", DeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
 
@@ -1943,7 +1943,7 @@ class PipelineEvent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineEvent:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineEvent:
         """Deserializes the PipelineEvent from a dictionary."""
         return cls(
             error=_from_dict(d, "error", ErrorDetail),
@@ -2006,7 +2006,7 @@ class PipelineLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineLibrary:
         """Deserializes the PipelineLibrary from a dictionary."""
         return cls(
             file=_from_dict(d, "file", FileLibrary),
@@ -2049,7 +2049,7 @@ class PipelinePermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermission:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermission:
         """Deserializes the PipelinePermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -2098,7 +2098,7 @@ class PipelinePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissions:
         """Deserializes the PipelinePermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlResponse),
@@ -2133,7 +2133,7 @@ class PipelinePermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsDescription:
         """Deserializes the PipelinePermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -2167,7 +2167,7 @@ class PipelinePermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsRequest:
         """Deserializes the PipelinePermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlRequest),
@@ -2356,7 +2356,7 @@ class PipelineSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineSpec:
         """Deserializes the PipelineSpec from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
@@ -2469,7 +2469,7 @@ class PipelineStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineStateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineStateInfo:
         """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
@@ -2515,7 +2515,7 @@ class PipelineTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
         return cls(cron=_from_dict(d, "cron", CronTrigger), manual=_from_dict(d, "manual", ManualTrigger))
 
@@ -2569,7 +2569,7 @@ class ReportSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReportSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ReportSpec:
         """Deserializes the ReportSpec from a dictionary."""
         return cls(
             destination_catalog=d.get("destination_catalog", None),
@@ -2618,7 +2618,7 @@ class RestartWindow:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestartWindow:
+    def from_dict(cls, d: Dict[str, Any]) -> RestartWindow:
         """Deserializes the RestartWindow from a dictionary."""
         return cls(
             days_of_week=_repeated_enum(d, "days_of_week", DayOfWeek),
@@ -2662,7 +2662,7 @@ class RunAs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunAs:
+    def from_dict(cls, d: Dict[str, Any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
         return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
@@ -2719,7 +2719,7 @@ class SchemaSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SchemaSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaSpec:
         """Deserializes the SchemaSpec from a dictionary."""
         return cls(
             destination_catalog=d.get("destination_catalog", None),
@@ -2757,7 +2757,7 @@ class Sequencing:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Sequencing:
+    def from_dict(cls, d: Dict[str, Any]) -> Sequencing:
         """Deserializes the Sequencing from a dictionary."""
         return cls(
             control_plane_seq_no=d.get("control_plane_seq_no", None),
@@ -2799,7 +2799,7 @@ class SerializedException:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SerializedException:
+    def from_dict(cls, d: Dict[str, Any]) -> SerializedException:
         """Deserializes the SerializedException from a dictionary."""
         return cls(
             class_name=d.get("class_name", None),
@@ -2849,7 +2849,7 @@ class StackFrame:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StackFrame:
+    def from_dict(cls, d: Dict[str, Any]) -> StackFrame:
         """Deserializes the StackFrame from a dictionary."""
         return cls(
             declaring_class=d.get("declaring_class", None),
@@ -2917,7 +2917,7 @@ class StartUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> StartUpdate:
         """Deserializes the StartUpdate from a dictionary."""
         return cls(
             cause=_enum(d, "cause", StartUpdateCause),
@@ -2958,7 +2958,7 @@ class StartUpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartUpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> StartUpdateResponse:
         """Deserializes the StartUpdateResponse from a dictionary."""
         return cls(update_id=d.get("update_id", None))
 
@@ -2976,7 +2976,7 @@ class StopPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StopPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> StopPipelineResponse:
         """Deserializes the StopPipelineResponse from a dictionary."""
         return cls()
 
@@ -3045,7 +3045,7 @@ class TableSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> TableSpec:
         """Deserializes the TableSpec from a dictionary."""
         return cls(
             destination_catalog=d.get("destination_catalog", None),
@@ -3101,7 +3101,7 @@ class TableSpecificConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableSpecificConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
             primary_keys=d.get("primary_keys", None),
@@ -3214,7 +3214,7 @@ class UpdateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInfo:
         """Deserializes the UpdateInfo from a dictionary."""
         return cls(
             cause=_enum(d, "cause", UpdateInfoCause),
@@ -3289,7 +3289,7 @@ class UpdateStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateStateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateStateInfo:
         """Deserializes the UpdateStateInfo from a dictionary."""
         return cls(
             creation_time=d.get("creation_time", None),

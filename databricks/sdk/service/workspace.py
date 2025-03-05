@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict
 
@@ -42,7 +42,7 @@ class AclItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AclItem:
+    def from_dict(cls, d: Dict[str, Any]) -> AclItem:
         """Deserializes the AclItem from a dictionary."""
         return cls(permission=_enum(d, "permission", AclPermission), principal=d.get("principal", None))
 
@@ -81,7 +81,7 @@ class AzureKeyVaultSecretScopeMetadata:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureKeyVaultSecretScopeMetadata:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureKeyVaultSecretScopeMetadata:
         """Deserializes the AzureKeyVaultSecretScopeMetadata from a dictionary."""
         return cls(dns_name=d.get("dns_name", None), resource_id=d.get("resource_id", None))
 
@@ -129,7 +129,7 @@ class CreateCredentialsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsRequest:
         """Deserializes the CreateCredentialsRequest from a dictionary."""
         return cls(
             git_provider=d.get("git_provider", None),
@@ -173,7 +173,7 @@ class CreateCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsResponse:
         """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
@@ -227,7 +227,7 @@ class CreateRepoRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRepoRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRepoRequest:
         """Deserializes the CreateRepoRequest from a dictionary."""
         return cls(
             path=d.get("path", None),
@@ -299,7 +299,7 @@ class CreateRepoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRepoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRepoResponse:
         """Deserializes the CreateRepoResponse from a dictionary."""
         return cls(
             branch=d.get("branch", None),
@@ -353,7 +353,7 @@ class CreateScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScope:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateScope:
         """Deserializes the CreateScope from a dictionary."""
         return cls(
             backend_azure_keyvault=_from_dict(d, "backend_azure_keyvault", AzureKeyVaultSecretScopeMetadata),
@@ -376,7 +376,7 @@ class CreateScopeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScopeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateScopeResponse:
         """Deserializes the CreateScopeResponse from a dictionary."""
         return cls()
 
@@ -416,7 +416,7 @@ class CredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
@@ -454,7 +454,7 @@ class Delete:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Delete:
+    def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
         return cls(path=d.get("path", None), recursive=d.get("recursive", None))
 
@@ -486,7 +486,7 @@ class DeleteAcl:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAcl:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAcl:
         """Deserializes the DeleteAcl from a dictionary."""
         return cls(principal=d.get("principal", None), scope=d.get("scope", None))
 
@@ -504,7 +504,7 @@ class DeleteAclResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAclResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAclResponse:
         """Deserializes the DeleteAclResponse from a dictionary."""
         return cls()
 
@@ -522,7 +522,7 @@ class DeleteCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCredentialsResponse:
         """Deserializes the DeleteCredentialsResponse from a dictionary."""
         return cls()
 
@@ -540,7 +540,7 @@ class DeleteRepoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRepoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRepoResponse:
         """Deserializes the DeleteRepoResponse from a dictionary."""
         return cls()
 
@@ -558,7 +558,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -583,7 +583,7 @@ class DeleteScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteScope:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScope:
         """Deserializes the DeleteScope from a dictionary."""
         return cls(scope=d.get("scope", None))
 
@@ -601,7 +601,7 @@ class DeleteScopeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteScopeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
         """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
 
@@ -633,7 +633,7 @@ class DeleteSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecret:
         """Deserializes the DeleteSecret from a dictionary."""
         return cls(key=d.get("key", None), scope=d.get("scope", None))
 
@@ -651,7 +651,7 @@ class DeleteSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecretResponse:
         """Deserializes the DeleteSecretResponse from a dictionary."""
         return cls()
 
@@ -694,7 +694,7 @@ class ExportResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportResponse:
         """Deserializes the ExportResponse from a dictionary."""
         return cls(content=d.get("content", None), file_type=d.get("file_type", None))
 
@@ -734,7 +734,7 @@ class GetCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
@@ -763,7 +763,7 @@ class GetRepoPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRepoPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRepoPermissionLevelsResponse:
         """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", RepoPermissionsDescription))
 
@@ -830,7 +830,7 @@ class GetRepoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRepoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRepoResponse:
         """Deserializes the GetRepoResponse from a dictionary."""
         return cls(
             branch=d.get("branch", None),
@@ -870,7 +870,7 @@ class GetSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetSecretResponse:
         """Deserializes the GetSecretResponse from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -895,7 +895,7 @@ class GetWorkspaceObjectPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetWorkspaceObjectPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", WorkspaceObjectPermissionsDescription))
 
@@ -963,7 +963,7 @@ class Import:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Import:
+    def from_dict(cls, d: Dict[str, Any]) -> Import:
         """Deserializes the Import from a dictionary."""
         return cls(
             content=d.get("content", None),
@@ -1009,7 +1009,7 @@ class ImportResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ImportResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ImportResponse:
         """Deserializes the ImportResponse from a dictionary."""
         return cls()
 
@@ -1043,7 +1043,7 @@ class ListAclsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAclsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAclsResponse:
         """Deserializes the ListAclsResponse from a dictionary."""
         return cls(items=_repeated_dict(d, "items", AclItem))
 
@@ -1068,7 +1068,7 @@ class ListCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(credentials=_repeated_dict(d, "credentials", CredentialInfo))
 
@@ -1101,7 +1101,7 @@ class ListReposResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListReposResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListReposResponse:
         """Deserializes the ListReposResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), repos=_repeated_dict(d, "repos", RepoInfo))
 
@@ -1126,7 +1126,7 @@ class ListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListResponse:
         """Deserializes the ListResponse from a dictionary."""
         return cls(objects=_repeated_dict(d, "objects", ObjectInfo))
 
@@ -1151,7 +1151,7 @@ class ListScopesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListScopesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListScopesResponse:
         """Deserializes the ListScopesResponse from a dictionary."""
         return cls(scopes=_repeated_dict(d, "scopes", SecretScope))
 
@@ -1176,7 +1176,7 @@ class ListSecretsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSecretsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSecretsResponse:
         """Deserializes the ListSecretsResponse from a dictionary."""
         return cls(secrets=_repeated_dict(d, "secrets", SecretMetadata))
 
@@ -1202,7 +1202,7 @@ class Mkdirs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Mkdirs:
+    def from_dict(cls, d: Dict[str, Any]) -> Mkdirs:
         """Deserializes the Mkdirs from a dictionary."""
         return cls(path=d.get("path", None))
 
@@ -1220,7 +1220,7 @@ class MkdirsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkdirsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MkdirsResponse:
         """Deserializes the MkdirsResponse from a dictionary."""
         return cls()
 
@@ -1298,7 +1298,7 @@ class ObjectInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ObjectInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ObjectInfo:
         """Deserializes the ObjectInfo from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -1361,7 +1361,7 @@ class PutAcl:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAcl:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAcl:
         """Deserializes the PutAcl from a dictionary."""
         return cls(
             permission=_enum(d, "permission", AclPermission),
@@ -1383,7 +1383,7 @@ class PutAclResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAclResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
         """Deserializes the PutAclResponse from a dictionary."""
         return cls()
 
@@ -1429,7 +1429,7 @@ class PutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> PutSecret:
         """Deserializes the PutSecret from a dictionary."""
         return cls(
             bytes_value=d.get("bytes_value", None),
@@ -1452,7 +1452,7 @@ class PutSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutSecretResponse:
         """Deserializes the PutSecretResponse from a dictionary."""
         return cls()
 
@@ -1498,7 +1498,7 @@ class RepoAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlRequest:
         """Deserializes the RepoAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -1556,7 +1556,7 @@ class RepoAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlResponse:
         """Deserializes the RepoAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", RepoPermission),
@@ -1631,7 +1631,7 @@ class RepoInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoInfo:
         """Deserializes the RepoInfo from a dictionary."""
         return cls(
             branch=d.get("branch", None),
@@ -1676,7 +1676,7 @@ class RepoPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermission:
         """Deserializes the RepoPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1725,7 +1725,7 @@ class RepoPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissions:
         """Deserializes the RepoPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlResponse),
@@ -1760,7 +1760,7 @@ class RepoPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsDescription:
         """Deserializes the RepoPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", RepoPermissionLevel)
@@ -1793,7 +1793,7 @@ class RepoPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsRequest:
         """Deserializes the RepoPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlRequest),
@@ -1834,7 +1834,7 @@ class SecretMetadata:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretMetadata:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretMetadata:
         """Deserializes the SecretMetadata from a dictionary."""
         return cls(key=d.get("key", None), last_updated_timestamp=d.get("last_updated_timestamp", None))
 
@@ -1873,7 +1873,7 @@ class SecretScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretScope:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretScope:
         """Deserializes the SecretScope from a dictionary."""
         return cls(
             backend_type=_enum(d, "backend_type", ScopeBackendType),
@@ -1906,7 +1906,7 @@ class SparseCheckout:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparseCheckout:
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckout:
         """Deserializes the SparseCheckout from a dictionary."""
         return cls(patterns=d.get("patterns", None))
 
@@ -1935,7 +1935,7 @@ class SparseCheckoutUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparseCheckoutUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckoutUpdate:
         """Deserializes the SparseCheckoutUpdate from a dictionary."""
         return cls(patterns=d.get("patterns", None))
 
@@ -1990,7 +1990,7 @@ class UpdateCredentialsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentialsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsRequest:
         """Deserializes the UpdateCredentialsRequest from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
@@ -2013,7 +2013,7 @@ class UpdateCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsResponse:
         """Deserializes the UpdateCredentialsResponse from a dictionary."""
         return cls()
 
@@ -2062,7 +2062,7 @@ class UpdateRepoRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRepoRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRepoRequest:
         """Deserializes the UpdateRepoRequest from a dictionary."""
         return cls(
             branch=d.get("branch", None),
@@ -2085,7 +2085,7 @@ class UpdateRepoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRepoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRepoResponse:
         """Deserializes the UpdateRepoResponse from a dictionary."""
         return cls()
 
@@ -2131,7 +2131,7 @@ class WorkspaceObjectAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlRequest:
         """Deserializes the WorkspaceObjectAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -2189,7 +2189,7 @@ class WorkspaceObjectAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlResponse:
         """Deserializes the WorkspaceObjectAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", WorkspaceObjectPermission),
@@ -2232,7 +2232,7 @@ class WorkspaceObjectPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermission:
         """Deserializes the WorkspaceObjectPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -2281,7 +2281,7 @@ class WorkspaceObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissions:
         """Deserializes the WorkspaceObjectPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlResponse),
@@ -2316,7 +2316,7 @@ class WorkspaceObjectPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsDescription:
         """Deserializes the WorkspaceObjectPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -2357,7 +2357,7 @@ class WorkspaceObjectPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsRequest:
         """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlRequest),

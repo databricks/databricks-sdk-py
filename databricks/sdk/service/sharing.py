@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -66,7 +66,7 @@ class CreateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateProvider:
         """Deserializes the CreateProvider from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -157,7 +157,7 @@ class CreateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRecipient:
         """Deserializes the CreateRecipient from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -206,7 +206,7 @@ class CreateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
         return cls(comment=d.get("comment", None), name=d.get("name", None), storage_root=d.get("storage_root", None))
 
@@ -224,7 +224,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -242,7 +242,7 @@ class GetActivationUrlInfoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetActivationUrlInfoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetActivationUrlInfoResponse:
         """Deserializes the GetActivationUrlInfoResponse from a dictionary."""
         return cls()
 
@@ -275,7 +275,7 @@ class GetRecipientSharePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRecipientSharePermissionsResponse:
         """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -303,7 +303,7 @@ class IpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> IpAccessList:
         """Deserializes the IpAccessList from a dictionary."""
         return cls(allowed_ip_addresses=d.get("allowed_ip_addresses", None))
 
@@ -336,7 +336,7 @@ class ListProviderSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ProviderShare))
 
@@ -369,7 +369,7 @@ class ListProvidersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
@@ -404,7 +404,7 @@ class ListRecipientsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), recipients=_repeated_dict(d, "recipients", RecipientInfo)
@@ -439,7 +439,7 @@ class ListSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ShareInfo))
 
@@ -464,7 +464,7 @@ class Partition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Partition:
+    def from_dict(cls, d: Dict[str, Any]) -> Partition:
         """Deserializes the Partition from a dictionary."""
         return cls(values=_repeated_dict(d, "values", PartitionValue))
 
@@ -489,7 +489,7 @@ class PartitionSpecificationPartition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionSpecificationPartition:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionSpecificationPartition:
         """Deserializes the PartitionSpecificationPartition from a dictionary."""
         return cls(values=_repeated_dict(d, "values", PartitionValue))
 
@@ -537,7 +537,7 @@ class PartitionValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionValue:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionValue:
         """Deserializes the PartitionValue from a dictionary."""
         return cls(
             name=d.get("name", None),
@@ -629,7 +629,7 @@ class PrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
@@ -752,7 +752,7 @@ class ProviderInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -792,7 +792,7 @@ class ProviderShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderShare:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderShare:
         """Deserializes the ProviderShare from a dictionary."""
         return cls(name=d.get("name", None))
 
@@ -952,7 +952,7 @@ class RecipientInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientInfo:
         """Deserializes the RecipientInfo from a dictionary."""
         return cls(
             activated=d.get("activated", None),
@@ -1011,7 +1011,7 @@ class RecipientProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientProfile:
         """Deserializes the RecipientProfile from a dictionary."""
         return cls(
             bearer_token=d.get("bearer_token", None),
@@ -1083,7 +1083,7 @@ class RecipientTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientTokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientTokenInfo:
         """Deserializes the RecipientTokenInfo from a dictionary."""
         return cls(
             activation_url=d.get("activation_url", None),
@@ -1137,7 +1137,7 @@ class RetrieveTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RetrieveTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveTokenResponse:
         """Deserializes the RetrieveTokenResponse from a dictionary."""
         return cls(
             bearer_token=d.get("bearerToken", None),
@@ -1176,7 +1176,7 @@ class RotateRecipientToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
+    def from_dict(cls, d: Dict[str, Any]) -> RotateRecipientToken:
         """Deserializes the RotateRecipientToken from a dictionary."""
         return cls(
             existing_token_expire_in_seconds=d.get("existing_token_expire_in_seconds", None), name=d.get("name", None)
@@ -1205,7 +1205,7 @@ class SecurablePropertiesKvPairs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecurablePropertiesKvPairs:
+    def from_dict(cls, d: Dict[str, Any]) -> SecurablePropertiesKvPairs:
         """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
         return cls(properties=d.get("properties", None))
 
@@ -1293,7 +1293,7 @@ class ShareInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1336,7 +1336,7 @@ class ShareToPrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareToPrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareToPrivilegeAssignment:
         """Deserializes the ShareToPrivilegeAssignment from a dictionary."""
         return cls(
             privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
@@ -1463,7 +1463,7 @@ class SharedDataObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(
             added_at=d.get("added_at", None),
@@ -1540,7 +1540,7 @@ class SharedDataObjectUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObjectUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObjectUpdate:
         """Deserializes the SharedDataObjectUpdate from a dictionary."""
         return cls(
             action=_enum(d, "action", SharedDataObjectUpdateAction),
@@ -1569,7 +1569,7 @@ class UpdatePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissionsResponse:
         """Deserializes the UpdatePermissionsResponse from a dictionary."""
         return cls()
 
@@ -1623,7 +1623,7 @@ class UpdateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProvider:
         """Deserializes the UpdateProvider from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1698,7 +1698,7 @@ class UpdateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRecipient:
         """Deserializes the UpdateRecipient from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1766,7 +1766,7 @@ class UpdateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateShare:
         """Deserializes the UpdateShare from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1825,7 +1825,7 @@ class UpdateSharePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
         return cls(
             changes=_repeated_dict(d, "changes", catalog.PermissionsChange),

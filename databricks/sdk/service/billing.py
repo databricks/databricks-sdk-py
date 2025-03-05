@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import BinaryIO, Dict, Iterator, List, Optional
+from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict
 
@@ -51,7 +51,7 @@ class ActionConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ActionConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> ActionConfiguration:
         """Deserializes the ActionConfiguration from a dictionary."""
         return cls(
             action_configuration_id=d.get("action_configuration_id", None),
@@ -123,7 +123,7 @@ class AlertConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AlertConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> AlertConfiguration:
         """Deserializes the AlertConfiguration from a dictionary."""
         return cls(
             action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
@@ -215,7 +215,7 @@ class BudgetConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetConfiguration:
         """Deserializes the BudgetConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -257,7 +257,7 @@ class BudgetConfigurationFilter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilter:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilter:
         """Deserializes the BudgetConfigurationFilter from a dictionary."""
         return cls(
             tags=_repeated_dict(d, "tags", BudgetConfigurationFilterTagClause),
@@ -290,7 +290,7 @@ class BudgetConfigurationFilterClause:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterClause:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilterClause:
         """Deserializes the BudgetConfigurationFilterClause from a dictionary."""
         return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
 
@@ -325,7 +325,7 @@ class BudgetConfigurationFilterTagClause:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterTagClause:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilterTagClause:
         """Deserializes the BudgetConfigurationFilterTagClause from a dictionary."""
         return cls(key=d.get("key", None), value=_from_dict(d, "value", BudgetConfigurationFilterClause))
 
@@ -355,7 +355,7 @@ class BudgetConfigurationFilterWorkspaceIdClause:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterWorkspaceIdClause:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
         return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
 
@@ -397,7 +397,7 @@ class BudgetPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
         return cls(
             custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
@@ -434,7 +434,7 @@ class CreateBillingUsageDashboardRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBillingUsageDashboardRequest:
         """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
         return cls(
             dashboard_type=_enum(d, "dashboard_type", UsageDashboardType), workspace_id=d.get("workspace_id", None)
@@ -461,7 +461,7 @@ class CreateBillingUsageDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBillingUsageDashboardResponse:
         """Deserializes the CreateBillingUsageDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None))
 
@@ -510,7 +510,7 @@ class CreateBudgetConfigurationBudget:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudget:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationBudget:
         """Deserializes the CreateBudgetConfigurationBudget from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -549,7 +549,7 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetActionConfigurations:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationBudgetActionConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetActionConfigurations from a dictionary."""
         return cls(action_type=_enum(d, "action_type", ActionConfigurationType), target=d.get("target", None))
 
@@ -605,7 +605,7 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetAlertConfigurations:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationBudgetAlertConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetAlertConfigurations from a dictionary."""
         return cls(
             action_configurations=_repeated_dict(
@@ -638,7 +638,7 @@ class CreateBudgetConfigurationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationRequest:
         """Deserializes the CreateBudgetConfigurationRequest from a dictionary."""
         return cls(budget=_from_dict(d, "budget", CreateBudgetConfigurationBudget))
 
@@ -663,7 +663,7 @@ class CreateBudgetConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationResponse:
         """Deserializes the CreateBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
@@ -706,7 +706,7 @@ class CreateBudgetPolicyRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetPolicyRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetPolicyRequest:
         """Deserializes the CreateBudgetPolicyRequest from a dictionary."""
         return cls(
             custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
@@ -833,7 +833,7 @@ class CreateLogDeliveryConfigurationParams:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateLogDeliveryConfigurationParams:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateLogDeliveryConfigurationParams:
         """Deserializes the CreateLogDeliveryConfigurationParams from a dictionary."""
         return cls(
             config_name=d.get("config_name", None),
@@ -861,7 +861,7 @@ class DeleteBudgetConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteBudgetConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteBudgetConfigurationResponse:
         """Deserializes the DeleteBudgetConfigurationResponse from a dictionary."""
         return cls()
 
@@ -879,7 +879,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -919,7 +919,7 @@ class DownloadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(contents=d.get("contents", None))
 
@@ -961,7 +961,7 @@ class Filter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Filter:
+    def from_dict(cls, d: Dict[str, Any]) -> Filter:
         """Deserializes the Filter from a dictionary."""
         return cls(
             creator_user_id=d.get("creator_user_id", None),
@@ -997,7 +997,7 @@ class GetBillingUsageDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetBillingUsageDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetBillingUsageDashboardResponse:
         """Deserializes the GetBillingUsageDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None), dashboard_url=d.get("dashboard_url", None))
 
@@ -1021,7 +1021,7 @@ class GetBudgetConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetBudgetConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetBudgetConfigurationResponse:
         """Deserializes the GetBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
@@ -1042,7 +1042,7 @@ class LimitConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LimitConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> LimitConfig:
         """Deserializes the LimitConfig from a dictionary."""
         return cls()
 
@@ -1074,7 +1074,7 @@ class ListBudgetConfigurationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListBudgetConfigurationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListBudgetConfigurationsResponse:
         """Deserializes the ListBudgetConfigurationsResponse from a dictionary."""
         return cls(
             budgets=_repeated_dict(d, "budgets", BudgetConfiguration), next_page_token=d.get("next_page_token", None)
@@ -1118,7 +1118,7 @@ class ListBudgetPoliciesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListBudgetPoliciesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListBudgetPoliciesResponse:
         """Deserializes the ListBudgetPoliciesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -1290,7 +1290,7 @@ class LogDeliveryConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogDeliveryConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> LogDeliveryConfiguration:
         """Deserializes the LogDeliveryConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -1360,7 +1360,7 @@ class LogDeliveryStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogDeliveryStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> LogDeliveryStatus:
         """Deserializes the LogDeliveryStatus from a dictionary."""
         return cls(
             last_attempt_time=d.get("last_attempt_time", None),
@@ -1417,7 +1417,7 @@ class PatchStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PatchStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PatchStatusResponse:
         """Deserializes the PatchStatusResponse from a dictionary."""
         return cls()
 
@@ -1449,7 +1449,7 @@ class SortSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SortSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> SortSpec:
         """Deserializes the SortSpec from a dictionary."""
         return cls(descending=d.get("descending", None), field=_enum(d, "field", SortSpecField))
 
@@ -1510,7 +1510,7 @@ class UpdateBudgetConfigurationBudget:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationBudget:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateBudgetConfigurationBudget:
         """Deserializes the UpdateBudgetConfigurationBudget from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -1548,7 +1548,7 @@ class UpdateBudgetConfigurationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateBudgetConfigurationRequest:
         """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
         return cls(budget=_from_dict(d, "budget", UpdateBudgetConfigurationBudget), budget_id=d.get("budget_id", None))
 
@@ -1573,7 +1573,7 @@ class UpdateBudgetConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateBudgetConfigurationResponse:
         """Deserializes the UpdateBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
@@ -1608,7 +1608,7 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateLogDeliveryConfigurationStatusRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
         return cls(
             log_delivery_configuration_id=d.get("log_delivery_configuration_id", None),
@@ -1641,7 +1641,7 @@ class WrappedCreateLogDeliveryConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WrappedCreateLogDeliveryConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> WrappedCreateLogDeliveryConfiguration:
         """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
         return cls(
             log_delivery_configuration=_from_dict(d, "log_delivery_configuration", CreateLogDeliveryConfigurationParams)
@@ -1667,7 +1667,7 @@ class WrappedLogDeliveryConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> WrappedLogDeliveryConfiguration:
         """Deserializes the WrappedLogDeliveryConfiguration from a dictionary."""
         return cls(log_delivery_configuration=_from_dict(d, "log_delivery_configuration", LogDeliveryConfiguration))
 
@@ -1691,7 +1691,7 @@ class WrappedLogDeliveryConfigurations:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfigurations:
+    def from_dict(cls, d: Dict[str, Any]) -> WrappedLogDeliveryConfigurations:
         """Deserializes the WrappedLogDeliveryConfigurations from a dictionary."""
         return cls(
             log_delivery_configurations=_repeated_dict(d, "log_delivery_configurations", LogDeliveryConfiguration)

@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -83,7 +83,7 @@ class BaseJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BaseJob:
+    def from_dict(cls, d: Dict[str, Any]) -> BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(
             created_time=d.get("created_time", None),
@@ -393,7 +393,7 @@ class BaseRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BaseRun:
+    def from_dict(cls, d: Dict[str, Any]) -> BaseRun:
         """Deserializes the BaseRun from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
@@ -460,7 +460,7 @@ class CancelAllRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelAllRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRuns:
         """Deserializes the CancelAllRuns from a dictionary."""
         return cls(all_queued_runs=d.get("all_queued_runs", None), job_id=d.get("job_id", None))
 
@@ -478,7 +478,7 @@ class CancelAllRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelAllRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRunsResponse:
         """Deserializes the CancelAllRunsResponse from a dictionary."""
         return cls()
 
@@ -503,7 +503,7 @@ class CancelRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRun:
         """Deserializes the CancelRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -521,7 +521,7 @@ class CancelRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRunResponse:
         """Deserializes the CancelRunResponse from a dictionary."""
         return cls()
 
@@ -591,7 +591,7 @@ class CleanRoomTaskRunState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomTaskRunState:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunState:
         """Deserializes the CleanRoomTaskRunState from a dictionary."""
         return cls(
             life_cycle_state=_enum(d, "life_cycle_state", CleanRoomTaskRunLifeCycleState),
@@ -641,7 +641,7 @@ class CleanRoomsNotebookTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTask:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomsNotebookTask:
         """Deserializes the CleanRoomsNotebookTask from a dictionary."""
         return cls(
             clean_room_name=d.get("clean_room_name", None),
@@ -685,7 +685,7 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
         """Deserializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput from a dictionary."""
         return cls(
             clean_room_job_run_state=_from_dict(d, "clean_room_job_run_state", CleanRoomTaskRunState),
@@ -732,7 +732,7 @@ class ClusterInstance:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterInstance:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterInstance:
         """Deserializes the ClusterInstance from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), spark_context_id=d.get("spark_context_id", None))
 
@@ -782,7 +782,7 @@ class ClusterSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterSpec:
         """Deserializes the ClusterSpec from a dictionary."""
         return cls(
             existing_cluster_id=d.get("existing_cluster_id", None),
@@ -842,7 +842,7 @@ class ConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConditionTask:
+    def from_dict(cls, d: Dict[str, Any]) -> ConditionTask:
         """Deserializes the ConditionTask from a dictionary."""
         return cls(left=d.get("left", None), op=_enum(d, "op", ConditionTaskOp), right=d.get("right", None))
 
@@ -886,7 +886,7 @@ class Continuous:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Continuous:
+    def from_dict(cls, d: Dict[str, Any]) -> Continuous:
         """Deserializes the Continuous from a dictionary."""
         return cls(pause_status=_enum(d, "pause_status", PauseStatus))
 
@@ -1120,7 +1120,7 @@ class CreateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateJob:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", JobAccessControlRequest),
@@ -1173,7 +1173,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(job_id=d.get("job_id", None))
 
@@ -1218,7 +1218,7 @@ class CronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(
             pause_status=_enum(d, "pause_status", PauseStatus),
@@ -1255,7 +1255,7 @@ class DbtOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DbtOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DbtOutput:
         """Deserializes the DbtOutput from a dictionary."""
         return cls(artifacts_headers=d.get("artifacts_headers", None), artifacts_link=d.get("artifacts_link", None))
 
@@ -1336,7 +1336,7 @@ class DbtTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DbtTask:
+    def from_dict(cls, d: Dict[str, Any]) -> DbtTask:
         """Deserializes the DbtTask from a dictionary."""
         return cls(
             catalog=d.get("catalog", None),
@@ -1369,7 +1369,7 @@ class DeleteJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteJob:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteJob:
         """Deserializes the DeleteJob from a dictionary."""
         return cls(job_id=d.get("job_id", None))
 
@@ -1387,7 +1387,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -1412,7 +1412,7 @@ class DeleteRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -1430,7 +1430,7 @@ class DeleteRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
         """Deserializes the DeleteRunResponse from a dictionary."""
         return cls()
 
@@ -1476,7 +1476,7 @@ class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
+    def from_dict(cls, d: Dict[str, Any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         """Deserializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange from a dictionary."""
         return cls(
             field=d.get("field", None), new_value=d.get("new_value", None), previous_value=d.get("previous_value", None)
@@ -1510,7 +1510,7 @@ class EnforcePolicyComplianceRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> EnforcePolicyComplianceRequest:
         """Deserializes the EnforcePolicyComplianceRequest from a dictionary."""
         return cls(job_id=d.get("job_id", None), validate_only=d.get("validate_only", None))
 
@@ -1554,7 +1554,7 @@ class EnforcePolicyComplianceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EnforcePolicyComplianceResponse:
         """Deserializes the EnforcePolicyComplianceResponse from a dictionary."""
         return cls(
             has_changes=d.get("has_changes", None),
@@ -1590,7 +1590,7 @@ class ExportRunOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportRunOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportRunOutput:
         """Deserializes the ExportRunOutput from a dictionary."""
         return cls(views=_repeated_dict(d, "views", ViewItem))
 
@@ -1633,7 +1633,7 @@ class FileArrivalTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileArrivalTriggerConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> FileArrivalTriggerConfiguration:
         """Deserializes the FileArrivalTriggerConfiguration from a dictionary."""
         return cls(
             min_time_between_triggers_seconds=d.get("min_time_between_triggers_seconds", None),
@@ -1669,7 +1669,7 @@ class ForEachStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachStats:
         """Deserializes the ForEachStats from a dictionary."""
         return cls(
             error_message_stats=_repeated_dict(d, "error_message_stats", ForEachTaskErrorMessageStats),
@@ -1712,7 +1712,7 @@ class ForEachTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTask:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTask:
         """Deserializes the ForEachTask from a dictionary."""
         return cls(
             concurrency=d.get("concurrency", None), inputs=d.get("inputs", None), task=_from_dict(d, "task", Task)
@@ -1753,7 +1753,7 @@ class ForEachTaskErrorMessageStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskErrorMessageStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTaskErrorMessageStats:
         """Deserializes the ForEachTaskErrorMessageStats from a dictionary."""
         return cls(
             count=d.get("count", None),
@@ -1817,7 +1817,7 @@ class ForEachTaskTaskRunStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskTaskRunStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTaskTaskRunStats:
         """Deserializes the ForEachTaskTaskRunStats from a dictionary."""
         return cls(
             active_iterations=d.get("active_iterations", None),
@@ -1855,7 +1855,7 @@ class GetJobPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetJobPermissionLevelsResponse:
         """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", JobPermissionsDescription))
 
@@ -1892,7 +1892,7 @@ class GetPolicyComplianceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPolicyComplianceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPolicyComplianceResponse:
         """Deserializes the GetPolicyComplianceResponse from a dictionary."""
         return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
 
@@ -1934,7 +1934,7 @@ class GitSnapshot:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GitSnapshot:
+    def from_dict(cls, d: Dict[str, Any]) -> GitSnapshot:
         """Deserializes the GitSnapshot from a dictionary."""
         return cls(used_commit=d.get("used_commit", None))
 
@@ -2014,7 +2014,7 @@ class GitSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GitSource:
+    def from_dict(cls, d: Dict[str, Any]) -> GitSource:
         """Deserializes the GitSource from a dictionary."""
         return cls(
             git_branch=d.get("git_branch", None),
@@ -2111,7 +2111,7 @@ class Job:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Job:
+    def from_dict(cls, d: Dict[str, Any]) -> Job:
         """Deserializes the Job from a dictionary."""
         return cls(
             created_time=d.get("created_time", None),
@@ -2166,7 +2166,7 @@ class JobAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> JobAccessControlRequest:
         """Deserializes the JobAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -2224,7 +2224,7 @@ class JobAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> JobAccessControlResponse:
         """Deserializes the JobAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", JobPermission),
@@ -2264,7 +2264,7 @@ class JobCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> JobCluster:
         """Deserializes the JobCluster from a dictionary."""
         return cls(
             job_cluster_key=d.get("job_cluster_key", None),
@@ -2309,7 +2309,7 @@ class JobCompliance:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobCompliance:
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompliance:
         """Deserializes the JobCompliance from a dictionary."""
         return cls(
             is_compliant=d.get("is_compliant", None), job_id=d.get("job_id", None), violations=d.get("violations", None)
@@ -2345,7 +2345,7 @@ class JobDeployment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobDeployment:
+    def from_dict(cls, d: Dict[str, Any]) -> JobDeployment:
         """Deserializes the JobDeployment from a dictionary."""
         return cls(kind=_enum(d, "kind", JobDeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
 
@@ -2436,7 +2436,7 @@ class JobEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobEmailNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> JobEmailNotifications:
         """Deserializes the JobEmailNotifications from a dictionary."""
         return cls(
             no_alert_for_skipped_runs=d.get("no_alert_for_skipped_runs", None),
@@ -2476,7 +2476,7 @@ class JobEnvironment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobEnvironment:
+    def from_dict(cls, d: Dict[str, Any]) -> JobEnvironment:
         """Deserializes the JobEnvironment from a dictionary."""
         return cls(environment_key=d.get("environment_key", None), spec=_from_dict(d, "spec", compute.Environment))
 
@@ -2510,7 +2510,7 @@ class JobNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobNotificationSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> JobNotificationSettings:
         """Deserializes the JobNotificationSettings from a dictionary."""
         return cls(
             no_alert_for_canceled_runs=d.get("no_alert_for_canceled_runs", None),
@@ -2552,7 +2552,7 @@ class JobParameter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobParameter:
+    def from_dict(cls, d: Dict[str, Any]) -> JobParameter:
         """Deserializes the JobParameter from a dictionary."""
         return cls(default=d.get("default", None), name=d.get("name", None), value=d.get("value", None))
 
@@ -2584,7 +2584,7 @@ class JobParameterDefinition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobParameterDefinition:
+    def from_dict(cls, d: Dict[str, Any]) -> JobParameterDefinition:
         """Deserializes the JobParameterDefinition from a dictionary."""
         return cls(default=d.get("default", None), name=d.get("name", None))
 
@@ -2621,7 +2621,7 @@ class JobPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermission:
         """Deserializes the JobPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -2670,7 +2670,7 @@ class JobPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissions:
         """Deserializes the JobPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", JobAccessControlResponse),
@@ -2705,7 +2705,7 @@ class JobPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissionsDescription:
         """Deserializes the JobPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", JobPermissionLevel)
@@ -2738,7 +2738,7 @@ class JobPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissionsRequest:
         """Deserializes the JobPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", JobAccessControlRequest),
@@ -2780,7 +2780,7 @@ class JobRunAs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobRunAs:
+    def from_dict(cls, d: Dict[str, Any]) -> JobRunAs:
         """Deserializes the JobRunAs from a dictionary."""
         return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
@@ -3007,7 +3007,7 @@ class JobSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
         return cls(
             budget_policy_id=d.get("budget_policy_id", None),
@@ -3080,7 +3080,7 @@ class JobSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSource:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSource:
         """Deserializes the JobSource from a dictionary."""
         return cls(
             dirty_state=_enum(d, "dirty_state", JobSourceDirtyState),
@@ -3169,7 +3169,7 @@ class JobsHealthRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRule:
+    def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRule:
         """Deserializes the JobsHealthRule from a dictionary."""
         return cls(
             metric=_enum(d, "metric", JobsHealthMetric),
@@ -3199,7 +3199,7 @@ class JobsHealthRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRules:
+    def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRules:
         """Deserializes the JobsHealthRules from a dictionary."""
         return cls(rules=_repeated_dict(d, "rules", JobsHealthRule))
 
@@ -3240,7 +3240,7 @@ class ListJobComplianceForPolicyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListJobComplianceForPolicyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListJobComplianceForPolicyResponse:
         """Deserializes the ListJobComplianceForPolicyResponse from a dictionary."""
         return cls(
             jobs=_repeated_dict(d, "jobs", JobCompliance),
@@ -3292,7 +3292,7 @@ class ListJobsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListJobsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListJobsResponse:
         """Deserializes the ListJobsResponse from a dictionary."""
         return cls(
             has_more=d.get("has_more", None),
@@ -3346,7 +3346,7 @@ class ListRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRunsResponse:
         """Deserializes the ListRunsResponse from a dictionary."""
         return cls(
             has_more=d.get("has_more", None),
@@ -3387,7 +3387,7 @@ class NotebookOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookOutput:
         """Deserializes the NotebookOutput from a dictionary."""
         return cls(result=d.get("result", None), truncated=d.get("truncated", None))
 
@@ -3456,7 +3456,7 @@ class NotebookTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookTask:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookTask:
         """Deserializes the NotebookTask from a dictionary."""
         return cls(
             base_parameters=d.get("base_parameters", None),
@@ -3501,7 +3501,7 @@ class OutputSchemaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OutputSchemaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> OutputSchemaInfo:
         """Deserializes the OutputSchemaInfo from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -3552,7 +3552,7 @@ class PeriodicTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PeriodicTriggerConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> PeriodicTriggerConfiguration:
         """Deserializes the PeriodicTriggerConfiguration from a dictionary."""
         return cls(interval=d.get("interval", None), unit=_enum(d, "unit", PeriodicTriggerConfigurationTimeUnit))
 
@@ -3584,7 +3584,7 @@ class PipelineParams:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineParams:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineParams:
         """Deserializes the PipelineParams from a dictionary."""
         return cls(full_refresh=d.get("full_refresh", None))
 
@@ -3616,7 +3616,7 @@ class PipelineTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineTask:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTask:
         """Deserializes the PipelineTask from a dictionary."""
         return cls(full_refresh=d.get("full_refresh", None), pipeline_id=d.get("pipeline_id", None))
 
@@ -3665,7 +3665,7 @@ class PythonWheelTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PythonWheelTask:
+    def from_dict(cls, d: Dict[str, Any]) -> PythonWheelTask:
         """Deserializes the PythonWheelTask from a dictionary."""
         return cls(
             entry_point=d.get("entry_point", None),
@@ -3707,7 +3707,7 @@ class QueueDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueueDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> QueueDetails:
         """Deserializes the QueueDetails from a dictionary."""
         return cls(code=_enum(d, "code", QueueDetailsCodeCode), message=d.get("message", None))
 
@@ -3744,7 +3744,7 @@ class QueueSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueueSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> QueueSettings:
         """Deserializes the QueueSettings from a dictionary."""
         return cls(enabled=d.get("enabled", None))
 
@@ -3811,7 +3811,7 @@ class RepairHistoryItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairHistoryItem:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairHistoryItem:
         """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(
             end_time=d.get("end_time", None),
@@ -3995,7 +3995,7 @@ class RepairRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairRun:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairRun:
         """Deserializes the RepairRun from a dictionary."""
         return cls(
             dbt_commands=d.get("dbt_commands", None),
@@ -4038,7 +4038,7 @@ class RepairRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get("repair_id", None))
 
@@ -4073,7 +4073,7 @@ class ResetJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResetJob:
+    def from_dict(cls, d: Dict[str, Any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
         return cls(job_id=d.get("job_id", None), new_settings=_from_dict(d, "new_settings", JobSettings))
 
@@ -4091,7 +4091,7 @@ class ResetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResetResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ResetResponse:
         """Deserializes the ResetResponse from a dictionary."""
         return cls()
 
@@ -4121,7 +4121,7 @@ class ResolvedConditionTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedConditionTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedConditionTaskValues:
         """Deserializes the ResolvedConditionTaskValues from a dictionary."""
         return cls(left=d.get("left", None), right=d.get("right", None))
 
@@ -4145,7 +4145,7 @@ class ResolvedDbtTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedDbtTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedDbtTaskValues:
         """Deserializes the ResolvedDbtTaskValues from a dictionary."""
         return cls(commands=d.get("commands", None))
 
@@ -4169,7 +4169,7 @@ class ResolvedNotebookTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedNotebookTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedNotebookTaskValues:
         """Deserializes the ResolvedNotebookTaskValues from a dictionary."""
         return cls(base_parameters=d.get("base_parameters", None))
 
@@ -4193,7 +4193,7 @@ class ResolvedParamPairValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedParamPairValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedParamPairValues:
         """Deserializes the ResolvedParamPairValues from a dictionary."""
         return cls(parameters=d.get("parameters", None))
 
@@ -4223,7 +4223,7 @@ class ResolvedPythonWheelTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedPythonWheelTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedPythonWheelTaskValues:
         """Deserializes the ResolvedPythonWheelTaskValues from a dictionary."""
         return cls(named_parameters=d.get("named_parameters", None), parameters=d.get("parameters", None))
 
@@ -4253,7 +4253,7 @@ class ResolvedRunJobTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedRunJobTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedRunJobTaskValues:
         """Deserializes the ResolvedRunJobTaskValues from a dictionary."""
         return cls(job_parameters=d.get("job_parameters", None), parameters=d.get("parameters", None))
 
@@ -4277,7 +4277,7 @@ class ResolvedStringParamsValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedStringParamsValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedStringParamsValues:
         """Deserializes the ResolvedStringParamsValues from a dictionary."""
         return cls(parameters=d.get("parameters", None))
 
@@ -4355,7 +4355,7 @@ class ResolvedValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValues:
         """Deserializes the ResolvedValues from a dictionary."""
         return cls(
             condition_task=_from_dict(d, "condition_task", ResolvedConditionTaskValues),
@@ -4685,7 +4685,7 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Run:
+    def from_dict(cls, d: Dict[str, Any]) -> Run:
         """Deserializes the Run from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
@@ -4778,7 +4778,7 @@ class RunConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunConditionTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunConditionTask:
         """Deserializes the RunConditionTask from a dictionary."""
         return cls(
             left=d.get("left", None),
@@ -4831,7 +4831,7 @@ class RunForEachTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunForEachTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunForEachTask:
         """Deserializes the RunForEachTask from a dictionary."""
         return cls(
             concurrency=d.get("concurrency", None),
@@ -4879,7 +4879,7 @@ class RunJobOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunJobOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> RunJobOutput:
         """Deserializes the RunJobOutput from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -5017,7 +5017,7 @@ class RunJobTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunJobTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunJobTask:
         """Deserializes the RunJobTask from a dictionary."""
         return cls(
             dbt_commands=d.get("dbt_commands", None),
@@ -5243,7 +5243,7 @@ class RunNow:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunNow:
+    def from_dict(cls, d: Dict[str, Any]) -> RunNow:
         """Deserializes the RunNow from a dictionary."""
         return cls(
             dbt_commands=d.get("dbt_commands", None),
@@ -5292,7 +5292,7 @@ class RunNowResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunNowResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RunNowResponse:
         """Deserializes the RunNowResponse from a dictionary."""
         return cls(number_in_job=d.get("number_in_job", None), run_id=d.get("run_id", None))
 
@@ -5400,7 +5400,7 @@ class RunOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
             clean_rooms_notebook_output=_from_dict(
@@ -5538,7 +5538,7 @@ class RunParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunParameters:
+    def from_dict(cls, d: Dict[str, Any]) -> RunParameters:
         """Deserializes the RunParameters from a dictionary."""
         return cls(
             dbt_commands=d.get("dbt_commands", None),
@@ -5628,7 +5628,7 @@ class RunState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunState:
+    def from_dict(cls, d: Dict[str, Any]) -> RunState:
         """Deserializes the RunState from a dictionary."""
         return cls(
             life_cycle_state=_enum(d, "life_cycle_state", RunLifeCycleState),
@@ -5676,7 +5676,7 @@ class RunStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> RunStatus:
         """Deserializes the RunStatus from a dictionary."""
         return cls(
             queue_details=_from_dict(d, "queue_details", QueueDetails),
@@ -6058,7 +6058,7 @@ class RunTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(
             attempt_number=d.get("attempt_number", None),
@@ -6181,7 +6181,7 @@ class SparkJarTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkJarTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkJarTask:
         """Deserializes the SparkJarTask from a dictionary."""
         return cls(
             jar_uri=d.get("jar_uri", None),
@@ -6238,7 +6238,7 @@ class SparkPythonTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkPythonTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkPythonTask:
         """Deserializes the SparkPythonTask from a dictionary."""
         return cls(
             parameters=d.get("parameters", None),
@@ -6271,7 +6271,7 @@ class SparkSubmitTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkSubmitTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkSubmitTask:
         """Deserializes the SparkSubmitTask from a dictionary."""
         return cls(parameters=d.get("parameters", None))
 
@@ -6328,7 +6328,7 @@ class SqlAlertOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlAlertOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlAlertOutput:
         """Deserializes the SqlAlertOutput from a dictionary."""
         return cls(
             alert_state=_enum(d, "alert_state", SqlAlertState),
@@ -6377,7 +6377,7 @@ class SqlDashboardOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardOutput:
         """Deserializes the SqlDashboardOutput from a dictionary."""
         return cls(
             warehouse_id=d.get("warehouse_id", None), widgets=_repeated_dict(d, "widgets", SqlDashboardWidgetOutput)
@@ -6446,7 +6446,7 @@ class SqlDashboardWidgetOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardWidgetOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardWidgetOutput:
         """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
         return cls(
             end_time=d.get("end_time", None),
@@ -6502,7 +6502,7 @@ class SqlOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlOutput:
         """Deserializes the SqlOutput from a dictionary."""
         return cls(
             alert_output=_from_dict(d, "alert_output", SqlAlertOutput),
@@ -6531,7 +6531,7 @@ class SqlOutputError:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlOutputError:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlOutputError:
         """Deserializes the SqlOutputError from a dictionary."""
         return cls(message=d.get("message", None))
 
@@ -6583,7 +6583,7 @@ class SqlQueryOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlQueryOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlQueryOutput:
         """Deserializes the SqlQueryOutput from a dictionary."""
         return cls(
             endpoint_id=d.get("endpoint_id", None),
@@ -6614,7 +6614,7 @@ class SqlStatementOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlStatementOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementOutput:
         """Deserializes the SqlStatementOutput from a dictionary."""
         return cls(lookup_key=d.get("lookup_key", None))
 
@@ -6677,7 +6677,7 @@ class SqlTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTask:
         """Deserializes the SqlTask from a dictionary."""
         return cls(
             alert=_from_dict(d, "alert", SqlTaskAlert),
@@ -6723,7 +6723,7 @@ class SqlTaskAlert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskAlert:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskAlert:
         """Deserializes the SqlTaskAlert from a dictionary."""
         return cls(
             alert_id=d.get("alert_id", None),
@@ -6773,7 +6773,7 @@ class SqlTaskDashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskDashboard:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskDashboard:
         """Deserializes the SqlTaskDashboard from a dictionary."""
         return cls(
             custom_subject=d.get("custom_subject", None),
@@ -6817,7 +6817,7 @@ class SqlTaskFile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskFile:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskFile:
         """Deserializes the SqlTaskFile from a dictionary."""
         return cls(path=d.get("path", None), source=_enum(d, "source", Source))
 
@@ -6842,7 +6842,7 @@ class SqlTaskQuery:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskQuery:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskQuery:
         """Deserializes the SqlTaskQuery from a dictionary."""
         return cls(query_id=d.get("query_id", None))
 
@@ -6877,7 +6877,7 @@ class SqlTaskSubscription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskSubscription:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskSubscription:
         """Deserializes the SqlTaskSubscription from a dictionary."""
         return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
 
@@ -7013,7 +7013,7 @@ class SubmitRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", JobAccessControlRequest),
@@ -7055,7 +7055,7 @@ class SubmitRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitRunResponse:
         """Deserializes the SubmitRunResponse from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -7284,7 +7284,7 @@ class SubmitTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -7360,7 +7360,7 @@ class TableUpdateTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableUpdateTriggerConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> TableUpdateTriggerConfiguration:
         """Deserializes the TableUpdateTriggerConfiguration from a dictionary."""
         return cls(
             condition=_enum(d, "condition", Condition),
@@ -7639,7 +7639,7 @@ class Task:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Task:
+    def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
@@ -7703,7 +7703,7 @@ class TaskDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskDependency:
         """Deserializes the TaskDependency from a dictionary."""
         return cls(outcome=d.get("outcome", None), task_key=d.get("task_key", None))
 
@@ -7778,7 +7778,7 @@ class TaskEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskEmailNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskEmailNotifications:
         """Deserializes the TaskEmailNotifications from a dictionary."""
         return cls(
             no_alert_for_skipped_runs=d.get("no_alert_for_skipped_runs", None),
@@ -7828,7 +7828,7 @@ class TaskNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskNotificationSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskNotificationSettings:
         """Deserializes the TaskNotificationSettings from a dictionary."""
         return cls(
             alert_on_last_attempt=d.get("alert_on_last_attempt", None),
@@ -7974,7 +7974,7 @@ class TerminationDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TerminationDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> TerminationDetails:
         """Deserializes the TerminationDetails from a dictionary."""
         return cls(
             code=_enum(d, "code", TerminationCodeCode),
@@ -8020,7 +8020,7 @@ class TriggerInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -8072,7 +8072,7 @@ class TriggerSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
@@ -8147,7 +8147,7 @@ class UpdateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateJob:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateJob:
         """Deserializes the UpdateJob from a dictionary."""
         return cls(
             fields_to_remove=d.get("fields_to_remove", None),
@@ -8169,7 +8169,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -8209,7 +8209,7 @@ class ViewItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ViewItem:
+    def from_dict(cls, d: Dict[str, Any]) -> ViewItem:
         """Deserializes the ViewItem from a dictionary."""
         return cls(content=d.get("content", None), name=d.get("name", None), type=_enum(d, "type", ViewType))
 
@@ -8249,7 +8249,7 @@ class Webhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Webhook:
+    def from_dict(cls, d: Dict[str, Any]) -> Webhook:
         """Deserializes the Webhook from a dictionary."""
         return cls(id=d.get("id", None))
 
@@ -8314,7 +8314,7 @@ class WebhookNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WebhookNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> WebhookNotifications:
         """Deserializes the WebhookNotifications from a dictionary."""
         return cls(
             on_duration_warning_threshold_exceeded=_repeated_dict(d, "on_duration_warning_threshold_exceeded", Webhook),
