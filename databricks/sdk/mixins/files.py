@@ -50,13 +50,13 @@ class _DbfsIO(BinaryIO):
     _closed = False
 
     def __init__(
-        self,
-        api: files.DbfsAPI,
-        path: str,
-        *,
-        read: bool = False,
-        write: bool = False,
-        overwrite: bool = False,
+            self,
+            api: files.DbfsAPI,
+            path: str,
+            *,
+            read: bool = False,
+            write: bool = False,
+            overwrite: bool = False,
     ):
         self._api = api
         self._path = path
@@ -115,10 +115,10 @@ class _DbfsIO(BinaryIO):
         return self._closed
 
     def __exit__(
-        self,
-        __t: Type[BaseException] | None,
-        __value: BaseException | None,
-        __traceback: TracebackType | None,
+            self,
+            __t: Type[BaseException] | None,
+            __value: BaseException | None,
+            __traceback: TracebackType | None,
     ):
         self.close()
 
@@ -200,13 +200,13 @@ class _DbfsIO(BinaryIO):
 class _VolumesIO(BinaryIO):
 
     def __init__(
-        self,
-        api: files.FilesAPI,
-        path: str,
-        *,
-        read: bool,
-        write: bool,
-        overwrite: bool,
+            self,
+            api: files.FilesAPI,
+            path: str,
+            *,
+            read: bool,
+            write: bool,
+            overwrite: bool,
     ):
         self._buffer = []
         self._api = api
@@ -586,12 +586,12 @@ class DbfsExt(files.DbfsAPI):
         self._dbfs_api = files.DbfsAPI(api_client)
 
     def open(
-        self,
-        path: str,
-        *,
-        read: bool = False,
-        write: bool = False,
-        overwrite: bool = False,
+            self,
+            path: str,
+            *,
+            read: bool = False,
+            write: bool = False,
+            overwrite: bool = False,
     ) -> BinaryIO:
         return self._path(path).open(read=read, write=write, overwrite=overwrite)
 
@@ -717,7 +717,7 @@ class FilesExt(files.FilesAPI):
         :returns: :class:`DownloadResponse`
         """
 
-        initial_response: DownloadResponse = self._download_raw_stream(
+        initial_response: DownloadResponse = self._open_download_stream(
             file_path=file_path,
             start_byte_offset=0,
             if_unmodified_since_timestamp=None,
@@ -728,6 +728,20 @@ class FilesExt(files.FilesAPI):
         return initial_response
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
+        """Upload a file.
+
+        Uploads a file. The file contents should be sent as the request body as raw bytes (an
+        octet stream); do not encode or otherwise modify the bytes before sending. The contents of the
+        resulting file will be exactly the bytes sent in the request body. If the request is successful, there
+        is no response body.
+
+        :param file_path: str
+          The absolute remote path of the target file.
+        :param contents: BinaryIO
+        :param overwrite: bool (optional)
+          If true, an existing file will be overwritten. When not specified, assumed True.
+        """
+
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.multipart_upload_min_stream_size)
         if len(pre_read_buffer) < self._config.multipart_upload_min_stream_size:
@@ -740,11 +754,10 @@ class FilesExt(files.FilesAPI):
         if overwrite is not None:
             query["overwrite"] = overwrite
 
-        # _api.do() does retry
+        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         initiate_upload_response = self._api.do(
             "POST", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}", query=query
         )
-        # no need to check response status, _api.do() will throw exception on failure
 
         if initiate_upload_response.get("multipart_upload"):
             cloud_provider_session = self._create_cloud_provider_session()
@@ -753,7 +766,9 @@ class FilesExt(files.FilesAPI):
                 raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
             try:
-                self._multipart_upload(file_path, contents, session_token, pre_read_buffer, cloud_provider_session)
+                self._perform_multipart_upload(
+                    file_path, contents, session_token, pre_read_buffer, cloud_provider_session
+                )
             except Exception as e:
                 _LOG.info(f"Aborting multipart upload on error: {e}")
                 try:
@@ -768,20 +783,24 @@ class FilesExt(files.FilesAPI):
         elif initiate_upload_response.get("resumable_upload"):
             cloud_provider_session = self._create_cloud_provider_session()
             session_token = initiate_upload_response["resumable_upload"]["session_token"]
-            self._resumable_upload(
+            self._perform_resumable_upload(
                 file_path, contents, session_token, overwrite, pre_read_buffer, cloud_provider_session
             )
         else:
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
-    def _multipart_upload(
-        self,
-        target_path: str,
-        input_stream: BinaryIO,
-        session_token: str,
-        pre_read_buffer: bytes,
-        cloud_provider_session: requests.Session,
+    def _perform_multipart_upload(
+            self,
+            target_path: str,
+            input_stream: BinaryIO,
+            session_token: str,
+            pre_read_buffer: bytes,
+            cloud_provider_session: requests.Session,
     ):
+        """
+        Performs multipart upload using presigned URLs on AWS and Azure:
+        https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html
+        """
         current_part_number = 1
         etags: dict = {}
 
@@ -799,22 +818,12 @@ class FilesExt(files.FilesAPI):
         # Note that initially buffer can be bigger (from pre_read_buffer).
         buffer = pre_read_buffer
 
-        def fill_buffer():
-            bytes_to_read = max(0, self._config.multipart_upload_chunk_size - len(buffer))
-            if bytes_to_read > 0:
-                next_buf = input_stream.read(bytes_to_read)
-                new_buffer = buffer + next_buf
-                return new_buffer
-            else:
-                # we have already buffered enough data
-                return buffer
-
         retry_count = 0
         eof = False
         while not eof:
             # If needed, buffer the next chunk.
-            buffer = fill_buffer()
-            if not len(buffer):
+            buffer = FilesExt._fill_buffer(buffer, self._config.multipart_upload_chunk_size, input_stream)
+            if len(buffer) == 0:
                 # End of stream, no need to request the next block of upload URLs.
                 break
 
@@ -833,20 +842,19 @@ class FilesExt(files.FilesAPI):
             headers = {"Content-Type": "application/json"}
 
             # Requesting URLs for the same set of parts is an idempotent operation, safe to retry.
-            # _api.do() does retry
+            # Method _api.do() takes care of retrying and will raise an exception in case of failure.
             upload_part_urls_response = self._api.do(
                 "POST", "/api/2.0/fs/create-upload-part-urls", headers=headers, body=body
             )
-            # no need to check response status, _api.do() will throw exception on failure
 
             upload_part_urls = upload_part_urls_response.get("upload_part_urls", [])
-            if not len(upload_part_urls):
+            if len(upload_part_urls) == 0:
                 raise ValueError(f"Unexpected server response: {upload_part_urls_response}")
 
             for upload_part_url in upload_part_urls:
-                buffer = fill_buffer()
+                buffer = FilesExt._fill_buffer(buffer, self._config.multipart_upload_chunk_size, input_stream)
                 actual_buffer_length = len(buffer)
-                if not actual_buffer_length:
+                if actual_buffer_length == 0:
                     eof = True
                     break
 
@@ -926,7 +934,7 @@ class FilesExt(files.FilesAPI):
         body["parts"] = parts
 
         # Completing upload is an idempotent operation, safe to retry.
-        # _api.do() does retry
+        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         self._api.do(
             "POST",
             f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(target_path)}",
@@ -934,10 +942,26 @@ class FilesExt(files.FilesAPI):
             headers=headers,
             body=body,
         )
-        # no need to check response status, _api.do() will throw exception on failure
+
+    @staticmethod
+    def _fill_buffer(buffer: bytes, desired_min_size: int, input_stream: BinaryIO):
+        """
+        Tries to fill given buffer to contain at least `desired_min_size` bytes by reading from input stream.
+        """
+        bytes_to_read = max(0, desired_min_size - len(buffer))
+        if bytes_to_read > 0:
+            next_buf = input_stream.read(bytes_to_read)
+            new_buffer = buffer + next_buf
+            return new_buffer
+        else:
+            # we have already buffered enough data
+            return buffer
 
     @staticmethod
     def _is_url_expired_response(response: requests.Response):
+        """
+        Checks if response matches one of the known "URL expired" responses from the cloud storage providers.
+        """
         if response.status_code != 403:
             return False
 
@@ -967,16 +991,19 @@ class FilesExt(files.FilesAPI):
 
         return False
 
-    def _resumable_upload(
-        self,
-        target_path: str,
-        input_stream: BinaryIO,
-        session_token: str,
-        overwrite: bool,
-        pre_read_buffer: bytes,
-        cloud_provider_session: requests.Session,
+    def _perform_resumable_upload(
+            self,
+            target_path: str,
+            input_stream: BinaryIO,
+            session_token: str,
+            overwrite: bool,
+            pre_read_buffer: bytes,
+            cloud_provider_session: requests.Session,
     ):
-        # https://cloud.google.com/storage/docs/performing-resumable-uploads
+        """
+        Performs resumable upload on GCP: https://cloud.google.com/storage/docs/performing-resumable-uploads
+        """
+
         # Session URI we're using expires after a week
 
         # Why are we buffering the current chunk?
@@ -1004,11 +1031,10 @@ class FilesExt(files.FilesAPI):
 
         headers = {"Content-Type": "application/json"}
 
-        # _api.do() does retry
+        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         resumable_upload_url_response = self._api.do(
             "POST", "/api/2.0/fs/create-resumable-upload-url", headers=headers, body=body
         )
-        # no need to check response status, _api.do() will throw exception on failure
 
         resumable_upload_url_node = resumable_upload_url_response.get("resumable_upload_url")
         if not resumable_upload_url_node:
@@ -1172,6 +1198,7 @@ class FilesExt(files.FilesAPI):
 
     @staticmethod
     def _extract_range_offset(range_string: Optional[str]) -> Optional[int]:
+        """Parses the response range header to extract the last byte."""
         if not range_string:
             return None  # server did not yet confirm any bytes
 
@@ -1181,6 +1208,7 @@ class FilesExt(files.FilesAPI):
             raise ValueError(f"Cannot parse response header: Range: {range_string}")
 
     def _get_url_expire_time(self):
+        """Generates expiration time and save it in the required format."""
         current_time = datetime.datetime.now(datetime.timezone.utc)
         expire_time = current_time + self._config.multipart_upload_url_expiration_duration
         # From Google Protobuf doc:
@@ -1190,13 +1218,13 @@ class FilesExt(files.FilesAPI):
         return expire_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def _abort_multipart_upload(self, target_path: str, session_token: str, cloud_provider_session: requests.Session):
+        """Aborts ongoing multipart upload session to clean up incomplete file."""
         body: dict = {"path": target_path, "session_token": session_token, "expire_time": self._get_url_expire_time()}
 
         headers = {"Content-Type": "application/json"}
 
-        # _api.do() does retry
+        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         abort_url_response = self._api.do("POST", "/api/2.0/fs/create-abort-upload-url", headers=headers, body=body)
-        # no need to check response status, _api.do() will throw exception on failure
 
         abort_upload_url_node = abort_url_response["abort_upload_url"]
         abort_url = abort_upload_url_node["url"]
@@ -1221,8 +1249,9 @@ class FilesExt(files.FilesAPI):
             raise ValueError(abort_response)
 
     def _abort_resumable_upload(
-        self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
+            self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
     ):
+        """Aborts ongoing resumable upload session to clean up incomplete file."""
         headers: dict = {}
         for h in required_headers:
             headers[h["name"]] = h["value"]
@@ -1242,8 +1271,7 @@ class FilesExt(files.FilesAPI):
             raise ValueError(abort_response)
 
     def _create_cloud_provider_session(self):
-        # Create a separate session which does not inherit
-        # auth headers from BaseClient session.
+        """Creates a separate session which does not inherit auth headers from BaseClient session."""
         session = requests.Session()
 
         # following session config in _BaseClient
@@ -1256,8 +1284,12 @@ class FilesExt(files.FilesAPI):
         return session
 
     def _retry_idempotent_operation(
-        self, operation: Callable[[], requests.Response], before_retry: Callable = None
+            self, operation: Callable[[], requests.Response], before_retry: Callable = None
     ) -> requests.Response:
+        """Perform given idempotent operation with necessary retries. Since operation is idempotent it's
+        safe to retry it for response codes where server state might have changed.
+        """
+
         def delegate():
             response = operation()
             if response.status_code in self._RETRYABLE_STATUS_CODES:
@@ -1279,9 +1311,10 @@ class FilesExt(files.FilesAPI):
             before_retry=before_retry,
         )(delegate)()
 
-    def _download_raw_stream(
-        self, file_path: str, start_byte_offset: int, if_unmodified_since_timestamp: Optional[str] = None
+    def _open_download_stream(
+            self, file_path: str, start_byte_offset: int, if_unmodified_since_timestamp: Optional[str] = None
     ) -> DownloadResponse:
+        """Opens a download stream from given offset, performing necessary retries."""
         headers = {
             "Accept": "application/octet-stream",
         }
@@ -1300,6 +1333,7 @@ class FilesExt(files.FilesAPI):
             "content-type",
             "last-modified",
         ]
+        # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         res = self._api.do(
             "GET",
             f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}",
@@ -1330,12 +1364,12 @@ class FilesExt(files.FilesAPI):
 class _ResilientResponse(_RawResponse):
 
     def __init__(
-        self,
-        api: FilesExt,
-        file_path: str,
-        file_last_modified: str,
-        offset: int,
-        underlying_response: _RawResponse,
+            self,
+            api: FilesExt,
+            file_path: str,
+            file_last_modified: str,
+            offset: int,
+            underlying_response: _RawResponse,
     ):
         self.api = api
         self.file_path = file_path
@@ -1368,19 +1402,19 @@ class _ResilientIterator(Iterator):
 
     @staticmethod
     def _extract_raw_response(
-        download_response: DownloadResponse,
+            download_response: DownloadResponse,
     ) -> _RawResponse:
         streaming_response: _StreamingResponse = download_response.contents  # this is an instance of _StreamingResponse
         return streaming_response._response
 
     def __init__(
-        self,
-        underlying_iterator,
-        file_path: str,
-        file_last_modified: str,
-        offset: int,
-        api: FilesExt,
-        chunk_size: int,
+            self,
+            underlying_iterator,
+            file_path: str,
+            file_last_modified: str,
+            offset: int,
+            api: FilesExt,
+            chunk_size: int,
     ):
         self._underlying_iterator = underlying_iterator
         self._api = api
@@ -1401,9 +1435,9 @@ class _ResilientIterator(Iterator):
             _LOG.debug("Total recovers limit exceeded")
             return False
         if (
-            self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None
-            and self._recovers_without_progressing_count
-            >= self._api._config.files_api_client_download_max_total_recovers_without_progressing
+                self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None
+                and self._recovers_without_progressing_count
+                >= self._api._config.files_api_client_download_max_total_recovers_without_progressing
         ):
             _LOG.debug("No progression recovers limit exceeded")
             return False
@@ -1422,7 +1456,7 @@ class _ResilientIterator(Iterator):
             _LOG.debug("Trying to recover from offset " + str(self._offset))
 
             # following call includes all the required network retries
-            downloadResponse = self._api._download_raw_stream(self._file_path, self._offset, self._file_last_modified)
+            downloadResponse = self._api._open_download_stream(self._file_path, self._offset, self._file_last_modified)
             underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
             self._underlying_iterator = underlying_response.iter_content(
                 chunk_size=self._chunk_size, decode_unicode=False
