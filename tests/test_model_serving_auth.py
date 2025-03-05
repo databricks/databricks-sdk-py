@@ -198,6 +198,26 @@ def test_agent_user_credentials(monkeypatch, mocker):
     assert cfg.host == "x"
     assert headers.get("Authorization") == f"Bearer {invokers_token_val}"
 
+    # Test invokers token in child thread
+
+    successful_authentication_event = threading.Event()
+
+    def authenticate():
+        try:
+            cfg = Config(credentials_strategy=ModelServingUserCredentials())
+            headers = cfg.authenticate()
+            assert cfg.host == "x"
+            assert headers.get("Authorization") == f"Bearer databricks_invokers_token_v2"
+            successful_authentication_event.set()
+        except Exception:
+            successful_authentication_event.clear()
+
+    thread = threading.Thread(target=authenticate)
+
+    thread.start()
+    thread.join()
+    assert successful_authentication_event.is_set()
+
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
 def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
