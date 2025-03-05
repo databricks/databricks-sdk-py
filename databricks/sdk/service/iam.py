@@ -56,7 +56,7 @@ class AccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AccessControlRequest:
         """Deserializes the AccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -114,7 +114,7 @@ class AccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AccessControlResponse:
         """Deserializes the AccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", Permission),
@@ -147,7 +147,7 @@ class Actor:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Actor:
+    def from_dict(cls, d: Dict[str, Any]) -> Actor:
         """Deserializes the Actor from a dictionary."""
         return cls(actor_id=d.get("actor_id", None))
 
@@ -177,7 +177,7 @@ class CheckPolicyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CheckPolicyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CheckPolicyResponse:
         """Deserializes the CheckPolicyResponse from a dictionary."""
         return cls(
             consistency_token=_from_dict(d, "consistency_token", ConsistencyToken),
@@ -228,7 +228,7 @@ class ComplexValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComplexValue:
+    def from_dict(cls, d: Dict[str, Any]) -> ComplexValue:
         """Deserializes the ComplexValue from a dictionary."""
         return cls(
             display=d.get("display", None),
@@ -258,7 +258,7 @@ class ConsistencyToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConsistencyToken:
+    def from_dict(cls, d: Dict[str, Any]) -> ConsistencyToken:
         """Deserializes the ConsistencyToken from a dictionary."""
         return cls(value=d.get("value", None))
 
@@ -276,7 +276,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -294,7 +294,7 @@ class DeleteWorkspacePermissionAssignmentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspacePermissionAssignmentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteWorkspacePermissionAssignmentResponse:
         """Deserializes the DeleteWorkspacePermissionAssignmentResponse from a dictionary."""
         return cls()
 
@@ -318,7 +318,7 @@ class GetAssignableRolesForResourceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetAssignableRolesForResourceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetAssignableRolesForResourceResponse:
         """Deserializes the GetAssignableRolesForResourceResponse from a dictionary."""
         return cls(roles=_repeated_dict(d, "roles", Role))
 
@@ -343,7 +343,7 @@ class GetPasswordPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPasswordPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPasswordPermissionLevelsResponse:
         """Deserializes the GetPasswordPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", PasswordPermissionsDescription))
 
@@ -368,7 +368,7 @@ class GetPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPermissionLevelsResponse:
         """Deserializes the GetPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", PermissionsDescription))
 
@@ -406,7 +406,7 @@ class GrantRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GrantRule:
+    def from_dict(cls, d: Dict[str, Any]) -> GrantRule:
         """Deserializes the GrantRule from a dictionary."""
         return cls(principals=d.get("principals", None), role=d.get("role", None))
 
@@ -487,7 +487,7 @@ class Group:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Group:
+    def from_dict(cls, d: Dict[str, Any]) -> Group:
         """Deserializes the Group from a dictionary."""
         return cls(
             display_name=d.get("displayName", None),
@@ -555,7 +555,7 @@ class ListGroupsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListGroupsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(
             items_per_page=d.get("itemsPerPage", None),
@@ -619,7 +619,7 @@ class ListServicePrincipalResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalResponse:
         """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(
             items_per_page=d.get("itemsPerPage", None),
@@ -684,7 +684,7 @@ class ListUsersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListUsersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(
             items_per_page=d.get("itemsPerPage", None),
@@ -736,7 +736,7 @@ class MigratePermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MigratePermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> MigratePermissionsRequest:
         """Deserializes the MigratePermissionsRequest from a dictionary."""
         return cls(
             from_workspace_group_name=d.get("from_workspace_group_name", None),
@@ -766,7 +766,7 @@ class MigratePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MigratePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MigratePermissionsResponse:
         """Deserializes the MigratePermissionsResponse from a dictionary."""
         return cls(permissions_migrated=d.get("permissions_migrated", None))
 
@@ -798,7 +798,7 @@ class Name:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Name:
+    def from_dict(cls, d: Dict[str, Any]) -> Name:
         """Deserializes the Name from a dictionary."""
         return cls(family_name=d.get("familyName", None), given_name=d.get("givenName", None))
 
@@ -834,7 +834,7 @@ class ObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ObjectPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ObjectPermissions:
         """Deserializes the ObjectPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", AccessControlResponse),
@@ -876,7 +876,7 @@ class PartialUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartialUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> PartialUpdate:
         """Deserializes the PartialUpdate from a dictionary."""
         return cls(
             id=d.get("id", None),
@@ -926,7 +926,7 @@ class PasswordAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlRequest:
         """Deserializes the PasswordAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -984,7 +984,7 @@ class PasswordAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlResponse:
         """Deserializes the PasswordAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", PasswordPermission),
@@ -1027,7 +1027,7 @@ class PasswordPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermission:
         """Deserializes the PasswordPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1073,7 +1073,7 @@ class PasswordPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissions:
         """Deserializes the PasswordPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", PasswordAccessControlResponse),
@@ -1108,7 +1108,7 @@ class PasswordPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsDescription:
         """Deserializes the PasswordPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -1135,7 +1135,7 @@ class PasswordPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsRequest:
         """Deserializes the PasswordPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, "access_control_list", PasswordAccessControlRequest))
 
@@ -1174,7 +1174,7 @@ class Patch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Patch:
+    def from_dict(cls, d: Dict[str, Any]) -> Patch:
         """Deserializes the Patch from a dictionary."""
         return cls(op=_enum(d, "op", PatchOp), path=d.get("path", None), value=d.get("value", None))
 
@@ -1200,7 +1200,7 @@ class PatchResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PatchResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PatchResponse:
         """Deserializes the PatchResponse from a dictionary."""
         return cls()
 
@@ -1242,7 +1242,7 @@ class Permission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Permission:
+    def from_dict(cls, d: Dict[str, Any]) -> Permission:
         """Deserializes the Permission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1288,7 +1288,7 @@ class PermissionAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignment:
         """Deserializes the PermissionAssignment from a dictionary."""
         return cls(
             error=d.get("error", None),
@@ -1317,7 +1317,7 @@ class PermissionAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignments:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
         return cls(permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment))
 
@@ -1370,7 +1370,7 @@ class PermissionOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionOutput:
         """Deserializes the PermissionOutput from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", WorkspacePermission)
@@ -1403,7 +1403,7 @@ class PermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsDescription:
         """Deserializes the PermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", PermissionLevel)
@@ -1445,7 +1445,7 @@ class PermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsRequest:
         """Deserializes the PermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
@@ -1504,7 +1504,7 @@ class PrincipalOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrincipalOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PrincipalOutput:
         """Deserializes the PrincipalOutput from a dictionary."""
         return cls(
             display_name=d.get("display_name", None),
@@ -1557,7 +1557,7 @@ class ResourceInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResourceInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ResourceInfo:
         """Deserializes the ResourceInfo from a dictionary."""
         return cls(
             id=d.get("id", None),
@@ -1587,7 +1587,7 @@ class ResourceMeta:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResourceMeta:
+    def from_dict(cls, d: Dict[str, Any]) -> ResourceMeta:
         """Deserializes the ResourceMeta from a dictionary."""
         return cls(resource_type=d.get("resourceType", None))
 
@@ -1612,7 +1612,7 @@ class Role:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Role:
+    def from_dict(cls, d: Dict[str, Any]) -> Role:
         """Deserializes the Role from a dictionary."""
         return cls(name=d.get("name", None))
 
@@ -1650,7 +1650,7 @@ class RuleSetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RuleSetResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RuleSetResponse:
         """Deserializes the RuleSetResponse from a dictionary."""
         return cls(
             etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
@@ -1691,7 +1691,7 @@ class RuleSetUpdateRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RuleSetUpdateRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RuleSetUpdateRequest:
         """Deserializes the RuleSetUpdateRequest from a dictionary."""
         return cls(
             etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
@@ -1775,7 +1775,7 @@ class ServicePrincipal:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServicePrincipal:
+    def from_dict(cls, d: Dict[str, Any]) -> ServicePrincipal:
         """Deserializes the ServicePrincipal from a dictionary."""
         return cls(
             active=d.get("active", None),
@@ -1808,7 +1808,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -1839,7 +1839,7 @@ class UpdateRuleSetRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRuleSetRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRuleSetRequest:
         """Deserializes the UpdateRuleSetRequest from a dictionary."""
         return cls(name=d.get("name", None), rule_set=_from_dict(d, "rule_set", RuleSetUpdateRequest))
 
@@ -1882,7 +1882,7 @@ class UpdateWorkspaceAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceAssignments:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceAssignments:
         """Deserializes the UpdateWorkspaceAssignments from a dictionary."""
         return cls(
             permissions=_repeated_enum(d, "permissions", WorkspacePermission),
@@ -1987,7 +1987,7 @@ class User:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> User:
+    def from_dict(cls, d: Dict[str, Any]) -> User:
         """Deserializes the User from a dictionary."""
         return cls(
             active=d.get("active", None),
@@ -2039,7 +2039,7 @@ class WorkspacePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspacePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspacePermissions:
         """Deserializes the WorkspacePermissions from a dictionary."""
         return cls(permissions=_repeated_dict(d, "permissions", PermissionOutput))
 

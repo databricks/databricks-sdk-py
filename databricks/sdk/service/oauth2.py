@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _from_dict, _repeated_dict
 
@@ -71,7 +71,7 @@ class CreateCustomAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegration:
         """Deserializes the CreateCustomAppIntegration from a dictionary."""
         return cls(
             confidential=d.get("confidential", None),
@@ -118,7 +118,7 @@ class CreateCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegrationOutput:
         """Deserializes the CreateCustomAppIntegrationOutput from a dictionary."""
         return cls(
             client_id=d.get("client_id", None),
@@ -154,7 +154,7 @@ class CreatePublishedAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegration:
         """Deserializes the CreatePublishedAppIntegration from a dictionary."""
         return cls(
             app_id=d.get("app_id", None), token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy)
@@ -181,7 +181,7 @@ class CreatePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegrationOutput:
         """Deserializes the CreatePublishedAppIntegrationOutput from a dictionary."""
         return cls(integration_id=d.get("integration_id", None))
 
@@ -241,7 +241,7 @@ class CreateServicePrincipalSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateServicePrincipalSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateServicePrincipalSecretResponse:
         """Deserializes the CreateServicePrincipalSecretResponse from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -266,7 +266,7 @@ class DeleteCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCustomAppIntegrationOutput:
         """Deserializes the DeleteCustomAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -284,7 +284,7 @@ class DeletePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePublishedAppIntegrationOutput:
         """Deserializes the DeletePublishedAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -302,7 +302,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -368,7 +368,7 @@ class FederationPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FederationPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> FederationPolicy:
         """Deserializes the FederationPolicy from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -467,7 +467,7 @@ class GetCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationOutput:
         """Deserializes the GetCustomAppIntegrationOutput from a dictionary."""
         return cls(
             client_id=d.get("client_id", None),
@@ -510,7 +510,7 @@ class GetCustomAppIntegrationsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCustomAppIntegrationsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationsOutput:
         """Deserializes the GetCustomAppIntegrationsOutput from a dictionary."""
         return cls(
             apps=_repeated_dict(d, "apps", GetCustomAppIntegrationOutput),
@@ -571,7 +571,7 @@ class GetPublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationOutput:
         """Deserializes the GetPublishedAppIntegrationOutput from a dictionary."""
         return cls(
             app_id=d.get("app_id", None),
@@ -609,7 +609,7 @@ class GetPublishedAppIntegrationsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppIntegrationsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationsOutput:
         """Deserializes the GetPublishedAppIntegrationsOutput from a dictionary."""
         return cls(
             apps=_repeated_dict(d, "apps", GetPublishedAppIntegrationOutput),
@@ -645,7 +645,7 @@ class GetPublishedAppsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppsOutput:
         """Deserializes the GetPublishedAppsOutput from a dictionary."""
         return cls(apps=_repeated_dict(d, "apps", PublishedAppOutput), next_page_token=d.get("next_page_token", None))
 
@@ -675,7 +675,7 @@ class ListFederationPoliciesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListFederationPoliciesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListFederationPoliciesResponse:
         """Deserializes the ListFederationPoliciesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", FederationPolicy)
@@ -709,7 +709,7 @@ class ListServicePrincipalSecretsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalSecretsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), secrets=_repeated_dict(d, "secrets", SecretInfo))
 
@@ -773,7 +773,7 @@ class OidcFederationPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OidcFederationPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> OidcFederationPolicy:
         """Deserializes the OidcFederationPolicy from a dictionary."""
         return cls(
             audiences=d.get("audiences", None),
@@ -847,7 +847,7 @@ class PublishedAppOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishedAppOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishedAppOutput:
         """Deserializes the PublishedAppOutput from a dictionary."""
         return cls(
             app_id=d.get("app_id", None),
@@ -908,7 +908,7 @@ class SecretInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretInfo:
         """Deserializes the SecretInfo from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -946,7 +946,7 @@ class TokenAccessPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessPolicy:
         """Deserializes the TokenAccessPolicy from a dictionary."""
         return cls(
             access_token_ttl_in_minutes=d.get("access_token_ttl_in_minutes", None),
@@ -1003,7 +1003,7 @@ class UpdateCustomAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomAppIntegration:
         """Deserializes the UpdateCustomAppIntegration from a dictionary."""
         return cls(
             integration_id=d.get("integration_id", None),
@@ -1027,7 +1027,7 @@ class UpdateCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomAppIntegrationOutput:
         """Deserializes the UpdateCustomAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -1058,7 +1058,7 @@ class UpdatePublishedAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePublishedAppIntegration:
         """Deserializes the UpdatePublishedAppIntegration from a dictionary."""
         return cls(
             integration_id=d.get("integration_id", None),
@@ -1079,7 +1079,7 @@ class UpdatePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePublishedAppIntegrationOutput:
         """Deserializes the UpdatePublishedAppIntegrationOutput from a dictionary."""
         return cls()
 

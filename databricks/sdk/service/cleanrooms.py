@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict
 
@@ -106,7 +106,7 @@ class CleanRoom:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoom:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoom:
         """Deserializes the CleanRoom from a dictionary."""
         return cls(
             access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
@@ -248,7 +248,7 @@ class CleanRoomAsset:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAsset:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAsset:
         """Deserializes the CleanRoomAsset from a dictionary."""
         return cls(
             added_at=d.get("added_at", None),
@@ -298,7 +298,7 @@ class CleanRoomAssetForeignTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetForeignTable:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetForeignTable:
         """Deserializes the CleanRoomAssetForeignTable from a dictionary."""
         return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
 
@@ -324,7 +324,7 @@ class CleanRoomAssetForeignTableLocalDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetForeignTableLocalDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetForeignTableLocalDetails:
         """Deserializes the CleanRoomAssetForeignTableLocalDetails from a dictionary."""
         return cls(local_name=d.get("local_name", None))
 
@@ -357,7 +357,7 @@ class CleanRoomAssetNotebook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetNotebook:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
         return cls(etag=d.get("etag", None), notebook_content=d.get("notebook_content", None))
 
@@ -389,7 +389,7 @@ class CleanRoomAssetTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetTable:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTable:
         """Deserializes the CleanRoomAssetTable from a dictionary."""
         return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
 
@@ -422,7 +422,7 @@ class CleanRoomAssetTableLocalDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetTableLocalDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTableLocalDetails:
         """Deserializes the CleanRoomAssetTableLocalDetails from a dictionary."""
         return cls(
             local_name=d.get("local_name", None),
@@ -450,7 +450,7 @@ class CleanRoomAssetView:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetView:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetView:
         """Deserializes the CleanRoomAssetView from a dictionary."""
         return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
 
@@ -476,7 +476,7 @@ class CleanRoomAssetViewLocalDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetViewLocalDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetViewLocalDetails:
         """Deserializes the CleanRoomAssetViewLocalDetails from a dictionary."""
         return cls(local_name=d.get("local_name", None))
 
@@ -502,7 +502,7 @@ class CleanRoomAssetVolumeLocalDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetVolumeLocalDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetVolumeLocalDetails:
         """Deserializes the CleanRoomAssetVolumeLocalDetails from a dictionary."""
         return cls(local_name=d.get("local_name", None))
 
@@ -576,7 +576,7 @@ class CleanRoomCollaborator:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCollaborator:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomCollaborator:
         """Deserializes the CleanRoomCollaborator from a dictionary."""
         return cls(
             collaborator_alias=d.get("collaborator_alias", None),
@@ -654,7 +654,7 @@ class CleanRoomNotebookTaskRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomNotebookTaskRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomNotebookTaskRun:
         """Deserializes the CleanRoomNotebookTaskRun from a dictionary."""
         return cls(
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
@@ -696,7 +696,7 @@ class CleanRoomOutputCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomOutputCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomOutputCatalog:
         """Deserializes the CleanRoomOutputCatalog from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -780,7 +780,7 @@ class CleanRoomRemoteDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomRemoteDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomRemoteDetail:
         """Deserializes the CleanRoomRemoteDetail from a dictionary."""
         return cls(
             central_clean_room_id=d.get("central_clean_room_id", None),
@@ -849,7 +849,7 @@ class CollaboratorJobRunInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CollaboratorJobRunInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CollaboratorJobRunInfo:
         """Deserializes the CollaboratorJobRunInfo from a dictionary."""
         return cls(
             collaborator_alias=d.get("collaborator_alias", None),
@@ -889,7 +889,7 @@ class ComplianceSecurityProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
             compliance_standards=_repeated_dict(d, "compliance_standards", settings.ComplianceStandard),
@@ -916,7 +916,7 @@ class CreateCleanRoomOutputCatalogResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCleanRoomOutputCatalogResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCleanRoomOutputCatalogResponse:
         """Deserializes the CreateCleanRoomOutputCatalogResponse from a dictionary."""
         return cls(output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog))
 
@@ -937,7 +937,7 @@ class DeleteCleanRoomAssetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCleanRoomAssetResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCleanRoomAssetResponse:
         """Deserializes the DeleteCleanRoomAssetResponse from a dictionary."""
         return cls()
 
@@ -955,7 +955,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -988,7 +988,7 @@ class ListCleanRoomAssetsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomAssetsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomAssetsResponse:
         """Deserializes the ListCleanRoomAssetsResponse from a dictionary."""
         return cls(assets=_repeated_dict(d, "assets", CleanRoomAsset), next_page_token=d.get("next_page_token", None))
 
@@ -1021,7 +1021,7 @@ class ListCleanRoomNotebookTaskRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomNotebookTaskRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomNotebookTaskRunsResponse:
         """Deserializes the ListCleanRoomNotebookTaskRunsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", CleanRoomNotebookTaskRun)
@@ -1055,7 +1055,7 @@ class ListCleanRoomsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomsResponse:
         """Deserializes the ListCleanRoomsResponse from a dictionary."""
         return cls(
             clean_rooms=_repeated_dict(d, "clean_rooms", CleanRoom), next_page_token=d.get("next_page_token", None)
@@ -1088,7 +1088,7 @@ class UpdateCleanRoomRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCleanRoomRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCleanRoomRequest:
         """Deserializes the UpdateCleanRoomRequest from a dictionary."""
         return cls(clean_room=_from_dict(d, "clean_room", CleanRoom), name=d.get("name", None))
 

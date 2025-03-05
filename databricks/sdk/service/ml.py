@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -123,7 +123,7 @@ class Activity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Activity:
+    def from_dict(cls, d: Dict[str, Any]) -> Activity:
         """Deserializes the Activity from a dictionary."""
         return cls(
             activity_type=_enum(d, "activity_type", ActivityType),
@@ -231,7 +231,7 @@ class ApproveTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequest:
         """Deserializes the ApproveTransitionRequest from a dictionary."""
         return cls(
             archive_existing_versions=d.get("archive_existing_versions", None),
@@ -262,7 +262,7 @@ class ApproveTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequestResponse:
         """Deserializes the ApproveTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, "activity", Activity))
 
@@ -334,7 +334,7 @@ class CommentObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CommentObject:
+    def from_dict(cls, d: Dict[str, Any]) -> CommentObject:
         """Deserializes the CommentObject from a dictionary."""
         return cls(
             available_actions=_repeated_enum(d, "available_actions", CommentActivityAction),
@@ -380,7 +380,7 @@ class CreateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateComment:
         """Deserializes the CreateComment from a dictionary."""
         return cls(comment=d.get("comment", None), name=d.get("name", None), version=d.get("version", None))
 
@@ -405,7 +405,7 @@ class CreateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCommentResponse:
         """Deserializes the CreateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, "comment", CommentObject))
 
@@ -448,7 +448,7 @@ class CreateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperiment:
         """Deserializes the CreateExperiment from a dictionary."""
         return cls(
             artifact_location=d.get("artifact_location", None),
@@ -477,7 +477,7 @@ class CreateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperimentResponse:
         """Deserializes the CreateExperimentResponse from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -516,7 +516,7 @@ class CreateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelRequest:
         """Deserializes the CreateModelRequest from a dictionary."""
         return cls(
             description=d.get("description", None), name=d.get("name", None), tags=_repeated_dict(d, "tags", ModelTag)
@@ -542,7 +542,7 @@ class CreateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelResponse:
         """Deserializes the CreateModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, "registered_model", Model))
 
@@ -604,7 +604,7 @@ class CreateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionRequest:
         """Deserializes the CreateModelVersionRequest from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -636,7 +636,7 @@ class CreateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionResponse:
         """Deserializes the CreateModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersion))
 
@@ -727,7 +727,7 @@ class CreateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRegistryWebhook:
         """Deserializes the CreateRegistryWebhook from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -781,7 +781,7 @@ class CreateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRun:
         """Deserializes the CreateRun from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
@@ -811,7 +811,7 @@ class CreateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRunResponse:
         """Deserializes the CreateRunResponse from a dictionary."""
         return cls(run=_from_dict(d, "run", Run))
 
@@ -865,7 +865,7 @@ class CreateTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequest:
         """Deserializes the CreateTransitionRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -895,7 +895,7 @@ class CreateTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequestResponse:
         """Deserializes the CreateTransitionRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, "request", TransitionRequest))
 
@@ -919,7 +919,7 @@ class CreateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateWebhookResponse:
         """Deserializes the CreateWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, "webhook", RegistryWebhook))
 
@@ -983,7 +983,7 @@ class Dataset:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dataset:
+    def from_dict(cls, d: Dict[str, Any]) -> Dataset:
         """Deserializes the Dataset from a dictionary."""
         return cls(
             digest=d.get("digest", None),
@@ -1022,7 +1022,7 @@ class DatasetInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
+    def from_dict(cls, d: Dict[str, Any]) -> DatasetInput:
         """Deserializes the DatasetInput from a dictionary."""
         return cls(dataset=_from_dict(d, "dataset", Dataset), tags=_repeated_dict(d, "tags", InputTag))
 
@@ -1040,7 +1040,7 @@ class DeleteCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCommentResponse:
         """Deserializes the DeleteCommentResponse from a dictionary."""
         return cls()
 
@@ -1065,7 +1065,7 @@ class DeleteExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperiment:
         """Deserializes the DeleteExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -1083,7 +1083,7 @@ class DeleteExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperimentResponse:
         """Deserializes the DeleteExperimentResponse from a dictionary."""
         return cls()
 
@@ -1101,7 +1101,7 @@ class DeleteModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelResponse:
         """Deserializes the DeleteModelResponse from a dictionary."""
         return cls()
 
@@ -1119,7 +1119,7 @@ class DeleteModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelTagResponse:
         """Deserializes the DeleteModelTagResponse from a dictionary."""
         return cls()
 
@@ -1137,7 +1137,7 @@ class DeleteModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionResponse:
         """Deserializes the DeleteModelVersionResponse from a dictionary."""
         return cls()
 
@@ -1155,7 +1155,7 @@ class DeleteModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionTagResponse:
         """Deserializes the DeleteModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -1180,7 +1180,7 @@ class DeleteRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -1198,7 +1198,7 @@ class DeleteRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
         """Deserializes the DeleteRunResponse from a dictionary."""
         return cls()
 
@@ -1239,7 +1239,7 @@ class DeleteRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRuns:
         """Deserializes the DeleteRuns from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
@@ -1268,7 +1268,7 @@ class DeleteRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunsResponse:
         """Deserializes the DeleteRunsResponse from a dictionary."""
         return cls(runs_deleted=d.get("runs_deleted", None))
 
@@ -1300,7 +1300,7 @@ class DeleteTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTag:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTag:
         """Deserializes the DeleteTag from a dictionary."""
         return cls(key=d.get("key", None), run_id=d.get("run_id", None))
 
@@ -1318,7 +1318,7 @@ class DeleteTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTagResponse:
         """Deserializes the DeleteTagResponse from a dictionary."""
         return cls()
 
@@ -1336,7 +1336,7 @@ class DeleteTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTransitionRequestResponse:
         """Deserializes the DeleteTransitionRequestResponse from a dictionary."""
         return cls()
 
@@ -1362,7 +1362,7 @@ class DeleteWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteWebhookResponse:
         """Deserializes the DeleteWebhookResponse from a dictionary."""
         return cls()
 
@@ -1430,7 +1430,7 @@ class Experiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Experiment:
+    def from_dict(cls, d: Dict[str, Any]) -> Experiment:
         """Deserializes the Experiment from a dictionary."""
         return cls(
             artifact_location=d.get("artifact_location", None),
@@ -1484,7 +1484,7 @@ class ExperimentAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlRequest:
         """Deserializes the ExperimentAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -1542,7 +1542,7 @@ class ExperimentAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlResponse:
         """Deserializes the ExperimentAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", ExperimentPermission),
@@ -1585,7 +1585,7 @@ class ExperimentPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermission:
         """Deserializes the ExperimentPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1633,7 +1633,7 @@ class ExperimentPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissions:
         """Deserializes the ExperimentPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ExperimentAccessControlResponse),
@@ -1668,7 +1668,7 @@ class ExperimentPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsDescription:
         """Deserializes the ExperimentPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -1702,7 +1702,7 @@ class ExperimentPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsRequest:
         """Deserializes the ExperimentPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ExperimentAccessControlRequest),
@@ -1737,7 +1737,7 @@ class ExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentTag:
         """Deserializes the ExperimentTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -1776,7 +1776,7 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get("file_size", None), is_dir=d.get("is_dir", None), path=d.get("path", None))
 
@@ -1801,7 +1801,7 @@ class GetExperimentPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentPermissionLevelsResponse:
         """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ExperimentPermissionsDescription))
 
@@ -1826,7 +1826,7 @@ class GetExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentResponse:
         """Deserializes the GetExperimentResponse from a dictionary."""
         return cls(experiment=_from_dict(d, "experiment", Experiment))
 
@@ -1858,7 +1858,7 @@ class GetLatestVersionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsRequest:
         """Deserializes the GetLatestVersionsRequest from a dictionary."""
         return cls(name=d.get("name", None), stages=d.get("stages", None))
 
@@ -1884,7 +1884,7 @@ class GetLatestVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsResponse:
         """Deserializes the GetLatestVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, "model_versions", ModelVersion))
 
@@ -1916,7 +1916,7 @@ class GetMetricHistoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetricHistoryResponse:
         """Deserializes the GetMetricHistoryResponse from a dictionary."""
         return cls(metrics=_repeated_dict(d, "metrics", Metric), next_page_token=d.get("next_page_token", None))
 
@@ -1940,7 +1940,7 @@ class GetModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelResponse:
         """Deserializes the GetModelResponse from a dictionary."""
         return cls(registered_model_databricks=_from_dict(d, "registered_model_databricks", ModelDatabricks))
 
@@ -1965,7 +1965,7 @@ class GetModelVersionDownloadUriResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionDownloadUriResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionDownloadUriResponse:
         """Deserializes the GetModelVersionDownloadUriResponse from a dictionary."""
         return cls(artifact_uri=d.get("artifact_uri", None))
 
@@ -1989,7 +1989,7 @@ class GetModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionResponse:
         """Deserializes the GetModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersion))
 
@@ -2014,7 +2014,7 @@ class GetRegisteredModelPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRegisteredModelPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRegisteredModelPermissionLevelsResponse:
         """Deserializes the GetRegisteredModelPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", RegisteredModelPermissionsDescription))
 
@@ -2039,7 +2039,7 @@ class GetRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRunResponse:
         """Deserializes the GetRunResponse from a dictionary."""
         return cls(run=_from_dict(d, "run", Run))
 
@@ -2092,7 +2092,7 @@ class HttpUrlSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpec:
         """Deserializes the HttpUrlSpec from a dictionary."""
         return cls(
             authorization=d.get("authorization", None),
@@ -2133,7 +2133,7 @@ class HttpUrlSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
         return cls(enable_ssl_verification=d.get("enable_ssl_verification", None), url=d.get("url", None))
 
@@ -2165,7 +2165,7 @@ class InputTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InputTag:
+    def from_dict(cls, d: Dict[str, Any]) -> InputTag:
         """Deserializes the InputTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -2205,7 +2205,7 @@ class JobSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpec:
         """Deserializes the JobSpec from a dictionary."""
         return cls(
             access_token=d.get("access_token", None),
@@ -2243,7 +2243,7 @@ class JobSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get("job_id", None), workspace_url=d.get("workspace_url", None))
 
@@ -2282,7 +2282,7 @@ class ListArtifactsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListArtifactsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListArtifactsResponse:
         """Deserializes the ListArtifactsResponse from a dictionary."""
         return cls(
             files=_repeated_dict(d, "files", FileInfo),
@@ -2319,7 +2319,7 @@ class ListExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
@@ -2352,7 +2352,7 @@ class ListModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelsResponse:
         """Deserializes the ListModelsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -2387,7 +2387,7 @@ class ListRegistryWebhooks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRegistryWebhooks:
         """Deserializes the ListRegistryWebhooks from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), webhooks=_repeated_dict(d, "webhooks", RegistryWebhook)
@@ -2414,7 +2414,7 @@ class ListTransitionRequestsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTransitionRequestsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTransitionRequestsResponse:
         """Deserializes the ListTransitionRequestsResponse from a dictionary."""
         return cls(requests=_repeated_dict(d, "requests", Activity))
 
@@ -2463,7 +2463,7 @@ class LogBatch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatch:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatch:
         """Deserializes the LogBatch from a dictionary."""
         return cls(
             metrics=_repeated_dict(d, "metrics", Metric),
@@ -2486,7 +2486,7 @@ class LogBatchResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatchResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatchResponse:
         """Deserializes the LogBatchResponse from a dictionary."""
         return cls()
 
@@ -2518,7 +2518,7 @@ class LogInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
         return cls(datasets=_repeated_dict(d, "datasets", DatasetInput), run_id=d.get("run_id", None))
 
@@ -2536,7 +2536,7 @@ class LogInputsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputsResponse:
         """Deserializes the LogInputsResponse from a dictionary."""
         return cls()
 
@@ -2597,7 +2597,7 @@ class LogMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetric:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetric:
         """Deserializes the LogMetric from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2622,7 +2622,7 @@ class LogMetricResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetricResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetricResponse:
         """Deserializes the LogMetricResponse from a dictionary."""
         return cls()
 
@@ -2654,7 +2654,7 @@ class LogModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModel:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get("model_json", None), run_id=d.get("run_id", None))
 
@@ -2672,7 +2672,7 @@ class LogModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModelResponse:
         """Deserializes the LogModelResponse from a dictionary."""
         return cls()
 
@@ -2719,7 +2719,7 @@ class LogParam:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParam:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParam:
         """Deserializes the LogParam from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2742,7 +2742,7 @@ class LogParamResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParamResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParamResponse:
         """Deserializes the LogParamResponse from a dictionary."""
         return cls()
 
@@ -2788,7 +2788,7 @@ class Metric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Metric:
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
         """Deserializes the Metric from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2861,7 +2861,7 @@ class Model:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Model:
+    def from_dict(cls, d: Dict[str, Any]) -> Model:
         """Deserializes the Model from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -2951,7 +2951,7 @@ class ModelDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelDatabricks:
         """Deserializes the ModelDatabricks from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -2993,7 +2993,7 @@ class ModelTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTag:
         """Deserializes the ModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3103,7 +3103,7 @@ class ModelVersion:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersion:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersion:
         """Deserializes the ModelVersion from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3250,7 +3250,7 @@ class ModelVersionDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3305,7 +3305,7 @@ class ModelVersionTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3337,7 +3337,7 @@ class Param:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Param:
+    def from_dict(cls, d: Dict[str, Any]) -> Param:
         """Deserializes the Param from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3394,7 +3394,7 @@ class RegisteredModelAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlRequest:
         """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -3452,7 +3452,7 @@ class RegisteredModelAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlResponse:
         """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", RegisteredModelPermission),
@@ -3495,7 +3495,7 @@ class RegisteredModelPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermission:
         """Deserializes the RegisteredModelPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -3545,7 +3545,7 @@ class RegisteredModelPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissions:
         """Deserializes the RegisteredModelPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RegisteredModelAccessControlResponse),
@@ -3580,7 +3580,7 @@ class RegisteredModelPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsDescription:
         """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -3614,7 +3614,7 @@ class RegisteredModelPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsRequest:
         """Deserializes the RegisteredModelPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RegisteredModelAccessControlRequest),
@@ -3729,7 +3729,7 @@ class RegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> RegistryWebhook:
         """Deserializes the RegistryWebhook from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3823,7 +3823,7 @@ class RejectTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequest:
         """Deserializes the RejectTransitionRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -3853,7 +3853,7 @@ class RejectTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequestResponse:
         """Deserializes the RejectTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, "activity", Activity))
 
@@ -3885,7 +3885,7 @@ class RenameModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelRequest:
         """Deserializes the RenameModelRequest from a dictionary."""
         return cls(name=d.get("name", None), new_name=d.get("new_name", None))
 
@@ -3909,7 +3909,7 @@ class RenameModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelResponse:
         """Deserializes the RenameModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, "registered_model", Model))
 
@@ -3934,7 +3934,7 @@ class RestoreExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperiment:
         """Deserializes the RestoreExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -3952,7 +3952,7 @@ class RestoreExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperimentResponse:
         """Deserializes the RestoreExperimentResponse from a dictionary."""
         return cls()
 
@@ -3977,7 +3977,7 @@ class RestoreRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -3995,7 +3995,7 @@ class RestoreRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunResponse:
         """Deserializes the RestoreRunResponse from a dictionary."""
         return cls()
 
@@ -4036,7 +4036,7 @@ class RestoreRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRuns:
         """Deserializes the RestoreRuns from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
@@ -4065,7 +4065,7 @@ class RestoreRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunsResponse:
         """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get("runs_restored", None))
 
@@ -4104,7 +4104,7 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Run:
+    def from_dict(cls, d: Dict[str, Any]) -> Run:
         """Deserializes the Run from a dictionary."""
         return cls(
             data=_from_dict(d, "data", RunData),
@@ -4147,7 +4147,7 @@ class RunData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunData:
+    def from_dict(cls, d: Dict[str, Any]) -> RunData:
         """Deserializes the RunData from a dictionary."""
         return cls(
             metrics=_repeated_dict(d, "metrics", Metric),
@@ -4236,7 +4236,7 @@ class RunInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInfo:
         """Deserializes the RunInfo from a dictionary."""
         return cls(
             artifact_uri=d.get("artifact_uri", None),
@@ -4281,7 +4281,7 @@ class RunInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInputs:
         """Deserializes the RunInputs from a dictionary."""
         return cls(dataset_inputs=_repeated_dict(d, "dataset_inputs", DatasetInput))
 
@@ -4313,7 +4313,7 @@ class RunTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunTag:
+    def from_dict(cls, d: Dict[str, Any]) -> RunTag:
         """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -4369,7 +4369,7 @@ class SearchExperiments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperiments:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperiments:
         """Deserializes the SearchExperiments from a dictionary."""
         return cls(
             filter=d.get("filter", None),
@@ -4408,7 +4408,7 @@ class SearchExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperimentsResponse:
         """Deserializes the SearchExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
@@ -4451,7 +4451,7 @@ class SearchModelVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelVersionsResponse:
         """Deserializes the SearchModelVersionsResponse from a dictionary."""
         return cls(
             model_versions=_repeated_dict(d, "model_versions", ModelVersion),
@@ -4486,7 +4486,7 @@ class SearchModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelsResponse:
         """Deserializes the SearchModelsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -4562,7 +4562,7 @@ class SearchRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRuns:
         """Deserializes the SearchRuns from a dictionary."""
         return cls(
             experiment_ids=d.get("experiment_ids", None),
@@ -4601,7 +4601,7 @@ class SearchRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", Run))
 
@@ -4650,7 +4650,7 @@ class SetExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTag:
         """Deserializes the SetExperimentTag from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None), key=d.get("key", None), value=d.get("value", None))
 
@@ -4668,7 +4668,7 @@ class SetExperimentTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTagResponse:
         """Deserializes the SetExperimentTagResponse from a dictionary."""
         return cls()
 
@@ -4710,7 +4710,7 @@ class SetModelTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get("key", None), name=d.get("name", None), value=d.get("value", None))
 
@@ -4728,7 +4728,7 @@ class SetModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagResponse:
         """Deserializes the SetModelTagResponse from a dictionary."""
         return cls()
 
@@ -4777,7 +4777,7 @@ class SetModelVersionTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagRequest:
         """Deserializes the SetModelVersionTagRequest from a dictionary."""
         return cls(
             key=d.get("key", None), name=d.get("name", None), value=d.get("value", None), version=d.get("version", None)
@@ -4797,7 +4797,7 @@ class SetModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagResponse:
         """Deserializes the SetModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -4846,7 +4846,7 @@ class SetTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTag:
         """Deserializes the SetTag from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -4869,7 +4869,7 @@ class SetTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTagResponse:
         """Deserializes the SetTagResponse from a dictionary."""
         return cls()
 
@@ -4933,7 +4933,7 @@ class TestRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhook:
         """Deserializes the TestRegistryWebhook from a dictionary."""
         return cls(body=d.get("body", None), status_code=d.get("status_code", None))
 
@@ -4966,7 +4966,7 @@ class TestRegistryWebhookRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookRequest:
         """Deserializes the TestRegistryWebhookRequest from a dictionary."""
         return cls(event=_enum(d, "event", RegistryWebhookEvent), id=d.get("id", None))
 
@@ -4991,7 +4991,7 @@ class TestRegistryWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookResponse:
         """Deserializes the TestRegistryWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, "webhook", TestRegistryWebhook))
 
@@ -5052,7 +5052,7 @@ class TransitionModelVersionStageDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionModelVersionStageDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionModelVersionStageDatabricks:
         """Deserializes the TransitionModelVersionStageDatabricks from a dictionary."""
         return cls(
             archive_existing_versions=d.get("archive_existing_versions", None),
@@ -5121,7 +5121,7 @@ class TransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionRequest:
         """Deserializes the TransitionRequest from a dictionary."""
         return cls(
             available_actions=_repeated_enum(d, "available_actions", ActivityAction),
@@ -5151,7 +5151,7 @@ class TransitionStageResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionStageResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersionDatabricks))
 
@@ -5183,7 +5183,7 @@ class UpdateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateComment:
         """Deserializes the UpdateComment from a dictionary."""
         return cls(comment=d.get("comment", None), id=d.get("id", None))
 
@@ -5208,7 +5208,7 @@ class UpdateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCommentResponse:
         """Deserializes the UpdateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, "comment", CommentObject))
 
@@ -5240,7 +5240,7 @@ class UpdateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperiment:
         """Deserializes the UpdateExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None), new_name=d.get("new_name", None))
 
@@ -5258,7 +5258,7 @@ class UpdateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperimentResponse:
         """Deserializes the UpdateExperimentResponse from a dictionary."""
         return cls()
 
@@ -5290,7 +5290,7 @@ class UpdateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get("description", None), name=d.get("name", None))
 
@@ -5308,7 +5308,7 @@ class UpdateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelResponse:
         """Deserializes the UpdateModelResponse from a dictionary."""
         return cls()
 
@@ -5347,7 +5347,7 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(description=d.get("description", None), name=d.get("name", None), version=d.get("version", None))
 
@@ -5365,7 +5365,7 @@ class UpdateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionResponse:
         """Deserializes the UpdateModelVersionResponse from a dictionary."""
         return cls()
 
@@ -5456,7 +5456,7 @@ class UpdateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegistryWebhook:
         """Deserializes the UpdateRegistryWebhook from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -5510,7 +5510,7 @@ class UpdateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRun:
         """Deserializes the UpdateRun from a dictionary."""
         return cls(
             end_time=d.get("end_time", None),
@@ -5540,7 +5540,7 @@ class UpdateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRunResponse:
         """Deserializes the UpdateRunResponse from a dictionary."""
         return cls(run_info=_from_dict(d, "run_info", RunInfo))
 
@@ -5568,7 +5568,7 @@ class UpdateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWebhookResponse:
         """Deserializes the UpdateWebhookResponse from a dictionary."""
         return cls()
 
