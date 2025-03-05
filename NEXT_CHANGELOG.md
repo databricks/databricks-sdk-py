@@ -3,6 +3,7 @@
 ## Release v0.45.0
 
 ### New Features and Improvements
+* Update Jobs service to use API 2.2 ([#913](https://github.com/databricks/databricks-sdk-py/pull/913)).
 
 ### Bug Fixes
 

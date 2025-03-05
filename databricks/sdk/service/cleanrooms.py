@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import catalog, jobs, settings, sharing
 
 # all definitions in this file are in alphabetical order
@@ -254,9 +255,7 @@ class CleanRoomAsset:
             asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
             foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
             foreign_table_local_details=_from_dict(
-                d,
-                "foreign_table_local_details",
-                CleanRoomAssetForeignTableLocalDetails,
+                d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
             ),
             name=d.get("name", None),
             notebook=_from_dict(d, "notebook", CleanRoomAssetNotebook),
@@ -360,10 +359,7 @@ class CleanRoomAssetNotebook:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
-        return cls(
-            etag=d.get("etag", None),
-            notebook_content=d.get("notebook_content", None),
-        )
+        return cls(etag=d.get("etag", None), notebook_content=d.get("notebook_content", None))
 
 
 class CleanRoomAssetStatusEnum(Enum):
@@ -948,7 +944,6 @@ class DeleteCleanRoomAssetResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -995,10 +990,7 @@ class ListCleanRoomAssetsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomAssetsResponse:
         """Deserializes the ListCleanRoomAssetsResponse from a dictionary."""
-        return cls(
-            assets=_repeated_dict(d, "assets", CleanRoomAsset),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(assets=_repeated_dict(d, "assets", CleanRoomAsset), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1032,8 +1024,7 @@ class ListCleanRoomNotebookTaskRunsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomNotebookTaskRunsResponse:
         """Deserializes the ListCleanRoomNotebookTaskRunsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            runs=_repeated_dict(d, "runs", CleanRoomNotebookTaskRun),
+            next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", CleanRoomNotebookTaskRun)
         )
 
 
@@ -1067,8 +1058,7 @@ class ListCleanRoomsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomsResponse:
         """Deserializes the ListCleanRoomsResponse from a dictionary."""
         return cls(
-            clean_rooms=_repeated_dict(d, "clean_rooms", CleanRoom),
-            next_page_token=d.get("next_page_token", None),
+            clean_rooms=_repeated_dict(d, "clean_rooms", CleanRoom), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -1100,10 +1090,7 @@ class UpdateCleanRoomRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateCleanRoomRequest:
         """Deserializes the UpdateCleanRoomRequest from a dictionary."""
-        return cls(
-            clean_room=_from_dict(d, "clean_room", CleanRoom),
-            name=d.get("name", None),
-        )
+        return cls(clean_room=_from_dict(d, "clean_room", CleanRoom), name=d.get("name", None))
 
 
 class CleanRoomAssetsAPI:
@@ -1134,20 +1121,10 @@ class CleanRoomAssetsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/clean-rooms/{clean_room_name}/assets",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
 
-    def delete(
-        self,
-        clean_room_name: str,
-        asset_type: CleanRoomAssetAssetType,
-        asset_full_name: str,
-    ):
+    def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str):
         """Delete an asset.
 
         Delete a clean room asset - unshare/remove the asset from the clean room
@@ -1172,12 +1149,7 @@ class CleanRoomAssetsAPI:
             headers=headers,
         )
 
-    def get(
-        self,
-        clean_room_name: str,
-        asset_type: CleanRoomAssetAssetType,
-        asset_full_name: str,
-    ) -> CleanRoomAsset:
+    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset:
         """Get an asset.
 
         Get the details of a clean room asset by its type and full name.
@@ -1222,12 +1194,7 @@ class CleanRoomAssetsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/clean-rooms/{clean_room_name}/assets",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets", query=query, headers=headers)
             if "assets" in json:
                 for v in json["assets"]:
                     yield CleanRoomAsset.from_dict(v)
@@ -1322,12 +1289,7 @@ class CleanRoomTaskRunsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/clean-rooms/{clean_room_name}/runs",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/runs", query=query, headers=headers)
             if "runs" in json:
                 for v in json["runs"]:
                     yield CleanRoomNotebookTaskRun.from_dict(v)
@@ -1369,10 +1331,7 @@ class CleanRoomsAPI:
         return CleanRoom.from_dict(res)
 
     def create_output_catalog(
-        self,
-        clean_room_name: str,
-        *,
-        output_catalog: Optional[CleanRoomOutputCatalog] = None,
+        self, clean_room_name: str, *, output_catalog: Optional[CleanRoomOutputCatalog] = None
     ) -> CreateCleanRoomOutputCatalogResponse:
         """Create an output catalog.
 
@@ -1391,10 +1350,7 @@ class CleanRoomsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/clean-rooms/{clean_room_name}/output-catalogs",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/clean-rooms/{clean_room_name}/output-catalogs", body=body, headers=headers
         )
         return CreateCleanRoomOutputCatalogResponse.from_dict(res)
 
@@ -1434,12 +1390,7 @@ class CleanRoomsAPI:
         res = self._api.do("GET", f"/api/2.0/clean-rooms/{name}", headers=headers)
         return CleanRoom.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[CleanRoom]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[CleanRoom]:
         """List clean rooms.
 
         Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are

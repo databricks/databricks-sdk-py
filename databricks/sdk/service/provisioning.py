@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -124,10 +125,7 @@ class AzureWorkspaceInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AzureWorkspaceInfo:
         """Deserializes the AzureWorkspaceInfo from a dictionary."""
-        return cls(
-            resource_group=d.get("resource_group", None),
-            subscription_id=d.get("subscription_id", None),
-        )
+        return cls(resource_group=d.get("resource_group", None), subscription_id=d.get("subscription_id", None))
 
 
 @dataclass
@@ -879,7 +877,6 @@ class CustomerManagedKey:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -900,8 +897,7 @@ class EndpointUseCase(Enum):
     """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
     creating this VPC endpoint.
 
-    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-    """
+    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html"""
 
     DATAPLANE_RELAY_ACCESS = "DATAPLANE_RELAY_ACCESS"
     WORKSPACE_ACCESS = "WORKSPACE_ACCESS"
@@ -1411,10 +1407,7 @@ class NetworkHealth:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkHealth:
         """Deserializes the NetworkHealth from a dictionary."""
-        return cls(
-            error_message=d.get("error_message", None),
-            error_type=_enum(d, "error_type", ErrorType),
-        )
+        return cls(error_message=d.get("error_message", None), error_type=_enum(d, "error_type", ErrorType))
 
 
 @dataclass
@@ -1452,10 +1445,7 @@ class NetworkVpcEndpoints:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkVpcEndpoints:
         """Deserializes the NetworkVpcEndpoints from a dictionary."""
-        return cls(
-            dataplane_relay=d.get("dataplane_relay", None),
-            rest_api=d.get("rest_api", None),
-        )
+        return cls(dataplane_relay=d.get("dataplane_relay", None), rest_api=d.get("rest_api", None))
 
 
 @dataclass
@@ -1487,10 +1477,7 @@ class NetworkWarning:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkWarning:
         """Deserializes the NetworkWarning from a dictionary."""
-        return cls(
-            warning_message=d.get("warning_message", None),
-            warning_type=_enum(d, "warning_type", WarningType),
-        )
+        return cls(warning_message=d.get("warning_message", None), warning_type=_enum(d, "warning_type", WarningType))
 
 
 class PricingTier(Enum):
@@ -1601,7 +1588,6 @@ class PrivateAccessSettings:
 
 @dataclass
 class ReplaceResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1734,15 +1720,11 @@ class StsRole:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StsRole:
         """Deserializes the StsRole from a dictionary."""
-        return cls(
-            external_id=d.get("external_id", None),
-            role_arn=d.get("role_arn", None),
-        )
+        return cls(external_id=d.get("external_id", None), role_arn=d.get("role_arn", None))
 
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2065,8 +2047,7 @@ class VpcEndpoint:
 
 class VpcStatus(Enum):
     """The status of this network configuration object in terms of its use in a workspace: *
-    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned.
-    """
+    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned."""
 
     BROKEN = "BROKEN"
     UNATTACHED = "UNATTACHED"
@@ -2347,11 +2328,7 @@ class CredentialsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        credentials_name: str,
-        aws_credentials: CreateCredentialAwsCredentials,
-    ) -> Credential:
+    def create(self, credentials_name: str, aws_credentials: CreateCredentialAwsCredentials) -> Credential:
         """Create credential configuration.
 
         Creates a Databricks credential configuration that represents cloud cross-account credentials for a
@@ -2383,12 +2360,7 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/credentials", body=body, headers=headers)
         return Credential.from_dict(res)
 
     def delete(self, credentials_id: str):
@@ -2408,9 +2380,7 @@ class CredentialsAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}",
-            headers=headers,
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}", headers=headers
         )
 
     def get(self, credentials_id: str) -> Credential:
@@ -2429,9 +2399,7 @@ class CredentialsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/credentials/{credentials_id}", headers=headers
         )
         return Credential.from_dict(res)
 
@@ -2447,11 +2415,7 @@ class CredentialsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/credentials",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/credentials", headers=headers)
         return [Credential.from_dict(v) for v in res]
 
 
@@ -2516,10 +2480,7 @@ class EncryptionKeysAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys", body=body, headers=headers
         )
         return CustomerManagedKey.from_dict(res)
 
@@ -2599,11 +2560,7 @@ class EncryptionKeysAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys", headers=headers)
         return [CustomerManagedKey.from_dict(v) for v in res]
 
 
@@ -2669,12 +2626,7 @@ class NetworksAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/networks",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/networks", body=body, headers=headers)
         return Network.from_dict(res)
 
     def delete(self, network_id: str):
@@ -2695,11 +2647,7 @@ class NetworksAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}", headers=headers)
 
     def get(self, network_id: str) -> Network:
         """Get a network configuration.
@@ -2716,11 +2664,7 @@ class NetworksAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}", headers=headers)
         return Network.from_dict(res)
 
     def list(self) -> Iterator[Network]:
@@ -2737,11 +2681,7 @@ class NetworksAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/networks",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/networks", headers=headers)
         return [Network.from_dict(v) for v in res]
 
 
@@ -2822,10 +2762,7 @@ class PrivateAccessAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/private-access-settings", body=body, headers=headers
         )
         return PrivateAccessSettings.from_dict(res)
 
@@ -2896,11 +2833,7 @@ class PrivateAccessAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/private-access-settings",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/private-access-settings", headers=headers)
         return [PrivateAccessSettings.from_dict(v) for v in res]
 
     def replace(
@@ -3029,10 +2962,7 @@ class StorageAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/storage-configurations",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/storage-configurations", body=body, headers=headers
         )
         return StorageConfiguration.from_dict(res)
 
@@ -3092,11 +3022,7 @@ class StorageAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/storage-configurations",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/storage-configurations", headers=headers)
         return [StorageConfiguration.from_dict(v) for v in res]
 
 
@@ -3155,10 +3081,7 @@ class VpcEndpointsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints", body=body, headers=headers
         )
         return VpcEndpoint.from_dict(res)
 
@@ -3185,9 +3108,7 @@ class VpcEndpointsAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}",
-            headers=headers,
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}", headers=headers
         )
 
     def get(self, vpc_endpoint_id: str) -> VpcEndpoint:
@@ -3210,9 +3131,7 @@ class VpcEndpointsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints/{vpc_endpoint_id}", headers=headers
         )
         return VpcEndpoint.from_dict(res)
 
@@ -3232,11 +3151,7 @@ class VpcEndpointsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints", headers=headers)
         return [VpcEndpoint.from_dict(v) for v in res]
 
 
@@ -3252,10 +3167,7 @@ class WorkspacesAPI:
         self._api = api_client
 
     def wait_get_workspace_running(
-        self,
-        workspace_id: int,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[Workspace], None]] = None,
+        self, workspace_id: int, timeout=timedelta(minutes=20), callback: Optional[Callable[[Workspace], None]] = None
     ) -> Workspace:
         deadline = time.time() + timeout.total_seconds()
         target_states = (WorkspaceStatus.RUNNING,)
@@ -3452,10 +3364,7 @@ class WorkspacesAPI:
         }
 
         op_response = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers
         )
         return Wait(
             self.wait_get_workspace_running,
@@ -3525,11 +3434,7 @@ class WorkspacesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", headers=headers)
 
     def get(self, workspace_id: int) -> Workspace:
         """Get a workspace.
@@ -3558,9 +3463,7 @@ class WorkspacesAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", headers=headers
         )
         return Workspace.from_dict(res)
 
@@ -3579,11 +3482,7 @@ class WorkspacesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces", headers=headers)
         return [Workspace.from_dict(v) for v in res]
 
     def update(
@@ -3755,15 +3654,10 @@ class WorkspacesAPI:
         }
 
         op_response = self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", body=body, headers=headers
         )
         return Wait(
-            self.wait_get_workspace_running,
-            response=UpdateResponse.from_dict(op_response),
-            workspace_id=workspace_id,
+            self.wait_get_workspace_running, response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
         )
 
     def update_and_wait(

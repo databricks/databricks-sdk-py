@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -437,10 +438,7 @@ class AppDeploymentStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppDeploymentStatus:
         """Deserializes the AppDeploymentStatus from a dictionary."""
-        return cls(
-            message=d.get("message", None),
-            state=_enum(d, "state", AppDeploymentState),
-        )
+        return cls(message=d.get("message", None), state=_enum(d, "state", AppDeploymentState))
 
 
 @dataclass
@@ -560,8 +558,7 @@ class AppPermissionsDescription:
     def from_dict(cls, d: Dict[str, any]) -> AppPermissionsDescription:
         """Deserializes the AppPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", AppPermissionLevel),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", AppPermissionLevel)
         )
 
 
@@ -692,10 +689,7 @@ class AppResourceJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppResourceJob:
         """Deserializes the AppResourceJob from a dictionary."""
-        return cls(
-            id=d.get("id", None),
-            permission=_enum(d, "permission", AppResourceJobJobPermission),
-        )
+        return cls(id=d.get("id", None), permission=_enum(d, "permission", AppResourceJobJobPermission))
 
 
 class AppResourceJobJobPermission(Enum):
@@ -790,11 +784,7 @@ class AppResourceServingEndpoint:
         """Deserializes the AppResourceServingEndpoint from a dictionary."""
         return cls(
             name=d.get("name", None),
-            permission=_enum(
-                d,
-                "permission",
-                AppResourceServingEndpointServingEndpointPermission,
-            ),
+            permission=_enum(d, "permission", AppResourceServingEndpointServingEndpointPermission),
         )
 
 
@@ -836,8 +826,7 @@ class AppResourceSqlWarehouse:
     def from_dict(cls, d: Dict[str, any]) -> AppResourceSqlWarehouse:
         """Deserializes the AppResourceSqlWarehouse from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            permission=_enum(d, "permission", AppResourceSqlWarehouseSqlWarehousePermission),
+            id=d.get("id", None), permission=_enum(d, "permission", AppResourceSqlWarehouseSqlWarehousePermission)
         )
 
 
@@ -885,10 +874,7 @@ class ApplicationStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
-        return cls(
-            message=d.get("message", None),
-            state=_enum(d, "state", ApplicationState),
-        )
+        return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
 
 
 class ComputeState(Enum):
@@ -931,10 +917,7 @@ class ComputeStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ComputeStatus:
         """Deserializes the ComputeStatus from a dictionary."""
-        return cls(
-            message=d.get("message", None),
-            state=_enum(d, "state", ComputeState),
-        )
+        return cls(message=d.get("message", None), state=_enum(d, "state", ComputeState))
 
 
 @dataclass
@@ -1025,10 +1008,7 @@ class ListAppsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
-        return cls(
-            apps=_repeated_dict(d, "apps", App),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1045,17 +1025,13 @@ class StopAppRequest:
 
 class AppsAPI:
     """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
-    Databricks services, and enable users to interact through single sign-on.
-    """
+    Databricks services, and enable users to interact through single sign-on."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def wait_get_app_active(
-        self,
-        name: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[App], None]] = None,
+        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[App], None]] = None
     ) -> App:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ComputeState.ACTIVE,)
@@ -1124,10 +1100,7 @@ class AppsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def wait_get_app_stopped(
-        self,
-        name: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[App], None]] = None,
+        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[App], None]] = None
     ) -> App:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ComputeState.STOPPED,)
@@ -1180,18 +1153,10 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
-        return Wait(
-            self.wait_get_app_active,
-            response=App.from_dict(op_response),
-            name=op_response["name"],
-        )
+        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
     def create_and_wait(
-        self,
-        *,
-        app: Optional[App] = None,
-        no_compute: Optional[bool] = None,
-        timeout=timedelta(minutes=20),
+        self, *, app: Optional[App] = None, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)
     ) -> App:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
@@ -1232,12 +1197,7 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "POST",
-            f"/api/2.0/apps/{app_name}/deployments",
-            body=body,
-            headers=headers,
-        )
+        op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
         return Wait(
             self.wait_get_deployment_app_succeeded,
             response=AppDeployment.from_dict(op_response),
@@ -1246,11 +1206,7 @@ class AppsAPI:
         )
 
     def deploy_and_wait(
-        self,
-        app_name: str,
-        *,
-        app_deployment: Optional[AppDeployment] = None,
-        timeout=timedelta(minutes=20),
+        self, app_name: str, *, app_deployment: Optional[AppDeployment] = None, timeout=timedelta(minutes=20)
     ) -> AppDeployment:
         return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
@@ -1289,11 +1245,7 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/apps/{app_name}/deployments/{deployment_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments/{deployment_id}", headers=headers)
         return AppDeployment.from_dict(res)
 
     def get_permission_levels(self, app_name: str) -> GetAppPermissionLevelsResponse:
@@ -1311,11 +1263,7 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/apps/{app_name}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}/permissionLevels", headers=headers)
         return GetAppPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, app_name: str) -> AppPermissions:
@@ -1336,12 +1284,7 @@ class AppsAPI:
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
         return AppPermissions.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[App]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
         """List apps.
 
         Lists all apps in the workspace.
@@ -1373,11 +1316,7 @@ class AppsAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_deployments(
-        self,
-        app_name: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, app_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[AppDeployment]:
         """List app deployments.
 
@@ -1403,12 +1342,7 @@ class AppsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/apps/{app_name}/deployments",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments", query=query, headers=headers)
             if "app_deployments" in json:
                 for v in json["app_deployments"]:
                     yield AppDeployment.from_dict(v)
@@ -1417,10 +1351,7 @@ class AppsAPI:
             query["page_token"] = json["next_page_token"]
 
     def set_permissions(
-        self,
-        app_name: str,
-        *,
-        access_control_list: Optional[List[AppAccessControlRequest]] = None,
+        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
     ) -> AppPermissions:
         """Set app permissions.
 
@@ -1441,12 +1372,7 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/apps/{app_name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
     def start(self, name: str) -> Wait[App]:
@@ -1468,11 +1394,7 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
-        return Wait(
-            self.wait_get_app_active,
-            response=App.from_dict(op_response),
-            name=op_response["name"],
-        )
+        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
     def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.start(name=name).result(timeout=timeout)
@@ -1496,11 +1418,7 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
-        return Wait(
-            self.wait_get_app_stopped,
-            response=App.from_dict(op_response),
-            name=op_response["name"],
-        )
+        return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
 
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
@@ -1527,10 +1445,7 @@ class AppsAPI:
         return App.from_dict(res)
 
     def update_permissions(
-        self,
-        app_name: str,
-        *,
-        access_control_list: Optional[List[AppAccessControlRequest]] = None,
+        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
     ) -> AppPermissions:
         """Update app permissions.
 
@@ -1550,10 +1465,5 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/apps/{app_name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)

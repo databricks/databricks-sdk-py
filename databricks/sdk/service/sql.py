@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -665,7 +666,6 @@ class BaseChunkInfo:
 
 @dataclass
 class CancelExecutionResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CancelExecutionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -712,10 +712,7 @@ class Channel:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Channel:
         """Deserializes the Channel from a dictionary."""
-        return cls(
-            dbsql_version=d.get("dbsql_version", None),
-            name=_enum(d, "name", ChannelName),
-        )
+        return cls(dbsql_version=d.get("dbsql_version", None), name=_enum(d, "name", ChannelName))
 
 
 @dataclass
@@ -749,10 +746,7 @@ class ChannelInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ChannelInfo:
         """Deserializes the ChannelInfo from a dictionary."""
-        return cls(
-            dbsql_version=d.get("dbsql_version", None),
-            name=_enum(d, "name", ChannelName),
-        )
+        return cls(dbsql_version=d.get("dbsql_version", None), name=_enum(d, "name", ChannelName))
 
 
 class ChannelName(Enum):
@@ -2156,7 +2150,6 @@ class DateValueDynamicDate(Enum):
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2175,7 +2168,6 @@ class DeleteResponse:
 
 @dataclass
 class DeleteWarehouseResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2428,7 +2420,6 @@ class EditWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class EditWarehouseResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3552,11 +3543,7 @@ class GetWorkspaceWarehouseConfigResponse:
             global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
             google_service_account=d.get("google_service_account", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
-            security_policy=_enum(
-                d,
-                "security_policy",
-                GetWorkspaceWarehouseConfigResponseSecurityPolicy,
-            ),
+            security_policy=_enum(d, "security_policy", GetWorkspaceWarehouseConfigResponseSecurityPolicy),
             sql_configuration_parameters=_from_dict(d, "sql_configuration_parameters", RepeatedEndpointConfPairs),
         )
 
@@ -3678,8 +3665,7 @@ class LegacyAlert:
 
 class LegacyAlertState(Enum):
     """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
-    """
+    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
     OK = "ok"
     TRIGGERED = "triggered"
@@ -4472,10 +4458,7 @@ class ListVisualizationsForQueryResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListVisualizationsForQueryResponse:
         """Deserializes the ListVisualizationsForQueryResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            results=_repeated_dict(d, "results", Visualization),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), results=_repeated_dict(d, "results", Visualization))
 
 
 @dataclass
@@ -4539,11 +4522,7 @@ class MultiValuesOptions:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> MultiValuesOptions:
         """Deserializes the MultiValuesOptions from a dictionary."""
-        return cls(
-            prefix=d.get("prefix", None),
-            separator=d.get("separator", None),
-            suffix=d.get("suffix", None),
-        )
+        return cls(prefix=d.get("prefix", None), separator=d.get("separator", None), suffix=d.get("suffix", None))
 
 
 @dataclass
@@ -5842,7 +5821,6 @@ class RepeatedEndpointConfPairs:
 
 @dataclass
 class RestoreResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RestoreResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6053,10 +6031,7 @@ class ResultSchema:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResultSchema:
         """Deserializes the ResultSchema from a dictionary."""
-        return cls(
-            column_count=d.get("column_count", None),
-            columns=_repeated_dict(d, "columns", ColumnInfo),
-        )
+        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 class RunAsMode(Enum):
@@ -6101,10 +6076,7 @@ class ServiceError:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServiceError:
         """Deserializes the ServiceError from a dictionary."""
-        return cls(
-            error_code=_enum(d, "error_code", ServiceErrorCode),
-            message=d.get("message", None),
-        )
+        return cls(error_code=_enum(d, "error_code", ServiceErrorCode), message=d.get("message", None))
 
 
 class ServiceErrorCode(Enum):
@@ -6258,11 +6230,7 @@ class SetWorkspaceWarehouseConfigRequest:
             global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
             google_service_account=d.get("google_service_account", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
-            security_policy=_enum(
-                d,
-                "security_policy",
-                SetWorkspaceWarehouseConfigRequestSecurityPolicy,
-            ),
+            security_policy=_enum(d, "security_policy", SetWorkspaceWarehouseConfigRequestSecurityPolicy),
             sql_configuration_parameters=_from_dict(d, "sql_configuration_parameters", RepeatedEndpointConfPairs),
         )
 
@@ -6277,7 +6245,6 @@ class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
 
 @dataclass
 class SetWorkspaceWarehouseConfigResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetWorkspaceWarehouseConfigResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6304,7 +6271,6 @@ class SpotInstancePolicy(Enum):
 
 @dataclass
 class StartWarehouseResponse:
-
     def as_dict(self) -> dict:
         """Serializes the StartWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6373,11 +6339,7 @@ class StatementParameterListItem:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StatementParameterListItem:
         """Deserializes the StatementParameterListItem from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            type=d.get("type", None),
-            value=d.get("value", None),
-        )
+        return cls(name=d.get("name", None), type=d.get("type", None), value=d.get("value", None))
 
 
 @dataclass
@@ -6436,8 +6398,7 @@ class StatementState(Enum):
     `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
     failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
     can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
-    execution successful, and statement closed; result no longer available for fetch
-    """
+    execution successful, and statement closed; result no longer available for fetch"""
 
     CANCELED = "CANCELED"
     CLOSED = "CLOSED"
@@ -6481,10 +6442,7 @@ class StatementStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StatementStatus:
         """Deserializes the StatementStatus from a dictionary."""
-        return cls(
-            error=_from_dict(d, "error", ServiceError),
-            state=_enum(d, "state", StatementState),
-        )
+        return cls(error=_from_dict(d, "error", ServiceError), state=_enum(d, "state", StatementState))
 
 
 class Status(Enum):
@@ -6498,7 +6456,6 @@ class Status(Enum):
 
 @dataclass
 class StopWarehouseResponse:
-
     def as_dict(self) -> dict:
         """Serializes the StopWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6733,10 +6690,7 @@ class TimeRange:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TimeRange:
         """Deserializes the TimeRange from a dictionary."""
-        return cls(
-            end_time_ms=d.get("end_time_ms", None),
-            start_time_ms=d.get("start_time_ms", None),
-        )
+        return cls(end_time_ms=d.get("end_time_ms", None), start_time_ms=d.get("start_time_ms", None))
 
 
 @dataclass
@@ -7059,7 +7013,6 @@ class UpdateQueryRequestQuery:
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -7211,11 +7164,7 @@ class User:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> User:
         """Deserializes the User from a dictionary."""
-        return cls(
-            email=d.get("email", None),
-            id=d.get("id", None),
-            name=d.get("name", None),
-        )
+        return cls(email=d.get("email", None), id=d.get("id", None), name=d.get("name", None))
 
 
 @dataclass
@@ -7602,8 +7551,7 @@ class WarehouseTypePair:
     def from_dict(cls, d: Dict[str, any]) -> WarehouseTypePair:
         """Deserializes the WarehouseTypePair from a dictionary."""
         return cls(
-            enabled=d.get("enabled", None),
-            warehouse_type=_enum(d, "warehouse_type", WarehouseTypePairWarehouseType),
+            enabled=d.get("enabled", None), warehouse_type=_enum(d, "warehouse_type", WarehouseTypePairWarehouseType)
         )
 
 
@@ -7872,10 +7820,7 @@ class AlertsAPI:
         return Alert.from_dict(res)
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListAlertsResponseAlert]:
         """List alerts.
 
@@ -7906,13 +7851,7 @@ class AlertsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(
-        self,
-        id: str,
-        update_mask: str,
-        *,
-        alert: Optional[UpdateAlertRequestAlert] = None,
-    ) -> Alert:
+    def update(self, id: str, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None) -> Alert:
         """Update an alert.
 
         Updates an alert.
@@ -8032,11 +7971,7 @@ class AlertsLegacyAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/alerts/{alert_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
 
     def get(self, alert_id: str) -> LegacyAlert:
         """Get an alert.
@@ -8080,15 +8015,7 @@ class AlertsLegacyAPI:
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
         return [LegacyAlert.from_dict(v) for v in res]
 
-    def update(
-        self,
-        alert_id: str,
-        name: str,
-        options: AlertOptions,
-        query_id: str,
-        *,
-        rearm: Optional[int] = None,
-    ):
+    def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
         """Update an alert.
 
         Updates an alert.
@@ -8125,12 +8052,7 @@ class AlertsLegacyAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/preview/sql/alerts/{alert_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
 
 
 class DashboardWidgetsAPI:
@@ -8241,12 +8163,7 @@ class DashboardWidgetsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/widgets/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/preview/sql/widgets/{id}", body=body, headers=headers)
         return Widget.from_dict(res)
 
 
@@ -8305,12 +8222,7 @@ class DashboardsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/preview/sql/dashboards",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
     def delete(self, dashboard_id: str):
@@ -8328,11 +8240,7 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/dashboards/{dashboard_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
 
     def get(self, dashboard_id: str) -> Dashboard:
         """Retrieve a definition.
@@ -8348,11 +8256,7 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/dashboards/{dashboard_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
         return Dashboard.from_dict(res)
 
     def list(
@@ -8399,12 +8303,7 @@ class DashboardsAPI:
         seen = set()
         query["page"] = 1
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/preview/sql/dashboards",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
                     i = v["id"]
@@ -8430,11 +8329,7 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}",
-            headers=headers,
-        )
+        self._api.do("POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", headers=headers)
 
     def update(
         self,
@@ -8473,12 +8368,7 @@ class DashboardsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/dashboards/{dashboard_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
 
@@ -8563,11 +8453,7 @@ class DbsqlPermissionsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", headers=headers)
         return GetResponse.from_dict(res)
 
     def set(
@@ -8604,19 +8490,12 @@ class DbsqlPermissionsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", body=body, headers=headers
         )
         return SetResponse.from_dict(res)
 
     def transfer_ownership(
-        self,
-        object_type: OwnableObjectType,
-        object_id: TransferOwnershipObjectId,
-        *,
-        new_owner: Optional[str] = None,
+        self, object_type: OwnableObjectType, object_id: TransferOwnershipObjectId, *, new_owner: Optional[str] = None
     ) -> Success:
         """Transfer object ownership.
 
@@ -8656,8 +8535,7 @@ class DbsqlPermissionsAPI:
 class QueriesAPI:
     """The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
     includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
-    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
-    """
+    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8718,10 +8596,7 @@ class QueriesAPI:
         return Query.from_dict(res)
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListQueryObjectsResponseQuery]:
         """List queries.
 
@@ -8753,11 +8628,7 @@ class QueriesAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_visualizations(
-        self,
-        id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Visualization]:
         """List visualizations on a query.
 
@@ -8780,12 +8651,7 @@ class QueriesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/sql/queries/{id}/visualizations",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.0/sql/queries/{id}/visualizations", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
                     yield Visualization.from_dict(v)
@@ -8793,13 +8659,7 @@ class QueriesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(
-        self,
-        id: str,
-        update_mask: str,
-        *,
-        query: Optional[UpdateQueryRequestQuery] = None,
-    ) -> Query:
+    def update(self, id: str, update_mask: str, *, query: Optional[UpdateQueryRequestQuery] = None) -> Query:
         """Update a query.
 
         Updates a query.
@@ -8943,11 +8803,7 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/queries/{query_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
 
     def get(self, query_id: str) -> LegacyQuery:
         """Get a query definition.
@@ -9033,12 +8889,7 @@ class QueriesLegacyAPI:
         seen = set()
         query["page"] = 1
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/preview/sql/queries",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
                     i = v["id"]
@@ -9070,11 +8921,7 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/queries/trash/{query_id}",
-            headers=headers,
-        )
+        self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", headers=headers)
 
     def update(
         self,
@@ -9142,12 +8989,7 @@ class QueriesLegacyAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/queries/{query_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body, headers=headers)
         return LegacyQuery.from_dict(res)
 
 
@@ -9213,11 +9055,7 @@ class QueryVisualizationsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        *,
-        visualization: Optional[CreateVisualizationRequestVisualization] = None,
-    ) -> Visualization:
+    def create(self, *, visualization: Optional[CreateVisualizationRequestVisualization] = None) -> Visualization:
         """Add a visualization to a query.
 
         Adds a visualization to a query.
@@ -9254,11 +9092,7 @@ class QueryVisualizationsAPI:
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
 
     def update(
-        self,
-        id: str,
-        update_mask: str,
-        *,
-        visualization: Optional[UpdateVisualizationRequestVisualization] = None,
+        self, id: str, update_mask: str, *, visualization: Optional[UpdateVisualizationRequestVisualization] = None
     ) -> Visualization:
         """Update a visualization.
 
@@ -9289,12 +9123,7 @@ class QueryVisualizationsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/sql/visualizations/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/sql/visualizations/{id}", body=body, headers=headers)
         return Visualization.from_dict(res)
 
 
@@ -9311,13 +9140,7 @@ class QueryVisualizationsLegacyAPI:
         self._api = api_client
 
     def create(
-        self,
-        query_id: str,
-        type: str,
-        options: Any,
-        *,
-        description: Optional[str] = None,
-        name: Optional[str] = None,
+        self, query_id: str, type: str, options: Any, *, description: Optional[str] = None, name: Optional[str] = None
     ) -> LegacyVisualization:
         """Add visualization to a query.
 
@@ -9358,12 +9181,7 @@ class QueryVisualizationsLegacyAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/preview/sql/visualizations",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/preview/sql/visualizations", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
 
     def delete(self, id: str):
@@ -9386,11 +9204,7 @@ class QueryVisualizationsLegacyAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/sql/visualizations/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/sql/visualizations/{id}", headers=headers)
 
     def update(
         self,
@@ -9450,12 +9264,7 @@ class QueryVisualizationsLegacyAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/preview/sql/visualizations/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/preview/sql/visualizations/{id}", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
 
 
@@ -9583,11 +9392,7 @@ class StatementExecutionAPI:
 
         headers = {}
 
-        self._api.do(
-            "POST",
-            f"/api/2.0/sql/statements/{statement_id}/cancel",
-            headers=headers,
-        )
+        self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", headers=headers)
 
     def execute_statement(
         self,
@@ -9791,26 +9596,20 @@ class StatementExecutionAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}",
-            headers=headers,
+            "GET", f"/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}", headers=headers
         )
         return ResultData.from_dict(res)
 
 
 class WarehousesAPI:
     """A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks
-    SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud.
-    """
+    SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def wait_get_warehouse_running(
-        self,
-        id: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[GetWarehouseResponse], None]] = None,
+        self, id: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[GetWarehouseResponse], None]] = None
     ) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.RUNNING,)
@@ -9844,10 +9643,7 @@ class WarehousesAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def wait_get_warehouse_stopped(
-        self,
-        id: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[GetWarehouseResponse], None]] = None,
+        self, id: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[GetWarehouseResponse], None]] = None
     ) -> GetWarehouseResponse:
         deadline = time.time() + timeout.total_seconds()
         target_states = (State.STOPPED,)
@@ -10159,17 +9955,8 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "POST",
-            f"/api/2.0/sql/warehouses/{id}/edit",
-            body=body,
-            headers=headers,
-        )
-        return Wait(
-            self.wait_get_warehouse_running,
-            response=EditWarehouseResponse.from_dict(op_response),
-            id=id,
-        )
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
+        return Wait(self.wait_get_warehouse_running, response=EditWarehouseResponse.from_dict(op_response), id=id)
 
     def edit_and_wait(
         self,
@@ -10240,11 +10027,7 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
         return GetWarehousePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, warehouse_id: str) -> WarehousePermissions:
@@ -10263,16 +10046,10 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/warehouses/{warehouse_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
         return WarehousePermissions.from_dict(res)
 
-    def get_workspace_warehouse_config(
-        self,
-    ) -> GetWorkspaceWarehouseConfigResponse:
+    def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Get the workspace configuration.
 
         Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
@@ -10311,10 +10088,7 @@ class WarehousesAPI:
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self,
-        warehouse_id: str,
-        *,
-        access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
+        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
     ) -> WarehousePermissions:
         """Set SQL warehouse permissions.
 
@@ -10335,12 +10109,7 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/warehouses/{warehouse_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)
 
     def set_workspace_warehouse_config(
@@ -10429,11 +10198,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return Wait(
-            self.wait_get_warehouse_running,
-            response=StartWarehouseResponse.from_dict(op_response),
-            id=id,
-        )
+        return Wait(self.wait_get_warehouse_running, response=StartWarehouseResponse.from_dict(op_response), id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -10456,20 +10221,13 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return Wait(
-            self.wait_get_warehouse_stopped,
-            response=StopWarehouseResponse.from_dict(op_response),
-            id=id,
-        )
+        return Wait(self.wait_get_warehouse_stopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
 
     def update_permissions(
-        self,
-        warehouse_id: str,
-        *,
-        access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
+        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
     ) -> WarehousePermissions:
         """Update SQL warehouse permissions.
 
@@ -10490,10 +10248,5 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/warehouses/{warehouse_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)

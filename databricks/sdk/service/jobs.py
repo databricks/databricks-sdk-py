@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
@@ -461,15 +462,11 @@ class CancelAllRuns:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CancelAllRuns:
         """Deserializes the CancelAllRuns from a dictionary."""
-        return cls(
-            all_queued_runs=d.get("all_queued_runs", None),
-            job_id=d.get("job_id", None),
-        )
+        return cls(all_queued_runs=d.get("all_queued_runs", None), job_id=d.get("job_id", None))
 
 
 @dataclass
 class CancelAllRunsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -513,7 +510,6 @@ class CancelRun:
 
 @dataclass
 class CancelRunResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -738,10 +734,7 @@ class ClusterInstance:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterInstance:
         """Deserializes the ClusterInstance from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            spark_context_id=d.get("spark_context_id", None),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), spark_context_id=d.get("spark_context_id", None))
 
 
 @dataclass
@@ -851,11 +844,7 @@ class ConditionTask:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ConditionTask:
         """Deserializes the ConditionTask from a dictionary."""
-        return cls(
-            left=d.get("left", None),
-            op=_enum(d, "op", ConditionTaskOp),
-            right=d.get("right", None),
-        )
+        return cls(left=d.get("left", None), op=_enum(d, "op", ConditionTaskOp), right=d.get("right", None))
 
 
 class ConditionTaskOp(Enum):
@@ -1268,10 +1257,7 @@ class DbtOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DbtOutput:
         """Deserializes the DbtOutput from a dictionary."""
-        return cls(
-            artifacts_headers=d.get("artifacts_headers", None),
-            artifacts_link=d.get("artifacts_link", None),
-        )
+        return cls(artifacts_headers=d.get("artifacts_headers", None), artifacts_link=d.get("artifacts_link", None))
 
 
 @dataclass
@@ -1390,7 +1376,6 @@ class DeleteJob:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1434,7 +1419,6 @@ class DeleteRun:
 
 @dataclass
 class DeleteRunResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1495,9 +1479,7 @@ class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
     def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         """Deserializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange from a dictionary."""
         return cls(
-            field=d.get("field", None),
-            new_value=d.get("new_value", None),
-            previous_value=d.get("previous_value", None),
+            field=d.get("field", None), new_value=d.get("new_value", None), previous_value=d.get("previous_value", None)
         )
 
 
@@ -1530,10 +1512,7 @@ class EnforcePolicyComplianceRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceRequest:
         """Deserializes the EnforcePolicyComplianceRequest from a dictionary."""
-        return cls(
-            job_id=d.get("job_id", None),
-            validate_only=d.get("validate_only", None),
-        )
+        return cls(job_id=d.get("job_id", None), validate_only=d.get("validate_only", None))
 
 
 @dataclass
@@ -1580,9 +1559,7 @@ class EnforcePolicyComplianceResponse:
         return cls(
             has_changes=d.get("has_changes", None),
             job_cluster_changes=_repeated_dict(
-                d,
-                "job_cluster_changes",
-                EnforcePolicyComplianceForJobResponseJobClusterSettingsChange,
+                d, "job_cluster_changes", EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
             ),
             settings=_from_dict(d, "settings", JobSettings),
         )
@@ -1738,9 +1715,7 @@ class ForEachTask:
     def from_dict(cls, d: Dict[str, any]) -> ForEachTask:
         """Deserializes the ForEachTask from a dictionary."""
         return cls(
-            concurrency=d.get("concurrency", None),
-            inputs=d.get("inputs", None),
-            task=_from_dict(d, "task", Task),
+            concurrency=d.get("concurrency", None), inputs=d.get("inputs", None), task=_from_dict(d, "task", Task)
         )
 
 
@@ -1919,10 +1894,7 @@ class GetPolicyComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetPolicyComplianceResponse:
         """Deserializes the GetPolicyComplianceResponse from a dictionary."""
-        return cls(
-            is_compliant=d.get("is_compliant", None),
-            violations=d.get("violations", None),
-        )
+        return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
 
 
 class GitProvider(Enum):
@@ -2340,9 +2312,7 @@ class JobCompliance:
     def from_dict(cls, d: Dict[str, any]) -> JobCompliance:
         """Deserializes the JobCompliance from a dictionary."""
         return cls(
-            is_compliant=d.get("is_compliant", None),
-            job_id=d.get("job_id", None),
-            violations=d.get("violations", None),
+            is_compliant=d.get("is_compliant", None), job_id=d.get("job_id", None), violations=d.get("violations", None)
         )
 
 
@@ -2377,10 +2347,7 @@ class JobDeployment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobDeployment:
         """Deserializes the JobDeployment from a dictionary."""
-        return cls(
-            kind=_enum(d, "kind", JobDeploymentKind),
-            metadata_file_path=d.get("metadata_file_path", None),
-        )
+        return cls(kind=_enum(d, "kind", JobDeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
 
 
 class JobDeploymentKind(Enum):
@@ -2511,10 +2478,7 @@ class JobEnvironment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobEnvironment:
         """Deserializes the JobEnvironment from a dictionary."""
-        return cls(
-            environment_key=d.get("environment_key", None),
-            spec=_from_dict(d, "spec", compute.Environment),
-        )
+        return cls(environment_key=d.get("environment_key", None), spec=_from_dict(d, "spec", compute.Environment))
 
 
 @dataclass
@@ -2590,11 +2554,7 @@ class JobParameter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobParameter:
         """Deserializes the JobParameter from a dictionary."""
-        return cls(
-            default=d.get("default", None),
-            name=d.get("name", None),
-            value=d.get("value", None),
-        )
+        return cls(default=d.get("default", None), name=d.get("name", None), value=d.get("value", None))
 
 
 @dataclass
@@ -2748,8 +2708,7 @@ class JobPermissionsDescription:
     def from_dict(cls, d: Dict[str, any]) -> JobPermissionsDescription:
         """Deserializes the JobPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", JobPermissionLevel),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", JobPermissionLevel)
         )
 
 
@@ -2792,8 +2751,7 @@ class JobRunAs:
     """Write-only setting. Specifies the user or service principal that the job runs as. If not
     specified, the job runs as the user who created the job.
 
-    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
-    """
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -2824,10 +2782,7 @@ class JobRunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobRunAs:
         """Deserializes the JobRunAs from a dictionary."""
-        return cls(
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
+        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -3564,8 +3519,7 @@ class PauseStatus(Enum):
 class PerformanceTarget(Enum):
     """PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run
     on serverless compute should be. The performance mode on the job or pipeline should map to a
-    performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget).
-    """
+    performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
 
     COST_OPTIMIZED = "COST_OPTIMIZED"
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
@@ -3600,10 +3554,7 @@ class PeriodicTriggerConfiguration:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PeriodicTriggerConfiguration:
         """Deserializes the PeriodicTriggerConfiguration from a dictionary."""
-        return cls(
-            interval=d.get("interval", None),
-            unit=_enum(d, "unit", PeriodicTriggerConfigurationTimeUnit),
-        )
+        return cls(interval=d.get("interval", None), unit=_enum(d, "unit", PeriodicTriggerConfigurationTimeUnit))
 
 
 class PeriodicTriggerConfigurationTimeUnit(Enum):
@@ -3667,10 +3618,7 @@ class PipelineTask:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineTask:
         """Deserializes the PipelineTask from a dictionary."""
-        return cls(
-            full_refresh=d.get("full_refresh", None),
-            pipeline_id=d.get("pipeline_id", None),
-        )
+        return cls(full_refresh=d.get("full_refresh", None), pipeline_id=d.get("pipeline_id", None))
 
 
 @dataclass
@@ -3761,10 +3709,7 @@ class QueueDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueueDetails:
         """Deserializes the QueueDetails from a dictionary."""
-        return cls(
-            code=_enum(d, "code", QueueDetailsCodeCode),
-            message=d.get("message", None),
-        )
+        return cls(code=_enum(d, "code", QueueDetailsCodeCode), message=d.get("message", None))
 
 
 class QueueDetailsCodeCode(Enum):
@@ -4130,15 +4075,11 @@ class ResetJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
-        return cls(
-            job_id=d.get("job_id", None),
-            new_settings=_from_dict(d, "new_settings", JobSettings),
-        )
+        return cls(job_id=d.get("job_id", None), new_settings=_from_dict(d, "new_settings", JobSettings))
 
 
 @dataclass
 class ResetResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4284,10 +4225,7 @@ class ResolvedPythonWheelTaskValues:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedPythonWheelTaskValues:
         """Deserializes the ResolvedPythonWheelTaskValues from a dictionary."""
-        return cls(
-            named_parameters=d.get("named_parameters", None),
-            parameters=d.get("parameters", None),
-        )
+        return cls(named_parameters=d.get("named_parameters", None), parameters=d.get("parameters", None))
 
 
 @dataclass
@@ -4317,10 +4255,7 @@ class ResolvedRunJobTaskValues:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedRunJobTaskValues:
         """Deserializes the ResolvedRunJobTaskValues from a dictionary."""
-        return cls(
-            job_parameters=d.get("job_parameters", None),
-            parameters=d.get("parameters", None),
-        )
+        return cls(job_parameters=d.get("job_parameters", None), parameters=d.get("parameters", None))
 
 
 @dataclass
@@ -5109,8 +5044,7 @@ class RunLifeCycleState(Enum):
     exceptional state that indicates a failure in the Jobs service, such as network failure over a
     long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service
     terminates the cluster as soon as possible. This state is terminal. * `BLOCKED`: The run is
-    blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry.
-    """
+    blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry."""
 
     BLOCKED = "BLOCKED"
     INTERNAL_ERROR = "INTERNAL_ERROR"
@@ -5360,10 +5294,7 @@ class RunNowResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunNowResponse:
         """Deserializes the RunNowResponse from a dictionary."""
-        return cls(
-            number_in_job=d.get("number_in_job", None),
-            run_id=d.get("run_id", None),
-        )
+        return cls(number_in_job=d.get("number_in_job", None), run_id=d.get("run_id", None))
 
 
 @dataclass
@@ -5473,9 +5404,7 @@ class RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(
             clean_rooms_notebook_output=_from_dict(
-                d,
-                "clean_rooms_notebook_output",
-                CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput,
+                d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
             ),
             dbt_output=_from_dict(d, "dbt_output", DbtOutput),
             error=d.get("error", None),
@@ -6182,8 +6111,7 @@ class RunType(Enum):
     `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit
     run. A run created with :method:jobs/submit.
 
-    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
-    """
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = "JOB_RUN"
     SUBMIT_RUN = "SUBMIT_RUN"
@@ -6452,8 +6380,7 @@ class SqlDashboardOutput:
     def from_dict(cls, d: Dict[str, any]) -> SqlDashboardOutput:
         """Deserializes the SqlDashboardOutput from a dictionary."""
         return cls(
-            warehouse_id=d.get("warehouse_id", None),
-            widgets=_repeated_dict(d, "widgets", SqlDashboardWidgetOutput),
+            warehouse_id=d.get("warehouse_id", None), widgets=_repeated_dict(d, "widgets", SqlDashboardWidgetOutput)
         )
 
 
@@ -6952,10 +6879,7 @@ class SqlTaskSubscription:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlTaskSubscription:
         """Deserializes the SqlTaskSubscription from a dictionary."""
-        return cls(
-            destination_id=d.get("destination_id", None),
-            user_name=d.get("user_name", None),
-        )
+        return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -7948,8 +7872,7 @@ class TerminationCodeCode(Enum):
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit.
 
-    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
-    """
+    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
     BUDGET_POLICY_LIMIT_EXCEEDED = "BUDGET_POLICY_LIMIT_EXCEEDED"
     CANCELED = "CANCELED"
@@ -8235,7 +8158,6 @@ class UpdateJob:
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8289,11 +8211,7 @@ class ViewItem:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ViewItem:
         """Deserializes the ViewItem from a dictionary."""
-        return cls(
-            content=d.get("content", None),
-            name=d.get("name", None),
-            type=_enum(d, "type", ViewType),
-        )
+        return cls(content=d.get("content", None), name=d.get("name", None), type=_enum(d, "type", ViewType))
 
 
 class ViewType(Enum):
@@ -8422,17 +8340,13 @@ class JobsAPI:
 
     [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
     [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
-    [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
-    """
+    [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def wait_get_run_job_terminated_or_skipped(
-        self,
-        run_id: int,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[Run], None]] = None,
+        self, run_id: int, timeout=timedelta(minutes=20), callback: Optional[Callable[[Run], None]] = None
     ) -> Run:
         deadline = time.time() + timeout.total_seconds()
         target_states = (
@@ -8465,12 +8379,7 @@ class JobsAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def cancel_all_runs(
-        self,
-        *,
-        all_queued_runs: Optional[bool] = None,
-        job_id: Optional[int] = None,
-    ):
+    def cancel_all_runs(self, *, all_queued_runs: Optional[bool] = None, job_id: Optional[int] = None):
         """Cancel all runs of a job.
 
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
@@ -8494,7 +8403,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/jobs/runs/cancel-all", body=body, headers=headers)
+        self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
         """Cancel a run.
@@ -8517,7 +8426,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/jobs/runs/cancel", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
             response=CancelRunResponse.from_dict(op_response),
@@ -8708,7 +8617,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.1/jobs/create", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.2/jobs/create", body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
     def delete(self, job_id: int):
@@ -8729,7 +8638,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/jobs/delete", body=body, headers=headers)
+        self._api.do("POST", "/api/2.2/jobs/delete", body=body, headers=headers)
 
     def delete_run(self, run_id: int):
         """Delete a job run.
@@ -8749,7 +8658,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/jobs/runs/delete", body=body, headers=headers)
+        self._api.do("POST", "/api/2.2/jobs/runs/delete", body=body, headers=headers)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
         """Export and retrieve a job run.
@@ -8773,7 +8682,7 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", "/api/2.1/jobs/runs/export", query=query, headers=headers)
+        res = self._api.do("GET", "/api/2.2/jobs/runs/export", query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
 
     def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
@@ -8804,7 +8713,7 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", "/api/2.1/jobs/get", query=query, headers=headers)
+        res = self._api.do("GET", "/api/2.2/jobs/get", query=query, headers=headers)
         return Job.from_dict(res)
 
     def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
@@ -8822,11 +8731,7 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/jobs/{job_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/jobs/{job_id}/permissionLevels", headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, job_id: str) -> JobPermissions:
@@ -8890,7 +8795,7 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", "/api/2.1/jobs/runs/get", query=query, headers=headers)
+        res = self._api.do("GET", "/api/2.2/jobs/runs/get", query=query, headers=headers)
         return Run.from_dict(res)
 
     def get_run_output(self, run_id: int) -> RunOutput:
@@ -8918,12 +8823,7 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.1/jobs/runs/get-output",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.2/jobs/runs/get-output", query=query, headers=headers)
         return RunOutput.from_dict(res)
 
     def list(
@@ -8973,7 +8873,7 @@ class JobsAPI:
         }
 
         while True:
-            json = self._api.do("GET", "/api/2.1/jobs/list", query=query, headers=headers)
+            json = self._api.do("GET", "/api/2.2/jobs/list", query=query, headers=headers)
             if "jobs" in json:
                 for v in json["jobs"]:
                     yield BaseJob.from_dict(v)
@@ -9058,7 +8958,7 @@ class JobsAPI:
         }
 
         while True:
-            json = self._api.do("GET", "/api/2.1/jobs/runs/list", query=query, headers=headers)
+            json = self._api.do("GET", "/api/2.2/jobs/runs/list", query=query, headers=headers)
             if "runs" in json:
                 for v in json["runs"]:
                     yield BaseRun.from_dict(v)
@@ -9208,7 +9108,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/jobs/runs/repair", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
             response=RepairRunResponse.from_dict(op_response),
@@ -9277,7 +9177,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/jobs/reset", body=body, headers=headers)
+        self._api.do("POST", "/api/2.2/jobs/reset", body=body, headers=headers)
 
     def run_now(
         self,
@@ -9432,7 +9332,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/jobs/run-now", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
             response=RunNowResponse.from_dict(op_response),
@@ -9476,10 +9376,7 @@ class JobsAPI:
         ).result(timeout=timeout)
 
     def set_permissions(
-        self,
-        job_id: str,
-        *,
-        access_control_list: Optional[List[JobAccessControlRequest]] = None,
+        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
         """Set job permissions.
 
@@ -9500,12 +9397,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/jobs/{job_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
         return JobPermissions.from_dict(res)
 
     def submit(
@@ -9619,7 +9511,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/jobs/runs/submit", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
             response=SubmitRunResponse.from_dict(op_response),
@@ -9663,11 +9555,7 @@ class JobsAPI:
         ).result(timeout=timeout)
 
     def update(
-        self,
-        job_id: int,
-        *,
-        fields_to_remove: Optional[List[str]] = None,
-        new_settings: Optional[JobSettings] = None,
+        self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None
     ):
         """Update job settings partially.
 
@@ -9705,13 +9593,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/jobs/update", body=body, headers=headers)
+        self._api.do("POST", "/api/2.2/jobs/update", body=body, headers=headers)
 
     def update_permissions(
-        self,
-        job_id: str,
-        *,
-        access_control_list: Optional[List[JobAccessControlRequest]] = None,
+        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
         """Update job permissions.
 
@@ -9731,12 +9616,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/jobs/{job_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
         return JobPermissions.from_dict(res)
 
 
@@ -9750,8 +9630,7 @@ class PolicyComplianceForJobsAPI:
     policies.
 
     The get and list compliance APIs allow you to view the policy compliance status of a job. The enforce
-    compliance API allows you to update a job so that it becomes compliant with all of its policies.
-    """
+    compliance API allows you to update a job so that it becomes compliant with all of its policies."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9782,12 +9661,7 @@ class PolicyComplianceForJobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/policies/jobs/enforce-compliance",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/policies/jobs/enforce-compliance", body=body, headers=headers)
         return EnforcePolicyComplianceResponse.from_dict(res)
 
     def get_compliance(self, job_id: int) -> GetPolicyComplianceResponse:
@@ -9810,20 +9684,11 @@ class PolicyComplianceForJobsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/policies/jobs/get-compliance",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/policies/jobs/get-compliance", query=query, headers=headers)
         return GetPolicyComplianceResponse.from_dict(res)
 
     def list_compliance(
-        self,
-        policy_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, policy_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[JobCompliance]:
         """List job policy compliance.
 
@@ -9855,12 +9720,7 @@ class PolicyComplianceForJobsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/policies/jobs/list-compliance",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/policies/jobs/list-compliance", query=query, headers=headers)
             if "jobs" in json:
                 for v in json["jobs"]:
                     yield JobCompliance.from_dict(v)

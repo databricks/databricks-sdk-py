@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -84,7 +85,6 @@ class AddInstanceProfile:
 
 @dataclass
 class AddResponse:
-
     def as_dict(self) -> dict:
         """Serializes the AddResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -158,10 +158,7 @@ class AutoScale:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AutoScale:
         """Deserializes the AutoScale from a dictionary."""
-        return cls(
-            max_workers=d.get("max_workers", None),
-            min_workers=d.get("min_workers", None),
-        )
+        return cls(max_workers=d.get("max_workers", None), min_workers=d.get("min_workers", None))
 
 
 @dataclass
@@ -315,8 +312,7 @@ class AwsAttributes:
 class AwsAvailability(Enum):
     """Availability type used for all subsequent nodes past the `first_on_demand` ones.
 
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
-    """
+    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -437,7 +433,6 @@ class CancelCommand:
 
 @dataclass
 class CancelResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -483,15 +478,11 @@ class ChangeClusterOwner:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwner:
         """Deserializes the ChangeClusterOwner from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            owner_username=d.get("owner_username", None),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), owner_username=d.get("owner_username", None))
 
 
 @dataclass
 class ChangeClusterOwnerResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ChangeClusterOwnerResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2186,9 +2177,7 @@ class ClusterSettingsChange:
     def from_dict(cls, d: Dict[str, any]) -> ClusterSettingsChange:
         """Deserializes the ClusterSettingsChange from a dictionary."""
         return cls(
-            field=d.get("field", None),
-            new_value=d.get("new_value", None),
-            previous_value=d.get("previous_value", None),
+            field=d.get("field", None), new_value=d.get("new_value", None), previous_value=d.get("previous_value", None)
         )
 
 
@@ -2229,16 +2218,12 @@ class ClusterSize:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterSize:
         """Deserializes the ClusterSize from a dictionary."""
-        return cls(
-            autoscale=_from_dict(d, "autoscale", AutoScale),
-            num_workers=d.get("num_workers", None),
-        )
+        return cls(autoscale=_from_dict(d, "autoscale", AutoScale), num_workers=d.get("num_workers", None))
 
 
 class ClusterSource(Enum):
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only.
-    """
+    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
 
     API = "API"
     JOB = "JOB"
@@ -2690,9 +2675,7 @@ class CommandStatusResponse:
     def from_dict(cls, d: Dict[str, any]) -> CommandStatusResponse:
         """Deserializes the CommandStatusResponse from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            results=_from_dict(d, "results", Results),
-            status=_enum(d, "status", CommandStatus),
+            id=d.get("id", None), results=_from_dict(d, "results", Results), status=_enum(d, "status", CommandStatus)
         )
 
 
@@ -3141,10 +3124,7 @@ class CreateContext:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateContext:
         """Deserializes the CreateContext from a dictionary."""
-        return cls(
-            cluster_id=d.get("clusterId", None),
-            language=_enum(d, "language", Language),
-        )
+        return cls(cluster_id=d.get("clusterId", None), language=_enum(d, "language", Language))
 
 
 @dataclass
@@ -3668,7 +3648,6 @@ class DeleteCluster:
 
 @dataclass
 class DeleteClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3712,7 +3691,6 @@ class DeleteInstancePool:
 
 @dataclass
 class DeleteInstancePoolResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3756,7 +3734,6 @@ class DeletePolicy:
 
 @dataclass
 class DeletePolicyResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeletePolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3775,7 +3752,6 @@ class DeletePolicyResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3819,15 +3795,11 @@ class DestroyContext:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DestroyContext:
         """Deserializes the DestroyContext from a dictionary."""
-        return cls(
-            cluster_id=d.get("clusterId", None),
-            context_id=d.get("contextId", None),
-        )
+        return cls(cluster_id=d.get("clusterId", None), context_id=d.get("contextId", None))
 
 
 @dataclass
 class DestroyResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DestroyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4023,10 +3995,7 @@ class DockerImage:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DockerImage:
         """Deserializes the DockerImage from a dictionary."""
-        return cls(
-            basic_auth=_from_dict(d, "basic_auth", DockerBasicAuth),
-            url=d.get("url", None),
-        )
+        return cls(basic_auth=_from_dict(d, "basic_auth", DockerBasicAuth), url=d.get("url", None))
 
 
 class EbsVolumeType(Enum):
@@ -4393,7 +4362,6 @@ class EditCluster:
 
 @dataclass
 class EditClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4500,7 +4468,6 @@ class EditInstancePool:
 
 @dataclass
 class EditInstancePoolResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4617,7 +4584,6 @@ class EditPolicy:
 
 @dataclass
 class EditPolicyResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4636,7 +4602,6 @@ class EditPolicyResponse:
 
 @dataclass
 class EditResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4683,10 +4648,7 @@ class EnforceClusterComplianceRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceRequest:
         """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            validate_only=d.get("validate_only", None),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), validate_only=d.get("validate_only", None))
 
 
 @dataclass
@@ -4720,17 +4682,13 @@ class EnforceClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceResponse:
         """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
-        return cls(
-            changes=_repeated_dict(d, "changes", ClusterSettingsChange),
-            has_changes=d.get("has_changes", None),
-        )
+        return cls(changes=_repeated_dict(d, "changes", ClusterSettingsChange), has_changes=d.get("has_changes", None))
 
 
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel and jobs' environment
-    for non-notebook task. In this minimal environment spec, only pip dependencies are supported.
-    """
+    for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
 
     client: str
     """Client version used by the environment The client is the user-facing environment of the runtime.
@@ -4766,10 +4724,7 @@ class Environment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
-        return cls(
-            client=d.get("client", None),
-            dependencies=d.get("dependencies", None),
-        )
+        return cls(client=d.get("client", None), dependencies=d.get("dependencies", None))
 
 
 @dataclass
@@ -5078,8 +5033,7 @@ class GcpAttributes:
 
 class GcpAvailability(Enum):
     """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
-    preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
-    """
+    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
 
     ON_DEMAND_GCP = "ON_DEMAND_GCP"
     PREEMPTIBLE_GCP = "PREEMPTIBLE_GCP"
@@ -5143,10 +5097,7 @@ class GetClusterComplianceResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetClusterComplianceResponse:
         """Deserializes the GetClusterComplianceResponse from a dictionary."""
-        return cls(
-            is_compliant=d.get("is_compliant", None),
-            violations=d.get("violations", None),
-        )
+        return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
 
 
 @dataclass
@@ -6116,15 +6067,11 @@ class InstallLibraries:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstallLibraries:
         """Deserializes the InstallLibraries from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            libraries=_repeated_dict(d, "libraries", Library),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
 
 
 @dataclass
 class InstallLibrariesResponse:
-
     def as_dict(self) -> dict:
         """Serializes the InstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6505,8 +6452,7 @@ class InstancePoolAwsAttributes:
 class InstancePoolAwsAttributesAvailability(Enum):
     """Availability type used for the spot nodes.
 
-    The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability
-    """
+    The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability"""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -6553,8 +6499,7 @@ class InstancePoolAzureAttributes:
 class InstancePoolAzureAttributesAvailability(Enum):
     """Shows the Availability type used for the spot nodes.
 
-    The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability
-    """
+    The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability"""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
@@ -7138,10 +7083,7 @@ class ListAvailableZonesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListAvailableZonesResponse:
         """Deserializes the ListAvailableZonesResponse from a dictionary."""
-        return cls(
-            default_zone=d.get("default_zone", None),
-            zones=d.get("zones", None),
-        )
+        return cls(default_zone=d.get("default_zone", None), zones=d.get("zones", None))
 
 
 @dataclass
@@ -7599,10 +7541,7 @@ class LogSyncStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogSyncStatus:
         """Deserializes the LogSyncStatus from a dictionary."""
-        return cls(
-            last_attempted=d.get("last_attempted", None),
-            last_exception=d.get("last_exception", None),
-        )
+        return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
 
 
 @dataclass
@@ -7646,9 +7585,7 @@ class MavenLibrary:
     def from_dict(cls, d: Dict[str, any]) -> MavenLibrary:
         """Deserializes the MavenLibrary from a dictionary."""
         return cls(
-            coordinates=d.get("coordinates", None),
-            exclusions=d.get("exclusions", None),
-            repo=d.get("repo", None),
+            coordinates=d.get("coordinates", None), exclusions=d.get("exclusions", None), repo=d.get("repo", None)
         )
 
 
@@ -7911,10 +7848,7 @@ class PendingInstanceError:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PendingInstanceError:
         """Deserializes the PendingInstanceError from a dictionary."""
-        return cls(
-            instance_id=d.get("instance_id", None),
-            message=d.get("message", None),
-        )
+        return cls(instance_id=d.get("instance_id", None), message=d.get("message", None))
 
 
 @dataclass
@@ -7944,7 +7878,6 @@ class PermanentDeleteCluster:
 
 @dataclass
 class PermanentDeleteClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PermanentDeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -7988,7 +7921,6 @@ class PinCluster:
 
 @dataclass
 class PinClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PinClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8276,7 +8208,6 @@ class RemoveInstanceProfile:
 
 @dataclass
 class RemoveResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8346,7 +8277,6 @@ class ResizeCluster:
 
 @dataclass
 class ResizeClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ResizeClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8392,15 +8322,11 @@ class RestartCluster:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestartCluster:
         """Deserializes the RestartCluster from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            restart_user=d.get("restart_user", None),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), restart_user=d.get("restart_user", None))
 
 
 @dataclass
 class RestartClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RestartClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8794,7 +8720,6 @@ class StartCluster:
 
 @dataclass
 class StartClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the StartClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8989,15 +8914,11 @@ class UninstallLibraries:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UninstallLibraries:
         """Deserializes the UninstallLibraries from a dictionary."""
-        return cls(
-            cluster_id=d.get("cluster_id", None),
-            libraries=_repeated_dict(d, "libraries", Library),
-        )
+        return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
 
 
 @dataclass
 class UninstallLibrariesResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UninstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -9041,7 +8962,6 @@ class UnpinCluster:
 
 @dataclass
 class UnpinClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UnpinClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -9444,7 +9364,6 @@ class UpdateClusterResource:
 
 @dataclass
 class UpdateClusterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -9463,7 +9382,6 @@ class UpdateClusterResponse:
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -9644,12 +9562,7 @@ class ClusterPoliciesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/policies/clusters/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/policies/clusters/create", body=body, headers=headers)
         return CreatePolicyResponse.from_dict(res)
 
     def delete(self, policy_id: str):
@@ -9670,12 +9583,7 @@ class ClusterPoliciesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/policies/clusters/delete",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/policies/clusters/delete", body=body, headers=headers)
 
     def edit(
         self,
@@ -9750,12 +9658,7 @@ class ClusterPoliciesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/policies/clusters/edit",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
     def get(self, policy_id: str) -> Policy:
         """Get a cluster policy.
@@ -9775,12 +9678,7 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/policies/clusters/get",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query, headers=headers)
         return Policy.from_dict(res)
 
     def get_permission_levels(self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
@@ -9799,9 +9697,7 @@ class ClusterPoliciesAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels", headers=headers
         )
         return GetClusterPolicyPermissionLevelsResponse.from_dict(res)
 
@@ -9821,18 +9717,11 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", headers=headers)
         return ClusterPolicyPermissions.from_dict(res)
 
     def list(
-        self,
-        *,
-        sort_column: Optional[ListSortColumn] = None,
-        sort_order: Optional[ListSortOrder] = None,
+        self, *, sort_column: Optional[ListSortColumn] = None, sort_order: Optional[ListSortOrder] = None
     ) -> Iterator[Policy]:
         """List cluster policies.
 
@@ -9857,20 +9746,12 @@ class ClusterPoliciesAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            "/api/2.0/policies/clusters/list",
-            query=query,
-            headers=headers,
-        )
+        json = self._api.do("GET", "/api/2.0/policies/clusters/list", query=query, headers=headers)
         parsed = ListPoliciesResponse.from_dict(json).policies
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self,
-        cluster_policy_id: str,
-        *,
-        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None,
+        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
     ) -> ClusterPolicyPermissions:
         """Set cluster policy permissions.
 
@@ -9892,18 +9773,12 @@ class ClusterPoliciesAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
         )
         return ClusterPolicyPermissions.from_dict(res)
 
     def update_permissions(
-        self,
-        cluster_policy_id: str,
-        *,
-        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None,
+        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
     ) -> ClusterPolicyPermissions:
         """Update cluster policy permissions.
 
@@ -9925,10 +9800,7 @@ class ClusterPoliciesAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", body=body, headers=headers
         )
         return ClusterPolicyPermissions.from_dict(res)
 
@@ -10049,12 +9921,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.1/clusters/change-owner",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.1/clusters/change-owner", body=body, headers=headers)
 
     def create(
         self,
@@ -10705,9 +10572,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
         return Wait(
-            self.wait_get_cluster_running,
-            response=EditClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
+            self.wait_get_cluster_running, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def edit_and_wait(
@@ -10882,11 +10747,7 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels", headers=headers)
         return GetClusterPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, cluster_id: str) -> ClusterPermissions:
@@ -10904,11 +10765,7 @@ class ClustersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/clusters/{cluster_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}", headers=headers)
         return ClusterPermissions.from_dict(res)
 
     def list(
@@ -11013,12 +10870,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.1/clusters/permanent-delete",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.1/clusters/permanent-delete", body=body, headers=headers)
 
     def pin(self, cluster_id: str):
         """Pin cluster.
@@ -11042,11 +10894,7 @@ class ClustersAPI:
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
 
     def resize(
-        self,
-        cluster_id: str,
-        *,
-        autoscale: Optional[AutoScale] = None,
-        num_workers: Optional[int] = None,
+        self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None
     ) -> Wait[ClusterDetails]:
         """Resize cluster.
 
@@ -11086,9 +10934,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
         return Wait(
-            self.wait_get_cluster_running,
-            response=ResizeClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
+            self.wait_get_cluster_running, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def resize_and_wait(
@@ -11128,25 +10974,16 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
         return Wait(
-            self.wait_get_cluster_running,
-            response=RestartClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
+            self.wait_get_cluster_running, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def restart_and_wait(
-        self,
-        cluster_id: str,
-        *,
-        restart_user: Optional[str] = None,
-        timeout=timedelta(minutes=20),
+        self, cluster_id: str, *, restart_user: Optional[str] = None, timeout=timedelta(minutes=20)
     ) -> ClusterDetails:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
     def set_permissions(
-        self,
-        cluster_id: str,
-        *,
-        access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
+        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
     ) -> ClusterPermissions:
         """Set cluster permissions.
 
@@ -11167,12 +11004,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/clusters/{cluster_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
@@ -11217,9 +11049,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
         return Wait(
-            self.wait_get_cluster_running,
-            response=StartClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
+            self.wait_get_cluster_running, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
@@ -11248,11 +11078,7 @@ class ClustersAPI:
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
 
     def update(
-        self,
-        cluster_id: str,
-        update_mask: str,
-        *,
-        cluster: Optional[UpdateClusterResource] = None,
+        self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None
     ) -> Wait[ClusterDetails]:
         """Update cluster configuration (partial).
 
@@ -11293,9 +11119,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
         return Wait(
-            self.wait_get_cluster_running,
-            response=UpdateClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
+            self.wait_get_cluster_running, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def update_and_wait(
@@ -11309,10 +11133,7 @@ class ClustersAPI:
         return self.update(cluster=cluster, cluster_id=cluster_id, update_mask=update_mask).result(timeout=timeout)
 
     def update_permissions(
-        self,
-        cluster_id: str,
-        *,
-        access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
+        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
     ) -> ClusterPermissions:
         """Update cluster permissions.
 
@@ -11332,19 +11153,13 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/clusters/{cluster_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
         return ClusterPermissions.from_dict(res)
 
 
 class CommandExecutionAPI:
     """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
-    only supports (classic) all-purpose clusters. Serverless compute is not supported.
-    """
+    only supports (classic) all-purpose clusters. Serverless compute is not supported."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -11363,11 +11178,7 @@ class CommandExecutionAPI:
         status_message = "polling..."
         attempt = 1
         while time.time() < deadline:
-            poll = self.command_status(
-                cluster_id=cluster_id,
-                command_id=command_id,
-                context_id=context_id,
-            )
+            poll = self.command_status(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
             status = poll.status
             status_message = f"current status: {status}"
             if poll.results:
@@ -11442,11 +11253,7 @@ class CommandExecutionAPI:
         status_message = "polling..."
         attempt = 1
         while time.time() < deadline:
-            poll = self.command_status(
-                cluster_id=cluster_id,
-                command_id=command_id,
-                context_id=context_id,
-            )
+            poll = self.command_status(cluster_id=cluster_id, command_id=command_id, context_id=context_id)
             status = poll.status
             status_message = f"current status: {status}"
             if status in target_states:
@@ -11467,11 +11274,7 @@ class CommandExecutionAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def cancel(
-        self,
-        *,
-        cluster_id: Optional[str] = None,
-        command_id: Optional[str] = None,
-        context_id: Optional[str] = None,
+        self, *, cluster_id: Optional[str] = None, command_id: Optional[str] = None, context_id: Optional[str] = None
     ) -> Wait[CommandStatusResponse]:
         """Cancel a command.
 
@@ -11570,10 +11373,7 @@ class CommandExecutionAPI:
         return ContextStatusResponse.from_dict(res)
 
     def create(
-        self,
-        *,
-        cluster_id: Optional[str] = None,
-        language: Optional[Language] = None,
+        self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None
     ) -> Wait[ContextStatusResponse]:
         """Create an execution context.
 
@@ -11608,11 +11408,7 @@ class CommandExecutionAPI:
         )
 
     def create_and_wait(
-        self,
-        *,
-        cluster_id: Optional[str] = None,
-        language: Optional[Language] = None,
-        timeout=timedelta(minutes=20),
+        self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None, timeout=timedelta(minutes=20)
     ) -> ContextStatusResponse:
         return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
 
@@ -11696,12 +11492,9 @@ class CommandExecutionAPI:
         language: Optional[Language] = None,
         timeout=timedelta(minutes=20),
     ) -> CommandStatusResponse:
-        return self.execute(
-            cluster_id=cluster_id,
-            command=command,
-            context_id=context_id,
-            language=language,
-        ).result(timeout=timeout)
+        return self.execute(cluster_id=cluster_id, command=command, context_id=context_id, language=language).result(
+            timeout=timeout
+        )
 
 
 class GlobalInitScriptsAPI:
@@ -11717,12 +11510,7 @@ class GlobalInitScriptsAPI:
         self._api = api_client
 
     def create(
-        self,
-        name: str,
-        script: str,
-        *,
-        enabled: Optional[bool] = None,
-        position: Optional[int] = None,
+        self, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
     ) -> CreateResponse:
         """Create init script.
 
@@ -11777,11 +11565,7 @@ class GlobalInitScriptsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/global-init-scripts/{script_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
     def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
         """Get an init script.
@@ -11820,13 +11604,7 @@ class GlobalInitScriptsAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self,
-        script_id: str,
-        name: str,
-        script: str,
-        *,
-        enabled: Optional[bool] = None,
-        position: Optional[int] = None,
+        self, script_id: str, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
     ):
         """Update init script.
 
@@ -11867,12 +11645,7 @@ class GlobalInitScriptsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/global-init-scripts/{script_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/global-init-scripts/{script_id}", body=body, headers=headers)
 
 
 class InstancePoolsAPI:
@@ -11996,12 +11769,7 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/instance-pools/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/instance-pools/create", body=body, headers=headers)
         return CreateInstancePoolResponse.from_dict(res)
 
     def delete(self, instance_pool_id: str):
@@ -12022,12 +11790,7 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/instance-pools/delete",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/instance-pools/delete", body=body, headers=headers)
 
     def edit(
         self,
@@ -12133,9 +11896,7 @@ class InstancePoolsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels", headers=headers
         )
         return GetInstancePoolPermissionLevelsResponse.from_dict(res)
 
@@ -12155,11 +11916,7 @@ class InstancePoolsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/instance-pools/{instance_pool_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
     def list(self) -> Iterator[InstancePoolAndStats]:
@@ -12179,10 +11936,7 @@ class InstancePoolsAPI:
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self,
-        instance_pool_id: str,
-        *,
-        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None,
+        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
     ) -> InstancePoolPermissions:
         """Set instance pool permissions.
 
@@ -12203,19 +11957,11 @@ class InstancePoolsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/instance-pools/{instance_pool_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers)
         return InstancePoolPermissions.from_dict(res)
 
     def update_permissions(
-        self,
-        instance_pool_id: str,
-        *,
-        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None,
+        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
     ) -> InstancePoolPermissions:
         """Update instance pool permissions.
 
@@ -12237,10 +11983,7 @@ class InstancePoolsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/instance-pools/{instance_pool_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers
         )
         return InstancePoolPermissions.from_dict(res)
 
@@ -12307,12 +12050,7 @@ class InstanceProfilesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/instance-profiles/add",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/instance-profiles/add", body=body, headers=headers)
 
     def edit(
         self,
@@ -12366,12 +12104,7 @@ class InstanceProfilesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/instance-profiles/edit",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body, headers=headers)
 
     def list(self) -> Iterator[InstanceProfile]:
         """List available instance profiles.
@@ -12412,12 +12145,7 @@ class InstanceProfilesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/instance-profiles/remove",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/instance-profiles/remove", body=body, headers=headers)
 
 
 class LibrariesAPI:
@@ -12433,8 +12161,7 @@ class LibrariesAPI:
     or using an init script.
 
     When you uninstall a library from a cluster, the library is removed only when you restart the cluster.
-    Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart.
-    """
+    Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -12478,12 +12205,7 @@ class LibrariesAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            "/api/2.0/libraries/cluster-status",
-            query=query,
-            headers=headers,
-        )
+        json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query, headers=headers)
         parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
         return parsed if parsed is not None else []
 
@@ -12546,8 +12268,7 @@ class PolicyComplianceForClustersAPI:
     be out of compliance if their policy was updated after the cluster was last edited.
 
     The get and list compliance APIs allow you to view the policy compliance status of a cluster. The enforce
-    compliance API allows you to update a cluster to be compliant with the current version of its policy.
-    """
+    compliance API allows you to update a cluster to be compliant with the current version of its policy."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -12587,12 +12308,7 @@ class PolicyComplianceForClustersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/policies/clusters/enforce-compliance",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/policies/clusters/enforce-compliance", body=body, headers=headers)
         return EnforceClusterComplianceResponse.from_dict(res)
 
     def get_compliance(self, cluster_id: str) -> GetClusterComplianceResponse:
@@ -12614,20 +12330,11 @@ class PolicyComplianceForClustersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/policies/clusters/get-compliance",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/policies/clusters/get-compliance", query=query, headers=headers)
         return GetClusterComplianceResponse.from_dict(res)
 
     def list_compliance(
-        self,
-        policy_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, policy_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ClusterCompliance]:
         """List cluster policy compliance.
 
@@ -12658,12 +12365,7 @@ class PolicyComplianceForClustersAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/policies/clusters/list-compliance",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/policies/clusters/list-compliance", query=query, headers=headers)
             if "clusters" in json:
                 for v in json["clusters"]:
                     yield ClusterCompliance.from_dict(v)
@@ -12706,20 +12408,10 @@ class PolicyFamiliesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/policy-families/{policy_family_id}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/policy-families/{policy_family_id}", query=query, headers=headers)
         return PolicyFamily.from_dict(res)
 
-    def list(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[PolicyFamily]:
+    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
         """List policy families.
 
         Returns the list of policy definition types available to use at their latest version. This API is

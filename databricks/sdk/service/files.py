@@ -10,6 +10,7 @@ from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -47,7 +48,6 @@ class AddBlock:
 
 @dataclass
 class AddBlockResponse:
-
     def as_dict(self) -> dict:
         """Serializes the AddBlockResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -91,7 +91,6 @@ class Close:
 
 @dataclass
 class CloseResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CloseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -142,7 +141,6 @@ class Create:
 
 @dataclass
 class CreateDirectoryResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CreateDirectoryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -220,7 +218,6 @@ class Delete:
 
 @dataclass
 class DeleteDirectoryResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteDirectoryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -239,7 +236,6 @@ class DeleteDirectoryResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -415,7 +411,6 @@ class FileInfo:
 
 @dataclass
 class GetDirectoryMetadataResponse:
-
     def as_dict(self) -> dict:
         """Serializes the GetDirectoryMetadataResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -502,8 +497,7 @@ class ListDirectoryResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListDirectoryResponse:
         """Deserializes the ListDirectoryResponse from a dictionary."""
         return cls(
-            contents=_repeated_dict(d, "contents", DirectoryEntry),
-            next_page_token=d.get("next_page_token", None),
+            contents=_repeated_dict(d, "contents", DirectoryEntry), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -559,7 +553,6 @@ class MkDirs:
 
 @dataclass
 class MkDirsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the MkDirsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -605,15 +598,11 @@ class Move:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Move:
         """Deserializes the Move from a dictionary."""
-        return cls(
-            destination_path=d.get("destination_path", None),
-            source_path=d.get("source_path", None),
-        )
+        return cls(destination_path=d.get("destination_path", None), source_path=d.get("source_path", None))
 
 
 @dataclass
 class MoveResponse:
-
     def as_dict(self) -> dict:
         """Serializes the MoveResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -666,16 +655,11 @@ class Put:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Put:
         """Deserializes the Put from a dictionary."""
-        return cls(
-            contents=d.get("contents", None),
-            overwrite=d.get("overwrite", None),
-            path=d.get("path", None),
-        )
+        return cls(contents=d.get("contents", None), overwrite=d.get("overwrite", None), path=d.get("path", None))
 
 
 @dataclass
 class PutResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PutResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -727,7 +711,6 @@ class ReadResponse:
 
 @dataclass
 class UploadResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UploadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -971,13 +954,7 @@ class DbfsAPI:
 
         self._api.do("POST", "/api/2.0/dbfs/move", body=body, headers=headers)
 
-    def put(
-        self,
-        path: str,
-        *,
-        contents: Optional[str] = None,
-        overwrite: Optional[bool] = None,
-    ):
+    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
         """Upload a file.
 
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
@@ -1014,13 +991,7 @@ class DbfsAPI:
 
         self._api.do("POST", "/api/2.0/dbfs/put", body=body, headers=headers)
 
-    def read(
-        self,
-        path: str,
-        *,
-        length: Optional[int] = None,
-        offset: Optional[int] = None,
-    ) -> ReadResponse:
+    def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
 
         Returns the contents of a file. If the file does not exist, this call throws an exception with
@@ -1074,8 +1045,7 @@ class FilesAPI:
     `enable_experimental_files_api_client = True` in your configuration profile or use the environment
     variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 
-    [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
-    """
+    [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1096,9 +1066,7 @@ class FilesAPI:
         headers = {}
 
         self._api.do(
-            "PUT",
-            f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}",
-            headers=headers,
+            "PUT", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
         )
 
     def delete(self, file_path: str):
@@ -1114,11 +1082,7 @@ class FilesAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}", headers=headers)
 
     def delete_directory(self, directory_path: str):
         """Delete a directory.
@@ -1137,9 +1101,7 @@ class FilesAPI:
         headers = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}",
-            headers=headers,
+            "DELETE", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
         )
 
     def download(self, file_path: str) -> DownloadResponse:
@@ -1191,9 +1153,7 @@ class FilesAPI:
         headers = {}
 
         self._api.do(
-            "HEAD",
-            f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}",
-            headers=headers,
+            "HEAD", f"/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}", headers=headers
         )
 
     def get_metadata(self, file_path: str) -> GetMetadataResponse:
@@ -1222,11 +1182,7 @@ class FilesAPI:
         return GetMetadataResponse.from_dict(res)
 
     def list_directory_contents(
-        self,
-        directory_path: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, directory_path: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectoryEntry]:
         """List directory contents.
 
@@ -1279,13 +1235,7 @@ class FilesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def upload(
-        self,
-        file_path: str,
-        contents: BinaryIO,
-        *,
-        overwrite: Optional[bool] = None,
-    ):
+    def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
 
         Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an

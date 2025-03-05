@@ -284,7 +284,7 @@ def test_config_parsing_non_string_env_vars(monkeypatch):
 
 def test_access_control_list(config, requests_mock):
     requests_mock.post(
-        "http://localhost/api/2.1/jobs/create",
+        "http://localhost/api/2.2/jobs/create",
         request_headers={"User-Agent": config.user_agent},
     )
 

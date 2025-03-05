@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
@@ -291,10 +292,7 @@ class BudgetConfigurationFilterClause:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterClause:
         """Deserializes the BudgetConfigurationFilterClause from a dictionary."""
-        return cls(
-            operator=_enum(d, "operator", BudgetConfigurationFilterOperator),
-            values=d.get("values", None),
-        )
+        return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
 
 
 class BudgetConfigurationFilterOperator(Enum):
@@ -329,10 +327,7 @@ class BudgetConfigurationFilterTagClause:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterTagClause:
         """Deserializes the BudgetConfigurationFilterTagClause from a dictionary."""
-        return cls(
-            key=d.get("key", None),
-            value=_from_dict(d, "value", BudgetConfigurationFilterClause),
-        )
+        return cls(key=d.get("key", None), value=_from_dict(d, "value", BudgetConfigurationFilterClause))
 
 
 @dataclass
@@ -362,10 +357,7 @@ class BudgetConfigurationFilterWorkspaceIdClause:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
-        return cls(
-            operator=_enum(d, "operator", BudgetConfigurationFilterOperator),
-            values=d.get("values", None),
-        )
+        return cls(operator=_enum(d, "operator", BudgetConfigurationFilterOperator), values=d.get("values", None))
 
 
 @dataclass
@@ -445,8 +437,7 @@ class CreateBillingUsageDashboardRequest:
     def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
         """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
         return cls(
-            dashboard_type=_enum(d, "dashboard_type", UsageDashboardType),
-            workspace_id=d.get("workspace_id", None),
+            dashboard_type=_enum(d, "dashboard_type", UsageDashboardType), workspace_id=d.get("workspace_id", None)
         )
 
 
@@ -524,9 +515,7 @@ class CreateBudgetConfigurationBudget:
         return cls(
             account_id=d.get("account_id", None),
             alert_configurations=_repeated_dict(
-                d,
-                "alert_configurations",
-                CreateBudgetConfigurationBudgetAlertConfigurations,
+                d, "alert_configurations", CreateBudgetConfigurationBudgetAlertConfigurations
             ),
             display_name=d.get("display_name", None),
             filter=_from_dict(d, "filter", BudgetConfigurationFilter),
@@ -562,10 +551,7 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetActionConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetActionConfigurations from a dictionary."""
-        return cls(
-            action_type=_enum(d, "action_type", ActionConfigurationType),
-            target=d.get("target", None),
-        )
+        return cls(action_type=_enum(d, "action_type", ActionConfigurationType), target=d.get("target", None))
 
 
 @dataclass
@@ -623,9 +609,7 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetAlertConfigurations from a dictionary."""
         return cls(
             action_configurations=_repeated_dict(
-                d,
-                "action_configurations",
-                CreateBudgetConfigurationBudgetActionConfigurations,
+                d, "action_configurations", CreateBudgetConfigurationBudgetActionConfigurations
             ),
             quantity_threshold=d.get("quantity_threshold", None),
             quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
@@ -866,7 +850,6 @@ class CreateLogDeliveryConfigurationParams:
 
 @dataclass
 class DeleteBudgetConfigurationResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -885,7 +868,6 @@ class DeleteBudgetConfigurationResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -909,8 +891,7 @@ class DeliveryStatus(Enum):
     misconfiguration of customer provided permissions on role or storage. * `SYSTEM_FAILURE`: The
     latest attempt of log delivery failed because of an Databricks internal error. Contact support
     if it doesn't go away soon. * `NOT_FOUND`: The log delivery status as the configuration has been
-    disabled since the release of this feature or there are no workspaces in the account.
-    """
+    disabled since the release of this feature or there are no workspaces in the account."""
 
     CREATED = "CREATED"
     NOT_FOUND = "NOT_FOUND"
@@ -1018,10 +999,7 @@ class GetBillingUsageDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetBillingUsageDashboardResponse:
         """Deserializes the GetBillingUsageDashboardResponse from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            dashboard_url=d.get("dashboard_url", None),
-        )
+        return cls(dashboard_id=d.get("dashboard_id", None), dashboard_url=d.get("dashboard_url", None))
 
 
 @dataclass
@@ -1099,8 +1077,7 @@ class ListBudgetConfigurationsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListBudgetConfigurationsResponse:
         """Deserializes the ListBudgetConfigurationsResponse from a dictionary."""
         return cls(
-            budgets=_repeated_dict(d, "budgets", BudgetConfiguration),
-            next_page_token=d.get("next_page_token", None),
+            budgets=_repeated_dict(d, "budgets", BudgetConfiguration), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -1154,8 +1131,7 @@ class LogDeliveryConfigStatus(Enum):
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
     Defaults to `ENABLED`. You can [enable or disable the
     configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
-    is not supported, so disable a log delivery configuration that is no longer needed.
-    """
+    is not supported, so disable a log delivery configuration that is no longer needed."""
 
     DISABLED = "DISABLED"
     ENABLED = "ENABLED"
@@ -1422,8 +1398,7 @@ class OutputFormat(Enum):
     supported. For the schema, see the [Configuring audit logs].
 
     [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-    """
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
 
     CSV = "CSV"
     JSON = "JSON"
@@ -1431,7 +1406,6 @@ class OutputFormat(Enum):
 
 @dataclass
 class PatchStatusResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PatchStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1477,10 +1451,7 @@ class SortSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SortSpec:
         """Deserializes the SortSpec from a dictionary."""
-        return cls(
-            descending=d.get("descending", None),
-            field=_enum(d, "field", SortSpecField),
-        )
+        return cls(descending=d.get("descending", None), field=_enum(d, "field", SortSpecField))
 
 
 class SortSpecField(Enum):
@@ -1579,10 +1550,7 @@ class UpdateBudgetConfigurationRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationRequest:
         """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
-        return cls(
-            budget=_from_dict(d, "budget", UpdateBudgetConfigurationBudget),
-            budget_id=d.get("budget_id", None),
-        )
+        return cls(budget=_from_dict(d, "budget", UpdateBudgetConfigurationBudget), budget_id=d.get("budget_id", None))
 
 
 @dataclass
@@ -1676,11 +1644,7 @@ class WrappedCreateLogDeliveryConfiguration:
     def from_dict(cls, d: Dict[str, any]) -> WrappedCreateLogDeliveryConfiguration:
         """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
         return cls(
-            log_delivery_configuration=_from_dict(
-                d,
-                "log_delivery_configuration",
-                CreateLogDeliveryConfigurationParams,
-            )
+            log_delivery_configuration=_from_dict(d, "log_delivery_configuration", CreateLogDeliveryConfigurationParams)
         )
 
 
@@ -1741,13 +1705,7 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(
-        self,
-        start_month: str,
-        end_month: str,
-        *,
-        personal_data: Optional[bool] = None,
-    ) -> DownloadResponse:
+    def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None) -> DownloadResponse:
         """Return billable usage logs.
 
         Returns billable usage logs in CSV format for the specified account and date range. For the data
@@ -1783,11 +1741,7 @@ class BillableUsageAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/usage/download",
-            query=query,
-            headers=headers,
-            raw=True,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/usage/download", query=query, headers=headers, raw=True
         )
         return DownloadResponse.from_dict(res)
 
@@ -1833,10 +1787,7 @@ class BudgetPolicyAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.1/accounts/{self._api.account_id}/budget-policies",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.1/accounts/{self._api.account_id}/budget-policies", body=body, headers=headers
         )
         return BudgetPolicy.from_dict(res)
 
@@ -1855,11 +1806,7 @@ class BudgetPolicyAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers)
 
     def get(self, policy_id: str) -> BudgetPolicy:
         """Get a budget policy.
@@ -1877,9 +1824,7 @@ class BudgetPolicyAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}",
-            headers=headers,
+            "GET", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers
         )
         return BudgetPolicy.from_dict(res)
 
@@ -1927,10 +1872,7 @@ class BudgetPolicyAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/accounts/{self._api.account_id}/budget-policies",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/accounts/{self._api.account_id}/budget-policies", query=query, headers=headers
             )
             if "policies" in json:
                 for v in json["policies"]:
@@ -1940,11 +1882,7 @@ class BudgetPolicyAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        policy_id: str,
-        *,
-        limit_config: Optional[LimitConfig] = None,
-        policy: Optional[BudgetPolicy] = None,
+        self, policy_id: str, *, limit_config: Optional[LimitConfig] = None, policy: Optional[BudgetPolicy] = None
     ) -> BudgetPolicy:
         """Update a budget policy.
 
@@ -2005,12 +1943,7 @@ class BudgetsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.1/accounts/{self._api.account_id}/budgets",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.1/accounts/{self._api.account_id}/budgets", body=body, headers=headers)
         return CreateBudgetConfigurationResponse.from_dict(res)
 
     def delete(self, budget_id: str):
@@ -2029,11 +1962,7 @@ class BudgetsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
 
     def get(self, budget_id: str) -> GetBudgetConfigurationResponse:
         """Get budget.
@@ -2050,11 +1979,7 @@ class BudgetsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
         return GetBudgetConfigurationResponse.from_dict(res)
 
     def list(self, *, page_token: Optional[str] = None) -> Iterator[BudgetConfiguration]:
@@ -2078,10 +2003,7 @@ class BudgetsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/accounts/{self._api.account_id}/budgets",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/accounts/{self._api.account_id}/budgets", query=query, headers=headers
             )
             if "budgets" in json:
                 for v in json["budgets"]:
@@ -2112,10 +2034,7 @@ class BudgetsAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", body=body, headers=headers
         )
         return UpdateBudgetConfigurationResponse.from_dict(res)
 
@@ -2166,16 +2085,13 @@ class LogDeliveryAPI:
     [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-    [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
-    """
+    [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        *,
-        log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None,
+        self, *, log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None
     ) -> WrappedLogDeliveryConfiguration:
         """Create a new log delivery configuration.
 
@@ -2212,12 +2128,7 @@ class LogDeliveryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/log-delivery",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", body=body, headers=headers)
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def get(self, log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration:
@@ -2275,19 +2186,12 @@ class LogDeliveryAPI:
         }
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/log-delivery",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", query=query, headers=headers
         )
         parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
         return parsed if parsed is not None else []
 
-    def patch_status(
-        self,
-        log_delivery_configuration_id: str,
-        status: LogDeliveryConfigStatus,
-    ):
+    def patch_status(self, log_delivery_configuration_id: str, status: LogDeliveryConfigStatus):
         """Enable or disable log delivery configuration.
 
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
@@ -2330,10 +2234,7 @@ class UsageDashboardsAPI:
         self._api = api_client
 
     def create(
-        self,
-        *,
-        dashboard_type: Optional[UsageDashboardType] = None,
-        workspace_id: Optional[int] = None,
+        self, *, dashboard_type: Optional[UsageDashboardType] = None, workspace_id: Optional[int] = None
     ) -> CreateBillingUsageDashboardResponse:
         """Create new usage dashboard.
 
@@ -2357,19 +2258,11 @@ class UsageDashboardsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/dashboard",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/dashboard", body=body, headers=headers)
         return CreateBillingUsageDashboardResponse.from_dict(res)
 
     def get(
-        self,
-        *,
-        dashboard_type: Optional[UsageDashboardType] = None,
-        workspace_id: Optional[int] = None,
+        self, *, dashboard_type: Optional[UsageDashboardType] = None, workspace_id: Optional[int] = None
     ) -> GetBillingUsageDashboardResponse:
         """Get usage dashboard.
 
@@ -2393,10 +2286,5 @@ class UsageDashboardsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/dashboard",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/dashboard", query=query, headers=headers)
         return GetBillingUsageDashboardResponse.from_dict(res)

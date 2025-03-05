@@ -324,9 +324,7 @@ class WorkspaceClient:
         return self._access_control
 
     @property
-    def account_access_control_proxy(
-        self,
-    ) -> service.iam.AccountAccessControlProxyAPI:
+    def account_access_control_proxy(self) -> service.iam.AccountAccessControlProxyAPI:
         """These APIs manage access rules on resources in an account."""
         return self._account_access_control_proxy
 
@@ -391,16 +389,12 @@ class WorkspaceClient:
         return self._connections
 
     @property
-    def consumer_fulfillments(
-        self,
-    ) -> service.marketplace.ConsumerFulfillmentsAPI:
+    def consumer_fulfillments(self) -> service.marketplace.ConsumerFulfillmentsAPI:
         """Fulfillments are entities that allow consumers to preview installations."""
         return self._consumer_fulfillments
 
     @property
-    def consumer_installations(
-        self,
-    ) -> service.marketplace.ConsumerInstallationsAPI:
+    def consumer_installations(self) -> service.marketplace.ConsumerInstallationsAPI:
         """Installations are entities that allow consumers to interact with Databricks Marketplace listings."""
         return self._consumer_installations
 
@@ -410,9 +404,7 @@ class WorkspaceClient:
         return self._consumer_listings
 
     @property
-    def consumer_personalization_requests(
-        self,
-    ) -> service.marketplace.ConsumerPersonalizationRequestsAPI:
+    def consumer_personalization_requests(self) -> service.marketplace.ConsumerPersonalizationRequestsAPI:
         """Personalization Requests allow customers to interact with the individualized Marketplace listing flow."""
         return self._consumer_personalization_requests
 
@@ -557,9 +549,7 @@ class WorkspaceClient:
         return self._model_versions
 
     @property
-    def notification_destinations(
-        self,
-    ) -> service.settings.NotificationDestinationsAPI:
+    def notification_destinations(self) -> service.settings.NotificationDestinationsAPI:
         """The notification destinations API lets you programmatically manage a workspace's notification destinations."""
         return self._notification_destinations
 
@@ -584,16 +574,12 @@ class WorkspaceClient:
         return self._pipelines
 
     @property
-    def policy_compliance_for_clusters(
-        self,
-    ) -> service.compute.PolicyComplianceForClustersAPI:
+    def policy_compliance_for_clusters(self) -> service.compute.PolicyComplianceForClustersAPI:
         """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace."""
         return self._policy_compliance_for_clusters
 
     @property
-    def policy_compliance_for_jobs(
-        self,
-    ) -> service.jobs.PolicyComplianceForJobsAPI:
+    def policy_compliance_for_jobs(self) -> service.jobs.PolicyComplianceForJobsAPI:
         """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace."""
         return self._policy_compliance_for_jobs
 
@@ -603,9 +589,7 @@ class WorkspaceClient:
         return self._policy_families
 
     @property
-    def provider_exchange_filters(
-        self,
-    ) -> service.marketplace.ProviderExchangeFiltersAPI:
+    def provider_exchange_filters(self) -> service.marketplace.ProviderExchangeFiltersAPI:
         """Marketplace exchanges filters curate which groups can access an exchange."""
         return self._provider_exchange_filters
 
@@ -625,16 +609,12 @@ class WorkspaceClient:
         return self._provider_listings
 
     @property
-    def provider_personalization_requests(
-        self,
-    ) -> service.marketplace.ProviderPersonalizationRequestsAPI:
+    def provider_personalization_requests(self) -> service.marketplace.ProviderPersonalizationRequestsAPI:
         """Personalization requests are an alternate to instantly available listings."""
         return self._provider_personalization_requests
 
     @property
-    def provider_provider_analytics_dashboards(
-        self,
-    ) -> service.marketplace.ProviderProviderAnalyticsDashboardsAPI:
+    def provider_provider_analytics_dashboards(self) -> service.marketplace.ProviderProviderAnalyticsDashboardsAPI:
         """Manage templated analytics solution for providers."""
         return self._provider_provider_analytics_dashboards
 
@@ -679,9 +659,7 @@ class WorkspaceClient:
         return self._query_visualizations
 
     @property
-    def query_visualizations_legacy(
-        self,
-    ) -> service.sql.QueryVisualizationsLegacyAPI:
+    def query_visualizations_legacy(self) -> service.sql.QueryVisualizationsLegacyAPI:
         """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
         return self._query_visualizations_legacy
 
@@ -736,9 +714,7 @@ class WorkspaceClient:
         return self._serving_endpoints
 
     @property
-    def serving_endpoints_data_plane(
-        self,
-    ) -> service.serving.ServingEndpointsDataPlaneAPI:
+    def serving_endpoints_data_plane(self) -> service.serving.ServingEndpointsDataPlaneAPI:
         """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service."""
         return self._serving_endpoints_data_plane
 
@@ -778,9 +754,7 @@ class WorkspaceClient:
         return self._tables
 
     @property
-    def temporary_table_credentials(
-        self,
-    ) -> service.catalog.TemporaryTableCredentialsAPI:
+    def temporary_table_credentials(self) -> service.catalog.TemporaryTableCredentialsAPI:
         """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
         return self._temporary_table_credentials
 
@@ -800,16 +774,12 @@ class WorkspaceClient:
         return self._users
 
     @property
-    def vector_search_endpoints(
-        self,
-    ) -> service.vectorsearch.VectorSearchEndpointsAPI:
+    def vector_search_endpoints(self) -> service.vectorsearch.VectorSearchEndpointsAPI:
         """**Endpoint**: Represents the compute resources to host vector search indexes."""
         return self._vector_search_endpoints
 
     @property
-    def vector_search_indexes(
-        self,
-    ) -> service.vectorsearch.VectorSearchIndexesAPI:
+    def vector_search_indexes(self) -> service.vectorsearch.VectorSearchIndexesAPI:
         """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries."""
         return self._vector_search_indexes
 
@@ -840,11 +810,7 @@ class WorkspaceClient:
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""
-        response = self._api_client.do(
-            "GET",
-            "/api/2.0/preview/scim/v2/Me",
-            response_headers=["X-Databricks-Org-Id"],
-        )
+        response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=["X-Databricks-Org-Id"])
         return int(response["X-Databricks-Org-Id"])
 
     def __repr__(self):
@@ -1003,9 +969,7 @@ class AccountClient:
         return self._log_delivery
 
     @property
-    def metastore_assignments(
-        self,
-    ) -> service.catalog.AccountMetastoreAssignmentsAPI:
+    def metastore_assignments(self) -> service.catalog.AccountMetastoreAssignmentsAPI:
         """These APIs manage metastore assignments to a workspace."""
         return self._metastore_assignments
 
@@ -1035,23 +999,17 @@ class AccountClient:
         return self._private_access
 
     @property
-    def published_app_integration(
-        self,
-    ) -> service.oauth2.PublishedAppIntegrationAPI:
+    def published_app_integration(self) -> service.oauth2.PublishedAppIntegrationAPI:
         """These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
         return self._published_app_integration
 
     @property
-    def service_principal_federation_policy(
-        self,
-    ) -> service.oauth2.ServicePrincipalFederationPolicyAPI:
+    def service_principal_federation_policy(self) -> service.oauth2.ServicePrincipalFederationPolicyAPI:
         """These APIs manage service principal federation policies."""
         return self._service_principal_federation_policy
 
     @property
-    def service_principal_secrets(
-        self,
-    ) -> service.oauth2.ServicePrincipalSecretsAPI:
+    def service_principal_secrets(self) -> service.oauth2.ServicePrincipalSecretsAPI:
         """These APIs enable administrators to manage service principal secrets."""
         return self._service_principal_secrets
 
@@ -1071,9 +1029,7 @@ class AccountClient:
         return self._storage
 
     @property
-    def storage_credentials(
-        self,
-    ) -> service.catalog.AccountStorageCredentialsAPI:
+    def storage_credentials(self) -> service.catalog.AccountStorageCredentialsAPI:
         """These APIs manage storage credentials for a particular metastore."""
         return self._storage_credentials
 

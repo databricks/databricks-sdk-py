@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -219,8 +220,7 @@ class AccountsUpdateMetastore:
     def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateMetastore:
         """Deserializes the AccountsUpdateMetastore from a dictionary."""
         return cls(
-            metastore_id=d.get("metastore_id", None),
-            metastore_info=_from_dict(d, "metastore_info", UpdateMetastore),
+            metastore_id=d.get("metastore_id", None), metastore_info=_from_dict(d, "metastore_info", UpdateMetastore)
         )
 
 
@@ -388,10 +388,7 @@ class ArtifactMatcher:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ArtifactMatcher:
         """Deserializes the ArtifactMatcher from a dictionary."""
-        return cls(
-            artifact=d.get("artifact", None),
-            match_type=_enum(d, "match_type", MatchType),
-        )
+        return cls(artifact=d.get("artifact", None), match_type=_enum(d, "match_type", MatchType))
 
 
 class ArtifactType(Enum):
@@ -404,7 +401,6 @@ class ArtifactType(Enum):
 
 @dataclass
 class AssignResponse:
-
     def as_dict(self) -> dict:
         """Serializes the AssignResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -424,8 +420,7 @@ class AssignResponse:
 @dataclass
 class AwsCredentials:
     """AWS temporary credentials for API authentication. Read more at
-    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
-    """
+    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
 
     access_key_id: Optional[str] = None
     """The access key ID that identifies the temporary credentials."""
@@ -596,8 +591,7 @@ class AwsIamRoleResponse:
 class AzureActiveDirectoryToken:
     """Azure Active Directory token, essentially the Oauth token for Azure Service Principal or Managed
     Identity. Read more at
-    https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
-    """
+    https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token"""
 
     aad_token: Optional[str] = None
     """Opaque token that contains claims that you can use in Azure Active Directory to access cloud
@@ -811,8 +805,7 @@ class AzureServicePrincipal:
 @dataclass
 class AzureUserDelegationSas:
     """Azure temporary credentials for API authentication. Read more at
-    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
-    """
+    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
 
     sas_token: Optional[str] = None
     """The signed URI (SAS Token) used to access blob services for a given path"""
@@ -839,7 +832,6 @@ class AzureUserDelegationSas:
 
 @dataclass
 class CancelRefreshResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CancelRefreshResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1041,15 +1033,9 @@ class CatalogInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             effective_predictive_optimization_flag=_from_dict(
-                d,
-                "effective_predictive_optimization_flag",
-                EffectivePredictiveOptimizationFlag,
+                d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
-            enable_predictive_optimization=_enum(
-                d,
-                "enable_predictive_optimization",
-                EnablePredictiveOptimization,
-            ),
+            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             full_name=d.get("full_name", None),
             isolation_mode=_enum(d, "isolation_mode", CatalogIsolationMode),
             metastore_id=d.get("metastore_id", None),
@@ -1270,10 +1256,7 @@ class ColumnMask:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
-        return cls(
-            function_name=d.get("function_name", None),
-            using_column_names=d.get("using_column_names", None),
-        )
+        return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
 
 
 class ColumnTypeName(Enum):
@@ -1765,11 +1748,7 @@ class CreateCredentialRequest:
             azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
             azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
             comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccount,
-            ),
+            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
             name=d.get("name", None),
             purpose=_enum(d, "purpose", CredentialPurpose),
             read_only=d.get("read_only", None),
@@ -2152,11 +2131,7 @@ class CreateMetastore:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateMetastore:
         """Deserializes the CreateMetastore from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            region=d.get("region", None),
-            storage_root=d.get("storage_root", None),
-        )
+        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
 
 
 @dataclass
@@ -2326,11 +2301,7 @@ class CreateMonitor:
             assets_dir=d.get("assets_dir", None),
             baseline_table_name=d.get("baseline_table_name", None),
             custom_metrics=_repeated_dict(d, "custom_metrics", MonitorMetric),
-            data_classification_config=_from_dict(
-                d,
-                "data_classification_config",
-                MonitorDataClassificationConfig,
-            ),
+            data_classification_config=_from_dict(d, "data_classification_config", MonitorDataClassificationConfig),
             inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
             notifications=_from_dict(d, "notifications", MonitorNotifications),
             output_schema_name=d.get("output_schema_name", None),
@@ -2405,7 +2376,6 @@ class CreateRegisteredModelRequest:
 
 @dataclass
 class CreateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2566,9 +2536,7 @@ class CreateStorageCredential:
             cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
             comment=d.get("comment", None),
             databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccountRequest,
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
             ),
             name=d.get("name", None),
             read_only=d.get("read_only", None),
@@ -2606,10 +2574,7 @@ class CreateTableConstraint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTableConstraint:
         """Deserializes the CreateTableConstraint from a dictionary."""
-        return cls(
-            constraint=_from_dict(d, "constraint", TableConstraint),
-            full_name_arg=d.get("full_name_arg", None),
-        )
+        return cls(constraint=_from_dict(d, "constraint", TableConstraint), full_name_arg=d.get("full_name_arg", None))
 
 
 @dataclass
@@ -2829,11 +2794,7 @@ class CredentialInfo:
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
-            databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccount,
-            ),
+            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
             full_name=d.get("full_name", None),
             id=d.get("id", None),
             isolation_mode=_enum(d, "isolation_mode", IsolationMode),
@@ -2890,10 +2851,7 @@ class CredentialValidationResult:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CredentialValidationResult:
         """Deserializes the CredentialValidationResult from a dictionary."""
-        return cls(
-            message=d.get("message", None),
-            result=_enum(d, "result", ValidateCredentialResult),
-        )
+        return cls(message=d.get("message", None), result=_enum(d, "result", ValidateCredentialResult))
 
 
 @dataclass
@@ -3000,7 +2958,6 @@ class DatabricksGcpServiceAccount:
 
 @dataclass
 class DatabricksGcpServiceAccountRequest:
-
     def as_dict(self) -> dict:
         """Serializes the DatabricksGcpServiceAccountRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3046,15 +3003,11 @@ class DatabricksGcpServiceAccountResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
-        return cls(
-            credential_id=d.get("credential_id", None),
-            email=d.get("email", None),
-        )
+        return cls(credential_id=d.get("credential_id", None), email=d.get("email", None))
 
 
 @dataclass
 class DeleteAliasResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteAliasResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3073,7 +3026,6 @@ class DeleteAliasResponse:
 
 @dataclass
 class DeleteCredentialResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteCredentialResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3092,7 +3044,6 @@ class DeleteCredentialResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3112,8 +3063,7 @@ class DeleteResponse:
 @dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
-    This does not contain **delta.*** (input) properties in __TableInfo.properties__.
-    """
+    This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
 
     delta_runtime_properties: Dict[str, str]
     """A map of key-value properties attached to the securable."""
@@ -3171,8 +3121,7 @@ class Dependency:
     def from_dict(cls, d: Dict[str, any]) -> Dependency:
         """Deserializes the Dependency from a dictionary."""
         return cls(
-            function=_from_dict(d, "function", FunctionDependency),
-            table=_from_dict(d, "table", TableDependency),
+            function=_from_dict(d, "function", FunctionDependency), table=_from_dict(d, "table", TableDependency)
         )
 
 
@@ -3205,7 +3154,6 @@ class DependencyList:
 
 @dataclass
 class DisableResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DisableResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3287,11 +3235,7 @@ class EffectivePredictiveOptimizationFlag:
         """Deserializes the EffectivePredictiveOptimizationFlag from a dictionary."""
         return cls(
             inherited_from_name=d.get("inherited_from_name", None),
-            inherited_from_type=_enum(
-                d,
-                "inherited_from_type",
-                EffectivePredictiveOptimizationFlagInheritedFromType,
-            ),
+            inherited_from_type=_enum(d, "inherited_from_type", EffectivePredictiveOptimizationFlagInheritedFromType),
             value=_enum(d, "value", EnablePredictiveOptimization),
         )
 
@@ -3378,10 +3322,7 @@ class EffectivePrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EffectivePrivilegeAssignment:
         """Deserializes the EffectivePrivilegeAssignment from a dictionary."""
-        return cls(
-            principal=d.get("principal", None),
-            privileges=_repeated_dict(d, "privileges", EffectivePrivilege),
-        )
+        return cls(principal=d.get("principal", None), privileges=_repeated_dict(d, "privileges", EffectivePrivilege))
 
 
 class EnablePredictiveOptimization(Enum):
@@ -3394,7 +3335,6 @@ class EnablePredictiveOptimization(Enum):
 
 @dataclass
 class EnableResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EnableResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4281,11 +4221,7 @@ class GenerateTemporaryServiceCredentialRequest:
     def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryServiceCredentialRequest:
         """Deserializes the GenerateTemporaryServiceCredentialRequest from a dictionary."""
         return cls(
-            azure_options=_from_dict(
-                d,
-                "azure_options",
-                GenerateTemporaryServiceCredentialAzureOptions,
-            ),
+            azure_options=_from_dict(d, "azure_options", GenerateTemporaryServiceCredentialAzureOptions),
             credential_name=d.get("credential_name", None),
             gcp_options=_from_dict(d, "gcp_options", GenerateTemporaryServiceCredentialGcpOptions),
         )
@@ -4322,10 +4258,7 @@ class GenerateTemporaryTableCredentialRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialRequest:
         """Deserializes the GenerateTemporaryTableCredentialRequest from a dictionary."""
-        return cls(
-            operation=_enum(d, "operation", TableOperation),
-            table_id=d.get("table_id", None),
-        )
+        return cls(operation=_enum(d, "operation", TableOperation), table_id=d.get("table_id", None))
 
 
 @dataclass
@@ -4580,11 +4513,7 @@ class GetMetastoreSummaryResponse:
             delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
-            delta_sharing_scope=_enum(
-                d,
-                "delta_sharing_scope",
-                GetMetastoreSummaryResponseDeltaSharingScope,
-            ),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", GetMetastoreSummaryResponseDeltaSharingScope),
             external_access_enabled=d.get("external_access_enabled", None),
             global_metastore_id=d.get("global_metastore_id", None),
             metastore_id=d.get("metastore_id", None),
@@ -4719,10 +4648,7 @@ class ListCatalogsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListCatalogsResponse:
         """Deserializes the ListCatalogsResponse from a dictionary."""
-        return cls(
-            catalogs=_repeated_dict(d, "catalogs", CatalogInfo),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(catalogs=_repeated_dict(d, "catalogs", CatalogInfo), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -4756,8 +4682,7 @@ class ListConnectionsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListConnectionsResponse:
         """Deserializes the ListConnectionsResponse from a dictionary."""
         return cls(
-            connections=_repeated_dict(d, "connections", ConnectionInfo),
-            next_page_token=d.get("next_page_token", None),
+            connections=_repeated_dict(d, "connections", ConnectionInfo), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -4791,8 +4716,7 @@ class ListCredentialsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(
-            credentials=_repeated_dict(d, "credentials", CredentialInfo),
-            next_page_token=d.get("next_page_token", None),
+            credentials=_repeated_dict(d, "credentials", CredentialInfo), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -4863,8 +4787,7 @@ class ListFunctionsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListFunctionsResponse:
         """Deserializes the ListFunctionsResponse from a dictionary."""
         return cls(
-            functions=_repeated_dict(d, "functions", FunctionInfo),
-            next_page_token=d.get("next_page_token", None),
+            functions=_repeated_dict(d, "functions", FunctionInfo), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -4958,10 +4881,7 @@ class ListQuotasResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListQuotasResponse:
         """Deserializes the ListQuotasResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            quotas=_repeated_dict(d, "quotas", QuotaInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), quotas=_repeated_dict(d, "quotas", QuotaInfo))
 
 
 @dataclass
@@ -5029,10 +4949,7 @@ class ListSchemasResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSchemasResponse:
         """Deserializes the ListSchemasResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            schemas=_repeated_dict(d, "schemas", SchemaInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), schemas=_repeated_dict(d, "schemas", SchemaInfo))
 
 
 @dataclass
@@ -5101,8 +5018,7 @@ class ListSystemSchemasResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListSystemSchemasResponse:
         """Deserializes the ListSystemSchemasResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            schemas=_repeated_dict(d, "schemas", SystemSchemaInfo),
+            next_page_token=d.get("next_page_token", None), schemas=_repeated_dict(d, "schemas", SystemSchemaInfo)
         )
 
 
@@ -5136,10 +5052,7 @@ class ListTableSummariesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListTableSummariesResponse:
         """Deserializes the ListTableSummariesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            tables=_repeated_dict(d, "tables", TableSummary),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), tables=_repeated_dict(d, "tables", TableSummary))
 
 
 @dataclass
@@ -5172,10 +5085,7 @@ class ListTablesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListTablesResponse:
         """Deserializes the ListTablesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            tables=_repeated_dict(d, "tables", TableInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), tables=_repeated_dict(d, "tables", TableInfo))
 
 
 @dataclass
@@ -5208,10 +5118,7 @@ class ListVolumesResponseContent:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListVolumesResponseContent:
         """Deserializes the ListVolumesResponseContent from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            volumes=_repeated_dict(d, "volumes", VolumeInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), volumes=_repeated_dict(d, "volumes", VolumeInfo))
 
 
 class MatchType(Enum):
@@ -5625,8 +5532,7 @@ class ModelVersionInfo:
 class ModelVersionInfoStatus(Enum):
     """Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
     status, then move to READY status once the model version files are uploaded and the model
-    version is finalized. Only model versions in READY status can be loaded for inference or served.
-    """
+    version is finalized. Only model versions in READY status can be loaded for inference or served."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -5983,11 +5889,7 @@ class MonitorInfo:
             baseline_table_name=d.get("baseline_table_name", None),
             custom_metrics=_repeated_dict(d, "custom_metrics", MonitorMetric),
             dashboard_id=d.get("dashboard_id", None),
-            data_classification_config=_from_dict(
-                d,
-                "data_classification_config",
-                MonitorDataClassificationConfig,
-            ),
+            data_classification_config=_from_dict(d, "data_classification_config", MonitorDataClassificationConfig),
             drift_metrics_table_name=d.get("drift_metrics_table_name", None),
             inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
             latest_monitor_failure_msg=d.get("latest_monitor_failure_msg", None),
@@ -6090,8 +5992,7 @@ class MonitorMetricType(Enum):
     ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
     two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
     columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
-    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
-    """
+    metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
 
     CUSTOM_METRIC_TYPE_AGGREGATE = "CUSTOM_METRIC_TYPE_AGGREGATE"
     CUSTOM_METRIC_TYPE_DERIVED = "CUSTOM_METRIC_TYPE_DERIVED"
@@ -6244,7 +6145,6 @@ class MonitorRefreshListResponse:
 
 @dataclass
 class MonitorSnapshot:
-
     def as_dict(self) -> dict:
         """Serializes the MonitorSnapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6296,10 +6196,7 @@ class MonitorTimeSeries:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> MonitorTimeSeries:
         """Deserializes the MonitorTimeSeries from a dictionary."""
-        return cls(
-            granularities=d.get("granularities", None),
-            timestamp_col=d.get("timestamp_col", None),
-        )
+        return cls(granularities=d.get("granularities", None), timestamp_col=d.get("timestamp_col", None))
 
 
 @dataclass
@@ -6466,11 +6363,7 @@ class OnlineTableSpec:
             perform_full_copy=d.get("perform_full_copy", None),
             pipeline_id=d.get("pipeline_id", None),
             primary_key_columns=d.get("primary_key_columns", None),
-            run_continuously=_from_dict(
-                d,
-                "run_continuously",
-                OnlineTableSpecContinuousSchedulingPolicy,
-            ),
+            run_continuously=_from_dict(d, "run_continuously", OnlineTableSpecContinuousSchedulingPolicy),
             run_triggered=_from_dict(d, "run_triggered", OnlineTableSpecTriggeredSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
             timeseries_key=d.get("timeseries_key", None),
@@ -6479,7 +6372,6 @@ class OnlineTableSpec:
 
 @dataclass
 class OnlineTableSpecContinuousSchedulingPolicy:
-
     def as_dict(self) -> dict:
         """Serializes the OnlineTableSpecContinuousSchedulingPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6498,7 +6390,6 @@ class OnlineTableSpecContinuousSchedulingPolicy:
 
 @dataclass
 class OnlineTableSpecTriggeredSchedulingPolicy:
-
     def as_dict(self) -> dict:
         """Serializes the OnlineTableSpecTriggeredSchedulingPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6763,10 +6654,7 @@ class PrimaryKeyConstraint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PrimaryKeyConstraint:
         """Deserializes the PrimaryKeyConstraint from a dictionary."""
-        return cls(
-            child_columns=d.get("child_columns", None),
-            name=d.get("name", None),
-        )
+        return cls(child_columns=d.get("child_columns", None), name=d.get("name", None))
 
 
 class Privilege(Enum):
@@ -6847,10 +6735,7 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(
-            principal=d.get("principal", None),
-            privileges=_repeated_enum(d, "privileges", Privilege),
-        )
+        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
 
 PropertiesKvPairs = Dict[str, str]
@@ -6895,8 +6780,7 @@ class ProvisioningInfoState(Enum):
 @dataclass
 class ProvisioningStatus:
     """Detailed status of an online table. Shown if the online table is in the
-    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.
-    """
+    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
 
     initial_pipeline_sync_progress: Optional[PipelineProgress] = None
     """Details about initial data synchronization. Only populated when in the
@@ -7065,10 +6949,7 @@ class RegenerateDashboardRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardRequest:
         """Deserializes the RegenerateDashboardRequest from a dictionary."""
-        return cls(
-            table_name=d.get("table_name", None),
-            warehouse_id=d.get("warehouse_id", None),
-        )
+        return cls(table_name=d.get("table_name", None), warehouse_id=d.get("warehouse_id", None))
 
 
 @dataclass
@@ -7100,10 +6981,7 @@ class RegenerateDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardResponse:
         """Deserializes the RegenerateDashboardResponse from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            parent_folder=d.get("parent_folder", None),
-        )
+        return cls(dashboard_id=d.get("dashboard_id", None), parent_folder=d.get("parent_folder", None))
 
 
 @dataclass
@@ -7137,10 +7015,7 @@ class RegisteredModelAlias:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAlias:
         """Deserializes the RegisteredModelAlias from a dictionary."""
-        return cls(
-            alias_name=d.get("alias_name", None),
-            version_num=d.get("version_num", None),
-        )
+        return cls(alias_name=d.get("alias_name", None), version_num=d.get("version_num", None))
 
 
 @dataclass
@@ -7424,15 +7299,9 @@ class SchemaInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             effective_predictive_optimization_flag=_from_dict(
-                d,
-                "effective_predictive_optimization_flag",
-                EffectivePredictiveOptimizationFlag,
+                d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
-            enable_predictive_optimization=_enum(
-                d,
-                "enable_predictive_optimization",
-                EnablePredictiveOptimization,
-            ),
+            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -7447,6 +7316,7 @@ class SchemaInfo:
 
 
 SecurableOptionsMap = Dict[str, str]
+
 
 SecurablePropertiesMap = Dict[str, str]
 
@@ -7543,9 +7413,7 @@ class SetRegisteredModelAliasRequest:
     def from_dict(cls, d: Dict[str, any]) -> SetRegisteredModelAliasRequest:
         """Deserializes the SetRegisteredModelAliasRequest from a dictionary."""
         return cls(
-            alias=d.get("alias", None),
-            full_name=d.get("full_name", None),
-            version_num=d.get("version_num", None),
+            alias=d.get("alias", None), full_name=d.get("full_name", None), version_num=d.get("version_num", None)
         )
 
 
@@ -7742,9 +7610,7 @@ class StorageCredentialInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccountResponse,
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountResponse
             ),
             full_name=d.get("full_name", None),
             id=d.get("id", None),
@@ -7789,10 +7655,7 @@ class SystemSchemaInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SystemSchemaInfo:
         """Deserializes the SystemSchemaInfo from a dictionary."""
-        return cls(
-            schema=d.get("schema", None),
-            state=_enum(d, "state", SystemSchemaInfoState),
-        )
+        return cls(schema=d.get("schema", None), state=_enum(d, "state", SystemSchemaInfoState))
 
 
 class SystemSchemaInfoState(Enum):
@@ -7809,8 +7672,7 @@ class SystemSchemaInfoState(Enum):
 @dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
-    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
-    """
+    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
 
     foreign_key_constraint: Optional[ForeignKeyConstraint] = None
 
@@ -8158,20 +8020,12 @@ class TableInfo:
             data_source_format=_enum(d, "data_source_format", DataSourceFormat),
             deleted_at=d.get("deleted_at", None),
             delta_runtime_properties_kvpairs=_from_dict(
-                d,
-                "delta_runtime_properties_kvpairs",
-                DeltaRuntimePropertiesKvPairs,
+                d, "delta_runtime_properties_kvpairs", DeltaRuntimePropertiesKvPairs
             ),
             effective_predictive_optimization_flag=_from_dict(
-                d,
-                "effective_predictive_optimization_flag",
-                EffectivePredictiveOptimizationFlag,
+                d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
-            enable_predictive_optimization=_enum(
-                d,
-                "enable_predictive_optimization",
-                EnablePredictiveOptimization,
-            ),
+            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
@@ -8230,10 +8084,7 @@ class TableRowFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
-        return cls(
-            function_name=d.get("function_name", None),
-            input_column_names=d.get("input_column_names", None),
-        )
+        return cls(function_name=d.get("function_name", None), input_column_names=d.get("input_column_names", None))
 
 
 @dataclass
@@ -8264,10 +8115,7 @@ class TableSummary:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TableSummary:
         """Deserializes the TableSummary from a dictionary."""
-        return cls(
-            full_name=d.get("full_name", None),
-            table_type=_enum(d, "table_type", TableType),
-        )
+        return cls(full_name=d.get("full_name", None), table_type=_enum(d, "table_type", TableType))
 
 
 class TableType(Enum):
@@ -8388,7 +8236,6 @@ class TriggeredUpdateStatus:
 
 @dataclass
 class UnassignResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UnassignResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8407,7 +8254,6 @@ class UnassignResponse:
 
 @dataclass
 class UpdateAssignmentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateAssignmentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -8505,11 +8351,7 @@ class UpdateCatalog:
         """Deserializes the UpdateCatalog from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            enable_predictive_optimization=_enum(
-                d,
-                "enable_predictive_optimization",
-                EnablePredictiveOptimization,
-            ),
+            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             isolation_mode=_enum(d, "isolation_mode", CatalogIsolationMode),
             name=d.get("name", None),
             new_name=d.get("new_name", None),
@@ -8676,11 +8518,7 @@ class UpdateCredentialRequest:
             azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
             azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
             comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccount,
-            ),
+            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
             force=d.get("force", None),
             isolation_mode=_enum(d, "isolation_mode", IsolationMode),
             name_arg=d.get("name_arg", None),
@@ -9025,11 +8863,7 @@ class UpdateModelVersionRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            full_name=d.get("full_name", None),
-            version=d.get("version", None),
-        )
+        return cls(comment=d.get("comment", None), full_name=d.get("full_name", None), version=d.get("version", None))
 
 
 @dataclass
@@ -9141,11 +8975,7 @@ class UpdateMonitor:
             baseline_table_name=d.get("baseline_table_name", None),
             custom_metrics=_repeated_dict(d, "custom_metrics", MonitorMetric),
             dashboard_id=d.get("dashboard_id", None),
-            data_classification_config=_from_dict(
-                d,
-                "data_classification_config",
-                MonitorDataClassificationConfig,
-            ),
+            data_classification_config=_from_dict(d, "data_classification_config", MonitorDataClassificationConfig),
             inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
             notifications=_from_dict(d, "notifications", MonitorNotifications),
             output_schema_name=d.get("output_schema_name", None),
@@ -9253,7 +9083,6 @@ class UpdateRegisteredModelRequest:
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -9329,11 +9158,7 @@ class UpdateSchema:
         """Deserializes the UpdateSchema from a dictionary."""
         return cls(
             comment=d.get("comment", None),
-            enable_predictive_optimization=_enum(
-                d,
-                "enable_predictive_optimization",
-                EnablePredictiveOptimization,
-            ),
+            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
             full_name=d.get("full_name", None),
             new_name=d.get("new_name", None),
             owner=d.get("owner", None),
@@ -9453,9 +9278,7 @@ class UpdateStorageCredential:
             cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
             comment=d.get("comment", None),
             databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccountRequest,
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
             ),
             force=d.get("force", None),
             isolation_mode=_enum(d, "isolation_mode", IsolationMode),
@@ -9719,10 +9542,7 @@ class ValidateCredentialResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ValidateCredentialResponse:
         """Deserializes the ValidateCredentialResponse from a dictionary."""
-        return cls(
-            is_dir=d.get("isDir", None),
-            results=_repeated_dict(d, "results", CredentialValidationResult),
-        )
+        return cls(is_dir=d.get("isDir", None), results=_repeated_dict(d, "results", CredentialValidationResult))
 
 
 class ValidateCredentialResult(Enum):
@@ -9817,9 +9637,7 @@ class ValidateStorageCredential:
             azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
             cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
             databricks_gcp_service_account=_from_dict(
-                d,
-                "databricks_gcp_service_account",
-                DatabricksGcpServiceAccountRequest,
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
             ),
             external_location_name=d.get("external_location_name", None),
             read_only=d.get("read_only", None),
@@ -9857,10 +9675,7 @@ class ValidateStorageCredentialResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredentialResponse:
         """Deserializes the ValidateStorageCredentialResponse from a dictionary."""
-        return cls(
-            is_dir=d.get("isDir", None),
-            results=_repeated_dict(d, "results", ValidationResult),
-        )
+        return cls(is_dir=d.get("isDir", None), results=_repeated_dict(d, "results", ValidationResult))
 
 
 @dataclass
@@ -10111,8 +9926,7 @@ class WorkspaceBinding:
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceBinding:
         """Deserializes the WorkspaceBinding from a dictionary."""
         return cls(
-            binding_type=_enum(d, "binding_type", WorkspaceBindingBindingType),
-            workspace_id=d.get("workspace_id", None),
+            binding_type=_enum(d, "binding_type", WorkspaceBindingBindingType), workspace_id=d.get("workspace_id", None)
         )
 
 
@@ -10155,8 +9969,7 @@ class WorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
         return cls(
-            bindings=_repeated_dict(d, "bindings", WorkspaceBinding),
-            next_page_token=d.get("next_page_token", None),
+            bindings=_repeated_dict(d, "bindings", WorkspaceBinding), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -10167,11 +9980,7 @@ class AccountMetastoreAssignmentsAPI:
         self._api = api_client
 
     def create(
-        self,
-        workspace_id: int,
-        metastore_id: str,
-        *,
-        metastore_assignment: Optional[CreateMetastoreAssignment] = None,
+        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
     ):
         """Assigns a workspace to a metastore.
 
@@ -10241,9 +10050,7 @@ class AccountMetastoreAssignmentsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore", headers=headers
         )
         return AccountsMetastoreAssignment.from_dict(res)
 
@@ -10263,19 +10070,13 @@ class AccountMetastoreAssignmentsAPI:
         }
 
         json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces", headers=headers
         )
         parsed = ListAccountMetastoreAssignmentsResponse.from_dict(json).workspace_ids
         return parsed if parsed is not None else []
 
     def update(
-        self,
-        workspace_id: int,
-        metastore_id: str,
-        *,
-        metastore_assignment: Optional[UpdateMetastoreAssignment] = None,
+        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
     ):
         """Updates a metastore assignment to a workspaces.
 
@@ -10330,12 +10131,7 @@ class AccountMetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/metastores",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
         return AccountsMetastoreInfo.from_dict(res)
 
     def delete(self, metastore_id: str, *, force: Optional[bool] = None):
@@ -10381,9 +10177,7 @@ class AccountMetastoresAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
         )
         return AccountsMetastoreInfo.from_dict(res)
 
@@ -10399,20 +10193,11 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/metastores",
-            headers=headers,
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
         parsed = ListMetastoresResponse.from_dict(json).metastores
         return parsed if parsed is not None else []
 
-    def update(
-        self,
-        metastore_id: str,
-        *,
-        metastore_info: Optional[UpdateMetastore] = None,
-    ) -> AccountsMetastoreInfo:
+    def update(self, metastore_id: str, *, metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
         """Update a metastore.
 
         Updates an existing Unity Catalog metastore.
@@ -10432,10 +10217,7 @@ class AccountMetastoresAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
         )
         return AccountsMetastoreInfo.from_dict(res)
 
@@ -10447,10 +10229,7 @@ class AccountStorageCredentialsAPI:
         self._api = api_client
 
     def create(
-        self,
-        metastore_id: str,
-        *,
-        credential_info: Optional[CreateStorageCredential] = None,
+        self, metastore_id: str, *, credential_info: Optional[CreateStorageCredential] = None
     ) -> AccountsStorageCredentialInfo:
         """Create a storage credential.
 
@@ -10484,13 +10263,7 @@ class AccountStorageCredentialsAPI:
         )
         return AccountsStorageCredentialInfo.from_dict(res)
 
-    def delete(
-        self,
-        metastore_id: str,
-        storage_credential_name: str,
-        *,
-        force: Optional[bool] = None,
-    ):
+    def delete(self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
 
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
@@ -10607,8 +10380,7 @@ class AccountStorageCredentialsAPI:
 
 class ArtifactAllowlistsAPI:
     """In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so
-    that users can leverage these artifacts on compute configured with shared access mode.
-    """
+    that users can leverage these artifacts on compute configured with shared access mode."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -10629,18 +10401,10 @@ class ArtifactAllowlistsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
-    def update(
-        self,
-        artifact_type: ArtifactType,
-        artifact_matchers: List[ArtifactMatcher],
-    ) -> ArtifactAllowlistInfo:
+    def update(self, artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
 
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
@@ -10663,10 +10427,7 @@ class ArtifactAllowlistsAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", body=body, headers=headers
         )
         return ArtifactAllowlistInfo.from_dict(res)
 
@@ -10742,12 +10503,7 @@ class CatalogsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/catalogs",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/catalogs", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
@@ -10771,12 +10527,7 @@ class CatalogsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/catalogs/{name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> CatalogInfo:
         """Get a catalog.
@@ -10800,12 +10551,7 @@ class CatalogsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/catalogs/{name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
         return CatalogInfo.from_dict(res)
 
     def list(
@@ -10853,12 +10599,7 @@ class CatalogsAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/catalogs",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/catalogs", query=query, headers=headers)
             if "catalogs" in json:
                 for v in json["catalogs"]:
                     yield CatalogInfo.from_dict(v)
@@ -10922,12 +10663,7 @@ class CatalogsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/catalogs/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
 
@@ -10939,8 +10675,7 @@ class ConnectionsAPI:
     with the second step being creating a data object (catalog, schema, or table) using the connection. Data
     objects derived from a connection can be written to or read from similar to other Unity Catalog data
     objects based on cloud storage. Users may create different types of connections with each connection
-    having a unique set of configuration options to support credential management and other settings.
-    """
+    having a unique set of configuration options to support credential management and other settings."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -10995,12 +10730,7 @@ class ConnectionsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/connections",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/connections", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
     def delete(self, name: str):
@@ -11018,11 +10748,7 @@ class ConnectionsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/connections/{name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
 
     def get(self, name: str) -> ConnectionInfo:
         """Get a connection.
@@ -11039,19 +10765,10 @@ class ConnectionsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/connections/{name}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[ConnectionInfo]:
+    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
         """List connections.
 
         List all connections.
@@ -11079,12 +10796,7 @@ class ConnectionsAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/connections",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/connections", query=query, headers=headers)
             if "connections" in json:
                 for v in json["connections"]:
                     yield ConnectionInfo.from_dict(v)
@@ -11093,12 +10805,7 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        name: str,
-        options: Dict[str, str],
-        *,
-        new_name: Optional[str] = None,
-        owner: Optional[str] = None,
+        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
     ) -> ConnectionInfo:
         """Update a connection.
 
@@ -11127,12 +10834,7 @@ class ConnectionsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/connections/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/connections/{name}", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
 
@@ -11216,12 +10918,7 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/credentials", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
 
     def delete_credential(self, name_arg: str, *, force: Optional[bool] = None):
@@ -11246,12 +10943,7 @@ class CredentialsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/credentials/{name_arg}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/credentials/{name_arg}", query=query, headers=headers)
 
     def generate_temporary_service_credential(
         self,
@@ -11286,12 +10978,7 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/temporary-service-credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/temporary-service-credentials", body=body, headers=headers)
         return TemporaryCredentials.from_dict(res)
 
     def get_credential(self, name_arg: str) -> CredentialInfo:
@@ -11310,11 +10997,7 @@ class CredentialsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/credentials/{name_arg}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/credentials/{name_arg}", headers=headers)
         return CredentialInfo.from_dict(res)
 
     def list_credentials(
@@ -11357,12 +11040,7 @@ class CredentialsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/credentials",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/credentials", query=query, headers=headers)
             if "credentials" in json:
                 for v in json["credentials"]:
                     yield CredentialInfo.from_dict(v)
@@ -11450,12 +11128,7 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/credentials/{name_arg}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/credentials/{name_arg}", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
 
     def validate_credential(
@@ -11524,12 +11197,7 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/validate-credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
         return ValidateCredentialResponse.from_dict(res)
 
 
@@ -11614,12 +11282,7 @@ class ExternalLocationsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/external-locations",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/external-locations", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
@@ -11643,12 +11306,7 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> ExternalLocationInfo:
         """Get an external location.
@@ -11672,12 +11330,7 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
     def list(
@@ -11721,12 +11374,7 @@ class ExternalLocationsAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/external-locations",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/external-locations", query=query, headers=headers)
             if "external_locations" in json:
                 for v in json["external_locations"]:
                     yield ExternalLocationInfo.from_dict(v)
@@ -11817,12 +11465,7 @@ class ExternalLocationsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/external-locations/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
 
@@ -11831,8 +11474,7 @@ class FunctionsAPI:
 
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
-    can be referenced with the form __catalog_name__.__schema_name__.__function_name__.
-    """
+    can be referenced with the form __catalog_name__.__schema_name__.__function_name__."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -11861,12 +11503,7 @@ class FunctionsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/functions",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/functions", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
@@ -11894,12 +11531,7 @@ class FunctionsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/functions/{name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> FunctionInfo:
         """Get a function.
@@ -11928,12 +11560,7 @@ class FunctionsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/functions/{name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
         return FunctionInfo.from_dict(res)
 
     def list(
@@ -11987,12 +11614,7 @@ class FunctionsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/functions",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/functions", query=query, headers=headers)
             if "functions" in json:
                 for v in json["functions"]:
                     yield FunctionInfo.from_dict(v)
@@ -12026,12 +11648,7 @@ class FunctionsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/functions/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/functions/{name}", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
 
@@ -12049,13 +11666,7 @@ class GrantsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(
-        self,
-        securable_type: SecurableType,
-        full_name: str,
-        *,
-        principal: Optional[str] = None,
-    ) -> PermissionsList:
+    def get(self, securable_type: SecurableType, full_name: str, *, principal: Optional[str] = None) -> PermissionsList:
         """Get permissions.
 
         Gets the permissions for a securable.
@@ -12086,11 +11697,7 @@ class GrantsAPI:
         return PermissionsList.from_dict(res)
 
     def get_effective(
-        self,
-        securable_type: SecurableType,
-        full_name: str,
-        *,
-        principal: Optional[str] = None,
+        self, securable_type: SecurableType, full_name: str, *, principal: Optional[str] = None
     ) -> EffectivePermissionsList:
         """Get effective permissions.
 
@@ -12123,11 +11730,7 @@ class GrantsAPI:
         return EffectivePermissionsList.from_dict(res)
 
     def update(
-        self,
-        securable_type: SecurableType,
-        full_name: str,
-        *,
-        changes: Optional[List[PermissionsChange]] = None,
+        self, securable_type: SecurableType, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
     ) -> PermissionsList:
         """Update permissions.
 
@@ -12202,20 +11805,9 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
-    def create(
-        self,
-        name: str,
-        *,
-        region: Optional[str] = None,
-        storage_root: Optional[str] = None,
-    ) -> MetastoreInfo:
+    def create(self, name: str, *, region: Optional[str] = None, storage_root: Optional[str] = None) -> MetastoreInfo:
         """Create a metastore.
 
         Creates a new metastore based on a provided name and optional storage root path. By default (if the
@@ -12246,12 +11838,7 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/metastores",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/metastores", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
 
     def current(self) -> MetastoreAssignment:
@@ -12266,11 +11853,7 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.1/unity-catalog/current-metastore-assignment",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.1/unity-catalog/current-metastore-assignment", headers=headers)
         return MetastoreAssignment.from_dict(res)
 
     def delete(self, id: str, *, force: Optional[bool] = None):
@@ -12293,12 +11876,7 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/metastores/{id}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, headers=headers)
 
     def get(self, id: str) -> MetastoreInfo:
         """Get a metastore.
@@ -12373,10 +11951,7 @@ class MetastoresAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
-            query=query,
-            headers=headers,
+            "DELETE", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", query=query, headers=headers
         )
 
     def update(
@@ -12438,20 +12013,11 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/metastores/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
 
     def update_assignment(
-        self,
-        workspace_id: int,
-        *,
-        default_catalog_name: Optional[str] = None,
-        metastore_id: Optional[str] = None,
+        self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
     ):
         """Update an assignment.
 
@@ -12480,12 +12046,7 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
 
 class ModelVersionsAPI:
@@ -12494,8 +12055,7 @@ class ModelVersionsAPI:
     workspaces.
 
     This API reference documents the REST endpoints for managing model versions in Unity Catalog. For more
-    details, see the [registered models API docs](/api/workspace/registeredmodels).
-    """
+    details, see the [registered models API docs](/api/workspace/registeredmodels)."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -12520,11 +12080,7 @@ class ModelVersionsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", headers=headers)
 
     def get(
         self,
@@ -12565,20 +12121,11 @@ class ModelVersionsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", query=query, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
-    def get_by_alias(
-        self,
-        full_name: str,
-        alias: str,
-        *,
-        include_aliases: Optional[bool] = None,
-    ) -> ModelVersionInfo:
+    def get_by_alias(self, full_name: str, alias: str, *, include_aliases: Optional[bool] = None) -> ModelVersionInfo:
         """Get Model Version By Alias.
 
         Get a model version by alias.
@@ -12605,10 +12152,7 @@ class ModelVersionsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", query=query, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
@@ -12664,10 +12208,7 @@ class ModelVersionsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/unity-catalog/models/{full_name}/versions",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions", query=query, headers=headers
             )
             if "model_versions" in json:
                 for v in json["model_versions"]:
@@ -12705,10 +12246,7 @@ class ModelVersionsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", body=body, headers=headers
         )
         return ModelVersionInfo.from_dict(res)
 
@@ -12720,10 +12258,7 @@ class OnlineTablesAPI:
         self._api = api_client
 
     def wait_get_online_table_active(
-        self,
-        name: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[OnlineTable], None]] = None,
+        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[OnlineTable], None]] = None
     ) -> OnlineTable:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ProvisioningInfoState.ACTIVE,)
@@ -12771,17 +12306,10 @@ class OnlineTablesAPI:
 
         op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
         return Wait(
-            self.wait_get_online_table_active,
-            response=OnlineTable.from_dict(op_response),
-            name=op_response["name"],
+            self.wait_get_online_table_active, response=OnlineTable.from_dict(op_response), name=op_response["name"]
         )
 
-    def create_and_wait(
-        self,
-        *,
-        table: Optional[OnlineTable] = None,
-        timeout=timedelta(minutes=20),
-    ) -> OnlineTable:
+    def create_and_wait(self, *, table: Optional[OnlineTable] = None, timeout=timedelta(minutes=20)) -> OnlineTable:
         return self.create(table=table).result(timeout=timeout)
 
     def delete(self, name: str):
@@ -12828,8 +12356,7 @@ class QualityMonitorsAPI:
 
     Most write operations require the user to be the owner of the table (or its parent schema or parent
     catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
-    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**).
-    """
+    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -12857,9 +12384,7 @@ class QualityMonitorsAPI:
         headers = {}
 
         self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel",
-            headers=headers,
+            "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
         )
 
     def create(
@@ -12960,12 +12485,7 @@ class QualityMonitorsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str):
@@ -12991,11 +12511,7 @@ class QualityMonitorsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
 
     def get(self, table_name: str) -> MonitorInfo:
         """Get a table monitor.
@@ -13021,11 +12537,7 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
@@ -13053,9 +12565,7 @@ class QualityMonitorsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}",
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}", headers=headers
         )
         return MonitorRefreshInfo.from_dict(res)
 
@@ -13081,11 +12591,7 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
 
     def regenerate_dashboard(
@@ -13120,10 +12626,7 @@ class QualityMonitorsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard", body=body, headers=headers
         )
         return RegenerateDashboardResponse.from_dict(res)
 
@@ -13150,11 +12653,7 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes",
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshInfo.from_dict(res)
 
     def update(
@@ -13247,12 +12746,7 @@ class QualityMonitorsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.1/unity-catalog/tables/{table_name}/monitor",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
 
@@ -13355,11 +12849,7 @@ class RegisteredModelsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/models/{full_name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}", headers=headers)
 
     def delete_alias(self, full_name: str, alias: str):
         """Delete a Registered Model Alias.
@@ -13380,18 +12870,10 @@ class RegisteredModelsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", headers=headers)
 
     def get(
-        self,
-        full_name: str,
-        *,
-        include_aliases: Optional[bool] = None,
-        include_browse: Optional[bool] = None,
+        self, full_name: str, *, include_aliases: Optional[bool] = None, include_browse: Optional[bool] = None
     ) -> RegisteredModelInfo:
         """Get a Registered Model.
 
@@ -13421,12 +12903,7 @@ class RegisteredModelsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/models/{full_name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{full_name}", query=query, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
     def list(
@@ -13496,12 +12973,7 @@ class RegisteredModelsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/models",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/models", query=query, headers=headers)
             if "registered_models" in json:
                 for v in json["registered_models"]:
                     yield RegisteredModelInfo.from_dict(v)
@@ -13536,10 +13008,7 @@ class RegisteredModelsAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", body=body, headers=headers
         )
         return RegisteredModelAlias.from_dict(res)
 
@@ -13584,12 +13053,7 @@ class RegisteredModelsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/models/{full_name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{full_name}", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
 
@@ -13605,12 +13069,7 @@ class ResourceQuotasAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get_quota(
-        self,
-        parent_securable_type: str,
-        parent_full_name: str,
-        quota_name: str,
-    ) -> GetQuotaResponse:
+    def get_quota(self, parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse:
         """Get information for a single resource quota.
 
         The GetQuota API returns usage information for a single resource quota, defined as a child-parent
@@ -13639,10 +13098,7 @@ class ResourceQuotasAPI:
         return GetQuotaResponse.from_dict(res)
 
     def list_quotas(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[QuotaInfo]:
         """List all resource quotas under a metastore.
 
@@ -13668,10 +13124,7 @@ class ResourceQuotasAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas",
-                query=query,
-                headers=headers,
+                "GET", "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas", query=query, headers=headers
             )
             if "quotas" in json:
                 for v in json["quotas"]:
@@ -13733,12 +13186,7 @@ class SchemasAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/schemas",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/schemas", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
     def delete(self, full_name: str, *, force: Optional[bool] = None):
@@ -13762,12 +13210,7 @@ class SchemasAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/schemas/{full_name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
         """Get a schema.
@@ -13791,12 +13234,7 @@ class SchemasAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/schemas/{full_name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
         return SchemaInfo.from_dict(res)
 
     def list(
@@ -13846,12 +13284,7 @@ class SchemasAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/schemas",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/schemas", query=query, headers=headers)
             if "schemas" in json:
                 for v in json["schemas"]:
                     yield SchemaInfo.from_dict(v)
@@ -13907,12 +13340,7 @@ class SchemasAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/schemas/{full_name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
 
@@ -13926,8 +13354,7 @@ class StorageCredentialsAPI:
     Databricks recommends using external locations rather than using storage credentials directly.
 
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
-    storage credential can delegate ownership to another user or group to manage permissions on it.
-    """
+    storage credential can delegate ownership to another user or group to manage permissions on it."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13994,12 +13421,7 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/storage-credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/storage-credentials", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
@@ -14023,12 +13445,7 @@ class StorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/storage-credentials/{name}", query=query, headers=headers)
 
     def get(self, name: str) -> StorageCredentialInfo:
         """Get a credential.
@@ -14046,18 +13463,11 @@ class StorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
     def list(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[StorageCredentialInfo]:
         """List credentials.
 
@@ -14090,12 +13500,7 @@ class StorageCredentialsAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/storage-credentials",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/storage-credentials", query=query, headers=headers)
             if "storage_credentials" in json:
                 for v in json["storage_credentials"]:
                     yield StorageCredentialInfo.from_dict(v)
@@ -14182,12 +13587,7 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/storage-credentials/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
     def validate(
@@ -14260,19 +13660,13 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/validate-storage-credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/validate-storage-credentials", body=body, headers=headers)
         return ValidateStorageCredentialResponse.from_dict(res)
 
 
 class SystemSchemasAPI:
     """A system schema is a schema that lives within the system catalog. A system schema may contain information
-    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc.
-    """
+    about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14296,9 +13690,7 @@ class SystemSchemasAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}",
-            headers=headers,
+            "DELETE", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
         )
 
     def enable(self, metastore_id: str, schema_name: str):
@@ -14320,17 +13712,11 @@ class SystemSchemasAPI:
         }
 
         self._api.do(
-            "PUT",
-            f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}",
-            headers=headers,
+            "PUT", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
         )
 
     def list(
-        self,
-        metastore_id: str,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, metastore_id: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
 
@@ -14363,10 +13749,7 @@ class SystemSchemasAPI:
             query["max_results"] = 0
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas", query=query, headers=headers
             )
             if "schemas" in json:
                 for v in json["schemas"]:
@@ -14421,12 +13804,7 @@ class TableConstraintsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/constraints",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/constraints", body=body, headers=headers)
         return TableConstraint.from_dict(res)
 
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
@@ -14461,12 +13839,7 @@ class TableConstraintsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/constraints/{full_name}",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{full_name}", query=query, headers=headers)
 
 
 class TablesAPI:
@@ -14500,11 +13873,7 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/tables/{full_name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Get boolean reflecting if table exists.
@@ -14526,11 +13895,7 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/tables/{full_name}/exists",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
 
     def get(
@@ -14573,12 +13938,7 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/tables/{full_name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
         return TableInfo.from_dict(res)
 
     def list(
@@ -14660,12 +14020,7 @@ class TablesAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/tables",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/tables", query=query, headers=headers)
             if "tables" in json:
                 for v in json["tables"]:
                     yield TableInfo.from_dict(v)
@@ -14736,12 +14091,7 @@ class TablesAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/table-summaries",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/table-summaries", query=query, headers=headers)
             if "tables" in json:
                 for v in json["tables"]:
                     yield TableSummary.from_dict(v)
@@ -14771,12 +14121,7 @@ class TablesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/tables/{full_name}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
 
 
 class TemporaryTableCredentialsAPI:
@@ -14797,10 +14142,7 @@ class TemporaryTableCredentialsAPI:
         self._api = api_client
 
     def generate_temporary_table_credentials(
-        self,
-        *,
-        operation: Optional[TableOperation] = None,
-        table_id: Optional[str] = None,
+        self, *, operation: Optional[TableOperation] = None, table_id: Optional[str] = None
     ) -> GenerateTemporaryTableCredentialResponse:
         """Generate a temporary table credential.
 
@@ -14827,12 +14169,7 @@ class TemporaryTableCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/unity-catalog/temporary-table-credentials",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-table-credentials", body=body, headers=headers)
         return GenerateTemporaryTableCredentialResponse.from_dict(res)
 
 
@@ -14907,12 +14244,7 @@ class VolumesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/volumes",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/volumes", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
     def delete(self, name: str):
@@ -14997,12 +14329,7 @@ class VolumesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/volumes",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/volumes", query=query, headers=headers)
             if "volumes" in json:
                 for v in json["volumes"]:
                     yield VolumeInfo.from_dict(v)
@@ -15035,21 +14362,11 @@ class VolumesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/volumes/{name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/volumes/{name}", query=query, headers=headers)
         return VolumeInfo.from_dict(res)
 
     def update(
-        self,
-        name: str,
-        *,
-        comment: Optional[str] = None,
-        new_name: Optional[str] = None,
-        owner: Optional[str] = None,
+        self, name: str, *, comment: Optional[str] = None, new_name: Optional[str] = None, owner: Optional[str] = None
     ) -> VolumeInfo:
         """Update a Volume.
 
@@ -15084,12 +14401,7 @@ class VolumesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/volumes/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/volumes/{name}", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
 
@@ -15107,8 +14419,7 @@ class WorkspaceBindingsAPI:
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - external_location
-    """
+    Securable types that support binding: - catalog - storage_credential - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -15129,11 +14440,7 @@ class WorkspaceBindingsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", headers=headers)
         return CurrentWorkspaceBindings.from_dict(res)
 
     def get_bindings(
@@ -15219,10 +14526,7 @@ class WorkspaceBindingsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", body=body, headers=headers
         )
         return CurrentWorkspaceBindings.from_dict(res)
 

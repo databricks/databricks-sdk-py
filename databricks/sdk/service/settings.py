@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -86,11 +87,7 @@ class AibiDashboardEmbeddingAccessPolicy:
     def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicy:
         """Deserializes the AibiDashboardEmbeddingAccessPolicy from a dictionary."""
         return cls(
-            access_policy_type=_enum(
-                d,
-                "access_policy_type",
-                AibiDashboardEmbeddingAccessPolicyAccessPolicyType,
-            )
+            access_policy_type=_enum(d, "access_policy_type", AibiDashboardEmbeddingAccessPolicyAccessPolicyType)
         )
 
 
@@ -146,9 +143,7 @@ class AibiDashboardEmbeddingAccessPolicySetting:
         """Deserializes the AibiDashboardEmbeddingAccessPolicySetting from a dictionary."""
         return cls(
             aibi_dashboard_embedding_access_policy=_from_dict(
-                d,
-                "aibi_dashboard_embedding_access_policy",
-                AibiDashboardEmbeddingAccessPolicy,
+                d, "aibi_dashboard_embedding_access_policy", AibiDashboardEmbeddingAccessPolicy
             ),
             etag=d.get("etag", None),
             setting_name=d.get("setting_name", None),
@@ -224,9 +219,7 @@ class AibiDashboardEmbeddingApprovedDomainsSetting:
         """Deserializes the AibiDashboardEmbeddingApprovedDomainsSetting from a dictionary."""
         return cls(
             aibi_dashboard_embedding_approved_domains=_from_dict(
-                d,
-                "aibi_dashboard_embedding_approved_domains",
-                AibiDashboardEmbeddingApprovedDomains,
+                d, "aibi_dashboard_embedding_approved_domains", AibiDashboardEmbeddingApprovedDomains
             ),
             etag=d.get("etag", None),
             setting_name=d.get("setting_name", None),
@@ -278,9 +271,7 @@ class AutomaticClusterUpdateSetting:
         """Deserializes the AutomaticClusterUpdateSetting from a dictionary."""
         return cls(
             automatic_cluster_update_workspace=_from_dict(
-                d,
-                "automatic_cluster_update_workspace",
-                ClusterAutoRestartMessage,
+                d, "automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             etag=d.get("etag", None),
             setting_name=d.get("setting_name", None),
@@ -364,16 +355,8 @@ class ClusterAutoRestartMessage:
         return cls(
             can_toggle=d.get("can_toggle", None),
             enabled=d.get("enabled", None),
-            enablement_details=_from_dict(
-                d,
-                "enablement_details",
-                ClusterAutoRestartMessageEnablementDetails,
-            ),
-            maintenance_window=_from_dict(
-                d,
-                "maintenance_window",
-                ClusterAutoRestartMessageMaintenanceWindow,
-            ),
+            enablement_details=_from_dict(d, "enablement_details", ClusterAutoRestartMessageEnablementDetails),
+            maintenance_window=_from_dict(d, "maintenance_window", ClusterAutoRestartMessageMaintenanceWindow),
             restart_even_if_no_updates_available=d.get("restart_even_if_no_updates_available", None),
         )
 
@@ -451,9 +434,7 @@ class ClusterAutoRestartMessageMaintenanceWindow:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindow from a dictionary."""
         return cls(
             week_day_based_schedule=_from_dict(
-                d,
-                "week_day_based_schedule",
-                ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule,
+                d, "week_day_based_schedule", ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule
             )
         )
 
@@ -503,20 +484,10 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
     def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule from a dictionary."""
         return cls(
-            day_of_week=_enum(
-                d,
-                "day_of_week",
-                ClusterAutoRestartMessageMaintenanceWindowDayOfWeek,
-            ),
-            frequency=_enum(
-                d,
-                "frequency",
-                ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency,
-            ),
+            day_of_week=_enum(d, "day_of_week", ClusterAutoRestartMessageMaintenanceWindowDayOfWeek),
+            frequency=_enum(d, "frequency", ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency),
             window_start_time=_from_dict(
-                d,
-                "window_start_time",
-                ClusterAutoRestartMessageMaintenanceWindowWindowStartTime,
+                d, "window_start_time", ClusterAutoRestartMessageMaintenanceWindowWindowStartTime
             ),
         )
 
@@ -644,9 +615,7 @@ class ComplianceSecurityProfileSetting:
         """Deserializes the ComplianceSecurityProfileSetting from a dictionary."""
         return cls(
             compliance_security_profile_workspace=_from_dict(
-                d,
-                "compliance_security_profile_workspace",
-                ComplianceSecurityProfile,
+                d, "compliance_security_profile_workspace", ComplianceSecurityProfile
             ),
             etag=d.get("etag", None),
             setting_name=d.get("setting_name", None),
@@ -862,10 +831,7 @@ class CreateNotificationDestinationRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateNotificationDestinationRequest:
         """Deserializes the CreateNotificationDestinationRequest from a dictionary."""
-        return cls(
-            config=_from_dict(d, "config", Config),
-            display_name=d.get("display_name", None),
-        )
+        return cls(config=_from_dict(d, "config", Config), display_name=d.get("display_name", None))
 
 
 @dataclass
@@ -943,10 +909,7 @@ class CreateOboTokenResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenResponse:
         """Deserializes the CreateOboTokenResponse from a dictionary."""
-        return cls(
-            token_info=_from_dict(d, "token_info", TokenInfo),
-            token_value=d.get("token_value", None),
-        )
+        return cls(token_info=_from_dict(d, "token_info", TokenInfo), token_value=d.get("token_value", None))
 
 
 @dataclass
@@ -995,8 +958,7 @@ class CreatePrivateEndpointRuleRequest:
 
 class CreatePrivateEndpointRuleRequestGroupId(Enum):
     """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-    """
+    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
 
     BLOB = "blob"
     DFS = "dfs"
@@ -1035,10 +997,7 @@ class CreateTokenRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTokenRequest:
         """Deserializes the CreateTokenRequest from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            lifetime_seconds=d.get("lifetime_seconds", None),
-        )
+        return cls(comment=d.get("comment", None), lifetime_seconds=d.get("lifetime_seconds", None))
 
 
 @dataclass
@@ -1070,10 +1029,7 @@ class CreateTokenResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTokenResponse:
         """Deserializes the CreateTokenResponse from a dictionary."""
-        return cls(
-            token_info=_from_dict(d, "token_info", PublicTokenInfo),
-            token_value=d.get("token_value", None),
-        )
+        return cls(token_info=_from_dict(d, "token_info", PublicTokenInfo), token_value=d.get("token_value", None))
 
 
 @dataclass
@@ -1449,7 +1405,6 @@ class DeleteDisableLegacyFeaturesResponse:
 
 @dataclass
 class DeleteNetworkConnectivityConfigurationResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1500,7 +1455,6 @@ class DeletePersonalComputeSettingResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1784,25 +1738,13 @@ class EgressNetworkPolicyInternetAccessPolicy:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicy from a dictionary."""
         return cls(
             allowed_internet_destinations=_repeated_dict(
-                d,
-                "allowed_internet_destinations",
-                EgressNetworkPolicyInternetAccessPolicyInternetDestination,
+                d, "allowed_internet_destinations", EgressNetworkPolicyInternetAccessPolicyInternetDestination
             ),
             allowed_storage_destinations=_repeated_dict(
-                d,
-                "allowed_storage_destinations",
-                EgressNetworkPolicyInternetAccessPolicyStorageDestination,
+                d, "allowed_storage_destinations", EgressNetworkPolicyInternetAccessPolicyStorageDestination
             ),
-            log_only_mode=_from_dict(
-                d,
-                "log_only_mode",
-                EgressNetworkPolicyInternetAccessPolicyLogOnlyMode,
-            ),
-            restriction_mode=_enum(
-                d,
-                "restriction_mode",
-                EgressNetworkPolicyInternetAccessPolicyRestrictionMode,
-            ),
+            log_only_mode=_from_dict(d, "log_only_mode", EgressNetworkPolicyInternetAccessPolicyLogOnlyMode),
+            restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyInternetAccessPolicyRestrictionMode),
         )
 
 
@@ -1856,11 +1798,7 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
                 "protocol",
                 EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol,
             ),
-            type=_enum(
-                d,
-                "type",
-                EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType,
-            ),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType),
         )
 
 
@@ -1907,15 +1845,9 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode from a dictionary."""
         return cls(
             log_only_mode_type=_enum(
-                d,
-                "log_only_mode_type",
-                EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType,
+                d, "log_only_mode_type", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
             ),
-            workloads=_repeated_enum(
-                d,
-                "workloads",
-                EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType,
-            ),
+            workloads=_repeated_enum(d, "workloads", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType),
         )
 
 
@@ -2017,11 +1949,7 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
             azure_storage_service=d.get("azure_storage_service", None),
             bucket_name=d.get("bucket_name", None),
             region=d.get("region", None),
-            type=_enum(
-                d,
-                "type",
-                EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType,
-            ),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType),
         )
 
 
@@ -2060,7 +1988,6 @@ class EmailConfig:
 
 @dataclass
 class Empty:
-
     def as_dict(self) -> dict:
         """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2149,9 +2076,7 @@ class EnhancedSecurityMonitoringSetting:
         """Deserializes the EnhancedSecurityMonitoringSetting from a dictionary."""
         return cls(
             enhanced_security_monitoring_workspace=_from_dict(
-                d,
-                "enhanced_security_monitoring_workspace",
-                EnhancedSecurityMonitoring,
+                d, "enhanced_security_monitoring_workspace", EnhancedSecurityMonitoring
             ),
             etag=d.get("etag", None),
             setting_name=d.get("setting_name", None),
@@ -2895,8 +2820,7 @@ class ListType(Enum):
     """Type of IP access list. Valid values are as follows and are case-sensitive:
 
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list.
-    """
+    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     ALLOW = "ALLOW"
     BLOCK = "BLOCK"
@@ -3060,11 +2984,7 @@ class NccAzurePrivateEndpointRule:
     def from_dict(cls, d: Dict[str, any]) -> NccAzurePrivateEndpointRule:
         """Deserializes the NccAzurePrivateEndpointRule from a dictionary."""
         return cls(
-            connection_state=_enum(
-                d,
-                "connection_state",
-                NccAzurePrivateEndpointRuleConnectionState,
-            ),
+            connection_state=_enum(d, "connection_state", NccAzurePrivateEndpointRuleConnectionState),
             creation_time=d.get("creation_time", None),
             deactivated=d.get("deactivated", None),
             deactivated_at=d.get("deactivated_at", None),
@@ -3098,8 +3018,7 @@ class NccAzurePrivateEndpointRuleConnectionState(Enum):
 
 class NccAzurePrivateEndpointRuleGroupId(Enum):
     """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-    """
+    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
 
     BLOB = "blob"
     DFS = "dfs"
@@ -3426,8 +3345,7 @@ class PagerdutyConfig:
     def from_dict(cls, d: Dict[str, any]) -> PagerdutyConfig:
         """Deserializes the PagerdutyConfig from a dictionary."""
         return cls(
-            integration_key=d.get("integration_key", None),
-            integration_key_set=d.get("integration_key_set", None),
+            integration_key=d.get("integration_key", None), integration_key_set=d.get("integration_key_set", None)
         )
 
 
@@ -3664,7 +3582,6 @@ class ReplaceIpAccessList:
 
 @dataclass
 class ReplaceResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3788,7 +3705,6 @@ class RevokeTokenRequest:
 
 @dataclass
 class RevokeTokenResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RevokeTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3807,7 +3723,6 @@ class RevokeTokenResponse:
 
 @dataclass
 class SetStatusResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4198,8 +4113,7 @@ class TokenPermissionsDescription:
     def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsDescription:
         """Deserializes the TokenPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", TokenPermissionLevel),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", TokenPermissionLevel)
         )
 
 
@@ -4966,9 +4880,7 @@ class UpdateNotificationDestinationRequest:
     def from_dict(cls, d: Dict[str, any]) -> UpdateNotificationDestinationRequest:
         """Deserializes the UpdateNotificationDestinationRequest from a dictionary."""
         return cls(
-            config=_from_dict(d, "config", Config),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
+            config=_from_dict(d, "config", Config), display_name=d.get("display_name", None), id=d.get("id", None)
         )
 
 
@@ -5026,7 +4938,6 @@ class UpdatePersonalComputeSettingRequest:
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5116,18 +5027,13 @@ class AccountIpAccessListsAPI:
     For all allow lists and block lists combined, the account supports a maximum of 1000 IP/CIDR values, where
     one CIDR counts as a single value.
 
-    After changes to the account-level IP access lists, it can take a few minutes for changes to take effect.
-    """
+    After changes to the account-level IP access lists, it can take a few minutes for changes to take effect."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        label: str,
-        list_type: ListType,
-        *,
-        ip_addresses: Optional[List[str]] = None,
+        self, label: str, list_type: ListType, *, ip_addresses: Optional[List[str]] = None
     ) -> CreateIpAccessListResponse:
         """Create access list.
 
@@ -5169,10 +5075,7 @@ class AccountIpAccessListsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists", body=body, headers=headers
         )
         return CreateIpAccessListResponse.from_dict(res)
 
@@ -5192,9 +5095,7 @@ class AccountIpAccessListsAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}",
-            headers=headers,
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}", headers=headers
         )
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
@@ -5213,9 +5114,7 @@ class AccountIpAccessListsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}", headers=headers
         )
         return GetIpAccessListResponse.from_dict(res)
 
@@ -5231,11 +5130,7 @@ class AccountIpAccessListsAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists",
-            headers=headers,
-        )
+        json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists", headers=headers)
         parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
         return parsed if parsed is not None else []
 
@@ -5398,8 +5293,7 @@ class AccountSettingsAPI:
 
 class AibiDashboardEmbeddingAccessPolicyAPI:
     """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the
-    workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
-    """
+    workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS)."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -5458,18 +5352,12 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", query=query, headers=headers
         )
         return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: AibiDashboardEmbeddingAccessPolicySetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: AibiDashboardEmbeddingAccessPolicySetting, field_mask: str
     ) -> AibiDashboardEmbeddingAccessPolicySetting:
         """Update the AI/BI dashboard embedding access policy.
 
@@ -5504,18 +5392,14 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", body=body, headers=headers
         )
         return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
 
 
 class AibiDashboardEmbeddingApprovedDomainsAPI:
     """Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
-    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS.
-    """
+    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -5582,10 +5466,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         return AibiDashboardEmbeddingApprovedDomainsSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: AibiDashboardEmbeddingApprovedDomainsSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: AibiDashboardEmbeddingApprovedDomainsSetting, field_mask: str
     ) -> AibiDashboardEmbeddingApprovedDomainsSetting:
         """Update the list of domains approved to host embedded AI/BI dashboards.
 
@@ -5659,18 +5540,12 @@ class AutomaticClusterUpdateAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/automatic_cluster_update/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/automatic_cluster_update/names/default", query=query, headers=headers
         )
         return AutomaticClusterUpdateSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: AutomaticClusterUpdateSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str
     ) -> AutomaticClusterUpdateSetting:
         """Update the automatic cluster update setting.
 
@@ -5708,10 +5583,7 @@ class AutomaticClusterUpdateAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/automatic_cluster_update/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/automatic_cluster_update/names/default", body=body, headers=headers
         )
         return AutomaticClusterUpdateSetting.from_dict(res)
 
@@ -5748,18 +5620,12 @@ class ComplianceSecurityProfileAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", query=query, headers=headers
         )
         return ComplianceSecurityProfileSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: ComplianceSecurityProfileSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: ComplianceSecurityProfileSetting, field_mask: str
     ) -> ComplianceSecurityProfileSetting:
         """Update the compliance security profile setting.
 
@@ -5797,10 +5663,7 @@ class ComplianceSecurityProfileAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", body=body, headers=headers
         )
         return ComplianceSecurityProfileSetting.from_dict(res)
 
@@ -5813,10 +5676,7 @@ class CredentialsManagerAPI:
         self._api = api_client
 
     def exchange_token(
-        self,
-        partition_id: PartitionId,
-        token_type: List[TokenType],
-        scopes: List[str],
+        self, partition_id: PartitionId, token_type: List[TokenType], scopes: List[str]
     ) -> ExchangeTokenResponse:
         """Exchange token.
 
@@ -5844,12 +5704,7 @@ class CredentialsManagerAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/credentials-manager/exchange-tokens/token",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/credentials-manager/exchange-tokens/token", body=body, headers=headers)
         return ExchangeTokenResponse.from_dict(res)
 
 
@@ -5895,10 +5750,7 @@ class CspEnablementAccountAPI:
         return CspEnablementAccountSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: CspEnablementAccountSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: CspEnablementAccountSetting, field_mask: str
     ) -> CspEnablementAccountSetting:
         """Update the compliance security profile setting for new workspaces.
 
@@ -5982,10 +5834,7 @@ class DefaultNamespaceAPI:
         }
 
         res = self._api.do(
-            "DELETE",
-            "/api/2.0/settings/types/default_namespace_ws/names/default",
-            query=query,
-            headers=headers,
+            "DELETE", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
         )
         return DeleteDefaultNamespaceSettingResponse.from_dict(res)
 
@@ -6012,19 +5861,11 @@ class DefaultNamespaceAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/default_namespace_ws/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
         )
         return DefaultNamespaceSetting.from_dict(res)
 
-    def update(
-        self,
-        allow_missing: bool,
-        setting: DefaultNamespaceSetting,
-        field_mask: str,
-    ) -> DefaultNamespaceSetting:
+    def update(self, allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting:
         """Update the default namespace setting.
 
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
@@ -6070,10 +5911,7 @@ class DefaultNamespaceAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/default_namespace_ws/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/default_namespace_ws/names/default", body=body, headers=headers
         )
         return DefaultNamespaceSetting.from_dict(res)
 
@@ -6112,10 +5950,7 @@ class DisableLegacyAccessAPI:
         }
 
         res = self._api.do(
-            "DELETE",
-            "/api/2.0/settings/types/disable_legacy_access/names/default",
-            query=query,
-            headers=headers,
+            "DELETE", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
         )
         return DeleteDisableLegacyAccessResponse.from_dict(res)
 
@@ -6142,19 +5977,11 @@ class DisableLegacyAccessAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/disable_legacy_access/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
         )
         return DisableLegacyAccess.from_dict(res)
 
-    def update(
-        self,
-        allow_missing: bool,
-        setting: DisableLegacyAccess,
-        field_mask: str,
-    ) -> DisableLegacyAccess:
+    def update(self, allow_missing: bool, setting: DisableLegacyAccess, field_mask: str) -> DisableLegacyAccess:
         """Update Legacy Access Disablement Status.
 
         Updates legacy access disablement status.
@@ -6188,10 +6015,7 @@ class DisableLegacyAccessAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/disable_legacy_access/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/disable_legacy_access/names/default", body=body, headers=headers
         )
         return DisableLegacyAccess.from_dict(res)
 
@@ -6226,10 +6050,7 @@ class DisableLegacyDbfsAPI:
         }
 
         res = self._api.do(
-            "DELETE",
-            "/api/2.0/settings/types/disable_legacy_dbfs/names/default",
-            query=query,
-            headers=headers,
+            "DELETE", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
         )
         return DeleteDisableLegacyDbfsResponse.from_dict(res)
 
@@ -6256,10 +6077,7 @@ class DisableLegacyDbfsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/disable_legacy_dbfs/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
         )
         return DisableLegacyDbfs.from_dict(res)
 
@@ -6297,10 +6115,7 @@ class DisableLegacyDbfsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/disable_legacy_dbfs/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", body=body, headers=headers
         )
         return DisableLegacyDbfs.from_dict(res)
 
@@ -6375,12 +6190,7 @@ class DisableLegacyFeaturesAPI:
         )
         return DisableLegacyFeatures.from_dict(res)
 
-    def update(
-        self,
-        allow_missing: bool,
-        setting: DisableLegacyFeatures,
-        field_mask: str,
-    ) -> DisableLegacyFeatures:
+    def update(self, allow_missing: bool, setting: DisableLegacyFeatures, field_mask: str) -> DisableLegacyFeatures:
         """Update the disable legacy features setting.
 
         Updates the value of the disable legacy features setting.
@@ -6489,12 +6299,7 @@ class EnableIpAccessListsAPI:
         )
         return AccountIpAccessEnable.from_dict(res)
 
-    def update(
-        self,
-        allow_missing: bool,
-        setting: AccountIpAccessEnable,
-        field_mask: str,
-    ) -> AccountIpAccessEnable:
+    def update(self, allow_missing: bool, setting: AccountIpAccessEnable, field_mask: str) -> AccountIpAccessEnable:
         """Update the account IP access toggle setting.
 
         Updates the value of the account IP access toggle setting.
@@ -6570,18 +6375,12 @@ class EnhancedSecurityMonitoringAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", query=query, headers=headers
         )
         return EnhancedSecurityMonitoringSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: EnhancedSecurityMonitoringSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: EnhancedSecurityMonitoringSetting, field_mask: str
     ) -> EnhancedSecurityMonitoringSetting:
         """Update the enhanced security monitoring setting.
 
@@ -6619,10 +6418,7 @@ class EnhancedSecurityMonitoringAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", body=body, headers=headers
         )
         return EnhancedSecurityMonitoringSetting.from_dict(res)
 
@@ -6630,8 +6426,7 @@ class EnhancedSecurityMonitoringAPI:
 class EsmEnablementAccountAPI:
     """The enhanced security monitoring setting at the account level controls whether to enable the feature on
     new workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
-    creation, account admins can enable enhanced security monitoring individually for each workspace.
-    """
+    creation, account admins can enable enhanced security monitoring individually for each workspace."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6667,10 +6462,7 @@ class EsmEnablementAccountAPI:
         return EsmEnablementAccountSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: EsmEnablementAccountSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: EsmEnablementAccountSetting, field_mask: str
     ) -> EsmEnablementAccountSetting:
         """Update the enhanced security monitoring setting for new workspaces.
 
@@ -6730,18 +6522,13 @@ class IpAccessListsAPI:
     For all allow lists and block lists combined, the workspace supports a maximum of 1000 IP/CIDR values,
     where one CIDR counts as a single value.
 
-    After changes to the IP access list feature, it can take a few minutes for changes to take effect.
-    """
+    After changes to the IP access list feature, it can take a few minutes for changes to take effect."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        label: str,
-        list_type: ListType,
-        *,
-        ip_addresses: Optional[List[str]] = None,
+        self, label: str, list_type: ListType, *, ip_addresses: Optional[List[str]] = None
     ) -> CreateIpAccessListResponse:
         """Create access list.
 
@@ -6801,11 +6588,7 @@ class IpAccessListsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
@@ -6822,11 +6605,7 @@ class IpAccessListsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
         return FetchIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator[IpAccessListInfo]:
@@ -6896,12 +6675,7 @@ class IpAccessListsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
     def update(
         self,
@@ -6958,12 +6732,7 @@ class IpAccessListsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/ip-access-lists/{ip_access_list_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
 
 class NetworkConnectivityAPI:
@@ -6997,18 +6766,12 @@ class NetworkConnectivityAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs", body=body, headers=headers
         )
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def create_private_endpoint_rule(
-        self,
-        network_connectivity_config_id: str,
-        resource_id: str,
-        group_id: CreatePrivateEndpointRuleRequestGroupId,
+        self, network_connectivity_config_id: str, resource_id: str, group_id: CreatePrivateEndpointRuleRequestGroupId
     ) -> NccAzurePrivateEndpointRule:
         """Create a private endpoint rule.
 
@@ -7072,9 +6835,7 @@ class NetworkConnectivityAPI:
         )
 
     def delete_private_endpoint_rule(
-        self,
-        network_connectivity_config_id: str,
-        private_endpoint_rule_id: str,
+        self, network_connectivity_config_id: str, private_endpoint_rule_id: str
     ) -> NccAzurePrivateEndpointRule:
         """Delete a private endpoint rule.
 
@@ -7127,9 +6888,7 @@ class NetworkConnectivityAPI:
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def get_private_endpoint_rule(
-        self,
-        network_connectivity_config_id: str,
-        private_endpoint_rule_id: str,
+        self, network_connectivity_config_id: str, private_endpoint_rule_id: str
     ) -> NccAzurePrivateEndpointRule:
         """Get a private endpoint rule.
 
@@ -7189,10 +6948,7 @@ class NetworkConnectivityAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_private_endpoint_rules(
-        self,
-        network_connectivity_config_id: str,
-        *,
-        page_token: Optional[str] = None,
+        self, network_connectivity_config_id: str, *, page_token: Optional[str] = None
     ) -> Iterator[NccAzurePrivateEndpointRule]:
         """List private endpoint rules.
 
@@ -7237,12 +6993,7 @@ class NotificationDestinationsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        *,
-        config: Optional[Config] = None,
-        display_name: Optional[str] = None,
-    ) -> NotificationDestination:
+    def create(self, *, config: Optional[Config] = None, display_name: Optional[str] = None) -> NotificationDestination:
         """Create a notification destination.
 
         Creates a notification destination. Requires workspace admin permissions.
@@ -7264,12 +7015,7 @@ class NotificationDestinationsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/notification-destinations",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/notification-destinations", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
 
     def delete(self, id: str):
@@ -7286,11 +7032,7 @@ class NotificationDestinationsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/notification-destinations/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/notification-destinations/{id}", headers=headers)
 
     def get(self, id: str) -> NotificationDestination:
         """Get a notification destination.
@@ -7310,10 +7052,7 @@ class NotificationDestinationsAPI:
         return NotificationDestination.from_dict(res)
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListNotificationDestinationsResult]:
         """List notification destinations.
 
@@ -7335,12 +7074,7 @@ class NotificationDestinationsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/notification-destinations",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/notification-destinations", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
                     yield ListNotificationDestinationsResult.from_dict(v)
@@ -7349,11 +7083,7 @@ class NotificationDestinationsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        id: str,
-        *,
-        config: Optional[Config] = None,
-        display_name: Optional[str] = None,
+        self, id: str, *, config: Optional[Config] = None, display_name: Optional[str] = None
     ) -> NotificationDestination:
         """Update a notification destination.
 
@@ -7379,12 +7109,7 @@ class NotificationDestinationsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/notification-destinations/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/notification-destinations/{id}", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
 
 
@@ -7460,12 +7185,7 @@ class PersonalComputeAPI:
         )
         return PersonalComputeSetting.from_dict(res)
 
-    def update(
-        self,
-        allow_missing: bool,
-        setting: PersonalComputeSetting,
-        field_mask: str,
-    ) -> PersonalComputeSetting:
+    def update(self, allow_missing: bool, setting: PersonalComputeSetting, field_mask: str) -> PersonalComputeSetting:
         """Update Personal Compute setting.
 
         Updates the value of the Personal Compute setting.
@@ -7547,10 +7267,7 @@ class RestrictWorkspaceAdminsAPI:
         }
 
         res = self._api.do(
-            "DELETE",
-            "/api/2.0/settings/types/restrict_workspace_admins/names/default",
-            query=query,
-            headers=headers,
+            "DELETE", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
         )
         return DeleteRestrictWorkspaceAdminsSettingResponse.from_dict(res)
 
@@ -7577,18 +7294,12 @@ class RestrictWorkspaceAdminsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/settings/types/restrict_workspace_admins/names/default",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
         )
         return RestrictWorkspaceAdminsSetting.from_dict(res)
 
     def update(
-        self,
-        allow_missing: bool,
-        setting: RestrictWorkspaceAdminsSetting,
-        field_mask: str,
+        self, allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str
     ) -> RestrictWorkspaceAdminsSetting:
         """Update the restrict workspace admins setting.
 
@@ -7626,10 +7337,7 @@ class RestrictWorkspaceAdminsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            "/api/2.0/settings/types/restrict_workspace_admins/names/default",
-            body=body,
-            headers=headers,
+            "PATCH", "/api/2.0/settings/types/restrict_workspace_admins/names/default", body=body, headers=headers
         )
         return RestrictWorkspaceAdminsSetting.from_dict(res)
 
@@ -7651,16 +7359,12 @@ class SettingsAPI:
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
     @property
-    def aibi_dashboard_embedding_access_policy(
-        self,
-    ) -> AibiDashboardEmbeddingAccessPolicyAPI:
+    def aibi_dashboard_embedding_access_policy(self) -> AibiDashboardEmbeddingAccessPolicyAPI:
         """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level."""
         return self._aibi_dashboard_embedding_access_policy
 
     @property
-    def aibi_dashboard_embedding_approved_domains(
-        self,
-    ) -> AibiDashboardEmbeddingApprovedDomainsAPI:
+    def aibi_dashboard_embedding_approved_domains(self) -> AibiDashboardEmbeddingApprovedDomainsAPI:
         """Controls the list of domains approved to host the embedded AI/BI dashboards."""
         return self._aibi_dashboard_embedding_approved_domains
 
@@ -7702,18 +7406,13 @@ class SettingsAPI:
 
 class TokenManagementAPI:
     """Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
-    token, get a specific token by ID, or get all tokens for a particular user.
-    """
+    token, get a specific token by ID, or get all tokens for a particular user."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_obo_token(
-        self,
-        application_id: str,
-        *,
-        comment: Optional[str] = None,
-        lifetime_seconds: Optional[int] = None,
+        self, application_id: str, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None
     ) -> CreateOboTokenResponse:
         """Create on-behalf token.
 
@@ -7740,12 +7439,7 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/token-management/on-behalf-of/tokens",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/token-management/on-behalf-of/tokens", body=body, headers=headers)
         return CreateOboTokenResponse.from_dict(res)
 
     def delete(self, token_id: str):
@@ -7763,11 +7457,7 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/token-management/tokens/{token_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
 
     def get(self, token_id: str) -> GetTokenResponse:
         """Get token info.
@@ -7784,11 +7474,7 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/token-management/tokens/{token_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
         return GetTokenResponse.from_dict(res)
 
     def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
@@ -7803,11 +7489,7 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/permissions/authorization/tokens/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens/permissionLevels", headers=headers)
         return GetTokenPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self) -> TokenPermissions:
@@ -7826,10 +7508,7 @@ class TokenManagementAPI:
         return TokenPermissions.from_dict(res)
 
     def list(
-        self,
-        *,
-        created_by_id: Optional[int] = None,
-        created_by_username: Optional[str] = None,
+        self, *, created_by_id: Optional[int] = None, created_by_username: Optional[str] = None
     ) -> Iterator[TokenInfo]:
         """List all tokens.
 
@@ -7852,19 +7531,12 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            "/api/2.0/token-management/tokens",
-            query=query,
-            headers=headers,
-        )
+        json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query, headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self,
-        *,
-        access_control_list: Optional[List[TokenAccessControlRequest]] = None,
+        self, *, access_control_list: Optional[List[TokenAccessControlRequest]] = None
     ) -> TokenPermissions:
         """Set token permissions.
 
@@ -7883,18 +7555,11 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            "/api/2.0/permissions/authorization/tokens",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
     def update_permissions(
-        self,
-        *,
-        access_control_list: Optional[List[TokenAccessControlRequest]] = None,
+        self, *, access_control_list: Optional[List[TokenAccessControlRequest]] = None
     ) -> TokenPermissions:
         """Update token permissions.
 
@@ -7912,12 +7577,7 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            "/api/2.0/permissions/authorization/tokens",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
 
@@ -7928,12 +7588,7 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        *,
-        comment: Optional[str] = None,
-        lifetime_seconds: Optional[int] = None,
-    ) -> CreateTokenResponse:
+    def create(self, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
         """Create a user token.
 
         Creates and returns a token for a user. If this call is made through token authentication, it creates
