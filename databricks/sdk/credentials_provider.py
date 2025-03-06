@@ -191,6 +191,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         token_url=oidc.token_endpoint,
         scopes=["all-apis"],
         use_header=True,
+        disable_async=not cfg.enable_experimental_async_token_refresh,
     )
 
     def inner() -> Dict[str, str]:
@@ -290,6 +291,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
             endpoint_params={"resource": resource},
             use_params=True,
+            disable_async=not cfg.enable_experimental_async_token_refresh,
         )
 
     _ensure_host_present(cfg, token_source_for)
@@ -355,6 +357,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
         endpoint_params=params,
         use_params=True,
+        disable_async=not cfg.enable_experimental_async_token_refresh,
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -458,8 +461,9 @@ class CliTokenSource(Refreshable):
         token_type_field: str,
         access_token_field: str,
         expiry_field: str,
+        disable_async: bool = True,
     ):
-        super().__init__()
+        super().__init__(disable_async=disable_async)
         self._cmd = cmd
         self._token_type_field = token_type_field
         self._access_token_field = access_token_field
@@ -690,6 +694,7 @@ class DatabricksCliTokenSource(CliTokenSource):
             token_type_field="token_type",
             access_token_field="access_token",
             expiry_field="expiry",
+            disable_async=not cfg.enable_experimental_async_token_refresh,
         )
 
     @staticmethod
