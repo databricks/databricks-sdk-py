@@ -1,1 +1,5 @@
-{}
+{
+    "version": {
+        "databricks/sdk/version.py": "__version__ = '$VERSION'"
+      }
+}

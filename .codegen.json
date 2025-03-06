@@ -1,9 +1,6 @@
 {
   "mode": "py_v0",
   "api_changelog": true,  
-  "version": {
-    "databricks/sdk/version.py": "__version__ = '$VERSION'"
-  },
   "toolchain": {
     "required": ["python3"],
     "pre_setup": [
