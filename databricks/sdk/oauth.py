@@ -426,12 +426,16 @@ class SessionCredentials(Refreshable):
         client_id: str,
         client_secret: str = None,
         redirect_url: str = None,
+        disable_async: bool = True,
     ):
         self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_url = redirect_url
-        super().__init__(token)
+        super().__init__(
+            token=token,
+            disable_async=disable_async,
+        )
 
     def as_dict(self) -> dict:
         return {"token": self.token().as_dict()}
@@ -708,9 +712,10 @@ class ClientCredentials(Refreshable):
     scopes: List[str] = None
     use_params: bool = False
     use_header: bool = False
+    disable_async: bool = True
 
     def __post_init__(self):
-        super().__init__()
+        super().__init__(disable_async=self.disable_async)
 
     def refresh(self) -> Token:
         params = {"grant_type": "client_credentials"}
