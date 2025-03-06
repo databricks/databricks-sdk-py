@@ -27,16 +27,16 @@
                 }
             """
             
-            created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
+            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
             
             # cleanup
             w.providers.delete(name=created.name)
 
         Create an auth provider.
-        
+
         Creates a new authentication provider minimally based on a name and authentication type. The caller
         must be an admin on the metastore.
-        
+
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
@@ -46,21 +46,21 @@
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         
 
     .. py:method:: delete(name: str)
 
         Delete a provider.
-        
+
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
         provider.
-        
+
         :param name: str
           Name of the provider.
-        
-        
+
+
         
 
     .. py:method:: get(name: str) -> ProviderInfo
@@ -83,7 +83,7 @@
                 }
             """
             
-            created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
+            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
             
             _ = w.providers.get(name=created.name)
             
@@ -91,13 +91,13 @@
             w.providers.delete(name=created.name)
 
         Get a provider.
-        
+
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
         either be a metastore admin or the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
-        
+
         :returns: :class:`ProviderInfo`
         
 
@@ -116,11 +116,11 @@
             all = w.providers.list(sharing.ListProvidersRequest())
 
         List providers.
-        
+
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
         is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
@@ -134,8 +134,31 @@
           from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ProviderInfo`
+        
+
+    .. py:method:: list_provider_share_assets(provider_name: str, share_name: str [, function_max_results: Optional[int], notebook_max_results: Optional[int], table_max_results: Optional[int], volume_max_results: Optional[int]]) -> ListProviderShareAssetsResponse
+
+        List assets by provider share.
+
+        Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
+        share.
+
+        :param provider_name: str
+          The name of the provider who owns the share.
+        :param share_name: str
+          The name of the share.
+        :param function_max_results: int (optional)
+          Maximum number of functions to return.
+        :param notebook_max_results: int (optional)
+          Maximum number of notebooks to return.
+        :param table_max_results: int (optional)
+          Maximum number of tables to return.
+        :param volume_max_results: int (optional)
+          Maximum number of volumes to return.
+
+        :returns: :class:`ListProviderShareAssetsResponse`
         
 
     .. py:method:: list_shares(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderShare]
@@ -158,7 +181,7 @@
                 }
             """
             
-            created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
+            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
             
             shares = w.providers.list_shares(name=created.name)
             
@@ -166,11 +189,11 @@
             w.providers.delete(name=created.name)
 
         List shares by Provider.
-        
+
         Gets an array of a specified provider's shares within the metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner.
-        
+
         :param name: str
           Name of the provider in which to list shares.
         :param max_results: int (optional)
@@ -183,7 +206,7 @@
           response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ProviderShare`
         
 
@@ -207,7 +230,7 @@
                 }
             """
             
-            created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
+            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
             
             _ = w.providers.update(name=created.name, comment="Comment for update")
             
@@ -215,11 +238,11 @@
             w.providers.delete(name=created.name)
 
         Update a provider.
-        
+
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
         admin and the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
         :param comment: str (optional)
@@ -231,6 +254,6 @@
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         

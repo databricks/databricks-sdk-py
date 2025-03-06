@@ -5090,9 +5090,7 @@ class AccountIpAccessListsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}", headers=headers
@@ -5180,7 +5178,6 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -5241,7 +5238,6 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -6584,9 +6580,7 @@ class IpAccessListsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
 
@@ -6671,7 +6665,6 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -6728,7 +6721,6 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -7453,9 +7445,7 @@ class TokenManagementAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
 

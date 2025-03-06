@@ -1456,11 +1456,13 @@ class ConnectionType(Enum):
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     MYSQL = "MYSQL"
+    ORACLE = "ORACLE"
     POSTGRESQL = "POSTGRESQL"
     REDSHIFT = "REDSHIFT"
     SNOWFLAKE = "SNOWFLAKE"
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
+    TERADATA = "TERADATA"
 
 
 @dataclass
@@ -8131,6 +8133,38 @@ class TableType(Enum):
 
 
 @dataclass
+class TagKeyValue:
+    key: Optional[str] = None
+    """name of the tag"""
+
+    value: Optional[str] = None
+    """value of the tag associated with the key, could be optional"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TagKeyValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TagKeyValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TagKeyValue:
+        """Deserializes the TagKeyValue from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
 class TemporaryCredentials:
     aws_temp_credentials: Optional[AwsCredentials] = None
     """AWS temporary credentials for API authentication. Read more at
@@ -9446,6 +9480,9 @@ class ValidateCredentialRequest:
     credential_name: Optional[str] = None
     """Required. The name of an existing credential or long-lived cloud credential to validate."""
 
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
+    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+
     external_location_name: Optional[str] = None
     """The name of an existing external location to validate. Only applicable for storage credentials
     (purpose is **STORAGE**.)"""
@@ -9469,6 +9506,8 @@ class ValidateCredentialRequest:
             body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
         if self.external_location_name is not None:
             body["external_location_name"] = self.external_location_name
         if self.purpose is not None:
@@ -9488,6 +9527,8 @@ class ValidateCredentialRequest:
             body["azure_managed_identity"] = self.azure_managed_identity
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
         if self.external_location_name is not None:
             body["external_location_name"] = self.external_location_name
         if self.purpose is not None:
@@ -9505,6 +9546,7 @@ class ValidateCredentialRequest:
             aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
             azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
             credential_name=d.get("credential_name", None),
+            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
             external_location_name=d.get("external_location_name", None),
             purpose=_enum(d, "purpose", CredentialPurpose),
             read_only=d.get("read_only", None),
@@ -11137,6 +11179,7 @@ class CredentialsAPI:
         aws_iam_role: Optional[AwsIamRole] = None,
         azure_managed_identity: Optional[AzureManagedIdentity] = None,
         credential_name: Optional[str] = None,
+        databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None,
         external_location_name: Optional[str] = None,
         purpose: Optional[CredentialPurpose] = None,
         read_only: Optional[bool] = None,
@@ -11164,6 +11207,8 @@ class CredentialsAPI:
           The Azure managed identity configuration.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
+          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
         :param external_location_name: str (optional)
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)
@@ -11184,6 +11229,8 @@ class CredentialsAPI:
             body["azure_managed_identity"] = azure_managed_identity.as_dict()
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if databricks_gcp_service_account is not None:
+            body["databricks_gcp_service_account"] = databricks_gcp_service_account.as_dict()
         if external_location_name is not None:
             body["external_location_name"] = external_location_name
         if purpose is not None:

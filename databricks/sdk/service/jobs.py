@@ -126,9 +126,8 @@ class BaseRun:
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from performance_target depending on if the job was
-    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if we specifically
-    override the value for the run (ex. RunNow)."""
+    effective_performance_target can differ from the client-set performance_target depending on if
+    the job was eligible to be cost-optimized."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -789,6 +788,51 @@ class ClusterSpec:
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
             new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+        )
+
+
+@dataclass
+class ComputeConfig:
+    """Next field: 4"""
+
+    num_gpus: int
+    """Number of GPUs."""
+
+    gpu_node_pool_id: str
+    """IDof the GPU pool to use."""
+
+    gpu_type: Optional[str] = None
+    """GPU type."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputeConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.gpu_node_pool_id is not None:
+            body["gpu_node_pool_id"] = self.gpu_node_pool_id
+        if self.gpu_type is not None:
+            body["gpu_type"] = self.gpu_type
+        if self.num_gpus is not None:
+            body["num_gpus"] = self.num_gpus
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputeConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gpu_node_pool_id is not None:
+            body["gpu_node_pool_id"] = self.gpu_node_pool_id
+        if self.gpu_type is not None:
+            body["gpu_type"] = self.gpu_type
+        if self.num_gpus is not None:
+            body["num_gpus"] = self.num_gpus
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ComputeConfig:
+        """Deserializes the ComputeConfig from a dictionary."""
+        return cls(
+            gpu_node_pool_id=d.get("gpu_node_pool_id", None),
+            gpu_type=d.get("gpu_type", None),
+            num_gpus=d.get("num_gpus", None),
         )
 
 
@@ -1833,6 +1877,100 @@ class Format(Enum):
 
     MULTI_TASK = "MULTI_TASK"
     SINGLE_TASK = "SINGLE_TASK"
+
+
+@dataclass
+class GenAiComputeTask:
+    """Next field: 9"""
+
+    dl_runtime_image: str
+    """Runtime image"""
+
+    command: Optional[str] = None
+    """Command launcher to run the actual script, e.g. bash, python etc."""
+
+    compute: Optional[ComputeConfig] = None
+    """Next field: 4"""
+
+    mlflow_experiment_name: Optional[str] = None
+    """Optional string containing the name of the MLflow experiment to log the run to. If name is not
+    found, backend will create the mlflow experiment using the name."""
+
+    source: Optional[Source] = None
+    """Optional location type of the training script. When set to `WORKSPACE`, the script will be
+    retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved
+    from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if
+    `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in
+    Databricks workspace. * `GIT`: Script is located in cloud Git provider."""
+
+    training_script_path: Optional[str] = None
+    """The training script file path to be executed. Cloud file URIs (such as dbfs:/, s3:/, adls:/,
+    gcs:/) and workspace paths are supported. For python files stored in the Databricks workspace,
+    the path must be absolute and begin with `/`. For files stored in a remote repository, the path
+    must be relative. This field is required."""
+
+    yaml_parameters: Optional[str] = None
+    """Optional string containing model parameters passed to the training script in yaml format. If
+    present, then the content in yaml_parameters_file_path will be ignored."""
+
+    yaml_parameters_file_path: Optional[str] = None
+    """Optional path to a YAML file containing model parameters passed to the training script."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenAiComputeTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.command is not None:
+            body["command"] = self.command
+        if self.compute:
+            body["compute"] = self.compute.as_dict()
+        if self.dl_runtime_image is not None:
+            body["dl_runtime_image"] = self.dl_runtime_image
+        if self.mlflow_experiment_name is not None:
+            body["mlflow_experiment_name"] = self.mlflow_experiment_name
+        if self.source is not None:
+            body["source"] = self.source.value
+        if self.training_script_path is not None:
+            body["training_script_path"] = self.training_script_path
+        if self.yaml_parameters is not None:
+            body["yaml_parameters"] = self.yaml_parameters
+        if self.yaml_parameters_file_path is not None:
+            body["yaml_parameters_file_path"] = self.yaml_parameters_file_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenAiComputeTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.command is not None:
+            body["command"] = self.command
+        if self.compute:
+            body["compute"] = self.compute
+        if self.dl_runtime_image is not None:
+            body["dl_runtime_image"] = self.dl_runtime_image
+        if self.mlflow_experiment_name is not None:
+            body["mlflow_experiment_name"] = self.mlflow_experiment_name
+        if self.source is not None:
+            body["source"] = self.source
+        if self.training_script_path is not None:
+            body["training_script_path"] = self.training_script_path
+        if self.yaml_parameters is not None:
+            body["yaml_parameters"] = self.yaml_parameters
+        if self.yaml_parameters_file_path is not None:
+            body["yaml_parameters_file_path"] = self.yaml_parameters_file_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenAiComputeTask:
+        """Deserializes the GenAiComputeTask from a dictionary."""
+        return cls(
+            command=d.get("command", None),
+            compute=_from_dict(d, "compute", ComputeConfig),
+            dl_runtime_image=d.get("dl_runtime_image", None),
+            mlflow_experiment_name=d.get("mlflow_experiment_name", None),
+            source=_enum(d, "source", Source),
+            training_script_path=d.get("training_script_path", None),
+            yaml_parameters=d.get("yaml_parameters", None),
+            yaml_parameters_file_path=d.get("yaml_parameters_file_path", None),
+        )
 
 
 @dataclass
@@ -4404,9 +4542,8 @@ class Run:
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from performance_target depending on if the job was
-    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if we specifically
-    override the value for the run (ex. RunNow)."""
+    effective_performance_target can differ from the client-set performance_target depending on if
+    the job was eligible to be cost-optimized."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -5066,6 +5203,7 @@ class RunLifecycleStateV2State(Enum):
     RUNNING = "RUNNING"
     TERMINATED = "TERMINATED"
     TERMINATING = "TERMINATING"
+    WAITING = "WAITING"
 
 
 @dataclass
@@ -5128,8 +5266,8 @@ class RunNow:
 
     performance_target: Optional[PerformanceTarget] = None
     """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-    compute should be. For RunNow request, the run will execute with this settings instead of ones
-    defined in job."""
+    compute should be. For RunNow, this performance target will override the target defined on the
+    job-level."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -5739,9 +5877,8 @@ class RunTask:
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from performance_target depending on if the job was
-    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if an override was
-    provided for the run (ex. RunNow)."""
+    effective_performance_target can differ from the client-set performance_target depending on if
+    the job was eligible to be cost-optimized."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -5770,6 +5907,9 @@ class RunTask:
     for_each_task: Optional[RunForEachTask] = None
     """The task executes a nested task for every input provided when the `for_each_task` field is
     present."""
+
+    gen_ai_compute_task: Optional[GenAiComputeTask] = None
+    """Next field: 9"""
 
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
@@ -5914,6 +6054,8 @@ class RunTask:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task.as_dict()
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.git_source:
             body["git_source"] = self.git_source.as_dict()
         if self.job_cluster_key is not None:
@@ -6003,6 +6145,8 @@ class RunTask:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task
         if self.git_source:
             body["git_source"] = self.git_source
         if self.job_cluster_key is not None:
@@ -6077,6 +6221,7 @@ class RunTask:
             execution_duration=d.get("execution_duration", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", RunForEachTask),
+            gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             git_source=_from_dict(d, "git_source", GitSource),
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
@@ -7106,6 +7251,9 @@ class SubmitTask:
     """The task executes a nested task for every input provided when the `for_each_task` field is
     present."""
 
+    gen_ai_compute_task: Optional[GenAiComputeTask] = None
+    """Next field: 9"""
+
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
 
@@ -7194,6 +7342,8 @@ class SubmitTask:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task.as_dict()
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.health:
             body["health"] = self.health.as_dict()
         if self.libraries:
@@ -7249,6 +7399,8 @@ class SubmitTask:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task
         if self.health:
             body["health"] = self.health
         if self.libraries:
@@ -7296,6 +7448,7 @@ class SubmitTask:
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
+            gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", compute.Library),
             new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
@@ -7420,6 +7573,9 @@ class Task:
     """The task executes a nested task for every input provided when the `for_each_task` field is
     present."""
 
+    gen_ai_compute_task: Optional[GenAiComputeTask] = None
+    """Next field: 9"""
+
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
 
@@ -7531,6 +7687,8 @@ class Task:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task.as_dict()
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.health:
             body["health"] = self.health.as_dict()
         if self.job_cluster_key is not None:
@@ -7596,6 +7754,8 @@ class Task:
             body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
             body["for_each_task"] = self.for_each_task
+        if self.gen_ai_compute_task:
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task
         if self.health:
             body["health"] = self.health
         if self.job_cluster_key is not None:
@@ -7652,6 +7812,7 @@ class Task:
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
+            gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
@@ -8399,7 +8560,6 @@ class JobsAPI:
         if job_id is not None:
             body["job_id"] = job_id
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -8422,7 +8582,6 @@ class JobsAPI:
         if run_id is not None:
             body["run_id"] = run_id
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -8634,7 +8793,6 @@ class JobsAPI:
         if job_id is not None:
             body["job_id"] = job_id
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -8654,7 +8812,6 @@ class JobsAPI:
         if run_id is not None:
             body["run_id"] = run_id
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -9173,7 +9330,6 @@ class JobsAPI:
         if new_settings is not None:
             body["new_settings"] = new_settings.as_dict()
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -9252,8 +9408,8 @@ class JobsAPI:
           will be run.
         :param performance_target: :class:`PerformanceTarget` (optional)
           PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-          compute should be. For RunNow request, the run will execute with this settings instead of ones
-          defined in job.
+          compute should be. For RunNow, this performance target will override the target defined on the
+          job-level.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -9589,7 +9745,6 @@ class JobsAPI:
         if new_settings is not None:
             body["new_settings"] = new_settings.as_dict()
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 

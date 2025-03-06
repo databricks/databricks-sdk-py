@@ -29,7 +29,7 @@
 
         Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
         workspace is permanent. By default, it is turned off.
-        
+    
         This settings can NOT be disabled once it is enabled.
 
     .. py:property:: default_namespace
@@ -37,12 +37,12 @@
 
         The default namespace setting API allows users to configure the default namespace for a Databricks
         workspace.
-        
+    
         Through this API, users can retrieve, set, or modify the default namespace used when queries do not
         reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
         default catalog, then a query 'SELECT * FROM myTable' would reference the object
         'retail_prod.default.myTable' (the schema 'default' is always assumed).
-        
+    
         This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
         namespace only applies when using Unity Catalog-enabled compute.
 
@@ -50,7 +50,7 @@
         :type: DisableLegacyAccessAPI
 
         'Disabling legacy access' has the following impacts:
-        
+    
         1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
         Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
         Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
@@ -68,7 +68,7 @@
         Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
         security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
         compliance security profile is enabled, this is automatically enabled.
-        
+    
         If the compliance security profile is disabled, you can enable or disable this setting and it is not
         permanent.
 

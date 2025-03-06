@@ -242,27 +242,6 @@ class DashboardView(Enum):
     DASHBOARD_VIEW_BASIC = "DASHBOARD_VIEW_BASIC"
 
 
-class DataType(Enum):
-
-    DATA_TYPE_ARRAY = "DATA_TYPE_ARRAY"
-    DATA_TYPE_BIG_INT = "DATA_TYPE_BIG_INT"
-    DATA_TYPE_BINARY = "DATA_TYPE_BINARY"
-    DATA_TYPE_BOOLEAN = "DATA_TYPE_BOOLEAN"
-    DATA_TYPE_DATE = "DATA_TYPE_DATE"
-    DATA_TYPE_DECIMAL = "DATA_TYPE_DECIMAL"
-    DATA_TYPE_DOUBLE = "DATA_TYPE_DOUBLE"
-    DATA_TYPE_FLOAT = "DATA_TYPE_FLOAT"
-    DATA_TYPE_INT = "DATA_TYPE_INT"
-    DATA_TYPE_INTERVAL = "DATA_TYPE_INTERVAL"
-    DATA_TYPE_MAP = "DATA_TYPE_MAP"
-    DATA_TYPE_SMALL_INT = "DATA_TYPE_SMALL_INT"
-    DATA_TYPE_STRING = "DATA_TYPE_STRING"
-    DATA_TYPE_STRUCT = "DATA_TYPE_STRUCT"
-    DATA_TYPE_TIMESTAMP = "DATA_TYPE_TIMESTAMP"
-    DATA_TYPE_TINY_INT = "DATA_TYPE_TINY_INT"
-    DATA_TYPE_VOID = "DATA_TYPE_VOID"
-
-
 @dataclass
 class DeleteScheduleResponse:
     def as_dict(self) -> dict:
@@ -391,13 +370,20 @@ class ExecuteQueryResponse:
 class GenieAttachment:
     """Genie AI Response"""
 
-    query: Optional[QueryAttachment] = None
+    attachment_id: Optional[str] = None
+    """Attachment ID"""
+
+    query: Optional[GenieQueryAttachment] = None
+    """Query Attachment if Genie responds with a SQL query"""
 
     text: Optional[TextAttachment] = None
+    """Text Attachment if Genie responds with text"""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attachment_id is not None:
+            body["attachment_id"] = self.attachment_id
         if self.query:
             body["query"] = self.query.as_dict()
         if self.text:
@@ -407,6 +393,8 @@ class GenieAttachment:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieAttachment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attachment_id is not None:
+            body["attachment_id"] = self.attachment_id
         if self.query:
             body["query"] = self.query
         if self.text:
@@ -416,13 +404,17 @@ class GenieAttachment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieAttachment:
         """Deserializes the GenieAttachment from a dictionary."""
-        return cls(query=_from_dict(d, "query", QueryAttachment), text=_from_dict(d, "text", TextAttachment))
+        return cls(
+            attachment_id=d.get("attachment_id", None),
+            query=_from_dict(d, "query", GenieQueryAttachment),
+            text=_from_dict(d, "text", TextAttachment),
+        )
 
 
 @dataclass
 class GenieConversation:
     id: str
-    """Conversation ID"""
+    """Conversation ID. Legacy identifier, use conversation_id instead"""
 
     space_id: str
     """Genie space ID"""
@@ -433,6 +425,9 @@ class GenieConversation:
     title: str
     """Conversation title"""
 
+    conversation_id: str
+    """Conversation ID"""
+
     created_timestamp: Optional[int] = None
     """Timestamp when the message was created"""
 
@@ -442,6 +437,8 @@ class GenieConversation:
     def as_dict(self) -> dict:
         """Serializes the GenieConversation into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.conversation_id is not None:
+            body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
             body["created_timestamp"] = self.created_timestamp
         if self.id is not None:
@@ -459,6 +456,8 @@ class GenieConversation:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieConversation into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.conversation_id is not None:
+            body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
             body["created_timestamp"] = self.created_timestamp
         if self.id is not None:
@@ -477,6 +476,7 @@ class GenieConversation:
     def from_dict(cls, d: Dict[str, Any]) -> GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
         return cls(
+            conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
@@ -558,7 +558,7 @@ class GenieGetMessageQueryResultResponse:
 @dataclass
 class GenieMessage:
     id: str
-    """Message ID"""
+    """Message ID. Legacy identifier, use message_id instead"""
 
     space_id: str
     """Genie space ID"""
@@ -569,35 +569,37 @@ class GenieMessage:
     content: str
     """User message content"""
 
+    message_id: str
+    """Message ID"""
+
     attachments: Optional[List[GenieAttachment]] = None
-    """AI produced response to the message"""
+    """AI-generated response to the message"""
 
     created_timestamp: Optional[int] = None
     """Timestamp when the message was created"""
 
     error: Optional[MessageError] = None
-    """Error message if AI failed to respond to the message"""
+    """Error message if Genie failed to respond to the message"""
 
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
 
     query_result: Optional[Result] = None
-    """The result of SQL query if the message has a query attachment"""
+    """The result of SQL query if the message includes a query attachment. Deprecated. Use
+    `query_result_metadata` in `GenieQueryAttachment` instead."""
 
     status: Optional[MessageStatus] = None
-    """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
+    """MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
-    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
-    AI provided SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
-    status will stay in the `EXECUTING_QUERY` until a client calls
-    [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
-    response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message
-    processing is completed. Results are in the `attachments` field. Get the SQL query result by
-    calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message
-    has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user
-    needs to execute the query again. * `CANCELLED`: Message has been cancelled."""
+    `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
+    generated SQL query. Get the SQL query result by calling
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response
+    generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is
+    completed. Results are in the `attachments` field. Get the SQL query result by calling
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has
+    been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to
+    rerun the query. * `CANCELLED`: Message has been cancelled."""
 
     user_id: Optional[int] = None
     """ID of the user who created the message"""
@@ -619,6 +621,8 @@ class GenieMessage:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.message_id is not None:
+            body["message_id"] = self.message_id
         if self.query_result:
             body["query_result"] = self.query_result.as_dict()
         if self.space_id is not None:
@@ -646,6 +650,8 @@ class GenieMessage:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.message_id is not None:
+            body["message_id"] = self.message_id
         if self.query_result:
             body["query_result"] = self.query_result
         if self.space_id is not None:
@@ -667,11 +673,149 @@ class GenieMessage:
             error=_from_dict(d, "error", MessageError),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
+            message_id=d.get("message_id", None),
             query_result=_from_dict(d, "query_result", Result),
             space_id=d.get("space_id", None),
             status=_enum(d, "status", MessageStatus),
             user_id=d.get("user_id", None),
         )
+
+
+@dataclass
+class GenieQueryAttachment:
+    description: Optional[str] = None
+    """Description of the query"""
+
+    id: Optional[str] = None
+
+    last_updated_timestamp: Optional[int] = None
+    """Time when the user updated the query last"""
+
+    query: Optional[str] = None
+    """AI generated SQL query"""
+
+    query_result_metadata: Optional[GenieResultMetadata] = None
+    """Metadata associated with the query result."""
+
+    title: Optional[str] = None
+    """Name of the query"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieQueryAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.query is not None:
+            body["query"] = self.query
+        if self.query_result_metadata:
+            body["query_result_metadata"] = self.query_result_metadata.as_dict()
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieQueryAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.last_updated_timestamp is not None:
+            body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.query is not None:
+            body["query"] = self.query
+        if self.query_result_metadata:
+            body["query_result_metadata"] = self.query_result_metadata
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieQueryAttachment:
+        """Deserializes the GenieQueryAttachment from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            id=d.get("id", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            query=d.get("query", None),
+            query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
+            title=d.get("title", None),
+        )
+
+
+@dataclass
+class GenieResultMetadata:
+    is_truncated: Optional[bool] = None
+    """Indicates whether the result set is truncated."""
+
+    row_count: Optional[int] = None
+    """The number of rows in the result set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieResultMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_truncated is not None:
+            body["is_truncated"] = self.is_truncated
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieResultMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_truncated is not None:
+            body["is_truncated"] = self.is_truncated
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieResultMetadata:
+        """Deserializes the GenieResultMetadata from a dictionary."""
+        return cls(is_truncated=d.get("is_truncated", None), row_count=d.get("row_count", None))
+
+
+@dataclass
+class GenieSpace:
+    space_id: str
+    """Space ID"""
+
+    title: str
+    """Title of the Genie Space"""
+
+    description: Optional[str] = None
+    """Description of the Genie Space"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieSpace into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
+        """Deserializes the GenieSpace from a dictionary."""
+        return cls(description=d.get("description", None), space_id=d.get("space_id", None), title=d.get("title", None))
 
 
 @dataclass
@@ -923,6 +1067,7 @@ class MessageErrorType(Enum):
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
+    FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION"
     FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION = "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION"
     GENERIC_CHAT_COMPLETION_EXCEPTION = "GENERIC_CHAT_COMPLETION_EXCEPTION"
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
@@ -935,6 +1080,7 @@ class MessageErrorType(Enum):
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
     INVALID_TABLE_IDENTIFIER_EXCEPTION = "INVALID_TABLE_IDENTIFIER_EXCEPTION"
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
+    MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
     NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
@@ -956,19 +1102,17 @@ class MessageErrorType(Enum):
 
 
 class MessageStatus(Enum):
-    """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
+    """MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
-    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
-    AI provided SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
-    status will stay in the `EXECUTING_QUERY` until a client calls
-    [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
-    response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message
-    processing is completed. Results are in the `attachments` field. Get the SQL query result by
-    calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message
-    has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user
-    needs to execute the query again. * `CANCELLED`: Message has been cancelled."""
+    `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
+    generated SQL query. Get the SQL query result by calling
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response
+    generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is
+    completed. Results are in the `attachments` field. Get the SQL query result by calling
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has
+    been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to
+    rerun the query. * `CANCELLED`: Message has been cancelled."""
 
     ASKING_AI = "ASKING_AI"
     CANCELLED = "CANCELLED"
@@ -1204,95 +1348,6 @@ class PublishedDashboard:
 
 
 @dataclass
-class QueryAttachment:
-    cached_query_schema: Optional[QuerySchema] = None
-
-    description: Optional[str] = None
-    """Description of the query"""
-
-    id: Optional[str] = None
-
-    instruction_id: Optional[str] = None
-    """If the query was created on an instruction (trusted asset) we link to the id"""
-
-    instruction_title: Optional[str] = None
-    """Always store the title next to the id in case the original instruction title changes or the
-    instruction is deleted."""
-
-    last_updated_timestamp: Optional[int] = None
-    """Time when the user updated the query last"""
-
-    query: Optional[str] = None
-    """AI generated SQL query"""
-
-    statement_id: Optional[str] = None
-
-    title: Optional[str] = None
-    """Name of the query"""
-
-    def as_dict(self) -> dict:
-        """Serializes the QueryAttachment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cached_query_schema:
-            body["cached_query_schema"] = self.cached_query_schema.as_dict()
-        if self.description is not None:
-            body["description"] = self.description
-        if self.id is not None:
-            body["id"] = self.id
-        if self.instruction_id is not None:
-            body["instruction_id"] = self.instruction_id
-        if self.instruction_title is not None:
-            body["instruction_title"] = self.instruction_title
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        if self.query is not None:
-            body["query"] = self.query
-        if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
-        if self.title is not None:
-            body["title"] = self.title
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QueryAttachment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cached_query_schema:
-            body["cached_query_schema"] = self.cached_query_schema
-        if self.description is not None:
-            body["description"] = self.description
-        if self.id is not None:
-            body["id"] = self.id
-        if self.instruction_id is not None:
-            body["instruction_id"] = self.instruction_id
-        if self.instruction_title is not None:
-            body["instruction_title"] = self.instruction_title
-        if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
-        if self.query is not None:
-            body["query"] = self.query
-        if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
-        if self.title is not None:
-            body["title"] = self.title
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QueryAttachment:
-        """Deserializes the QueryAttachment from a dictionary."""
-        return cls(
-            cached_query_schema=_from_dict(d, "cached_query_schema", QuerySchema),
-            description=d.get("description", None),
-            id=d.get("id", None),
-            instruction_id=d.get("instruction_id", None),
-            instruction_title=d.get("instruction_title", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-            query=d.get("query", None),
-            statement_id=d.get("statement_id", None),
-            title=d.get("title", None),
-        )
-
-
-@dataclass
 class QueryResponseStatus:
     canceled: Optional[Empty] = None
     """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
@@ -1350,78 +1405,6 @@ class QueryResponseStatus:
             pending=_from_dict(d, "pending", PendingStatus),
             statement_id=d.get("statement_id", None),
             success=_from_dict(d, "success", SuccessStatus),
-        )
-
-
-@dataclass
-class QuerySchema:
-    columns: Optional[List[QuerySchemaColumn]] = None
-
-    statement_id: Optional[str] = None
-    """Used to determine if the stored query schema is compatible with the latest run. The service
-    should always clear the schema when the query is re-executed."""
-
-    def as_dict(self) -> dict:
-        """Serializes the QuerySchema into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.columns:
-            body["columns"] = [v.as_dict() for v in self.columns]
-        if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QuerySchema into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.columns:
-            body["columns"] = self.columns
-        if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QuerySchema:
-        """Deserializes the QuerySchema from a dictionary."""
-        return cls(columns=_repeated_dict(d, "columns", QuerySchemaColumn), statement_id=d.get("statement_id", None))
-
-
-@dataclass
-class QuerySchemaColumn:
-    name: str
-
-    type_text: str
-    """Corresponds to type desc"""
-
-    data_type: DataType
-    """Populated from https://docs.databricks.com/sql/language-manual/sql-ref-datatypes.html"""
-
-    def as_dict(self) -> dict:
-        """Serializes the QuerySchemaColumn into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.data_type is not None:
-            body["data_type"] = self.data_type.value
-        if self.name is not None:
-            body["name"] = self.name
-        if self.type_text is not None:
-            body["type_text"] = self.type_text
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QuerySchemaColumn into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.data_type is not None:
-            body["data_type"] = self.data_type
-        if self.name is not None:
-            body["name"] = self.name
-        if self.type_text is not None:
-            body["type_text"] = self.type_text
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QuerySchemaColumn:
-        """Deserializes the QuerySchemaColumn from a dictionary."""
-        return cls(
-            data_type=_enum(d, "data_type", DataType), name=d.get("name", None), type_text=d.get("type_text", None)
         )
 
 
@@ -1886,7 +1869,7 @@ class GenieAPI:
     def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
         """Create conversation message.
 
-        Create new message in [conversation](:method:genie/startconversation). The AI response uses all
+        Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
         previously created messages in the conversation to respond.
 
         :param space_id: str
@@ -1928,6 +1911,36 @@ class GenieAPI:
         return self.create_message(content=content, conversation_id=conversation_id, space_id=space_id).result(
             timeout=timeout
         )
+
+    def execute_message_attachment_query(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
+    ) -> GenieGetMessageQueryResultResponse:
+        """Execute message attachment SQL query.
+
+        Execute the SQL for a message query attachment.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/execute-query",
+            headers=headers,
+        )
+        return GenieGetMessageQueryResultResponse.from_dict(res)
 
     def execute_message_query(
         self, space_id: str, conversation_id: str, message_id: str
@@ -1983,10 +1996,41 @@ class GenieAPI:
         )
         return GenieMessage.from_dict(res)
 
+    def get_message_attachment_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
+    ) -> GenieGetMessageQueryResultResponse:
+        """Get message attachment SQL query result.
+
+        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/query-result",
+            headers=headers,
+        )
+        return GenieGetMessageQueryResultResponse.from_dict(res)
+
     def get_message_query_result(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get conversation message SQL query result.
+        """[Deprecated] Get conversation message SQL query result.
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY`.
@@ -2015,10 +2059,10 @@ class GenieAPI:
     def get_message_query_result_by_attachment(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get conversation message SQL query result by attachment id.
+        """[deprecated] Get conversation message SQL query result.
 
-        Get the result of SQL query by attachment id This is only available if a message has a query
-        attachment and the message status is `EXECUTING_QUERY`.
+        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
 
         :param space_id: str
           Genie space ID
@@ -2042,6 +2086,24 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def get_space(self, space_id: str) -> GenieSpace:
+        """Get details of a Genie Space.
+
+        Get a Genie Space.
+
+        :param space_id: str
+          The ID associated with the Genie space
+
+        :returns: :class:`GenieSpace`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
+        return GenieSpace.from_dict(res)
 
     def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
         """Start conversation.

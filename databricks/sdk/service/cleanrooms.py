@@ -400,7 +400,7 @@ class CleanRoomAssetTableLocalDetails:
     """The fully qualified name of the table in its owner's local metastore, in the format of
     *catalog*.*schema*.*table_name*"""
 
-    partitions: Optional[List[sharing.PartitionSpecificationPartition]] = None
+    partitions: Optional[List[sharing.Partition]] = None
     """Partition filtering specification for a shared table."""
 
     def as_dict(self) -> dict:
@@ -424,10 +424,7 @@ class CleanRoomAssetTableLocalDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTableLocalDetails:
         """Deserializes the CleanRoomAssetTableLocalDetails from a dictionary."""
-        return cls(
-            local_name=d.get("local_name", None),
-            partitions=_repeated_dict(d, "partitions", sharing.PartitionSpecificationPartition),
-        )
+        return cls(local_name=d.get("local_name", None), partitions=_repeated_dict(d, "partitions", sharing.Partition))
 
 
 @dataclass
@@ -1270,7 +1267,7 @@ class CleanRoomTaskRunsAPI:
         :param notebook_name: str (optional)
           Notebook name
         :param page_size: int (optional)
-          The maximum number of task runs to return
+          The maximum number of task runs to return. Currently ignored - all runs will be returned.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 

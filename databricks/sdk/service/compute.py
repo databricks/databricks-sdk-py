@@ -739,9 +739,9 @@ class ClusterAttributes:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -793,7 +793,7 @@ class ClusterAttributes:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -803,8 +803,15 @@ class ClusterAttributes:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -851,7 +858,7 @@ class ClusterAttributes:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -1121,9 +1128,9 @@ class ClusterDetails:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -1195,7 +1202,7 @@ class ClusterDetails:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -1209,8 +1216,15 @@ class ClusterDetails:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
@@ -1305,7 +1319,7 @@ class ClusterDetails:
     a `TERMINATING` or `TERMINATED` state."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -2281,9 +2295,9 @@ class ClusterSpec:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -2335,7 +2349,7 @@ class ClusterSpec:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -2345,8 +2359,15 @@ class ClusterSpec:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2407,7 +2428,7 @@ class ClusterSpec:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -2771,9 +2792,9 @@ class CreateCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -2825,7 +2846,7 @@ class CreateCluster:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -2835,8 +2856,15 @@ class CreateCluster:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2893,7 +2921,7 @@ class CreateCluster:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -3561,9 +3589,9 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
 
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
 
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -4059,9 +4087,9 @@ class EditCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -4113,7 +4141,7 @@ class EditCluster:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -4123,8 +4151,15 @@ class EditCluster:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -4181,7 +4216,7 @@ class EditCluster:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -6863,8 +6898,15 @@ class Kind(Enum):
 
     Depending on `kind`, different validations and default values will be applied.
 
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     CLASSIC_PREVIEW = "CLASSIC_PREVIEW"
 
@@ -9067,9 +9109,9 @@ class UpdateClusterResource:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -9121,7 +9163,7 @@ class UpdateClusterResource:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -9131,8 +9173,15 @@ class UpdateClusterResource:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -9193,7 +9242,7 @@ class UpdateClusterResource:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -10012,8 +10061,8 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
 
-          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-          choose the most appropriate access mode depending on your compute configuration. *
+          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+          Databricks will choose the most appropriate access mode depending on your compute configuration. *
           `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
           for `SINGLE_USER`.
 
@@ -10057,7 +10106,7 @@ class ClustersAPI:
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
@@ -10066,7 +10115,15 @@ class ClustersAPI:
 
           Depending on `kind`, different validations and default values will be applied.
 
-          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
+          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10114,7 +10171,7 @@ class ClustersAPI:
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
         :param use_ml_runtime: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
@@ -10390,8 +10447,8 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
 
-          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-          choose the most appropriate access mode depending on your compute configuration. *
+          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+          Databricks will choose the most appropriate access mode depending on your compute configuration. *
           `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
           for `SINGLE_USER`.
 
@@ -10435,7 +10492,7 @@ class ClustersAPI:
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
@@ -10444,7 +10501,15 @@ class ClustersAPI:
 
           Depending on `kind`, different validations and default values will be applied.
 
-          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
+          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10492,7 +10557,7 @@ class ClustersAPI:
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
         :param use_ml_runtime: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
@@ -11563,7 +11628,9 @@ class GlobalInitScriptsAPI:
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
@@ -11642,6 +11709,7 @@ class GlobalInitScriptsAPI:
         if script is not None:
             body["script"] = script
         headers = {
+            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 

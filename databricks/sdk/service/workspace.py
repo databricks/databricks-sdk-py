@@ -657,17 +657,22 @@ class DeleteSecretResponse:
 
 
 class ExportFormat(Enum):
+    """The format for workspace import and export."""
 
     AUTO = "AUTO"
     DBC = "DBC"
     HTML = "HTML"
     JUPYTER = "JUPYTER"
+    RAW = "RAW"
     R_MARKDOWN = "R_MARKDOWN"
     SOURCE = "SOURCE"
 
 
 @dataclass
 class ExportResponse:
+    """The request field `direct_download` determines whether a JSON response or binary contents are
+    returned by this endpoint."""
+
     content: Optional[str] = None
     """The base64-encoded content. If the limit (10MB) is exceeded, exception with error code
     **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown."""
@@ -975,17 +980,7 @@ class Import:
 
 
 class ImportFormat(Enum):
-    """This specifies the format of the file to be imported.
-
-    The value is case sensitive.
-
-    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
-    content provided in the request. If the item is imported as a notebook, then the item's
-    extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
-    code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
-    as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive
-    format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
-    format."""
+    """The format for workspace import and export."""
 
     AUTO = "AUTO"
     DBC = "DBC"
@@ -1015,7 +1010,7 @@ class ImportResponse:
 
 
 class Language(Enum):
-    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
+    """The language of notebook."""
 
     PYTHON = "PYTHON"
     R = "R"
@@ -1227,11 +1222,13 @@ class MkdirsResponse:
 
 @dataclass
 class ObjectInfo:
+    """The information of the object in workspace. It will be returned by ``list`` and ``get-status``."""
+
     created_at: Optional[int] = None
     """Only applicable to files. The creation UTC timestamp."""
 
     language: Optional[Language] = None
-    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
+    """The language of the object. This value is set only if the object type is ``NOTEBOOK``."""
 
     modified_at: Optional[int] = None
     """Only applicable to files, the last modified UTC timestamp."""
@@ -1313,11 +1310,7 @@ class ObjectInfo:
 
 
 class ObjectType(Enum):
-    """The type of the object in workspace.
-
-    - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
-    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
-    Lakeview dashboard"""
+    """The type of the object in workspace."""
 
     DASHBOARD = "DASHBOARD"
     DIRECTORY = "DIRECTORY"
