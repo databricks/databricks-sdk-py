@@ -14,6 +14,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AssetType
 
+   .. py:attribute:: ASSET_TYPE_APP
+      :value: "ASSET_TYPE_APP"
+
    .. py:attribute:: ASSET_TYPE_DATA_TABLE
       :value: "ASSET_TYPE_DATA_TABLE"
 

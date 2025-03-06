@@ -187,9 +187,45 @@ class CreatePublishedAppIntegrationOutput:
 
 
 @dataclass
+class CreateServicePrincipalSecretRequest:
+    lifetime: Optional[str] = None
+    """The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
+    default lifetime of 730 days (63072000s)."""
+
+    service_principal_id: Optional[int] = None
+    """The service principal ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateServicePrincipalSecretRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.lifetime is not None:
+            body["lifetime"] = self.lifetime
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateServicePrincipalSecretRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.lifetime is not None:
+            body["lifetime"] = self.lifetime
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateServicePrincipalSecretRequest:
+        """Deserializes the CreateServicePrincipalSecretRequest from a dictionary."""
+        return cls(lifetime=d.get("lifetime", None), service_principal_id=d.get("service_principal_id", None))
+
+
+@dataclass
 class CreateServicePrincipalSecretResponse:
     create_time: Optional[str] = None
     """UTC time when the secret was created"""
+
+    expire_time: Optional[str] = None
+    """UTC time when the secret will expire. If the field is not present, the secret does not expire."""
 
     id: Optional[str] = None
     """ID of the secret"""
@@ -211,6 +247,8 @@ class CreateServicePrincipalSecretResponse:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
         if self.secret is not None:
@@ -228,6 +266,8 @@ class CreateServicePrincipalSecretResponse:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
         if self.secret is not None:
@@ -245,6 +285,7 @@ class CreateServicePrincipalSecretResponse:
         """Deserializes the CreateServicePrincipalSecretResponse from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
+            expire_time=d.get("expire_time", None),
             id=d.get("id", None),
             secret=d.get("secret", None),
             secret_hash=d.get("secret_hash", None),
@@ -729,10 +770,18 @@ class OidcFederationPolicy:
     """The required token issuer, as specified in the 'iss' claim of federated tokens."""
 
     jwks_json: Optional[str] = None
-    """The public keys used to validate the signature of federated tokens, in JWKS format. If
-    unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s
-    well known endpoint. Databricks strongly recommends relying on your issuer’s well known
-    endpoint for discovering public keys."""
+    """The public keys used to validate the signature of federated tokens, in JWKS format. Most use
+    cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified
+    (recommended), Databricks automatically fetches the public keys from your issuer’s well known
+    endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
+    discovering public keys."""
+
+    jwks_uri: Optional[str] = None
+    """URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most
+    use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified
+    (recommended), Databricks automatically fetches the public keys from your issuer’s well known
+    endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
+    discovering public keys."""
 
     subject: Optional[str] = None
     """The required token subject, as specified in the subject claim of federated tokens. Must be
@@ -751,6 +800,8 @@ class OidcFederationPolicy:
             body["issuer"] = self.issuer
         if self.jwks_json is not None:
             body["jwks_json"] = self.jwks_json
+        if self.jwks_uri is not None:
+            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
             body["subject"] = self.subject
         if self.subject_claim is not None:
@@ -766,6 +817,8 @@ class OidcFederationPolicy:
             body["issuer"] = self.issuer
         if self.jwks_json is not None:
             body["jwks_json"] = self.jwks_json
+        if self.jwks_uri is not None:
+            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
             body["subject"] = self.subject
         if self.subject_claim is not None:
@@ -779,6 +832,7 @@ class OidcFederationPolicy:
             audiences=d.get("audiences", None),
             issuer=d.get("issuer", None),
             jwks_json=d.get("jwks_json", None),
+            jwks_uri=d.get("jwks_uri", None),
             subject=d.get("subject", None),
             subject_claim=d.get("subject_claim", None),
         )
@@ -865,6 +919,9 @@ class SecretInfo:
     create_time: Optional[str] = None
     """UTC time when the secret was created"""
 
+    expire_time: Optional[str] = None
+    """UTC time when the secret will expire. If the field is not present, the secret does not expire."""
+
     id: Optional[str] = None
     """ID of the secret"""
 
@@ -882,6 +939,8 @@ class SecretInfo:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
         if self.secret_hash is not None:
@@ -897,6 +956,8 @@ class SecretInfo:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.id is not None:
             body["id"] = self.id
         if self.secret_hash is not None:
@@ -912,6 +973,7 @@ class SecretInfo:
         """Deserializes the SecretInfo from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
+            expire_time=d.get("expire_time", None),
             id=d.get("id", None),
             secret_hash=d.get("secret_hash", None),
             status=d.get("status", None),
@@ -1866,24 +1928,33 @@ class ServicePrincipalSecretsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, service_principal_id: int) -> CreateServicePrincipalSecretResponse:
+    def create(
+        self, service_principal_id: int, *, lifetime: Optional[str] = None
+    ) -> CreateServicePrincipalSecretResponse:
         """Create service principal secret.
 
         Create a secret for the given service principal.
 
         :param service_principal_id: int
           The service principal ID.
+        :param lifetime: str (optional)
+          The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
+          default lifetime of 730 days (63072000s).
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
-
+        body = {}
+        if lifetime is not None:
+            body["lifetime"] = lifetime
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets",
+            body=body,
             headers=headers,
         )
         return CreateServicePrincipalSecretResponse.from_dict(res)

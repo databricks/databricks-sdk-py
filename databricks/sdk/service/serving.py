@@ -400,6 +400,12 @@ class AmazonBedrockConfig:
     Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the
     following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
 
+    instance_profile_arn: Optional[str] = None
+    """ARN of the instance profile that the external model will use to access AWS resources. You must
+    authenticate using an instance profile or access keys. If you prefer to authenticate using
+    access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and
+    `aws_secret_access_key_plaintext`."""
+
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -415,6 +421,8 @@ class AmazonBedrockConfig:
             body["aws_secret_access_key_plaintext"] = self.aws_secret_access_key_plaintext
         if self.bedrock_provider is not None:
             body["bedrock_provider"] = self.bedrock_provider.value
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -432,6 +440,8 @@ class AmazonBedrockConfig:
             body["aws_secret_access_key_plaintext"] = self.aws_secret_access_key_plaintext
         if self.bedrock_provider is not None:
             body["bedrock_provider"] = self.bedrock_provider
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         return body
 
     @classmethod
@@ -444,6 +454,7 @@ class AmazonBedrockConfig:
             aws_secret_access_key=d.get("aws_secret_access_key", None),
             aws_secret_access_key_plaintext=d.get("aws_secret_access_key_plaintext", None),
             bedrock_provider=_enum(d, "bedrock_provider", AmazonBedrockConfigBedrockProvider),
+            instance_profile_arn=d.get("instance_profile_arn", None),
         )
 
 
@@ -756,6 +767,9 @@ class CreateServingEndpoint:
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
 
+    budget_policy_id: Optional[str] = None
+    """The budget policy to be applied to the serving endpoint."""
+
     config: Optional[EndpointCoreConfigInput] = None
     """The core config of the serving endpoint."""
 
@@ -774,6 +788,8 @@ class CreateServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.name is not None:
@@ -791,6 +807,8 @@ class CreateServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.name is not None:
@@ -808,6 +826,7 @@ class CreateServingEndpoint:
         """Deserializes the CreateServingEndpoint from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigInput),
             name=d.get("name", None),
             rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
@@ -3326,6 +3345,9 @@ class ServingEndpoint:
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
 
+    budget_policy_id: Optional[str] = None
+    """The budget policy associated with the endpoint."""
+
     config: Optional[EndpointCoreConfigSummary] = None
     """The config that is currently being served by the endpoint."""
 
@@ -3358,6 +3380,8 @@ class ServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.creation_timestamp is not None:
@@ -3383,6 +3407,8 @@ class ServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.creation_timestamp is not None:
@@ -3408,6 +3434,7 @@ class ServingEndpoint:
         """Deserializes the ServingEndpoint from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigSummary),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
@@ -3536,6 +3563,9 @@ class ServingEndpointDetailed:
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
 
+    budget_policy_id: Optional[str] = None
+    """The budget policy associated with the endpoint."""
+
     config: Optional[EndpointCoreConfigOutput] = None
     """The config that is currently being served by the endpoint."""
 
@@ -3584,6 +3614,8 @@ class ServingEndpointDetailed:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.creation_timestamp is not None:
@@ -3619,6 +3651,8 @@ class ServingEndpointDetailed:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.creation_timestamp is not None:
@@ -3654,6 +3688,7 @@ class ServingEndpointDetailed:
         """Deserializes the ServingEndpointDetailed from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigOutput),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
@@ -4005,6 +4040,7 @@ class ServingEndpointsAPI:
         name: str,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
@@ -4018,6 +4054,8 @@ class ServingEndpointsAPI:
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
           The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
           throughput endpoints are currently supported.
+        :param budget_policy_id: str (optional)
+          The budget policy to be applied to the serving endpoint.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param rate_limits: List[:class:`RateLimit`] (optional)
@@ -4035,6 +4073,8 @@ class ServingEndpointsAPI:
         body = {}
         if ai_gateway is not None:
             body["ai_gateway"] = ai_gateway.as_dict()
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
         if config is not None:
             body["config"] = config.as_dict()
         if name is not None:
@@ -4062,6 +4102,7 @@ class ServingEndpointsAPI:
         name: str,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
@@ -4070,6 +4111,7 @@ class ServingEndpointsAPI:
     ) -> ServingEndpointDetailed:
         return self.create(
             ai_gateway=ai_gateway,
+            budget_policy_id=budget_policy_id,
             config=config,
             name=name,
             rate_limits=rate_limits,
@@ -4085,9 +4127,7 @@ class ServingEndpointsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 

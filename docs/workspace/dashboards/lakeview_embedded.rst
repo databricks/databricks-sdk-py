@@ -9,11 +9,11 @@
     .. py:method:: get_published_dashboard_embedded(dashboard_id: str)
 
         Read a published dashboard in an embedded ui.
-        
+
         Get the current published dashboard within an embedded context.
-        
+
         :param dashboard_id: str
           UUID identifying the published dashboard.
-        
-        
+
+
         

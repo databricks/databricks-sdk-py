@@ -31,6 +31,8 @@ class App:
 
     app_status: Optional[ApplicationStatus] = None
 
+    budget_policy_id: Optional[str] = None
+
     compute_status: Optional[ComputeStatus] = None
 
     create_time: Optional[str] = None
@@ -45,6 +47,8 @@ class App:
 
     description: Optional[str] = None
     """The description of the app."""
+
+    effective_budget_policy_id: Optional[str] = None
 
     id: Optional[str] = None
     """The unique identifier of the app."""
@@ -78,6 +82,8 @@ class App:
             body["active_deployment"] = self.active_deployment.as_dict()
         if self.app_status:
             body["app_status"] = self.app_status.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.compute_status:
             body["compute_status"] = self.compute_status.as_dict()
         if self.create_time is not None:
@@ -88,6 +94,8 @@ class App:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -117,6 +125,8 @@ class App:
             body["active_deployment"] = self.active_deployment
         if self.app_status:
             body["app_status"] = self.app_status
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.compute_status:
             body["compute_status"] = self.compute_status
         if self.create_time is not None:
@@ -127,6 +137,8 @@ class App:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -155,11 +167,13 @@ class App:
         return cls(
             active_deployment=_from_dict(d, "active_deployment", AppDeployment),
             app_status=_from_dict(d, "app_status", ApplicationStatus),
+            budget_policy_id=d.get("budget_policy_id", None),
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             id=d.get("id", None),
             name=d.get("name", None),
             pending_deployment=_from_dict(d, "pending_deployment", AppDeployment),

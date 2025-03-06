@@ -974,6 +974,9 @@ class QueryVectorIndexRequest:
     columns: List[str]
     """List of column names to include in the response."""
 
+    columns_to_rerank: Optional[List[str]] = None
+    """Column names used to retrieve data to send to the reranker."""
+
     filters_json: Optional[str] = None
     """JSON string representing query filters.
     
@@ -1005,6 +1008,8 @@ class QueryVectorIndexRequest:
         body = {}
         if self.columns:
             body["columns"] = [v for v in self.columns]
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = [v for v in self.columns_to_rerank]
         if self.filters_json is not None:
             body["filters_json"] = self.filters_json
         if self.index_name is not None:
@@ -1026,6 +1031,8 @@ class QueryVectorIndexRequest:
         body = {}
         if self.columns:
             body["columns"] = self.columns
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = self.columns_to_rerank
         if self.filters_json is not None:
             body["filters_json"] = self.filters_json
         if self.index_name is not None:
@@ -1047,6 +1054,7 @@ class QueryVectorIndexRequest:
         """Deserializes the QueryVectorIndexRequest from a dictionary."""
         return cls(
             columns=d.get("columns", None),
+            columns_to_rerank=d.get("columns_to_rerank", None),
             filters_json=d.get("filters_json", None),
             index_name=d.get("index_name", None),
             num_results=d.get("num_results", None),
@@ -1065,7 +1073,7 @@ class QueryVectorIndexResponse:
     next_page_token: Optional[str] = None
     """[Optional] Token that can be used in `QueryVectorIndexNextPage` API to get next page of results.
     If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty value
-    means no more results."""
+    means no more results. The maximum number of results that can be returned is 10,000."""
 
     result: Optional[ResultData] = None
     """Data returned in the query result."""
@@ -1905,6 +1913,7 @@ class VectorSearchIndexesAPI:
         index_name: str,
         columns: List[str],
         *,
+        columns_to_rerank: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
         num_results: Optional[int] = None,
         query_text: Optional[str] = None,
@@ -1920,6 +1929,8 @@ class VectorSearchIndexesAPI:
           Name of the vector index to query.
         :param columns: List[str]
           List of column names to include in the response.
+        :param columns_to_rerank: List[str] (optional)
+          Column names used to retrieve data to send to the reranker.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -1943,6 +1954,8 @@ class VectorSearchIndexesAPI:
         body = {}
         if columns is not None:
             body["columns"] = [v for v in columns]
+        if columns_to_rerank is not None:
+            body["columns_to_rerank"] = [v for v in columns_to_rerank]
         if filters_json is not None:
             body["filters_json"] = filters_json
         if num_results is not None:

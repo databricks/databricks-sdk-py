@@ -25,59 +25,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
-.. py:class:: DataType
-
-   .. py:attribute:: DATA_TYPE_ARRAY
-      :value: "DATA_TYPE_ARRAY"
-
-   .. py:attribute:: DATA_TYPE_BIG_INT
-      :value: "DATA_TYPE_BIG_INT"
-
-   .. py:attribute:: DATA_TYPE_BINARY
-      :value: "DATA_TYPE_BINARY"
-
-   .. py:attribute:: DATA_TYPE_BOOLEAN
-      :value: "DATA_TYPE_BOOLEAN"
-
-   .. py:attribute:: DATA_TYPE_DATE
-      :value: "DATA_TYPE_DATE"
-
-   .. py:attribute:: DATA_TYPE_DECIMAL
-      :value: "DATA_TYPE_DECIMAL"
-
-   .. py:attribute:: DATA_TYPE_DOUBLE
-      :value: "DATA_TYPE_DOUBLE"
-
-   .. py:attribute:: DATA_TYPE_FLOAT
-      :value: "DATA_TYPE_FLOAT"
-
-   .. py:attribute:: DATA_TYPE_INT
-      :value: "DATA_TYPE_INT"
-
-   .. py:attribute:: DATA_TYPE_INTERVAL
-      :value: "DATA_TYPE_INTERVAL"
-
-   .. py:attribute:: DATA_TYPE_MAP
-      :value: "DATA_TYPE_MAP"
-
-   .. py:attribute:: DATA_TYPE_SMALL_INT
-      :value: "DATA_TYPE_SMALL_INT"
-
-   .. py:attribute:: DATA_TYPE_STRING
-      :value: "DATA_TYPE_STRING"
-
-   .. py:attribute:: DATA_TYPE_STRUCT
-      :value: "DATA_TYPE_STRUCT"
-
-   .. py:attribute:: DATA_TYPE_TIMESTAMP
-      :value: "DATA_TYPE_TIMESTAMP"
-
-   .. py:attribute:: DATA_TYPE_TINY_INT
-      :value: "DATA_TYPE_TINY_INT"
-
-   .. py:attribute:: DATA_TYPE_VOID
-      :value: "DATA_TYPE_VOID"
-
 .. autoclass:: DeleteScheduleResponse
    :members:
    :undoc-members:
@@ -115,6 +62,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieQueryAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieResultMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieSpace
    :members:
    :undoc-members:
 
@@ -189,6 +148,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION
       :value: "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
 
+   .. py:attribute:: FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION
+      :value: "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION"
+
    .. py:attribute:: FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION
       :value: "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION"
 
@@ -224,6 +186,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LOCAL_CONTEXT_EXCEEDED_EXCEPTION
       :value: "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
+
+   .. py:attribute:: MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION
+      :value: "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
 
    .. py:attribute:: MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION
       :value: "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION"
@@ -281,7 +246,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MessageStatus
 
-   MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message status will stay in the `EXECUTING_QUERY` until a client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to execute the query again. * `CANCELLED`: Message has been cancelled.
+   MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to rerun the query. * `CANCELLED`: Message has been cancelled.
 
    .. py:attribute:: ASKING_AI
       :value: "ASKING_AI"
@@ -337,19 +302,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: QueryAttachment
-   :members:
-   :undoc-members:
-
 .. autoclass:: QueryResponseStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: QuerySchema
-   :members:
-   :undoc-members:
-
-.. autoclass:: QuerySchemaColumn
    :members:
    :undoc-members:
 
