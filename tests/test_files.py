@@ -1940,7 +1940,14 @@ def create_file_stream(length: int) -> io.IOBase:
         f.write(os.urandom(length))
 
     stream = open(temp_file, "rb")
-    stream.delete_temp_file = lambda: os.remove(temp_file)
+
+    def cleanup():
+        try:
+            stream.close()
+        finally:
+            os.remove(temp_file)
+
+    stream.cleanup = lambda: cleanup()
     return stream
 
 
@@ -1965,13 +1972,13 @@ def create_file_stream(length: int) -> io.IOBase:
             "File stream: length reported",
             contents=lambda: create_file_stream(566),
             expected_content_length=566,
-            cleanup=lambda stream: stream.delete_temp_file(),
+            cleanup=lambda stream: stream.cleanup(),
         ),
         SingleShotUploadContentLengthTestCase(
             "File stream with tell disabled: length unknown",
             contents=lambda: make_non_seekable(create_file_stream(239), disable_tell=True),
             expected_content_length=None,
-            cleanup=lambda stream: stream.delete_temp_file(),
+            cleanup=lambda stream: stream.cleanup(),
         ),
     ],
     ids=SingleShotUploadContentLengthTestCase.to_string,
