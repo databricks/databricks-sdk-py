@@ -15,6 +15,7 @@ exclude docs-requirements.txt
 exclude NEXT_CHANGELOG.md
 exclude tagging.py
 exclude .package.json
+exclude .release_metadata.json
 
 recursive-exclude docs *
 recursive-exclude examples *
