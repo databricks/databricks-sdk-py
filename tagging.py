@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 NEXT_CHANGELOG_FILE_NAME = "NEXT_CHANGELOG.md"
 CHANGELOG_FILE_NAME = "CHANGELOG.md"
 PACKAGE_FILE_NAME = ".package.json"
+CODEGEN_FILE_NAME = ".codegen.json"
 """
 This script tags the release of the SDKs using a combination of the GitHub API and Git commands.  
 It reads the local repository to determine necessary changes, updates changelogs, and creates tags.  
@@ -153,14 +154,14 @@ def update_version_references(tag_info: TagInfo) -> None:
     Code references are defined in .package.json files.
     """
 
-    # Load version patterns from '.package.json' file
-    package_file_path = os.path.join(os.getcwd(), tag_info.package.path, PACKAGE_FILE_NAME)
+    # Load version patterns from '.codegen.json' file at the top level of the repository
+    package_file_path = os.path.join(os.getcwd(), CODEGEN_FILE_NAME)
     with open(package_file_path, 'r') as file:
         package_file = json.load(file)
 
     version = package_file.get('version')
     if not version:
-        print(f"Version not found in .package.json. Nothing to update.")
+        print(f"`version` not found in .codegen.json. Nothing to update.")
         return
 
     # Update the versions
