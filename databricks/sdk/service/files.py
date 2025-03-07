@@ -6,6 +6,8 @@ import logging
 from dataclasses import dataclass
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
+from requests.utils import super_len
+
 from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -1258,6 +1260,10 @@ class FilesAPI:
         headers = {
             "Content-Type": "application/octet-stream",
         }
+
+        length = super_len(contents)
+        if length > 0:
+            headers["Content-Length"] = str(length)
 
         self._api.do(
             "PUT",
