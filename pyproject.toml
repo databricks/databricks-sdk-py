@@ -55,7 +55,7 @@ dev = [
     "build", # some integration tests depend on the databricks-sdk-py wheel
 ]
 notebook = [
-    "ipython>=8,<9",
+    "ipython>=8,<10",
     "ipywidgets>=8,<9",
 ]
 openai = [
