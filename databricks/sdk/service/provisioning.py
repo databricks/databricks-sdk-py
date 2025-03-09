@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
@@ -38,7 +38,7 @@ class AwsCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsCredentials:
         """Deserializes the AwsCredentials from a dictionary."""
         return cls(sts_role=_from_dict(d, "sts_role", StsRole))
 
@@ -86,7 +86,7 @@ class AwsKeyInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsKeyInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsKeyInfo:
         """Deserializes the AwsKeyInfo from a dictionary."""
         return cls(
             key_alias=d.get("key_alias", None),
@@ -123,7 +123,7 @@ class AzureWorkspaceInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureWorkspaceInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureWorkspaceInfo:
         """Deserializes the AzureWorkspaceInfo from a dictionary."""
         return cls(resource_group=d.get("resource_group", None), subscription_id=d.get("subscription_id", None))
 
@@ -150,7 +150,7 @@ class CloudResourceContainer:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloudResourceContainer:
+    def from_dict(cls, d: Dict[str, Any]) -> CloudResourceContainer:
         """Deserializes the CloudResourceContainer from a dictionary."""
         return cls(gcp=_from_dict(d, "gcp", CustomerFacingGcpCloudResourceContainer))
 
@@ -192,7 +192,7 @@ class CreateAwsKeyInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateAwsKeyInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAwsKeyInfo:
         """Deserializes the CreateAwsKeyInfo from a dictionary."""
         return cls(
             key_alias=d.get("key_alias", None),
@@ -220,7 +220,7 @@ class CreateCredentialAwsCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialAwsCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialAwsCredentials:
         """Deserializes the CreateCredentialAwsCredentials from a dictionary."""
         return cls(sts_role=_from_dict(d, "sts_role", CreateCredentialStsRole))
 
@@ -251,7 +251,7 @@ class CreateCredentialRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialRequest:
         """Deserializes the CreateCredentialRequest from a dictionary."""
         return cls(
             aws_credentials=_from_dict(d, "aws_credentials", CreateCredentialAwsCredentials),
@@ -279,7 +279,7 @@ class CreateCredentialStsRole:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialStsRole:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialStsRole:
         """Deserializes the CreateCredentialStsRole from a dictionary."""
         return cls(role_arn=d.get("role_arn", None))
 
@@ -316,7 +316,7 @@ class CreateCustomerManagedKeyRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCustomerManagedKeyRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomerManagedKeyRequest:
         """Deserializes the CreateCustomerManagedKeyRequest from a dictionary."""
         return cls(
             aws_key_info=_from_dict(d, "aws_key_info", CreateAwsKeyInfo),
@@ -345,7 +345,7 @@ class CreateGcpKeyInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateGcpKeyInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateGcpKeyInfo:
         """Deserializes the CreateGcpKeyInfo from a dictionary."""
         return cls(kms_key_id=d.get("kms_key_id", None))
 
@@ -412,7 +412,7 @@ class CreateNetworkRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateNetworkRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkRequest:
         """Deserializes the CreateNetworkRequest from a dictionary."""
         return cls(
             gcp_network_info=_from_dict(d, "gcp_network_info", GcpNetworkInfo),
@@ -451,7 +451,7 @@ class CreateStorageConfigurationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateStorageConfigurationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateStorageConfigurationRequest:
         """Deserializes the CreateStorageConfigurationRequest from a dictionary."""
         return cls(
             root_bucket_info=_from_dict(d, "root_bucket_info", RootBucketInfo),
@@ -500,7 +500,7 @@ class CreateVpcEndpointRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVpcEndpointRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVpcEndpointRequest:
         """Deserializes the CreateVpcEndpointRequest from a dictionary."""
         return cls(
             aws_vpc_endpoint_id=d.get("aws_vpc_endpoint_id", None),
@@ -698,7 +698,7 @@ class CreateWorkspaceRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateWorkspaceRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateWorkspaceRequest:
         """Deserializes the CreateWorkspaceRequest from a dictionary."""
         return cls(
             aws_region=d.get("aws_region", None),
@@ -768,7 +768,7 @@ class Credential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Credential:
+    def from_dict(cls, d: Dict[str, Any]) -> Credential:
         """Deserializes the Credential from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -805,7 +805,7 @@ class CustomerFacingGcpCloudResourceContainer:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CustomerFacingGcpCloudResourceContainer:
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerFacingGcpCloudResourceContainer:
         """Deserializes the CustomerFacingGcpCloudResourceContainer from a dictionary."""
         return cls(project_id=d.get("project_id", None))
 
@@ -863,7 +863,7 @@ class CustomerManagedKey:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CustomerManagedKey:
+    def from_dict(cls, d: Dict[str, Any]) -> CustomerManagedKey:
         """Deserializes the CustomerManagedKey from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -888,7 +888,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -948,7 +948,7 @@ class ExternalCustomerInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalCustomerInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalCustomerInfo:
         """Deserializes the ExternalCustomerInfo from a dictionary."""
         return cls(
             authoritative_user_email=d.get("authoritative_user_email", None),
@@ -977,7 +977,7 @@ class GcpKeyInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpKeyInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpKeyInfo:
         """Deserializes the GcpKeyInfo from a dictionary."""
         return cls(kms_key_id=d.get("kms_key_id", None))
 
@@ -1039,7 +1039,7 @@ class GcpManagedNetworkConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpManagedNetworkConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpManagedNetworkConfig:
         """Deserializes the GcpManagedNetworkConfig from a dictionary."""
         return cls(
             gke_cluster_pod_ip_range=d.get("gke_cluster_pod_ip_range", None),
@@ -1109,7 +1109,7 @@ class GcpNetworkInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpNetworkInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpNetworkInfo:
         """Deserializes the GcpNetworkInfo from a dictionary."""
         return cls(
             network_project_id=d.get("network_project_id", None),
@@ -1171,7 +1171,7 @@ class GcpVpcEndpointInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpVpcEndpointInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpVpcEndpointInfo:
         """Deserializes the GcpVpcEndpointInfo from a dictionary."""
         return cls(
             endpoint_region=d.get("endpoint_region", None),
@@ -1220,7 +1220,7 @@ class GkeConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GkeConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> GkeConfig:
         """Deserializes the GkeConfig from a dictionary."""
         return cls(
             connectivity_type=_enum(d, "connectivity_type", GkeConfigConnectivityType),
@@ -1358,7 +1358,7 @@ class Network:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Network:
+    def from_dict(cls, d: Dict[str, Any]) -> Network:
         """Deserializes the Network from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -1405,7 +1405,7 @@ class NetworkHealth:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NetworkHealth:
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkHealth:
         """Deserializes the NetworkHealth from a dictionary."""
         return cls(error_message=d.get("error_message", None), error_type=_enum(d, "error_type", ErrorType))
 
@@ -1443,7 +1443,7 @@ class NetworkVpcEndpoints:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NetworkVpcEndpoints:
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkVpcEndpoints:
         """Deserializes the NetworkVpcEndpoints from a dictionary."""
         return cls(dataplane_relay=d.get("dataplane_relay", None), rest_api=d.get("rest_api", None))
 
@@ -1475,7 +1475,7 @@ class NetworkWarning:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NetworkWarning:
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkWarning:
         """Deserializes the NetworkWarning from a dictionary."""
         return cls(warning_message=d.get("warning_message", None), warning_type=_enum(d, "warning_type", WarningType))
 
@@ -1573,7 +1573,7 @@ class PrivateAccessSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivateAccessSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivateAccessSettings:
         """Deserializes the PrivateAccessSettings from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -1599,7 +1599,7 @@ class ReplaceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceResponse:
         """Deserializes the ReplaceResponse from a dictionary."""
         return cls()
 
@@ -1626,7 +1626,7 @@ class RootBucketInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RootBucketInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RootBucketInfo:
         """Deserializes the RootBucketInfo from a dictionary."""
         return cls(bucket_name=d.get("bucket_name", None))
 
@@ -1679,7 +1679,7 @@ class StorageConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StorageConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> StorageConfiguration:
         """Deserializes the StorageConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -1718,7 +1718,7 @@ class StsRole:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StsRole:
+    def from_dict(cls, d: Dict[str, Any]) -> StsRole:
         """Deserializes the StsRole from a dictionary."""
         return cls(external_id=d.get("external_id", None), role_arn=d.get("role_arn", None))
 
@@ -1736,7 +1736,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -1833,7 +1833,7 @@ class UpdateWorkspaceRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceRequest:
         """Deserializes the UpdateWorkspaceRequest from a dictionary."""
         return cls(
             aws_region=d.get("aws_region", None),
@@ -1922,7 +1922,7 @@ class UpsertPrivateAccessSettingsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertPrivateAccessSettingsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertPrivateAccessSettingsRequest:
         """Deserializes the UpsertPrivateAccessSettingsRequest from a dictionary."""
         return cls(
             allowed_vpc_endpoint_ids=d.get("allowed_vpc_endpoint_ids", None),
@@ -2029,7 +2029,7 @@ class VpcEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VpcEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> VpcEndpoint:
         """Deserializes the VpcEndpoint from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -2277,7 +2277,7 @@ class Workspace:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Workspace:
+    def from_dict(cls, d: Dict[str, Any]) -> Workspace:
         """Deserializes the Workspace from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),

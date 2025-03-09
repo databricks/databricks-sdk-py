@@ -242,6 +242,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MYSQL
       :value: "MYSQL"
 
+   .. py:attribute:: ORACLE
+      :value: "ORACLE"
+
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
@@ -256,6 +259,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
+
+   .. py:attribute:: TERADATA
+      :value: "TERADATA"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -1358,6 +1364,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
+
+.. autoclass:: TagKeyValue
+   :members:
+   :undoc-members:
 
 .. autoclass:: TemporaryCredentials
    :members:

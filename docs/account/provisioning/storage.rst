@@ -25,43 +25,44 @@
             a = AccountClient()
             
             storage = a.storage.create(
-                storage_configuration_name=f'sdk-{time.time_ns()}',
-                root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]))
+                storage_configuration_name=f"sdk-{time.time_ns()}",
+                root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]),
+            )
             
             # cleanup
             a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
 
         Create new storage configuration.
-        
+
         Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
         object that represents the root AWS S3 bucket in your account. Databricks stores related workspace
         assets including DBFS, cluster logs, and job results. For the AWS S3 bucket, you need to configure the
         required bucket policy.
-        
+
         For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
-        
+
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-        
+
         :param storage_configuration_name: str
           The human-readable name of the storage configuration.
         :param root_bucket_info: :class:`RootBucketInfo`
           Root S3 bucket information.
-        
+
         :returns: :class:`StorageConfiguration`
         
 
     .. py:method:: delete(storage_configuration_id: str)
 
         Delete storage configuration.
-        
+
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
-        
+
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
-        
-        
+
+
         
 
     .. py:method:: get(storage_configuration_id: str) -> StorageConfiguration
@@ -78,18 +79,20 @@
             
             a = AccountClient()
             
-            storage = a.storage.create(storage_configuration_name=f'sdk-{time.time_ns()}',
-                                       root_bucket_info=provisioning.RootBucketInfo(bucket_name=f'sdk-{time.time_ns()}'))
+            storage = a.storage.create(
+                storage_configuration_name=f"sdk-{time.time_ns()}",
+                root_bucket_info=provisioning.RootBucketInfo(bucket_name=f"sdk-{time.time_ns()}"),
+            )
             
             by_id = a.storage.get(storage_configuration_id=storage.storage_configuration_id)
 
         Get storage configuration.
-        
+
         Gets a Databricks storage configuration for an account, both specified by ID.
-        
+
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
-        
+
         :returns: :class:`StorageConfiguration`
         
 
@@ -107,8 +110,8 @@
             configs = a.storage.list()
 
         Get all storage configurations.
-        
+
         Gets a list of all Databricks storage configurations for your account, specified by ID.
-        
+
         :returns: Iterator over :class:`StorageConfiguration`
         

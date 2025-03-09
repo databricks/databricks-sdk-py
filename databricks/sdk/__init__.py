@@ -5,7 +5,8 @@ from typing import Optional
 
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
-from databricks.sdk import azure, service
+import databricks.sdk.service as service
+from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt, FilesExt

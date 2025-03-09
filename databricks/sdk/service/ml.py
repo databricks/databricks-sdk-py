@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -123,7 +123,7 @@ class Activity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Activity:
+    def from_dict(cls, d: Dict[str, Any]) -> Activity:
         """Deserializes the Activity from a dictionary."""
         return cls(
             activity_type=_enum(d, "activity_type", ActivityType),
@@ -231,7 +231,7 @@ class ApproveTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequest:
         """Deserializes the ApproveTransitionRequest from a dictionary."""
         return cls(
             archive_existing_versions=d.get("archive_existing_versions", None),
@@ -262,7 +262,7 @@ class ApproveTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequestResponse:
         """Deserializes the ApproveTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, "activity", Activity))
 
@@ -334,7 +334,7 @@ class CommentObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CommentObject:
+    def from_dict(cls, d: Dict[str, Any]) -> CommentObject:
         """Deserializes the CommentObject from a dictionary."""
         return cls(
             available_actions=_repeated_enum(d, "available_actions", CommentActivityAction),
@@ -380,7 +380,7 @@ class CreateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateComment:
         """Deserializes the CreateComment from a dictionary."""
         return cls(comment=d.get("comment", None), name=d.get("name", None), version=d.get("version", None))
 
@@ -405,7 +405,7 @@ class CreateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCommentResponse:
         """Deserializes the CreateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, "comment", CommentObject))
 
@@ -448,7 +448,7 @@ class CreateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperiment:
         """Deserializes the CreateExperiment from a dictionary."""
         return cls(
             artifact_location=d.get("artifact_location", None),
@@ -477,7 +477,7 @@ class CreateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperimentResponse:
         """Deserializes the CreateExperimentResponse from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -516,7 +516,7 @@ class CreateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelRequest:
         """Deserializes the CreateModelRequest from a dictionary."""
         return cls(
             description=d.get("description", None), name=d.get("name", None), tags=_repeated_dict(d, "tags", ModelTag)
@@ -542,7 +542,7 @@ class CreateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelResponse:
         """Deserializes the CreateModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, "registered_model", Model))
 
@@ -604,7 +604,7 @@ class CreateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionRequest:
         """Deserializes the CreateModelVersionRequest from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -636,7 +636,7 @@ class CreateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionResponse:
         """Deserializes the CreateModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersion))
 
@@ -727,7 +727,7 @@ class CreateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRegistryWebhook:
         """Deserializes the CreateRegistryWebhook from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -744,6 +744,9 @@ class CreateRun:
     experiment_id: Optional[str] = None
     """ID of the associated experiment."""
 
+    run_name: Optional[str] = None
+    """The name of the run."""
+
     start_time: Optional[int] = None
     """Unix timestamp in milliseconds of when the run started."""
 
@@ -759,6 +762,8 @@ class CreateRun:
         body = {}
         if self.experiment_id is not None:
             body["experiment_id"] = self.experiment_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         if self.tags:
@@ -772,6 +777,8 @@ class CreateRun:
         body = {}
         if self.experiment_id is not None:
             body["experiment_id"] = self.experiment_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         if self.tags:
@@ -781,10 +788,11 @@ class CreateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRun:
         """Deserializes the CreateRun from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
+            run_name=d.get("run_name", None),
             start_time=d.get("start_time", None),
             tags=_repeated_dict(d, "tags", RunTag),
             user_id=d.get("user_id", None),
@@ -811,7 +819,7 @@ class CreateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRunResponse:
         """Deserializes the CreateRunResponse from a dictionary."""
         return cls(run=_from_dict(d, "run", Run))
 
@@ -865,7 +873,7 @@ class CreateTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequest:
         """Deserializes the CreateTransitionRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -895,7 +903,7 @@ class CreateTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequestResponse:
         """Deserializes the CreateTransitionRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, "request", TransitionRequest))
 
@@ -919,19 +927,29 @@ class CreateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateWebhookResponse:
         """Deserializes the CreateWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, "webhook", RegistryWebhook))
 
 
 @dataclass
 class Dataset:
-    digest: Optional[str] = None
+    """Dataset. Represents a reference to data used for training, testing, or evaluation during the
+    model development process."""
+
+    name: str
+    """The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”"""
+
+    digest: str
     """Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies it within datasets of
     the same name."""
 
-    name: Optional[str] = None
-    """The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”"""
+    source_type: str
+    """The type of the dataset source, e.g. ‘databricks-uc-table’, ‘DBFS’, ‘S3’, ..."""
+
+    source: str
+    """Source information for the dataset. Note that the source may not exactly reproduce the dataset
+    if it was transformed / modified before use with MLflow."""
 
     profile: Optional[str] = None
     """The profile of the dataset. Summary statistics for the dataset, such as the number of rows in a
@@ -940,13 +958,6 @@ class Dataset:
     schema: Optional[str] = None
     """The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe, MLflow TensorSpec JSON for
     an ndarray, or another schema format."""
-
-    source: Optional[str] = None
-    """The type of the dataset source, e.g. ‘databricks-uc-table’, ‘DBFS’, ‘S3’, ..."""
-
-    source_type: Optional[str] = None
-    """Source information for the dataset. Note that the source may not exactly reproduce the dataset
-    if it was transformed / modified before use with MLflow."""
 
     def as_dict(self) -> dict:
         """Serializes the Dataset into a dictionary suitable for use as a JSON request body."""
@@ -983,7 +994,7 @@ class Dataset:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dataset:
+    def from_dict(cls, d: Dict[str, Any]) -> Dataset:
         """Deserializes the Dataset from a dictionary."""
         return cls(
             digest=d.get("digest", None),
@@ -997,7 +1008,9 @@ class Dataset:
 
 @dataclass
 class DatasetInput:
-    dataset: Optional[Dataset] = None
+    """DatasetInput. Represents a dataset and input tags."""
+
+    dataset: Dataset
     """The dataset being used as a Run input."""
 
     tags: Optional[List[InputTag]] = None
@@ -1022,7 +1035,7 @@ class DatasetInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
+    def from_dict(cls, d: Dict[str, Any]) -> DatasetInput:
         """Deserializes the DatasetInput from a dictionary."""
         return cls(dataset=_from_dict(d, "dataset", Dataset), tags=_repeated_dict(d, "tags", InputTag))
 
@@ -1040,7 +1053,7 @@ class DeleteCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCommentResponse:
         """Deserializes the DeleteCommentResponse from a dictionary."""
         return cls()
 
@@ -1065,7 +1078,7 @@ class DeleteExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperiment:
         """Deserializes the DeleteExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -1083,7 +1096,7 @@ class DeleteExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperimentResponse:
         """Deserializes the DeleteExperimentResponse from a dictionary."""
         return cls()
 
@@ -1101,7 +1114,7 @@ class DeleteModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelResponse:
         """Deserializes the DeleteModelResponse from a dictionary."""
         return cls()
 
@@ -1119,7 +1132,7 @@ class DeleteModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelTagResponse:
         """Deserializes the DeleteModelTagResponse from a dictionary."""
         return cls()
 
@@ -1137,7 +1150,7 @@ class DeleteModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionResponse:
         """Deserializes the DeleteModelVersionResponse from a dictionary."""
         return cls()
 
@@ -1155,7 +1168,7 @@ class DeleteModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionTagResponse:
         """Deserializes the DeleteModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -1180,7 +1193,7 @@ class DeleteRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -1198,7 +1211,7 @@ class DeleteRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
         """Deserializes the DeleteRunResponse from a dictionary."""
         return cls()
 
@@ -1239,7 +1252,7 @@ class DeleteRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRuns:
         """Deserializes the DeleteRuns from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
@@ -1268,7 +1281,7 @@ class DeleteRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunsResponse:
         """Deserializes the DeleteRunsResponse from a dictionary."""
         return cls(runs_deleted=d.get("runs_deleted", None))
 
@@ -1300,7 +1313,7 @@ class DeleteTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTag:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTag:
         """Deserializes the DeleteTag from a dictionary."""
         return cls(key=d.get("key", None), run_id=d.get("run_id", None))
 
@@ -1318,7 +1331,7 @@ class DeleteTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTagResponse:
         """Deserializes the DeleteTagResponse from a dictionary."""
         return cls()
 
@@ -1336,7 +1349,7 @@ class DeleteTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTransitionRequestResponse:
         """Deserializes the DeleteTransitionRequestResponse from a dictionary."""
         return cls()
 
@@ -1362,13 +1375,15 @@ class DeleteWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteWebhookResponse:
         """Deserializes the DeleteWebhookResponse from a dictionary."""
         return cls()
 
 
 @dataclass
 class Experiment:
+    """An experiment and its metadata."""
+
     artifact_location: Optional[str] = None
     """Location where artifacts for the experiment are stored."""
 
@@ -1430,7 +1445,7 @@ class Experiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Experiment:
+    def from_dict(cls, d: Dict[str, Any]) -> Experiment:
         """Deserializes the Experiment from a dictionary."""
         return cls(
             artifact_location=d.get("artifact_location", None),
@@ -1484,7 +1499,7 @@ class ExperimentAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlRequest:
         """Deserializes the ExperimentAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -1542,7 +1557,7 @@ class ExperimentAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlResponse:
         """Deserializes the ExperimentAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", ExperimentPermission),
@@ -1585,7 +1600,7 @@ class ExperimentPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermission:
         """Deserializes the ExperimentPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1633,7 +1648,7 @@ class ExperimentPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissions:
         """Deserializes the ExperimentPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ExperimentAccessControlResponse),
@@ -1668,7 +1683,7 @@ class ExperimentPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsDescription:
         """Deserializes the ExperimentPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -1702,7 +1717,7 @@ class ExperimentPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsRequest:
         """Deserializes the ExperimentPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ExperimentAccessControlRequest),
@@ -1712,6 +1727,8 @@ class ExperimentPermissionsRequest:
 
 @dataclass
 class ExperimentTag:
+    """A tag for an experiment."""
+
     key: Optional[str] = None
     """The tag key."""
 
@@ -1737,13 +1754,15 @@ class ExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentTag:
         """Deserializes the ExperimentTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
 class FileInfo:
+    """Metadata of a single artifact file or directory."""
+
     file_size: Optional[int] = None
     """Size in bytes. Unset for directories."""
 
@@ -1776,9 +1795,34 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get("file_size", None), is_dir=d.get("is_dir", None), path=d.get("path", None))
+
+
+@dataclass
+class GetExperimentByNameResponse:
+    experiment: Optional[Experiment] = None
+    """Experiment details."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetExperimentByNameResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment:
+            body["experiment"] = self.experiment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetExperimentByNameResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment:
+            body["experiment"] = self.experiment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentByNameResponse:
+        """Deserializes the GetExperimentByNameResponse from a dictionary."""
+        return cls(experiment=_from_dict(d, "experiment", Experiment))
 
 
 @dataclass
@@ -1801,7 +1845,7 @@ class GetExperimentPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentPermissionLevelsResponse:
         """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ExperimentPermissionsDescription))
 
@@ -1826,7 +1870,7 @@ class GetExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentResponse:
         """Deserializes the GetExperimentResponse from a dictionary."""
         return cls(experiment=_from_dict(d, "experiment", Experiment))
 
@@ -1858,7 +1902,7 @@ class GetLatestVersionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsRequest:
         """Deserializes the GetLatestVersionsRequest from a dictionary."""
         return cls(name=d.get("name", None), stages=d.get("stages", None))
 
@@ -1884,7 +1928,7 @@ class GetLatestVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsResponse:
         """Deserializes the GetLatestVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, "model_versions", ModelVersion))
 
@@ -1892,10 +1936,13 @@ class GetLatestVersionsResponse:
 @dataclass
 class GetMetricHistoryResponse:
     metrics: Optional[List[Metric]] = None
-    """All logged values for this metric."""
+    """All logged values for this metric if `max_results` is not specified in the request or if the
+    total count of metrics returned is less than the service level pagination threshold. Otherwise,
+    this is one page of results."""
 
     next_page_token: Optional[str] = None
-    """Token that can be used to retrieve the next page of metric history results"""
+    """A token that can be used to issue a query for the next page of metric history values. A missing
+    token indicates that no additional metrics are available to fetch."""
 
     def as_dict(self) -> dict:
         """Serializes the GetMetricHistoryResponse into a dictionary suitable for use as a JSON request body."""
@@ -1916,7 +1963,7 @@ class GetMetricHistoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetricHistoryResponse:
         """Deserializes the GetMetricHistoryResponse from a dictionary."""
         return cls(metrics=_repeated_dict(d, "metrics", Metric), next_page_token=d.get("next_page_token", None))
 
@@ -1940,7 +1987,7 @@ class GetModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelResponse:
         """Deserializes the GetModelResponse from a dictionary."""
         return cls(registered_model_databricks=_from_dict(d, "registered_model_databricks", ModelDatabricks))
 
@@ -1965,7 +2012,7 @@ class GetModelVersionDownloadUriResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionDownloadUriResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionDownloadUriResponse:
         """Deserializes the GetModelVersionDownloadUriResponse from a dictionary."""
         return cls(artifact_uri=d.get("artifact_uri", None))
 
@@ -1989,7 +2036,7 @@ class GetModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionResponse:
         """Deserializes the GetModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersion))
 
@@ -2014,7 +2061,7 @@ class GetRegisteredModelPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRegisteredModelPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRegisteredModelPermissionLevelsResponse:
         """Deserializes the GetRegisteredModelPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", RegisteredModelPermissionsDescription))
 
@@ -2039,7 +2086,7 @@ class GetRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRunResponse:
         """Deserializes the GetRunResponse from a dictionary."""
         return cls(run=_from_dict(d, "run", Run))
 
@@ -2092,7 +2139,7 @@ class HttpUrlSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpec:
         """Deserializes the HttpUrlSpec from a dictionary."""
         return cls(
             authorization=d.get("authorization", None),
@@ -2133,17 +2180,19 @@ class HttpUrlSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
         return cls(enable_ssl_verification=d.get("enable_ssl_verification", None), url=d.get("url", None))
 
 
 @dataclass
 class InputTag:
-    key: Optional[str] = None
+    """Tag for a dataset input."""
+
+    key: str
     """The tag key."""
 
-    value: Optional[str] = None
+    value: str
     """The tag value."""
 
     def as_dict(self) -> dict:
@@ -2165,7 +2214,7 @@ class InputTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InputTag:
+    def from_dict(cls, d: Dict[str, Any]) -> InputTag:
         """Deserializes the InputTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -2205,7 +2254,7 @@ class JobSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpec:
         """Deserializes the JobSpec from a dictionary."""
         return cls(
             access_token=d.get("access_token", None),
@@ -2243,7 +2292,7 @@ class JobSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get("job_id", None), workspace_url=d.get("workspace_url", None))
 
@@ -2282,7 +2331,7 @@ class ListArtifactsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListArtifactsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListArtifactsResponse:
         """Deserializes the ListArtifactsResponse from a dictionary."""
         return cls(
             files=_repeated_dict(d, "files", FileInfo),
@@ -2319,7 +2368,7 @@ class ListExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
@@ -2352,7 +2401,7 @@ class ListModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelsResponse:
         """Deserializes the ListModelsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -2387,7 +2436,7 @@ class ListRegistryWebhooks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRegistryWebhooks:
         """Deserializes the ListRegistryWebhooks from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), webhooks=_repeated_dict(d, "webhooks", RegistryWebhook)
@@ -2414,7 +2463,7 @@ class ListTransitionRequestsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTransitionRequestsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTransitionRequestsResponse:
         """Deserializes the ListTransitionRequestsResponse from a dictionary."""
         return cls(requests=_repeated_dict(d, "requests", Activity))
 
@@ -2463,7 +2512,7 @@ class LogBatch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatch:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatch:
         """Deserializes the LogBatch from a dictionary."""
         return cls(
             metrics=_repeated_dict(d, "metrics", Metric),
@@ -2486,18 +2535,18 @@ class LogBatchResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatchResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatchResponse:
         """Deserializes the LogBatchResponse from a dictionary."""
         return cls()
 
 
 @dataclass
 class LogInputs:
+    run_id: str
+    """ID of the run to log under"""
+
     datasets: Optional[List[DatasetInput]] = None
     """Dataset inputs"""
-
-    run_id: Optional[str] = None
-    """ID of the run to log under"""
 
     def as_dict(self) -> dict:
         """Serializes the LogInputs into a dictionary suitable for use as a JSON request body."""
@@ -2518,7 +2567,7 @@ class LogInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
         return cls(datasets=_repeated_dict(d, "datasets", DatasetInput), run_id=d.get("run_id", None))
 
@@ -2536,7 +2585,7 @@ class LogInputsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputsResponse:
         """Deserializes the LogInputsResponse from a dictionary."""
         return cls()
 
@@ -2556,8 +2605,8 @@ class LogMetric:
     """ID of the run under which to log the metric. Must be provided."""
 
     run_uuid: Optional[str] = None
-    """[Deprecated, use run_id instead] ID of the run under which to log the metric. This field will be
-    removed in a future MLflow version."""
+    """[Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will
+    be removed in a future MLflow version."""
 
     step: Optional[int] = None
     """Step at which to log the metric"""
@@ -2597,7 +2646,7 @@ class LogMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetric:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetric:
         """Deserializes the LogMetric from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2622,7 +2671,7 @@ class LogMetricResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetricResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetricResponse:
         """Deserializes the LogMetricResponse from a dictionary."""
         return cls()
 
@@ -2654,7 +2703,7 @@ class LogModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModel:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get("model_json", None), run_id=d.get("run_id", None))
 
@@ -2672,7 +2721,7 @@ class LogModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModelResponse:
         """Deserializes the LogModelResponse from a dictionary."""
         return cls()
 
@@ -2689,8 +2738,8 @@ class LogParam:
     """ID of the run under which to log the param. Must be provided."""
 
     run_uuid: Optional[str] = None
-    """[Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
-    removed in a future MLflow version."""
+    """[Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will
+    be removed in a future MLflow version."""
 
     def as_dict(self) -> dict:
         """Serializes the LogParam into a dictionary suitable for use as a JSON request body."""
@@ -2719,7 +2768,7 @@ class LogParam:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParam:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParam:
         """Deserializes the LogParam from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2742,13 +2791,15 @@ class LogParamResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParamResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParamResponse:
         """Deserializes the LogParamResponse from a dictionary."""
         return cls()
 
 
 @dataclass
 class Metric:
+    """Metric associated with a run, represented as a key-value pair."""
+
     key: Optional[str] = None
     """Key identifying this metric."""
 
@@ -2788,7 +2839,7 @@ class Metric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Metric:
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
         """Deserializes the Metric from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -2861,7 +2912,7 @@ class Model:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Model:
+    def from_dict(cls, d: Dict[str, Any]) -> Model:
         """Deserializes the Model from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -2951,7 +3002,7 @@ class ModelDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelDatabricks:
         """Deserializes the ModelDatabricks from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -2993,7 +3044,7 @@ class ModelTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTag:
         """Deserializes the ModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3103,7 +3154,7 @@ class ModelVersion:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersion:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersion:
         """Deserializes the ModelVersion from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3250,7 +3301,7 @@ class ModelVersionDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3305,13 +3356,15 @@ class ModelVersionTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
 class Param:
+    """Param associated with a run."""
+
     key: Optional[str] = None
     """Key identifying this param."""
 
@@ -3337,7 +3390,7 @@ class Param:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Param:
+    def from_dict(cls, d: Dict[str, Any]) -> Param:
         """Deserializes the Param from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3394,7 +3447,7 @@ class RegisteredModelAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlRequest:
         """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -3452,7 +3505,7 @@ class RegisteredModelAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlResponse:
         """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", RegisteredModelPermission),
@@ -3495,7 +3548,7 @@ class RegisteredModelPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermission:
         """Deserializes the RegisteredModelPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -3545,7 +3598,7 @@ class RegisteredModelPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissions:
         """Deserializes the RegisteredModelPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RegisteredModelAccessControlResponse),
@@ -3580,7 +3633,7 @@ class RegisteredModelPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsDescription:
         """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -3614,7 +3667,7 @@ class RegisteredModelPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsRequest:
         """Deserializes the RegisteredModelPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", RegisteredModelAccessControlRequest),
@@ -3729,7 +3782,7 @@ class RegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> RegistryWebhook:
         """Deserializes the RegistryWebhook from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3823,7 +3876,7 @@ class RejectTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequest:
         """Deserializes the RejectTransitionRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -3853,7 +3906,7 @@ class RejectTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequestResponse:
         """Deserializes the RejectTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, "activity", Activity))
 
@@ -3885,7 +3938,7 @@ class RenameModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelRequest:
         """Deserializes the RenameModelRequest from a dictionary."""
         return cls(name=d.get("name", None), new_name=d.get("new_name", None))
 
@@ -3909,7 +3962,7 @@ class RenameModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelResponse:
         """Deserializes the RenameModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, "registered_model", Model))
 
@@ -3934,7 +3987,7 @@ class RestoreExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperiment:
         """Deserializes the RestoreExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
@@ -3952,7 +4005,7 @@ class RestoreExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperimentResponse:
         """Deserializes the RestoreExperimentResponse from a dictionary."""
         return cls()
 
@@ -3977,7 +4030,7 @@ class RestoreRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get("run_id", None))
 
@@ -3995,7 +4048,7 @@ class RestoreRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunResponse:
         """Deserializes the RestoreRunResponse from a dictionary."""
         return cls()
 
@@ -4036,7 +4089,7 @@ class RestoreRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRuns:
         """Deserializes the RestoreRuns from a dictionary."""
         return cls(
             experiment_id=d.get("experiment_id", None),
@@ -4065,13 +4118,15 @@ class RestoreRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunsResponse:
         """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get("runs_restored", None))
 
 
 @dataclass
 class Run:
+    """A single run."""
+
     data: Optional[RunData] = None
     """Run data."""
 
@@ -4104,7 +4159,7 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Run:
+    def from_dict(cls, d: Dict[str, Any]) -> Run:
         """Deserializes the Run from a dictionary."""
         return cls(
             data=_from_dict(d, "data", RunData),
@@ -4115,6 +4170,8 @@ class Run:
 
 @dataclass
 class RunData:
+    """Run data (metrics, params, and tags)."""
+
     metrics: Optional[List[Metric]] = None
     """Run metrics."""
 
@@ -4147,7 +4204,7 @@ class RunData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunData:
+    def from_dict(cls, d: Dict[str, Any]) -> RunData:
         """Deserializes the RunData from a dictionary."""
         return cls(
             metrics=_repeated_dict(d, "metrics", Metric),
@@ -4158,10 +4215,12 @@ class RunData:
 
 @dataclass
 class RunInfo:
+    """Metadata of a single run."""
+
     artifact_uri: Optional[str] = None
     """URI of the directory where artifacts should be uploaded. This can be a local path (starting with
-    "/"), or a distributed file system (DFS) path, like `s3://bucket/directory` or
-    `dbfs:/my/directory`. If not set, the local `./mlruns` directory is chosen."""
+    "/"), or a distributed file system (DFS) path, like ``s3://bucket/directory`` or
+    ``dbfs:/my/directory``. If not set, the local ``./mlruns`` directory is chosen."""
 
     end_time: Optional[int] = None
     """Unix timestamp of when the run ended in milliseconds."""
@@ -4174,6 +4233,9 @@ class RunInfo:
 
     run_id: Optional[str] = None
     """Unique identifier for the run."""
+
+    run_name: Optional[str] = None
+    """The name of the run."""
 
     run_uuid: Optional[str] = None
     """[Deprecated, use run_id instead] Unique identifier for the run. This field will be removed in a
@@ -4202,6 +4264,8 @@ class RunInfo:
             body["lifecycle_stage"] = self.lifecycle_stage
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.run_uuid is not None:
             body["run_uuid"] = self.run_uuid
         if self.start_time is not None:
@@ -4225,6 +4289,8 @@ class RunInfo:
             body["lifecycle_stage"] = self.lifecycle_stage
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.run_uuid is not None:
             body["run_uuid"] = self.run_uuid
         if self.start_time is not None:
@@ -4236,7 +4302,7 @@ class RunInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInfo:
         """Deserializes the RunInfo from a dictionary."""
         return cls(
             artifact_uri=d.get("artifact_uri", None),
@@ -4244,6 +4310,7 @@ class RunInfo:
             experiment_id=d.get("experiment_id", None),
             lifecycle_stage=d.get("lifecycle_stage", None),
             run_id=d.get("run_id", None),
+            run_name=d.get("run_name", None),
             run_uuid=d.get("run_uuid", None),
             start_time=d.get("start_time", None),
             status=_enum(d, "status", RunInfoStatus),
@@ -4252,7 +4319,7 @@ class RunInfo:
 
 
 class RunInfoStatus(Enum):
-    """Current status of the run."""
+    """Status of a run."""
 
     FAILED = "FAILED"
     FINISHED = "FINISHED"
@@ -4263,6 +4330,8 @@ class RunInfoStatus(Enum):
 
 @dataclass
 class RunInputs:
+    """Run inputs."""
+
     dataset_inputs: Optional[List[DatasetInput]] = None
     """Run metrics."""
 
@@ -4281,13 +4350,15 @@ class RunInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInputs:
         """Deserializes the RunInputs from a dictionary."""
         return cls(dataset_inputs=_repeated_dict(d, "dataset_inputs", DatasetInput))
 
 
 @dataclass
 class RunTag:
+    """Tag for a run."""
+
     key: Optional[str] = None
     """The tag key."""
 
@@ -4313,7 +4384,7 @@ class RunTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunTag:
+    def from_dict(cls, d: Dict[str, Any]) -> RunTag:
         """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -4334,7 +4405,7 @@ class SearchExperiments:
     page_token: Optional[str] = None
     """Token indicating the page of experiments to fetch"""
 
-    view_type: Optional[SearchExperimentsViewType] = None
+    view_type: Optional[ViewType] = None
     """Qualifier for type of experiments to be returned. If unspecified, return only active
     experiments."""
 
@@ -4369,14 +4440,14 @@ class SearchExperiments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperiments:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperiments:
         """Deserializes the SearchExperiments from a dictionary."""
         return cls(
             filter=d.get("filter", None),
             max_results=d.get("max_results", None),
             order_by=d.get("order_by", None),
             page_token=d.get("page_token", None),
-            view_type=_enum(d, "view_type", SearchExperimentsViewType),
+            view_type=_enum(d, "view_type", ViewType),
         )
 
 
@@ -4408,20 +4479,11 @@ class SearchExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperimentsResponse:
         """Deserializes the SearchExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
         )
-
-
-class SearchExperimentsViewType(Enum):
-    """Qualifier for type of experiments to be returned. If unspecified, return only active
-    experiments."""
-
-    ACTIVE_ONLY = "ACTIVE_ONLY"
-    ALL = "ALL"
-    DELETED_ONLY = "DELETED_ONLY"
 
 
 @dataclass
@@ -4451,7 +4513,7 @@ class SearchModelVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelVersionsResponse:
         """Deserializes the SearchModelVersionsResponse from a dictionary."""
         return cls(
             model_versions=_repeated_dict(d, "model_versions", ModelVersion),
@@ -4486,7 +4548,7 @@ class SearchModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelsResponse:
         """Deserializes the SearchModelsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -4516,15 +4578,15 @@ class SearchRuns:
 
     order_by: Optional[List[str]] = None
     """List of columns to be ordered by, including attributes, params, metrics, and tags with an
-    optional "DESC" or "ASC" annotation, where "ASC" is the default. Example: ["params.input DESC",
-    "metrics.alpha ASC", "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
-    for runs with the same start time (and this is the default ordering criterion if order_by is not
-    provided)."""
+    optional `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input
+    DESC", "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed
+    by `run_id` for runs with the same start time (and this is the default ordering criterion if
+    order_by is not provided)."""
 
     page_token: Optional[str] = None
     """Token for the current page of runs."""
 
-    run_view_type: Optional[SearchRunsRunViewType] = None
+    run_view_type: Optional[ViewType] = None
     """Whether to display only active, only deleted, or all runs. Defaults to only active runs."""
 
     def as_dict(self) -> dict:
@@ -4562,7 +4624,7 @@ class SearchRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRuns:
         """Deserializes the SearchRuns from a dictionary."""
         return cls(
             experiment_ids=d.get("experiment_ids", None),
@@ -4570,7 +4632,7 @@ class SearchRuns:
             max_results=d.get("max_results", None),
             order_by=d.get("order_by", None),
             page_token=d.get("page_token", None),
-            run_view_type=_enum(d, "run_view_type", SearchRunsRunViewType),
+            run_view_type=_enum(d, "run_view_type", ViewType),
         )
 
 
@@ -4601,17 +4663,9 @@ class SearchRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", Run))
-
-
-class SearchRunsRunViewType(Enum):
-    """Whether to display only active, only deleted, or all runs. Defaults to only active runs."""
-
-    ACTIVE_ONLY = "ACTIVE_ONLY"
-    ALL = "ALL"
-    DELETED_ONLY = "DELETED_ONLY"
 
 
 @dataclass
@@ -4620,12 +4674,10 @@ class SetExperimentTag:
     """ID of the experiment under which to log the tag. Must be provided."""
 
     key: str
-    """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-    support key values up to 250 bytes in size."""
+    """Name of the tag. Keys up to 250 bytes in size are supported."""
 
     value: str
-    """String value of the tag being logged. Maximum size depends on storage backend. All storage
-    backends are guaranteed to support key values up to 5000 bytes in size."""
+    """String value of the tag being logged. Values up to 64KB in size are supported."""
 
     def as_dict(self) -> dict:
         """Serializes the SetExperimentTag into a dictionary suitable for use as a JSON request body."""
@@ -4650,7 +4702,7 @@ class SetExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTag:
         """Deserializes the SetExperimentTag from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None), key=d.get("key", None), value=d.get("value", None))
 
@@ -4668,7 +4720,7 @@ class SetExperimentTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTagResponse:
         """Deserializes the SetExperimentTagResponse from a dictionary."""
         return cls()
 
@@ -4710,7 +4762,7 @@ class SetModelTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get("key", None), name=d.get("name", None), value=d.get("value", None))
 
@@ -4728,7 +4780,7 @@ class SetModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagResponse:
         """Deserializes the SetModelTagResponse from a dictionary."""
         return cls()
 
@@ -4777,7 +4829,7 @@ class SetModelVersionTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagRequest:
         """Deserializes the SetModelVersionTagRequest from a dictionary."""
         return cls(
             key=d.get("key", None), name=d.get("name", None), value=d.get("value", None), version=d.get("version", None)
@@ -4797,7 +4849,7 @@ class SetModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagResponse:
         """Deserializes the SetModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -4805,18 +4857,16 @@ class SetModelVersionTagResponse:
 @dataclass
 class SetTag:
     key: str
-    """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-    support key values up to 250 bytes in size."""
+    """Name of the tag. Keys up to 250 bytes in size are supported."""
 
     value: str
-    """String value of the tag being logged. Maximum size depends on storage backend. All storage
-    backends are guaranteed to support key values up to 5000 bytes in size."""
+    """String value of the tag being logged. Values up to 64KB in size are supported."""
 
     run_id: Optional[str] = None
     """ID of the run under which to log the tag. Must be provided."""
 
     run_uuid: Optional[str] = None
-    """[Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
+    """[Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be
     removed in a future MLflow version."""
 
     def as_dict(self) -> dict:
@@ -4846,7 +4896,7 @@ class SetTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTag:
         """Deserializes the SetTag from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -4869,7 +4919,7 @@ class SetTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTagResponse:
         """Deserializes the SetTagResponse from a dictionary."""
         return cls()
 
@@ -4933,7 +4983,7 @@ class TestRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhook:
         """Deserializes the TestRegistryWebhook from a dictionary."""
         return cls(body=d.get("body", None), status_code=d.get("status_code", None))
 
@@ -4966,7 +5016,7 @@ class TestRegistryWebhookRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookRequest:
         """Deserializes the TestRegistryWebhookRequest from a dictionary."""
         return cls(event=_enum(d, "event", RegistryWebhookEvent), id=d.get("id", None))
 
@@ -4991,7 +5041,7 @@ class TestRegistryWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookResponse:
         """Deserializes the TestRegistryWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, "webhook", TestRegistryWebhook))
 
@@ -5052,7 +5102,7 @@ class TransitionModelVersionStageDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionModelVersionStageDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionModelVersionStageDatabricks:
         """Deserializes the TransitionModelVersionStageDatabricks from a dictionary."""
         return cls(
             archive_existing_versions=d.get("archive_existing_versions", None),
@@ -5121,7 +5171,7 @@ class TransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionRequest:
         """Deserializes the TransitionRequest from a dictionary."""
         return cls(
             available_actions=_repeated_enum(d, "available_actions", ActivityAction),
@@ -5151,7 +5201,7 @@ class TransitionStageResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionStageResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version=_from_dict(d, "model_version", ModelVersionDatabricks))
 
@@ -5183,7 +5233,7 @@ class UpdateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateComment:
         """Deserializes the UpdateComment from a dictionary."""
         return cls(comment=d.get("comment", None), id=d.get("id", None))
 
@@ -5208,7 +5258,7 @@ class UpdateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCommentResponse:
         """Deserializes the UpdateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, "comment", CommentObject))
 
@@ -5240,7 +5290,7 @@ class UpdateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperiment:
         """Deserializes the UpdateExperiment from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None), new_name=d.get("new_name", None))
 
@@ -5258,7 +5308,7 @@ class UpdateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperimentResponse:
         """Deserializes the UpdateExperimentResponse from a dictionary."""
         return cls()
 
@@ -5290,7 +5340,7 @@ class UpdateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get("description", None), name=d.get("name", None))
 
@@ -5308,7 +5358,7 @@ class UpdateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelResponse:
         """Deserializes the UpdateModelResponse from a dictionary."""
         return cls()
 
@@ -5347,7 +5397,7 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(description=d.get("description", None), name=d.get("name", None), version=d.get("version", None))
 
@@ -5365,7 +5415,7 @@ class UpdateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionResponse:
         """Deserializes the UpdateModelVersionResponse from a dictionary."""
         return cls()
 
@@ -5456,7 +5506,7 @@ class UpdateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegistryWebhook:
         """Deserializes the UpdateRegistryWebhook from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -5476,8 +5526,11 @@ class UpdateRun:
     run_id: Optional[str] = None
     """ID of the run to update. Must be provided."""
 
+    run_name: Optional[str] = None
+    """Updated name of the run."""
+
     run_uuid: Optional[str] = None
-    """[Deprecated, use run_id instead] ID of the run to update.. This field will be removed in a
+    """[Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a
     future MLflow version."""
 
     status: Optional[UpdateRunStatus] = None
@@ -5490,6 +5543,8 @@ class UpdateRun:
             body["end_time"] = self.end_time
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.run_uuid is not None:
             body["run_uuid"] = self.run_uuid
         if self.status is not None:
@@ -5503,6 +5558,8 @@ class UpdateRun:
             body["end_time"] = self.end_time
         if self.run_id is not None:
             body["run_id"] = self.run_id
+        if self.run_name is not None:
+            body["run_name"] = self.run_name
         if self.run_uuid is not None:
             body["run_uuid"] = self.run_uuid
         if self.status is not None:
@@ -5510,11 +5567,12 @@ class UpdateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRun:
         """Deserializes the UpdateRun from a dictionary."""
         return cls(
             end_time=d.get("end_time", None),
             run_id=d.get("run_id", None),
+            run_name=d.get("run_name", None),
             run_uuid=d.get("run_uuid", None),
             status=_enum(d, "status", UpdateRunStatus),
         )
@@ -5540,13 +5598,13 @@ class UpdateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRunResponse:
         """Deserializes the UpdateRunResponse from a dictionary."""
         return cls(run_info=_from_dict(d, "run_info", RunInfo))
 
 
 class UpdateRunStatus(Enum):
-    """Updated status of the run."""
+    """Status of a run."""
 
     FAILED = "FAILED"
     FINISHED = "FINISHED"
@@ -5568,9 +5626,17 @@ class UpdateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWebhookResponse:
         """Deserializes the UpdateWebhookResponse from a dictionary."""
         return cls()
+
+
+class ViewType(Enum):
+    """Qualifier for the view type."""
+
+    ACTIVE_ONLY = "ACTIVE_ONLY"
+    ALL = "ALL"
+    DELETED_ONLY = "DELETED_ONLY"
 
 
 class ExperimentsAPI:
@@ -5593,7 +5659,7 @@ class ExperimentsAPI:
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
-        Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name exists.
+        Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists.
 
         :param name: str
           Experiment name.
@@ -5627,6 +5693,7 @@ class ExperimentsAPI:
         self,
         *,
         experiment_id: Optional[str] = None,
+        run_name: Optional[str] = None,
         start_time: Optional[int] = None,
         tags: Optional[List[RunTag]] = None,
         user_id: Optional[str] = None,
@@ -5634,11 +5701,13 @@ class ExperimentsAPI:
         """Create a run.
 
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
-        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag`
+        data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
         associated with a single execution.
 
         :param experiment_id: str (optional)
           ID of the associated experiment.
+        :param run_name: str (optional)
+          The name of the run.
         :param start_time: int (optional)
           Unix timestamp in milliseconds of when the run started.
         :param tags: List[:class:`RunTag`] (optional)
@@ -5652,6 +5721,8 @@ class ExperimentsAPI:
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
+        if run_name is not None:
+            body["run_name"] = run_name
         if start_time is not None:
             body["start_time"] = start_time
         if tags is not None:
@@ -5670,7 +5741,7 @@ class ExperimentsAPI:
         """Delete an experiment.
 
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
-        experiment uses FileStore, artifacts associated with experiment are also deleted.
+        experiment uses FileStore, artifacts associated with the experiment are also deleted.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -5714,7 +5785,7 @@ class ExperimentsAPI:
 
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
         most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
+        client code snippet on
 
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -5743,7 +5814,7 @@ class ExperimentsAPI:
         return DeleteRunsResponse.from_dict(res)
 
     def delete_tag(self, run_id: str, key: str):
-        """Delete a tag.
+        """Delete a tag on a run.
 
         Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
         completes.
@@ -5767,8 +5838,8 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
-    def get_by_name(self, experiment_name: str) -> GetExperimentResponse:
-        """Get metadata.
+    def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
+        """Get an experiment by name.
 
         Gets metadata for an experiment.
 
@@ -5781,7 +5852,7 @@ class ExperimentsAPI:
         :param experiment_name: str
           Name of the associated experiment.
 
-        :returns: :class:`GetExperimentResponse`
+        :returns: :class:`GetExperimentByNameResponse`
         """
 
         query = {}
@@ -5792,7 +5863,7 @@ class ExperimentsAPI:
         }
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
-        return GetExperimentResponse.from_dict(res)
+        return GetExperimentByNameResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
@@ -5824,7 +5895,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[Metric]:
-        """Get history of a given metric within a run.
+        """Get metric history for a run.
 
         Gets a list of all values for the specified metric for a given run.
 
@@ -5838,8 +5909,8 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run from which to fetch metric values. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be
-          removed in a future MLflow version.
+          [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will
+          be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
         """
@@ -5915,7 +5986,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to fetch. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run to fetch. This field will be removed in a future
+          [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future
           MLflow version.
 
         :returns: :class:`GetRunResponse`
@@ -5941,13 +6012,13 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[FileInfo]:
-        """Get all artifacts.
+        """List artifacts.
 
-        List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
-        contains only artifacts with the specified prefix. This API does not support pagination when listing
-        artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-        `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-        pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
+        List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
+        UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
+        which supports pagination. See [List directory contents | Files
+        API](/api/workspace/files/listdirectorycontents).
 
         :param page_token: str (optional)
           Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
@@ -5959,7 +6030,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run whose artifacts to list. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run whose artifacts to list. This field will be removed
+          [Deprecated, use `run_id` instead] ID of the run whose artifacts to list. This field will be removed
           in a future MLflow version.
 
         :returns: Iterator over :class:`FileInfo`
@@ -5988,7 +6059,11 @@ class ExperimentsAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_experiments(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, view_type: Optional[str] = None
+        self,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+        view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
         """List experiments.
 
@@ -6000,7 +6075,7 @@ class ExperimentsAPI:
           encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.
         :param page_token: str (optional)
           Token indicating the page of experiments to fetch
-        :param view_type: str (optional)
+        :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
         :returns: Iterator over :class:`Experiment`
@@ -6012,7 +6087,7 @@ class ExperimentsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         if view_type is not None:
-            query["view_type"] = view_type
+            query["view_type"] = view_type.value
         headers = {
             "Accept": "application/json",
         }
@@ -6034,7 +6109,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         tags: Optional[List[RunTag]] = None,
     ):
-        """Log a batch.
+        """Log a batch of metrics/params/tags for a run.
 
         Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
         will respond with an error (non-200 status code).
@@ -6060,16 +6135,22 @@ class ExperimentsAPI:
         Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
         in size and contain:
 
-        * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics * Up to 100 params * Up to
-        100 tags
+        * No more than 1000 metrics, params, and tags in total
+
+        * Up to 1000 metrics
+
+        * Up to 100 params
+
+        * Up to 100 tags
 
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
         metrics, 50 params, and 51 tags is invalid.
 
         The following limits also apply to metric, param, and tag keys and values:
 
-        * Metric keys, param keys, and tag keys can be up to 250 characters in length * Parameter and tag
-        values can be up to 250 characters in length
+        * Metric keys, param keys, and tag keys can be up to 250 characters in length
+
+        * Parameter and tag values can be up to 250 characters in length
 
         :param metrics: List[:class:`Metric`] (optional)
           Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
@@ -6101,15 +6182,17 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
-    def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
+    def log_inputs(self, run_id: str, *, datasets: Optional[List[DatasetInput]] = None):
         """Log inputs to a run.
 
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
 
+        Logs inputs, such as datasets and models, to an MLflow Run.
+
+        :param run_id: str
+          ID of the run to log under
         :param datasets: List[:class:`DatasetInput`] (optional)
           Dataset inputs
-        :param run_id: str (optional)
-          ID of the run to log under
 
 
         """
@@ -6135,9 +6218,9 @@ class ExperimentsAPI:
         run_uuid: Optional[str] = None,
         step: Optional[int] = None,
     ):
-        """Log a metric.
+        """Log a metric for a run.
 
-        Logs a metric for a run. A metric is a key-value pair (string key, float value) with an associated
+        Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
         logged multiple times.
 
@@ -6150,7 +6233,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run under which to log the metric. This field will be
+          [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be
           removed in a future MLflow version.
         :param step: int (optional)
           Step at which to log the metric
@@ -6202,7 +6285,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
     def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Log a param.
+        """Log a param for a run.
 
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
@@ -6215,7 +6298,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run under which to log the param. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
+          [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
 
 
@@ -6237,7 +6320,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
-        """Restores an experiment.
+        """Restore an experiment.
 
         Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
@@ -6263,7 +6346,9 @@ class ExperimentsAPI:
     def restore_run(self, run_id: str):
         """Restore a run.
 
-        Restores a deleted run.
+        Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
+
+        Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
 
         :param run_id: str
           ID of the run to restore.
@@ -6287,7 +6372,7 @@ class ExperimentsAPI:
 
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
         at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
-        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
+        client code snippet on
 
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.
@@ -6322,7 +6407,7 @@ class ExperimentsAPI:
         max_results: Optional[int] = None,
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
-        view_type: Optional[SearchExperimentsViewType] = None,
+        view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
         """Search experiments.
 
@@ -6338,7 +6423,7 @@ class ExperimentsAPI:
           done by experiment id DESC.
         :param page_token: str (optional)
           Token indicating the page of experiments to fetch
-        :param view_type: :class:`SearchExperimentsViewType` (optional)
+        :param view_type: :class:`ViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
         :returns: Iterator over :class:`Experiment`
@@ -6376,13 +6461,13 @@ class ExperimentsAPI:
         max_results: Optional[int] = None,
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
-        run_view_type: Optional[SearchRunsRunViewType] = None,
+        run_view_type: Optional[ViewType] = None,
     ) -> Iterator[Run]:
         """Search for runs.
 
         Searches for runs that satisfy expressions.
 
-        Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
+        Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.
@@ -6401,13 +6486,13 @@ class ExperimentsAPI:
           Maximum number of runs desired. Max threshold is 50000
         :param order_by: List[str] (optional)
           List of columns to be ordered by, including attributes, params, metrics, and tags with an optional
-          "DESC" or "ASC" annotation, where "ASC" is the default. Example: ["params.input DESC",
-          "metrics.alpha ASC", "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id for
-          runs with the same start time (and this is the default ordering criterion if order_by is not
+          `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",
+          "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`
+          for runs with the same start time (and this is the default ordering criterion if order_by is not
           provided).
         :param page_token: str (optional)
           Token for the current page of runs.
-        :param run_view_type: :class:`SearchRunsRunViewType` (optional)
+        :param run_view_type: :class:`ViewType` (optional)
           Whether to display only active, only deleted, or all runs. Defaults to only active runs.
 
         :returns: Iterator over :class:`Run`
@@ -6440,18 +6525,16 @@ class ExperimentsAPI:
             body["page_token"] = json["next_page_token"]
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
-        """Set a tag.
+        """Set a tag for an experiment.
 
         Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
         :param key: str
-          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-          support key values up to 250 bytes in size.
+          Name of the tag. Keys up to 250 bytes in size are supported.
         :param value: str
-          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
-          are guaranteed to support key values up to 5000 bytes in size.
+          String value of the tag being logged. Values up to 64KB in size are supported.
 
 
         """
@@ -6495,20 +6578,18 @@ class ExperimentsAPI:
         return ExperimentPermissions.from_dict(res)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Set a tag.
+        """Set a tag for a run.
 
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
 
         :param key: str
-          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-          support key values up to 250 bytes in size.
+          Name of the tag. Keys up to 250 bytes in size are supported.
         :param value: str
-          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
-          are guaranteed to support key values up to 5000 bytes in size.
+          String value of the tag being logged. Values up to 64KB in size are supported.
         :param run_id: str (optional)
           ID of the run under which to log the tag. Must be provided.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
+          [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
 
 
@@ -6582,6 +6663,7 @@ class ExperimentsAPI:
         *,
         end_time: Optional[int] = None,
         run_id: Optional[str] = None,
+        run_name: Optional[str] = None,
         run_uuid: Optional[str] = None,
         status: Optional[UpdateRunStatus] = None,
     ) -> UpdateRunResponse:
@@ -6593,8 +6675,10 @@ class ExperimentsAPI:
           Unix timestamp in milliseconds of when the run ended.
         :param run_id: str (optional)
           ID of the run to update. Must be provided.
+        :param run_name: str (optional)
+          Updated name of the run.
         :param run_uuid: str (optional)
-          [Deprecated, use run_id instead] ID of the run to update.. This field will be removed in a future
+          [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future
           MLflow version.
         :param status: :class:`UpdateRunStatus` (optional)
           Updated status of the run.
@@ -6606,6 +6690,8 @@ class ExperimentsAPI:
             body["end_time"] = end_time
         if run_id is not None:
             body["run_id"] = run_id
+        if run_name is not None:
+            body["run_name"] = run_name
         if run_uuid is not None:
             body["run_uuid"] = run_uuid
         if status is not None:

@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -31,6 +31,8 @@ class App:
 
     app_status: Optional[ApplicationStatus] = None
 
+    budget_policy_id: Optional[str] = None
+
     compute_status: Optional[ComputeStatus] = None
 
     create_time: Optional[str] = None
@@ -45,6 +47,8 @@ class App:
 
     description: Optional[str] = None
     """The description of the app."""
+
+    effective_budget_policy_id: Optional[str] = None
 
     id: Optional[str] = None
     """The unique identifier of the app."""
@@ -78,6 +82,8 @@ class App:
             body["active_deployment"] = self.active_deployment.as_dict()
         if self.app_status:
             body["app_status"] = self.app_status.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.compute_status:
             body["compute_status"] = self.compute_status.as_dict()
         if self.create_time is not None:
@@ -88,6 +94,8 @@ class App:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -117,6 +125,8 @@ class App:
             body["active_deployment"] = self.active_deployment
         if self.app_status:
             body["app_status"] = self.app_status
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.compute_status:
             body["compute_status"] = self.compute_status
         if self.create_time is not None:
@@ -127,6 +137,8 @@ class App:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -150,16 +162,18 @@ class App:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> App:
+    def from_dict(cls, d: Dict[str, Any]) -> App:
         """Deserializes the App from a dictionary."""
         return cls(
             active_deployment=_from_dict(d, "active_deployment", AppDeployment),
             app_status=_from_dict(d, "app_status", ApplicationStatus),
+            budget_policy_id=d.get("budget_policy_id", None),
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             id=d.get("id", None),
             name=d.get("name", None),
             pending_deployment=_from_dict(d, "pending_deployment", AppDeployment),
@@ -214,7 +228,7 @@ class AppAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlRequest:
         """Deserializes the AppAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -272,7 +286,7 @@ class AppAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlResponse:
         """Deserializes the AppAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", AppPermission),
@@ -356,7 +370,7 @@ class AppDeployment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppDeployment:
+    def from_dict(cls, d: Dict[str, Any]) -> AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(
             create_time=d.get("create_time", None),
@@ -390,7 +404,7 @@ class AppDeploymentArtifacts:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppDeploymentArtifacts:
+    def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentArtifacts:
         """Deserializes the AppDeploymentArtifacts from a dictionary."""
         return cls(source_code_path=d.get("source_code_path", None))
 
@@ -436,7 +450,7 @@ class AppDeploymentStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppDeploymentStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentStatus:
         """Deserializes the AppDeploymentStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", AppDeploymentState))
 
@@ -473,7 +487,7 @@ class AppPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> AppPermission:
         """Deserializes the AppPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -520,7 +534,7 @@ class AppPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> AppPermissions:
         """Deserializes the AppPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlResponse),
@@ -555,7 +569,7 @@ class AppPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsDescription:
         """Deserializes the AppPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", AppPermissionLevel)
@@ -588,7 +602,7 @@ class AppPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsRequest:
         """Deserializes the AppPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlRequest),
@@ -647,7 +661,7 @@ class AppResource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppResource:
+    def from_dict(cls, d: Dict[str, Any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -687,7 +701,7 @@ class AppResourceJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppResourceJob:
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceJob:
         """Deserializes the AppResourceJob from a dictionary."""
         return cls(id=d.get("id", None), permission=_enum(d, "permission", AppResourceJobJobPermission))
 
@@ -735,7 +749,7 @@ class AppResourceSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppResourceSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceSecret:
         """Deserializes the AppResourceSecret from a dictionary."""
         return cls(
             key=d.get("key", None),
@@ -780,7 +794,7 @@ class AppResourceServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppResourceServingEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceServingEndpoint:
         """Deserializes the AppResourceServingEndpoint from a dictionary."""
         return cls(
             name=d.get("name", None),
@@ -823,7 +837,7 @@ class AppResourceSqlWarehouse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppResourceSqlWarehouse:
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceSqlWarehouse:
         """Deserializes the AppResourceSqlWarehouse from a dictionary."""
         return cls(
             id=d.get("id", None), permission=_enum(d, "permission", AppResourceSqlWarehouseSqlWarehousePermission)
@@ -872,7 +886,7 @@ class ApplicationStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApplicationStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
 
@@ -915,7 +929,7 @@ class ComputeStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComputeStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ComputeStatus:
         """Deserializes the ComputeStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", ComputeState))
 
@@ -940,7 +954,7 @@ class GetAppPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetAppPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetAppPermissionLevelsResponse:
         """Deserializes the GetAppPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", AppPermissionsDescription))
 
@@ -972,7 +986,7 @@ class ListAppDeploymentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAppDeploymentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAppDeploymentsResponse:
         """Deserializes the ListAppDeploymentsResponse from a dictionary."""
         return cls(
             app_deployments=_repeated_dict(d, "app_deployments", AppDeployment),
@@ -1006,7 +1020,7 @@ class ListAppsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
         return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
 

@@ -10,7 +10,7 @@
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
 
         Query a serving endpoint.
-        
+
         :param name: str
           The name of the serving endpoint. This field is required.
         :param dataframe_records: List[Any] (optional)
@@ -54,6 +54,6 @@
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
-        
+
         :returns: :class:`QueryEndpointResponse`
         

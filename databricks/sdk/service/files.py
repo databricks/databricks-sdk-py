@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import BinaryIO, Dict, Iterator, List, Optional
+from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
 
@@ -41,7 +41,7 @@ class AddBlock:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddBlock:
+    def from_dict(cls, d: Dict[str, Any]) -> AddBlock:
         """Deserializes the AddBlock from a dictionary."""
         return cls(data=d.get("data", None), handle=d.get("handle", None))
 
@@ -59,7 +59,7 @@ class AddBlockResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddBlockResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AddBlockResponse:
         """Deserializes the AddBlockResponse from a dictionary."""
         return cls()
 
@@ -84,7 +84,7 @@ class Close:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Close:
+    def from_dict(cls, d: Dict[str, Any]) -> Close:
         """Deserializes the Close from a dictionary."""
         return cls(handle=d.get("handle", None))
 
@@ -102,7 +102,7 @@ class CloseResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloseResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CloseResponse:
         """Deserializes the CloseResponse from a dictionary."""
         return cls()
 
@@ -134,7 +134,7 @@ class Create:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Create:
+    def from_dict(cls, d: Dict[str, Any]) -> Create:
         """Deserializes the Create from a dictionary."""
         return cls(overwrite=d.get("overwrite", None), path=d.get("path", None))
 
@@ -152,7 +152,7 @@ class CreateDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateDirectoryResponse:
         """Deserializes the CreateDirectoryResponse from a dictionary."""
         return cls()
 
@@ -178,7 +178,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(handle=d.get("handle", None))
 
@@ -211,7 +211,7 @@ class Delete:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Delete:
+    def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
         return cls(path=d.get("path", None), recursive=d.get("recursive", None))
 
@@ -229,7 +229,7 @@ class DeleteDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDirectoryResponse:
         """Deserializes the DeleteDirectoryResponse from a dictionary."""
         return cls()
 
@@ -247,7 +247,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -300,7 +300,7 @@ class DirectoryEntry:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DirectoryEntry:
+    def from_dict(cls, d: Dict[str, Any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
         return cls(
             file_size=d.get("file_size", None),
@@ -348,7 +348,7 @@ class DownloadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(
             content_length=int(d.get("content-length", None)),
@@ -399,7 +399,7 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
             file_size=d.get("file_size", None),
@@ -422,7 +422,7 @@ class GetDirectoryMetadataResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetDirectoryMetadataResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetDirectoryMetadataResponse:
         """Deserializes the GetDirectoryMetadataResponse from a dictionary."""
         return cls()
 
@@ -458,7 +458,7 @@ class GetMetadataResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetadataResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetadataResponse:
         """Deserializes the GetMetadataResponse from a dictionary."""
         return cls(
             content_length=int(d.get("content-length", None)),
@@ -494,7 +494,7 @@ class ListDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListDirectoryResponse:
         """Deserializes the ListDirectoryResponse from a dictionary."""
         return cls(
             contents=_repeated_dict(d, "contents", DirectoryEntry), next_page_token=d.get("next_page_token", None)
@@ -521,7 +521,7 @@ class ListStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListStatusResponse:
         """Deserializes the ListStatusResponse from a dictionary."""
         return cls(files=_repeated_dict(d, "files", FileInfo))
 
@@ -546,7 +546,7 @@ class MkDirs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkDirs:
+    def from_dict(cls, d: Dict[str, Any]) -> MkDirs:
         """Deserializes the MkDirs from a dictionary."""
         return cls(path=d.get("path", None))
 
@@ -564,7 +564,7 @@ class MkDirsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkDirsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MkDirsResponse:
         """Deserializes the MkDirsResponse from a dictionary."""
         return cls()
 
@@ -596,7 +596,7 @@ class Move:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Move:
+    def from_dict(cls, d: Dict[str, Any]) -> Move:
         """Deserializes the Move from a dictionary."""
         return cls(destination_path=d.get("destination_path", None), source_path=d.get("source_path", None))
 
@@ -614,7 +614,7 @@ class MoveResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MoveResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MoveResponse:
         """Deserializes the MoveResponse from a dictionary."""
         return cls()
 
@@ -653,7 +653,7 @@ class Put:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Put:
+    def from_dict(cls, d: Dict[str, Any]) -> Put:
         """Deserializes the Put from a dictionary."""
         return cls(contents=d.get("contents", None), overwrite=d.get("overwrite", None), path=d.get("path", None))
 
@@ -671,7 +671,7 @@ class PutResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutResponse:
         """Deserializes the PutResponse from a dictionary."""
         return cls()
 
@@ -704,7 +704,7 @@ class ReadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
         return cls(bytes_read=d.get("bytes_read", None), data=d.get("data", None))
 
@@ -722,7 +722,7 @@ class UploadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UploadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UploadResponse:
         """Deserializes the UploadResponse from a dictionary."""
         return cls()
 
