@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import random
+import threading
 import time
 from dataclasses import dataclass
 from datetime import timedelta
@@ -52,7 +53,7 @@ class Ai21LabsConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Ai21LabsConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> Ai21LabsConfig:
         """Deserializes the Ai21LabsConfig from a dictionary."""
         return cls(
             ai21labs_api_key=d.get("ai21labs_api_key", None),
@@ -104,7 +105,7 @@ class AiGatewayConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayConfig:
         """Deserializes the AiGatewayConfig from a dictionary."""
         return cls(
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
@@ -157,7 +158,7 @@ class AiGatewayGuardrailParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrailParameters:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayGuardrailParameters:
         """Deserializes the AiGatewayGuardrailParameters from a dictionary."""
         return cls(
             invalid_keywords=d.get("invalid_keywords", None),
@@ -187,7 +188,7 @@ class AiGatewayGuardrailPiiBehavior:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrailPiiBehavior:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayGuardrailPiiBehavior:
         """Deserializes the AiGatewayGuardrailPiiBehavior from a dictionary."""
         return cls(behavior=_enum(d, "behavior", AiGatewayGuardrailPiiBehaviorBehavior))
 
@@ -225,7 +226,7 @@ class AiGatewayGuardrails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrails:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayGuardrails:
         """Deserializes the AiGatewayGuardrails from a dictionary."""
         return cls(
             input=_from_dict(d, "input", AiGatewayGuardrailParameters),
@@ -277,7 +278,7 @@ class AiGatewayInferenceTableConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayInferenceTableConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayInferenceTableConfig:
         """Deserializes the AiGatewayInferenceTableConfig from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -322,7 +323,7 @@ class AiGatewayRateLimit:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayRateLimit:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayRateLimit:
         """Deserializes the AiGatewayRateLimit from a dictionary."""
         return cls(
             calls=d.get("calls", None),
@@ -362,7 +363,7 @@ class AiGatewayUsageTrackingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AiGatewayUsageTrackingConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AiGatewayUsageTrackingConfig:
         """Deserializes the AiGatewayUsageTrackingConfig from a dictionary."""
         return cls(enabled=d.get("enabled", None))
 
@@ -400,6 +401,12 @@ class AmazonBedrockConfig:
     Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the
     following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
 
+    instance_profile_arn: Optional[str] = None
+    """ARN of the instance profile that the external model will use to access AWS resources. You must
+    authenticate using an instance profile or access keys. If you prefer to authenticate using
+    access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and
+    `aws_secret_access_key_plaintext`."""
+
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -415,6 +422,8 @@ class AmazonBedrockConfig:
             body["aws_secret_access_key_plaintext"] = self.aws_secret_access_key_plaintext
         if self.bedrock_provider is not None:
             body["bedrock_provider"] = self.bedrock_provider.value
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -432,10 +441,12 @@ class AmazonBedrockConfig:
             body["aws_secret_access_key_plaintext"] = self.aws_secret_access_key_plaintext
         if self.bedrock_provider is not None:
             body["bedrock_provider"] = self.bedrock_provider
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AmazonBedrockConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AmazonBedrockConfig:
         """Deserializes the AmazonBedrockConfig from a dictionary."""
         return cls(
             aws_access_key_id=d.get("aws_access_key_id", None),
@@ -444,6 +455,7 @@ class AmazonBedrockConfig:
             aws_secret_access_key=d.get("aws_secret_access_key", None),
             aws_secret_access_key_plaintext=d.get("aws_secret_access_key_plaintext", None),
             bedrock_provider=_enum(d, "bedrock_provider", AmazonBedrockConfigBedrockProvider),
+            instance_profile_arn=d.get("instance_profile_arn", None),
         )
 
 
@@ -486,7 +498,7 @@ class AnthropicConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AnthropicConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AnthropicConfig:
         """Deserializes the AnthropicConfig from a dictionary."""
         return cls(
             anthropic_api_key=d.get("anthropic_api_key", None),
@@ -538,7 +550,7 @@ class AutoCaptureConfigInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureConfigInput:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureConfigInput:
         """Deserializes the AutoCaptureConfigInput from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -598,7 +610,7 @@ class AutoCaptureConfigOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureConfigOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureConfigOutput:
         """Deserializes the AutoCaptureConfigOutput from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -628,7 +640,7 @@ class AutoCaptureState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureState:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureState:
         """Deserializes the AutoCaptureState from a dictionary."""
         return cls(payload_table=_from_dict(d, "payload_table", PayloadTable))
 
@@ -653,7 +665,7 @@ class BuildLogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BuildLogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> BuildLogsResponse:
         """Deserializes the BuildLogsResponse from a dictionary."""
         return cls(logs=d.get("logs", None))
 
@@ -685,7 +697,7 @@ class ChatMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ChatMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> ChatMessage:
         """Deserializes the ChatMessage from a dictionary."""
         return cls(content=d.get("content", None), role=_enum(d, "role", ChatMessageRole))
 
@@ -737,7 +749,7 @@ class CohereConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CohereConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> CohereConfig:
         """Deserializes the CohereConfig from a dictionary."""
         return cls(
             cohere_api_base=d.get("cohere_api_base", None),
@@ -755,6 +767,9 @@ class CreateServingEndpoint:
     ai_gateway: Optional[AiGatewayConfig] = None
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy to be applied to the serving endpoint."""
 
     config: Optional[EndpointCoreConfigInput] = None
     """The core config of the serving endpoint."""
@@ -774,6 +789,8 @@ class CreateServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.name is not None:
@@ -791,6 +808,8 @@ class CreateServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.name is not None:
@@ -804,10 +823,11 @@ class CreateServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateServingEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateServingEndpoint:
         """Deserializes the CreateServingEndpoint from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigInput),
             name=d.get("name", None),
             rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
@@ -845,7 +865,7 @@ class DataPlaneInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> DataPlaneInfo:
         """Deserializes the DataPlaneInfo from a dictionary."""
         return cls(authorization_details=d.get("authorization_details", None), endpoint_url=d.get("endpoint_url", None))
 
@@ -893,7 +913,7 @@ class DatabricksModelServingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksModelServingConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksModelServingConfig:
         """Deserializes the DatabricksModelServingConfig from a dictionary."""
         return cls(
             databricks_api_token=d.get("databricks_api_token", None),
@@ -933,7 +953,7 @@ class DataframeSplitInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataframeSplitInput:
+    def from_dict(cls, d: Dict[str, Any]) -> DataframeSplitInput:
         """Deserializes the DataframeSplitInput from a dictionary."""
         return cls(columns=d.get("columns", None), data=d.get("data", None), index=d.get("index", None))
 
@@ -951,7 +971,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -989,7 +1009,7 @@ class EmbeddingsV1ResponseEmbeddingElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingsV1ResponseEmbeddingElement:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingsV1ResponseEmbeddingElement:
         """Deserializes the EmbeddingsV1ResponseEmbeddingElement from a dictionary."""
         return cls(
             embedding=d.get("embedding", None),
@@ -1056,7 +1076,7 @@ class EndpointCoreConfigInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigInput:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigInput:
         """Deserializes the EndpointCoreConfigInput from a dictionary."""
         return cls(
             auto_capture_config=_from_dict(d, "auto_capture_config", AutoCaptureConfigInput),
@@ -1119,7 +1139,7 @@ class EndpointCoreConfigOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigOutput:
         """Deserializes the EndpointCoreConfigOutput from a dictionary."""
         return cls(
             auto_capture_config=_from_dict(d, "auto_capture_config", AutoCaptureConfigOutput),
@@ -1158,7 +1178,7 @@ class EndpointCoreConfigSummary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigSummary:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigSummary:
         """Deserializes the EndpointCoreConfigSummary from a dictionary."""
         return cls(
             served_entities=_repeated_dict(d, "served_entities", ServedEntitySpec),
@@ -1225,7 +1245,7 @@ class EndpointPendingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
         return cls(
             auto_capture_config=_from_dict(d, "auto_capture_config", AutoCaptureConfigOutput),
@@ -1269,7 +1289,7 @@ class EndpointState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointState:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointState:
         """Deserializes the EndpointState from a dictionary."""
         return cls(
             config_update=_enum(d, "config_update", EndpointStateConfigUpdate),
@@ -1318,7 +1338,7 @@ class EndpointTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointTag:
         """Deserializes the EndpointTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -1342,7 +1362,7 @@ class EndpointTags:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointTags:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointTags:
         """Deserializes the EndpointTags from a dictionary."""
         return cls(tags=_repeated_dict(d, "tags", EndpointTag))
 
@@ -1366,7 +1386,7 @@ class ExportMetricsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportMetricsResponse:
         """Deserializes the ExportMetricsResponse from a dictionary."""
         return cls(contents=d.get("contents", None))
 
@@ -1429,7 +1449,7 @@ class ExternalFunctionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalFunctionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalFunctionRequest:
         """Deserializes the ExternalFunctionRequest from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
@@ -1542,7 +1562,7 @@ class ExternalModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalModel:
         """Deserializes the ExternalModel from a dictionary."""
         return cls(
             ai21labs_config=_from_dict(d, "ai21labs_config", Ai21LabsConfig),
@@ -1607,7 +1627,7 @@ class ExternalModelUsageElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModelUsageElement:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalModelUsageElement:
         """Deserializes the ExternalModelUsageElement from a dictionary."""
         return cls(
             completion_tokens=d.get("completion_tokens", None),
@@ -1656,7 +1676,7 @@ class FoundationModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FoundationModel:
+    def from_dict(cls, d: Dict[str, Any]) -> FoundationModel:
         """Deserializes the FoundationModel from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -1685,7 +1705,7 @@ class GetOpenApiResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetOpenApiResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetOpenApiResponse:
         """Deserializes the GetOpenApiResponse from a dictionary."""
         return cls(contents=d.get("contents", None))
 
@@ -1710,7 +1730,7 @@ class GetServingEndpointPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetServingEndpointPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetServingEndpointPermissionLevelsResponse:
         """Deserializes the GetServingEndpointPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ServingEndpointPermissionsDescription))
 
@@ -1771,7 +1791,7 @@ class GoogleCloudVertexAiConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GoogleCloudVertexAiConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> GoogleCloudVertexAiConfig:
         """Deserializes the GoogleCloudVertexAiConfig from a dictionary."""
         return cls(
             private_key=d.get("private_key", None),
@@ -1800,7 +1820,7 @@ class HttpRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpRequestResponse:
         """Deserializes the HttpRequestResponse from a dictionary."""
         return cls(contents=d.get("contents", None))
 
@@ -1825,7 +1845,7 @@ class ListEndpointsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListEndpointsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListEndpointsResponse:
         """Deserializes the ListEndpointsResponse from a dictionary."""
         return cls(endpoints=_repeated_dict(d, "endpoints", ServingEndpoint))
 
@@ -1853,7 +1873,7 @@ class ModelDataPlaneInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelDataPlaneInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelDataPlaneInfo:
         """Deserializes the ModelDataPlaneInfo from a dictionary."""
         return cls(query_info=_from_dict(d, "query_info", DataPlaneInfo))
 
@@ -1968,7 +1988,7 @@ class OpenAiConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OpenAiConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> OpenAiConfig:
         """Deserializes the OpenAiConfig from a dictionary."""
         return cls(
             microsoft_entra_client_id=d.get("microsoft_entra_client_id", None),
@@ -2016,7 +2036,7 @@ class PaLmConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PaLmConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> PaLmConfig:
         """Deserializes the PaLmConfig from a dictionary."""
         return cls(
             palm_api_key=d.get("palm_api_key", None), palm_api_key_plaintext=d.get("palm_api_key_plaintext", None)
@@ -2057,7 +2077,7 @@ class PatchServingEndpointTags:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PatchServingEndpointTags:
+    def from_dict(cls, d: Dict[str, Any]) -> PatchServingEndpointTags:
         """Deserializes the PatchServingEndpointTags from a dictionary."""
         return cls(
             add_tags=_repeated_dict(d, "add_tags", EndpointTag),
@@ -2097,7 +2117,7 @@ class PayloadTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PayloadTable:
+    def from_dict(cls, d: Dict[str, Any]) -> PayloadTable:
         """Deserializes the PayloadTable from a dictionary."""
         return cls(name=d.get("name", None), status=d.get("status", None), status_message=d.get("status_message", None))
 
@@ -2153,7 +2173,7 @@ class PutAiGatewayRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAiGatewayRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAiGatewayRequest:
         """Deserializes the PutAiGatewayRequest from a dictionary."""
         return cls(
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
@@ -2208,7 +2228,7 @@ class PutAiGatewayResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAiGatewayResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAiGatewayResponse:
         """Deserializes the PutAiGatewayResponse from a dictionary."""
         return cls(
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
@@ -2245,7 +2265,7 @@ class PutRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PutRequest:
         """Deserializes the PutRequest from a dictionary."""
         return cls(name=d.get("name", None), rate_limits=_repeated_dict(d, "rate_limits", RateLimit))
 
@@ -2270,7 +2290,7 @@ class PutResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutResponse:
         """Deserializes the PutResponse from a dictionary."""
         return cls(rate_limits=_repeated_dict(d, "rate_limits", RateLimit))
 
@@ -2402,7 +2422,7 @@ class QueryEndpointInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointInput:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryEndpointInput:
         """Deserializes the QueryEndpointInput from a dictionary."""
         return cls(
             dataframe_records=d.get("dataframe_records", None),
@@ -2506,7 +2526,7 @@ class QueryEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryEndpointResponse:
         """Deserializes the QueryEndpointResponse from a dictionary."""
         return cls(
             choices=_repeated_dict(d, "choices", V1ResponseChoiceElement),
@@ -2565,7 +2585,7 @@ class RateLimit:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RateLimit:
+    def from_dict(cls, d: Dict[str, Any]) -> RateLimit:
         """Deserializes the RateLimit from a dictionary."""
         return cls(
             calls=d.get("calls", None),
@@ -2613,7 +2633,7 @@ class Route:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Route:
+    def from_dict(cls, d: Dict[str, Any]) -> Route:
         """Deserializes the Route from a dictionary."""
         return cls(
             served_model_name=d.get("served_model_name", None), traffic_percentage=d.get("traffic_percentage", None)
@@ -2733,7 +2753,7 @@ class ServedEntityInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntityInput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntityInput:
         """Deserializes the ServedEntityInput from a dictionary."""
         return cls(
             entity_name=d.get("entity_name", None),
@@ -2889,7 +2909,7 @@ class ServedEntityOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntityOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -2955,7 +2975,7 @@ class ServedEntitySpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntitySpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntitySpec:
         """Deserializes the ServedEntitySpec from a dictionary."""
         return cls(
             entity_name=d.get("entity_name", None),
@@ -3063,7 +3083,7 @@ class ServedModelInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelInput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(
             environment_vars=d.get("environment_vars", None),
@@ -3196,7 +3216,7 @@ class ServedModelOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -3246,7 +3266,7 @@ class ServedModelSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelSpec:
         """Deserializes the ServedModelSpec from a dictionary."""
         return cls(
             model_name=d.get("model_name", None), model_version=d.get("model_version", None), name=d.get("name", None)
@@ -3278,7 +3298,7 @@ class ServedModelState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelState:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelState:
         """Deserializes the ServedModelState from a dictionary."""
         return cls(
             deployment=_enum(d, "deployment", ServedModelStateDeployment),
@@ -3315,7 +3335,7 @@ class ServerLogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServerLogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ServerLogsResponse:
         """Deserializes the ServerLogsResponse from a dictionary."""
         return cls(logs=d.get("logs", None))
 
@@ -3325,6 +3345,9 @@ class ServingEndpoint:
     ai_gateway: Optional[AiGatewayConfig] = None
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy associated with the endpoint."""
 
     config: Optional[EndpointCoreConfigSummary] = None
     """The config that is currently being served by the endpoint."""
@@ -3358,6 +3381,8 @@ class ServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.creation_timestamp is not None:
@@ -3383,6 +3408,8 @@ class ServingEndpoint:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.creation_timestamp is not None:
@@ -3404,10 +3431,11 @@ class ServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpoint:
         """Deserializes the ServingEndpoint from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigSummary),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
@@ -3461,7 +3489,7 @@ class ServingEndpointAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlRequest:
         """Deserializes the ServingEndpointAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -3519,7 +3547,7 @@ class ServingEndpointAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlResponse:
         """Deserializes the ServingEndpointAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", ServingEndpointPermission),
@@ -3535,6 +3563,9 @@ class ServingEndpointDetailed:
     ai_gateway: Optional[AiGatewayConfig] = None
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy associated with the endpoint."""
 
     config: Optional[EndpointCoreConfigOutput] = None
     """The config that is currently being served by the endpoint."""
@@ -3584,6 +3615,8 @@ class ServingEndpointDetailed:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
         if self.creation_timestamp is not None:
@@ -3619,6 +3652,8 @@ class ServingEndpointDetailed:
         body = {}
         if self.ai_gateway:
             body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
         if self.creation_timestamp is not None:
@@ -3650,10 +3685,11 @@ class ServingEndpointDetailed:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointDetailed:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointDetailed:
         """Deserializes the ServingEndpointDetailed from a dictionary."""
         return cls(
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigOutput),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
@@ -3710,7 +3746,7 @@ class ServingEndpointPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermission:
         """Deserializes the ServingEndpointPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -3758,7 +3794,7 @@ class ServingEndpointPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissions:
         """Deserializes the ServingEndpointPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ServingEndpointAccessControlResponse),
@@ -3793,7 +3829,7 @@ class ServingEndpointPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsDescription:
         """Deserializes the ServingEndpointPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -3827,7 +3863,7 @@ class ServingEndpointPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsRequest:
         """Deserializes the ServingEndpointPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ServingEndpointAccessControlRequest),
@@ -3864,7 +3900,7 @@ class TrafficConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TrafficConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, "routes", Route))
 
@@ -3917,7 +3953,7 @@ class V1ResponseChoiceElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> V1ResponseChoiceElement:
+    def from_dict(cls, d: Dict[str, Any]) -> V1ResponseChoiceElement:
         """Deserializes the V1ResponseChoiceElement from a dictionary."""
         return cls(
             finish_reason=d.get("finishReason", None),
@@ -4005,6 +4041,7 @@ class ServingEndpointsAPI:
         name: str,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
@@ -4018,6 +4055,8 @@ class ServingEndpointsAPI:
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
           The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
           throughput endpoints are currently supported.
+        :param budget_policy_id: str (optional)
+          The budget policy to be applied to the serving endpoint.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param rate_limits: List[:class:`RateLimit`] (optional)
@@ -4035,6 +4074,8 @@ class ServingEndpointsAPI:
         body = {}
         if ai_gateway is not None:
             body["ai_gateway"] = ai_gateway.as_dict()
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
         if config is not None:
             body["config"] = config.as_dict()
         if name is not None:
@@ -4062,6 +4103,7 @@ class ServingEndpointsAPI:
         name: str,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
@@ -4070,6 +4112,7 @@ class ServingEndpointsAPI:
     ) -> ServingEndpointDetailed:
         return self.create(
             ai_gateway=ai_gateway,
+            budget_policy_id=budget_policy_id,
             config=config,
             name=name,
             rate_limits=rate_limits,
@@ -4085,9 +4128,7 @@ class ServingEndpointsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 
@@ -4619,6 +4660,7 @@ class ServingEndpointsDataPlaneAPI:
 
     def __init__(self, api_client, control_plane_service, dpts):
         self._api = api_client
+        self._lock = threading.Lock()
         self._control_plane_service = control_plane_service
         self._dpts = dpts
         self._data_plane_details = {}
@@ -4629,15 +4671,17 @@ class ServingEndpointsDataPlaneAPI:
                 str(name),
             ]
         )
-        if key in self._data_plane_details:
-            return self._data_plane_details[key]
+        with self._lock:
+            if key in self._data_plane_details:
+                return self._data_plane_details[key]
         response = self._control_plane_service.get(
             name=name,
         )
         if response.data_plane_info is None:
             raise Exception("Resource does not support direct Data Plane access")
         result = response.data_plane_info.query_info
-        self._data_plane_details[key] = result
+        with self._lock:
+            self._data_plane_details[key] = result
         return result
 
     def query(

@@ -11,8 +11,81 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
 
+   .. py:attribute:: OAUTH_CLIENT_CREDENTIALS
+      :value: "OAUTH_CLIENT_CREDENTIALS"
+
    .. py:attribute:: TOKEN
       :value: "TOKEN"
+
+.. py:class:: ColumnTypeName
+
+   UC supported column types Copied from https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
+
+   .. py:attribute:: ARRAY
+      :value: "ARRAY"
+
+   .. py:attribute:: BINARY
+      :value: "BINARY"
+
+   .. py:attribute:: BOOLEAN
+      :value: "BOOLEAN"
+
+   .. py:attribute:: BYTE
+      :value: "BYTE"
+
+   .. py:attribute:: CHAR
+      :value: "CHAR"
+
+   .. py:attribute:: DATE
+      :value: "DATE"
+
+   .. py:attribute:: DECIMAL
+      :value: "DECIMAL"
+
+   .. py:attribute:: DOUBLE
+      :value: "DOUBLE"
+
+   .. py:attribute:: FLOAT
+      :value: "FLOAT"
+
+   .. py:attribute:: INT
+      :value: "INT"
+
+   .. py:attribute:: INTERVAL
+      :value: "INTERVAL"
+
+   .. py:attribute:: LONG
+      :value: "LONG"
+
+   .. py:attribute:: MAP
+      :value: "MAP"
+
+   .. py:attribute:: NULL
+      :value: "NULL"
+
+   .. py:attribute:: SHORT
+      :value: "SHORT"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
+
+   .. py:attribute:: STRUCT
+      :value: "STRUCT"
+
+   .. py:attribute:: TABLE_TYPE
+      :value: "TABLE_TYPE"
+
+   .. py:attribute:: TIMESTAMP
+      :value: "TIMESTAMP"
+
+   .. py:attribute:: TIMESTAMP_NTZ
+      :value: "TIMESTAMP_NTZ"
+
+   .. py:attribute:: USER_DEFINED_TYPE
+      :value: "USER_DEFINED_TYPE"
+
+   .. py:attribute:: VARIANT
+      :value: "VARIANT"
 
 .. autoclass:: CreateProvider
    :members:
@@ -30,6 +103,53 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeltaSharingDependency
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeltaSharingDependencyList
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeltaSharingFunctionDependency
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeltaSharingTableDependency
+   :members:
+   :undoc-members:
+
+.. autoclass:: Function
+   :members:
+   :undoc-members:
+
+.. autoclass:: FunctionParameterInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: FunctionParameterInfos
+   :members:
+   :undoc-members:
+
+.. py:class:: FunctionParameterMode
+
+   .. py:attribute:: IN
+      :value: "IN"
+
+   .. py:attribute:: INOUT
+      :value: "INOUT"
+
+   .. py:attribute:: OUT
+      :value: "OUT"
+
+.. py:class:: FunctionParameterType
+
+   .. py:attribute:: COLUMN
+      :value: "COLUMN"
+
+   .. py:attribute:: PARAM
+      :value: "PARAM"
+
 .. autoclass:: GetActivationUrlInfoResponse
    :members:
    :undoc-members:
@@ -38,7 +158,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetSharePermissionsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: IpAccessList
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListProviderShareAssetsResponse
    :members:
    :undoc-members:
 
@@ -58,11 +186,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: Partition
+.. autoclass:: NotebookFile
    :members:
    :undoc-members:
 
-.. autoclass:: PartitionSpecificationPartition
+.. autoclass:: Partition
    :members:
    :undoc-members:
 
@@ -77,6 +205,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LIKE
       :value: "LIKE"
+
+.. autoclass:: PermissionsChange
+   :members:
+   :undoc-members:
 
 .. py:class:: Privilege
 
@@ -239,6 +371,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RegisteredModelAlias
+   :members:
+   :undoc-members:
+
 .. autoclass:: RetrieveTokenResponse
    :members:
    :undoc-members:
@@ -264,8 +400,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SharedDataObjectDataObjectType
-
-   The type of the data object.
 
    .. py:attribute:: FEATURE_SPEC
       :value: "FEATURE_SPEC"
@@ -296,8 +430,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SharedDataObjectHistoryDataSharingStatus
 
-   Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**.
-
    .. py:attribute:: DISABLED
       :value: "DISABLED"
 
@@ -305,8 +437,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "ENABLED"
 
 .. py:class:: SharedDataObjectStatus
-
-   One of: **ACTIVE**, **PERMISSION_DENIED**.
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
@@ -320,8 +450,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SharedDataObjectUpdateAction
 
-   One of: **ADD**, **REMOVE**, **UPDATE**.
-
    .. py:attribute:: ADD
       :value: "ADD"
 
@@ -331,9 +459,46 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATE
       :value: "UPDATE"
 
-.. autoclass:: UpdatePermissionsResponse
+.. py:class:: SharedSecurableKind
+
+   The SecurableKind of a delta-shared object.
+
+   .. py:attribute:: FUNCTION_FEATURE_SPEC
+      :value: "FUNCTION_FEATURE_SPEC"
+
+   .. py:attribute:: FUNCTION_REGISTERED_MODEL
+      :value: "FUNCTION_REGISTERED_MODEL"
+
+   .. py:attribute:: FUNCTION_STANDARD
+      :value: "FUNCTION_STANDARD"
+
+.. autoclass:: Table
    :members:
    :undoc-members:
+
+.. autoclass:: TableInternalAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: TableInternalAttributesSharedTableType
+
+   .. py:attribute:: DIRECTORY_BASED_TABLE
+      :value: "DIRECTORY_BASED_TABLE"
+
+   .. py:attribute:: FILE_BASED_TABLE
+      :value: "FILE_BASED_TABLE"
+
+   .. py:attribute:: FOREIGN_TABLE
+      :value: "FOREIGN_TABLE"
+
+   .. py:attribute:: MATERIALIZED_VIEW
+      :value: "MATERIALIZED_VIEW"
+
+   .. py:attribute:: STREAMING_TABLE
+      :value: "STREAMING_TABLE"
+
+   .. py:attribute:: VIEW
+      :value: "VIEW"
 
 .. autoclass:: UpdateProvider
    :members:
@@ -348,5 +513,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateSharePermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateSharePermissionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Volume
+   :members:
+   :undoc-members:
+
+.. autoclass:: VolumeInternalAttributes
    :members:
    :undoc-members:

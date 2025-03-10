@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -21,7 +21,37 @@ class AuthenticationType(Enum):
     """The delta sharing authentication type."""
 
     DATABRICKS = "DATABRICKS"
+    OAUTH_CLIENT_CREDENTIALS = "OAUTH_CLIENT_CREDENTIALS"
     TOKEN = "TOKEN"
+
+
+class ColumnTypeName(Enum):
+    """UC supported column types Copied from
+    https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
+    """
+
+    ARRAY = "ARRAY"
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    BYTE = "BYTE"
+    CHAR = "CHAR"
+    DATE = "DATE"
+    DECIMAL = "DECIMAL"
+    DOUBLE = "DOUBLE"
+    FLOAT = "FLOAT"
+    INT = "INT"
+    INTERVAL = "INTERVAL"
+    LONG = "LONG"
+    MAP = "MAP"
+    NULL = "NULL"
+    SHORT = "SHORT"
+    STRING = "STRING"
+    STRUCT = "STRUCT"
+    TABLE_TYPE = "TABLE_TYPE"
+    TIMESTAMP = "TIMESTAMP"
+    TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
+    USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
+    VARIANT = "VARIANT"
 
 
 @dataclass
@@ -66,7 +96,7 @@ class CreateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateProvider:
         """Deserializes the CreateProvider from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -157,7 +187,7 @@ class CreateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRecipient:
         """Deserializes the CreateRecipient from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -206,7 +236,7 @@ class CreateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
         return cls(comment=d.get("comment", None), name=d.get("name", None), storage_root=d.get("storage_root", None))
 
@@ -224,9 +254,440 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class DeltaSharingDependency:
+    """Represents a UC dependency."""
+
+    function: Optional[DeltaSharingFunctionDependency] = None
+    """A Function in UC as a dependency."""
+
+    table: Optional[DeltaSharingTableDependency] = None
+    """A Table in UC as a dependency."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaSharingDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function:
+            body["function"] = self.function.as_dict()
+        if self.table:
+            body["table"] = self.table.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaSharingDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function:
+            body["function"] = self.function
+        if self.table:
+            body["table"] = self.table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingDependency:
+        """Deserializes the DeltaSharingDependency from a dictionary."""
+        return cls(
+            function=_from_dict(d, "function", DeltaSharingFunctionDependency),
+            table=_from_dict(d, "table", DeltaSharingTableDependency),
+        )
+
+
+@dataclass
+class DeltaSharingDependencyList:
+    """Represents a list of dependencies."""
+
+    dependencies: Optional[List[DeltaSharingDependency]] = None
+    """An array of Dependency."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaSharingDependencyList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = [v.as_dict() for v in self.dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaSharingDependencyList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = self.dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingDependencyList:
+        """Deserializes the DeltaSharingDependencyList from a dictionary."""
+        return cls(dependencies=_repeated_dict(d, "dependencies", DeltaSharingDependency))
+
+
+@dataclass
+class DeltaSharingFunctionDependency:
+    """A Function in UC as a dependency."""
+
+    function_name: Optional[str] = None
+
+    schema_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaSharingFunctionDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaSharingFunctionDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingFunctionDependency:
+        """Deserializes the DeltaSharingFunctionDependency from a dictionary."""
+        return cls(function_name=d.get("function_name", None), schema_name=d.get("schema_name", None))
+
+
+@dataclass
+class DeltaSharingTableDependency:
+    """A Table in UC as a dependency."""
+
+    schema_name: Optional[str] = None
+
+    table_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaSharingTableDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaSharingTableDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingTableDependency:
+        """Deserializes the DeltaSharingTableDependency from a dictionary."""
+        return cls(schema_name=d.get("schema_name", None), table_name=d.get("table_name", None))
+
+
+@dataclass
+class Function:
+    aliases: Optional[List[RegisteredModelAlias]] = None
+    """The aliass of registered model."""
+
+    comment: Optional[str] = None
+    """The comment of the function."""
+
+    data_type: Optional[ColumnTypeName] = None
+    """The data type of the function."""
+
+    dependency_list: Optional[DeltaSharingDependencyList] = None
+    """The dependency list of the function."""
+
+    full_data_type: Optional[str] = None
+    """The full data type of the function."""
+
+    id: Optional[str] = None
+    """The id of the function."""
+
+    input_params: Optional[FunctionParameterInfos] = None
+    """The function parameter information."""
+
+    name: Optional[str] = None
+    """The name of the function."""
+
+    properties: Optional[str] = None
+    """The properties of the function."""
+
+    routine_definition: Optional[str] = None
+    """The routine definition of the function."""
+
+    schema: Optional[str] = None
+    """The name of the schema that the function belongs to."""
+
+    securable_kind: Optional[SharedSecurableKind] = None
+    """The securable kind of the function."""
+
+    share: Optional[str] = None
+    """The name of the share that the function belongs to."""
+
+    share_id: Optional[str] = None
+    """The id of the share that the function belongs to."""
+
+    storage_location: Optional[str] = None
+    """The storage location of the function."""
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Function into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v.as_dict() for v in self.aliases]
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.data_type is not None:
+            body["data_type"] = self.data_type.value
+        if self.dependency_list:
+            body["dependency_list"] = self.dependency_list.as_dict()
+        if self.full_data_type is not None:
+            body["full_data_type"] = self.full_data_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.input_params:
+            body["input_params"] = self.input_params.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.properties is not None:
+            body["properties"] = self.properties
+        if self.routine_definition is not None:
+            body["routine_definition"] = self.routine_definition
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind.value
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Function into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.data_type is not None:
+            body["data_type"] = self.data_type
+        if self.dependency_list:
+            body["dependency_list"] = self.dependency_list
+        if self.full_data_type is not None:
+            body["full_data_type"] = self.full_data_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.input_params:
+            body["input_params"] = self.input_params
+        if self.name is not None:
+            body["name"] = self.name
+        if self.properties is not None:
+            body["properties"] = self.properties
+        if self.routine_definition is not None:
+            body["routine_definition"] = self.routine_definition
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Function:
+        """Deserializes the Function from a dictionary."""
+        return cls(
+            aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
+            comment=d.get("comment", None),
+            data_type=_enum(d, "data_type", ColumnTypeName),
+            dependency_list=_from_dict(d, "dependency_list", DeltaSharingDependencyList),
+            full_data_type=d.get("full_data_type", None),
+            id=d.get("id", None),
+            input_params=_from_dict(d, "input_params", FunctionParameterInfos),
+            name=d.get("name", None),
+            properties=d.get("properties", None),
+            routine_definition=d.get("routine_definition", None),
+            schema=d.get("schema", None),
+            securable_kind=_enum(d, "securable_kind", SharedSecurableKind),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+            storage_location=d.get("storage_location", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
+
+
+@dataclass
+class FunctionParameterInfo:
+    """Represents a parameter of a function. The same message is used for both input and output
+    columns."""
+
+    comment: Optional[str] = None
+    """The comment of the parameter."""
+
+    name: Optional[str] = None
+    """The name of the parameter."""
+
+    parameter_default: Optional[str] = None
+    """The default value of the parameter."""
+
+    parameter_mode: Optional[FunctionParameterMode] = None
+    """The mode of the function parameter."""
+
+    parameter_type: Optional[FunctionParameterType] = None
+    """The type of the function parameter."""
+
+    position: Optional[int] = None
+    """The position of the parameter."""
+
+    type_interval_type: Optional[str] = None
+    """The interval type of the parameter type."""
+
+    type_json: Optional[str] = None
+    """The type of the parameter in JSON format."""
+
+    type_name: Optional[ColumnTypeName] = None
+    """The type of the parameter in Enum format."""
+
+    type_precision: Optional[int] = None
+    """The precision of the parameter type."""
+
+    type_scale: Optional[int] = None
+    """The scale of the parameter type."""
+
+    type_text: Optional[str] = None
+    """The type of the parameter in text format."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionParameterInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parameter_default is not None:
+            body["parameter_default"] = self.parameter_default
+        if self.parameter_mode is not None:
+            body["parameter_mode"] = self.parameter_mode.value
+        if self.parameter_type is not None:
+            body["parameter_type"] = self.parameter_type.value
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_json is not None:
+            body["type_json"] = self.type_json
+        if self.type_name is not None:
+            body["type_name"] = self.type_name.value
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionParameterInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.parameter_default is not None:
+            body["parameter_default"] = self.parameter_default
+        if self.parameter_mode is not None:
+            body["parameter_mode"] = self.parameter_mode
+        if self.parameter_type is not None:
+            body["parameter_type"] = self.parameter_type
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_json is not None:
+            body["type_json"] = self.type_json
+        if self.type_name is not None:
+            body["type_name"] = self.type_name
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfo:
+        """Deserializes the FunctionParameterInfo from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            name=d.get("name", None),
+            parameter_default=d.get("parameter_default", None),
+            parameter_mode=_enum(d, "parameter_mode", FunctionParameterMode),
+            parameter_type=_enum(d, "parameter_type", FunctionParameterType),
+            position=d.get("position", None),
+            type_interval_type=d.get("type_interval_type", None),
+            type_json=d.get("type_json", None),
+            type_name=_enum(d, "type_name", ColumnTypeName),
+            type_precision=d.get("type_precision", None),
+            type_scale=d.get("type_scale", None),
+            type_text=d.get("type_text", None),
+        )
+
+
+@dataclass
+class FunctionParameterInfos:
+    parameters: Optional[List[FunctionParameterInfo]] = None
+    """The list of parameters of the function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionParameterInfos into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.parameters:
+            body["parameters"] = [v.as_dict() for v in self.parameters]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionParameterInfos into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfos:
+        """Deserializes the FunctionParameterInfos from a dictionary."""
+        return cls(parameters=_repeated_dict(d, "parameters", FunctionParameterInfo))
+
+
+class FunctionParameterMode(Enum):
+
+    IN = "IN"
+    INOUT = "INOUT"
+    OUT = "OUT"
+
+
+class FunctionParameterType(Enum):
+
+    COLUMN = "COLUMN"
+    PARAM = "PARAM"
 
 
 @dataclass
@@ -242,7 +703,7 @@ class GetActivationUrlInfoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetActivationUrlInfoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetActivationUrlInfoResponse:
         """Deserializes the GetActivationUrlInfoResponse from a dictionary."""
         return cls()
 
@@ -275,11 +736,47 @@ class GetRecipientSharePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRecipientSharePermissionsResponse:
         """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
             permissions_out=_repeated_dict(d, "permissions_out", ShareToPrivilegeAssignment),
+        )
+
+
+@dataclass
+class GetSharePermissionsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+    """The privileges assigned to each principal"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetSharePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetSharePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetSharePermissionsResponse:
+        """Deserializes the GetSharePermissionsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
         )
 
 
@@ -303,9 +800,62 @@ class IpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> IpAccessList:
         """Deserializes the IpAccessList from a dictionary."""
         return cls(allowed_ip_addresses=d.get("allowed_ip_addresses", None))
+
+
+@dataclass
+class ListProviderShareAssetsResponse:
+    """Response to ListProviderShareAssets, which contains the list of assets of a share."""
+
+    functions: Optional[List[Function]] = None
+    """The list of functions in the share."""
+
+    notebooks: Optional[List[NotebookFile]] = None
+    """The list of notebooks in the share."""
+
+    tables: Optional[List[Table]] = None
+    """The list of tables in the share."""
+
+    volumes: Optional[List[Volume]] = None
+    """The list of volumes in the share."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListProviderShareAssetsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.functions:
+            body["functions"] = [v.as_dict() for v in self.functions]
+        if self.notebooks:
+            body["notebooks"] = [v.as_dict() for v in self.notebooks]
+        if self.tables:
+            body["tables"] = [v.as_dict() for v in self.tables]
+        if self.volumes:
+            body["volumes"] = [v.as_dict() for v in self.volumes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListProviderShareAssetsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.functions:
+            body["functions"] = self.functions
+        if self.notebooks:
+            body["notebooks"] = self.notebooks
+        if self.tables:
+            body["tables"] = self.tables
+        if self.volumes:
+            body["volumes"] = self.volumes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListProviderShareAssetsResponse:
+        """Deserializes the ListProviderShareAssetsResponse from a dictionary."""
+        return cls(
+            functions=_repeated_dict(d, "functions", Function),
+            notebooks=_repeated_dict(d, "notebooks", NotebookFile),
+            tables=_repeated_dict(d, "tables", Table),
+            volumes=_repeated_dict(d, "volumes", Volume),
+        )
 
 
 @dataclass
@@ -336,7 +886,7 @@ class ListProviderSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ProviderShare))
 
@@ -369,7 +919,7 @@ class ListProvidersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
@@ -404,7 +954,7 @@ class ListRecipientsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), recipients=_repeated_dict(d, "recipients", RecipientInfo)
@@ -439,9 +989,76 @@ class ListSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ShareInfo))
+
+
+@dataclass
+class NotebookFile:
+    comment: Optional[str] = None
+    """The comment of the notebook file."""
+
+    id: Optional[str] = None
+    """The id of the notebook file."""
+
+    name: Optional[str] = None
+    """Name of the notebook file."""
+
+    share: Optional[str] = None
+    """The name of the share that the notebook file belongs to."""
+
+    share_id: Optional[str] = None
+    """The id of the share that the notebook file belongs to."""
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the notebook file."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NotebookFile into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotebookFile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookFile:
+        """Deserializes the NotebookFile from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
 
 
 @dataclass
@@ -464,33 +1081,8 @@ class Partition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Partition:
+    def from_dict(cls, d: Dict[str, Any]) -> Partition:
         """Deserializes the Partition from a dictionary."""
-        return cls(values=_repeated_dict(d, "values", PartitionValue))
-
-
-@dataclass
-class PartitionSpecificationPartition:
-    values: Optional[List[PartitionValue]] = None
-    """An array of partition values."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PartitionSpecificationPartition into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.values:
-            body["values"] = [v.as_dict() for v in self.values]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PartitionSpecificationPartition into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.values:
-            body["values"] = self.values
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionSpecificationPartition:
-        """Deserializes the PartitionSpecificationPartition from a dictionary."""
         return cls(values=_repeated_dict(d, "values", PartitionValue))
 
 
@@ -537,7 +1129,7 @@ class PartitionValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionValue:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionValue:
         """Deserializes the PartitionValue from a dictionary."""
         return cls(
             name=d.get("name", None),
@@ -551,6 +1143,45 @@ class PartitionValueOp(Enum):
 
     EQUAL = "EQUAL"
     LIKE = "LIKE"
+
+
+@dataclass
+class PermissionsChange:
+    add: Optional[List[str]] = None
+    """The set of privileges to add."""
+
+    principal: Optional[str] = None
+    """The principal whose privileges we are changing."""
+
+    remove: Optional[List[str]] = None
+    """The set of privileges to remove."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PermissionsChange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.add:
+            body["add"] = [v for v in self.add]
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.remove:
+            body["remove"] = [v for v in self.remove]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PermissionsChange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.add:
+            body["add"] = self.add
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.remove:
+            body["remove"] = self.remove
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
+        """Deserializes the PermissionsChange from a dictionary."""
+        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
 
 
 class Privilege(Enum):
@@ -629,7 +1260,7 @@ class PrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
@@ -752,7 +1383,7 @@ class ProviderInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
         return cls(
             authentication_type=_enum(d, "authentication_type", AuthenticationType),
@@ -792,7 +1423,7 @@ class ProviderShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderShare:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderShare:
         """Deserializes the ProviderShare from a dictionary."""
         return cls(name=d.get("name", None))
 
@@ -952,7 +1583,7 @@ class RecipientInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientInfo:
         """Deserializes the RecipientInfo from a dictionary."""
         return cls(
             activated=d.get("activated", None),
@@ -1011,7 +1642,7 @@ class RecipientProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientProfile:
         """Deserializes the RecipientProfile from a dictionary."""
         return cls(
             bearer_token=d.get("bearer_token", None),
@@ -1083,7 +1714,7 @@ class RecipientTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientTokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientTokenInfo:
         """Deserializes the RecipientTokenInfo from a dictionary."""
         return cls(
             activation_url=d.get("activation_url", None),
@@ -1094,6 +1725,38 @@ class RecipientTokenInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
         )
+
+
+@dataclass
+class RegisteredModelAlias:
+    alias_name: Optional[str] = None
+    """Name of the alias."""
+
+    version_num: Optional[int] = None
+    """Numeric model version that alias will reference."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegisteredModelAlias into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alias_name is not None:
+            body["alias_name"] = self.alias_name
+        if self.version_num is not None:
+            body["version_num"] = self.version_num
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelAlias into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alias_name is not None:
+            body["alias_name"] = self.alias_name
+        if self.version_num is not None:
+            body["version_num"] = self.version_num
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAlias:
+        """Deserializes the RegisteredModelAlias from a dictionary."""
+        return cls(alias_name=d.get("alias_name", None), version_num=d.get("version_num", None))
 
 
 @dataclass
@@ -1137,7 +1800,7 @@ class RetrieveTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RetrieveTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveTokenResponse:
         """Deserializes the RetrieveTokenResponse from a dictionary."""
         return cls(
             bearer_token=d.get("bearerToken", None),
@@ -1176,7 +1839,7 @@ class RotateRecipientToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
+    def from_dict(cls, d: Dict[str, Any]) -> RotateRecipientToken:
         """Deserializes the RotateRecipientToken from a dictionary."""
         return cls(
             existing_token_expire_in_seconds=d.get("existing_token_expire_in_seconds", None), name=d.get("name", None)
@@ -1205,7 +1868,7 @@ class SecurablePropertiesKvPairs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecurablePropertiesKvPairs:
+    def from_dict(cls, d: Dict[str, Any]) -> SecurablePropertiesKvPairs:
         """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
         return cls(properties=d.get("properties", None))
 
@@ -1293,7 +1956,7 @@ class ShareInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1336,7 +1999,7 @@ class ShareToPrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareToPrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareToPrivilegeAssignment:
         """Deserializes the ShareToPrivilegeAssignment from a dictionary."""
         return cls(
             privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
@@ -1347,9 +2010,8 @@ class ShareToPrivilegeAssignment:
 @dataclass
 class SharedDataObject:
     name: str
-    """A fully qualified name that uniquely identifies a data object.
-    
-    For example, a table's fully qualified name is in the format of `<catalog>.<schema>.<table>`."""
+    """A fully qualified name that uniquely identifies a data object. For example, a table's fully
+    qualified name is in the format of `<catalog>.<schema>.<table>`,"""
 
     added_at: Optional[int] = None
     """The time when this data object is added to the share, in epoch milliseconds."""
@@ -1361,7 +2023,7 @@ class SharedDataObject:
     """Whether to enable cdf or indicate if cdf is enabled on the shared object."""
 
     comment: Optional[str] = None
-    """A user-provided comment when adding the data object to the share. [Update:OPT]"""
+    """A user-provided comment when adding the data object to the share."""
 
     content: Optional[str] = None
     """The content of the notebook file when the data object type is NOTEBOOK_FILE. This should be
@@ -1395,10 +2057,10 @@ class SharedDataObject:
     """One of: **ACTIVE**, **PERMISSION_DENIED**."""
 
     string_shared_as: Optional[str] = None
-    """A user-provided new name for the data object within the share. If this new name is not provided,
-    the object's original name will be used as the `string_shared_as` name. The `string_shared_as`
-    name must be unique within a share. For notebooks, the new name should be the new notebook file
-    name."""
+    """A user-provided new name for the shared object within the share. If this new name is not not
+    provided, the object's original name will be used as the `string_shared_as` name. The
+    `string_shared_as` name must be unique for objects of the same type within a Share. For
+    notebooks, the new name should be the new notebook file name."""
 
     def as_dict(self) -> dict:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
@@ -1463,7 +2125,7 @@ class SharedDataObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(
             added_at=d.get("added_at", None),
@@ -1485,7 +2147,6 @@ class SharedDataObject:
 
 
 class SharedDataObjectDataObjectType(Enum):
-    """The type of the data object."""
 
     FEATURE_SPEC = "FEATURE_SPEC"
     FUNCTION = "FUNCTION"
@@ -1499,15 +2160,12 @@ class SharedDataObjectDataObjectType(Enum):
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
-    """Whether to enable or disable sharing of data history. If not specified, the default is
-    **DISABLED**."""
 
     DISABLED = "DISABLED"
     ENABLED = "ENABLED"
 
 
 class SharedDataObjectStatus(Enum):
-    """One of: **ACTIVE**, **PERMISSION_DENIED**."""
 
     ACTIVE = "ACTIVE"
     PERMISSION_DENIED = "PERMISSION_DENIED"
@@ -1540,7 +2198,7 @@ class SharedDataObjectUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObjectUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObjectUpdate:
         """Deserializes the SharedDataObjectUpdate from a dictionary."""
         return cls(
             action=_enum(d, "action", SharedDataObjectUpdateAction),
@@ -1549,29 +2207,177 @@ class SharedDataObjectUpdate:
 
 
 class SharedDataObjectUpdateAction(Enum):
-    """One of: **ADD**, **REMOVE**, **UPDATE**."""
 
     ADD = "ADD"
     REMOVE = "REMOVE"
     UPDATE = "UPDATE"
 
 
+class SharedSecurableKind(Enum):
+    """The SecurableKind of a delta-shared object."""
+
+    FUNCTION_FEATURE_SPEC = "FUNCTION_FEATURE_SPEC"
+    FUNCTION_REGISTERED_MODEL = "FUNCTION_REGISTERED_MODEL"
+    FUNCTION_STANDARD = "FUNCTION_STANDARD"
+
+
 @dataclass
-class UpdatePermissionsResponse:
+class Table:
+    comment: Optional[str] = None
+    """The comment of the table."""
+
+    id: Optional[str] = None
+    """The id of the table."""
+
+    internal_attributes: Optional[TableInternalAttributes] = None
+    """Internal information for D2D sharing that should not be disclosed to external users."""
+
+    materialized_table_name: Optional[str] = None
+    """The name of a materialized table."""
+
+    name: Optional[str] = None
+    """The name of the table."""
+
+    schema: Optional[str] = None
+    """The name of the schema that the table belongs to."""
+
+    share: Optional[str] = None
+    """The name of the share that the table belongs to."""
+
+    share_id: Optional[str] = None
+    """The id of the share that the table belongs to."""
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The Tags of the table."""
+
     def as_dict(self) -> dict:
-        """Serializes the UpdatePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the Table into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.internal_attributes:
+            body["internal_attributes"] = self.internal_attributes.as_dict()
+        if self.materialized_table_name is not None:
+            body["materialized_table_name"] = self.materialized_table_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the UpdatePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        """Serializes the Table into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.internal_attributes:
+            body["internal_attributes"] = self.internal_attributes
+        if self.materialized_table_name is not None:
+            body["materialized_table_name"] = self.materialized_table_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissionsResponse:
-        """Deserializes the UpdatePermissionsResponse from a dictionary."""
-        return cls()
+    def from_dict(cls, d: Dict[str, Any]) -> Table:
+        """Deserializes the Table from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            id=d.get("id", None),
+            internal_attributes=_from_dict(d, "internal_attributes", TableInternalAttributes),
+            materialized_table_name=d.get("materialized_table_name", None),
+            name=d.get("name", None),
+            schema=d.get("schema", None),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
+
+
+@dataclass
+class TableInternalAttributes:
+    """Internal information for D2D sharing that should not be disclosed to external users."""
+
+    parent_storage_location: Optional[str] = None
+    """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
+    the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
+    CreateStagingTableHandler, which is used to store the materialized table for a shared
+    VIEW/FOREIGN_TABLE for D2O queries. The value will be used on the recipient side to be
+    whitelisted when SEG is enabled on the workspace of the recipient, to allow the recipient users
+    to query this shared VIEW/FOREIGN_TABLE."""
+
+    storage_location: Optional[str] = None
+    """The cloud storage location of a shard table with DIRECTORY_BASED_TABLE type."""
+
+    type: Optional[TableInternalAttributesSharedTableType] = None
+    """The type of the shared table."""
+
+    view_definition: Optional[str] = None
+    """The view definition of a shared view. DEPRECATED."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableInternalAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.parent_storage_location is not None:
+            body["parent_storage_location"] = self.parent_storage_location
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.type is not None:
+            body["type"] = self.type.value
+        if self.view_definition is not None:
+            body["view_definition"] = self.view_definition
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableInternalAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parent_storage_location is not None:
+            body["parent_storage_location"] = self.parent_storage_location
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.type is not None:
+            body["type"] = self.type
+        if self.view_definition is not None:
+            body["view_definition"] = self.view_definition
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableInternalAttributes:
+        """Deserializes the TableInternalAttributes from a dictionary."""
+        return cls(
+            parent_storage_location=d.get("parent_storage_location", None),
+            storage_location=d.get("storage_location", None),
+            type=_enum(d, "type", TableInternalAttributesSharedTableType),
+            view_definition=d.get("view_definition", None),
+        )
+
+
+class TableInternalAttributesSharedTableType(Enum):
+
+    DIRECTORY_BASED_TABLE = "DIRECTORY_BASED_TABLE"
+    FILE_BASED_TABLE = "FILE_BASED_TABLE"
+    FOREIGN_TABLE = "FOREIGN_TABLE"
+    MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
+    STREAMING_TABLE = "STREAMING_TABLE"
+    VIEW = "VIEW"
 
 
 @dataclass
@@ -1623,7 +2429,7 @@ class UpdateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProvider:
         """Deserializes the UpdateProvider from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1698,7 +2504,7 @@ class UpdateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRecipient:
         """Deserializes the UpdateRecipient from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1766,7 +2572,7 @@ class UpdateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateShare:
         """Deserializes the UpdateShare from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -1780,35 +2586,19 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    changes: Optional[List[catalog.PermissionsChange]] = None
+    changes: Optional[List[PermissionsChange]] = None
     """Array of permission changes."""
-
-    max_results: Optional[int] = None
-    """Maximum number of permissions to return. - when set to 0, the page length is set to a server
-    configured value (recommended); - when set to a value greater than 0, the page length is the
-    minimum of this value and a server configured value; - when set to a value less than 0, an
-    invalid parameter error is returned; - If not set, all valid permissions are returned (not
-    recommended). - Note: The number of returned permissions might be less than the specified
-    max_results size, even zero. The only definitive indication that no further permissions can be
-    fetched is when the next_page_token is unset from the response."""
 
     name: Optional[str] = None
     """The name of the share."""
-
-    page_token: Optional[str] = None
-    """Opaque pagination token to go to next page based on previous query."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateSharePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.changes:
             body["changes"] = [v.as_dict() for v in self.changes]
-        if self.max_results is not None:
-            body["max_results"] = self.max_results
         if self.name is not None:
             body["name"] = self.name
-        if self.page_token is not None:
-            body["page_token"] = self.page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1816,23 +2606,157 @@ class UpdateSharePermissions:
         body = {}
         if self.changes:
             body["changes"] = self.changes
-        if self.max_results is not None:
-            body["max_results"] = self.max_results
         if self.name is not None:
             body["name"] = self.name
-        if self.page_token is not None:
-            body["page_token"] = self.page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
+        return cls(changes=_repeated_dict(d, "changes", PermissionsChange), name=d.get("name", None))
+
+
+@dataclass
+class UpdateSharePermissionsResponse:
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+    """The privileges assigned to each principal"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateSharePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateSharePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSharePermissionsResponse:
+        """Deserializes the UpdateSharePermissionsResponse from a dictionary."""
+        return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment))
+
+
+@dataclass
+class Volume:
+    comment: Optional[str] = None
+    """The comment of the volume."""
+
+    id: Optional[str] = None
+    """This id maps to the shared_volume_id in database Recipient needs shared_volume_id for recon to
+    check if this volume is already in recipient's DB or not."""
+
+    internal_attributes: Optional[VolumeInternalAttributes] = None
+    """Internal attributes for D2D sharing that should not be disclosed to external users."""
+
+    name: Optional[str] = None
+    """The name of the volume."""
+
+    schema: Optional[str] = None
+    """The name of the schema that the volume belongs to."""
+
+    share: Optional[str] = None
+    """The name of the share that the volume belongs to."""
+
+    share_id: Optional[str] = None
+    """/ The id of the share that the volume belongs to."""
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the volume."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Volume into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.internal_attributes:
+            body["internal_attributes"] = self.internal_attributes.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Volume into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.id is not None:
+            body["id"] = self.id
+        if self.internal_attributes:
+            body["internal_attributes"] = self.internal_attributes
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Volume:
+        """Deserializes the Volume from a dictionary."""
         return cls(
-            changes=_repeated_dict(d, "changes", catalog.PermissionsChange),
-            max_results=d.get("max_results", None),
+            comment=d.get("comment", None),
+            id=d.get("id", None),
+            internal_attributes=_from_dict(d, "internal_attributes", VolumeInternalAttributes),
             name=d.get("name", None),
-            page_token=d.get("page_token", None),
+            schema=d.get("schema", None),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
         )
+
+
+@dataclass
+class VolumeInternalAttributes:
+    """Internal information for D2D sharing that should not be disclosed to external users."""
+
+    storage_location: Optional[str] = None
+    """The cloud storage location of the volume"""
+
+    type: Optional[str] = None
+    """The type of the shared volume."""
+
+    def as_dict(self) -> dict:
+        """Serializes the VolumeInternalAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VolumeInternalAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VolumeInternalAttributes:
+        """Deserializes the VolumeInternalAttributes from a dictionary."""
+        return cls(storage_location=d.get("storage_location", None), type=d.get("type", None))
 
 
 class ProvidersAPI:
@@ -1896,9 +2820,7 @@ class ProvidersAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
@@ -1972,6 +2894,55 @@ class ProvidersAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def list_provider_share_assets(
+        self,
+        provider_name: str,
+        share_name: str,
+        *,
+        function_max_results: Optional[int] = None,
+        notebook_max_results: Optional[int] = None,
+        table_max_results: Optional[int] = None,
+        volume_max_results: Optional[int] = None,
+    ) -> ListProviderShareAssetsResponse:
+        """List assets by provider share.
+
+        Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
+        share.
+
+        :param provider_name: str
+          The name of the provider who owns the share.
+        :param share_name: str
+          The name of the share.
+        :param function_max_results: int (optional)
+          Maximum number of functions to return.
+        :param notebook_max_results: int (optional)
+          Maximum number of notebooks to return.
+        :param table_max_results: int (optional)
+          Maximum number of tables to return.
+        :param volume_max_results: int (optional)
+          Maximum number of volumes to return.
+
+        :returns: :class:`ListProviderShareAssetsResponse`
+        """
+
+        query = {}
+        if function_max_results is not None:
+            query["function_max_results"] = function_max_results
+        if notebook_max_results is not None:
+            query["notebook_max_results"] = notebook_max_results
+        if table_max_results is not None:
+            query["table_max_results"] = table_max_results
+        if volume_max_results is not None:
+            query["volume_max_results"] = volume_max_results
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}", query=query, headers=headers
+        )
+        return ListProviderShareAssetsResponse.from_dict(res)
 
     def list_shares(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
@@ -2217,9 +3188,7 @@ class RecipientsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
@@ -2468,9 +3437,7 @@ class SharesAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
@@ -2540,7 +3507,7 @@ class SharesAPI:
 
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
-    ) -> catalog.PermissionsList:
+    ) -> GetSharePermissionsResponse:
         """Get permissions.
 
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
@@ -2559,7 +3526,7 @@ class SharesAPI:
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
-        :returns: :class:`PermissionsList`
+        :returns: :class:`GetSharePermissionsResponse`
         """
 
         query = {}
@@ -2572,7 +3539,7 @@ class SharesAPI:
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
-        return catalog.PermissionsList.from_dict(res)
+        return GetSharePermissionsResponse.from_dict(res)
 
     def update(
         self,
@@ -2637,51 +3604,30 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def update_permissions(
-        self,
-        name: str,
-        *,
-        changes: Optional[List[catalog.PermissionsChange]] = None,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ):
+        self, name: str, *, changes: Optional[List[PermissionsChange]] = None
+    ) -> UpdateSharePermissionsResponse:
         """Update permissions.
 
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
 
-        For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
-        not require additional privileges.
+        For new recipient grants, the user must also be the recipient owner or metastore admin. recipient
+        revocations do not require additional privileges.
 
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
-        :param max_results: int (optional)
-          Maximum number of permissions to return. - when set to 0, the page length is set to a server
-          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
-          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
-          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
-          number of returned permissions might be less than the specified max_results size, even zero. The
-          only definitive indication that no further permissions can be fetched is when the next_page_token is
-          unset from the response.
-        :param page_token: str (optional)
-          Opaque pagination token to go to next page based on previous query.
 
-
+        :returns: :class:`UpdateSharePermissionsResponse`
         """
         body = {}
-        query = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
-        if max_results is not None:
-            query["max_results"] = max_results
-        if page_token is not None:
-            query["page_token"] = page_token
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, body=body, headers=headers
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body, headers=headers)
+        return UpdateSharePermissionsResponse.from_dict(res)

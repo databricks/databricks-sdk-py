@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -56,7 +56,7 @@ class AccountIpAccessEnable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountIpAccessEnable:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountIpAccessEnable:
         """Deserializes the AccountIpAccessEnable from a dictionary."""
         return cls(
             acct_ip_acl_enable=_from_dict(d, "acct_ip_acl_enable", BooleanMessage),
@@ -84,7 +84,7 @@ class AibiDashboardEmbeddingAccessPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> AibiDashboardEmbeddingAccessPolicy:
         """Deserializes the AibiDashboardEmbeddingAccessPolicy from a dictionary."""
         return cls(
             access_policy_type=_enum(d, "access_policy_type", AibiDashboardEmbeddingAccessPolicyAccessPolicyType)
@@ -139,7 +139,7 @@ class AibiDashboardEmbeddingAccessPolicySetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicySetting:
+    def from_dict(cls, d: Dict[str, Any]) -> AibiDashboardEmbeddingAccessPolicySetting:
         """Deserializes the AibiDashboardEmbeddingAccessPolicySetting from a dictionary."""
         return cls(
             aibi_dashboard_embedding_access_policy=_from_dict(
@@ -169,7 +169,7 @@ class AibiDashboardEmbeddingApprovedDomains:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomains:
+    def from_dict(cls, d: Dict[str, Any]) -> AibiDashboardEmbeddingApprovedDomains:
         """Deserializes the AibiDashboardEmbeddingApprovedDomains from a dictionary."""
         return cls(approved_domains=d.get("approved_domains", None))
 
@@ -215,7 +215,7 @@ class AibiDashboardEmbeddingApprovedDomainsSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> AibiDashboardEmbeddingApprovedDomainsSetting:
         """Deserializes the AibiDashboardEmbeddingApprovedDomainsSetting from a dictionary."""
         return cls(
             aibi_dashboard_embedding_approved_domains=_from_dict(
@@ -267,7 +267,7 @@ class AutomaticClusterUpdateSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutomaticClusterUpdateSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> AutomaticClusterUpdateSetting:
         """Deserializes the AutomaticClusterUpdateSetting from a dictionary."""
         return cls(
             automatic_cluster_update_workspace=_from_dict(
@@ -297,7 +297,7 @@ class BooleanMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BooleanMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> BooleanMessage:
         """Deserializes the BooleanMessage from a dictionary."""
         return cls(value=d.get("value", None))
 
@@ -350,7 +350,7 @@ class ClusterAutoRestartMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessage:
         """Deserializes the ClusterAutoRestartMessage from a dictionary."""
         return cls(
             can_toggle=d.get("can_toggle", None),
@@ -402,7 +402,7 @@ class ClusterAutoRestartMessageEnablementDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageEnablementDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageEnablementDetails:
         """Deserializes the ClusterAutoRestartMessageEnablementDetails from a dictionary."""
         return cls(
             forced_for_compliance_mode=d.get("forced_for_compliance_mode", None),
@@ -430,7 +430,7 @@ class ClusterAutoRestartMessageMaintenanceWindow:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindow:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindow:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindow from a dictionary."""
         return cls(
             week_day_based_schedule=_from_dict(
@@ -481,7 +481,7 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule from a dictionary."""
         return cls(
             day_of_week=_enum(d, "day_of_week", ClusterAutoRestartMessageMaintenanceWindowDayOfWeek),
@@ -528,7 +528,7 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime from a dictionary."""
         return cls(hours=d.get("hours", None), minutes=d.get("minutes", None))
 
@@ -561,7 +561,7 @@ class ComplianceSecurityProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
             compliance_standards=_repeated_enum(d, "compliance_standards", ComplianceStandard),
@@ -611,7 +611,7 @@ class ComplianceSecurityProfileSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfileSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfileSetting:
         """Deserializes the ComplianceSecurityProfileSetting from a dictionary."""
         return cls(
             compliance_security_profile_workspace=_from_dict(
@@ -682,7 +682,7 @@ class Config:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Config:
+    def from_dict(cls, d: Dict[str, Any]) -> Config:
         """Deserializes the Config from a dictionary."""
         return cls(
             email=_from_dict(d, "email", EmailConfig),
@@ -731,7 +731,7 @@ class CreateIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateIpAccessList:
         """Deserializes the CreateIpAccessList from a dictionary."""
         return cls(
             ip_addresses=d.get("ip_addresses", None),
@@ -762,7 +762,7 @@ class CreateIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateIpAccessListResponse:
         """Deserializes the CreateIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, "ip_access_list", IpAccessListInfo))
 
@@ -797,7 +797,7 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateNetworkConnectivityConfigRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfigRequest:
         """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
         return cls(name=d.get("name", None), region=d.get("region", None))
 
@@ -829,7 +829,7 @@ class CreateNotificationDestinationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateNotificationDestinationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNotificationDestinationRequest:
         """Deserializes the CreateNotificationDestinationRequest from a dictionary."""
         return cls(config=_from_dict(d, "config", Config), display_name=d.get("display_name", None))
 
@@ -870,7 +870,7 @@ class CreateOboTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateOboTokenRequest:
         """Deserializes the CreateOboTokenRequest from a dictionary."""
         return cls(
             application_id=d.get("application_id", None),
@@ -907,7 +907,7 @@ class CreateOboTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateOboTokenResponse:
         """Deserializes the CreateOboTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, "token_info", TokenInfo), token_value=d.get("token_value", None))
 
@@ -947,7 +947,7 @@ class CreatePrivateEndpointRuleRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePrivateEndpointRuleRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRuleRequest:
         """Deserializes the CreatePrivateEndpointRuleRequest from a dictionary."""
         return cls(
             group_id=_enum(d, "group_id", CreatePrivateEndpointRuleRequestGroupId),
@@ -995,7 +995,7 @@ class CreateTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTokenRequest:
         """Deserializes the CreateTokenRequest from a dictionary."""
         return cls(comment=d.get("comment", None), lifetime_seconds=d.get("lifetime_seconds", None))
 
@@ -1027,7 +1027,7 @@ class CreateTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTokenResponse:
         """Deserializes the CreateTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, "token_info", PublicTokenInfo), token_value=d.get("token_value", None))
 
@@ -1062,7 +1062,7 @@ class CspEnablementAccount:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementAccount:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablementAccount:
         """Deserializes the CspEnablementAccount from a dictionary."""
         return cls(
             compliance_standards=_repeated_enum(d, "compliance_standards", ComplianceStandard),
@@ -1112,7 +1112,7 @@ class CspEnablementAccountSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementAccountSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablementAccountSetting:
         """Deserializes the CspEnablementAccountSetting from a dictionary."""
         return cls(
             csp_enablement_account=_from_dict(d, "csp_enablement_account", CspEnablementAccount),
@@ -1170,7 +1170,7 @@ class DefaultNamespaceSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DefaultNamespaceSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultNamespaceSetting:
         """Deserializes the DefaultNamespaceSetting from a dictionary."""
         return cls(
             etag=d.get("etag", None),
@@ -1206,7 +1206,7 @@ class DeleteAccountIpAccessEnableResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAccountIpAccessEnableResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAccountIpAccessEnableResponse:
         """Deserializes the DeleteAccountIpAccessEnableResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1238,7 +1238,7 @@ class DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
         """Deserializes the DeleteAibiDashboardEmbeddingAccessPolicySettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1270,7 +1270,7 @@ class DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
         """Deserializes the DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1302,7 +1302,7 @@ class DeleteDefaultNamespaceSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDefaultNamespaceSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDefaultNamespaceSettingResponse:
         """Deserializes the DeleteDefaultNamespaceSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1334,7 +1334,7 @@ class DeleteDisableLegacyAccessResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyAccessResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDisableLegacyAccessResponse:
         """Deserializes the DeleteDisableLegacyAccessResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1366,7 +1366,7 @@ class DeleteDisableLegacyDbfsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyDbfsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDisableLegacyDbfsResponse:
         """Deserializes the DeleteDisableLegacyDbfsResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1398,7 +1398,7 @@ class DeleteDisableLegacyFeaturesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyFeaturesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDisableLegacyFeaturesResponse:
         """Deserializes the DeleteDisableLegacyFeaturesResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1416,7 +1416,7 @@ class DeleteNetworkConnectivityConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteNetworkConnectivityConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkConnectivityConfigurationResponse:
         """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
         return cls()
 
@@ -1448,7 +1448,7 @@ class DeletePersonalComputeSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePersonalComputeSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1466,7 +1466,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -1498,7 +1498,7 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Deserializes the DeleteRestrictWorkspaceAdminsSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
 
@@ -1553,7 +1553,7 @@ class DisableLegacyAccess:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyAccess:
+    def from_dict(cls, d: Dict[str, Any]) -> DisableLegacyAccess:
         """Deserializes the DisableLegacyAccess from a dictionary."""
         return cls(
             disable_legacy_access=_from_dict(d, "disable_legacy_access", BooleanMessage),
@@ -1603,7 +1603,7 @@ class DisableLegacyDbfs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyDbfs:
+    def from_dict(cls, d: Dict[str, Any]) -> DisableLegacyDbfs:
         """Deserializes the DisableLegacyDbfs from a dictionary."""
         return cls(
             disable_legacy_dbfs=_from_dict(d, "disable_legacy_dbfs", BooleanMessage),
@@ -1653,7 +1653,7 @@ class DisableLegacyFeatures:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyFeatures:
+    def from_dict(cls, d: Dict[str, Any]) -> DisableLegacyFeatures:
         """Deserializes the DisableLegacyFeatures from a dictionary."""
         return cls(
             disable_legacy_features=_from_dict(d, "disable_legacy_features", BooleanMessage),
@@ -1686,7 +1686,7 @@ class EgressNetworkPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicy:
         """Deserializes the EgressNetworkPolicy from a dictionary."""
         return cls(internet_access=_from_dict(d, "internet_access", EgressNetworkPolicyInternetAccessPolicy))
 
@@ -1734,7 +1734,7 @@ class EgressNetworkPolicyInternetAccessPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicy:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicy from a dictionary."""
         return cls(
             allowed_internet_destinations=_repeated_dict(
@@ -1789,7 +1789,7 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyInternetDestination:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination from a dictionary."""
         return cls(
             destination=d.get("destination", None),
@@ -1841,7 +1841,7 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode from a dictionary."""
         return cls(
             log_only_mode_type=_enum(
@@ -1939,7 +1939,7 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyStorageDestination:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination from a dictionary."""
         return cls(
             allowed_paths=d.get("allowed_paths", None),
@@ -1981,7 +1981,7 @@ class EmailConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmailConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> EmailConfig:
         """Deserializes the EmailConfig from a dictionary."""
         return cls(addresses=d.get("addresses", None))
 
@@ -1999,7 +1999,7 @@ class Empty:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Empty:
+    def from_dict(cls, d: Dict[str, Any]) -> Empty:
         """Deserializes the Empty from a dictionary."""
         return cls()
 
@@ -2025,7 +2025,7 @@ class EnhancedSecurityMonitoring:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnhancedSecurityMonitoring:
+    def from_dict(cls, d: Dict[str, Any]) -> EnhancedSecurityMonitoring:
         """Deserializes the EnhancedSecurityMonitoring from a dictionary."""
         return cls(is_enabled=d.get("is_enabled", None))
 
@@ -2072,7 +2072,7 @@ class EnhancedSecurityMonitoringSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnhancedSecurityMonitoringSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> EnhancedSecurityMonitoringSetting:
         """Deserializes the EnhancedSecurityMonitoringSetting from a dictionary."""
         return cls(
             enhanced_security_monitoring_workspace=_from_dict(
@@ -2104,7 +2104,7 @@ class EsmEnablementAccount:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementAccount:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablementAccount:
         """Deserializes the EsmEnablementAccount from a dictionary."""
         return cls(is_enforced=d.get("is_enforced", None))
 
@@ -2151,7 +2151,7 @@ class EsmEnablementAccountSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementAccountSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablementAccountSetting:
         """Deserializes the EsmEnablementAccountSetting from a dictionary."""
         return cls(
             esm_enablement_account=_from_dict(d, "esm_enablement_account", EsmEnablementAccount),
@@ -2210,7 +2210,7 @@ class ExchangeToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeToken:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeToken:
         """Deserializes the ExchangeToken from a dictionary."""
         return cls(
             credential=d.get("credential", None),
@@ -2257,7 +2257,7 @@ class ExchangeTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeTokenRequest:
         """Deserializes the ExchangeTokenRequest from a dictionary."""
         return cls(
             partition_id=_from_dict(d, "partitionId", PartitionId),
@@ -2287,7 +2287,7 @@ class ExchangeTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeTokenResponse:
         """Deserializes the ExchangeTokenResponse from a dictionary."""
         return cls(values=_repeated_dict(d, "values", ExchangeToken))
 
@@ -2314,7 +2314,7 @@ class FetchIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FetchIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> FetchIpAccessListResponse:
         """Deserializes the FetchIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, "ip_access_list", IpAccessListInfo))
 
@@ -2374,7 +2374,7 @@ class GenericWebhookConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GenericWebhookConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> GenericWebhookConfig:
         """Deserializes the GenericWebhookConfig from a dictionary."""
         return cls(
             password=d.get("password", None),
@@ -2406,7 +2406,7 @@ class GetIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetIpAccessListResponse:
         """Deserializes the GetIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, "ip_access_list", IpAccessListInfo))
 
@@ -2432,7 +2432,7 @@ class GetIpAccessListsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetIpAccessListsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetIpAccessListsResponse:
         """Deserializes the GetIpAccessListsResponse from a dictionary."""
         return cls(ip_access_lists=_repeated_dict(d, "ip_access_lists", IpAccessListInfo))
 
@@ -2457,7 +2457,7 @@ class GetTokenPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetTokenPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetTokenPermissionLevelsResponse:
         """Deserializes the GetTokenPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", TokenPermissionsDescription))
 
@@ -2483,7 +2483,7 @@ class GetTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetTokenResponse:
         """Deserializes the GetTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, "token_info", TokenInfo))
 
@@ -2575,7 +2575,7 @@ class IpAccessListInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IpAccessListInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> IpAccessListInfo:
         """Deserializes the IpAccessListInfo from a dictionary."""
         return cls(
             address_count=d.get("address_count", None),
@@ -2612,7 +2612,7 @@ class ListIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListIpAccessListResponse:
         """Deserializes the ListIpAccessListResponse from a dictionary."""
         return cls(ip_access_lists=_repeated_dict(d, "ip_access_lists", IpAccessListInfo))
 
@@ -2644,7 +2644,7 @@ class ListNccAzurePrivateEndpointRulesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNccAzurePrivateEndpointRulesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNccAzurePrivateEndpointRulesResponse:
         """Deserializes the ListNccAzurePrivateEndpointRulesResponse from a dictionary."""
         return cls(
             items=_repeated_dict(d, "items", NccAzurePrivateEndpointRule),
@@ -2679,7 +2679,7 @@ class ListNetworkConnectivityConfigurationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNetworkConnectivityConfigurationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNetworkConnectivityConfigurationsResponse:
         """Deserializes the ListNetworkConnectivityConfigurationsResponse from a dictionary."""
         return cls(
             items=_repeated_dict(d, "items", NetworkConnectivityConfiguration),
@@ -2713,7 +2713,7 @@ class ListNotificationDestinationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNotificationDestinationsResponse:
         """Deserializes the ListNotificationDestinationsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -2755,7 +2755,7 @@ class ListNotificationDestinationsResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResult:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNotificationDestinationsResult:
         """Deserializes the ListNotificationDestinationsResult from a dictionary."""
         return cls(
             destination_type=_enum(d, "destination_type", DestinationType),
@@ -2784,7 +2784,7 @@ class ListPublicTokensResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPublicTokensResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPublicTokensResponse:
         """Deserializes the ListPublicTokensResponse from a dictionary."""
         return cls(token_infos=_repeated_dict(d, "token_infos", PublicTokenInfo))
 
@@ -2811,7 +2811,7 @@ class ListTokensResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTokensResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTokensResponse:
         """Deserializes the ListTokensResponse from a dictionary."""
         return cls(token_infos=_repeated_dict(d, "token_infos", TokenInfo))
 
@@ -2853,7 +2853,7 @@ class MicrosoftTeamsConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MicrosoftTeamsConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> MicrosoftTeamsConfig:
         """Deserializes the MicrosoftTeamsConfig from a dictionary."""
         return cls(url=d.get("url", None), url_set=d.get("url_set", None))
 
@@ -2882,7 +2882,7 @@ class NccAwsStableIpRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccAwsStableIpRule:
+    def from_dict(cls, d: Dict[str, Any]) -> NccAwsStableIpRule:
         """Deserializes the NccAwsStableIpRule from a dictionary."""
         return cls(cidr_blocks=d.get("cidr_blocks", None))
 
@@ -2981,7 +2981,7 @@ class NccAzurePrivateEndpointRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccAzurePrivateEndpointRule:
+    def from_dict(cls, d: Dict[str, Any]) -> NccAzurePrivateEndpointRule:
         """Deserializes the NccAzurePrivateEndpointRule from a dictionary."""
         return cls(
             connection_state=_enum(d, "connection_state", NccAzurePrivateEndpointRuleConnectionState),
@@ -3064,7 +3064,7 @@ class NccAzureServiceEndpointRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccAzureServiceEndpointRule:
+    def from_dict(cls, d: Dict[str, Any]) -> NccAzureServiceEndpointRule:
         """Deserializes the NccAzureServiceEndpointRule from a dictionary."""
         return cls(
             subnets=d.get("subnets", None),
@@ -3106,7 +3106,7 @@ class NccEgressConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressConfig:
         """Deserializes the NccEgressConfig from a dictionary."""
         return cls(
             default_rules=_from_dict(d, "default_rules", NccEgressDefaultRules),
@@ -3147,7 +3147,7 @@ class NccEgressDefaultRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressDefaultRules:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressDefaultRules:
         """Deserializes the NccEgressDefaultRules from a dictionary."""
         return cls(
             aws_stable_ip_rule=_from_dict(d, "aws_stable_ip_rule", NccAwsStableIpRule),
@@ -3177,7 +3177,7 @@ class NccEgressTargetRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressTargetRules:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressTargetRules:
         """Deserializes the NccEgressTargetRules from a dictionary."""
         return cls(
             azure_private_endpoint_rules=_repeated_dict(d, "azure_private_endpoint_rules", NccAzurePrivateEndpointRule)
@@ -3250,7 +3250,7 @@ class NetworkConnectivityConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NetworkConnectivityConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfiguration:
         """Deserializes the NetworkConnectivityConfiguration from a dictionary."""
         return cls(
             account_id=d.get("account_id", None),
@@ -3305,7 +3305,7 @@ class NotificationDestination:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotificationDestination:
+    def from_dict(cls, d: Dict[str, Any]) -> NotificationDestination:
         """Deserializes the NotificationDestination from a dictionary."""
         return cls(
             config=_from_dict(d, "config", Config),
@@ -3342,7 +3342,7 @@ class PagerdutyConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PagerdutyConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> PagerdutyConfig:
         """Deserializes the PagerdutyConfig from a dictionary."""
         return cls(
             integration_key=d.get("integration_key", None), integration_key_set=d.get("integration_key_set", None)
@@ -3371,7 +3371,7 @@ class PartitionId:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionId:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionId:
         """Deserializes the PartitionId from a dictionary."""
         return cls(workspace_id=d.get("workspaceId", None))
 
@@ -3400,7 +3400,7 @@ class PersonalComputeMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PersonalComputeMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> PersonalComputeMessage:
         """Deserializes the PersonalComputeMessage from a dictionary."""
         return cls(value=_enum(d, "value", PersonalComputeMessageEnum))
 
@@ -3457,7 +3457,7 @@ class PersonalComputeSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PersonalComputeSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> PersonalComputeSetting:
         """Deserializes the PersonalComputeSetting from a dictionary."""
         return cls(
             etag=d.get("etag", None),
@@ -3507,7 +3507,7 @@ class PublicTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublicTokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> PublicTokenInfo:
         """Deserializes the PublicTokenInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -3569,7 +3569,7 @@ class ReplaceIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReplaceIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceIpAccessList:
         """Deserializes the ReplaceIpAccessList from a dictionary."""
         return cls(
             enabled=d.get("enabled", None),
@@ -3593,7 +3593,7 @@ class ReplaceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceResponse:
         """Deserializes the ReplaceResponse from a dictionary."""
         return cls()
 
@@ -3617,7 +3617,7 @@ class RestrictWorkspaceAdminsMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsMessage:
         """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
         return cls(status=_enum(d, "status", RestrictWorkspaceAdminsMessageStatus))
 
@@ -3669,7 +3669,7 @@ class RestrictWorkspaceAdminsSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsSetting:
         """Deserializes the RestrictWorkspaceAdminsSetting from a dictionary."""
         return cls(
             etag=d.get("etag", None),
@@ -3698,7 +3698,7 @@ class RevokeTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RevokeTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenRequest:
         """Deserializes the RevokeTokenRequest from a dictionary."""
         return cls(token_id=d.get("token_id", None))
 
@@ -3716,7 +3716,7 @@ class RevokeTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RevokeTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenResponse:
         """Deserializes the RevokeTokenResponse from a dictionary."""
         return cls()
 
@@ -3734,7 +3734,7 @@ class SetStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetStatusResponse:
         """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
 
@@ -3766,7 +3766,7 @@ class SlackConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SlackConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> SlackConfig:
         """Deserializes the SlackConfig from a dictionary."""
         return cls(url=d.get("url", None), url_set=d.get("url_set", None))
 
@@ -3791,7 +3791,7 @@ class StringMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StringMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> StringMessage:
         """Deserializes the StringMessage from a dictionary."""
         return cls(value=d.get("value", None))
 
@@ -3837,7 +3837,7 @@ class TokenAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlRequest:
         """Deserializes the TokenAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -3895,7 +3895,7 @@ class TokenAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlResponse:
         """Deserializes the TokenAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", TokenPermission),
@@ -3982,7 +3982,7 @@ class TokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -4029,7 +4029,7 @@ class TokenPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermission:
         """Deserializes the TokenPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -4075,7 +4075,7 @@ class TokenPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissions:
         """Deserializes the TokenPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", TokenAccessControlResponse),
@@ -4110,7 +4110,7 @@ class TokenPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsDescription:
         """Deserializes the TokenPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", TokenPermissionLevel)
@@ -4136,7 +4136,7 @@ class TokenPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsRequest:
         """Deserializes the TokenPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, "access_control_list", TokenAccessControlRequest))
 
@@ -4192,7 +4192,7 @@ class UpdateAccountIpAccessEnableRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAccountIpAccessEnableRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAccountIpAccessEnableRequest:
         """Deserializes the UpdateAccountIpAccessEnableRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4244,7 +4244,7 @@ class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
         """Deserializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4296,7 +4296,7 @@ class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
         """Deserializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4348,7 +4348,7 @@ class UpdateAutomaticClusterUpdateSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAutomaticClusterUpdateSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAutomaticClusterUpdateSettingRequest:
         """Deserializes the UpdateAutomaticClusterUpdateSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4400,7 +4400,7 @@ class UpdateComplianceSecurityProfileSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateComplianceSecurityProfileSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateComplianceSecurityProfileSettingRequest:
         """Deserializes the UpdateComplianceSecurityProfileSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4452,7 +4452,7 @@ class UpdateCspEnablementAccountSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCspEnablementAccountSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCspEnablementAccountSettingRequest:
         """Deserializes the UpdateCspEnablementAccountSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4511,7 +4511,7 @@ class UpdateDefaultNamespaceSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDefaultNamespaceSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateDefaultNamespaceSettingRequest:
         """Deserializes the UpdateDefaultNamespaceSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4563,7 +4563,7 @@ class UpdateDisableLegacyAccessRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyAccessRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyAccessRequest:
         """Deserializes the UpdateDisableLegacyAccessRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4615,7 +4615,7 @@ class UpdateDisableLegacyDbfsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyDbfsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyDbfsRequest:
         """Deserializes the UpdateDisableLegacyDbfsRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4667,7 +4667,7 @@ class UpdateDisableLegacyFeaturesRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyFeaturesRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyFeaturesRequest:
         """Deserializes the UpdateDisableLegacyFeaturesRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4719,7 +4719,7 @@ class UpdateEnhancedSecurityMonitoringSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateEnhancedSecurityMonitoringSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnhancedSecurityMonitoringSettingRequest:
         """Deserializes the UpdateEnhancedSecurityMonitoringSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4771,7 +4771,7 @@ class UpdateEsmEnablementAccountSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateEsmEnablementAccountSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEsmEnablementAccountSettingRequest:
         """Deserializes the UpdateEsmEnablementAccountSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4832,7 +4832,7 @@ class UpdateIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateIpAccessList:
         """Deserializes the UpdateIpAccessList from a dictionary."""
         return cls(
             enabled=d.get("enabled", None),
@@ -4877,7 +4877,7 @@ class UpdateNotificationDestinationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateNotificationDestinationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateNotificationDestinationRequest:
         """Deserializes the UpdateNotificationDestinationRequest from a dictionary."""
         return cls(
             config=_from_dict(d, "config", Config), display_name=d.get("display_name", None), id=d.get("id", None)
@@ -4927,7 +4927,7 @@ class UpdatePersonalComputeSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePersonalComputeSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalComputeSettingRequest:
         """Deserializes the UpdatePersonalComputeSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -4949,7 +4949,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -4997,7 +4997,7 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
         """Deserializes the UpdateRestrictWorkspaceAdminsSettingRequest from a dictionary."""
         return cls(
             allow_missing=d.get("allow_missing", None),
@@ -5090,9 +5090,7 @@ class AccountIpAccessListsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do(
             "DELETE", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}", headers=headers
@@ -5180,7 +5178,6 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -5241,7 +5238,6 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -6584,9 +6580,7 @@ class IpAccessListsAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
 
@@ -6671,7 +6665,6 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -6728,7 +6721,6 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -7453,9 +7445,7 @@ class TokenManagementAPI:
 
         """
 
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
 

@@ -263,6 +263,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetExperimentByNameResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetExperimentPermissionLevelsResponse
    :members:
    :undoc-members:
@@ -601,7 +605,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunInfoStatus
 
-   Current status of the run.
+   Status of a run.
 
    .. py:attribute:: FAILED
       :value: "FAILED"
@@ -634,19 +638,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: SearchExperimentsViewType
-
-   Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
-
-   .. py:attribute:: ACTIVE_ONLY
-      :value: "ACTIVE_ONLY"
-
-   .. py:attribute:: ALL
-      :value: "ALL"
-
-   .. py:attribute:: DELETED_ONLY
-      :value: "DELETED_ONLY"
-
 .. autoclass:: SearchModelVersionsResponse
    :members:
    :undoc-members:
@@ -662,19 +653,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SearchRunsResponse
    :members:
    :undoc-members:
-
-.. py:class:: SearchRunsRunViewType
-
-   Whether to display only active, only deleted, or all runs. Defaults to only active runs.
-
-   .. py:attribute:: ACTIVE_ONLY
-      :value: "ACTIVE_ONLY"
-
-   .. py:attribute:: ALL
-      :value: "ALL"
-
-   .. py:attribute:: DELETED_ONLY
-      :value: "DELETED_ONLY"
 
 .. autoclass:: SetExperimentTag
    :members:
@@ -813,7 +791,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: UpdateRunStatus
 
-   Updated status of the run.
+   Status of a run.
 
    .. py:attribute:: FAILED
       :value: "FAILED"
@@ -833,3 +811,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateWebhookResponse
    :members:
    :undoc-members:
+
+.. py:class:: ViewType
+
+   Qualifier for the view type.
+
+   .. py:attribute:: ACTIVE_ONLY
+      :value: "ACTIVE_ONLY"
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: DELETED_ONLY
+      :value: "DELETED_ONLY"

@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -39,7 +39,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(name=d.get("name", None))
 
@@ -71,7 +71,7 @@ class CreateEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateEndpoint:
         """Deserializes the CreateEndpoint from a dictionary."""
         return cls(endpoint_type=_enum(d, "endpoint_type", EndpointType), name=d.get("name", None))
 
@@ -136,7 +136,7 @@ class CreateVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexRequest:
         """Deserializes the CreateVectorIndexRequest from a dictionary."""
         return cls(
             delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecRequest),
@@ -167,7 +167,7 @@ class CreateVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexResponse:
         """Deserializes the CreateVectorIndexResponse from a dictionary."""
         return cls(vector_index=_from_dict(d, "vector_index", VectorIndex))
 
@@ -201,7 +201,7 @@ class DeleteDataResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataResult:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataResult:
         """Deserializes the DeleteDataResult from a dictionary."""
         return cls(
             failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
@@ -245,7 +245,7 @@ class DeleteDataVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexRequest:
         """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
         return cls(index_name=d.get("index_name", None), primary_keys=d.get("primary_keys", None))
 
@@ -279,7 +279,7 @@ class DeleteDataVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexResponse:
         """Deserializes the DeleteDataVectorIndexResponse from a dictionary."""
         return cls(result=_from_dict(d, "result", DeleteDataResult), status=_enum(d, "status", DeleteDataStatus))
 
@@ -297,7 +297,7 @@ class DeleteEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteEndpointResponse:
         """Deserializes the DeleteEndpointResponse from a dictionary."""
         return cls()
 
@@ -315,7 +315,7 @@ class DeleteIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteIndexResponse:
         """Deserializes the DeleteIndexResponse from a dictionary."""
         return cls()
 
@@ -384,7 +384,7 @@ class DeltaSyncVectorIndexSpecRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaSyncVectorIndexSpecRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
             columns_to_sync=d.get("columns_to_sync", None),
@@ -457,7 +457,7 @@ class DeltaSyncVectorIndexSpecResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaSyncVectorIndexSpecResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
@@ -507,7 +507,7 @@ class DirectAccessVectorIndexSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DirectAccessVectorIndexSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> DirectAccessVectorIndexSpec:
         """Deserializes the DirectAccessVectorIndexSpec from a dictionary."""
         return cls(
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
@@ -543,7 +543,7 @@ class EmbeddingSourceColumn:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingSourceColumn:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
         return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
 
@@ -575,7 +575,7 @@ class EmbeddingVectorColumn:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingVectorColumn:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingVectorColumn:
         """Deserializes the EmbeddingVectorColumn from a dictionary."""
         return cls(embedding_dimension=d.get("embedding_dimension", None), name=d.get("name", None))
 
@@ -656,7 +656,7 @@ class EndpointInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
@@ -700,7 +700,7 @@ class EndpointStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointStatus:
         """Deserializes the EndpointStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", EndpointStatusState))
 
@@ -747,7 +747,7 @@ class ListEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListEndpointResponse:
         """Deserializes the ListEndpointResponse from a dictionary."""
         return cls(
             endpoints=_repeated_dict(d, "endpoints", EndpointInfo), next_page_token=d.get("next_page_token", None)
@@ -773,7 +773,7 @@ class ListValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListValue:
+    def from_dict(cls, d: Dict[str, Any]) -> ListValue:
         """Deserializes the ListValue from a dictionary."""
         return cls(values=_repeated_dict(d, "values", Value))
 
@@ -805,7 +805,7 @@ class ListVectorIndexesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListVectorIndexesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListVectorIndexesResponse:
         """Deserializes the ListVectorIndexesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -842,7 +842,7 @@ class MapStringValueEntry:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MapStringValueEntry:
+    def from_dict(cls, d: Dict[str, Any]) -> MapStringValueEntry:
         """Deserializes the MapStringValueEntry from a dictionary."""
         return cls(key=d.get("key", None), value=_from_dict(d, "value", Value))
 
@@ -900,7 +900,7 @@ class MiniVectorIndex:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MiniVectorIndex:
+    def from_dict(cls, d: Dict[str, Any]) -> MiniVectorIndex:
         """Deserializes the MiniVectorIndex from a dictionary."""
         return cls(
             creator=d.get("creator", None),
@@ -960,7 +960,7 @@ class QueryVectorIndexNextPageRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexNextPageRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexNextPageRequest:
         """Deserializes the QueryVectorIndexNextPageRequest from a dictionary."""
         return cls(
             endpoint_name=d.get("endpoint_name", None),
@@ -973,6 +973,9 @@ class QueryVectorIndexNextPageRequest:
 class QueryVectorIndexRequest:
     columns: List[str]
     """List of column names to include in the response."""
+
+    columns_to_rerank: Optional[List[str]] = None
+    """Column names used to retrieve data to send to the reranker."""
 
     filters_json: Optional[str] = None
     """JSON string representing query filters.
@@ -1005,6 +1008,8 @@ class QueryVectorIndexRequest:
         body = {}
         if self.columns:
             body["columns"] = [v for v in self.columns]
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = [v for v in self.columns_to_rerank]
         if self.filters_json is not None:
             body["filters_json"] = self.filters_json
         if self.index_name is not None:
@@ -1026,6 +1031,8 @@ class QueryVectorIndexRequest:
         body = {}
         if self.columns:
             body["columns"] = self.columns
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = self.columns_to_rerank
         if self.filters_json is not None:
             body["filters_json"] = self.filters_json
         if self.index_name is not None:
@@ -1043,10 +1050,11 @@ class QueryVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexRequest:
         """Deserializes the QueryVectorIndexRequest from a dictionary."""
         return cls(
             columns=d.get("columns", None),
+            columns_to_rerank=d.get("columns_to_rerank", None),
             filters_json=d.get("filters_json", None),
             index_name=d.get("index_name", None),
             num_results=d.get("num_results", None),
@@ -1065,7 +1073,7 @@ class QueryVectorIndexResponse:
     next_page_token: Optional[str] = None
     """[Optional] Token that can be used in `QueryVectorIndexNextPage` API to get next page of results.
     If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty value
-    means no more results."""
+    means no more results. The maximum number of results that can be returned is 10,000."""
 
     result: Optional[ResultData] = None
     """Data returned in the query result."""
@@ -1093,7 +1101,7 @@ class QueryVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(
             manifest=_from_dict(d, "manifest", ResultManifest),
@@ -1131,7 +1139,7 @@ class ResultData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResultData:
+    def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
 
@@ -1165,7 +1173,7 @@ class ResultManifest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResultManifest:
+    def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
         return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
 
@@ -1206,7 +1214,7 @@ class ScanVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ScanVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ScanVectorIndexRequest:
         """Deserializes the ScanVectorIndexRequest from a dictionary."""
         return cls(
             index_name=d.get("index_name", None),
@@ -1244,7 +1252,7 @@ class ScanVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ScanVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ScanVectorIndexResponse:
         """Deserializes the ScanVectorIndexResponse from a dictionary."""
         return cls(data=_repeated_dict(d, "data", Struct), last_primary_key=d.get("last_primary_key", None))
 
@@ -1269,7 +1277,7 @@ class Struct:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Struct:
+    def from_dict(cls, d: Dict[str, Any]) -> Struct:
         """Deserializes the Struct from a dictionary."""
         return cls(fields=_repeated_dict(d, "fields", MapStringValueEntry))
 
@@ -1287,7 +1295,7 @@ class SyncIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SyncIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SyncIndexResponse:
         """Deserializes the SyncIndexResponse from a dictionary."""
         return cls()
 
@@ -1321,7 +1329,7 @@ class UpsertDataResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataResult:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataResult:
         """Deserializes the UpsertDataResult from a dictionary."""
         return cls(
             failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
@@ -1365,7 +1373,7 @@ class UpsertDataVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexRequest:
         """Deserializes the UpsertDataVectorIndexRequest from a dictionary."""
         return cls(index_name=d.get("index_name", None), inputs_json=d.get("inputs_json", None))
 
@@ -1399,7 +1407,7 @@ class UpsertDataVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexResponse:
         """Deserializes the UpsertDataVectorIndexResponse from a dictionary."""
         return cls(result=_from_dict(d, "result", UpsertDataResult), status=_enum(d, "status", UpsertDataStatus))
 
@@ -1453,7 +1461,7 @@ class Value:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Value:
+    def from_dict(cls, d: Dict[str, Any]) -> Value:
         """Deserializes the Value from a dictionary."""
         return cls(
             bool_value=d.get("bool_value", None),
@@ -1536,7 +1544,7 @@ class VectorIndex:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VectorIndex:
+    def from_dict(cls, d: Dict[str, Any]) -> VectorIndex:
         """Deserializes the VectorIndex from a dictionary."""
         return cls(
             creator=d.get("creator", None),
@@ -1591,7 +1599,7 @@ class VectorIndexStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VectorIndexStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(
             index_url=d.get("index_url", None),
@@ -1905,6 +1913,7 @@ class VectorSearchIndexesAPI:
         index_name: str,
         columns: List[str],
         *,
+        columns_to_rerank: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
         num_results: Optional[int] = None,
         query_text: Optional[str] = None,
@@ -1920,6 +1929,8 @@ class VectorSearchIndexesAPI:
           Name of the vector index to query.
         :param columns: List[str]
           List of column names to include in the response.
+        :param columns_to_rerank: List[str] (optional)
+          Column names used to retrieve data to send to the reranker.
         :param filters_json: str (optional)
           JSON string representing query filters.
 
@@ -1943,6 +1954,8 @@ class VectorSearchIndexesAPI:
         body = {}
         if columns is not None:
             body["columns"] = [v for v in columns]
+        if columns_to_rerank is not None:
+            body["columns_to_rerank"] = [v for v in columns_to_rerank]
         if filters_json is not None:
             body["filters_json"] = filters_json
         if num_results is not None:

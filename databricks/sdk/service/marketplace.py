@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -40,7 +40,7 @@ class AddExchangeForListingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddExchangeForListingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AddExchangeForListingRequest:
         """Deserializes the AddExchangeForListingRequest from a dictionary."""
         return cls(exchange_id=d.get("exchange_id", None), listing_id=d.get("listing_id", None))
 
@@ -64,13 +64,14 @@ class AddExchangeForListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddExchangeForListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AddExchangeForListingResponse:
         """Deserializes the AddExchangeForListingResponse from a dictionary."""
         return cls(exchange_for_listing=_from_dict(d, "exchange_for_listing", ExchangeListing))
 
 
 class AssetType(Enum):
 
+    ASSET_TYPE_APP = "ASSET_TYPE_APP"
     ASSET_TYPE_DATA_TABLE = "ASSET_TYPE_DATA_TABLE"
     ASSET_TYPE_GIT_REPO = "ASSET_TYPE_GIT_REPO"
     ASSET_TYPE_MEDIA = "ASSET_TYPE_MEDIA"
@@ -98,7 +99,7 @@ class BatchGetListingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BatchGetListingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> BatchGetListingsResponse:
         """Deserializes the BatchGetListingsResponse from a dictionary."""
         return cls(listings=_repeated_dict(d, "listings", Listing))
 
@@ -122,7 +123,7 @@ class BatchGetProvidersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BatchGetProvidersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> BatchGetProvidersResponse:
         """Deserializes the BatchGetProvidersResponse from a dictionary."""
         return cls(providers=_repeated_dict(d, "providers", ProviderInfo))
 
@@ -172,7 +173,7 @@ class ConsumerTerms:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConsumerTerms:
+    def from_dict(cls, d: Dict[str, Any]) -> ConsumerTerms:
         """Deserializes the ConsumerTerms from a dictionary."""
         return cls(version=d.get("version", None))
 
@@ -216,7 +217,7 @@ class ContactInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContactInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ContactInfo:
         """Deserializes the ContactInfo from a dictionary."""
         return cls(
             company=d.get("company", None),
@@ -251,7 +252,7 @@ class CreateExchangeFilterRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExchangeFilterRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeFilterRequest:
         """Deserializes the CreateExchangeFilterRequest from a dictionary."""
         return cls(filter=_from_dict(d, "filter", ExchangeFilter))
 
@@ -275,7 +276,7 @@ class CreateExchangeFilterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExchangeFilterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeFilterResponse:
         """Deserializes the CreateExchangeFilterResponse from a dictionary."""
         return cls(filter_id=d.get("filter_id", None))
 
@@ -299,7 +300,7 @@ class CreateExchangeRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExchangeRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeRequest:
         """Deserializes the CreateExchangeRequest from a dictionary."""
         return cls(exchange=_from_dict(d, "exchange", Exchange))
 
@@ -323,7 +324,7 @@ class CreateExchangeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExchangeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeResponse:
         """Deserializes the CreateExchangeResponse from a dictionary."""
         return cls(exchange_id=d.get("exchange_id", None))
 
@@ -365,7 +366,7 @@ class CreateFileRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFileRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFileRequest:
         """Deserializes the CreateFileRequest from a dictionary."""
         return cls(
             display_name=d.get("display_name", None),
@@ -401,7 +402,7 @@ class CreateFileResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFileResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFileResponse:
         """Deserializes the CreateFileResponse from a dictionary."""
         return cls(file_info=_from_dict(d, "file_info", FileInfo), upload_url=d.get("upload_url", None))
 
@@ -456,7 +457,7 @@ class CreateInstallationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateInstallationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateInstallationRequest:
         """Deserializes the CreateInstallationRequest from a dictionary."""
         return cls(
             accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
@@ -487,7 +488,7 @@ class CreateListingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateListingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateListingRequest:
         """Deserializes the CreateListingRequest from a dictionary."""
         return cls(listing=_from_dict(d, "listing", Listing))
 
@@ -511,7 +512,7 @@ class CreateListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateListingResponse:
         """Deserializes the CreateListingResponse from a dictionary."""
         return cls(listing_id=d.get("listing_id", None))
 
@@ -585,7 +586,7 @@ class CreatePersonalizationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePersonalizationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequest:
         """Deserializes the CreatePersonalizationRequest from a dictionary."""
         return cls(
             accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
@@ -619,7 +620,7 @@ class CreatePersonalizationRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePersonalizationRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequestResponse:
         """Deserializes the CreatePersonalizationRequestResponse from a dictionary."""
         return cls(id=d.get("id", None))
 
@@ -643,7 +644,7 @@ class CreateProviderRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateProviderRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateProviderRequest:
         """Deserializes the CreateProviderRequest from a dictionary."""
         return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
@@ -667,7 +668,7 @@ class CreateProviderResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateProviderResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateProviderResponse:
         """Deserializes the CreateProviderResponse from a dictionary."""
         return cls(id=d.get("id", None))
 
@@ -710,7 +711,7 @@ class DataRefreshInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataRefreshInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> DataRefreshInfo:
         """Deserializes the DataRefreshInfo from a dictionary."""
         return cls(interval=d.get("interval", None), unit=_enum(d, "unit", DataRefresh))
 
@@ -728,7 +729,7 @@ class DeleteExchangeFilterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExchangeFilterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExchangeFilterResponse:
         """Deserializes the DeleteExchangeFilterResponse from a dictionary."""
         return cls()
 
@@ -746,7 +747,7 @@ class DeleteExchangeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExchangeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExchangeResponse:
         """Deserializes the DeleteExchangeResponse from a dictionary."""
         return cls()
 
@@ -764,7 +765,7 @@ class DeleteFileResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteFileResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteFileResponse:
         """Deserializes the DeleteFileResponse from a dictionary."""
         return cls()
 
@@ -782,7 +783,7 @@ class DeleteInstallationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteInstallationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteInstallationResponse:
         """Deserializes the DeleteInstallationResponse from a dictionary."""
         return cls()
 
@@ -800,7 +801,7 @@ class DeleteListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteListingResponse:
         """Deserializes the DeleteListingResponse from a dictionary."""
         return cls()
 
@@ -818,7 +819,7 @@ class DeleteProviderResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteProviderResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteProviderResponse:
         """Deserializes the DeleteProviderResponse from a dictionary."""
         return cls()
 
@@ -896,7 +897,7 @@ class Exchange:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Exchange:
+    def from_dict(cls, d: Dict[str, Any]) -> Exchange:
         """Deserializes the Exchange from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -978,7 +979,7 @@ class ExchangeFilter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeFilter:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeFilter:
         """Deserializes the ExchangeFilter from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -1053,7 +1054,7 @@ class ExchangeListing:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeListing:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeListing:
         """Deserializes the ExchangeListing from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -1141,7 +1142,7 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -1183,7 +1184,7 @@ class FileParent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileParent:
+    def from_dict(cls, d: Dict[str, Any]) -> FileParent:
         """Deserializes the FileParent from a dictionary."""
         return cls(file_parent_type=_enum(d, "file_parent_type", FileParentType), parent_id=d.get("parent_id", None))
 
@@ -1227,7 +1228,7 @@ class GetExchangeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExchangeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExchangeResponse:
         """Deserializes the GetExchangeResponse from a dictionary."""
         return cls(exchange=_from_dict(d, "exchange", Exchange))
 
@@ -1251,7 +1252,7 @@ class GetFileResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetFileResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetFileResponse:
         """Deserializes the GetFileResponse from a dictionary."""
         return cls(file_info=_from_dict(d, "file_info", FileInfo))
 
@@ -1276,7 +1277,7 @@ class GetLatestVersionProviderAnalyticsDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionProviderAnalyticsDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Deserializes the GetLatestVersionProviderAnalyticsDashboardResponse from a dictionary."""
         return cls(version=d.get("version", None))
 
@@ -1306,7 +1307,7 @@ class GetListingContentMetadataResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetListingContentMetadataResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetListingContentMetadataResponse:
         """Deserializes the GetListingContentMetadataResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -1333,7 +1334,7 @@ class GetListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetListingResponse:
         """Deserializes the GetListingResponse from a dictionary."""
         return cls(listing=_from_dict(d, "listing", Listing))
 
@@ -1363,7 +1364,7 @@ class GetListingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetListingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetListingsResponse:
         """Deserializes the GetListingsResponse from a dictionary."""
         return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
@@ -1387,7 +1388,7 @@ class GetPersonalizationRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPersonalizationRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPersonalizationRequestResponse:
         """Deserializes the GetPersonalizationRequestResponse from a dictionary."""
         return cls(personalization_requests=_repeated_dict(d, "personalization_requests", PersonalizationRequest))
 
@@ -1411,7 +1412,7 @@ class GetProviderResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetProviderResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetProviderResponse:
         """Deserializes the GetProviderResponse from a dictionary."""
         return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
@@ -1435,7 +1436,7 @@ class Installation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Installation:
+    def from_dict(cls, d: Dict[str, Any]) -> Installation:
         """Deserializes the Installation from a dictionary."""
         return cls(installation=_from_dict(d, "installation", InstallationDetail))
 
@@ -1531,7 +1532,7 @@ class InstallationDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstallationDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> InstallationDetail:
         """Deserializes the InstallationDetail from a dictionary."""
         return cls(
             catalog_name=d.get("catalog_name", None),
@@ -1581,7 +1582,7 @@ class ListAllInstallationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAllInstallationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAllInstallationsResponse:
         """Deserializes the ListAllInstallationsResponse from a dictionary."""
         return cls(
             installations=_repeated_dict(d, "installations", InstallationDetail),
@@ -1614,7 +1615,7 @@ class ListAllPersonalizationRequestsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAllPersonalizationRequestsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAllPersonalizationRequestsResponse:
         """Deserializes the ListAllPersonalizationRequestsResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -1647,7 +1648,7 @@ class ListExchangeFiltersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExchangeFiltersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExchangeFiltersResponse:
         """Deserializes the ListExchangeFiltersResponse from a dictionary."""
         return cls(filters=_repeated_dict(d, "filters", ExchangeFilter), next_page_token=d.get("next_page_token", None))
 
@@ -1677,7 +1678,7 @@ class ListExchangesForListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExchangesForListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExchangesForListingResponse:
         """Deserializes the ListExchangesForListingResponse from a dictionary."""
         return cls(
             exchange_listing=_repeated_dict(d, "exchange_listing", ExchangeListing),
@@ -1710,7 +1711,7 @@ class ListExchangesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExchangesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExchangesResponse:
         """Deserializes the ListExchangesResponse from a dictionary."""
         return cls(exchanges=_repeated_dict(d, "exchanges", Exchange), next_page_token=d.get("next_page_token", None))
 
@@ -1740,7 +1741,7 @@ class ListFilesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListFilesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListFilesResponse:
         """Deserializes the ListFilesResponse from a dictionary."""
         return cls(file_infos=_repeated_dict(d, "file_infos", FileInfo), next_page_token=d.get("next_page_token", None))
 
@@ -1770,7 +1771,7 @@ class ListFulfillmentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListFulfillmentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListFulfillmentsResponse:
         """Deserializes the ListFulfillmentsResponse from a dictionary."""
         return cls(
             fulfillments=_repeated_dict(d, "fulfillments", ListingFulfillment),
@@ -1803,7 +1804,7 @@ class ListInstallationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListInstallationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListInstallationsResponse:
         """Deserializes the ListInstallationsResponse from a dictionary."""
         return cls(
             installations=_repeated_dict(d, "installations", InstallationDetail),
@@ -1836,7 +1837,7 @@ class ListListingsForExchangeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListListingsForExchangeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListListingsForExchangeResponse:
         """Deserializes the ListListingsForExchangeResponse from a dictionary."""
         return cls(
             exchange_listings=_repeated_dict(d, "exchange_listings", ExchangeListing),
@@ -1869,7 +1870,7 @@ class ListListingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListListingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListListingsResponse:
         """Deserializes the ListListingsResponse from a dictionary."""
         return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
@@ -1906,7 +1907,7 @@ class ListProviderAnalyticsDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProviderAnalyticsDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProviderAnalyticsDashboardResponse:
         """Deserializes the ListProviderAnalyticsDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
@@ -1936,7 +1937,7 @@ class ListProvidersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
@@ -1975,7 +1976,7 @@ class Listing:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Listing:
+    def from_dict(cls, d: Dict[str, Any]) -> Listing:
         """Deserializes the Listing from a dictionary."""
         return cls(
             detail=_from_dict(d, "detail", ListingDetail),
@@ -2130,7 +2131,7 @@ class ListingDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListingDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> ListingDetail:
         """Deserializes the ListingDetail from a dictionary."""
         return cls(
             assets=_repeated_enum(d, "assets", AssetType),
@@ -2198,7 +2199,7 @@ class ListingFulfillment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListingFulfillment:
+    def from_dict(cls, d: Dict[str, Any]) -> ListingFulfillment:
         """Deserializes the ListingFulfillment from a dictionary."""
         return cls(
             fulfillment_type=_enum(d, "fulfillment_type", FulfillmentType),
@@ -2228,7 +2229,7 @@ class ListingSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListingSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> ListingSetting:
         """Deserializes the ListingSetting from a dictionary."""
         return cls(visibility=_enum(d, "visibility", Visibility))
 
@@ -2380,7 +2381,7 @@ class ListingSummary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListingSummary:
+    def from_dict(cls, d: Dict[str, Any]) -> ListingSummary:
         """Deserializes the ListingSummary from a dictionary."""
         return cls(
             categories=_repeated_enum(d, "categories", Category),
@@ -2432,7 +2433,7 @@ class ListingTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListingTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ListingTag:
         """Deserializes the ListingTag from a dictionary."""
         return cls(tag_name=_enum(d, "tag_name", ListingTagType), tag_values=d.get("tag_values", None))
 
@@ -2565,7 +2566,7 @@ class PersonalizationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PersonalizationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PersonalizationRequest:
         """Deserializes the PersonalizationRequest from a dictionary."""
         return cls(
             comment=d.get("comment", None),
@@ -2614,7 +2615,7 @@ class ProviderAnalyticsDashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderAnalyticsDashboard:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderAnalyticsDashboard:
         """Deserializes the ProviderAnalyticsDashboard from a dictionary."""
         return cls(id=d.get("id", None))
 
@@ -2718,7 +2719,7 @@ class ProviderInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
         return cls(
             business_contact_email=d.get("business_contact_email", None),
@@ -2763,7 +2764,7 @@ class RegionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RegionInfo:
         """Deserializes the RegionInfo from a dictionary."""
         return cls(cloud=d.get("cloud", None), region=d.get("region", None))
 
@@ -2781,7 +2782,7 @@ class RemoveExchangeForListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RemoveExchangeForListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RemoveExchangeForListingResponse:
         """Deserializes the RemoveExchangeForListingResponse from a dictionary."""
         return cls()
 
@@ -2806,7 +2807,7 @@ class RepoInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoInfo:
         """Deserializes the RepoInfo from a dictionary."""
         return cls(git_repo_url=d.get("git_repo_url", None))
 
@@ -2839,7 +2840,7 @@ class RepoInstallation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoInstallation:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoInstallation:
         """Deserializes the RepoInstallation from a dictionary."""
         return cls(repo_name=d.get("repo_name", None), repo_path=d.get("repo_path", None))
 
@@ -2869,7 +2870,7 @@ class SearchListingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchListingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchListingsResponse:
         """Deserializes the SearchListingsResponse from a dictionary."""
         return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
@@ -2899,7 +2900,7 @@ class ShareInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
         return cls(name=d.get("name", None), type=_enum(d, "type", ListingShareType))
 
@@ -2931,7 +2932,7 @@ class SharedDataObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(data_object_type=d.get("data_object_type", None), name=d.get("name", None))
 
@@ -2975,7 +2976,7 @@ class TokenDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenDetail:
         """Deserializes the TokenDetail from a dictionary."""
         return cls(
             bearer_token=d.get("bearerToken", None),
@@ -3048,7 +3049,7 @@ class TokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
             activation_url=d.get("activation_url", None),
@@ -3086,7 +3087,7 @@ class UpdateExchangeFilterRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExchangeFilterRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterRequest:
         """Deserializes the UpdateExchangeFilterRequest from a dictionary."""
         return cls(filter=_from_dict(d, "filter", ExchangeFilter), id=d.get("id", None))
 
@@ -3110,7 +3111,7 @@ class UpdateExchangeFilterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExchangeFilterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterResponse:
         """Deserializes the UpdateExchangeFilterResponse from a dictionary."""
         return cls(filter=_from_dict(d, "filter", ExchangeFilter))
 
@@ -3140,7 +3141,7 @@ class UpdateExchangeRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExchangeRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeRequest:
         """Deserializes the UpdateExchangeRequest from a dictionary."""
         return cls(exchange=_from_dict(d, "exchange", Exchange), id=d.get("id", None))
 
@@ -3164,7 +3165,7 @@ class UpdateExchangeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExchangeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeResponse:
         """Deserializes the UpdateExchangeResponse from a dictionary."""
         return cls(exchange=_from_dict(d, "exchange", Exchange))
 
@@ -3206,7 +3207,7 @@ class UpdateInstallationRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateInstallationRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationRequest:
         """Deserializes the UpdateInstallationRequest from a dictionary."""
         return cls(
             installation=_from_dict(d, "installation", InstallationDetail),
@@ -3235,7 +3236,7 @@ class UpdateInstallationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateInstallationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationResponse:
         """Deserializes the UpdateInstallationResponse from a dictionary."""
         return cls(installation=_from_dict(d, "installation", InstallationDetail))
 
@@ -3265,7 +3266,7 @@ class UpdateListingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateListingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateListingRequest:
         """Deserializes the UpdateListingRequest from a dictionary."""
         return cls(id=d.get("id", None), listing=_from_dict(d, "listing", Listing))
 
@@ -3289,7 +3290,7 @@ class UpdateListingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateListingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateListingResponse:
         """Deserializes the UpdateListingResponse from a dictionary."""
         return cls(listing=_from_dict(d, "listing", Listing))
 
@@ -3337,7 +3338,7 @@ class UpdatePersonalizationRequestRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePersonalizationRequestRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestRequest:
         """Deserializes the UpdatePersonalizationRequestRequest from a dictionary."""
         return cls(
             listing_id=d.get("listing_id", None),
@@ -3367,7 +3368,7 @@ class UpdatePersonalizationRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePersonalizationRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestResponse:
         """Deserializes the UpdatePersonalizationRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, "request", PersonalizationRequest))
 
@@ -3400,7 +3401,7 @@ class UpdateProviderAnalyticsDashboardRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProviderAnalyticsDashboardRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardRequest:
         """Deserializes the UpdateProviderAnalyticsDashboardRequest from a dictionary."""
         return cls(id=d.get("id", None), version=d.get("version", None))
 
@@ -3438,7 +3439,7 @@ class UpdateProviderAnalyticsDashboardResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProviderAnalyticsDashboardResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardResponse:
         """Deserializes the UpdateProviderAnalyticsDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
@@ -3468,7 +3469,7 @@ class UpdateProviderRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProviderRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderRequest:
         """Deserializes the UpdateProviderRequest from a dictionary."""
         return cls(id=d.get("id", None), provider=_from_dict(d, "provider", ProviderInfo))
 
@@ -3492,7 +3493,7 @@ class UpdateProviderResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProviderResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderResponse:
         """Deserializes the UpdateProviderResponse from a dictionary."""
         return cls(provider=_from_dict(d, "provider", ProviderInfo))
 

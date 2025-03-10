@@ -73,7 +73,7 @@ class AddInstanceProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddInstanceProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> AddInstanceProfile:
         """Deserializes the AddInstanceProfile from a dictionary."""
         return cls(
             iam_role_arn=d.get("iam_role_arn", None),
@@ -96,7 +96,7 @@ class AddResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AddResponse:
         """Deserializes the AddResponse from a dictionary."""
         return cls()
 
@@ -122,7 +122,7 @@ class Adlsgen2Info:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Adlsgen2Info:
+    def from_dict(cls, d: Dict[str, Any]) -> Adlsgen2Info:
         """Deserializes the Adlsgen2Info from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -156,7 +156,7 @@ class AutoScale:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoScale:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoScale:
         """Deserializes the AutoScale from a dictionary."""
         return cls(max_workers=d.get("max_workers", None), min_workers=d.get("min_workers", None))
 
@@ -293,7 +293,7 @@ class AwsAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsAttributes:
         """Deserializes the AwsAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", AwsAvailability),
@@ -371,7 +371,7 @@ class AzureAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureAttributes:
         """Deserializes the AzureAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", AzureAvailability),
@@ -422,7 +422,7 @@ class CancelCommand:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelCommand:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelCommand:
         """Deserializes the CancelCommand from a dictionary."""
         return cls(
             cluster_id=d.get("clusterId", None),
@@ -444,7 +444,7 @@ class CancelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelResponse:
         """Deserializes the CancelResponse from a dictionary."""
         return cls()
 
@@ -476,7 +476,7 @@ class ChangeClusterOwner:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwner:
+    def from_dict(cls, d: Dict[str, Any]) -> ChangeClusterOwner:
         """Deserializes the ChangeClusterOwner from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), owner_username=d.get("owner_username", None))
 
@@ -494,7 +494,7 @@ class ChangeClusterOwnerResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwnerResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ChangeClusterOwnerResponse:
         """Deserializes the ChangeClusterOwnerResponse from a dictionary."""
         return cls()
 
@@ -526,7 +526,7 @@ class ClientsTypes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClientsTypes:
+    def from_dict(cls, d: Dict[str, Any]) -> ClientsTypes:
         """Deserializes the ClientsTypes from a dictionary."""
         return cls(jobs=d.get("jobs", None), notebooks=d.get("notebooks", None))
 
@@ -551,7 +551,7 @@ class CloneCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloneCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> CloneCluster:
         """Deserializes the CloneCluster from a dictionary."""
         return cls(source_cluster_id=d.get("source_cluster_id", None))
 
@@ -575,7 +575,7 @@ class CloudProviderNodeInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloudProviderNodeInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CloudProviderNodeInfo:
         """Deserializes the CloudProviderNodeInfo from a dictionary."""
         return cls(status=_repeated_enum(d, "status", CloudProviderNodeStatus))
 
@@ -627,7 +627,7 @@ class ClusterAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAccessControlRequest:
         """Deserializes the ClusterAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -685,7 +685,7 @@ class ClusterAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAccessControlResponse:
         """Deserializes the ClusterAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", ClusterPermission),
@@ -739,9 +739,9 @@ class ClusterAttributes:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -793,7 +793,7 @@ class ClusterAttributes:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -803,8 +803,15 @@ class ClusterAttributes:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -851,7 +858,7 @@ class ClusterAttributes:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -977,7 +984,7 @@ class ClusterAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAttributes:
         """Deserializes the ClusterAttributes from a dictionary."""
         return cls(
             autotermination_minutes=d.get("autotermination_minutes", None),
@@ -1046,7 +1053,7 @@ class ClusterCompliance:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterCompliance:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterCompliance:
         """Deserializes the ClusterCompliance from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
@@ -1121,9 +1128,9 @@ class ClusterDetails:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -1195,7 +1202,7 @@ class ClusterDetails:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -1209,8 +1216,15 @@ class ClusterDetails:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
@@ -1305,7 +1319,7 @@ class ClusterDetails:
     a `TERMINATING` or `TERMINATED` state."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -1515,7 +1529,7 @@ class ClusterDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterDetails:
         """Deserializes the ClusterDetails from a dictionary."""
         return cls(
             autoscale=_from_dict(d, "autoscale", AutoScale),
@@ -1617,7 +1631,7 @@ class ClusterEvent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterEvent:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterEvent:
         """Deserializes the ClusterEvent from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
@@ -1655,7 +1669,7 @@ class ClusterLibraryStatuses:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterLibraryStatuses:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterLibraryStatuses:
         """Deserializes the ClusterLibraryStatuses from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
@@ -1702,7 +1716,7 @@ class ClusterLogConf:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterLogConf:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterLogConf:
         """Deserializes the ClusterLogConf from a dictionary."""
         return cls(
             dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
@@ -1743,7 +1757,7 @@ class ClusterPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermission:
         """Deserializes the ClusterPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -1791,7 +1805,7 @@ class ClusterPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissions:
         """Deserializes the ClusterPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ClusterAccessControlResponse),
@@ -1826,7 +1840,7 @@ class ClusterPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissionsDescription:
         """Deserializes the ClusterPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -1860,7 +1874,7 @@ class ClusterPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissionsRequest:
         """Deserializes the ClusterPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ClusterAccessControlRequest),
@@ -1909,7 +1923,7 @@ class ClusterPolicyAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyAccessControlRequest:
         """Deserializes the ClusterPolicyAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -1967,7 +1981,7 @@ class ClusterPolicyAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyAccessControlResponse:
         """Deserializes the ClusterPolicyAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", ClusterPolicyPermission),
@@ -2010,7 +2024,7 @@ class ClusterPolicyPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermission:
         """Deserializes the ClusterPolicyPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -2056,7 +2070,7 @@ class ClusterPolicyPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissions:
         """Deserializes the ClusterPolicyPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ClusterPolicyAccessControlResponse),
@@ -2091,7 +2105,7 @@ class ClusterPolicyPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissionsDescription:
         """Deserializes the ClusterPolicyPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -2125,7 +2139,7 @@ class ClusterPolicyPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissionsRequest:
         """Deserializes the ClusterPolicyPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", ClusterPolicyAccessControlRequest),
@@ -2174,7 +2188,7 @@ class ClusterSettingsChange:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterSettingsChange:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterSettingsChange:
         """Deserializes the ClusterSettingsChange from a dictionary."""
         return cls(
             field=d.get("field", None), new_value=d.get("new_value", None), previous_value=d.get("previous_value", None)
@@ -2216,7 +2230,7 @@ class ClusterSize:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterSize:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterSize:
         """Deserializes the ClusterSize from a dictionary."""
         return cls(autoscale=_from_dict(d, "autoscale", AutoScale), num_workers=d.get("num_workers", None))
 
@@ -2281,9 +2295,9 @@ class ClusterSpec:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -2335,7 +2349,7 @@ class ClusterSpec:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -2345,8 +2359,15 @@ class ClusterSpec:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2407,7 +2428,7 @@ class ClusterSpec:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -2545,7 +2566,7 @@ class ClusterSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterSpec:
         """Deserializes the ClusterSpec from a dictionary."""
         return cls(
             apply_policy_default_values=d.get("apply_policy_default_values", None),
@@ -2621,7 +2642,7 @@ class Command:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Command:
+    def from_dict(cls, d: Dict[str, Any]) -> Command:
         """Deserializes the Command from a dictionary."""
         return cls(
             cluster_id=d.get("clusterId", None),
@@ -2672,7 +2693,7 @@ class CommandStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CommandStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CommandStatusResponse:
         """Deserializes the CommandStatusResponse from a dictionary."""
         return cls(
             id=d.get("id", None), results=_from_dict(d, "results", Results), status=_enum(d, "status", CommandStatus)
@@ -2711,7 +2732,7 @@ class ContextStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContextStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ContextStatusResponse:
         """Deserializes the ContextStatusResponse from a dictionary."""
         return cls(id=d.get("id", None), status=_enum(d, "status", ContextStatus))
 
@@ -2771,9 +2792,9 @@ class CreateCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -2825,7 +2846,7 @@ class CreateCluster:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -2835,8 +2856,15 @@ class CreateCluster:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2893,7 +2921,7 @@ class CreateCluster:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -3035,7 +3063,7 @@ class CreateCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCluster:
         """Deserializes the CreateCluster from a dictionary."""
         return cls(
             apply_policy_default_values=d.get("apply_policy_default_values", None),
@@ -3091,7 +3119,7 @@ class CreateClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateClusterResponse:
         """Deserializes the CreateClusterResponse from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -3122,7 +3150,7 @@ class CreateContext:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateContext:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateContext:
         """Deserializes the CreateContext from a dictionary."""
         return cls(cluster_id=d.get("clusterId", None), language=_enum(d, "language", Language))
 
@@ -3252,7 +3280,7 @@ class CreateInstancePool:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateInstancePool:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateInstancePool:
         """Deserializes the CreateInstancePool from a dictionary."""
         return cls(
             aws_attributes=_from_dict(d, "aws_attributes", InstancePoolAwsAttributes),
@@ -3291,7 +3319,7 @@ class CreateInstancePoolResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateInstancePoolResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateInstancePoolResponse:
         """Deserializes the CreateInstancePoolResponse from a dictionary."""
         return cls(instance_pool_id=d.get("instance_pool_id", None))
 
@@ -3373,7 +3401,7 @@ class CreatePolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePolicy:
         """Deserializes the CreatePolicy from a dictionary."""
         return cls(
             definition=d.get("definition", None),
@@ -3406,7 +3434,7 @@ class CreatePolicyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePolicyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePolicyResponse:
         """Deserializes the CreatePolicyResponse from a dictionary."""
         return cls(policy_id=d.get("policy_id", None))
 
@@ -3431,7 +3459,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(script_id=d.get("script_id", None))
 
@@ -3455,7 +3483,7 @@ class Created:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Created:
+    def from_dict(cls, d: Dict[str, Any]) -> Created:
         """Deserializes the Created from a dictionary."""
         return cls(id=d.get("id", None))
 
@@ -3495,7 +3523,7 @@ class CustomPolicyTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CustomPolicyTag:
+    def from_dict(cls, d: Dict[str, Any]) -> CustomPolicyTag:
         """Deserializes the CustomPolicyTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
@@ -3541,7 +3569,7 @@ class DataPlaneEventDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataPlaneEventDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> DataPlaneEventDetails:
         """Deserializes the DataPlaneEventDetails from a dictionary."""
         return cls(
             event_type=_enum(d, "event_type", DataPlaneEventDetailsEventType),
@@ -3561,9 +3589,9 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
 
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
 
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -3616,7 +3644,7 @@ class DbfsStorageInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DbfsStorageInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
         """Deserializes the DbfsStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -3641,7 +3669,7 @@ class DeleteCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCluster:
         """Deserializes the DeleteCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -3659,7 +3687,7 @@ class DeleteClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteClusterResponse:
         """Deserializes the DeleteClusterResponse from a dictionary."""
         return cls()
 
@@ -3684,7 +3712,7 @@ class DeleteInstancePool:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePool:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteInstancePool:
         """Deserializes the DeleteInstancePool from a dictionary."""
         return cls(instance_pool_id=d.get("instance_pool_id", None))
 
@@ -3702,7 +3730,7 @@ class DeleteInstancePoolResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePoolResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteInstancePoolResponse:
         """Deserializes the DeleteInstancePoolResponse from a dictionary."""
         return cls()
 
@@ -3727,7 +3755,7 @@ class DeletePolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePolicy:
         """Deserializes the DeletePolicy from a dictionary."""
         return cls(policy_id=d.get("policy_id", None))
 
@@ -3745,7 +3773,7 @@ class DeletePolicyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePolicyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePolicyResponse:
         """Deserializes the DeletePolicyResponse from a dictionary."""
         return cls()
 
@@ -3763,7 +3791,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -3793,7 +3821,7 @@ class DestroyContext:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DestroyContext:
+    def from_dict(cls, d: Dict[str, Any]) -> DestroyContext:
         """Deserializes the DestroyContext from a dictionary."""
         return cls(cluster_id=d.get("clusterId", None), context_id=d.get("contextId", None))
 
@@ -3811,7 +3839,7 @@ class DestroyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DestroyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DestroyResponse:
         """Deserializes the DestroyResponse from a dictionary."""
         return cls()
 
@@ -3879,7 +3907,7 @@ class DiskSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DiskSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> DiskSpec:
         """Deserializes the DiskSpec from a dictionary."""
         return cls(
             disk_count=d.get("disk_count", None),
@@ -3915,7 +3943,7 @@ class DiskType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DiskType:
+    def from_dict(cls, d: Dict[str, Any]) -> DiskType:
         """Deserializes the DiskType from a dictionary."""
         return cls(
             azure_disk_volume_type=_enum(d, "azure_disk_volume_type", DiskTypeAzureDiskVolumeType),
@@ -3962,7 +3990,7 @@ class DockerBasicAuth:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DockerBasicAuth:
+    def from_dict(cls, d: Dict[str, Any]) -> DockerBasicAuth:
         """Deserializes the DockerBasicAuth from a dictionary."""
         return cls(password=d.get("password", None), username=d.get("username", None))
 
@@ -3993,7 +4021,7 @@ class DockerImage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DockerImage:
+    def from_dict(cls, d: Dict[str, Any]) -> DockerImage:
         """Deserializes the DockerImage from a dictionary."""
         return cls(basic_auth=_from_dict(d, "basic_auth", DockerBasicAuth), url=d.get("url", None))
 
@@ -4059,9 +4087,9 @@ class EditCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -4113,7 +4141,7 @@ class EditCluster:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -4123,8 +4151,15 @@ class EditCluster:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -4181,7 +4216,7 @@ class EditCluster:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -4323,7 +4358,7 @@ class EditCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> EditCluster:
         """Deserializes the EditCluster from a dictionary."""
         return cls(
             apply_policy_default_values=d.get("apply_policy_default_values", None),
@@ -4373,7 +4408,7 @@ class EditClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditClusterResponse:
         """Deserializes the EditClusterResponse from a dictionary."""
         return cls()
 
@@ -4453,7 +4488,7 @@ class EditInstancePool:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditInstancePool:
+    def from_dict(cls, d: Dict[str, Any]) -> EditInstancePool:
         """Deserializes the EditInstancePool from a dictionary."""
         return cls(
             custom_tags=d.get("custom_tags", None),
@@ -4479,7 +4514,7 @@ class EditInstancePoolResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditInstancePoolResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditInstancePoolResponse:
         """Deserializes the EditInstancePoolResponse from a dictionary."""
         return cls()
 
@@ -4568,7 +4603,7 @@ class EditPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPolicy:
         """Deserializes the EditPolicy from a dictionary."""
         return cls(
             definition=d.get("definition", None),
@@ -4595,7 +4630,7 @@ class EditPolicyResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPolicyResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPolicyResponse:
         """Deserializes the EditPolicyResponse from a dictionary."""
         return cls()
 
@@ -4613,7 +4648,7 @@ class EditResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditResponse:
         """Deserializes the EditResponse from a dictionary."""
         return cls()
 
@@ -4646,7 +4681,7 @@ class EnforceClusterComplianceRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceRequest:
         """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), validate_only=d.get("validate_only", None))
 
@@ -4680,7 +4715,7 @@ class EnforceClusterComplianceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceResponse:
         """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
         return cls(changes=_repeated_dict(d, "changes", ClusterSettingsChange), has_changes=d.get("has_changes", None))
 
@@ -4722,7 +4757,7 @@ class Environment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Environment:
+    def from_dict(cls, d: Dict[str, Any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
         return cls(client=d.get("client", None), dependencies=d.get("dependencies", None))
 
@@ -4883,7 +4918,7 @@ class EventDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EventDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> EventDetails:
         """Deserializes the EventDetails from a dictionary."""
         return cls(
             attributes=_from_dict(d, "attributes", ClusterAttributes),
@@ -5019,7 +5054,7 @@ class GcpAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcpAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> GcpAttributes:
         """Deserializes the GcpAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
@@ -5060,7 +5095,7 @@ class GcsStorageInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GcsStorageInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> GcsStorageInfo:
         """Deserializes the GcsStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -5095,7 +5130,7 @@ class GetClusterComplianceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetClusterComplianceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetClusterComplianceResponse:
         """Deserializes the GetClusterComplianceResponse from a dictionary."""
         return cls(is_compliant=d.get("is_compliant", None), violations=d.get("violations", None))
 
@@ -5120,7 +5155,7 @@ class GetClusterPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetClusterPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetClusterPermissionLevelsResponse:
         """Deserializes the GetClusterPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ClusterPermissionsDescription))
 
@@ -5145,7 +5180,7 @@ class GetClusterPolicyPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetClusterPolicyPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetClusterPolicyPermissionLevelsResponse:
         """Deserializes the GetClusterPolicyPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ClusterPolicyPermissionsDescription))
 
@@ -5215,7 +5250,7 @@ class GetEvents:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetEvents:
+    def from_dict(cls, d: Dict[str, Any]) -> GetEvents:
         """Deserializes the GetEvents from a dictionary."""
         return cls(
             cluster_id=d.get("cluster_id", None),
@@ -5270,7 +5305,7 @@ class GetEventsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetEventsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetEventsResponse:
         """Deserializes the GetEventsResponse from a dictionary."""
         return cls(
             events=_repeated_dict(d, "events", ClusterEvent),
@@ -5447,7 +5482,7 @@ class GetInstancePool:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetInstancePool:
+    def from_dict(cls, d: Dict[str, Any]) -> GetInstancePool:
         """Deserializes the GetInstancePool from a dictionary."""
         return cls(
             aws_attributes=_from_dict(d, "aws_attributes", InstancePoolAwsAttributes),
@@ -5491,7 +5526,7 @@ class GetInstancePoolPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetInstancePoolPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetInstancePoolPermissionLevelsResponse:
         """Deserializes the GetInstancePoolPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", InstancePoolPermissionsDescription))
 
@@ -5516,7 +5551,7 @@ class GetSparkVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetSparkVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetSparkVersionsResponse:
         """Deserializes the GetSparkVersionsResponse from a dictionary."""
         return cls(versions=_repeated_dict(d, "versions", SparkVersion))
 
@@ -5570,7 +5605,7 @@ class GlobalInitScriptCreateRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptCreateRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptCreateRequest:
         """Deserializes the GlobalInitScriptCreateRequest from a dictionary."""
         return cls(
             enabled=d.get("enabled", None),
@@ -5650,7 +5685,7 @@ class GlobalInitScriptDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptDetails:
         """Deserializes the GlobalInitScriptDetails from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -5741,7 +5776,7 @@ class GlobalInitScriptDetailsWithContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptDetailsWithContent:
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptDetailsWithContent:
         """Deserializes the GlobalInitScriptDetailsWithContent from a dictionary."""
         return cls(
             created_at=d.get("created_at", None),
@@ -5812,7 +5847,7 @@ class GlobalInitScriptUpdateRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptUpdateRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptUpdateRequest:
         """Deserializes the GlobalInitScriptUpdateRequest from a dictionary."""
         return cls(
             enabled=d.get("enabled", None),
@@ -5857,7 +5892,7 @@ class InitScriptEventDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InitScriptEventDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptEventDetails:
         """Deserializes the InitScriptEventDetails from a dictionary."""
         return cls(
             cluster=_repeated_dict(d, "cluster", InitScriptInfoAndExecutionDetails),
@@ -5900,7 +5935,7 @@ class InitScriptExecutionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InitScriptExecutionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptExecutionDetails:
         """Deserializes the InitScriptExecutionDetails from a dictionary."""
         return cls(
             error_message=d.get("error_message", None),
@@ -5990,7 +6025,7 @@ class InitScriptInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InitScriptInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfo:
         """Deserializes the InitScriptInfo from a dictionary."""
         return cls(
             abfss=_from_dict(d, "abfss", Adlsgen2Info),
@@ -6030,7 +6065,7 @@ class InitScriptInfoAndExecutionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InitScriptInfoAndExecutionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfoAndExecutionDetails:
         """Deserializes the InitScriptInfoAndExecutionDetails from a dictionary."""
         return cls(
             execution_details=_from_dict(d, "execution_details", InitScriptExecutionDetails),
@@ -6065,7 +6100,7 @@ class InstallLibraries:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstallLibraries:
+    def from_dict(cls, d: Dict[str, Any]) -> InstallLibraries:
         """Deserializes the InstallLibraries from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
 
@@ -6083,7 +6118,7 @@ class InstallLibrariesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstallLibrariesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> InstallLibrariesResponse:
         """Deserializes the InstallLibrariesResponse from a dictionary."""
         return cls()
 
@@ -6129,7 +6164,7 @@ class InstancePoolAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAccessControlRequest:
         """Deserializes the InstancePoolAccessControlRequest from a dictionary."""
         return cls(
             group_name=d.get("group_name", None),
@@ -6187,7 +6222,7 @@ class InstancePoolAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAccessControlResponse:
         """Deserializes the InstancePoolAccessControlResponse from a dictionary."""
         return cls(
             all_permissions=_repeated_dict(d, "all_permissions", InstancePoolPermission),
@@ -6366,7 +6401,7 @@ class InstancePoolAndStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolAndStats:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAndStats:
         """Deserializes the InstancePoolAndStats from a dictionary."""
         return cls(
             aws_attributes=_from_dict(d, "aws_attributes", InstancePoolAwsAttributes),
@@ -6440,7 +6475,7 @@ class InstancePoolAwsAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolAwsAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAwsAttributes:
         """Deserializes the InstancePoolAwsAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAwsAttributesAvailability),
@@ -6488,7 +6523,7 @@ class InstancePoolAzureAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolAzureAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolAzureAttributes:
         """Deserializes the InstancePoolAzureAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAzureAttributesAvailability),
@@ -6555,7 +6590,7 @@ class InstancePoolGcpAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolGcpAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolGcpAttributes:
         """Deserializes the InstancePoolGcpAttributes from a dictionary."""
         return cls(
             gcp_availability=_enum(d, "gcp_availability", GcpAvailability),
@@ -6596,7 +6631,7 @@ class InstancePoolPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermission:
         """Deserializes the InstancePoolPermission from a dictionary."""
         return cls(
             inherited=d.get("inherited", None),
@@ -6643,7 +6678,7 @@ class InstancePoolPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissions:
         """Deserializes the InstancePoolPermissions from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", InstancePoolAccessControlResponse),
@@ -6678,7 +6713,7 @@ class InstancePoolPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissionsDescription:
         """Deserializes the InstancePoolPermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None),
@@ -6712,7 +6747,7 @@ class InstancePoolPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissionsRequest:
         """Deserializes the InstancePoolPermissionsRequest from a dictionary."""
         return cls(
             access_control_list=_repeated_dict(d, "access_control_list", InstancePoolAccessControlRequest),
@@ -6769,7 +6804,7 @@ class InstancePoolStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolStats:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolStats:
         """Deserializes the InstancePoolStats from a dictionary."""
         return cls(
             idle_count=d.get("idle_count", None),
@@ -6801,7 +6836,7 @@ class InstancePoolStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstancePoolStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolStatus:
         """Deserializes the InstancePoolStatus from a dictionary."""
         return cls(pending_instance_errors=_repeated_dict(d, "pending_instance_errors", PendingInstanceError))
 
@@ -6849,7 +6884,7 @@ class InstanceProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InstanceProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> InstanceProfile:
         """Deserializes the InstanceProfile from a dictionary."""
         return cls(
             iam_role_arn=d.get("iam_role_arn", None),
@@ -6863,8 +6898,15 @@ class Kind(Enum):
 
     Depending on `kind`, different validations and default values will be applied.
 
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     CLASSIC_PREVIEW = "CLASSIC_PREVIEW"
 
@@ -6950,7 +6992,7 @@ class Library:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Library:
+    def from_dict(cls, d: Dict[str, Any]) -> Library:
         """Deserializes the Library from a dictionary."""
         return cls(
             cran=_from_dict(d, "cran", RCranLibrary),
@@ -7006,7 +7048,7 @@ class LibraryFullStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LibraryFullStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> LibraryFullStatus:
         """Deserializes the LibraryFullStatus from a dictionary."""
         return cls(
             is_library_for_all_clusters=d.get("is_library_for_all_clusters", None),
@@ -7049,7 +7091,7 @@ class ListAllClusterLibraryStatusesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAllClusterLibraryStatusesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAllClusterLibraryStatusesResponse:
         """Deserializes the ListAllClusterLibraryStatusesResponse from a dictionary."""
         return cls(statuses=_repeated_dict(d, "statuses", ClusterLibraryStatuses))
 
@@ -7081,7 +7123,7 @@ class ListAvailableZonesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAvailableZonesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAvailableZonesResponse:
         """Deserializes the ListAvailableZonesResponse from a dictionary."""
         return cls(default_zone=d.get("default_zone", None), zones=d.get("zones", None))
 
@@ -7122,7 +7164,7 @@ class ListClusterCompliancesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListClusterCompliancesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListClusterCompliancesResponse:
         """Deserializes the ListClusterCompliancesResponse from a dictionary."""
         return cls(
             clusters=_repeated_dict(d, "clusters", ClusterCompliance),
@@ -7172,7 +7214,7 @@ class ListClustersFilterBy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListClustersFilterBy:
+    def from_dict(cls, d: Dict[str, Any]) -> ListClustersFilterBy:
         """Deserializes the ListClustersFilterBy from a dictionary."""
         return cls(
             cluster_sources=_repeated_enum(d, "cluster_sources", ClusterSource),
@@ -7218,7 +7260,7 @@ class ListClustersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListClustersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListClustersResponse:
         """Deserializes the ListClustersResponse from a dictionary."""
         return cls(
             clusters=_repeated_dict(d, "clusters", ClusterDetails),
@@ -7255,7 +7297,7 @@ class ListClustersSortBy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListClustersSortBy:
+    def from_dict(cls, d: Dict[str, Any]) -> ListClustersSortBy:
         """Deserializes the ListClustersSortBy from a dictionary."""
         return cls(
             direction=_enum(d, "direction", ListClustersSortByDirection),
@@ -7297,7 +7339,7 @@ class ListGlobalInitScriptsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListGlobalInitScriptsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListGlobalInitScriptsResponse:
         """Deserializes the ListGlobalInitScriptsResponse from a dictionary."""
         return cls(scripts=_repeated_dict(d, "scripts", GlobalInitScriptDetails))
 
@@ -7321,7 +7363,7 @@ class ListInstancePools:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListInstancePools:
+    def from_dict(cls, d: Dict[str, Any]) -> ListInstancePools:
         """Deserializes the ListInstancePools from a dictionary."""
         return cls(instance_pools=_repeated_dict(d, "instance_pools", InstancePoolAndStats))
 
@@ -7346,7 +7388,7 @@ class ListInstanceProfilesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListInstanceProfilesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListInstanceProfilesResponse:
         """Deserializes the ListInstanceProfilesResponse from a dictionary."""
         return cls(instance_profiles=_repeated_dict(d, "instance_profiles", InstanceProfile))
 
@@ -7371,7 +7413,7 @@ class ListNodeTypesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNodeTypesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNodeTypesResponse:
         """Deserializes the ListNodeTypesResponse from a dictionary."""
         return cls(node_types=_repeated_dict(d, "node_types", NodeType))
 
@@ -7396,7 +7438,7 @@ class ListPoliciesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPoliciesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPoliciesResponse:
         """Deserializes the ListPoliciesResponse from a dictionary."""
         return cls(policies=_repeated_dict(d, "policies", Policy))
 
@@ -7429,7 +7471,7 @@ class ListPolicyFamiliesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPolicyFamiliesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPolicyFamiliesResponse:
         """Deserializes the ListPolicyFamiliesResponse from a dictionary."""
         return cls(
             next_page_token=d.get("next_page_token", None),
@@ -7470,7 +7512,7 @@ class LocalFileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LocalFileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> LocalFileInfo:
         """Deserializes the LocalFileInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -7502,7 +7544,7 @@ class LogAnalyticsInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogAnalyticsInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> LogAnalyticsInfo:
         """Deserializes the LogAnalyticsInfo from a dictionary."""
         return cls(
             log_analytics_primary_key=d.get("log_analytics_primary_key", None),
@@ -7539,7 +7581,7 @@ class LogSyncStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogSyncStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> LogSyncStatus:
         """Deserializes the LogSyncStatus from a dictionary."""
         return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
 
@@ -7582,7 +7624,7 @@ class MavenLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MavenLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> MavenLibrary:
         """Deserializes the MavenLibrary from a dictionary."""
         return cls(
             coordinates=d.get("coordinates", None), exclusions=d.get("exclusions", None), repo=d.get("repo", None)
@@ -7632,7 +7674,7 @@ class NodeInstanceType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NodeInstanceType:
+    def from_dict(cls, d: Dict[str, Any]) -> NodeInstanceType:
         """Deserializes the NodeInstanceType from a dictionary."""
         return cls(
             instance_type_id=d.get("instance_type_id", None),
@@ -7794,7 +7836,7 @@ class NodeType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NodeType:
+    def from_dict(cls, d: Dict[str, Any]) -> NodeType:
         """Deserializes the NodeType from a dictionary."""
         return cls(
             category=d.get("category", None),
@@ -7846,7 +7888,7 @@ class PendingInstanceError:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PendingInstanceError:
+    def from_dict(cls, d: Dict[str, Any]) -> PendingInstanceError:
         """Deserializes the PendingInstanceError from a dictionary."""
         return cls(instance_id=d.get("instance_id", None), message=d.get("message", None))
 
@@ -7871,7 +7913,7 @@ class PermanentDeleteCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermanentDeleteCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> PermanentDeleteCluster:
         """Deserializes the PermanentDeleteCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -7889,7 +7931,7 @@ class PermanentDeleteClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermanentDeleteClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PermanentDeleteClusterResponse:
         """Deserializes the PermanentDeleteClusterResponse from a dictionary."""
         return cls()
 
@@ -7914,7 +7956,7 @@ class PinCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PinCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> PinCluster:
         """Deserializes the PinCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -7932,7 +7974,7 @@ class PinClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PinClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PinClusterResponse:
         """Deserializes the PinClusterResponse from a dictionary."""
         return cls()
 
@@ -8046,7 +8088,7 @@ class Policy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Policy:
+    def from_dict(cls, d: Dict[str, Any]) -> Policy:
         """Deserializes the Policy from a dictionary."""
         return cls(
             created_at_timestamp=d.get("created_at_timestamp", None),
@@ -8106,7 +8148,7 @@ class PolicyFamily:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PolicyFamily:
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyFamily:
         """Deserializes the PolicyFamily from a dictionary."""
         return cls(
             definition=d.get("definition", None),
@@ -8144,7 +8186,7 @@ class PythonPyPiLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PythonPyPiLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> PythonPyPiLibrary:
         """Deserializes the PythonPyPiLibrary from a dictionary."""
         return cls(package=d.get("package", None), repo=d.get("repo", None))
 
@@ -8176,7 +8218,7 @@ class RCranLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RCranLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> RCranLibrary:
         """Deserializes the RCranLibrary from a dictionary."""
         return cls(package=d.get("package", None), repo=d.get("repo", None))
 
@@ -8201,7 +8243,7 @@ class RemoveInstanceProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RemoveInstanceProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> RemoveInstanceProfile:
         """Deserializes the RemoveInstanceProfile from a dictionary."""
         return cls(instance_profile_arn=d.get("instance_profile_arn", None))
 
@@ -8219,7 +8261,7 @@ class RemoveResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RemoveResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RemoveResponse:
         """Deserializes the RemoveResponse from a dictionary."""
         return cls()
 
@@ -8266,7 +8308,7 @@ class ResizeCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResizeCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> ResizeCluster:
         """Deserializes the ResizeCluster from a dictionary."""
         return cls(
             autoscale=_from_dict(d, "autoscale", AutoScale),
@@ -8288,7 +8330,7 @@ class ResizeClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResizeClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ResizeClusterResponse:
         """Deserializes the ResizeClusterResponse from a dictionary."""
         return cls()
 
@@ -8320,7 +8362,7 @@ class RestartCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestartCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> RestartCluster:
         """Deserializes the RestartCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), restart_user=d.get("restart_user", None))
 
@@ -8338,7 +8380,7 @@ class RestartClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestartClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestartClusterResponse:
         """Deserializes the RestartClusterResponse from a dictionary."""
         return cls()
 
@@ -8432,7 +8474,7 @@ class Results:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Results:
+    def from_dict(cls, d: Dict[str, Any]) -> Results:
         """Deserializes the Results from a dictionary."""
         return cls(
             cause=d.get("cause", None),
@@ -8536,7 +8578,7 @@ class S3StorageInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> S3StorageInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> S3StorageInfo:
         """Deserializes the S3StorageInfo from a dictionary."""
         return cls(
             canned_acl=d.get("canned_acl", None),
@@ -8620,7 +8662,7 @@ class SparkNode:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkNode:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkNode:
         """Deserializes the SparkNode from a dictionary."""
         return cls(
             host_private_ip=d.get("host_private_ip", None),
@@ -8653,7 +8695,7 @@ class SparkNodeAwsAttributes:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkNodeAwsAttributes:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkNodeAwsAttributes:
         """Deserializes the SparkNodeAwsAttributes from a dictionary."""
         return cls(is_spot=d.get("is_spot", None))
 
@@ -8688,7 +8730,7 @@ class SparkVersion:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkVersion:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkVersion:
         """Deserializes the SparkVersion from a dictionary."""
         return cls(key=d.get("key", None), name=d.get("name", None))
 
@@ -8713,7 +8755,7 @@ class StartCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> StartCluster:
         """Deserializes the StartCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -8731,7 +8773,7 @@ class StartClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> StartClusterResponse:
         """Deserializes the StartClusterResponse from a dictionary."""
         return cls()
 
@@ -8783,7 +8825,7 @@ class TerminationReason:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TerminationReason:
+    def from_dict(cls, d: Dict[str, Any]) -> TerminationReason:
         """Deserializes the TerminationReason from a dictionary."""
         return cls(
             code=_enum(d, "code", TerminationReasonCode),
@@ -8912,7 +8954,7 @@ class UninstallLibraries:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UninstallLibraries:
+    def from_dict(cls, d: Dict[str, Any]) -> UninstallLibraries:
         """Deserializes the UninstallLibraries from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
 
@@ -8930,7 +8972,7 @@ class UninstallLibrariesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UninstallLibrariesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UninstallLibrariesResponse:
         """Deserializes the UninstallLibrariesResponse from a dictionary."""
         return cls()
 
@@ -8955,7 +8997,7 @@ class UnpinCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UnpinCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> UnpinCluster:
         """Deserializes the UnpinCluster from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
 
@@ -8973,7 +9015,7 @@ class UnpinClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UnpinClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UnpinClusterResponse:
         """Deserializes the UnpinClusterResponse from a dictionary."""
         return cls()
 
@@ -9015,7 +9057,7 @@ class UpdateCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCluster:
         """Deserializes the UpdateCluster from a dictionary."""
         return cls(
             cluster=_from_dict(d, "cluster", UpdateClusterResource),
@@ -9067,9 +9109,9 @@ class UpdateClusterResource:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-    choose the most appropriate access mode depending on your compute configuration. *
-    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+    Databricks will choose the most appropriate access mode depending on your compute configuration.
+    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
     Alias for `SINGLE_USER`.
     
     The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
@@ -9121,7 +9163,7 @@ class UpdateClusterResource:
     """The optional ID of the instance pool to which the cluster belongs."""
 
     is_single_node: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     When set to true, Databricks will automatically set single node related `custom_tags`,
     `spark_conf`, and `num_workers`"""
@@ -9131,8 +9173,15 @@ class UpdateClusterResource:
     
     Depending on `kind`, different validations and default values will be applied.
     
-    The first usage of this value is for the simple cluster form where it sets `kind =
-    CLASSIC_PREVIEW`."""
+    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+    
+    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+    
+    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -9193,7 +9242,7 @@ class UpdateClusterResource:
     be specified."""
 
     use_ml_runtime: Optional[bool] = None
-    """This field can only be used with `kind`.
+    """This field can only be used when `kind = CLASSIC_PREVIEW`.
     
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
@@ -9327,7 +9376,7 @@ class UpdateClusterResource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResource:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateClusterResource:
         """Deserializes the UpdateClusterResource from a dictionary."""
         return cls(
             autoscale=_from_dict(d, "autoscale", AutoScale),
@@ -9375,7 +9424,7 @@ class UpdateClusterResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateClusterResponse:
         """Deserializes the UpdateClusterResponse from a dictionary."""
         return cls()
 
@@ -9393,7 +9442,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -9418,7 +9467,7 @@ class VolumesStorageInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VolumesStorageInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> VolumesStorageInfo:
         """Deserializes the VolumesStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -9443,7 +9492,7 @@ class WorkloadType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkloadType:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkloadType:
         """Deserializes the WorkloadType from a dictionary."""
         return cls(clients=_from_dict(d, "clients", ClientsTypes))
 
@@ -9468,7 +9517,7 @@ class WorkspaceStorageInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceStorageInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceStorageInfo:
         """Deserializes the WorkspaceStorageInfo from a dictionary."""
         return cls(destination=d.get("destination", None))
 
@@ -10012,8 +10061,8 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
 
-          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-          choose the most appropriate access mode depending on your compute configuration. *
+          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+          Databricks will choose the most appropriate access mode depending on your compute configuration. *
           `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
           for `SINGLE_USER`.
 
@@ -10057,7 +10106,7 @@ class ClustersAPI:
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
@@ -10066,7 +10115,15 @@ class ClustersAPI:
 
           Depending on `kind`, different validations and default values will be applied.
 
-          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
+          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10114,7 +10171,7 @@ class ClustersAPI:
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
         :param use_ml_runtime: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
@@ -10390,8 +10447,8 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
 
-          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
-          choose the most appropriate access mode depending on your compute configuration. *
+          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
+          Databricks will choose the most appropriate access mode depending on your compute configuration. *
           `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
           for `SINGLE_USER`.
 
@@ -10435,7 +10492,7 @@ class ClustersAPI:
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
         :param is_single_node: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
@@ -10444,7 +10501,15 @@ class ClustersAPI:
 
           Depending on `kind`, different validations and default values will be applied.
 
-          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
+          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
+          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
+          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
+          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
+          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+
+          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+
+          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10492,7 +10557,7 @@ class ClustersAPI:
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
         :param use_ml_runtime: bool (optional)
-          This field can only be used with `kind`.
+          This field can only be used when `kind = CLASSIC_PREVIEW`.
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
@@ -11563,7 +11628,9 @@ class GlobalInitScriptsAPI:
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
@@ -11642,6 +11709,7 @@ class GlobalInitScriptsAPI:
         if script is not None:
             body["script"] = script
         headers = {
+            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 

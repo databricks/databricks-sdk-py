@@ -78,9 +78,9 @@ class OidcEndpoints:
 @dataclass
 class Token:
     access_token: str
-    token_type: str = None
-    refresh_token: str = None
-    expiry: datetime = None
+    token_type: Optional[str] = None
+    refresh_token: Optional[str] = None
+    expiry: Optional[datetime] = None
 
     @property
     def expired(self):
@@ -238,7 +238,7 @@ class Refreshable(TokenSource):
 
     def __init__(
         self,
-        token: Token = None,
+        token: Optional[Token] = None,
         disable_async: bool = True,
         stale_duration: timedelta = _DEFAULT_STALE_DURATION,
     ):
@@ -248,7 +248,7 @@ class Refreshable(TokenSource):
         # Lock
         self._lock = threading.Lock()
         # Non Thread safe properties. They should be accessed only when protected by the lock above.
-        self._token = token
+        self._token = token or Token("")
         self._is_refreshing = False
         self._refresh_err = False
 
@@ -312,7 +312,7 @@ class Refreshable(TokenSource):
         """Starts an asynchronous refresh if none is in progress."""
 
         def _refresh_internal():
-            new_token: Token = None
+            new_token = None
             try:
                 new_token = self.refresh()
             except Exception as e:
@@ -742,9 +742,9 @@ class TokenCache:
         host: str,
         oidc_endpoints: OidcEndpoints,
         client_id: str,
-        redirect_url: str = None,
-        client_secret: str = None,
-        scopes: List[str] = None,
+        redirect_url: Optional[str] = None,
+        client_secret: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
     ) -> None:
         self._host = host
         self._client_id = client_id

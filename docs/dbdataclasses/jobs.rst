@@ -125,6 +125,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ComputeConfig
+   :members:
+   :undoc-members:
+
 .. py:class:: Condition
 
    .. py:attribute:: ALL_UPDATED
@@ -243,6 +247,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SINGLE_TASK
       :value: "SINGLE_TASK"
+
+.. autoclass:: GenAiComputeTask
+   :members:
+   :undoc-members:
 
 .. autoclass:: GetJobPermissionLevelsResponse
    :members:
@@ -685,6 +693,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TERMINATING
       :value: "TERMINATING"
+
+   .. py:attribute:: WAITING
+      :value: "WAITING"
 
 .. autoclass:: RunNow
    :members:
