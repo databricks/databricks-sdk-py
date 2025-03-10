@@ -17,7 +17,7 @@
             
             w = WorkspaceClient()
             
-            me2 = w.current_user.me()
+            me = w.current_user.me()
 
         Get current user info.
 
