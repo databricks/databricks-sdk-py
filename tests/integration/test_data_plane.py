@@ -13,3 +13,10 @@ def test_data_plane_token_source(ucws, env_or_skip):
     dp_token = ts.token(info.endpoint_url, info.authorization_details)
 
     assert dp_token.valid
+
+
+def test_model_serving_data_plane(ucws, env_or_skip):
+    endpoint = env_or_skip("SERVING_ENDPOINT_NAME")
+    serving_endpoints = ucws.serving_endpoints_data_plane
+    response = serving_endpoints.query(name=endpoint, dataframe_records=[{"col": 1.0}])
+    assert response is not None
