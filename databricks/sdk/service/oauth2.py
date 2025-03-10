@@ -776,13 +776,6 @@ class OidcFederationPolicy:
     endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
     discovering public keys."""
 
-    jwks_uri: Optional[str] = None
-    """URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most
-    use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified
-    (recommended), Databricks automatically fetches the public keys from your issuer’s well known
-    endpoint. Databricks strongly recommends relying on your issuer’s well known endpoint for
-    discovering public keys."""
-
     subject: Optional[str] = None
     """The required token subject, as specified in the subject claim of federated tokens. Must be
     specified for service principal federation policies. Must not be specified for account
@@ -800,8 +793,6 @@ class OidcFederationPolicy:
             body["issuer"] = self.issuer
         if self.jwks_json is not None:
             body["jwks_json"] = self.jwks_json
-        if self.jwks_uri is not None:
-            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
             body["subject"] = self.subject
         if self.subject_claim is not None:
@@ -817,8 +808,6 @@ class OidcFederationPolicy:
             body["issuer"] = self.issuer
         if self.jwks_json is not None:
             body["jwks_json"] = self.jwks_json
-        if self.jwks_uri is not None:
-            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
             body["subject"] = self.subject
         if self.subject_claim is not None:
@@ -832,7 +821,6 @@ class OidcFederationPolicy:
             audiences=d.get("audiences", None),
             issuer=d.get("issuer", None),
             jwks_json=d.get("jwks_json", None),
-            jwks_uri=d.get("jwks_uri", None),
             subject=d.get("subject", None),
             subject_claim=d.get("subject_claim", None),
         )

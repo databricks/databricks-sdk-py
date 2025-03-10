@@ -35,7 +35,8 @@
 
         Execute message attachment SQL query.
 
-        Execute the SQL for a message query attachment.
+        Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
+        needs to be re-executed.
 
         :param space_id: str
           Genie space ID
@@ -51,7 +52,7 @@
 
     .. py:method:: execute_message_query(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
-        Execute SQL query in a conversation message.
+        [Deprecated] Execute SQL query in a conversation message.
 
         Execute the SQL query in the message.
 
@@ -119,7 +120,7 @@
 
     .. py:method:: get_message_query_result_by_attachment(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
-        [deprecated] Get conversation message SQL query result.
+        [Deprecated] Get conversation message SQL query result.
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
@@ -138,9 +139,9 @@
 
     .. py:method:: get_space(space_id: str) -> GenieSpace
 
-        Get details of a Genie Space.
+        Get Genie Space.
 
-        Get a Genie Space.
+        Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space
