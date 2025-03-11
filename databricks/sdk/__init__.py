@@ -8,6 +8,7 @@ import databricks.sdk.dbutils as dbutils
 import databricks.sdk.service as service
 from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
+from databricks.sdk.data_plane import DataPlaneTokenSource
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
@@ -285,8 +286,11 @@ class WorkspaceClient:
         self._secrets = service.workspace.SecretsAPI(self._api_client)
         self._service_principals = service.iam.ServicePrincipalsAPI(self._api_client)
         self._serving_endpoints = serving_endpoints
+        serving_endpoints_data_plane_token_source = DataPlaneTokenSource(
+            self._config.host, self._config.oauth_token, not self._config.enable_experimental_async_token_refresh
+        )
         self._serving_endpoints_data_plane = service.serving.ServingEndpointsDataPlaneAPI(
-            self._api_client, serving_endpoints
+            self._api_client, serving_endpoints, serving_endpoints_data_plane_token_source
         )
         self._settings = service.settings.SettingsAPI(self._api_client)
         self._shares = service.sharing.SharesAPI(self._api_client)
