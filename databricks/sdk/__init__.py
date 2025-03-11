@@ -64,7 +64,8 @@ from databricks.sdk.service.marketplace import (
     ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
-from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
+from databricks.sdk.service.ml import (ExperimentsAPI, ForecastingAPI,
+                                       ModelRegistryAPI)
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
@@ -309,6 +310,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = service.catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = service.settings.WorkspaceConfAPI(self._api_client)
+        self._forecasting = service.ml.ForecastingAPI(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -811,6 +813,11 @@ class WorkspaceClient:
     def workspace_conf(self) -> service.settings.WorkspaceConfAPI:
         """This API allows updating known workspace settings for advanced users."""
         return self._workspace_conf
+
+    @property
+    def forecasting(self) -> service.ml.ForecastingAPI:
+        """The Forecasting API allows you to create and get serverless forecasting experiments."""
+        return self._forecasting
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""

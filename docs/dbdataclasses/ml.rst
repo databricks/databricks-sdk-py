@@ -92,6 +92,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateForecastingExperimentRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateForecastingExperimentResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateModelRequest
    :members:
    :undoc-members:
@@ -262,6 +270,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: FileInfo
    :members:
    :undoc-members:
+
+.. autoclass:: ForecastingExperiment
+   :members:
+   :undoc-members:
+
+.. py:class:: ForecastingExperimentState
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
 
 .. autoclass:: GetExperimentByNameResponse
    :members:

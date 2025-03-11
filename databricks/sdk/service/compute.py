@@ -3846,6 +3846,10 @@ class DestroyResponse:
 
 @dataclass
 class DiskSpec:
+    """Describes the disks that are launched for each instance in the spark cluster. For example, if
+    the cluster has 3 instances, each instance is configured to launch 2 disks, 100 GiB each, then
+    Databricks will launch a total of 6 disks, 100 GiB each, for this cluster."""
+
     disk_count: Optional[int] = None
     """The number of disks launched for each instance: - This feature is only enabled for supported
     node types. - Users can choose up to the limit of the disks supported by the node type. - For
@@ -3920,9 +3924,15 @@ class DiskSpec:
 
 @dataclass
 class DiskType:
+    """Describes the disk type."""
+
     azure_disk_volume_type: Optional[DiskTypeAzureDiskVolumeType] = None
+    """All Azure Disk types that Databricks supports. See
+    https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"""
 
     ebs_volume_type: Optional[DiskTypeEbsVolumeType] = None
+    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
+    details."""
 
     def as_dict(self) -> dict:
         """Serializes the DiskType into a dictionary suitable for use as a JSON request body."""
@@ -3952,12 +3962,16 @@ class DiskType:
 
 
 class DiskTypeAzureDiskVolumeType(Enum):
+    """All Azure Disk types that Databricks supports. See
+    https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"""
 
     PREMIUM_LRS = "PREMIUM_LRS"
     STANDARD_LRS = "STANDARD_LRS"
 
 
 class DiskTypeEbsVolumeType(Enum):
+    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
+    details."""
 
     GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
     THROUGHPUT_OPTIMIZED_HDD = "THROUGHPUT_OPTIMIZED_HDD"
@@ -3998,6 +4012,7 @@ class DockerBasicAuth:
 @dataclass
 class DockerImage:
     basic_auth: Optional[DockerBasicAuth] = None
+    """Basic auth with username and password"""
 
     url: Optional[str] = None
     """URL of the docker image."""
@@ -5334,7 +5349,7 @@ class GetInstancePool:
     - Currently, Databricks allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any `custom_tags`, including:
+    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
     
@@ -6250,7 +6265,7 @@ class InstancePoolAndStats:
     - Currently, Databricks allows at most 45 custom tags"""
 
     default_tags: Optional[Dict[str, str]] = None
-    """Tags that are added by Databricks regardless of any `custom_tags`, including:
+    """Tags that are added by Databricks regardless of any ``custom_tags``, including:
     
     - Vendor: Databricks
     
@@ -6427,10 +6442,10 @@ class InstancePoolAndStats:
 
 @dataclass
 class InstancePoolAwsAttributes:
+    """Attributes set during instance pool creation which are related to Amazon Web Services."""
+
     availability: Optional[InstancePoolAwsAttributesAvailability] = None
-    """Availability type used for the spot nodes.
-    
-    The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability"""
+    """Availability type used for the spot nodes."""
 
     spot_bid_price_percent: Optional[int] = None
     """Calculates the bid price for AWS spot instances, as a percentage of the corresponding instance
@@ -6439,10 +6454,7 @@ class InstancePoolAwsAttributes:
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
     `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
-    will be considered. Note that, for safety, we enforce this field to be no more than 10000.
-    
-    The default value and documentation here should be kept consistent with
-    CommonConf.defaultSpotBidPricePercent and CommonConf.maxSpotBidPricePercent."""
+    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
@@ -6485,9 +6497,7 @@ class InstancePoolAwsAttributes:
 
 
 class InstancePoolAwsAttributesAvailability(Enum):
-    """Availability type used for the spot nodes.
-
-    The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability"""
+    """The set of AWS availability types supported when setting up nodes for a cluster."""
 
     ON_DEMAND = "ON_DEMAND"
     SPOT = "SPOT"
@@ -6495,14 +6505,16 @@ class InstancePoolAwsAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolAzureAttributes:
+    """Attributes set during instance pool creation which are related to Azure."""
+
     availability: Optional[InstancePoolAzureAttributesAvailability] = None
-    """Shows the Availability type used for the spot nodes.
-    
-    The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability"""
+    """Availability type used for the spot nodes."""
 
     spot_bid_max_price: Optional[float] = None
-    """The default value and documentation here should be kept consistent with
-    CommonConf.defaultSpotBidMaxPrice."""
+    """With variable pricing, you have option to set a max price, in US dollars (USD) For example, the
+    value 2 would be a max price of $2.00 USD per hour. If you set the max price to be -1, the VM
+    won't be evicted based on price. The price for the VM will be the current price for spot or the
+    price for a standard VM, which ever is less, as long as there is capacity and quota available."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAzureAttributes into a dictionary suitable for use as a JSON request body."""
@@ -6532,9 +6544,7 @@ class InstancePoolAzureAttributes:
 
 
 class InstancePoolAzureAttributesAvailability(Enum):
-    """Shows the Availability type used for the spot nodes.
-
-    The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability"""
+    """The set of Azure availability types supported when setting up nodes for a cluster."""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
@@ -6542,6 +6552,8 @@ class InstancePoolAzureAttributesAvailability(Enum):
 
 @dataclass
 class InstancePoolGcpAttributes:
+    """Attributes set during instance pool creation which are related to GCP."""
+
     gcp_availability: Optional[GcpAvailability] = None
     """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
     preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
@@ -6756,7 +6768,10 @@ class InstancePoolPermissionsRequest:
 
 
 class InstancePoolState(Enum):
-    """Current state of the instance pool."""
+    """The state of a Cluster. The current allowable state transitions are as follows:
+
+    - ``ACTIVE`` -> ``STOPPED`` - ``ACTIVE`` -> ``DELETED`` - ``STOPPED`` -> ``ACTIVE`` -
+    ``STOPPED`` -> ``DELETED``"""
 
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
@@ -7865,6 +7880,8 @@ class NodeType:
 
 @dataclass
 class PendingInstanceError:
+    """Error message of a failed pending instances"""
+
     instance_id: Optional[str] = None
 
     message: Optional[str] = None
