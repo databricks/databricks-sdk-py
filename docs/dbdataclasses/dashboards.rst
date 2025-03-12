@@ -133,6 +133,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTEXT_EXCEEDED_EXCEPTION
       :value: "CONTEXT_EXCEEDED_EXCEPTION"
 
+   .. py:attribute:: COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION
+      :value: "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
+
    .. py:attribute:: COULD_NOT_GET_UC_SCHEMA_EXCEPTION
       :value: "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
 
@@ -246,7 +249,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MessageStatus
 
-   MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to rerun the query. * `CANCELLED`: Message has been cancelled.
+   MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a generated SQL query. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to rerun the query. Rerun the SQL query result by calling [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`: Message has been cancelled.
 
    .. py:attribute:: ASKING_AI
       :value: "ASKING_AI"

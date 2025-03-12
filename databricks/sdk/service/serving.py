@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import random
+import threading
 import time
 from dataclasses import dataclass
 from datetime import timedelta
@@ -4657,12 +4658,31 @@ class ServingEndpointsDataPlaneAPI:
     """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
     endpoints service."""
 
-    def __init__(self, api_client, control_plane):
+    def __init__(self, api_client, control_plane_service, dpts):
         self._api = api_client
-        self._control_plane = control_plane
-        from ..data_plane import DataPlaneService
+        self._lock = threading.Lock()
+        self._control_plane_service = control_plane_service
+        self._dpts = dpts
+        self._data_plane_details = {}
 
-        self._data_plane_service = DataPlaneService()
+    def _data_plane_info_query(self, name: str) -> DataPlaneInfo:
+        key = "query" + "/".join(
+            [
+                str(name),
+            ]
+        )
+        with self._lock:
+            if key in self._data_plane_details:
+                return self._data_plane_details[key]
+        response = self._control_plane_service.get(
+            name=name,
+        )
+        if response.data_plane_info is None:
+            raise Exception("Resource does not support direct Data Plane access")
+        result = response.data_plane_info.query_info
+        with self._lock:
+            self._data_plane_details[key] = result
+        return result
 
     def query(
         self,
@@ -4757,22 +4777,10 @@ class ServingEndpointsDataPlaneAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
-
-        def info_getter():
-            response = self._control_plane.get(
-                name=name,
-            )
-            if response.data_plane_info is None:
-                raise Exception("Resource does not support direct Data Plane access")
-            return response.data_plane_info.query_info
-
-        get_params = [
-            name,
-        ]
-        data_plane_details = self._data_plane_service.get_data_plane_details(
-            "query", get_params, info_getter, self._api.get_oauth_token
+        data_plane_info = self._data_plane_info_query(
+            name=name,
         )
-        token = data_plane_details.token
+        token = self._dpts.token(data_plane_info.endpoint_url, data_plane_info.authorization_details)
 
         def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
             authorization = f"{token.token_type} {token.access_token}"
@@ -4788,7 +4796,7 @@ class ServingEndpointsDataPlaneAPI:
         ]
         res = self._api.do(
             "POST",
-            url=data_plane_details.endpoint_url,
+            url=data_plane_info.endpoint_url,
             body=body,
             headers=headers,
             response_headers=response_headers,

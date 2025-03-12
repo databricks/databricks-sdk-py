@@ -405,6 +405,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DiskTypeAzureDiskVolumeType
 
+   All Azure Disk types that Databricks supports. See https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
+
    .. py:attribute:: PREMIUM_LRS
       :value: "PREMIUM_LRS"
 
@@ -412,6 +414,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STANDARD_LRS"
 
 .. py:class:: DiskTypeEbsVolumeType
+
+   All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for details.
 
    .. py:attribute:: GENERAL_PURPOSE_SSD
       :value: "GENERAL_PURPOSE_SSD"
@@ -729,8 +733,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolAwsAttributesAvailability
 
-   Availability type used for the spot nodes.
-   The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability
+   The set of AWS availability types supported when setting up nodes for a cluster.
 
    .. py:attribute:: ON_DEMAND
       :value: "ON_DEMAND"
@@ -744,8 +747,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolAzureAttributesAvailability
 
-   Shows the Availability type used for the spot nodes.
-   The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability
+   The set of Azure availability types supported when setting up nodes for a cluster.
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -785,7 +787,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolState
 
-   Current state of the instance pool.
+   The state of a Cluster. The current allowable state transitions are as follows:
+   - ``ACTIVE`` -> ``STOPPED`` - ``ACTIVE`` -> ``DELETED`` - ``STOPPED`` -> ``ACTIVE`` - ``STOPPED`` -> ``DELETED``
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"

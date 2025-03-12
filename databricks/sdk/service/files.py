@@ -314,12 +314,14 @@ class DirectoryEntry:
 @dataclass
 class DownloadResponse:
     content_length: Optional[int] = None
+    """The length of the HTTP response body in bytes."""
 
     content_type: Optional[str] = None
 
     contents: Optional[BinaryIO] = None
 
     last_modified: Optional[str] = None
+    """The last modified time of the file in HTTP-date (RFC 7231) format."""
 
     def as_dict(self) -> dict:
         """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
@@ -430,10 +432,12 @@ class GetDirectoryMetadataResponse:
 @dataclass
 class GetMetadataResponse:
     content_length: Optional[int] = None
+    """The length of the HTTP response body in bytes."""
 
     content_type: Optional[str] = None
 
     last_modified: Optional[str] = None
+    """The last modified time of the file in HTTP-date (RFC 7231) format."""
 
     def as_dict(self) -> dict:
         """Serializes the GetMetadataResponse into a dictionary suitable for use as a JSON request body."""
