@@ -1023,6 +1023,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: APPLY_TAG
       :value: "APPLY_TAG"
 
+   .. py:attribute:: BROWSE
+      :value: "BROWSE"
+
    .. py:attribute:: CREATE
       :value: "CREATE"
 
