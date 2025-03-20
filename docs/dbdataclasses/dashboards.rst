@@ -157,6 +157,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION
       :value: "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION"
 
+   .. py:attribute:: GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION
+      :value: "GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION"
+
    .. py:attribute:: GENERIC_CHAT_COMPLETION_EXCEPTION
       :value: "GENERIC_CHAT_COMPLETION_EXCEPTION"
 
@@ -198,6 +201,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION
       :value: "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
+
+   .. py:attribute:: MISSING_SQL_QUERY_EXCEPTION
+      :value: "MISSING_SQL_QUERY_EXCEPTION"
 
    .. py:attribute:: NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE
       :value: "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
