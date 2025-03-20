@@ -629,7 +629,11 @@ class OAuthClient:
     ):
 
         if not scopes:
-            scopes = ["all-apis"]
+            # all-apis ensures that the returned OAuth token can be used with all APIs, aside
+            # from direct-to-dataplane APIs.
+            # offline_access ensures that the response from the Authorization server includes
+            # a refresh token.
+            scopes = ["all-apis", "offline_access"]
 
         self.redirect_url = redirect_url
         self._client_id = client_id

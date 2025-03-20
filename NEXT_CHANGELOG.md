@@ -6,6 +6,8 @@
 
 ### Bug Fixes
 
+ * Ensure that refresh tokens are returned when using the `external-browser` credentials strategy.
+
 ### Documentation
 
 ### Internal Changes
