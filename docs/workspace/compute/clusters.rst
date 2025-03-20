@@ -66,7 +66,6 @@
         `owner_username`.
 
         :param cluster_id: str
-          <needs content added>
         :param owner_username: str
           New owner of the cluster_id after this RPC.
 
@@ -105,8 +104,11 @@
         Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
-        necessary. Note: Databricks may not be able to acquire some of the requested nodes, due to cloud
-        provider limitations (account limits, spot price, etc.) or transient network issues.
+        necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
+        status. When this method returns, the cluster will be in a ``PENDING`` state. The cluster will be
+        usable once it enters a ``RUNNING`` state. Note: Databricks may not be able to acquire some of the
+        requested nodes, due to cloud provider limitations (account limits, spot price, etc.) or transient
+        network issues.
 
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
@@ -179,12 +181,17 @@
           standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
           nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
+          Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
+
+          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
+          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
+          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space. This feature requires specific AWS permissions
@@ -271,6 +278,7 @@
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
+          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -443,12 +451,17 @@
           standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
           nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
+          Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
+
+          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
+          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
+          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space. This feature requires specific AWS permissions
@@ -535,6 +548,7 @@
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
+          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -603,8 +617,7 @@
         List cluster activity events.
 
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
-        events to read, the response includes all the nparameters necessary to request the next page of
-        events.
+        events to read, the response includes all the parameters necessary to request the next page of events.
 
         :param cluster_id: str
           The ID of the cluster to retrieve events about.
@@ -700,10 +713,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import compute
             
             w = WorkspaceClient()
             
-            nodes = w.clusters.list_node_types()
+            all = w.clusters.list(compute.ListClustersRequest())
 
         List clusters.
 
@@ -807,7 +821,6 @@
         cluster that is already pinned will have no effect. This API can only be called by workspace admins.
 
         :param cluster_id: str
-          <needs content added>
 
 
         
@@ -910,7 +923,6 @@
         :param cluster_id: str
           The cluster to be started.
         :param restart_user: str (optional)
-          <needs content added>
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -1038,11 +1050,10 @@
         Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
-
-        * The previous cluster id and attributes are preserved. * The cluster starts with the last specified
-        cluster size. * If the previous cluster was an autoscaling cluster, the current cluster starts with
-        the minimum number of nodes. * If the cluster is not currently in a `TERMINATED` state, nothing will
-        happen. * Clusters launched to run a job cannot be started.
+        - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
+        cluster size. - If the previous cluster was an autoscaling cluster, the current cluster starts with
+        the minimum number of nodes. - If the cluster is not currently in a ``TERMINATED`` state, nothing will
+        happen. - Clusters launched to run a job cannot be started.
 
         :param cluster_id: str
           The cluster to be started.
@@ -1093,7 +1104,6 @@
         admins.
 
         :param cluster_id: str
-          <needs content added>
 
 
         
@@ -1114,10 +1124,18 @@
         :param cluster_id: str
           ID of the cluster.
         :param update_mask: str
-          Specifies which fields of the cluster will be updated. This is required in the POST request. The
-          update mask should be supplied as a single string. To specify multiple fields, separate them with
-          commas (no spaces). To delete a field from a cluster configuration, add it to the `update_mask`
-          string but omit it from the `cluster` object.
+          Used to specify which cluster attributes and size fields to update. See https://google.aip.dev/161
+          for more details.
+
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         :param cluster: :class:`UpdateClusterResource` (optional)
           The cluster to be updated.
 
