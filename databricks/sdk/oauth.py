@@ -658,8 +658,6 @@ class OAuthClient:
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
-        if not scopes:
-            scopes = ["all-apis"]
         oidc = config.oidc_endpoints
         if not oidc:
             raise ValueError(f"{host} does not support OAuth")
