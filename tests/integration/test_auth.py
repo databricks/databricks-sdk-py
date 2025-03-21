@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pytest
 
+from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk.service import iam, oauth2
 from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
                                             Library, ResultType, SparkVersion)
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
@@ -198,3 +200,72 @@ def _task_outputs(w, run):
                             output += data["data"]
         task_outputs[task_run.task_key] = output
     return task_outputs
+
+
+def test_wif_account(ucacct, env_or_skip, random):
+
+    sp = ucacct.service_principals.create(
+        active=True,
+        display_name="py-sdk-test-" + random(),
+        roles=[iam.ComplexValue(value="account_admin")],
+    )
+
+    ucacct.service_principal_federation_policy.create(
+        policy=oauth2.FederationPolicy(
+            oidc_policy=oauth2.OidcFederationPolicy(
+                issuer="https://token.actions.githubusercontent.com",
+                audiences=["https://github.com/databricks-eng"],
+                subject="repo:databricks-eng/eng-dev-ecosystem:environment:integration-tests",
+            )
+        ),
+        service_principal_id=sp.id,
+    )
+
+    ac = AccountClient(
+        host=ucacct.config.host,
+        account_id=ucacct.config.account_id,
+        client_id=sp.application_id,
+        auth_type="databricks-wif",
+        token_audience="https://github.com/databricks-eng",
+    )
+
+    groups = ac.groups.list()
+
+    next(groups)
+
+
+def test_wif_workspace(ucacct, env_or_skip, random):
+
+    workspace_id = env_or_skip("TEST_WORKSPACE_ID")
+    workspace_url = env_or_skip("TEST_WORKSPACE_URL")
+
+    sp = ucacct.service_principals.create(
+        active=True,
+        display_name="py-sdk-test-" + random(),
+    )
+
+    ucacct.service_principal_federation_policy.create(
+        policy=oauth2.FederationPolicy(
+            oidc_policy=oauth2.OidcFederationPolicy(
+                issuer="https://token.actions.githubusercontent.com",
+                audiences=["https://github.com/databricks-eng"],
+                subject="repo:databricks-eng/eng-dev-ecosystem:environment:integration-tests",
+            )
+        ),
+        service_principal_id=sp.id,
+    )
+
+    ucacct.workspace_assignment.update(
+        workspace_id=workspace_id,
+        principal_id=sp.id,
+        permissions=[iam.WorkspacePermission.ADMIN],
+    )
+
+    ws = WorkspaceClient(
+        host=workspace_url,
+        client_id=sp.application_id,
+        auth_type="databricks-wif",
+        token_audience="https://github.com/databricks-eng",
+    )
+
+    ws.current_user.me()
