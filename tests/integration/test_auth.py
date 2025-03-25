@@ -225,7 +225,7 @@ def test_wif_account(ucacct, env_or_skip, random):
         host=ucacct.config.host,
         account_id=ucacct.config.account_id,
         client_id=sp.application_id,
-        auth_type="databricks-wif",
+        auth_type="github-oidc",
         token_audience="https://github.com/databricks-eng",
     )
 
@@ -264,7 +264,7 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     ws = WorkspaceClient(
         host=workspace_url,
         client_id=sp.application_id,
-        auth_type="databricks-wif",
+        auth_type="github-oidc",
         token_audience="https://github.com/databricks-eng",
     )
 

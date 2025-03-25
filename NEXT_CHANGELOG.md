@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.47.0
+## Release v0.48.0
 
 ### New Features and Improvements
 * Introduce support for Databricks Workload Identity Federation in GitHub workflows ([933](https://github.com/databricks/databricks-sdk-py/pull/933)).
@@ -9,8 +9,6 @@
   environment variables set may see their authentication start failing due to the order in which the SDK tries different authentication methods.
 
 ### Bug Fixes
-
- * Ensure that refresh tokens are returned when using the `external-browser` credentials strategy.
 
 ### Documentation
 
