@@ -846,7 +846,7 @@ class ObjectPermissions:
 @dataclass
 class PartialUpdate:
     id: Optional[str] = None
-    """Unique ID for a user in the Databricks workspace."""
+    """Unique ID in the Databricks workspace."""
 
     operations: Optional[List[Patch]] = None
 
@@ -1918,8 +1918,7 @@ class User:
     groups: Optional[List[ComplexValue]] = None
 
     id: Optional[str] = None
-    """Databricks user ID. This is automatically set by Databricks. Any value provided by the client
-    will be ignored."""
+    """Databricks user ID."""
 
     name: Optional[Name] = None
 
@@ -2480,7 +2479,7 @@ class AccountGroupsAPI:
         Partially updates the details of a group.
 
         :param id: str
-          Unique ID for a group in the Databricks account.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -2493,7 +2492,6 @@ class AccountGroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2557,7 +2555,6 @@ class AccountGroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2765,7 +2762,7 @@ class AccountServicePrincipalsAPI:
         Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
-          Unique ID for a service principal in the Databricks account.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -2778,7 +2775,6 @@ class AccountServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2848,7 +2844,6 @@ class AccountServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2912,8 +2907,7 @@ class AccountUsersAPI:
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
-          be ignored.
+          Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -3123,7 +3117,7 @@ class AccountUsersAPI:
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
-          Unique ID for a user in the Databricks account.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3136,7 +3130,6 @@ class AccountUsersAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -3164,8 +3157,7 @@ class AccountUsersAPI:
         Replaces a user's information with the data supplied in request.
 
         :param id: str
-          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
-          be ignored.
+          Databricks user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
@@ -3215,7 +3207,6 @@ class AccountUsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -3434,7 +3425,7 @@ class GroupsAPI:
         Partially updates the details of a group.
 
         :param id: str
-          Unique ID for a group in the Databricks workspace.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3447,7 +3438,6 @@ class GroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -3509,7 +3499,6 @@ class GroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -3922,7 +3911,7 @@ class ServicePrincipalsAPI:
         Partially updates the details of a single service principal in the Databricks workspace.
 
         :param id: str
-          Unique ID for a service principal in the Databricks workspace.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -3935,7 +3924,6 @@ class ServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -4000,7 +3988,6 @@ class ServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -4059,8 +4046,7 @@ class UsersAPI:
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
-          be ignored.
+          Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -4294,7 +4280,7 @@ class UsersAPI:
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
-          Unique ID for a user in the Databricks workspace.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -4307,7 +4293,6 @@ class UsersAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -4356,8 +4341,7 @@ class UsersAPI:
         Replaces a user's information with the data supplied in request.
 
         :param id: str
-          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
-          be ignored.
+          Databricks user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
@@ -4407,7 +4391,6 @@ class UsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 

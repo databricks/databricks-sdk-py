@@ -209,7 +209,7 @@
         :returns: :class:`PutResponse`
         
 
-    .. py:method:: put_ai_gateway(name: str [, guardrails: Optional[AiGatewayGuardrails], inference_table_config: Optional[AiGatewayInferenceTableConfig], rate_limits: Optional[List[AiGatewayRateLimit]], usage_tracking_config: Optional[AiGatewayUsageTrackingConfig]]) -> PutAiGatewayResponse
+    .. py:method:: put_ai_gateway(name: str [, fallback_config: Optional[FallbackConfig], guardrails: Optional[AiGatewayGuardrails], inference_table_config: Optional[AiGatewayInferenceTableConfig], rate_limits: Optional[List[AiGatewayRateLimit]], usage_tracking_config: Optional[AiGatewayUsageTrackingConfig]]) -> PutAiGatewayResponse
 
         Update AI Gateway of a serving endpoint.
 
@@ -218,6 +218,9 @@
 
         :param name: str
           The name of the serving endpoint whose AI Gateway is being updated. This field is required.
+        :param fallback_config: :class:`FallbackConfig` (optional)
+          Configuration for traffic fallback which auto fallbacks to other served entities if the request to a
+          served entity fails with certain error codes, to increase availability.
         :param guardrails: :class:`AiGatewayGuardrails` (optional)
           Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.
         :param inference_table_config: :class:`AiGatewayInferenceTableConfig` (optional)

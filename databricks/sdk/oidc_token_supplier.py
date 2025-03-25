@@ -1,5 +1,4 @@
 import os
-from time import sleep
 from typing import Optional
 
 import requests
@@ -25,9 +24,5 @@ class GitHubOIDCTokenSupplier:
         response_json = response.json()
         if "value" not in response_json:
             return None
-
-        # GitHub issued time is not allways in sync, and can give tokens which are not yet valid.
-        # TODO: Remove this after Databricks API is updated to handle such cases.
-        sleep(2)
 
         return response_json["value"]

@@ -23,7 +23,10 @@
             
             a = AccountClient()
             
-            spn = a.service_principals.create(display_name=f"sdk-{time.time_ns()}")
+            sp_create = a.service_principals.create(active=True, display_name=f"sdk-{time.time_ns()}")
+            
+            # cleanup
+            a.service_principals.delete(id=sp_create.id)
 
         Create a service principal.
 
@@ -175,7 +178,7 @@
         Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
-          Unique ID for a service principal in the Databricks account.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].

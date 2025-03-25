@@ -325,19 +325,26 @@ def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
     - GitHub OIDC
     """
     supplier = GitHubOIDCTokenSupplier()
+
+    audience = cfg.token_audience
+    if audience is None and cfg.is_account_client:
+        audience = cfg.account_id
+    if audience is None and not cfg.is_account_client:
+        audience = cfg.oidc_endpoints.token_endpoint
+
     # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
-    idToken = supplier.get_oidc_token(cfg.token_audience)
-    if not idToken:
+    id_token = supplier.get_oidc_token(audience)
+    if not id_token:
         return None
 
     def token_source_for(audience: str) -> TokenSource:
-        idToken = supplier.get_oidc_token(audience)
-        if not idToken:
+        id_token = supplier.get_oidc_token(audience)
+        if not id_token:
             # Should not happen, since we checked it above.
             raise Exception("Cannot get OIDC token")
         params = {
             "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-            "subject_token": idToken,
+            "subject_token": id_token,
             "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
         }
         return ClientCredentials(
@@ -351,11 +358,11 @@ def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
         )
 
     def refreshed_headers() -> Dict[str, str]:
-        token = token_source_for(cfg.token_audience).token()
+        token = token_source_for(audience).token()
         return {"Authorization": f"{token.token_type} {token.access_token}"}
 
     def token() -> Token:
-        return token_source_for(cfg.token_audience).token()
+        return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
 

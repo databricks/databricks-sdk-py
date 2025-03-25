@@ -87,7 +87,7 @@
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
-          'libraries', 'target' or 'catalog' settings.
+          'libraries', 'schema', 'target', or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)
@@ -105,15 +105,15 @@
           Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
           thrown.
         :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
+          The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
-          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 
@@ -485,7 +485,7 @@
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
-          'libraries', 'target' or 'catalog' settings.
+          'libraries', 'schema', 'target', or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)
@@ -503,15 +503,15 @@
           Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
           thrown.
         :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
+          The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
-          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 

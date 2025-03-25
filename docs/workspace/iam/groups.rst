@@ -71,9 +71,6 @@
             group = w.groups.create(display_name=f"sdk-{time.time_ns()}")
             
             w.groups.delete(id=group.id)
-            
-            # cleanup
-            w.groups.delete(id=group.id)
 
         Delete a group.
 
@@ -190,7 +187,7 @@
         Partially updates the details of a group.
 
         :param id: str
-          Unique ID for a group in the Databricks workspace.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].

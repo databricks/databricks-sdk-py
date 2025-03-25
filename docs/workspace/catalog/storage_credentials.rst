@@ -30,13 +30,13 @@
             
             w = WorkspaceClient()
             
-            credential = w.storage_credentials.create(
+            created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             # cleanup
-            w.storage_credentials.delete(name=credential.name)
+            w.storage_credentials.delete(delete=created.name)
 
         Create a storage credential.
 
@@ -96,13 +96,13 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
-            by_name = w.storage_credentials.get(get=created.name)
+            by_name = w.storage_credentials.get(name=created.name)
             
             # cleanup
-            w.storage_credentials.delete(delete=created.name)
+            w.storage_credentials.delete(name=created.name)
 
         Get a credential.
 
@@ -123,11 +123,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.storage_credentials.list(catalog.ListStorageCredentialsRequest())
+            all = w.storage_credentials.list()
 
         List credentials.
 

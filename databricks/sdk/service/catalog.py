@@ -9471,6 +9471,8 @@ class UpdateWorkspaceBindingsParameters:
 
 @dataclass
 class ValidateCredentialRequest:
+    """Next ID: 17"""
+
     aws_iam_role: Optional[AwsIamRole] = None
     """The AWS IAM role configuration"""
 

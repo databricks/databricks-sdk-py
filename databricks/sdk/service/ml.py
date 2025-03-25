@@ -499,26 +499,18 @@ class CreateForecastingExperimentRequest:
     time_column: str
     """Name of the column in the input training table that represents the timestamp of each row."""
 
-    data_granularity_unit: str
-    """The time unit of the input data granularity. Together with data_granularity_quantity field, this
-    defines the time interval between consecutive rows in the time series data. Possible values: *
-    'W' (weeks) * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' / 'min' /
-    'minutes' / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' / 'month' / 'months' * 'Q' /
-    'quarter' / 'quarters' * 'Y' / 'year' / 'years'"""
+    forecast_granularity: str
+    """The granularity of the forecast. This defines the time interval between consecutive rows in the
+    time series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15
+    minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'."""
 
     forecast_horizon: int
     """The number of time steps into the future for which predictions should be made. This value
-    represents a multiple of data_granularity_unit and data_granularity_quantity determining how far
-    ahead the model will forecast."""
+    represents a multiple of forecast_granularity determining how far ahead the model will forecast."""
 
     custom_weights_column: Optional[str] = None
     """Name of the column in the input training table used to customize the weight for each time series
     to calculate weighted metrics."""
-
-    data_granularity_quantity: Optional[int] = None
-    """The quantity of the input data granularity. Together with data_granularity_unit field, this
-    defines the time interval between consecutive rows in the time series data. For now, only 1
-    second, 1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year are supported."""
 
     experiment_path: Optional[str] = None
     """The path to the created experiment. This is the path where the experiment will be stored in the
@@ -560,12 +552,10 @@ class CreateForecastingExperimentRequest:
         body = {}
         if self.custom_weights_column is not None:
             body["custom_weights_column"] = self.custom_weights_column
-        if self.data_granularity_quantity is not None:
-            body["data_granularity_quantity"] = self.data_granularity_quantity
-        if self.data_granularity_unit is not None:
-            body["data_granularity_unit"] = self.data_granularity_unit
         if self.experiment_path is not None:
             body["experiment_path"] = self.experiment_path
+        if self.forecast_granularity is not None:
+            body["forecast_granularity"] = self.forecast_granularity
         if self.forecast_horizon is not None:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
@@ -597,12 +587,10 @@ class CreateForecastingExperimentRequest:
         body = {}
         if self.custom_weights_column is not None:
             body["custom_weights_column"] = self.custom_weights_column
-        if self.data_granularity_quantity is not None:
-            body["data_granularity_quantity"] = self.data_granularity_quantity
-        if self.data_granularity_unit is not None:
-            body["data_granularity_unit"] = self.data_granularity_unit
         if self.experiment_path is not None:
             body["experiment_path"] = self.experiment_path
+        if self.forecast_granularity is not None:
+            body["forecast_granularity"] = self.forecast_granularity
         if self.forecast_horizon is not None:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
@@ -634,9 +622,8 @@ class CreateForecastingExperimentRequest:
         """Deserializes the CreateForecastingExperimentRequest from a dictionary."""
         return cls(
             custom_weights_column=d.get("custom_weights_column", None),
-            data_granularity_quantity=d.get("data_granularity_quantity", None),
-            data_granularity_unit=d.get("data_granularity_unit", None),
             experiment_path=d.get("experiment_path", None),
+            forecast_granularity=d.get("forecast_granularity", None),
             forecast_horizon=d.get("forecast_horizon", None),
             holiday_regions=d.get("holiday_regions", None),
             max_runtime=d.get("max_runtime", None),
@@ -7000,11 +6987,10 @@ class ForecastingAPI:
         train_data_path: str,
         target_column: str,
         time_column: str,
-        data_granularity_unit: str,
+        forecast_granularity: str,
         forecast_horizon: int,
         *,
         custom_weights_column: Optional[str] = None,
-        data_granularity_quantity: Optional[int] = None,
         experiment_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
@@ -7027,23 +7013,16 @@ class ForecastingAPI:
           this column will be used as the ground truth for model training.
         :param time_column: str
           Name of the column in the input training table that represents the timestamp of each row.
-        :param data_granularity_unit: str
-          The time unit of the input data granularity. Together with data_granularity_quantity field, this
-          defines the time interval between consecutive rows in the time series data. Possible values: * 'W'
-          (weeks) * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' / 'min' / 'minutes'
-          / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' / 'month' / 'months' * 'Q' / 'quarter' / 'quarters'
-          * 'Y' / 'year' / 'years'
+        :param forecast_granularity: str
+          The granularity of the forecast. This defines the time interval between consecutive rows in the time
+          series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30
+          minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
         :param forecast_horizon: int
           The number of time steps into the future for which predictions should be made. This value represents
-          a multiple of data_granularity_unit and data_granularity_quantity determining how far ahead the
-          model will forecast.
+          a multiple of forecast_granularity determining how far ahead the model will forecast.
         :param custom_weights_column: str (optional)
           Name of the column in the input training table used to customize the weight for each time series to
           calculate weighted metrics.
-        :param data_granularity_quantity: int (optional)
-          The quantity of the input data granularity. Together with data_granularity_unit field, this defines
-          the time interval between consecutive rows in the time series data. For now, only 1 second,
-          1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year are supported.
         :param experiment_path: str (optional)
           The path to the created experiment. This is the path where the experiment will be stored in the
           workspace.
@@ -7078,12 +7057,10 @@ class ForecastingAPI:
         body = {}
         if custom_weights_column is not None:
             body["custom_weights_column"] = custom_weights_column
-        if data_granularity_quantity is not None:
-            body["data_granularity_quantity"] = data_granularity_quantity
-        if data_granularity_unit is not None:
-            body["data_granularity_unit"] = data_granularity_unit
         if experiment_path is not None:
             body["experiment_path"] = experiment_path
+        if forecast_granularity is not None:
+            body["forecast_granularity"] = forecast_granularity
         if forecast_horizon is not None:
             body["forecast_horizon"] = forecast_horizon
         if holiday_regions is not None:
@@ -7125,11 +7102,10 @@ class ForecastingAPI:
         train_data_path: str,
         target_column: str,
         time_column: str,
-        data_granularity_unit: str,
+        forecast_granularity: str,
         forecast_horizon: int,
         *,
         custom_weights_column: Optional[str] = None,
-        data_granularity_quantity: Optional[int] = None,
         experiment_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
@@ -7143,9 +7119,8 @@ class ForecastingAPI:
     ) -> ForecastingExperiment:
         return self.create_experiment(
             custom_weights_column=custom_weights_column,
-            data_granularity_quantity=data_granularity_quantity,
-            data_granularity_unit=data_granularity_unit,
             experiment_path=experiment_path,
+            forecast_granularity=forecast_granularity,
             forecast_horizon=forecast_horizon,
             holiday_regions=holiday_regions,
             max_runtime=max_runtime,

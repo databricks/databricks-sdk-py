@@ -324,6 +324,153 @@ class DeltaSharingDependencyList:
 
 
 @dataclass
+class DeltaSharingFunction:
+    aliases: Optional[List[RegisteredModelAlias]] = None
+    """The aliass of registered model."""
+
+    comment: Optional[str] = None
+    """The comment of the function."""
+
+    data_type: Optional[ColumnTypeName] = None
+    """The data type of the function."""
+
+    dependency_list: Optional[DeltaSharingDependencyList] = None
+    """The dependency list of the function."""
+
+    full_data_type: Optional[str] = None
+    """The full data type of the function."""
+
+    id: Optional[str] = None
+    """The id of the function."""
+
+    input_params: Optional[FunctionParameterInfos] = None
+    """The function parameter information."""
+
+    name: Optional[str] = None
+    """The name of the function."""
+
+    properties: Optional[str] = None
+    """The properties of the function."""
+
+    routine_definition: Optional[str] = None
+    """The routine definition of the function."""
+
+    schema: Optional[str] = None
+    """The name of the schema that the function belongs to."""
+
+    securable_kind: Optional[SharedSecurableKind] = None
+    """The securable kind of the function."""
+
+    share: Optional[str] = None
+    """The name of the share that the function belongs to."""
+
+    share_id: Optional[str] = None
+    """The id of the share that the function belongs to."""
+
+    storage_location: Optional[str] = None
+    """The storage location of the function."""
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeltaSharingFunction into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v.as_dict() for v in self.aliases]
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.data_type is not None:
+            body["data_type"] = self.data_type.value
+        if self.dependency_list:
+            body["dependency_list"] = self.dependency_list.as_dict()
+        if self.full_data_type is not None:
+            body["full_data_type"] = self.full_data_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.input_params:
+            body["input_params"] = self.input_params.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.properties is not None:
+            body["properties"] = self.properties
+        if self.routine_definition is not None:
+            body["routine_definition"] = self.routine_definition
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind.value
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeltaSharingFunction into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.data_type is not None:
+            body["data_type"] = self.data_type
+        if self.dependency_list:
+            body["dependency_list"] = self.dependency_list
+        if self.full_data_type is not None:
+            body["full_data_type"] = self.full_data_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.input_params:
+            body["input_params"] = self.input_params
+        if self.name is not None:
+            body["name"] = self.name
+        if self.properties is not None:
+            body["properties"] = self.properties
+        if self.routine_definition is not None:
+            body["routine_definition"] = self.routine_definition
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
+        if self.share is not None:
+            body["share"] = self.share
+        if self.share_id is not None:
+            body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingFunction:
+        """Deserializes the DeltaSharingFunction from a dictionary."""
+        return cls(
+            aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
+            comment=d.get("comment", None),
+            data_type=_enum(d, "data_type", ColumnTypeName),
+            dependency_list=_from_dict(d, "dependency_list", DeltaSharingDependencyList),
+            full_data_type=d.get("full_data_type", None),
+            id=d.get("id", None),
+            input_params=_from_dict(d, "input_params", FunctionParameterInfos),
+            name=d.get("name", None),
+            properties=d.get("properties", None),
+            routine_definition=d.get("routine_definition", None),
+            schema=d.get("schema", None),
+            securable_kind=_enum(d, "securable_kind", SharedSecurableKind),
+            share=d.get("share", None),
+            share_id=d.get("share_id", None),
+            storage_location=d.get("storage_location", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
+
+
+@dataclass
 class DeltaSharingFunctionDependency:
     """A Function in UC as a dependency."""
 
@@ -385,153 +532,6 @@ class DeltaSharingTableDependency:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSharingTableDependency:
         """Deserializes the DeltaSharingTableDependency from a dictionary."""
         return cls(schema_name=d.get("schema_name", None), table_name=d.get("table_name", None))
-
-
-@dataclass
-class Function:
-    aliases: Optional[List[RegisteredModelAlias]] = None
-    """The aliass of registered model."""
-
-    comment: Optional[str] = None
-    """The comment of the function."""
-
-    data_type: Optional[ColumnTypeName] = None
-    """The data type of the function."""
-
-    dependency_list: Optional[DeltaSharingDependencyList] = None
-    """The dependency list of the function."""
-
-    full_data_type: Optional[str] = None
-    """The full data type of the function."""
-
-    id: Optional[str] = None
-    """The id of the function."""
-
-    input_params: Optional[FunctionParameterInfos] = None
-    """The function parameter information."""
-
-    name: Optional[str] = None
-    """The name of the function."""
-
-    properties: Optional[str] = None
-    """The properties of the function."""
-
-    routine_definition: Optional[str] = None
-    """The routine definition of the function."""
-
-    schema: Optional[str] = None
-    """The name of the schema that the function belongs to."""
-
-    securable_kind: Optional[SharedSecurableKind] = None
-    """The securable kind of the function."""
-
-    share: Optional[str] = None
-    """The name of the share that the function belongs to."""
-
-    share_id: Optional[str] = None
-    """The id of the share that the function belongs to."""
-
-    storage_location: Optional[str] = None
-    """The storage location of the function."""
-
-    tags: Optional[List[catalog.TagKeyValue]] = None
-    """The tags of the function."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Function into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aliases:
-            body["aliases"] = [v.as_dict() for v in self.aliases]
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.data_type is not None:
-            body["data_type"] = self.data_type.value
-        if self.dependency_list:
-            body["dependency_list"] = self.dependency_list.as_dict()
-        if self.full_data_type is not None:
-            body["full_data_type"] = self.full_data_type
-        if self.id is not None:
-            body["id"] = self.id
-        if self.input_params:
-            body["input_params"] = self.input_params.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.properties is not None:
-            body["properties"] = self.properties
-        if self.routine_definition is not None:
-            body["routine_definition"] = self.routine_definition
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.securable_kind is not None:
-            body["securable_kind"] = self.securable_kind.value
-        if self.share is not None:
-            body["share"] = self.share
-        if self.share_id is not None:
-            body["share_id"] = self.share_id
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.tags:
-            body["tags"] = [v.as_dict() for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Function into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aliases:
-            body["aliases"] = self.aliases
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.data_type is not None:
-            body["data_type"] = self.data_type
-        if self.dependency_list:
-            body["dependency_list"] = self.dependency_list
-        if self.full_data_type is not None:
-            body["full_data_type"] = self.full_data_type
-        if self.id is not None:
-            body["id"] = self.id
-        if self.input_params:
-            body["input_params"] = self.input_params
-        if self.name is not None:
-            body["name"] = self.name
-        if self.properties is not None:
-            body["properties"] = self.properties
-        if self.routine_definition is not None:
-            body["routine_definition"] = self.routine_definition
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.securable_kind is not None:
-            body["securable_kind"] = self.securable_kind
-        if self.share is not None:
-            body["share"] = self.share
-        if self.share_id is not None:
-            body["share_id"] = self.share_id
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Function:
-        """Deserializes the Function from a dictionary."""
-        return cls(
-            aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
-            comment=d.get("comment", None),
-            data_type=_enum(d, "data_type", ColumnTypeName),
-            dependency_list=_from_dict(d, "dependency_list", DeltaSharingDependencyList),
-            full_data_type=d.get("full_data_type", None),
-            id=d.get("id", None),
-            input_params=_from_dict(d, "input_params", FunctionParameterInfos),
-            name=d.get("name", None),
-            properties=d.get("properties", None),
-            routine_definition=d.get("routine_definition", None),
-            schema=d.get("schema", None),
-            securable_kind=_enum(d, "securable_kind", SharedSecurableKind),
-            share=d.get("share", None),
-            share_id=d.get("share_id", None),
-            storage_location=d.get("storage_location", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
-        )
 
 
 @dataclass
@@ -809,7 +809,7 @@ class IpAccessList:
 class ListProviderShareAssetsResponse:
     """Response to ListProviderShareAssets, which contains the list of assets of a share."""
 
-    functions: Optional[List[Function]] = None
+    functions: Optional[List[DeltaSharingFunction]] = None
     """The list of functions in the share."""
 
     notebooks: Optional[List[NotebookFile]] = None
@@ -851,7 +851,7 @@ class ListProviderShareAssetsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListProviderShareAssetsResponse:
         """Deserializes the ListProviderShareAssetsResponse from a dictionary."""
         return cls(
-            functions=_repeated_dict(d, "functions", Function),
+            functions=_repeated_dict(d, "functions", DeltaSharingFunction),
             notebooks=_repeated_dict(d, "notebooks", NotebookFile),
             tables=_repeated_dict(d, "tables", Table),
             volumes=_repeated_dict(d, "volumes", Volume),

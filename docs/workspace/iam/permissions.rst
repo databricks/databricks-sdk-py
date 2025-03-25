@@ -71,7 +71,7 @@
             
             obj = w.workspace.get_status(path=notebook_path)
             
-            _ = w.permissions.get(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
+            levels = w.permissions.get_permission_levels(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
 
         Get object permissions.
 
