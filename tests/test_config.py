@@ -39,7 +39,7 @@ def test_config_supports_legacy_credentials_provider():
     ],
 )
 def test_config_host_url_format_check(mocker, host, expected):
-    mocker.patch("databricks.sdk.config.Config.init_auth")
+    mocker.patch("databricks.sdk.databricks.config.Config.init_auth")
     assert Config(host=host).host == expected
 
 
@@ -113,7 +113,7 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
 
 def test_config_deep_copy(monkeypatch, mocker, tmp_path):
     mocker.patch(
-        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        "databricks.sdk.databricks.credentials_provider.CliTokenSource.refresh",
         return_value=Token(
             access_token="token",
             token_type="Bearer",

@@ -26,7 +26,7 @@ def test_external_browser_refresh_success(mocker):
 
     # Inject the mock implementations.
     mocker.patch(
-        "databricks.sdk.credentials_provider.TokenCache",
+        "databricks.sdk.databricks.credentials_provider.TokenCache",
         return_value=mock_token_cache,
     )
 
@@ -66,11 +66,11 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
 
     # Inject the mock implementations.
     mocker.patch(
-        "databricks.sdk.credentials_provider.TokenCache",
+        "databricks.sdk.databricks.credentials_provider.TokenCache",
         return_value=mock_token_cache,
     )
     mocker.patch(
-        "databricks.sdk.credentials_provider.OAuthClient",
+        "databricks.sdk.databricks.credentials_provider.OAuthClient",
         return_value=mock_oauth_client,
     )
 
@@ -112,11 +112,11 @@ def test_external_browser_no_cached_credentials(mocker):
 
     # Inject the mock implementations.
     mocker.patch(
-        "databricks.sdk.credentials_provider.TokenCache",
+        "databricks.sdk.databricks.credentials_provider.TokenCache",
         return_value=mock_token_cache,
     )
     mocker.patch(
-        "databricks.sdk.credentials_provider.OAuthClient",
+        "databricks.sdk.databricks.credentials_provider.OAuthClient",
         return_value=mock_oauth_client,
     )
 
@@ -150,11 +150,11 @@ def test_external_browser_consent_fails(mocker):
 
     # Inject the mock implementations.
     mocker.patch(
-        "databricks.sdk.credentials_provider.TokenCache",
+        "databricks.sdk.databricks.credentials_provider.TokenCache",
         return_value=mock_token_cache,
     )
     mocker.patch(
-        "databricks.sdk.credentials_provider.OAuthClient",
+        "databricks.sdk.databricks.credentials_provider.OAuthClient",
         return_value=mock_oauth_client,
     )
 

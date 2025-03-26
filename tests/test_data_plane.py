@@ -22,7 +22,7 @@ def test_endpoint_token_source_get_token(config):
         config.host, success_callable(cp_token), "authDetails", disable_async=True
     )
 
-    with patch("databricks.sdk.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
+    with patch("databricks.sdk.databricks.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
         token_source.token()
 
     retrieve_token.assert_called_once()
@@ -42,7 +42,7 @@ def test_endpoint_token_source_get_token(config):
 def test_token_source_get_token_not_existing(config):
     token_source = data_plane.DataPlaneTokenSource(config.host, success_callable(cp_token), disable_async=True)
 
-    with patch("databricks.sdk.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
+    with patch("databricks.sdk.databricks.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
         result_token = token_source.token(endpoint="endpoint", auth_details="authDetails")
 
     retrieve_token.assert_called_once()
@@ -64,7 +64,7 @@ def test_token_source_get_token_existing(config):
     token_source = data_plane.DataPlaneTokenSource(config.host, success_callable(cp_token), disable_async=True)
     token_source._token_sources["endpoint:authDetails"] = MockEndpointTokenSource(another_token)
 
-    with patch("databricks.sdk.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
+    with patch("databricks.sdk.databricks.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
         result_token = token_source.token(endpoint="endpoint", auth_details="authDetails")
 
     retrieve_token.assert_not_called()

@@ -62,10 +62,10 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
 
     # patch mlflow to read the file from the test directory
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         oauth_file_name,
     )
-    mocker.patch("databricks.sdk.config.Config._known_file_config_loader")
+    mocker.patch("databricks.sdk.databricks.config.Config._known_file_config_loader")
 
     cfg = Config()
     assert cfg.auth_type == "model-serving"
@@ -107,7 +107,7 @@ def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
     for env_name, env_value in env_values:
         monkeypatch.setenv(env_name, env_value)
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         oauth_file_name,
     )
 
@@ -121,10 +121,10 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
 
     # patch mlflow to read the file from the test directory
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         "tests/testdata/model-serving-test-token",
     )
-    mocker.patch("databricks.sdk.config.Config._known_file_config_loader")
+    mocker.patch("databricks.databricks.sdk.config.Config._known_file_config_loader")
 
     cfg = Config()
     assert cfg.auth_type == "model-serving"
@@ -135,12 +135,12 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     assert headers.get("Authorization") == "Bearer databricks_sdk_unit_test_token"  # Token defined in the test file
     # Simulate refreshing the token by patching to to a new file
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         "tests/testdata/model-serving-test-token-v2",
     )
 
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.time.time",
+        "databricks.sdk.databricks.credentials_provider.time.time",
         lambda: current_time + 10,
     )
 
@@ -151,7 +151,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
 
     # Expiry is 300 seconds so this should force an expiry and re read from the new file path
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.time.time",
+        "databricks.sdk.databricks.credentials_provider.time.time",
         lambda: current_time + 600,
     )
 
@@ -171,7 +171,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
     monkeypatch.setenv("IS_IN_DB_MODEL_SERVING_ENV", "true")
     monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
     monkeypatch.setattr(
-        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         "tests/testdata/model-serving-test-token",
     )
 

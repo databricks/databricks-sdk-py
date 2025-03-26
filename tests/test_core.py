@@ -166,7 +166,7 @@ def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch
 
 def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
     get_mock = mocker.patch(
-        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        "databricks.sdk.databricks.credentials_provider.CliTokenSource.refresh",
         return_value=Token(
             access_token="token",
             token_type="Bearer",
