@@ -124,7 +124,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
         "databricks.sdk.databricks.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         "tests/testdata/model-serving-test-token",
     )
-    mocker.patch("databricks.databricks.sdk.config.Config._known_file_config_loader")
+    mocker.patch("databricks.sdk.databricks.config.Config._known_file_config_loader")
 
     cfg = Config()
     assert cfg.auth_type == "model-serving"
