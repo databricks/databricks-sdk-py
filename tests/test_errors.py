@@ -6,8 +6,8 @@ from typing import Any, List, Optional
 import pytest
 import requests
 
-from databricks.sdk import errors
-from databricks.sdk.errors import details
+from databricks.sdk.databricks import errors
+from databricks.sdk.databricks.errors import details
 
 
 def fake_response(

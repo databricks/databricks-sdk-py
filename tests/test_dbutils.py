@@ -1,6 +1,6 @@
 import pytest as pytest
 
-from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
+from databricks.sdk.databricks.dbutils import FileInfo as DBUtilsFileInfo
 from databricks.sdk.service.files import FileInfo, ReadResponse
 
 from .conftest import raises

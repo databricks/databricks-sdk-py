@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 from urllib import parse
 
-from databricks.sdk import data_plane, oauth
-from databricks.sdk.oauth import Token
+from databricks.sdk.databricks import data_plane, oauth
+from databricks.sdk.databricks.oauth import Token
 
 cp_token = Token(access_token="control plane token", token_type="type", expiry=datetime.now() + timedelta(hours=1))
 dp_token = Token(access_token="data plane token", token_type="type", expiry=datetime.now() + timedelta(hours=1))

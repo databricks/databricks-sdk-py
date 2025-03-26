@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from databricks.sdk.credentials_provider import external_browser
+from databricks.sdk.databricks.credentials_provider import external_browser
 
 
 def test_external_browser_refresh_success(mocker):

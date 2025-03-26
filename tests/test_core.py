@@ -8,7 +8,8 @@ from http.server import BaseHTTPRequestHandler
 
 import pytest
 
-from databricks.sdk import WorkspaceClient, errors
+from databricks.sdk import WorkspaceClient
+from databricks.sdk.databricks import errors
 from databricks.sdk.databricks.core import ApiClient, Config, DatabricksError
 from databricks.sdk.databricks.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,

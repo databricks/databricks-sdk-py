@@ -19,8 +19,8 @@ import requests_mock
 from requests import RequestException
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.core import Config
-from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
+from databricks.sdk.databricks.core import Config
+from databricks.sdk.databricks.errors.platform import (AlreadyExists, BadRequest,
                                             InternalError, PermissionDenied,
                                             TooManyRequests)
 

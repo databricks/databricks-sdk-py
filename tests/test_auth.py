@@ -1,6 +1,6 @@
 # These are auto-generated tests for Unified Authentication
 # In case of editing this file, make sure the change is propagated to all Databricks SDK codebases
-from databricks.sdk.core import Config
+from databricks.sdk.databricks.core import Config
 
 from .conftest import __tests__, raises, set_az_path, set_home
 
