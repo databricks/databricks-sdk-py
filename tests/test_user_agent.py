@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from databricks.sdk.databricks.version import __version__
+from databricks.sdk.version import __version__
 
 
 @pytest.fixture(scope="function")

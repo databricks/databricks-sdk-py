@@ -5,7 +5,7 @@ import platform
 import re
 from typing import List, Optional, Tuple
 
-from .version import __version__
+from ..version import __version__
 
 # Constants
 RUNTIME_KEY = "runtime"

@@ -8,7 +8,7 @@ from .conftest import raises
 
 @pytest.fixture
 def dbutils(config):
-    from databricks.sdk.dbutils import RemoteDbUtils
+    from databricks.sdk.databricks.dbutils import RemoteDbUtils
 
     return RemoteDbUtils(config)
 
@@ -121,8 +121,8 @@ def test_fs_mount_without_cluster_fails(dbutils):
 
 @pytest.fixture
 def dbutils_proxy(mocker):
-    from databricks.sdk.core import Config
-    from databricks.sdk.dbutils import RemoteDbUtils
+    from databricks.sdk.databricks.core import Config
+    from databricks.sdk.databricks.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
     from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
                                                 CommandStatusResponse, Created,

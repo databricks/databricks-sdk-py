@@ -22,7 +22,7 @@ from databricks.sdk.databricks.oauth import Token
 from databricks.sdk.databricks import useragent
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
-from databricks.sdk.databricks.version import __version__
+from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
 from .fixture_server import http_fixture_server

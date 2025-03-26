@@ -13,7 +13,7 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from ..errors import OperationFailed
+from ..databricks.errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")

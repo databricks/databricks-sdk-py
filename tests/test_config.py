@@ -10,7 +10,7 @@ import pytest
 from databricks.sdk.databricks import useragent
 from databricks.sdk.databricks.config import Config, with_product, with_user_agent_extra
 from databricks.sdk.databricks.credentials_provider import Token
-from databricks.sdk.databricks.version import __version__
+from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path
 

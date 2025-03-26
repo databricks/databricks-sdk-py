@@ -10,7 +10,7 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 import requests
 import requests.adapters
 
-from .databricks import useragent
+from . import useragent
 from .casing import Casing
 from .clock import Clock, RealClock
 from .errors import DatabricksError, _ErrorCustomizer, _Parser

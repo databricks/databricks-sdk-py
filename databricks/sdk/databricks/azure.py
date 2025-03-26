@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ..oauth import TokenSource
+from .oauth import TokenSource
 from ..service.provisioning import Workspace
 
 

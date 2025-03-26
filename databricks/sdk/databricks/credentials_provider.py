@@ -20,7 +20,7 @@ from google.auth import impersonated_credentials  # type: ignore
 from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
-from .databricks.azure import add_sp_management_token, add_workspace_id_header
+from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
                     TokenCache, TokenSource)
 
@@ -155,7 +155,7 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+    from databricks.sdk.databricks.runtime import (init_runtime_legacy_auth,
                                         init_runtime_native_auth,
                                         init_runtime_repl_auth)
 

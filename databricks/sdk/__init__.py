@@ -3,12 +3,12 @@
 import logging
 from typing import Optional
 
-import databricks.sdk.core as client
-import databricks.sdk.dbutils as dbutils
+import databricks.sdk.databricks.core as client
+import databricks.sdk.databricks.dbutils as dbutils
 import databricks.sdk.service as service
 from databricks.sdk.databricks import azure
-from databricks.sdk.credentials_provider import CredentialsStrategy
-from databricks.sdk.data_plane import DataPlaneTokenSource
+from databricks.sdk.databricks.credentials_provider import CredentialsStrategy
+from databricks.sdk.databricks.data_plane import DataPlaneTokenSource
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
@@ -123,7 +123,7 @@ def _make_dbutils(config: client.Config):
         return dbutils.RemoteDbUtils(config)
 
     # We are in runtime, so we can use the runtime dbutils
-    from databricks.sdk.runtime import dbutils as runtime_dbutils
+    from databricks.sdk.databricks.runtime import dbutils as runtime_dbutils
 
     return runtime_dbutils
 
