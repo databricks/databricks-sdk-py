@@ -1,5 +1,5 @@
-from databricks.sdk._base_client import _BaseClient
-from databricks.sdk.oauth import (OidcEndpoints, TokenCache,
+from databricks.sdk.databricks._base_client import _BaseClient
+from databricks.sdk.databricks.oauth import (OidcEndpoints, TokenCache,
                                   get_account_endpoints,
                                   get_workspace_endpoints)
 

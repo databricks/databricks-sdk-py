@@ -8,19 +8,20 @@ from http.server import BaseHTTPRequestHandler
 
 import pytest
 
-from databricks.sdk import WorkspaceClient, errors, useragent
-from databricks.sdk.core import ApiClient, Config, DatabricksError
-from databricks.sdk.credentials_provider import (CliTokenSource,
+from databricks.sdk import WorkspaceClient, errors
+from databricks.sdk.databricks.core import ApiClient, Config, DatabricksError
+from databricks.sdk.databricks.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
                                                  CredentialsStrategy,
                                                  DatabricksCliTokenSource,
                                                  databricks_cli)
-from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
+from databricks.sdk.databricks.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
-from databricks.sdk.oauth import Token
+from databricks.sdk.databricks.oauth import Token
+from databricks.sdk.databricks import useragent
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
-from databricks.sdk.version import __version__
+from databricks.sdk.databricks.version import __version__
 
 from .conftest import noop_credentials
 from .fixture_server import http_fixture_server

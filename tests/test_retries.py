@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 
 from databricks.sdk.errors import NotFound, ResourceDoesNotExist
-from databricks.sdk.retries import retried
+from databricks.sdk.databricks.retries import retried
 from tests.clock import FakeClock
 
 

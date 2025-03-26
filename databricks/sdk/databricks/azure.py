@@ -1,7 +1,7 @@
 from typing import Dict
 
-from .oauth import TokenSource
-from .service.provisioning import Workspace
+from ..oauth import TokenSource
+from ..service.provisioning import Workspace
 
 
 def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):

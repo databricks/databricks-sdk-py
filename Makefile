@@ -1,11 +1,11 @@
 dev:
-	python3 -m venv .venv
+	python3.11 -m venv .venv
 ifeq ($(OS), Windows_NT)
 	.venv\Scripts\activate
 else
-	. .venv/bin/activate
+	source .venv/bin/activate
 endif
-	pip install '.[dev]'
+	python3.11 -m pip install '.[dev]'
 
 install:
 	pip install .
