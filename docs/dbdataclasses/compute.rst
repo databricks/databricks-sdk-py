@@ -44,7 +44,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AzureAvailability
 
-   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero (which only happens on pool clusters), this availability type will be used for the entire cluster.
+   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -309,8 +309,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DataPlaneEventDetailsEventType
 
-   <needs content added>
-
    .. py:attribute:: NODE_BLACKLISTED
       :value: "NODE_BLACKLISTED"
 
@@ -405,6 +403,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DiskTypeAzureDiskVolumeType
 
+   All Azure Disk types that Databricks supports. See https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
+
    .. py:attribute:: PREMIUM_LRS
       :value: "PREMIUM_LRS"
 
@@ -412,6 +412,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STANDARD_LRS"
 
 .. py:class:: DiskTypeEbsVolumeType
+
+   All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for details.
 
    .. py:attribute:: GENERAL_PURPOSE_SSD
       :value: "GENERAL_PURPOSE_SSD"
@@ -429,7 +431,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EbsVolumeType
 
-   The type of EBS volumes that will be launched with this cluster.
+   All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for details.
 
    .. py:attribute:: GENERAL_PURPOSE_SSD
       :value: "GENERAL_PURPOSE_SSD"
@@ -625,8 +627,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: GetEventsOrder
 
-   The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
-
    .. py:attribute:: ASC
       :value: "ASC"
 
@@ -669,19 +669,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: InitScriptExecutionDetails
-   :members:
-   :undoc-members:
+.. py:class:: InitScriptExecutionDetailsInitScriptExecutionStatus
 
-.. py:class:: InitScriptExecutionDetailsStatus
-
-   The current status of the script
+   Result of attempted script execution
 
    .. py:attribute:: FAILED_EXECUTION
       :value: "FAILED_EXECUTION"
 
    .. py:attribute:: FAILED_FETCH
       :value: "FAILED_FETCH"
+
+   .. py:attribute:: FUSE_MOUNT_FAILED
+      :value: "FUSE_MOUNT_FAILED"
 
    .. py:attribute:: NOT_EXECUTED
       :value: "NOT_EXECUTED"
@@ -729,8 +728,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolAwsAttributesAvailability
 
-   Availability type used for the spot nodes.
-   The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability
+   The set of AWS availability types supported when setting up nodes for a cluster.
 
    .. py:attribute:: ON_DEMAND
       :value: "ON_DEMAND"
@@ -744,8 +742,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolAzureAttributesAvailability
 
-   Shows the Availability type used for the spot nodes.
-   The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability
+   The set of Azure availability types supported when setting up nodes for a cluster.
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -785,7 +782,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: InstancePoolState
 
-   Current state of the instance pool.
+   The state of a Cluster. The current allowable state transitions are as follows:
+   - ``ACTIVE`` -> ``STOPPED`` - ``ACTIVE`` -> ``DELETED`` - ``STOPPED`` -> ``ACTIVE`` - ``STOPPED`` -> ``DELETED``
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
@@ -892,8 +890,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ListClustersSortByDirection
 
-   The direction to sort by.
-
    .. py:attribute:: ASC
       :value: "ASC"
 
@@ -901,8 +897,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "DESC"
 
 .. py:class:: ListClustersSortByField
-
-   The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest precedence: cluster state, pinned or unpinned, then cluster name.
 
    .. py:attribute:: CLUSTER_NAME
       :value: "CLUSTER_NAME"
@@ -943,8 +937,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "POLICY_NAME"
 
 .. py:class:: ListSortOrder
-
-   A generic ordering enum for list-based queries.
 
    .. py:attribute:: ASC
       :value: "ASC"
@@ -1059,10 +1051,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RuntimeEngine
 
-   Determines the cluster's runtime engine, either standard or Photon.
-   This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
-   If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used.
-
    .. py:attribute:: NULL
       :value: "NULL"
 
@@ -1098,7 +1086,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: State
 
-   Current state of the cluster.
+   The state of a Cluster. The current allowable state transitions are as follows:
+   - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` -> `RESIZING` - `RUNNING` -> `RESTARTING` - `RUNNING` -> `TERMINATING` - `RESTARTING` -> `RUNNING` - `RESTARTING` -> `TERMINATING` - `RESIZING` -> `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` -> `TERMINATED`
 
    .. py:attribute:: ERROR
       :value: "ERROR"
@@ -1130,10 +1119,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TerminationReasonCode
 
-   status code indicating why the cluster was terminated
+   The status code indicating why the cluster was terminated
 
    .. py:attribute:: ABUSE_DETECTED
       :value: "ABUSE_DETECTED"
+
+   .. py:attribute:: ACCESS_TOKEN_FAILURE
+      :value: "ACCESS_TOKEN_FAILURE"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT
+      :value: "ALLOCATION_TIMEOUT"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY
+      :value: "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_READY_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS"
+
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS"
 
    .. py:attribute:: ATTACH_PROJECT_FAILURE
       :value: "ATTACH_PROJECT_FAILURE"
@@ -1141,17 +1154,32 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AWS_AUTHORIZATION_FAILURE
       :value: "AWS_AUTHORIZATION_FAILURE"
 
+   .. py:attribute:: AWS_INACCESSIBLE_KMS_KEY_FAILURE
+      :value: "AWS_INACCESSIBLE_KMS_KEY_FAILURE"
+
+   .. py:attribute:: AWS_INSTANCE_PROFILE_UPDATE_FAILURE
+      :value: "AWS_INSTANCE_PROFILE_UPDATE_FAILURE"
+
    .. py:attribute:: AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE
       :value: "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE"
 
    .. py:attribute:: AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE
       :value: "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE"
 
+   .. py:attribute:: AWS_INVALID_KEY_PAIR
+      :value: "AWS_INVALID_KEY_PAIR"
+
+   .. py:attribute:: AWS_INVALID_KMS_KEY_STATE
+      :value: "AWS_INVALID_KMS_KEY_STATE"
+
    .. py:attribute:: AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE
       :value: "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE"
 
    .. py:attribute:: AWS_REQUEST_LIMIT_EXCEEDED
       :value: "AWS_REQUEST_LIMIT_EXCEEDED"
+
+   .. py:attribute:: AWS_RESOURCE_QUOTA_EXCEEDED
+      :value: "AWS_RESOURCE_QUOTA_EXCEEDED"
 
    .. py:attribute:: AWS_UNSUPPORTED_FAILURE
       :value: "AWS_UNSUPPORTED_FAILURE"
@@ -1167,6 +1195,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: AZURE_OPERATION_NOT_ALLOWED_EXCEPTION
       :value: "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION"
+
+   .. py:attribute:: AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE
+      :value: "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE"
 
    .. py:attribute:: AZURE_QUOTA_EXCEEDED_EXCEPTION
       :value: "AZURE_QUOTA_EXCEEDED_EXCEPTION"
@@ -1192,17 +1223,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION
       :value: "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION"
 
+   .. py:attribute:: BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG
+      :value: "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
+
+   .. py:attribute:: BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED
+      :value: "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
+
+   .. py:attribute:: BUDGET_POLICY_RESOLUTION_FAILURE
+      :value: "BUDGET_POLICY_RESOLUTION_FAILURE"
+
+   .. py:attribute:: CLOUD_ACCOUNT_SETUP_FAILURE
+      :value: "CLOUD_ACCOUNT_SETUP_FAILURE"
+
+   .. py:attribute:: CLOUD_OPERATION_CANCELLED
+      :value: "CLOUD_OPERATION_CANCELLED"
+
    .. py:attribute:: CLOUD_PROVIDER_DISK_SETUP_FAILURE
       :value: "CLOUD_PROVIDER_DISK_SETUP_FAILURE"
+
+   .. py:attribute:: CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED
+      :value: "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED"
 
    .. py:attribute:: CLOUD_PROVIDER_LAUNCH_FAILURE
       :value: "CLOUD_PROVIDER_LAUNCH_FAILURE"
 
+   .. py:attribute:: CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG
+      :value: "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG"
+
    .. py:attribute:: CLOUD_PROVIDER_RESOURCE_STOCKOUT
       :value: "CLOUD_PROVIDER_RESOURCE_STOCKOUT"
 
+   .. py:attribute:: CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG
+      :value: "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG"
+
    .. py:attribute:: CLOUD_PROVIDER_SHUTDOWN
       :value: "CLOUD_PROVIDER_SHUTDOWN"
+
+   .. py:attribute:: CLUSTER_OPERATION_THROTTLED
+      :value: "CLUSTER_OPERATION_THROTTLED"
+
+   .. py:attribute:: CLUSTER_OPERATION_TIMEOUT
+      :value: "CLUSTER_OPERATION_TIMEOUT"
 
    .. py:attribute:: COMMUNICATION_LOST
       :value: "COMMUNICATION_LOST"
@@ -1213,14 +1274,44 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE
       :value: "CONTROL_PLANE_REQUEST_FAILURE"
 
+   .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG
+      :value: "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
+
    .. py:attribute:: DATABASE_CONNECTION_FAILURE
       :value: "DATABASE_CONNECTION_FAILURE"
+
+   .. py:attribute:: DATA_ACCESS_CONFIG_CHANGED
+      :value: "DATA_ACCESS_CONFIG_CHANGED"
 
    .. py:attribute:: DBFS_COMPONENT_UNHEALTHY
       :value: "DBFS_COMPONENT_UNHEALTHY"
 
+   .. py:attribute:: DISASTER_RECOVERY_REPLICATION
+      :value: "DISASTER_RECOVERY_REPLICATION"
+
    .. py:attribute:: DOCKER_IMAGE_PULL_FAILURE
       :value: "DOCKER_IMAGE_PULL_FAILURE"
+
+   .. py:attribute:: DRIVER_EVICTION
+      :value: "DRIVER_EVICTION"
+
+   .. py:attribute:: DRIVER_LAUNCH_TIMEOUT
+      :value: "DRIVER_LAUNCH_TIMEOUT"
+
+   .. py:attribute:: DRIVER_NODE_UNREACHABLE
+      :value: "DRIVER_NODE_UNREACHABLE"
+
+   .. py:attribute:: DRIVER_OUT_OF_DISK
+      :value: "DRIVER_OUT_OF_DISK"
+
+   .. py:attribute:: DRIVER_OUT_OF_MEMORY
+      :value: "DRIVER_OUT_OF_MEMORY"
+
+   .. py:attribute:: DRIVER_POD_CREATION_FAILURE
+      :value: "DRIVER_POD_CREATION_FAILURE"
+
+   .. py:attribute:: DRIVER_UNEXPECTED_FAILURE
+      :value: "DRIVER_UNEXPECTED_FAILURE"
 
    .. py:attribute:: DRIVER_UNREACHABLE
       :value: "DRIVER_UNREACHABLE"
@@ -1228,14 +1319,65 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DRIVER_UNRESPONSIVE
       :value: "DRIVER_UNRESPONSIVE"
 
+   .. py:attribute:: DYNAMIC_SPARK_CONF_SIZE_EXCEEDED
+      :value: "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
+
+   .. py:attribute:: EOS_SPARK_IMAGE
+      :value: "EOS_SPARK_IMAGE"
+
    .. py:attribute:: EXECUTION_COMPONENT_UNHEALTHY
       :value: "EXECUTION_COMPONENT_UNHEALTHY"
+
+   .. py:attribute:: EXECUTOR_POD_UNSCHEDULED
+      :value: "EXECUTOR_POD_UNSCHEDULED"
+
+   .. py:attribute:: GCP_API_RATE_QUOTA_EXCEEDED
+      :value: "GCP_API_RATE_QUOTA_EXCEEDED"
+
+   .. py:attribute:: GCP_FORBIDDEN
+      :value: "GCP_FORBIDDEN"
+
+   .. py:attribute:: GCP_IAM_TIMEOUT
+      :value: "GCP_IAM_TIMEOUT"
+
+   .. py:attribute:: GCP_INACCESSIBLE_KMS_KEY_FAILURE
+      :value: "GCP_INACCESSIBLE_KMS_KEY_FAILURE"
+
+   .. py:attribute:: GCP_INSUFFICIENT_CAPACITY
+      :value: "GCP_INSUFFICIENT_CAPACITY"
+
+   .. py:attribute:: GCP_IP_SPACE_EXHAUSTED
+      :value: "GCP_IP_SPACE_EXHAUSTED"
+
+   .. py:attribute:: GCP_KMS_KEY_PERMISSION_DENIED
+      :value: "GCP_KMS_KEY_PERMISSION_DENIED"
+
+   .. py:attribute:: GCP_NOT_FOUND
+      :value: "GCP_NOT_FOUND"
 
    .. py:attribute:: GCP_QUOTA_EXCEEDED
       :value: "GCP_QUOTA_EXCEEDED"
 
+   .. py:attribute:: GCP_RESOURCE_QUOTA_EXCEEDED
+      :value: "GCP_RESOURCE_QUOTA_EXCEEDED"
+
+   .. py:attribute:: GCP_SERVICE_ACCOUNT_ACCESS_DENIED
+      :value: "GCP_SERVICE_ACCOUNT_ACCESS_DENIED"
+
    .. py:attribute:: GCP_SERVICE_ACCOUNT_DELETED
       :value: "GCP_SERVICE_ACCOUNT_DELETED"
+
+   .. py:attribute:: GCP_SERVICE_ACCOUNT_NOT_FOUND
+      :value: "GCP_SERVICE_ACCOUNT_NOT_FOUND"
+
+   .. py:attribute:: GCP_SUBNET_NOT_READY
+      :value: "GCP_SUBNET_NOT_READY"
+
+   .. py:attribute:: GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED
+      :value: "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED"
+
+   .. py:attribute:: GKE_BASED_CLUSTER_TERMINATION
+      :value: "GKE_BASED_CLUSTER_TERMINATION"
 
    .. py:attribute:: GLOBAL_INIT_SCRIPT_FAILURE
       :value: "GLOBAL_INIT_SCRIPT_FAILURE"
@@ -1249,14 +1391,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INACTIVITY
       :value: "INACTIVITY"
 
+   .. py:attribute:: INIT_CONTAINER_NOT_FINISHED
+      :value: "INIT_CONTAINER_NOT_FINISHED"
+
    .. py:attribute:: INIT_SCRIPT_FAILURE
       :value: "INIT_SCRIPT_FAILURE"
 
    .. py:attribute:: INSTANCE_POOL_CLUSTER_FAILURE
       :value: "INSTANCE_POOL_CLUSTER_FAILURE"
 
+   .. py:attribute:: INSTANCE_POOL_MAX_CAPACITY_REACHED
+      :value: "INSTANCE_POOL_MAX_CAPACITY_REACHED"
+
+   .. py:attribute:: INSTANCE_POOL_NOT_FOUND
+      :value: "INSTANCE_POOL_NOT_FOUND"
+
    .. py:attribute:: INSTANCE_UNREACHABLE
       :value: "INSTANCE_UNREACHABLE"
+
+   .. py:attribute:: INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG
+      :value: "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG"
+
+   .. py:attribute:: INTERNAL_CAPACITY_FAILURE
+      :value: "INTERNAL_CAPACITY_FAILURE"
 
    .. py:attribute:: INTERNAL_ERROR
       :value: "INTERNAL_ERROR"
@@ -1264,8 +1421,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INVALID_ARGUMENT
       :value: "INVALID_ARGUMENT"
 
+   .. py:attribute:: INVALID_AWS_PARAMETER
+      :value: "INVALID_AWS_PARAMETER"
+
+   .. py:attribute:: INVALID_INSTANCE_PLACEMENT_PROTOCOL
+      :value: "INVALID_INSTANCE_PLACEMENT_PROTOCOL"
+
    .. py:attribute:: INVALID_SPARK_IMAGE
       :value: "INVALID_SPARK_IMAGE"
+
+   .. py:attribute:: INVALID_WORKER_IMAGE_FAILURE
+      :value: "INVALID_WORKER_IMAGE_FAILURE"
+
+   .. py:attribute:: IN_PENALTY_BOX
+      :value: "IN_PENALTY_BOX"
 
    .. py:attribute:: IP_EXHAUSTION_FAILURE
       :value: "IP_EXHAUSTION_FAILURE"
@@ -1279,11 +1448,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: K8S_DBR_CLUSTER_LAUNCH_TIMEOUT
       :value: "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT"
 
+   .. py:attribute:: LAZY_ALLOCATION_TIMEOUT
+      :value: "LAZY_ALLOCATION_TIMEOUT"
+
+   .. py:attribute:: MAINTENANCE_MODE
+      :value: "MAINTENANCE_MODE"
+
    .. py:attribute:: METASTORE_COMPONENT_UNHEALTHY
       :value: "METASTORE_COMPONENT_UNHEALTHY"
 
    .. py:attribute:: NEPHOS_RESOURCE_MANAGEMENT
       :value: "NEPHOS_RESOURCE_MANAGEMENT"
+
+   .. py:attribute:: NETVISOR_SETUP_TIMEOUT
+      :value: "NETVISOR_SETUP_TIMEOUT"
 
    .. py:attribute:: NETWORK_CONFIGURATION_FAILURE
       :value: "NETWORK_CONFIGURATION_FAILURE"
@@ -1291,17 +1469,35 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
+   .. py:attribute:: NO_MATCHED_K8S
+      :value: "NO_MATCHED_K8S"
+
+   .. py:attribute:: NO_MATCHED_K8S_TESTING_TAG
+      :value: "NO_MATCHED_K8S_TESTING_TAG"
+
    .. py:attribute:: NPIP_TUNNEL_SETUP_FAILURE
       :value: "NPIP_TUNNEL_SETUP_FAILURE"
 
    .. py:attribute:: NPIP_TUNNEL_TOKEN_FAILURE
       :value: "NPIP_TUNNEL_TOKEN_FAILURE"
 
+   .. py:attribute:: POD_ASSIGNMENT_FAILURE
+      :value: "POD_ASSIGNMENT_FAILURE"
+
+   .. py:attribute:: POD_SCHEDULING_FAILURE
+      :value: "POD_SCHEDULING_FAILURE"
+
    .. py:attribute:: REQUEST_REJECTED
       :value: "REQUEST_REJECTED"
 
    .. py:attribute:: REQUEST_THROTTLED
       :value: "REQUEST_THROTTLED"
+
+   .. py:attribute:: RESOURCE_USAGE_BLOCKED
+      :value: "RESOURCE_USAGE_BLOCKED"
+
+   .. py:attribute:: SECRET_CREATION_FAILURE
+      :value: "SECRET_CREATION_FAILURE"
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
@@ -1311,6 +1507,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SELF_BOOTSTRAP_FAILURE
       :value: "SELF_BOOTSTRAP_FAILURE"
+
+   .. py:attribute:: SERVERLESS_LONG_RUNNING_TERMINATED
+      :value: "SERVERLESS_LONG_RUNNING_TERMINATED"
 
    .. py:attribute:: SKIPPED_SLOW_NODES
       :value: "SKIPPED_SLOW_NODES"
@@ -1324,14 +1523,32 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPARK_IMAGE_DOWNLOAD_FAILURE
       :value: "SPARK_IMAGE_DOWNLOAD_FAILURE"
 
+   .. py:attribute:: SPARK_IMAGE_DOWNLOAD_THROTTLED
+      :value: "SPARK_IMAGE_DOWNLOAD_THROTTLED"
+
+   .. py:attribute:: SPARK_IMAGE_NOT_FOUND
+      :value: "SPARK_IMAGE_NOT_FOUND"
+
    .. py:attribute:: SPARK_STARTUP_FAILURE
       :value: "SPARK_STARTUP_FAILURE"
 
    .. py:attribute:: SPOT_INSTANCE_TERMINATION
       :value: "SPOT_INSTANCE_TERMINATION"
 
+   .. py:attribute:: SSH_BOOTSTRAP_FAILURE
+      :value: "SSH_BOOTSTRAP_FAILURE"
+
    .. py:attribute:: STORAGE_DOWNLOAD_FAILURE
       :value: "STORAGE_DOWNLOAD_FAILURE"
+
+   .. py:attribute:: STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG
+      :value: "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG"
+
+   .. py:attribute:: STORAGE_DOWNLOAD_FAILURE_SLOW
+      :value: "STORAGE_DOWNLOAD_FAILURE_SLOW"
+
+   .. py:attribute:: STORAGE_DOWNLOAD_FAILURE_THROTTLED
+      :value: "STORAGE_DOWNLOAD_FAILURE_THROTTLED"
 
    .. py:attribute:: STS_CLIENT_SETUP_FAILURE
       :value: "STS_CLIENT_SETUP_FAILURE"
@@ -1348,6 +1565,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNEXPECTED_LAUNCH_FAILURE
       :value: "UNEXPECTED_LAUNCH_FAILURE"
 
+   .. py:attribute:: UNEXPECTED_POD_RECREATION
+      :value: "UNEXPECTED_POD_RECREATION"
+
    .. py:attribute:: UNKNOWN
       :value: "UNKNOWN"
 
@@ -1356,6 +1576,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UPDATE_INSTANCE_PROFILE_FAILURE
       :value: "UPDATE_INSTANCE_PROFILE_FAILURE"
+
+   .. py:attribute:: USER_INITIATED_VM_TERMINATION
+      :value: "USER_INITIATED_VM_TERMINATION"
 
    .. py:attribute:: USER_REQUEST
       :value: "USER_REQUEST"
@@ -1368,6 +1591,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKSPACE_CONFIGURATION_ERROR
       :value: "WORKSPACE_CONFIGURATION_ERROR"
+
+   .. py:attribute:: WORKSPACE_UPDATE
+      :value: "WORKSPACE_UPDATE"
 
 .. py:class:: TerminationReasonType
 

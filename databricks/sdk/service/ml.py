@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from ..errors import OperationFailed
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -479,6 +483,184 @@ class CreateExperimentResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateExperimentResponse:
         """Deserializes the CreateExperimentResponse from a dictionary."""
+        return cls(experiment_id=d.get("experiment_id", None))
+
+
+@dataclass
+class CreateForecastingExperimentRequest:
+    train_data_path: str
+    """The three-level (fully qualified) name of a unity catalog table. This table serves as the
+    training data for the forecasting model."""
+
+    target_column: str
+    """Name of the column in the input training table that serves as the prediction target. The values
+    in this column will be used as the ground truth for model training."""
+
+    time_column: str
+    """Name of the column in the input training table that represents the timestamp of each row."""
+
+    forecast_granularity: str
+    """The granularity of the forecast. This defines the time interval between consecutive rows in the
+    time series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15
+    minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'."""
+
+    forecast_horizon: int
+    """The number of time steps into the future for which predictions should be made. This value
+    represents a multiple of forecast_granularity determining how far ahead the model will forecast."""
+
+    custom_weights_column: Optional[str] = None
+    """Name of the column in the input training table used to customize the weight for each time series
+    to calculate weighted metrics."""
+
+    experiment_path: Optional[str] = None
+    """The path to the created experiment. This is the path where the experiment will be stored in the
+    workspace."""
+
+    holiday_regions: Optional[List[str]] = None
+    """Region code(s) to consider when automatically adding holiday features. When empty, no holiday
+    features are added. Only supports 1 holiday region for now."""
+
+    max_runtime: Optional[int] = None
+    """The maximum duration in minutes for which the experiment is allowed to run. If the experiment
+    exceeds this time limit it will be stopped automatically."""
+
+    prediction_data_path: Optional[str] = None
+    """The three-level (fully qualified) path to a unity catalog table. This table path serves to store
+    the predictions."""
+
+    primary_metric: Optional[str] = None
+    """The evaluation metric used to optimize the forecasting model."""
+
+    register_to: Optional[str] = None
+    """The three-level (fully qualified) path to a unity catalog model. This model path serves to store
+    the best model."""
+
+    split_column: Optional[str] = None
+    """Name of the column in the input training table used for custom data splits. The values in this
+    column must be "train", "validate", or "test" to indicate which split each row belongs to."""
+
+    timeseries_identifier_columns: Optional[List[str]] = None
+    """Name of the column in the input training table used to group the dataset to predict individual
+    time series"""
+
+    training_frameworks: Optional[List[str]] = None
+    """The list of frameworks to include for model tuning. Possible values: 'Prophet', 'ARIMA',
+    'DeepAR'. An empty list will include all supported frameworks."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateForecastingExperimentRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_weights_column is not None:
+            body["custom_weights_column"] = self.custom_weights_column
+        if self.experiment_path is not None:
+            body["experiment_path"] = self.experiment_path
+        if self.forecast_granularity is not None:
+            body["forecast_granularity"] = self.forecast_granularity
+        if self.forecast_horizon is not None:
+            body["forecast_horizon"] = self.forecast_horizon
+        if self.holiday_regions:
+            body["holiday_regions"] = [v for v in self.holiday_regions]
+        if self.max_runtime is not None:
+            body["max_runtime"] = self.max_runtime
+        if self.prediction_data_path is not None:
+            body["prediction_data_path"] = self.prediction_data_path
+        if self.primary_metric is not None:
+            body["primary_metric"] = self.primary_metric
+        if self.register_to is not None:
+            body["register_to"] = self.register_to
+        if self.split_column is not None:
+            body["split_column"] = self.split_column
+        if self.target_column is not None:
+            body["target_column"] = self.target_column
+        if self.time_column is not None:
+            body["time_column"] = self.time_column
+        if self.timeseries_identifier_columns:
+            body["timeseries_identifier_columns"] = [v for v in self.timeseries_identifier_columns]
+        if self.train_data_path is not None:
+            body["train_data_path"] = self.train_data_path
+        if self.training_frameworks:
+            body["training_frameworks"] = [v for v in self.training_frameworks]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateForecastingExperimentRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_weights_column is not None:
+            body["custom_weights_column"] = self.custom_weights_column
+        if self.experiment_path is not None:
+            body["experiment_path"] = self.experiment_path
+        if self.forecast_granularity is not None:
+            body["forecast_granularity"] = self.forecast_granularity
+        if self.forecast_horizon is not None:
+            body["forecast_horizon"] = self.forecast_horizon
+        if self.holiday_regions:
+            body["holiday_regions"] = self.holiday_regions
+        if self.max_runtime is not None:
+            body["max_runtime"] = self.max_runtime
+        if self.prediction_data_path is not None:
+            body["prediction_data_path"] = self.prediction_data_path
+        if self.primary_metric is not None:
+            body["primary_metric"] = self.primary_metric
+        if self.register_to is not None:
+            body["register_to"] = self.register_to
+        if self.split_column is not None:
+            body["split_column"] = self.split_column
+        if self.target_column is not None:
+            body["target_column"] = self.target_column
+        if self.time_column is not None:
+            body["time_column"] = self.time_column
+        if self.timeseries_identifier_columns:
+            body["timeseries_identifier_columns"] = self.timeseries_identifier_columns
+        if self.train_data_path is not None:
+            body["train_data_path"] = self.train_data_path
+        if self.training_frameworks:
+            body["training_frameworks"] = self.training_frameworks
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateForecastingExperimentRequest:
+        """Deserializes the CreateForecastingExperimentRequest from a dictionary."""
+        return cls(
+            custom_weights_column=d.get("custom_weights_column", None),
+            experiment_path=d.get("experiment_path", None),
+            forecast_granularity=d.get("forecast_granularity", None),
+            forecast_horizon=d.get("forecast_horizon", None),
+            holiday_regions=d.get("holiday_regions", None),
+            max_runtime=d.get("max_runtime", None),
+            prediction_data_path=d.get("prediction_data_path", None),
+            primary_metric=d.get("primary_metric", None),
+            register_to=d.get("register_to", None),
+            split_column=d.get("split_column", None),
+            target_column=d.get("target_column", None),
+            time_column=d.get("time_column", None),
+            timeseries_identifier_columns=d.get("timeseries_identifier_columns", None),
+            train_data_path=d.get("train_data_path", None),
+            training_frameworks=d.get("training_frameworks", None),
+        )
+
+
+@dataclass
+class CreateForecastingExperimentResponse:
+    experiment_id: Optional[str] = None
+    """The unique ID of the created forecasting experiment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateForecastingExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateForecastingExperimentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateForecastingExperimentResponse:
+        """Deserializes the CreateForecastingExperimentResponse from a dictionary."""
         return cls(experiment_id=d.get("experiment_id", None))
 
 
@@ -1798,6 +1980,60 @@ class FileInfo:
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get("file_size", None), is_dir=d.get("is_dir", None), path=d.get("path", None))
+
+
+@dataclass
+class ForecastingExperiment:
+    """Represents a forecasting experiment with its unique identifier, URL, and state."""
+
+    experiment_id: Optional[str] = None
+    """The unique ID for the forecasting experiment."""
+
+    experiment_page_url: Optional[str] = None
+    """The URL to the forecasting experiment page."""
+
+    state: Optional[ForecastingExperimentState] = None
+    """The current state of the forecasting experiment."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForecastingExperiment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.experiment_page_url is not None:
+            body["experiment_page_url"] = self.experiment_page_url
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForecastingExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.experiment_page_url is not None:
+            body["experiment_page_url"] = self.experiment_page_url
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ForecastingExperiment:
+        """Deserializes the ForecastingExperiment from a dictionary."""
+        return cls(
+            experiment_id=d.get("experiment_id", None),
+            experiment_page_url=d.get("experiment_page_url", None),
+            state=_enum(d, "state", ForecastingExperimentState),
+        )
+
+
+class ForecastingExperimentState(Enum):
+
+    CANCELLED = "CANCELLED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
 
 
 @dataclass
@@ -6703,6 +6939,219 @@ class ExperimentsAPI:
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
+
+
+class ForecastingAPI:
+    """The Forecasting API allows you to create and get serverless forecasting experiments"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def wait_get_experiment_forecasting_succeeded(
+        self,
+        experiment_id: str,
+        timeout=timedelta(minutes=120),
+        callback: Optional[Callable[[ForecastingExperiment], None]] = None,
+    ) -> ForecastingExperiment:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ForecastingExperimentState.SUCCEEDED,)
+        failure_states = (
+            ForecastingExperimentState.FAILED,
+            ForecastingExperimentState.CANCELLED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_experiment(experiment_id=experiment_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f"failed to reach SUCCEEDED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"experiment_id={experiment_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def create_experiment(
+        self,
+        train_data_path: str,
+        target_column: str,
+        time_column: str,
+        forecast_granularity: str,
+        forecast_horizon: int,
+        *,
+        custom_weights_column: Optional[str] = None,
+        experiment_path: Optional[str] = None,
+        holiday_regions: Optional[List[str]] = None,
+        max_runtime: Optional[int] = None,
+        prediction_data_path: Optional[str] = None,
+        primary_metric: Optional[str] = None,
+        register_to: Optional[str] = None,
+        split_column: Optional[str] = None,
+        timeseries_identifier_columns: Optional[List[str]] = None,
+        training_frameworks: Optional[List[str]] = None,
+    ) -> Wait[ForecastingExperiment]:
+        """Create a forecasting experiment.
+
+        Creates a serverless forecasting experiment. Returns the experiment ID.
+
+        :param train_data_path: str
+          The three-level (fully qualified) name of a unity catalog table. This table serves as the training
+          data for the forecasting model.
+        :param target_column: str
+          Name of the column in the input training table that serves as the prediction target. The values in
+          this column will be used as the ground truth for model training.
+        :param time_column: str
+          Name of the column in the input training table that represents the timestamp of each row.
+        :param forecast_granularity: str
+          The granularity of the forecast. This defines the time interval between consecutive rows in the time
+          series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30
+          minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
+        :param forecast_horizon: int
+          The number of time steps into the future for which predictions should be made. This value represents
+          a multiple of forecast_granularity determining how far ahead the model will forecast.
+        :param custom_weights_column: str (optional)
+          Name of the column in the input training table used to customize the weight for each time series to
+          calculate weighted metrics.
+        :param experiment_path: str (optional)
+          The path to the created experiment. This is the path where the experiment will be stored in the
+          workspace.
+        :param holiday_regions: List[str] (optional)
+          Region code(s) to consider when automatically adding holiday features. When empty, no holiday
+          features are added. Only supports 1 holiday region for now.
+        :param max_runtime: int (optional)
+          The maximum duration in minutes for which the experiment is allowed to run. If the experiment
+          exceeds this time limit it will be stopped automatically.
+        :param prediction_data_path: str (optional)
+          The three-level (fully qualified) path to a unity catalog table. This table path serves to store the
+          predictions.
+        :param primary_metric: str (optional)
+          The evaluation metric used to optimize the forecasting model.
+        :param register_to: str (optional)
+          The three-level (fully qualified) path to a unity catalog model. This model path serves to store the
+          best model.
+        :param split_column: str (optional)
+          Name of the column in the input training table used for custom data splits. The values in this
+          column must be "train", "validate", or "test" to indicate which split each row belongs to.
+        :param timeseries_identifier_columns: List[str] (optional)
+          Name of the column in the input training table used to group the dataset to predict individual time
+          series
+        :param training_frameworks: List[str] (optional)
+          The list of frameworks to include for model tuning. Possible values: 'Prophet', 'ARIMA', 'DeepAR'.
+          An empty list will include all supported frameworks.
+
+        :returns:
+          Long-running operation waiter for :class:`ForecastingExperiment`.
+          See :method:wait_get_experiment_forecasting_succeeded for more details.
+        """
+        body = {}
+        if custom_weights_column is not None:
+            body["custom_weights_column"] = custom_weights_column
+        if experiment_path is not None:
+            body["experiment_path"] = experiment_path
+        if forecast_granularity is not None:
+            body["forecast_granularity"] = forecast_granularity
+        if forecast_horizon is not None:
+            body["forecast_horizon"] = forecast_horizon
+        if holiday_regions is not None:
+            body["holiday_regions"] = [v for v in holiday_regions]
+        if max_runtime is not None:
+            body["max_runtime"] = max_runtime
+        if prediction_data_path is not None:
+            body["prediction_data_path"] = prediction_data_path
+        if primary_metric is not None:
+            body["primary_metric"] = primary_metric
+        if register_to is not None:
+            body["register_to"] = register_to
+        if split_column is not None:
+            body["split_column"] = split_column
+        if target_column is not None:
+            body["target_column"] = target_column
+        if time_column is not None:
+            body["time_column"] = time_column
+        if timeseries_identifier_columns is not None:
+            body["timeseries_identifier_columns"] = [v for v in timeseries_identifier_columns]
+        if train_data_path is not None:
+            body["train_data_path"] = train_data_path
+        if training_frameworks is not None:
+            body["training_frameworks"] = [v for v in training_frameworks]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
+        return Wait(
+            self.wait_get_experiment_forecasting_succeeded,
+            response=CreateForecastingExperimentResponse.from_dict(op_response),
+            experiment_id=op_response["experiment_id"],
+        )
+
+    def create_experiment_and_wait(
+        self,
+        train_data_path: str,
+        target_column: str,
+        time_column: str,
+        forecast_granularity: str,
+        forecast_horizon: int,
+        *,
+        custom_weights_column: Optional[str] = None,
+        experiment_path: Optional[str] = None,
+        holiday_regions: Optional[List[str]] = None,
+        max_runtime: Optional[int] = None,
+        prediction_data_path: Optional[str] = None,
+        primary_metric: Optional[str] = None,
+        register_to: Optional[str] = None,
+        split_column: Optional[str] = None,
+        timeseries_identifier_columns: Optional[List[str]] = None,
+        training_frameworks: Optional[List[str]] = None,
+        timeout=timedelta(minutes=120),
+    ) -> ForecastingExperiment:
+        return self.create_experiment(
+            custom_weights_column=custom_weights_column,
+            experiment_path=experiment_path,
+            forecast_granularity=forecast_granularity,
+            forecast_horizon=forecast_horizon,
+            holiday_regions=holiday_regions,
+            max_runtime=max_runtime,
+            prediction_data_path=prediction_data_path,
+            primary_metric=primary_metric,
+            register_to=register_to,
+            split_column=split_column,
+            target_column=target_column,
+            time_column=time_column,
+            timeseries_identifier_columns=timeseries_identifier_columns,
+            train_data_path=train_data_path,
+            training_frameworks=training_frameworks,
+        ).result(timeout=timeout)
+
+    def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
+        """Get a forecasting experiment.
+
+        Public RPC to get forecasting experiment
+
+        :param experiment_id: str
+          The unique ID of a forecasting experiment
+
+        :returns: :class:`ForecastingExperiment`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/automl/get-forecasting-experiment/{experiment_id}", headers=headers)
+        return ForecastingExperiment.from_dict(res)
 
 
 class ModelRegistryAPI:

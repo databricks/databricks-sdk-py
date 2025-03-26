@@ -594,12 +594,15 @@ class GenieMessage:
     `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
     Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
     generated SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response
-    generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is
-    completed. Results are in the `attachments` field. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has
-    been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to
-    rerun the query. * `CANCELLED`: Message has been cancelled."""
+    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
+    `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`:
+    Message processing is completed. Results are in the `attachments` field. Get the SQL query
+    result by calling
+    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
+    `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available
+    anymore. The user needs to rerun the query. Rerun the SQL query result by calling
+    [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`:
+    Message has been cancelled."""
 
     user_id: Optional[int] = None
     """ID of the user who created the message"""
@@ -697,6 +700,10 @@ class GenieQueryAttachment:
     query_result_metadata: Optional[GenieResultMetadata] = None
     """Metadata associated with the query result."""
 
+    statement_id: Optional[str] = None
+    """Statement Execution API statement id. Use [Get status, manifest, and result first
+    chunk](:method:statementexecution/getstatement) to get the full result data."""
+
     title: Optional[str] = None
     """Name of the query"""
 
@@ -713,6 +720,8 @@ class GenieQueryAttachment:
             body["query"] = self.query
         if self.query_result_metadata:
             body["query_result_metadata"] = self.query_result_metadata.as_dict()
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
         if self.title is not None:
             body["title"] = self.title
         return body
@@ -730,6 +739,8 @@ class GenieQueryAttachment:
             body["query"] = self.query
         if self.query_result_metadata:
             body["query_result_metadata"] = self.query_result_metadata
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
         if self.title is not None:
             body["title"] = self.title
         return body
@@ -743,6 +754,7 @@ class GenieQueryAttachment:
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             query=d.get("query", None),
             query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
+            statement_id=d.get("statement_id", None),
             title=d.get("title", None),
         )
 
@@ -1062,6 +1074,7 @@ class MessageErrorType(Enum):
     CHAT_COMPLETION_NETWORK_EXCEPTION = "CHAT_COMPLETION_NETWORK_EXCEPTION"
     CONTENT_FILTER_EXCEPTION = "CONTENT_FILTER_EXCEPTION"
     CONTEXT_EXCEEDED_EXCEPTION = "CONTEXT_EXCEEDED_EXCEPTION"
+    COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
@@ -1069,6 +1082,7 @@ class MessageErrorType(Enum):
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION"
     FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION = "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION"
+    GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION = "GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION"
     GENERIC_CHAT_COMPLETION_EXCEPTION = "GENERIC_CHAT_COMPLETION_EXCEPTION"
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
     GENERIC_SQL_EXEC_API_CALL_EXCEPTION = "GENERIC_SQL_EXEC_API_CALL_EXCEPTION"
@@ -1083,6 +1097,7 @@ class MessageErrorType(Enum):
     MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
+    MISSING_SQL_QUERY_EXCEPTION = "MISSING_SQL_QUERY_EXCEPTION"
     NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
     NO_QUERY_TO_VISUALIZE_EXCEPTION = "NO_QUERY_TO_VISUALIZE_EXCEPTION"
     NO_TABLES_TO_QUERY_EXCEPTION = "NO_TABLES_TO_QUERY_EXCEPTION"
@@ -1107,12 +1122,15 @@ class MessageStatus(Enum):
     `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
     Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
     generated SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: The response
-    generation or query execution failed. See `error` field. * `COMPLETED`: Message processing is
-    completed. Results are in the `attachments` field. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has
-    been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to
-    rerun the query. * `CANCELLED`: Message has been cancelled."""
+    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
+    `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`:
+    Message processing is completed. Results are in the `attachments` field. Get the SQL query
+    result by calling
+    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
+    `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available
+    anymore. The user needs to rerun the query. Rerun the SQL query result by calling
+    [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`:
+    Message has been cancelled."""
 
     ASKING_AI = "ASKING_AI"
     CANCELLED = "CANCELLED"
@@ -1917,7 +1935,8 @@ class GenieAPI:
     ) -> GenieGetMessageQueryResultResponse:
         """Execute message attachment SQL query.
 
-        Execute the SQL for a message query attachment.
+        Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
+        needs to be re-executed.
 
         :param space_id: str
           Genie space ID
@@ -1945,7 +1964,7 @@ class GenieAPI:
     def execute_message_query(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Execute SQL query in a conversation message.
+        """[Deprecated] Execute SQL query in a conversation message.
 
         Execute the SQL query in the message.
 
@@ -2059,7 +2078,7 @@ class GenieAPI:
     def get_message_query_result_by_attachment(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """[deprecated] Get conversation message SQL query result.
+        """[Deprecated] Get conversation message SQL query result.
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
@@ -2088,9 +2107,9 @@ class GenieAPI:
         return GenieGetMessageQueryResultResponse.from_dict(res)
 
     def get_space(self, space_id: str) -> GenieSpace:
-        """Get details of a Genie Space.
+        """Get Genie Space.
 
-        Get a Genie Space.
+        Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space

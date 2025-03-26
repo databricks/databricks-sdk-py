@@ -1192,6 +1192,7 @@ class FileParent:
 class FileParentType(Enum):
 
     LISTING = "LISTING"
+    LISTING_RESOURCE = "LISTING_RESOURCE"
     PROVIDER = "PROVIDER"
 
 
@@ -2452,6 +2453,7 @@ class ListingType(Enum):
 
 class MarketplaceFileType(Enum):
 
+    APP = "APP"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
 

@@ -426,12 +426,16 @@ class SessionCredentials(Refreshable):
         client_id: str,
         client_secret: str = None,
         redirect_url: str = None,
+        disable_async: bool = True,
     ):
         self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_url = redirect_url
-        super().__init__(token)
+        super().__init__(
+            token=token,
+            disable_async=disable_async,
+        )
 
     def as_dict(self) -> dict:
         return {"token": self.token().as_dict()}
@@ -625,7 +629,11 @@ class OAuthClient:
     ):
 
         if not scopes:
-            scopes = ["all-apis"]
+            # all-apis ensures that the returned OAuth token can be used with all APIs, aside
+            # from direct-to-dataplane APIs.
+            # offline_access ensures that the response from the Authorization server includes
+            # a refresh token.
+            scopes = ["all-apis", "offline_access"]
 
         self.redirect_url = redirect_url
         self._client_id = client_id
@@ -650,8 +658,6 @@ class OAuthClient:
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
-        if not scopes:
-            scopes = ["all-apis"]
         oidc = config.oidc_endpoints
         if not oidc:
             raise ValueError(f"{host} does not support OAuth")
@@ -708,9 +714,10 @@ class ClientCredentials(Refreshable):
     scopes: List[str] = None
     use_params: bool = False
     use_header: bool = False
+    disable_async: bool = True
 
     def __post_init__(self):
-        super().__init__()
+        super().__init__(disable_async=self.disable_async)
 
     def refresh(self) -> Token:
         params = {"grant_type": "client_credentials"}
