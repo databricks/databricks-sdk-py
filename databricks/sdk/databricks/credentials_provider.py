@@ -156,8 +156,8 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
     from databricks.sdk.databricks.runtime import (init_runtime_legacy_auth,
-                                        init_runtime_native_auth,
-                                        init_runtime_repl_auth)
+                                                   init_runtime_native_auth,
+                                                   init_runtime_repl_auth)
 
     for init in [
         init_runtime_native_auth,

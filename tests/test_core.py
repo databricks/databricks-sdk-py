@@ -9,17 +9,15 @@ from http.server import BaseHTTPRequestHandler
 import pytest
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.databricks import errors
+from databricks.sdk.databricks import errors, useragent
 from databricks.sdk.databricks.core import ApiClient, Config, DatabricksError
-from databricks.sdk.databricks.credentials_provider import (CliTokenSource,
-                                                 CredentialsProvider,
-                                                 CredentialsStrategy,
-                                                 DatabricksCliTokenSource,
-                                                 databricks_cli)
-from databricks.sdk.databricks.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
-                                         DatabricksEnvironment)
+from databricks.sdk.databricks.credentials_provider import (
+    CliTokenSource, CredentialsProvider, CredentialsStrategy,
+    DatabricksCliTokenSource, databricks_cli)
+from databricks.sdk.databricks.environments import (ENVIRONMENTS,
+                                                    AzureEnvironment, Cloud,
+                                                    DatabricksEnvironment)
 from databricks.sdk.databricks.oauth import Token
-from databricks.sdk.databricks import useragent
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__

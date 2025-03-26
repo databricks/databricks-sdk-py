@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 import requests
 
 from databricks.sdk.databricks.core import Config
-from databricks.sdk.databricks.credentials_provider import MetadataServiceTokenSource
+from databricks.sdk.databricks.credentials_provider import \
+    MetadataServiceTokenSource
 
 
 def get_test_server(host: str, token: str, expires_after: int):

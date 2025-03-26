@@ -24,7 +24,8 @@ import requests
 import requests.adapters
 from requests import RequestException
 
-from ..databricks._base_client import _BaseClient, _RawResponse, _StreamingResponse
+from ..databricks._base_client import (_BaseClient, _RawResponse,
+                                       _StreamingResponse)
 from ..databricks._property import _cached_property
 from ..databricks.config import Config
 from ..databricks.errors import AlreadyExists, NotFound

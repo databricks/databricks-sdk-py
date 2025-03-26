@@ -4,7 +4,8 @@ import time
 import pytest
 
 from databricks.sdk.databricks.core import Config
-from databricks.sdk.databricks.credentials_provider import ModelServingUserCredentials
+from databricks.sdk.databricks.credentials_provider import \
+    ModelServingUserCredentials
 
 from .conftest import raises
 
