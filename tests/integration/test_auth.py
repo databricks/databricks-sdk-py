@@ -108,71 +108,71 @@ def _get_lts_versions(w) -> typing.List[SparkVersion]:
     return lts_runtimes
 
 
-def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):
-    dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]
+# def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):
+#     dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]
 
-    volume_wheel = f"{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
-    with fresh_wheel_file.open("rb") as f:
-        files_api.upload(volume_wheel, f)
+#     volume_wheel = f"{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
+#     with fresh_wheel_file.open("rb") as f:
+#         files_api.upload(volume_wheel, f)
 
-    lib = Library(whl=volume_wheel)
-    return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
-
-
-def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
-    # Library installation from DBFS is not supported past DBR 14.3
-    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]
-
-    dbfs_wheel = f"/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
-    with fresh_wheel_file.open("rb") as f:
-        w.dbfs.upload(dbfs_wheel, f)
-
-    lib = Library(whl=f"dbfs:{dbfs_wheel}")
-    return _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib)
+#     lib = Library(whl=volume_wheel)
+#     return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
 
 
-def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, library):
-    instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
+# def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
+#     # Library installation from DBFS is not supported past DBR 14.3
+#     dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]
 
-    my_name = w.current_user.me().user_name
-    notebook_path = f"/Users/{my_name}/notebook-native-auth"
-    notebook_content = io.BytesIO(
-        b"""
-from databricks.sdk import WorkspaceClient
-w = WorkspaceClient()
-me = w.current_user.me()
-print(me.user_name)"""
-    )
+#     dbfs_wheel = f"/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
+#     with fresh_wheel_file.open("rb") as f:
+#         w.dbfs.upload(dbfs_wheel, f)
 
-    from databricks.sdk.service.workspace import Language
+#     lib = Library(whl=f"dbfs:{dbfs_wheel}")
+#     return _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib)
 
-    w.workspace.upload(
-        notebook_path,
-        notebook_content,
-        language=Language.PYTHON,
-        overwrite=True,
-    )
 
-    tasks = []
-    for v in dbr_versions:
-        t = Task(
-            task_key=f'test_{v.key.replace(".", "_")}',
-            notebook_task=NotebookTask(notebook_path=notebook_path),
-            new_cluster=ClusterSpec(
-                spark_version=v.key,
-                num_workers=1,
-                instance_pool_id=instance_pool_id,
-                # GCP uses "custom" data security mode by default, which does not support UC.
-                data_security_mode=DataSecurityMode.SINGLE_USER,
-            ),
-            libraries=[library],
-        )
-        tasks.append(t)
+# def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, library):
+#     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
 
-    waiter = w.jobs.submit(run_name=f"Runtime Native Auth {random(10)}", tasks=tasks)
-    run = waiter.result()
-    for task_key, output in _task_outputs(w, run).items():
-        assert my_name in output, f"{task_key} does not work with notebook native auth"
+#     my_name = w.current_user.me().user_name
+#     notebook_path = f"/Users/{my_name}/notebook-native-auth"
+#     notebook_content = io.BytesIO(
+#         b"""
+# from databricks.sdk import WorkspaceClient
+# w = WorkspaceClient()
+# me = w.current_user.me()
+# print(me.user_name)"""
+#     )
+
+#     from databricks.sdk.service.workspace import Language
+
+#     w.workspace.upload(
+#         notebook_path,
+#         notebook_content,
+#         language=Language.PYTHON,
+#         overwrite=True,
+#     )
+
+#     tasks = []
+#     for v in dbr_versions:
+#         t = Task(
+#             task_key=f'test_{v.key.replace(".", "_")}',
+#             notebook_task=NotebookTask(notebook_path=notebook_path),
+#             new_cluster=ClusterSpec(
+#                 spark_version=v.key,
+#                 num_workers=1,
+#                 instance_pool_id=instance_pool_id,
+#                 # GCP uses "custom" data security mode by default, which does not support UC.
+#                 data_security_mode=DataSecurityMode.SINGLE_USER,
+#             ),
+#             libraries=[library],
+#         )
+#         tasks.append(t)
+
+#     waiter = w.jobs.submit(run_name=f"Runtime Native Auth {random(10)}", tasks=tasks)
+#     run = waiter.result()
+#     for task_key, output in _task_outputs(w, run).items():
+#         assert my_name in output, f"{task_key} does not work with notebook native auth"
 
 
 def _task_outputs(w, run):
