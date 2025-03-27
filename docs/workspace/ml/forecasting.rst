@@ -6,7 +6,7 @@
 
     The Forecasting API allows you to create and get serverless forecasting experiments
 
-    .. py:method:: create_experiment(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], holiday_regions: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]]]) -> Wait[ForecastingExperiment]
+    .. py:method:: create_experiment(train_data_path: str, target_column: str, time_column: str, data_granularity_unit: str, forecast_horizon: int [, custom_weights_column: Optional[str], data_granularity_quantity: Optional[int], experiment_path: Optional[str], holiday_regions: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]]]) -> Wait[ForecastingExperiment]
 
         Create a forecasting experiment.
 
@@ -20,16 +20,23 @@
           this column will be used as the ground truth for model training.
         :param time_column: str
           Name of the column in the input training table that represents the timestamp of each row.
-        :param forecast_granularity: str
-          The granularity of the forecast. This defines the time interval between consecutive rows in the time
-          series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30
-          minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
+        :param data_granularity_unit: str
+          The time unit of the input data granularity. Together with data_granularity_quantity field, this
+          defines the time interval between consecutive rows in the time series data. Possible values: * 'W'
+          (weeks) * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' / 'min' / 'minutes'
+          / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' / 'month' / 'months' * 'Q' / 'quarter' / 'quarters'
+          * 'Y' / 'year' / 'years'
         :param forecast_horizon: int
           The number of time steps into the future for which predictions should be made. This value represents
-          a multiple of forecast_granularity determining how far ahead the model will forecast.
+          a multiple of data_granularity_unit and data_granularity_quantity determining how far ahead the
+          model will forecast.
         :param custom_weights_column: str (optional)
           Name of the column in the input training table used to customize the weight for each time series to
           calculate weighted metrics.
+        :param data_granularity_quantity: int (optional)
+          The quantity of the input data granularity. Together with data_granularity_unit field, this defines
+          the time interval between consecutive rows in the time series data. For now, only 1 second,
+          1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year are supported.
         :param experiment_path: str (optional)
           The path to the created experiment. This is the path where the experiment will be stored in the
           workspace.
@@ -62,7 +69,7 @@
           See :method:wait_get_experiment_forecasting_succeeded for more details.
         
 
-    .. py:method:: create_experiment_and_wait(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], holiday_regions: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]], timeout: datetime.timedelta = 2:00:00]) -> ForecastingExperiment
+    .. py:method:: create_experiment_and_wait(train_data_path: str, target_column: str, time_column: str, data_granularity_unit: str, forecast_horizon: int [, custom_weights_column: Optional[str], data_granularity_quantity: Optional[int], experiment_path: Optional[str], holiday_regions: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]], timeout: datetime.timedelta = 2:00:00]) -> ForecastingExperiment
 
 
     .. py:method:: get_experiment(experiment_id: str) -> ForecastingExperiment

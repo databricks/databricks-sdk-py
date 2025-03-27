@@ -111,15 +111,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeltaSharingFunction
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeltaSharingFunctionDependency
    :members:
    :undoc-members:
 
 .. autoclass:: DeltaSharingTableDependency
+   :members:
+   :undoc-members:
+
+.. autoclass:: Function
    :members:
    :undoc-members:
 

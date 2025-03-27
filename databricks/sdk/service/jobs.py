@@ -3659,7 +3659,6 @@ class PerformanceTarget(Enum):
     on serverless compute should be. The performance mode on the job or pipeline should map to a
     performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
 
-    BALANCED = "BALANCED"
     COST_OPTIMIZED = "COST_OPTIMIZED"
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
 

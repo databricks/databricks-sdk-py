@@ -55,7 +55,8 @@
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -239,7 +240,7 @@
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
-          Unique ID in the Databricks workspace.
+          Unique ID for a user in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
@@ -284,7 +285,8 @@
         Replaces a user's information with the data supplied in request.
 
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)

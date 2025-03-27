@@ -63,10 +63,6 @@ class Ai21LabsConfig:
 
 @dataclass
 class AiGatewayConfig:
-    fallback_config: Optional[FallbackConfig] = None
-    """Configuration for traffic fallback which auto fallbacks to other served entities if the request
-    to a served entity fails with certain error codes, to increase availability."""
-
     guardrails: Optional[AiGatewayGuardrails] = None
     """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
     responses."""
@@ -85,8 +81,6 @@ class AiGatewayConfig:
     def as_dict(self) -> dict:
         """Serializes the AiGatewayConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config.as_dict()
         if self.guardrails:
             body["guardrails"] = self.guardrails.as_dict()
         if self.inference_table_config:
@@ -100,8 +94,6 @@ class AiGatewayConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the AiGatewayConfig into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config
         if self.guardrails:
             body["guardrails"] = self.guardrails
         if self.inference_table_config:
@@ -116,7 +108,6 @@ class AiGatewayConfig:
     def from_dict(cls, d: Dict[str, Any]) -> AiGatewayConfig:
         """Deserializes the AiGatewayConfig from a dictionary."""
         return cls(
-            fallback_config=_from_dict(d, "fallback_config", FallbackConfig),
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
             inference_table_config=_from_dict(d, "inference_table_config", AiGatewayInferenceTableConfig),
             rate_limits=_repeated_dict(d, "rate_limits", AiGatewayRateLimit),
@@ -516,47 +507,6 @@ class AnthropicConfig:
 
 
 @dataclass
-class ApiKeyAuth:
-    key: str
-    """The name of the API key parameter used for authentication."""
-
-    value: Optional[str] = None
-    """The Databricks secret key reference for an API Key. If you prefer to paste your token directly,
-    see `value_plaintext`."""
-
-    value_plaintext: Optional[str] = None
-    """The API Key provided as a plaintext string. If you prefer to reference your token using
-    Databricks Secrets, see `value`."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ApiKeyAuth into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        if self.value_plaintext is not None:
-            body["value_plaintext"] = self.value_plaintext
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ApiKeyAuth into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        if self.value_plaintext is not None:
-            body["value_plaintext"] = self.value_plaintext
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ApiKeyAuth:
-        """Deserializes the ApiKeyAuth from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None), value_plaintext=d.get("value_plaintext", None))
-
-
-@dataclass
 class AutoCaptureConfigInput:
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
@@ -693,40 +643,6 @@ class AutoCaptureState:
     def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureState:
         """Deserializes the AutoCaptureState from a dictionary."""
         return cls(payload_table=_from_dict(d, "payload_table", PayloadTable))
-
-
-@dataclass
-class BearerTokenAuth:
-    token: Optional[str] = None
-    """The Databricks secret key reference for a token. If you prefer to paste your token directly, see
-    `token_plaintext`."""
-
-    token_plaintext: Optional[str] = None
-    """The token provided as a plaintext string. If you prefer to reference your token using Databricks
-    Secrets, see `token`."""
-
-    def as_dict(self) -> dict:
-        """Serializes the BearerTokenAuth into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.token is not None:
-            body["token"] = self.token
-        if self.token_plaintext is not None:
-            body["token_plaintext"] = self.token_plaintext
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the BearerTokenAuth into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.token is not None:
-            body["token"] = self.token
-        if self.token_plaintext is not None:
-            body["token_plaintext"] = self.token_plaintext
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> BearerTokenAuth:
-        """Deserializes the BearerTokenAuth from a dictionary."""
-        return cls(token=d.get("token", None), token_plaintext=d.get("token_plaintext", None))
 
 
 @dataclass
@@ -917,53 +833,6 @@ class CreateServingEndpoint:
             rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
             route_optimized=d.get("route_optimized", None),
             tags=_repeated_dict(d, "tags", EndpointTag),
-        )
-
-
-@dataclass
-class CustomProviderConfig:
-    """Configs needed to create a custom provider model route."""
-
-    custom_provider_url: str
-    """This is a field to provide the URL of the custom provider API."""
-
-    api_key_auth: Optional[ApiKeyAuth] = None
-    """This is a field to provide API key authentication for the custom provider API. You can only
-    specify one authentication method."""
-
-    bearer_token_auth: Optional[BearerTokenAuth] = None
-    """This is a field to provide bearer token authentication for the custom provider API. You can only
-    specify one authentication method."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CustomProviderConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.api_key_auth:
-            body["api_key_auth"] = self.api_key_auth.as_dict()
-        if self.bearer_token_auth:
-            body["bearer_token_auth"] = self.bearer_token_auth.as_dict()
-        if self.custom_provider_url is not None:
-            body["custom_provider_url"] = self.custom_provider_url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CustomProviderConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.api_key_auth:
-            body["api_key_auth"] = self.api_key_auth
-        if self.bearer_token_auth:
-            body["bearer_token_auth"] = self.bearer_token_auth
-        if self.custom_provider_url is not None:
-            body["custom_provider_url"] = self.custom_provider_url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomProviderConfig:
-        """Deserializes the CustomProviderConfig from a dictionary."""
-        return cls(
-            api_key_auth=_from_dict(d, "api_key_auth", ApiKeyAuth),
-            bearer_token_auth=_from_dict(d, "bearer_token_auth", BearerTokenAuth),
-            custom_provider_url=d.get("custom_provider_url", None),
         )
 
 
@@ -1626,9 +1495,6 @@ class ExternalModel:
     cohere_config: Optional[CohereConfig] = None
     """Cohere Config. Only required if the provider is 'cohere'."""
 
-    custom_provider_config: Optional[CustomProviderConfig] = None
-    """Custom Provider Config. Only required if the provider is 'custom'."""
-
     databricks_model_serving_config: Optional[DatabricksModelServingConfig] = None
     """Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."""
 
@@ -1652,8 +1518,6 @@ class ExternalModel:
             body["anthropic_config"] = self.anthropic_config.as_dict()
         if self.cohere_config:
             body["cohere_config"] = self.cohere_config.as_dict()
-        if self.custom_provider_config:
-            body["custom_provider_config"] = self.custom_provider_config.as_dict()
         if self.databricks_model_serving_config:
             body["databricks_model_serving_config"] = self.databricks_model_serving_config.as_dict()
         if self.google_cloud_vertex_ai_config:
@@ -1681,8 +1545,6 @@ class ExternalModel:
             body["anthropic_config"] = self.anthropic_config
         if self.cohere_config:
             body["cohere_config"] = self.cohere_config
-        if self.custom_provider_config:
-            body["custom_provider_config"] = self.custom_provider_config
         if self.databricks_model_serving_config:
             body["databricks_model_serving_config"] = self.databricks_model_serving_config
         if self.google_cloud_vertex_ai_config:
@@ -1707,7 +1569,6 @@ class ExternalModel:
             amazon_bedrock_config=_from_dict(d, "amazon_bedrock_config", AmazonBedrockConfig),
             anthropic_config=_from_dict(d, "anthropic_config", AnthropicConfig),
             cohere_config=_from_dict(d, "cohere_config", CohereConfig),
-            custom_provider_config=_from_dict(d, "custom_provider_config", CustomProviderConfig),
             databricks_model_serving_config=_from_dict(
                 d, "databricks_model_serving_config", DatabricksModelServingConfig
             ),
@@ -1726,7 +1587,6 @@ class ExternalModelProvider(Enum):
     AMAZON_BEDROCK = "amazon-bedrock"
     ANTHROPIC = "anthropic"
     COHERE = "cohere"
-    CUSTOM = "custom"
     DATABRICKS_MODEL_SERVING = "databricks-model-serving"
     GOOGLE_CLOUD_VERTEX_AI = "google-cloud-vertex-ai"
     OPENAI = "openai"
@@ -1774,35 +1634,6 @@ class ExternalModelUsageElement:
             prompt_tokens=d.get("prompt_tokens", None),
             total_tokens=d.get("total_tokens", None),
         )
-
-
-@dataclass
-class FallbackConfig:
-    enabled: bool
-    """Whether to enable traffic fallback. When a served entity in the serving endpoint returns
-    specific error codes (e.g. 500), the request will automatically be round-robin attempted with
-    other served entities in the same endpoint, following the order of served entity list, until a
-    successful response is returned. If all attempts fail, return the last response with the error
-    code."""
-
-    def as_dict(self) -> dict:
-        """Serializes the FallbackConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the FallbackConfig into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> FallbackConfig:
-        """Deserializes the FallbackConfig from a dictionary."""
-        return cls(enabled=d.get("enabled", None))
 
 
 @dataclass
@@ -2293,10 +2124,6 @@ class PayloadTable:
 
 @dataclass
 class PutAiGatewayRequest:
-    fallback_config: Optional[FallbackConfig] = None
-    """Configuration for traffic fallback which auto fallbacks to other served entities if the request
-    to a served entity fails with certain error codes, to increase availability."""
-
     guardrails: Optional[AiGatewayGuardrails] = None
     """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
     responses."""
@@ -2318,8 +2145,6 @@ class PutAiGatewayRequest:
     def as_dict(self) -> dict:
         """Serializes the PutAiGatewayRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config.as_dict()
         if self.guardrails:
             body["guardrails"] = self.guardrails.as_dict()
         if self.inference_table_config:
@@ -2335,8 +2160,6 @@ class PutAiGatewayRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the PutAiGatewayRequest into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config
         if self.guardrails:
             body["guardrails"] = self.guardrails
         if self.inference_table_config:
@@ -2353,7 +2176,6 @@ class PutAiGatewayRequest:
     def from_dict(cls, d: Dict[str, Any]) -> PutAiGatewayRequest:
         """Deserializes the PutAiGatewayRequest from a dictionary."""
         return cls(
-            fallback_config=_from_dict(d, "fallback_config", FallbackConfig),
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
             inference_table_config=_from_dict(d, "inference_table_config", AiGatewayInferenceTableConfig),
             name=d.get("name", None),
@@ -2364,10 +2186,6 @@ class PutAiGatewayRequest:
 
 @dataclass
 class PutAiGatewayResponse:
-    fallback_config: Optional[FallbackConfig] = None
-    """Configuration for traffic fallback which auto fallbacks to other served entities if the request
-    to a served entity fails with certain error codes, to increase availability."""
-
     guardrails: Optional[AiGatewayGuardrails] = None
     """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
     responses."""
@@ -2386,8 +2204,6 @@ class PutAiGatewayResponse:
     def as_dict(self) -> dict:
         """Serializes the PutAiGatewayResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config.as_dict()
         if self.guardrails:
             body["guardrails"] = self.guardrails.as_dict()
         if self.inference_table_config:
@@ -2401,8 +2217,6 @@ class PutAiGatewayResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the PutAiGatewayResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config
         if self.guardrails:
             body["guardrails"] = self.guardrails
         if self.inference_table_config:
@@ -2417,7 +2231,6 @@ class PutAiGatewayResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PutAiGatewayResponse:
         """Deserializes the PutAiGatewayResponse from a dictionary."""
         return cls(
-            fallback_config=_from_dict(d, "fallback_config", FallbackConfig),
             guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
             inference_table_config=_from_dict(d, "inference_table_config", AiGatewayInferenceTableConfig),
             rate_limits=_repeated_dict(d, "rate_limits", AiGatewayRateLimit),
@@ -4556,7 +4369,6 @@ class ServingEndpointsAPI:
         self,
         name: str,
         *,
-        fallback_config: Optional[FallbackConfig] = None,
         guardrails: Optional[AiGatewayGuardrails] = None,
         inference_table_config: Optional[AiGatewayInferenceTableConfig] = None,
         rate_limits: Optional[List[AiGatewayRateLimit]] = None,
@@ -4569,9 +4381,6 @@ class ServingEndpointsAPI:
 
         :param name: str
           The name of the serving endpoint whose AI Gateway is being updated. This field is required.
-        :param fallback_config: :class:`FallbackConfig` (optional)
-          Configuration for traffic fallback which auto fallbacks to other served entities if the request to a
-          served entity fails with certain error codes, to increase availability.
         :param guardrails: :class:`AiGatewayGuardrails` (optional)
           Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.
         :param inference_table_config: :class:`AiGatewayInferenceTableConfig` (optional)
@@ -4586,8 +4395,6 @@ class ServingEndpointsAPI:
         :returns: :class:`PutAiGatewayResponse`
         """
         body = {}
-        if fallback_config is not None:
-            body["fallback_config"] = fallback_config.as_dict()
         if guardrails is not None:
             body["guardrails"] = guardrails.as_dict()
         if inference_table_config is not None:
