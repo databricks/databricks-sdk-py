@@ -274,9 +274,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LISTING
       :value: "LISTING"
 
-   .. py:attribute:: LISTING_RESOURCE
-      :value: "LISTING_RESOURCE"
-
    .. py:attribute:: PROVIDER
       :value: "PROVIDER"
 
@@ -463,9 +460,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STANDARD"
 
 .. py:class:: MarketplaceFileType
-
-   .. py:attribute:: APP
-      :value: "APP"
 
    .. py:attribute:: EMBEDDED_NOTEBOOK
       :value: "EMBEDDED_NOTEBOOK"

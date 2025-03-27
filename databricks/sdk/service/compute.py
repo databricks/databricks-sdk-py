@@ -103,8 +103,6 @@ class AddResponse:
 
 @dataclass
 class Adlsgen2Info:
-    """A storage location in Adls Gen2"""
-
     destination: str
     """abfss destination, e.g.
     `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."""
@@ -165,8 +163,6 @@ class AutoScale:
 
 @dataclass
 class AwsAttributes:
-    """Attributes set during cluster creation which are related to Amazon Web Services."""
-
     availability: Optional[AwsAvailability] = None
     """Availability type used for all subsequent nodes past the `first_on_demand` ones.
     
@@ -220,7 +216,9 @@ class AwsAttributes:
     profile must have previously been added to the Databricks environment by an account
     administrator.
     
-    This feature may only be available to certain customer plans."""
+    This feature may only be available to certain customer plans.
+    
+    If this field is ommitted, we will pull in the default from the conf if it exists."""
 
     spot_bid_price_percent: Optional[int] = None
     """The bid price for AWS spot instances, as a percentage of the corresponding instance type's
@@ -229,7 +227,10 @@ class AwsAttributes:
     instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
     `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
     requested for this cluster, only spot instances whose bid price percentage matches this field
-    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
+    will be considered. Note that, for safety, we enforce this field to be no more than 10000.
+    
+    The default value and documentation here should be kept consistent with
+    CommonConf.defaultSpotBidPricePercent and CommonConf.maxSpotBidPricePercent."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone/datacenter in which the cluster resides. This string will
@@ -238,10 +239,8 @@ class AwsAttributes:
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
     if not specified, a default zone will be used. If the zone specified is "auto", will try to
     place cluster in a zone with high availability, and will retry placement in a different AZ if
-    there is not enough capacity.
-    
-    The list of available zones as well as the default value can be found by using the `List Zones`
-    method."""
+    there is not enough capacity. The list of available zones as well as the default value can be
+    found by using the `List Zones` method."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsAttributes into a dictionary suitable for use as a JSON request body."""
@@ -322,11 +321,10 @@ class AwsAvailability(Enum):
 
 @dataclass
 class AzureAttributes:
-    """Attributes set during cluster creation which are related to Microsoft Azure."""
-
     availability: Optional[AzureAvailability] = None
     """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+    `first_on_demand` is zero (which only happens on pool clusters), this availability type will be
+    used for the entire cluster."""
 
     first_on_demand: Optional[int] = None
     """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
@@ -385,7 +383,8 @@ class AzureAttributes:
 
 class AzureAvailability(Enum):
     """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+    `first_on_demand` is zero (which only happens on pool clusters), this availability type will be
+    used for the entire cluster."""
 
     ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
     SPOT_AZURE = "SPOT_AZURE"
@@ -453,6 +452,7 @@ class CancelResponse:
 @dataclass
 class ChangeClusterOwner:
     cluster_id: str
+    """<needs content added>"""
 
     owner_username: str
     """New owner of the cluster_id after this RPC."""
@@ -559,7 +559,6 @@ class CloneCluster:
 @dataclass
 class CloudProviderNodeInfo:
     status: Optional[List[CloudProviderNodeStatus]] = None
-    """Status as reported by the cloud provider"""
 
     def as_dict(self) -> dict:
         """Serializes the CloudProviderNodeInfo into a dictionary suitable for use as a JSON request body."""
@@ -699,9 +698,6 @@ class ClusterAccessControlResponse:
 
 @dataclass
 class ClusterAttributes:
-    """Common set of attributes set during cluster creation. These attributes cannot be changed over
-    the lifetime of a cluster."""
-
     spark_version: str
     """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
     be retrieved by using the :method:clusters/sparkVersions API call."""
@@ -767,7 +763,6 @@ class ClusterAttributes:
     doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -775,11 +770,7 @@ class ClusterAttributes:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -873,7 +864,6 @@ class ClusterAttributes:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAttributes into a dictionary suitable for use as a JSON request body."""
@@ -1074,8 +1064,6 @@ class ClusterCompliance:
 
 @dataclass
 class ClusterDetails:
-    """Describes all of the metadata about a single Spark cluster in Databricks."""
-
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
     autoscaling works best with DB runtime versions 3.0 or later."""
@@ -1122,7 +1110,7 @@ class ClusterDetails:
 
     cluster_source: Optional[ClusterSource] = None
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request."""
+    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
 
     creator_user_name: Optional[str] = None
     """Creator user name. The field won't be included in the response if the user has already been
@@ -1177,7 +1165,6 @@ class ClusterDetails:
     - Name: <Databricks internal use>"""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver: Optional[SparkNode] = None
     """Node on which the Spark driver resides. The driver node contains the Spark master and the
@@ -1189,11 +1176,7 @@ class ClusterDetails:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -1308,8 +1291,9 @@ class ClusterDetails:
     be retrieved by using the :method:clusters/sparkVersions API call."""
 
     spec: Optional[ClusterSpec] = None
-    """The spec contains a snapshot of the latest user specified settings that were used to create/edit
-    the cluster. Note: not included in the response of the ListClusters API."""
+    """`spec` contains a snapshot of the field values that were used to create or edit this cluster.
+    The contents of `spec` can be used in the body of a create cluster request. This field might not
+    be populated for older clusters. Note: not included in the response of the ListClusters API."""
 
     ssh_public_keys: Optional[List[str]] = None
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
@@ -1341,7 +1325,6 @@ class ClusterDetails:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterDetails into a dictionary suitable for use as a JSON request body."""
@@ -1603,10 +1586,13 @@ class ClusterDetails:
 @dataclass
 class ClusterEvent:
     cluster_id: str
+    """<needs content added>"""
 
     data_plane_event_details: Optional[DataPlaneEventDetails] = None
+    """<needs content added>"""
 
     details: Optional[EventDetails] = None
+    """<needs content added>"""
 
     timestamp: Optional[int] = None
     """The timestamp when the event occurred, stored as the number of milliseconds since the Unix
@@ -1693,8 +1679,6 @@ class ClusterLibraryStatuses:
 
 @dataclass
 class ClusterLogConf:
-    """Cluster log delivery config"""
-
     dbfs: Optional[DbfsStorageInfo] = None
     """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
     }`"""
@@ -1706,7 +1690,7 @@ class ClusterLogConf:
     write data to the s3 destination."""
 
     volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "volumes": { "destination":
+    """destination needs to be provided. e.g. `{ "volumes" : { "destination" :
     "/Volumes/catalog/schema/volume/cluster_log" } }`"""
 
     def as_dict(self) -> dict:
@@ -2266,9 +2250,6 @@ class ClusterSource(Enum):
 
 @dataclass
 class ClusterSpec:
-    """Contains a snapshot of the latest user specified settings that were used to create/edit the
-    cluster."""
-
     apply_policy_default_values: Optional[bool] = None
     """When set to true, fixed and default values from the policy will be used for fields that are
     omitted. When set to false, only fixed values from the policy will be applied."""
@@ -2338,7 +2319,6 @@ class ClusterSpec:
     doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2346,11 +2326,7 @@ class ClusterSpec:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -2458,7 +2434,6 @@ class ClusterSpec:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
@@ -2841,7 +2816,6 @@ class CreateCluster:
     doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2849,11 +2823,7 @@ class CreateCluster:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -2957,7 +2927,6 @@ class CreateCluster:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCluster into a dictionary suitable for use as a JSON request body."""
@@ -3562,12 +3531,16 @@ class CustomPolicyTag:
 @dataclass
 class DataPlaneEventDetails:
     event_type: Optional[DataPlaneEventDetailsEventType] = None
+    """<needs content added>"""
 
     executor_failures: Optional[int] = None
+    """<needs content added>"""
 
     host_id: Optional[str] = None
+    """<needs content added>"""
 
     timestamp: Optional[int] = None
+    """<needs content added>"""
 
     def as_dict(self) -> dict:
         """Serializes the DataPlaneEventDetails into a dictionary suitable for use as a JSON request body."""
@@ -3607,6 +3580,7 @@ class DataPlaneEventDetails:
 
 
 class DataPlaneEventDetailsEventType(Enum):
+    """<needs content added>"""
 
     NODE_BLACKLISTED = "NODE_BLACKLISTED"
     NODE_EXCLUDED_DECOMMISSIONED = "NODE_EXCLUDED_DECOMMISSIONED"
@@ -3652,8 +3626,6 @@ class DataSecurityMode(Enum):
 
 @dataclass
 class DbfsStorageInfo:
-    """A storage location in DBFS"""
-
     destination: str
     """dbfs destination, e.g. `dbfs:/my/path`"""
 
@@ -4070,8 +4042,7 @@ class DockerImage:
 
 
 class EbsVolumeType(Enum):
-    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
-    details."""
+    """The type of EBS volumes that will be launched with this cluster."""
 
     GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
     THROUGHPUT_OPTIMIZED_HDD = "THROUGHPUT_OPTIMIZED_HDD"
@@ -4155,7 +4126,6 @@ class EditCluster:
     doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -4163,11 +4133,7 @@ class EditCluster:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -4271,7 +4237,6 @@ class EditCluster:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the EditCluster into a dictionary suitable for use as a JSON request body."""
@@ -4831,6 +4796,7 @@ class EventDetails:
     """The current number of nodes in the cluster."""
 
     did_not_expand_reason: Optional[str] = None
+    """<needs content added>"""
 
     disk_size: Optional[int] = None
     """Current disk size in bytes"""
@@ -4842,6 +4808,7 @@ class EventDetails:
     """Whether or not a blocklisted node should be terminated. For ClusterEventType NODE_BLACKLISTED."""
 
     free_space: Optional[int] = None
+    """<needs content added>"""
 
     init_scripts: Optional[InitScriptEventDetails] = None
     """List of global and cluster init scripts associated with this cluster event."""
@@ -5036,14 +5003,12 @@ class EventType(Enum):
 
 @dataclass
 class GcpAttributes:
-    """Attributes set during cluster creation which are related to GCP."""
-
     availability: Optional[GcpAvailability] = None
-    """This field determines whether the spark executors will be scheduled to run on preemptible VMs,
-    on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
+    """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
+    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
 
     boot_disk_size: Optional[int] = None
-    """Boot disk size in GB"""
+    """boot disk size in GB"""
 
     google_service_account: Optional[str] = None
     """If provided, the cluster will impersonate the google service account when accessing gcloud
@@ -5060,12 +5025,12 @@ class GcpAttributes:
     use_preemptible_executors: Optional[bool] = None
     """This field determines whether the spark executors will be scheduled to run on preemptible VMs
     (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon
-    to be deprecated, use the 'availability' field instead."""
+    to be deprecated, use the availability field instead."""
 
     zone_id: Optional[str] = None
     """Identifier for the availability zone in which the cluster resides. This can be one of the
     following: - "HA" => High availability, spread nodes across availability zones for a Databricks
-    deployment region [default]. - "AUTO" => Databricks picks an availability zone to schedule the
+    deployment region [default] - "AUTO" => Databricks picks an availability zone to schedule the
     cluster on. - A GCP availability zone => Pick One of the available zones for (machine type +
     region) from https://cloud.google.com/compute/docs/regions-zones."""
 
@@ -5127,8 +5092,6 @@ class GcpAvailability(Enum):
 
 @dataclass
 class GcsStorageInfo:
-    """A storage location in Google Cloud Platform's GCS"""
-
     destination: str
     """GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"""
 
@@ -5316,6 +5279,7 @@ class GetEvents:
 
 
 class GetEventsOrder(Enum):
+    """The order to list events in; either "ASC" or "DESC". Defaults to "DESC"."""
 
     ASC = "ASC"
     DESC = "DESC"
@@ -5324,6 +5288,7 @@ class GetEventsOrder(Enum):
 @dataclass
 class GetEventsResponse:
     events: Optional[List[ClusterEvent]] = None
+    """<content needs to be added>"""
 
     next_page: Optional[GetEvents] = None
     """The parameters required to retrieve the next page of events. Omitted if there are no more events
@@ -5911,17 +5876,13 @@ class GlobalInitScriptUpdateRequest:
 @dataclass
 class InitScriptEventDetails:
     cluster: Optional[List[InitScriptInfoAndExecutionDetails]] = None
-    """The cluster scoped init scripts associated with this cluster event."""
+    """The cluster scoped init scripts associated with this cluster event"""
 
     global_: Optional[List[InitScriptInfoAndExecutionDetails]] = None
-    """The global init scripts associated with this cluster event."""
+    """The global init scripts associated with this cluster event"""
 
     reported_for_node: Optional[str] = None
-    """The private ip of the node we are reporting init script execution details for (we will select
-    the execution details from only one node rather than reporting the execution details from every
-    node to keep these event details small)
-    
-    This should only be defined for the INIT_SCRIPTS_FINISHED event"""
+    """The private ip address of the node where the init scripts were run."""
 
     def as_dict(self) -> dict:
         """Serializes the InitScriptEventDetails into a dictionary suitable for use as a JSON request body."""
@@ -5955,12 +5916,54 @@ class InitScriptEventDetails:
         )
 
 
-class InitScriptExecutionDetailsInitScriptExecutionStatus(Enum):
-    """Result of attempted script execution"""
+@dataclass
+class InitScriptExecutionDetails:
+    error_message: Optional[str] = None
+    """Addition details regarding errors."""
+
+    execution_duration_seconds: Optional[int] = None
+    """The duration of the script execution in seconds."""
+
+    status: Optional[InitScriptExecutionDetailsStatus] = None
+    """The current status of the script"""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitScriptExecutionDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.execution_duration_seconds is not None:
+            body["execution_duration_seconds"] = self.execution_duration_seconds
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptExecutionDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.execution_duration_seconds is not None:
+            body["execution_duration_seconds"] = self.execution_duration_seconds
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptExecutionDetails:
+        """Deserializes the InitScriptExecutionDetails from a dictionary."""
+        return cls(
+            error_message=d.get("error_message", None),
+            execution_duration_seconds=d.get("execution_duration_seconds", None),
+            status=_enum(d, "status", InitScriptExecutionDetailsStatus),
+        )
+
+
+class InitScriptExecutionDetailsStatus(Enum):
+    """The current status of the script"""
 
     FAILED_EXECUTION = "FAILED_EXECUTION"
     FAILED_FETCH = "FAILED_FETCH"
-    FUSE_MOUNT_FAILED = "FUSE_MOUNT_FAILED"
     NOT_EXECUTED = "NOT_EXECUTED"
     SKIPPED = "SKIPPED"
     SUCCEEDED = "SUCCEEDED"
@@ -5969,35 +5972,34 @@ class InitScriptExecutionDetailsInitScriptExecutionStatus(Enum):
 
 @dataclass
 class InitScriptInfo:
-    """Config for an individual init script Next ID: 11"""
-
     abfss: Optional[Adlsgen2Info] = None
-    """destination needs to be provided, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
+    """destination needs to be provided. e.g. `{ "abfss" : { "destination" :
+    "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>" } }"""
 
     dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
+    """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
     }`"""
 
     file: Optional[LocalFileInfo] = None
-    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
+    """destination needs to be provided. e.g. `{ "file" : { "destination" : "file:/my/local/file.sh" }
+    }`"""
 
     gcs: Optional[GcsStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
+    """destination needs to be provided. e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
 
     s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
-    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
-    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
-    permission to write data to the s3 destination."""
+    """destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination"
+    : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to
+    access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to
+    write data to the s3 destination."""
 
     volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
-    \"/Volumes/my-init.sh\" } }`"""
+    """destination needs to be provided. e.g. `{ "volumes" : { "destination" : "/Volumes/my-init.sh" }
+    }`"""
 
     workspace: Optional[WorkspaceStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "workspace": { "destination":
-    "/cluster-init-scripts/setup-datadog.sh" } }`"""
+    """destination needs to be provided. e.g. `{ "workspace" : { "destination" :
+    "/Users/user1@databricks.com/my-init.sh" } }`"""
 
     def as_dict(self) -> dict:
         """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
@@ -6053,109 +6055,36 @@ class InitScriptInfo:
 
 @dataclass
 class InitScriptInfoAndExecutionDetails:
-    abfss: Optional[Adlsgen2Info] = None
-    """destination needs to be provided, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
+    execution_details: Optional[InitScriptExecutionDetails] = None
+    """Details about the script"""
 
-    dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
-
-    error_message: Optional[str] = None
-    """Additional details regarding errors (such as a file not found message if the status is
-    FAILED_FETCH). This field should only be used to provide *additional* information to the status
-    field, not duplicate it."""
-
-    execution_duration_seconds: Optional[int] = None
-    """The number duration of the script execution in seconds"""
-
-    file: Optional[LocalFileInfo] = None
-    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
-
-    gcs: Optional[GcsStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
-
-    s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
-    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
-    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
-    permission to write data to the s3 destination."""
-
-    status: Optional[InitScriptExecutionDetailsInitScriptExecutionStatus] = None
-    """The current status of the script"""
-
-    volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
-    \"/Volumes/my-init.sh\" } }`"""
-
-    workspace: Optional[WorkspaceStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "workspace": { "destination":
-    "/cluster-init-scripts/setup-datadog.sh" } }`"""
+    script: Optional[InitScriptInfo] = None
+    """The script"""
 
     def as_dict(self) -> dict:
         """Serializes the InitScriptInfoAndExecutionDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.abfss:
-            body["abfss"] = self.abfss.as_dict()
-        if self.dbfs:
-            body["dbfs"] = self.dbfs.as_dict()
-        if self.error_message is not None:
-            body["error_message"] = self.error_message
-        if self.execution_duration_seconds is not None:
-            body["execution_duration_seconds"] = self.execution_duration_seconds
-        if self.file:
-            body["file"] = self.file.as_dict()
-        if self.gcs:
-            body["gcs"] = self.gcs.as_dict()
-        if self.s3:
-            body["s3"] = self.s3.as_dict()
-        if self.status is not None:
-            body["status"] = self.status.value
-        if self.volumes:
-            body["volumes"] = self.volumes.as_dict()
-        if self.workspace:
-            body["workspace"] = self.workspace.as_dict()
+        if self.execution_details:
+            body["execution_details"] = self.execution_details.as_dict()
+        if self.script:
+            body["script"] = self.script.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the InitScriptInfoAndExecutionDetails into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.abfss:
-            body["abfss"] = self.abfss
-        if self.dbfs:
-            body["dbfs"] = self.dbfs
-        if self.error_message is not None:
-            body["error_message"] = self.error_message
-        if self.execution_duration_seconds is not None:
-            body["execution_duration_seconds"] = self.execution_duration_seconds
-        if self.file:
-            body["file"] = self.file
-        if self.gcs:
-            body["gcs"] = self.gcs
-        if self.s3:
-            body["s3"] = self.s3
-        if self.status is not None:
-            body["status"] = self.status
-        if self.volumes:
-            body["volumes"] = self.volumes
-        if self.workspace:
-            body["workspace"] = self.workspace
+        if self.execution_details:
+            body["execution_details"] = self.execution_details
+        if self.script:
+            body["script"] = self.script
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfoAndExecutionDetails:
         """Deserializes the InitScriptInfoAndExecutionDetails from a dictionary."""
         return cls(
-            abfss=_from_dict(d, "abfss", Adlsgen2Info),
-            dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
-            error_message=d.get("error_message", None),
-            execution_duration_seconds=d.get("execution_duration_seconds", None),
-            file=_from_dict(d, "file", LocalFileInfo),
-            gcs=_from_dict(d, "gcs", GcsStorageInfo),
-            s3=_from_dict(d, "s3", S3StorageInfo),
-            status=_enum(d, "status", InitScriptExecutionDetailsInitScriptExecutionStatus),
-            volumes=_from_dict(d, "volumes", VolumesStorageInfo),
-            workspace=_from_dict(d, "workspace", WorkspaceStorageInfo),
+            execution_details=_from_dict(d, "execution_details", InitScriptExecutionDetails),
+            script=_from_dict(d, "script", InitScriptInfo),
         )
 
 
@@ -7185,7 +7114,7 @@ class ListAllClusterLibraryStatusesResponse:
 @dataclass
 class ListAvailableZonesResponse:
     default_zone: Optional[str] = None
-    """The availability zone if no ``zone_id`` is provided in the cluster creation request."""
+    """The availability zone if no `zone_id` is provided in the cluster creation request."""
 
     zones: Optional[List[str]] = None
     """The list of available zones (e.g., ['us-west-2c', 'us-east-2'])."""
@@ -7313,6 +7242,7 @@ class ListClustersFilterBy:
 @dataclass
 class ListClustersResponse:
     clusters: Optional[List[ClusterDetails]] = None
+    """<needs content added>"""
 
     next_page_token: Optional[str] = None
     """This field represents the pagination token to retrieve the next page of results. If the value is
@@ -7391,12 +7321,15 @@ class ListClustersSortBy:
 
 
 class ListClustersSortByDirection(Enum):
+    """The direction to sort by."""
 
     ASC = "ASC"
     DESC = "DESC"
 
 
 class ListClustersSortByField(Enum):
+    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
+    precedence: cluster state, pinned or unpinned, then cluster name."""
 
     CLUSTER_NAME = "CLUSTER_NAME"
     DEFAULT = "DEFAULT"
@@ -7568,6 +7501,7 @@ class ListSortColumn(Enum):
 
 
 class ListSortOrder(Enum):
+    """A generic ordering enum for list-based queries."""
 
     ASC = "ASC"
     DESC = "DESC"
@@ -7601,8 +7535,10 @@ class LocalFileInfo:
 @dataclass
 class LogAnalyticsInfo:
     log_analytics_primary_key: Optional[str] = None
+    """<needs content added>"""
 
     log_analytics_workspace_id: Optional[str] = None
+    """<needs content added>"""
 
     def as_dict(self) -> dict:
         """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
@@ -7633,8 +7569,6 @@ class LogAnalyticsInfo:
 
 @dataclass
 class LogSyncStatus:
-    """The log delivery status"""
-
     last_attempted: Optional[int] = None
     """The timestamp of last attempt. If the last attempt fails, `last_exception` will contain the
     exception in the last attempt."""
@@ -7714,24 +7648,15 @@ class MavenLibrary:
 
 @dataclass
 class NodeInstanceType:
-    """This structure embodies the machine type that hosts spark containers Note: this should be an
-    internal data structure for now It is defined in proto in case we want to send it over the wire
-    in the future (which is likely)"""
-
-    instance_type_id: str
-    """Unique identifier across instance types"""
+    instance_type_id: Optional[str] = None
 
     local_disk_size_gb: Optional[int] = None
-    """Size of the individual local disks attached to this instance (i.e. per local disk)."""
 
     local_disks: Optional[int] = None
-    """Number of local disks that are present on this instance."""
 
     local_nvme_disk_size_gb: Optional[int] = None
-    """Size of the individual local nvme disks attached to this instance (i.e. per local disk)."""
 
     local_nvme_disks: Optional[int] = None
-    """Number of local nvme disks that are present on this instance."""
 
     def as_dict(self) -> dict:
         """Serializes the NodeInstanceType into a dictionary suitable for use as a JSON request body."""
@@ -7777,9 +7702,6 @@ class NodeInstanceType:
 
 @dataclass
 class NodeType:
-    """A description of a Spark node type including both the dimensions of the node and the instance
-    type on which it will be hosted."""
-
     node_type_id: str
     """Unique identifier for this node type."""
 
@@ -7797,13 +7719,9 @@ class NodeType:
     instance_type_id: str
     """An identifier for the type of hardware that this node runs on, e.g., "r3.2xlarge" in AWS."""
 
-    category: str
-    """A descriptive category for this node type. Examples include "Memory Optimized" and "Compute
-    Optimized"."""
+    category: Optional[str] = None
 
     display_order: Optional[int] = None
-    """An optional hint at the display order of node types in the UI. Within a node type category,
-    lowest numbers come first."""
 
     is_deprecated: Optional[bool] = None
     """Whether the node type is deprecated. Non-deprecated node types offer greater performance."""
@@ -7813,36 +7731,30 @@ class NodeType:
     workloads."""
 
     is_graviton: Optional[bool] = None
-    """Whether this is an Arm-based instance."""
 
     is_hidden: Optional[bool] = None
-    """Whether this node is hidden from presentation in the UI."""
 
     is_io_cache_enabled: Optional[bool] = None
-    """Whether this node comes with IO cache enabled by default."""
 
     node_info: Optional[CloudProviderNodeInfo] = None
-    """A collection of node type info reported by the cloud provider"""
 
     node_instance_type: Optional[NodeInstanceType] = None
-    """The NodeInstanceType object corresponding to instance_type_id"""
 
     num_gpus: Optional[int] = None
-    """Number of GPUs available for this node type."""
 
     photon_driver_capable: Optional[bool] = None
 
     photon_worker_capable: Optional[bool] = None
 
     support_cluster_tags: Optional[bool] = None
-    """Whether this node type support cluster tags."""
 
     support_ebs_volumes: Optional[bool] = None
-    """Whether this node type support EBS volumes. EBS volumes is disabled for node types that we could
-    place multiple corresponding containers on the same hosting instance."""
 
     support_port_forwarding: Optional[bool] = None
-    """Whether this node type supports port forwarding."""
+
+    supports_elastic_disk: Optional[bool] = None
+    """Indicates if this node type can be used for an instance pool or cluster with elastic disk
+    enabled. This is true for most node types."""
 
     def as_dict(self) -> dict:
         """Serializes the NodeType into a dictionary suitable for use as a JSON request body."""
@@ -7887,6 +7799,8 @@ class NodeType:
             body["support_ebs_volumes"] = self.support_ebs_volumes
         if self.support_port_forwarding is not None:
             body["support_port_forwarding"] = self.support_port_forwarding
+        if self.supports_elastic_disk is not None:
+            body["supports_elastic_disk"] = self.supports_elastic_disk
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7932,6 +7846,8 @@ class NodeType:
             body["support_ebs_volumes"] = self.support_ebs_volumes
         if self.support_port_forwarding is not None:
             body["support_port_forwarding"] = self.support_port_forwarding
+        if self.supports_elastic_disk is not None:
+            body["supports_elastic_disk"] = self.supports_elastic_disk
         return body
 
     @classmethod
@@ -7958,6 +7874,7 @@ class NodeType:
             support_cluster_tags=d.get("support_cluster_tags", None),
             support_ebs_volumes=d.get("support_ebs_volumes", None),
             support_port_forwarding=d.get("support_port_forwarding", None),
+            supports_elastic_disk=d.get("supports_elastic_disk", None),
         )
 
 
@@ -8039,6 +7956,7 @@ class PermanentDeleteClusterResponse:
 @dataclass
 class PinCluster:
     cluster_id: str
+    """<needs content added>"""
 
     def as_dict(self) -> dict:
         """Serializes the PinCluster into a dictionary suitable for use as a JSON request body."""
@@ -8440,6 +8358,7 @@ class RestartCluster:
     """The cluster to be started."""
 
     restart_user: Optional[str] = None
+    """<needs content added>"""
 
     def as_dict(self) -> dict:
         """Serializes the RestartCluster into a dictionary suitable for use as a JSON request body."""
@@ -8589,6 +8508,13 @@ class Results:
 
 
 class RuntimeEngine(Enum):
+    """Determines the cluster's runtime engine, either standard or Photon.
+
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     NULL = "NULL"
     PHOTON = "PHOTON"
@@ -8597,8 +8523,6 @@ class RuntimeEngine(Enum):
 
 @dataclass
 class S3StorageInfo:
-    """A storage location in Amazon S3"""
-
     destination: str
     """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
     iam role, please make sure you set cluster iam role and the role has write access to the
@@ -8686,8 +8610,6 @@ class S3StorageInfo:
 
 @dataclass
 class SparkNode:
-    """Describes a specific Spark driver or executor."""
-
     host_private_ip: Optional[str] = None
     """The private IP address of the host instance."""
 
@@ -8707,10 +8629,16 @@ class SparkNode:
     public_dns: Optional[str] = None
     """Public DNS address of this node. This address can be used to access the Spark JDBC server on the
     driver node. To communicate with the JDBC server, traffic must be manually authorized by adding
-    security group rules to the "worker-unmanaged" security group via the AWS console."""
+    security group rules to the "worker-unmanaged" security group via the AWS console.
+    
+    Actually it's the public DNS address of the host instance."""
 
     start_timestamp: Optional[int] = None
-    """The timestamp (in millisecond) when the Spark node is launched."""
+    """The timestamp (in millisecond) when the Spark node is launched.
+    
+    The start_timestamp is set right before the container is being launched. The timestamp when the
+    container is placed on the ResourceManager, before its launch and setup by the NodeDaemon. This
+    timestamp is the same as the creation timestamp in the database."""
 
     def as_dict(self) -> dict:
         """Serializes the SparkNode into a dictionary suitable for use as a JSON request body."""
@@ -8766,8 +8694,6 @@ class SparkNode:
 
 @dataclass
 class SparkNodeAwsAttributes:
-    """Attributes specific to AWS for a Spark node."""
-
     is_spot: Optional[bool] = None
     """Whether this node is on an Amazon spot instance."""
 
@@ -8870,12 +8796,7 @@ class StartClusterResponse:
 
 
 class State(Enum):
-    """The state of a Cluster. The current allowable state transitions are as follows:
-
-    - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` -> `RESIZING` - `RUNNING` ->
-    `RESTARTING` - `RUNNING` -> `TERMINATING` - `RESTARTING` -> `RUNNING` - `RESTARTING` ->
-    `TERMINATING` - `RESIZING` -> `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` ->
-    `TERMINATED`"""
+    """Current state of the cluster."""
 
     ERROR = "ERROR"
     PENDING = "PENDING"
@@ -8931,34 +8852,20 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """The status code indicating why the cluster was terminated"""
+    """status code indicating why the cluster was terminated"""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
-    ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
-    ALLOCATION_TIMEOUT = "ALLOCATION_TIMEOUT"
-    ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY = "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY"
-    ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS"
-    ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS = "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS"
-    ALLOCATION_TIMEOUT_NO_READY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS"
-    ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS = "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS"
-    ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS = "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS"
     ATTACH_PROJECT_FAILURE = "ATTACH_PROJECT_FAILURE"
     AWS_AUTHORIZATION_FAILURE = "AWS_AUTHORIZATION_FAILURE"
-    AWS_INACCESSIBLE_KMS_KEY_FAILURE = "AWS_INACCESSIBLE_KMS_KEY_FAILURE"
-    AWS_INSTANCE_PROFILE_UPDATE_FAILURE = "AWS_INSTANCE_PROFILE_UPDATE_FAILURE"
     AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE = "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE"
     AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE = "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE"
-    AWS_INVALID_KEY_PAIR = "AWS_INVALID_KEY_PAIR"
-    AWS_INVALID_KMS_KEY_STATE = "AWS_INVALID_KMS_KEY_STATE"
     AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE = "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE"
     AWS_REQUEST_LIMIT_EXCEEDED = "AWS_REQUEST_LIMIT_EXCEEDED"
-    AWS_RESOURCE_QUOTA_EXCEEDED = "AWS_RESOURCE_QUOTA_EXCEEDED"
     AWS_UNSUPPORTED_FAILURE = "AWS_UNSUPPORTED_FAILURE"
     AZURE_BYOK_KEY_PERMISSION_FAILURE = "AZURE_BYOK_KEY_PERMISSION_FAILURE"
     AZURE_EPHEMERAL_DISK_FAILURE = "AZURE_EPHEMERAL_DISK_FAILURE"
     AZURE_INVALID_DEPLOYMENT_TEMPLATE = "AZURE_INVALID_DEPLOYMENT_TEMPLATE"
     AZURE_OPERATION_NOT_ALLOWED_EXCEPTION = "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION"
-    AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE = "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE"
     AZURE_QUOTA_EXCEEDED_EXCEPTION = "AZURE_QUOTA_EXCEEDED_EXCEPTION"
     AZURE_RESOURCE_MANAGER_THROTTLING = "AZURE_RESOURCE_MANAGER_THROTTLING"
     AZURE_RESOURCE_PROVIDER_THROTTLING = "AZURE_RESOURCE_PROVIDER_THROTTLING"
@@ -8967,130 +8874,65 @@ class TerminationReasonCode(Enum):
     AZURE_VNET_CONFIGURATION_FAILURE = "AZURE_VNET_CONFIGURATION_FAILURE"
     BOOTSTRAP_TIMEOUT = "BOOTSTRAP_TIMEOUT"
     BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION = "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION"
-    BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
-    BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
-    BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
-    CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
-    CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
     CLOUD_PROVIDER_DISK_SETUP_FAILURE = "CLOUD_PROVIDER_DISK_SETUP_FAILURE"
-    CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED = "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED"
     CLOUD_PROVIDER_LAUNCH_FAILURE = "CLOUD_PROVIDER_LAUNCH_FAILURE"
-    CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG = "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG"
     CLOUD_PROVIDER_RESOURCE_STOCKOUT = "CLOUD_PROVIDER_RESOURCE_STOCKOUT"
-    CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG = "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG"
     CLOUD_PROVIDER_SHUTDOWN = "CLOUD_PROVIDER_SHUTDOWN"
-    CLUSTER_OPERATION_THROTTLED = "CLUSTER_OPERATION_THROTTLED"
-    CLUSTER_OPERATION_TIMEOUT = "CLUSTER_OPERATION_TIMEOUT"
     COMMUNICATION_LOST = "COMMUNICATION_LOST"
     CONTAINER_LAUNCH_FAILURE = "CONTAINER_LAUNCH_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
-    CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
-    DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
-    DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
-    DRIVER_EVICTION = "DRIVER_EVICTION"
-    DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
-    DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
-    DRIVER_OUT_OF_DISK = "DRIVER_OUT_OF_DISK"
-    DRIVER_OUT_OF_MEMORY = "DRIVER_OUT_OF_MEMORY"
-    DRIVER_POD_CREATION_FAILURE = "DRIVER_POD_CREATION_FAILURE"
-    DRIVER_UNEXPECTED_FAILURE = "DRIVER_UNEXPECTED_FAILURE"
     DRIVER_UNREACHABLE = "DRIVER_UNREACHABLE"
     DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE"
-    DYNAMIC_SPARK_CONF_SIZE_EXCEEDED = "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
-    EOS_SPARK_IMAGE = "EOS_SPARK_IMAGE"
     EXECUTION_COMPONENT_UNHEALTHY = "EXECUTION_COMPONENT_UNHEALTHY"
-    EXECUTOR_POD_UNSCHEDULED = "EXECUTOR_POD_UNSCHEDULED"
-    GCP_API_RATE_QUOTA_EXCEEDED = "GCP_API_RATE_QUOTA_EXCEEDED"
-    GCP_FORBIDDEN = "GCP_FORBIDDEN"
-    GCP_IAM_TIMEOUT = "GCP_IAM_TIMEOUT"
-    GCP_INACCESSIBLE_KMS_KEY_FAILURE = "GCP_INACCESSIBLE_KMS_KEY_FAILURE"
-    GCP_INSUFFICIENT_CAPACITY = "GCP_INSUFFICIENT_CAPACITY"
-    GCP_IP_SPACE_EXHAUSTED = "GCP_IP_SPACE_EXHAUSTED"
-    GCP_KMS_KEY_PERMISSION_DENIED = "GCP_KMS_KEY_PERMISSION_DENIED"
-    GCP_NOT_FOUND = "GCP_NOT_FOUND"
     GCP_QUOTA_EXCEEDED = "GCP_QUOTA_EXCEEDED"
-    GCP_RESOURCE_QUOTA_EXCEEDED = "GCP_RESOURCE_QUOTA_EXCEEDED"
-    GCP_SERVICE_ACCOUNT_ACCESS_DENIED = "GCP_SERVICE_ACCOUNT_ACCESS_DENIED"
     GCP_SERVICE_ACCOUNT_DELETED = "GCP_SERVICE_ACCOUNT_DELETED"
-    GCP_SERVICE_ACCOUNT_NOT_FOUND = "GCP_SERVICE_ACCOUNT_NOT_FOUND"
-    GCP_SUBNET_NOT_READY = "GCP_SUBNET_NOT_READY"
-    GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED = "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED"
-    GKE_BASED_CLUSTER_TERMINATION = "GKE_BASED_CLUSTER_TERMINATION"
     GLOBAL_INIT_SCRIPT_FAILURE = "GLOBAL_INIT_SCRIPT_FAILURE"
     HIVE_METASTORE_PROVISIONING_FAILURE = "HIVE_METASTORE_PROVISIONING_FAILURE"
     IMAGE_PULL_PERMISSION_DENIED = "IMAGE_PULL_PERMISSION_DENIED"
     INACTIVITY = "INACTIVITY"
-    INIT_CONTAINER_NOT_FINISHED = "INIT_CONTAINER_NOT_FINISHED"
     INIT_SCRIPT_FAILURE = "INIT_SCRIPT_FAILURE"
     INSTANCE_POOL_CLUSTER_FAILURE = "INSTANCE_POOL_CLUSTER_FAILURE"
-    INSTANCE_POOL_MAX_CAPACITY_REACHED = "INSTANCE_POOL_MAX_CAPACITY_REACHED"
-    INSTANCE_POOL_NOT_FOUND = "INSTANCE_POOL_NOT_FOUND"
     INSTANCE_UNREACHABLE = "INSTANCE_UNREACHABLE"
-    INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG = "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG"
-    INTERNAL_CAPACITY_FAILURE = "INTERNAL_CAPACITY_FAILURE"
     INTERNAL_ERROR = "INTERNAL_ERROR"
     INVALID_ARGUMENT = "INVALID_ARGUMENT"
-    INVALID_AWS_PARAMETER = "INVALID_AWS_PARAMETER"
-    INVALID_INSTANCE_PLACEMENT_PROTOCOL = "INVALID_INSTANCE_PLACEMENT_PROTOCOL"
     INVALID_SPARK_IMAGE = "INVALID_SPARK_IMAGE"
-    INVALID_WORKER_IMAGE_FAILURE = "INVALID_WORKER_IMAGE_FAILURE"
-    IN_PENALTY_BOX = "IN_PENALTY_BOX"
     IP_EXHAUSTION_FAILURE = "IP_EXHAUSTION_FAILURE"
     JOB_FINISHED = "JOB_FINISHED"
     K8S_AUTOSCALING_FAILURE = "K8S_AUTOSCALING_FAILURE"
     K8S_DBR_CLUSTER_LAUNCH_TIMEOUT = "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT"
-    LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
-    MAINTENANCE_MODE = "MAINTENANCE_MODE"
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
-    NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_MATCHED_K8S = "NO_MATCHED_K8S"
-    NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
     NPIP_TUNNEL_TOKEN_FAILURE = "NPIP_TUNNEL_TOKEN_FAILURE"
-    POD_ASSIGNMENT_FAILURE = "POD_ASSIGNMENT_FAILURE"
-    POD_SCHEDULING_FAILURE = "POD_SCHEDULING_FAILURE"
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
-    RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
-    SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
-    SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
     SKIPPED_SLOW_NODES = "SKIPPED_SLOW_NODES"
     SLOW_IMAGE_DOWNLOAD = "SLOW_IMAGE_DOWNLOAD"
     SPARK_ERROR = "SPARK_ERROR"
     SPARK_IMAGE_DOWNLOAD_FAILURE = "SPARK_IMAGE_DOWNLOAD_FAILURE"
-    SPARK_IMAGE_DOWNLOAD_THROTTLED = "SPARK_IMAGE_DOWNLOAD_THROTTLED"
-    SPARK_IMAGE_NOT_FOUND = "SPARK_IMAGE_NOT_FOUND"
     SPARK_STARTUP_FAILURE = "SPARK_STARTUP_FAILURE"
     SPOT_INSTANCE_TERMINATION = "SPOT_INSTANCE_TERMINATION"
-    SSH_BOOTSTRAP_FAILURE = "SSH_BOOTSTRAP_FAILURE"
     STORAGE_DOWNLOAD_FAILURE = "STORAGE_DOWNLOAD_FAILURE"
-    STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG = "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG"
-    STORAGE_DOWNLOAD_FAILURE_SLOW = "STORAGE_DOWNLOAD_FAILURE_SLOW"
-    STORAGE_DOWNLOAD_FAILURE_THROTTLED = "STORAGE_DOWNLOAD_FAILURE_THROTTLED"
     STS_CLIENT_SETUP_FAILURE = "STS_CLIENT_SETUP_FAILURE"
     SUBNET_EXHAUSTED_FAILURE = "SUBNET_EXHAUSTED_FAILURE"
     TEMPORARILY_UNAVAILABLE = "TEMPORARILY_UNAVAILABLE"
     TRIAL_EXPIRED = "TRIAL_EXPIRED"
     UNEXPECTED_LAUNCH_FAILURE = "UNEXPECTED_LAUNCH_FAILURE"
-    UNEXPECTED_POD_RECREATION = "UNEXPECTED_POD_RECREATION"
     UNKNOWN = "UNKNOWN"
     UNSUPPORTED_INSTANCE_TYPE = "UNSUPPORTED_INSTANCE_TYPE"
     UPDATE_INSTANCE_PROFILE_FAILURE = "UPDATE_INSTANCE_PROFILE_FAILURE"
-    USER_INITIATED_VM_TERMINATION = "USER_INITIATED_VM_TERMINATION"
     USER_REQUEST = "USER_REQUEST"
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
-    WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
 class TerminationReasonType(Enum):
@@ -9155,6 +8997,7 @@ class UninstallLibrariesResponse:
 @dataclass
 class UnpinCluster:
     cluster_id: str
+    """<needs content added>"""
 
     def as_dict(self) -> dict:
         """Serializes the UnpinCluster into a dictionary suitable for use as a JSON request body."""
@@ -9200,18 +9043,10 @@ class UpdateCluster:
     """ID of the cluster."""
 
     update_mask: str
-    """Used to specify which cluster attributes and size fields to update. See
-    https://google.aip.dev/161 for more details.
-    
-    The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
+    """Specifies which fields of the cluster will be updated. This is required in the POST request. The
+    update mask should be supplied as a single string. To specify multiple fields, separate them
+    with commas (no spaces). To delete a field from a cluster configuration, add it to the
+    `update_mask` string but omit it from the `cluster` object."""
 
     cluster: Optional[UpdateClusterResource] = None
     """The cluster to be updated."""
@@ -9315,7 +9150,6 @@ class UpdateClusterResource:
     doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -9323,11 +9157,7 @@ class UpdateClusterResource:
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
+    type will be set as the same value as `node_type_id` defined above."""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -9435,7 +9265,6 @@ class UpdateClusterResource:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
@@ -9637,11 +9466,8 @@ class UpdateResponse:
 
 @dataclass
 class VolumesStorageInfo:
-    """A storage location back by UC Volumes."""
-
     destination: str
-    """UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
-    `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"""
+    """Unity Catalog volumes file destination, e.g. `/Volumes/catalog/schema/volume/dir/file`"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -9665,8 +9491,6 @@ class VolumesStorageInfo:
 
 @dataclass
 class WorkloadType:
-    """Cluster Attributes showing for clusters workload types."""
-
     clients: ClientsTypes
     """defined what type of clients can use the cluster. E.g. Notebooks, Jobs"""
 
@@ -9692,10 +9516,8 @@ class WorkloadType:
 
 @dataclass
 class WorkspaceStorageInfo:
-    """A storage location in Workspace Filesystem (WSFS)"""
-
     destination: str
-    """wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"""
+    """workspace files destination, e.g. `/Users/user1@databricks.com/my-init.sh`"""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -10149,6 +9971,7 @@ class ClustersAPI:
         `owner_username`.
 
         :param cluster_id: str
+          <needs content added>
         :param owner_username: str
           New owner of the cluster_id after this RPC.
 
@@ -10204,11 +10027,8 @@ class ClustersAPI:
         """Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
-        necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
-        status. When this method returns, the cluster will be in a ``PENDING`` state. The cluster will be
-        usable once it enters a ``RUNNING`` state. Note: Databricks may not be able to acquire some of the
-        requested nodes, due to cloud provider limitations (account limits, spot price, etc.) or transient
-        network issues.
+        necessary. Note: Databricks may not be able to acquire some of the requested nodes, due to cloud
+        provider limitations (account limits, spot price, etc.) or transient network issues.
 
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
@@ -10281,17 +10101,12 @@ class ClustersAPI:
           standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
           nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
-
-          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
-          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space. This feature requires specific AWS permissions
@@ -10378,7 +10193,6 @@ class ClustersAPI:
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
-          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -10673,17 +10487,12 @@ class ClustersAPI:
           standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
           nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
-          Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
-
-          This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-          driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id and
-          node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
           when its Spark workers are running low on disk space. This feature requires specific AWS permissions
@@ -10770,7 +10579,6 @@ class ClustersAPI:
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
-          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -10933,7 +10741,8 @@ class ClustersAPI:
         """List cluster activity events.
 
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
-        events to read, the response includes all the parameters necessary to request the next page of events.
+        events to read, the response includes all the nparameters necessary to request the next page of
+        events.
 
         :param cluster_id: str
           The ID of the cluster to retrieve events about.
@@ -11152,6 +10961,7 @@ class ClustersAPI:
         cluster that is already pinned will have no effect. This API can only be called by workspace admins.
 
         :param cluster_id: str
+          <needs content added>
 
 
         """
@@ -11228,6 +11038,7 @@ class ClustersAPI:
         :param cluster_id: str
           The cluster to be started.
         :param restart_user: str (optional)
+          <needs content added>
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -11297,10 +11108,11 @@ class ClustersAPI:
         """Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
-        - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
-        cluster size. - If the previous cluster was an autoscaling cluster, the current cluster starts with
-        the minimum number of nodes. - If the cluster is not currently in a ``TERMINATED`` state, nothing will
-        happen. - Clusters launched to run a job cannot be started.
+
+        * The previous cluster id and attributes are preserved. * The cluster starts with the last specified
+        cluster size. * If the previous cluster was an autoscaling cluster, the current cluster starts with
+        the minimum number of nodes. * If the cluster is not currently in a `TERMINATED` state, nothing will
+        happen. * Clusters launched to run a job cannot be started.
 
         :param cluster_id: str
           The cluster to be started.
@@ -11333,6 +11145,7 @@ class ClustersAPI:
         admins.
 
         :param cluster_id: str
+          <needs content added>
 
 
         """
@@ -11363,18 +11176,10 @@ class ClustersAPI:
         :param cluster_id: str
           ID of the cluster.
         :param update_mask: str
-          Used to specify which cluster attributes and size fields to update. See https://google.aip.dev/161
-          for more details.
-
-          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
-          the entire collection field can be specified. Field names must exactly match the resource field
-          names.
-
-          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-          changes in the future.
+          Specifies which fields of the cluster will be updated. This is required in the POST request. The
+          update mask should be supplied as a single string. To specify multiple fields, separate them with
+          commas (no spaces). To delete a field from a cluster configuration, add it to the `update_mask`
+          string but omit it from the `cluster` object.
         :param cluster: :class:`UpdateClusterResource` (optional)
           The cluster to be updated.
 
