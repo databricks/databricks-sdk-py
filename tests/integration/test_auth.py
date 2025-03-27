@@ -1,5 +1,4 @@
 import base64
-import io
 import json
 import re
 import shutil
@@ -12,9 +11,9 @@ from pathlib import Path
 
 import pytest
 
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType, SparkVersion)
-from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
+from databricks.sdk.service.compute import (DataSecurityMode, ResultType,
+                                            SparkVersion)
+from databricks.sdk.service.jobs import ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
 
