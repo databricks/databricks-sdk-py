@@ -12,8 +12,6 @@ from ._internal import _enum, _from_dict, _repeated_dict
 _LOG = logging.getLogger("databricks.sdk")
 
 
-from databricks.sdk.service import compute
-
 # all definitions in this file are in alphabetical order
 
 
@@ -364,7 +362,7 @@ class BudgetConfigurationFilterWorkspaceIdClause:
 class BudgetPolicy:
     """Contains the BudgetPolicy details."""
 
-    custom_tags: Optional[List[compute.CustomPolicyTag]] = None
+    custom_tags: Optional[List[CustomPolicyTag]] = None
     """A list of tags defined by the customer. At most 20 entries are allowed per policy."""
 
     policy_id: Optional[str] = None
@@ -372,7 +370,8 @@ class BudgetPolicy:
 
     policy_name: Optional[str] = None
     """The name of the policy. - Must be unique among active policies. - Can contain only characters
-    from the ISO 8859-1 (latin1) set."""
+    from the ISO 8859-1 (latin1) set. - Can't start with reserved keywords such as
+    `databricks:default-policy`."""
 
     def as_dict(self) -> dict:
         """Serializes the BudgetPolicy into a dictionary suitable for use as a JSON request body."""
@@ -400,7 +399,7 @@ class BudgetPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
         return cls(
-            custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
+            custom_tags=_repeated_dict(d, "custom_tags", CustomPolicyTag),
             policy_id=d.get("policy_id", None),
             policy_name=d.get("policy_name", None),
         )
@@ -836,6 +835,46 @@ class CreateLogDeliveryConfigurationParams:
             storage_configuration_id=d.get("storage_configuration_id", None),
             workspace_ids_filter=d.get("workspace_ids_filter", None),
         )
+
+
+@dataclass
+class CustomPolicyTag:
+    key: str
+    """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
+    “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
+    tags are preserved.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+
+    value: Optional[str] = None
+    """The value of the tag.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomPolicyTag:
+        """Deserializes the CustomPolicyTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass

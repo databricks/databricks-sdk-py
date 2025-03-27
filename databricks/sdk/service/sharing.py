@@ -12,8 +12,6 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 _LOG = logging.getLogger("databricks.sdk")
 
 
-from databricks.sdk.service import catalog
-
 # all definitions in this file are in alphabetical order
 
 
@@ -370,7 +368,7 @@ class DeltaSharingFunction:
     storage_location: Optional[str] = None
     """The storage location of the function."""
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
+    tags: Optional[List[TagKeyValue]] = None
     """The tags of the function."""
 
     def as_dict(self) -> dict:
@@ -466,7 +464,7 @@ class DeltaSharingFunction:
             share=d.get("share", None),
             share_id=d.get("share_id", None),
             storage_location=d.get("storage_location", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+            tags=_repeated_dict(d, "tags", TagKeyValue),
         )
 
 
@@ -1011,7 +1009,7 @@ class NotebookFile:
     share_id: Optional[str] = None
     """The id of the share that the notebook file belongs to."""
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
+    tags: Optional[List[TagKeyValue]] = None
     """The tags of the notebook file."""
 
     def as_dict(self) -> dict:
@@ -1057,7 +1055,7 @@ class NotebookFile:
             name=d.get("name", None),
             share=d.get("share", None),
             share_id=d.get("share_id", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+            tags=_repeated_dict(d, "tags", TagKeyValue),
         )
 
 
@@ -2247,7 +2245,7 @@ class Table:
     share_id: Optional[str] = None
     """The id of the share that the table belongs to."""
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
+    tags: Optional[List[TagKeyValue]] = None
     """The Tags of the table."""
 
     def as_dict(self) -> dict:
@@ -2308,7 +2306,7 @@ class Table:
             schema=d.get("schema", None),
             share=d.get("share", None),
             share_id=d.get("share_id", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+            tags=_repeated_dict(d, "tags", TagKeyValue),
         )
 
 
@@ -2378,6 +2376,38 @@ class TableInternalAttributesSharedTableType(Enum):
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
+
+
+@dataclass
+class TagKeyValue:
+    key: Optional[str] = None
+    """name of the tag"""
+
+    value: Optional[str] = None
+    """value of the tag associated with the key, could be optional"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TagKeyValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TagKeyValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TagKeyValue:
+        """Deserializes the TagKeyValue from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -2665,7 +2695,7 @@ class Volume:
     share_id: Optional[str] = None
     """/ The id of the share that the volume belongs to."""
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
+    tags: Optional[List[TagKeyValue]] = None
     """The tags of the volume."""
 
     def as_dict(self) -> dict:
@@ -2721,7 +2751,7 @@ class Volume:
             schema=d.get("schema", None),
             share=d.get("share", None),
             share_id=d.get("share_id", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+            tags=_repeated_dict(d, "tags", TagKeyValue),
         )
 
 

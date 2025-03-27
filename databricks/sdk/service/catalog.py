@@ -1065,6 +1065,7 @@ class CatalogType(Enum):
     """The type of the catalog."""
 
     DELTASHARING_CATALOG = "DELTASHARING_CATALOG"
+    FOREIGN_CATALOG = "FOREIGN_CATALOG"
     MANAGED_CATALOG = "MANAGED_CATALOG"
     SYSTEM_CATALOG = "SYSTEM_CATALOG"
 
@@ -2591,6 +2592,11 @@ class CreateVolumeRequestContent:
     """The name of the volume"""
 
     volume_type: VolumeType
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     comment: Optional[str] = None
     """The comment attached to the volume"""
@@ -6664,6 +6670,7 @@ class Privilege(Enum):
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
+    BROWSE = "BROWSE"
     CREATE = "CREATE"
     CREATE_CATALOG = "CREATE_CATALOG"
     CREATE_CONNECTION = "CREATE_CONNECTION"
@@ -8130,38 +8137,6 @@ class TableType(Enum):
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
-
-
-@dataclass
-class TagKeyValue:
-    key: Optional[str] = None
-    """name of the tag"""
-
-    value: Optional[str] = None
-    """value of the tag associated with the key, could be optional"""
-
-    def as_dict(self) -> dict:
-        """Serializes the TagKeyValue into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TagKeyValue into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TagKeyValue:
-        """Deserializes the TagKeyValue from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -9833,6 +9808,11 @@ class VolumeInfo:
     """The unique identifier of the volume"""
 
     volume_type: Optional[VolumeType] = None
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -9937,6 +9917,11 @@ class VolumeInfo:
 
 
 class VolumeType(Enum):
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
@@ -14268,6 +14253,11 @@ class VolumesAPI:
         :param name: str
           The name of the volume
         :param volume_type: :class:`VolumeType`
+          The type of the volume. An external volume is located in the specified external location. A managed
+          volume is located in the default location which is specified by the parent schema, or the parent
+          catalog, or the Metastore. [Learn more]
+
+          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)

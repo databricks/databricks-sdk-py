@@ -16,9 +16,62 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 _LOG = logging.getLogger("databricks.sdk")
 
 
-from databricks.sdk.service import sql
-
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class BaseChunkInfo:
+    """Describes metadata for a particular chunk, within a result set; this structure is used both
+    within a manifest, and when fetching individual chunk data or links."""
+
+    byte_count: Optional[int] = None
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
+
+    chunk_index: Optional[int] = None
+    """The position within the sequence of result set chunks."""
+
+    row_count: Optional[int] = None
+    """The number of rows within the result chunk."""
+
+    row_offset: Optional[int] = None
+    """The starting row offset within the result set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BaseChunkInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BaseChunkInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BaseChunkInfo:
+        """Deserializes the BaseChunkInfo from a dictionary."""
+        return cls(
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
+        )
 
 
 @dataclass
@@ -89,6 +142,108 @@ class CancelQueryExecutionResponseStatus:
             pending=_from_dict(d, "pending", Empty),
             success=_from_dict(d, "success", Empty),
         )
+
+
+@dataclass
+class ColumnInfo:
+    name: Optional[str] = None
+    """The name of the column."""
+
+    position: Optional[int] = None
+    """The ordinal position of the column (starting at position 0)."""
+
+    type_interval_type: Optional[str] = None
+    """The format of the interval type."""
+
+    type_name: Optional[ColumnInfoTypeName] = None
+    """The name of the base data type. This doesn't include details for complex types such as STRUCT,
+    MAP or ARRAY."""
+
+    type_precision: Optional[int] = None
+    """Specifies the number of digits in a number. This applies to the DECIMAL type."""
+
+    type_scale: Optional[int] = None
+    """Specifies the number of digits to the right of the decimal point in a number. This applies to
+    the DECIMAL type."""
+
+    type_text: Optional[str] = None
+    """The full SQL type specification."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_name is not None:
+            body["type_name"] = self.type_name.value
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_name is not None:
+            body["type_name"] = self.type_name
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
+        """Deserializes the ColumnInfo from a dictionary."""
+        return cls(
+            name=d.get("name", None),
+            position=d.get("position", None),
+            type_interval_type=d.get("type_interval_type", None),
+            type_name=_enum(d, "type_name", ColumnInfoTypeName),
+            type_precision=d.get("type_precision", None),
+            type_scale=d.get("type_scale", None),
+            type_text=d.get("type_text", None),
+        )
+
+
+class ColumnInfoTypeName(Enum):
+    """The name of the base data type. This doesn't include details for complex types such as STRUCT,
+    MAP or ARRAY."""
+
+    ARRAY = "ARRAY"
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    BYTE = "BYTE"
+    CHAR = "CHAR"
+    DATE = "DATE"
+    DECIMAL = "DECIMAL"
+    DOUBLE = "DOUBLE"
+    FLOAT = "FLOAT"
+    INT = "INT"
+    INTERVAL = "INTERVAL"
+    LONG = "LONG"
+    MAP = "MAP"
+    NULL = "NULL"
+    SHORT = "SHORT"
+    STRING = "STRING"
+    STRUCT = "STRUCT"
+    TIMESTAMP = "TIMESTAMP"
+    USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
 
 
 @dataclass
@@ -367,6 +522,112 @@ class ExecuteQueryResponse:
 
 
 @dataclass
+class ExternalLink:
+    byte_count: Optional[int] = None
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
+
+    chunk_index: Optional[int] = None
+    """The position within the sequence of result set chunks."""
+
+    expiration: Optional[str] = None
+    """Indicates the date-time that the given external link will expire and becomes invalid, after
+    which point a new `external_link` must be requested."""
+
+    external_link: Optional[str] = None
+
+    http_headers: Optional[Dict[str, str]] = None
+    """HTTP headers that must be included with a GET request to the `external_link`. Each header is
+    provided as a key-value pair. Headers are typically used to pass a decryption key to the
+    external service. The values of these headers should be considered sensitive and the client
+    should not expose these values in a log."""
+
+    next_chunk_index: Optional[int] = None
+    """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
+    no more chunks. The next chunk can be fetched with a
+    :method:statementexecution/getStatementResultChunkN request."""
+
+    next_chunk_internal_link: Optional[str] = None
+    """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
+    chunks. This link is an absolute `path` to be joined with your `$DATABRICKS_HOST`, and should be
+    treated as an opaque link. This is an alternative to using `next_chunk_index`."""
+
+    row_count: Optional[int] = None
+    """The number of rows within the result chunk."""
+
+    row_offset: Optional[int] = None
+    """The starting row offset within the result set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLink into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.expiration is not None:
+            body["expiration"] = self.expiration
+        if self.external_link is not None:
+            body["external_link"] = self.external_link
+        if self.http_headers:
+            body["http_headers"] = self.http_headers
+        if self.next_chunk_index is not None:
+            body["next_chunk_index"] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLink into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.expiration is not None:
+            body["expiration"] = self.expiration
+        if self.external_link is not None:
+            body["external_link"] = self.external_link
+        if self.http_headers:
+            body["http_headers"] = self.http_headers
+        if self.next_chunk_index is not None:
+            body["next_chunk_index"] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLink:
+        """Deserializes the ExternalLink from a dictionary."""
+        return cls(
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            expiration=d.get("expiration", None),
+            external_link=d.get("external_link", None),
+            http_headers=d.get("http_headers", None),
+            next_chunk_index=d.get("next_chunk_index", None),
+            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
+        )
+
+
+class Format(Enum):
+
+    ARROW_STREAM = "ARROW_STREAM"
+    CSV = "CSV"
+    JSON_ARRAY = "JSON_ARRAY"
+
+
+@dataclass
 class GenieAttachment:
     """Genie AI Response"""
 
@@ -530,8 +791,87 @@ class GenieCreateConversationMessageRequest:
 
 
 @dataclass
+class GenieGenerateDownloadFullQueryResultResponse:
+    error: Optional[str] = None
+    """Error message if Genie failed to download the result"""
+
+    status: Optional[MessageStatus] = None
+    """Download result status"""
+
+    transient_statement_id: Optional[str] = None
+    """Transient Statement ID. Use this ID to track the download request in subsequent polling calls"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error is not None:
+            body["error"] = self.error
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error is not None:
+            body["error"] = self.error
+        if self.status is not None:
+            body["status"] = self.status
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
+        return cls(
+            error=d.get("error", None),
+            status=_enum(d, "status", MessageStatus),
+            transient_statement_id=d.get("transient_statement_id", None),
+        )
+
+
+@dataclass
+class GenieGetDownloadFullQueryResultResponse:
+    statement_response: Optional[StatementResponse] = None
+    """SQL Statement Execution response. See [Get status, manifest, and result first
+    chunk](:method:statementexecution/getstatement) for more details."""
+
+    transient_statement_id: Optional[str] = None
+    """Transient Statement ID"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response.as_dict()
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
+        """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
+        return cls(
+            statement_response=_from_dict(d, "statement_response", StatementResponse),
+            transient_statement_id=d.get("transient_statement_id", None),
+        )
+
+
+@dataclass
 class GenieGetMessageQueryResultResponse:
-    statement_response: Optional[sql.StatementResponse] = None
+    statement_response: Optional[StatementResponse] = None
     """SQL Statement Execution response. See [Get status, manifest, and result first
     chunk](:method:statementexecution/getstatement) for more details."""
 
@@ -552,7 +892,7 @@ class GenieGetMessageQueryResultResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetMessageQueryResultResponse:
         """Deserializes the GenieGetMessageQueryResultResponse from a dictionary."""
-        return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
+        return cls(statement_response=_from_dict(d, "statement_response", StatementResponse))
 
 
 @dataclass
@@ -1471,6 +1811,203 @@ class Result:
 
 
 @dataclass
+class ResultData:
+    byte_count: Optional[int] = None
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
+
+    chunk_index: Optional[int] = None
+    """The position within the sequence of result set chunks."""
+
+    data_array: Optional[List[List[str]]] = None
+    """The `JSON_ARRAY` format is an array of arrays of values, where each non-null value is formatted
+    as a string. Null values are encoded as JSON `null`."""
+
+    external_links: Optional[List[ExternalLink]] = None
+
+    next_chunk_index: Optional[int] = None
+    """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
+    no more chunks. The next chunk can be fetched with a
+    :method:statementexecution/getStatementResultChunkN request."""
+
+    next_chunk_internal_link: Optional[str] = None
+    """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
+    chunks. This link is an absolute `path` to be joined with your `$DATABRICKS_HOST`, and should be
+    treated as an opaque link. This is an alternative to using `next_chunk_index`."""
+
+    row_count: Optional[int] = None
+    """The number of rows within the result chunk."""
+
+    row_offset: Optional[int] = None
+    """The starting row offset within the result set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.data_array:
+            body["data_array"] = [v for v in self.data_array]
+        if self.external_links:
+            body["external_links"] = [v.as_dict() for v in self.external_links]
+        if self.next_chunk_index is not None:
+            body["next_chunk_index"] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResultData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.byte_count is not None:
+            body["byte_count"] = self.byte_count
+        if self.chunk_index is not None:
+            body["chunk_index"] = self.chunk_index
+        if self.data_array:
+            body["data_array"] = self.data_array
+        if self.external_links:
+            body["external_links"] = self.external_links
+        if self.next_chunk_index is not None:
+            body["next_chunk_index"] = self.next_chunk_index
+        if self.next_chunk_internal_link is not None:
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+        if self.row_count is not None:
+            body["row_count"] = self.row_count
+        if self.row_offset is not None:
+            body["row_offset"] = self.row_offset
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResultData:
+        """Deserializes the ResultData from a dictionary."""
+        return cls(
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            data_array=d.get("data_array", None),
+            external_links=_repeated_dict(d, "external_links", ExternalLink),
+            next_chunk_index=d.get("next_chunk_index", None),
+            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
+        )
+
+
+@dataclass
+class ResultManifest:
+    """The result manifest provides schema and metadata for the result set."""
+
+    chunks: Optional[List[BaseChunkInfo]] = None
+    """Array of result set chunk metadata."""
+
+    format: Optional[Format] = None
+
+    schema: Optional[ResultSchema] = None
+    """The schema is an ordered list of column descriptions."""
+
+    total_byte_count: Optional[int] = None
+    """The total number of bytes in the result set. This field is not available when using `INLINE`
+    disposition."""
+
+    total_chunk_count: Optional[int] = None
+    """The total number of chunks that the result set has been divided into."""
+
+    total_row_count: Optional[int] = None
+    """The total number of rows in the result set."""
+
+    truncated: Optional[bool] = None
+    """Indicates whether the result is truncated due to `row_limit` or `byte_limit`."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.chunks:
+            body["chunks"] = [v.as_dict() for v in self.chunks]
+        if self.format is not None:
+            body["format"] = self.format.value
+        if self.schema:
+            body["schema"] = self.schema.as_dict()
+        if self.total_byte_count is not None:
+            body["total_byte_count"] = self.total_byte_count
+        if self.total_chunk_count is not None:
+            body["total_chunk_count"] = self.total_chunk_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResultManifest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.chunks:
+            body["chunks"] = self.chunks
+        if self.format is not None:
+            body["format"] = self.format
+        if self.schema:
+            body["schema"] = self.schema
+        if self.total_byte_count is not None:
+            body["total_byte_count"] = self.total_byte_count
+        if self.total_chunk_count is not None:
+            body["total_chunk_count"] = self.total_chunk_count
+        if self.total_row_count is not None:
+            body["total_row_count"] = self.total_row_count
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
+        """Deserializes the ResultManifest from a dictionary."""
+        return cls(
+            chunks=_repeated_dict(d, "chunks", BaseChunkInfo),
+            format=_enum(d, "format", Format),
+            schema=_from_dict(d, "schema", ResultSchema),
+            total_byte_count=d.get("total_byte_count", None),
+            total_chunk_count=d.get("total_chunk_count", None),
+            total_row_count=d.get("total_row_count", None),
+            truncated=d.get("truncated", None),
+        )
+
+
+@dataclass
+class ResultSchema:
+    """The schema is an ordered list of column descriptions."""
+
+    column_count: Optional[int] = None
+
+    columns: Optional[List[ColumnInfo]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ResultSchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_count is not None:
+            body["column_count"] = self.column_count
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResultSchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_count is not None:
+            body["column_count"] = self.column_count
+        if self.columns:
+            body["columns"] = self.columns
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResultSchema:
+        """Deserializes the ResultSchema from a dictionary."""
+        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+
+
+@dataclass
 class Schedule:
     cron_schedule: CronSchedule
     """The cron expression describing the frequency of the periodic refresh for this schedule."""
@@ -1567,6 +2104,158 @@ class SchedulePauseStatus(Enum):
 
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
+
+
+@dataclass
+class ServiceError:
+    error_code: Optional[ServiceErrorCode] = None
+
+    message: Optional[str] = None
+    """A brief summary of the error condition."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ServiceError into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code.value
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServiceError into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ServiceError:
+        """Deserializes the ServiceError from a dictionary."""
+        return cls(error_code=_enum(d, "error_code", ServiceErrorCode), message=d.get("message", None))
+
+
+class ServiceErrorCode(Enum):
+
+    ABORTED = "ABORTED"
+    ALREADY_EXISTS = "ALREADY_EXISTS"
+    BAD_REQUEST = "BAD_REQUEST"
+    CANCELLED = "CANCELLED"
+    DEADLINE_EXCEEDED = "DEADLINE_EXCEEDED"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    IO_ERROR = "IO_ERROR"
+    NOT_FOUND = "NOT_FOUND"
+    RESOURCE_EXHAUSTED = "RESOURCE_EXHAUSTED"
+    SERVICE_UNDER_MAINTENANCE = "SERVICE_UNDER_MAINTENANCE"
+    TEMPORARILY_UNAVAILABLE = "TEMPORARILY_UNAVAILABLE"
+    UNAUTHENTICATED = "UNAUTHENTICATED"
+    UNKNOWN = "UNKNOWN"
+    WORKSPACE_TEMPORARILY_UNAVAILABLE = "WORKSPACE_TEMPORARILY_UNAVAILABLE"
+
+
+@dataclass
+class StatementResponse:
+    manifest: Optional[ResultManifest] = None
+    """The result manifest provides schema and metadata for the result set."""
+
+    result: Optional[ResultData] = None
+
+    statement_id: Optional[str] = None
+    """The statement ID is returned upon successfully submitting a SQL statement, and is a required
+    reference for all subsequent calls."""
+
+    status: Optional[StatementStatus] = None
+    """The status response includes execution state and if relevant, error information."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StatementResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.manifest:
+            body["manifest"] = self.manifest.as_dict()
+        if self.result:
+            body["result"] = self.result.as_dict()
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
+        if self.status:
+            body["status"] = self.status.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StatementResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.manifest:
+            body["manifest"] = self.manifest
+        if self.result:
+            body["result"] = self.result
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
+        if self.status:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StatementResponse:
+        """Deserializes the StatementResponse from a dictionary."""
+        return cls(
+            manifest=_from_dict(d, "manifest", ResultManifest),
+            result=_from_dict(d, "result", ResultData),
+            statement_id=d.get("statement_id", None),
+            status=_from_dict(d, "status", StatementStatus),
+        )
+
+
+class StatementState(Enum):
+    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
+    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
+    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
+    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
+    execution successful, and statement closed; result no longer available for fetch"""
+
+    CANCELED = "CANCELED"
+    CLOSED = "CLOSED"
+    FAILED = "FAILED"
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class StatementStatus:
+    """The status response includes execution state and if relevant, error information."""
+
+    error: Optional[ServiceError] = None
+
+    state: Optional[StatementState] = None
+    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
+    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
+    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
+    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
+    execution successful, and statement closed; result no longer available for fetch"""
+
+    def as_dict(self) -> dict:
+        """Serializes the StatementStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StatementStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error:
+            body["error"] = self.error
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> StatementStatus:
+        """Deserializes the StatementStatus from a dictionary."""
+        return cls(error=_from_dict(d, "error", ServiceError), state=_enum(d, "state", StatementState))
 
 
 @dataclass
@@ -1988,6 +2677,85 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def generate_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
+    ) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Generate full query result download.
+
+        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
+        This call initiates a new SQL execution to generate the query result. The result is stored in an
+        external link can be retrieved using the [Get Download Full Query
+        Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks strongly recommends that
+        you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/generate-download",
+            headers=headers,
+        )
+        return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
+
+    def get_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, transient_statement_id: str
+    ) -> GenieGetDownloadFullQueryResultResponse:
+        """Get download full query result status.
+
+        Poll download progress and retrieve the SQL query result external link(s) upon completion. Warning:
+        Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS`
+        disposition. When you use the `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated,
+        which can be used to download the results directly from Amazon S3. As a short-lived access credential
+        is embedded in this presigned URL, you should protect the URL. Because presigned URLs are already
+        generated with embedded temporary access credentials, you must not set an Authorization header in the
+        download requests. See [Execute Statement](:method:statementexecution/executestatement) for more
+        details.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param transient_statement_id: str
+          Transient Statement ID. This ID is provided by the [Start Download
+          endpoint](:method:genie/startdownloadfullqueryresult)
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
+        """
+
+        query = {}
+        if transient_statement_id is not None:
+            query["transient_statement_id"] = transient_statement_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/get-download",
+            query=query,
+            headers=headers,
+        )
+        return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
         """Get conversation message.
