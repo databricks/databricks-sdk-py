@@ -50,8 +50,15 @@ class App:
 
     effective_budget_policy_id: Optional[str] = None
 
+    effective_user_api_scopes: Optional[List[str]] = None
+    """The effective api scopes granted to the user access token."""
+
     id: Optional[str] = None
     """The unique identifier of the app."""
+
+    oauth2_app_client_id: Optional[str] = None
+
+    oauth2_app_integration_id: Optional[str] = None
 
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app. A deployment is considered pending when it is being prepared
@@ -75,6 +82,8 @@ class App:
     url: Optional[str] = None
     """The URL of the app once it is deployed."""
 
+    user_api_scopes: Optional[List[str]] = None
+
     def as_dict(self) -> dict:
         """Serializes the App into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -96,10 +105,16 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_user_api_scopes:
+            body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
+        if self.oauth2_app_client_id is not None:
+            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+        if self.oauth2_app_integration_id is not None:
+            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.pending_deployment:
             body["pending_deployment"] = self.pending_deployment.as_dict()
         if self.resources:
@@ -116,6 +131,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.user_api_scopes:
+            body["user_api_scopes"] = [v for v in self.user_api_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -139,10 +156,16 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_user_api_scopes:
+            body["effective_user_api_scopes"] = self.effective_user_api_scopes
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
+        if self.oauth2_app_client_id is not None:
+            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+        if self.oauth2_app_integration_id is not None:
+            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
         if self.pending_deployment:
             body["pending_deployment"] = self.pending_deployment
         if self.resources:
@@ -159,6 +182,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.user_api_scopes:
+            body["user_api_scopes"] = self.user_api_scopes
         return body
 
     @classmethod
@@ -174,8 +199,11 @@ class App:
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             id=d.get("id", None),
             name=d.get("name", None),
+            oauth2_app_client_id=d.get("oauth2_app_client_id", None),
+            oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
             pending_deployment=_from_dict(d, "pending_deployment", AppDeployment),
             resources=_repeated_dict(d, "resources", AppResource),
             service_principal_client_id=d.get("service_principal_client_id", None),
@@ -184,6 +212,7 @@ class App:
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
+            user_api_scopes=d.get("user_api_scopes", None),
         )
 
 

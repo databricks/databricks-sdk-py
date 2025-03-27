@@ -3161,6 +3161,123 @@ class ExternalLink:
         )
 
 
+@dataclass
+class ExternalQuerySource:
+    alert_id: Optional[str] = None
+    """The canonical identifier for this SQL alert"""
+
+    dashboard_id: Optional[str] = None
+    """The canonical identifier for this Lakeview dashboard"""
+
+    genie_space_id: Optional[str] = None
+    """The canonical identifier for this Genie space"""
+
+    job_info: Optional[ExternalQuerySourceJobInfo] = None
+
+    legacy_dashboard_id: Optional[str] = None
+    """The canonical identifier for this legacy dashboard"""
+
+    notebook_id: Optional[str] = None
+    """The canonical identifier for this notebook"""
+
+    sql_query_id: Optional[str] = None
+    """The canonical identifier for this SQL query"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalQuerySource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_id is not None:
+            body["alert_id"] = self.alert_id
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.genie_space_id is not None:
+            body["genie_space_id"] = self.genie_space_id
+        if self.job_info:
+            body["job_info"] = self.job_info.as_dict()
+        if self.legacy_dashboard_id is not None:
+            body["legacy_dashboard_id"] = self.legacy_dashboard_id
+        if self.notebook_id is not None:
+            body["notebook_id"] = self.notebook_id
+        if self.sql_query_id is not None:
+            body["sql_query_id"] = self.sql_query_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalQuerySource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_id is not None:
+            body["alert_id"] = self.alert_id
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.genie_space_id is not None:
+            body["genie_space_id"] = self.genie_space_id
+        if self.job_info:
+            body["job_info"] = self.job_info
+        if self.legacy_dashboard_id is not None:
+            body["legacy_dashboard_id"] = self.legacy_dashboard_id
+        if self.notebook_id is not None:
+            body["notebook_id"] = self.notebook_id
+        if self.sql_query_id is not None:
+            body["sql_query_id"] = self.sql_query_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalQuerySource:
+        """Deserializes the ExternalQuerySource from a dictionary."""
+        return cls(
+            alert_id=d.get("alert_id", None),
+            dashboard_id=d.get("dashboard_id", None),
+            genie_space_id=d.get("genie_space_id", None),
+            job_info=_from_dict(d, "job_info", ExternalQuerySourceJobInfo),
+            legacy_dashboard_id=d.get("legacy_dashboard_id", None),
+            notebook_id=d.get("notebook_id", None),
+            sql_query_id=d.get("sql_query_id", None),
+        )
+
+
+@dataclass
+class ExternalQuerySourceJobInfo:
+    job_id: Optional[str] = None
+    """The canonical identifier for this job."""
+
+    job_run_id: Optional[str] = None
+    """The canonical identifier of the run. This ID is unique across all runs of all jobs."""
+
+    job_task_run_id: Optional[str] = None
+    """The canonical identifier of the task run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalQuerySourceJobInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.job_run_id is not None:
+            body["job_run_id"] = self.job_run_id
+        if self.job_task_run_id is not None:
+            body["job_task_run_id"] = self.job_task_run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalQuerySourceJobInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.job_run_id is not None:
+            body["job_run_id"] = self.job_run_id
+        if self.job_task_run_id is not None:
+            body["job_task_run_id"] = self.job_task_run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalQuerySourceJobInfo:
+        """Deserializes the ExternalQuerySourceJobInfo from a dictionary."""
+        return cls(
+            job_id=d.get("job_id", None),
+            job_run_id=d.get("job_run_id", None),
+            job_task_run_id=d.get("job_task_run_id", None),
+        )
+
+
 class Format(Enum):
 
     ARROW_STREAM = "ARROW_STREAM"
@@ -5113,6 +5230,11 @@ class QueryInfo:
     query_id: Optional[str] = None
     """The query ID."""
 
+    query_source: Optional[ExternalQuerySource] = None
+    """A struct that contains key-value pairs representing Databricks entities that were involved in
+    the execution of this statement, such as jobs, notebooks, or dashboards. This field only records
+    Databricks entities."""
+
     query_start_time_ms: Optional[int] = None
     """The time the query started."""
 
@@ -5173,6 +5295,8 @@ class QueryInfo:
             body["query_end_time_ms"] = self.query_end_time_ms
         if self.query_id is not None:
             body["query_id"] = self.query_id
+        if self.query_source:
+            body["query_source"] = self.query_source.as_dict()
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
         if self.query_text is not None:
@@ -5222,6 +5346,8 @@ class QueryInfo:
             body["query_end_time_ms"] = self.query_end_time_ms
         if self.query_id is not None:
             body["query_id"] = self.query_id
+        if self.query_source:
+            body["query_source"] = self.query_source
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
         if self.query_text is not None:
@@ -5259,6 +5385,7 @@ class QueryInfo:
             plans_state=_enum(d, "plans_state", PlansState),
             query_end_time_ms=d.get("query_end_time_ms", None),
             query_id=d.get("query_id", None),
+            query_source=_from_dict(d, "query_source", ExternalQuerySource),
             query_start_time_ms=d.get("query_start_time_ms", None),
             query_text=d.get("query_text", None),
             rows_produced=d.get("rows_produced", None),
@@ -7409,6 +7536,7 @@ class WarehousePermissionLevel(Enum):
     CAN_MANAGE = "CAN_MANAGE"
     CAN_MONITOR = "CAN_MONITOR"
     CAN_USE = "CAN_USE"
+    CAN_VIEW = "CAN_VIEW"
     IS_OWNER = "IS_OWNER"
 
 

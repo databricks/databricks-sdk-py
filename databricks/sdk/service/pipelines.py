@@ -16,9 +16,314 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 _LOG = logging.getLogger("databricks.sdk")
 
 
-from databricks.sdk.service import compute
-
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class Adlsgen2Info:
+    """A storage location in Adls Gen2"""
+
+    destination: str
+    """abfss destination, e.g.
+    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Adlsgen2Info into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Adlsgen2Info:
+        """Deserializes the Adlsgen2Info from a dictionary."""
+        return cls(destination=d.get("destination", None))
+
+
+@dataclass
+class AwsAttributes:
+    """Attributes set during cluster creation which are related to Amazon Web Services."""
+
+    availability: Optional[AwsAvailability] = None
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
+    
+    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+
+    ebs_volume_count: Optional[int] = None
+    """The number of volumes launched for each instance. Users can choose up to 10 volumes. This
+    feature is only enabled for supported node types. Legacy node types cannot specify custom EBS
+    volumes. For node types with no instance store, at least one EBS volume needs to be specified;
+    otherwise, cluster creation will fail.
+    
+    These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be
+    mounted at `/local_disk0`, `/local_disk1`, and etc.
+    
+    If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for
+    scratch storage because heterogenously sized scratch devices can lead to inefficient disk
+    utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance
+    store volumes.
+    
+    Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir`
+    will be overridden."""
+
+    ebs_volume_iops: Optional[int] = None
+    """If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance
+    of a gp2 volume with the same volume size will be used."""
+
+    ebs_volume_size: Optional[int] = None
+    """The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this
+    value must be within the range 100 - 4096. For throughput optimized HDD, this value must be
+    within the range 500 - 4096."""
+
+    ebs_volume_throughput: Optional[int] = None
+    """If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum
+    performance of a gp2 volume with the same volume size will be used."""
+
+    ebs_volume_type: Optional[EbsVolumeType] = None
+    """The type of EBS volumes that will be launched with this cluster."""
+
+    first_on_demand: Optional[int] = None
+    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this
+    value is greater than 0, the cluster driver node in particular will be placed on an on-demand
+    instance. If this value is greater than or equal to the current cluster size, all nodes will be
+    placed on on-demand instances. If this value is less than the current cluster size,
+    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
+    on `availability` instances. Note that this value does not affect cluster size and cannot
+    currently be mutated over the lifetime of a cluster."""
+
+    instance_profile_arn: Optional[str] = None
+    """Nodes for this cluster will only be placed on AWS instances with this instance profile. If
+    ommitted, nodes will be placed on instances without an IAM instance profile. The instance
+    profile must have previously been added to the Databricks environment by an account
+    administrator.
+    
+    This feature may only be available to certain customer plans."""
+
+    spot_bid_price_percent: Optional[int] = None
+    """The bid price for AWS spot instances, as a percentage of the corresponding instance type's
+    on-demand price. For example, if this field is set to 50, and the cluster needs a new
+    `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge`
+    instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
+    `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
+    requested for this cluster, only spot instances whose bid price percentage matches this field
+    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
+
+    zone_id: Optional[str] = None
+    """Identifier for the availability zone/datacenter in which the cluster resides. This string will
+    be of a form like "us-west-2a". The provided availability zone must be in the same region as the
+    Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
+    deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
+    if not specified, a default zone will be used. If the zone specified is "auto", will try to
+    place cluster in a zone with high availability, and will retry placement in a different AZ if
+    there is not enough capacity.
+    
+    The list of available zones as well as the default value can be found by using the `List Zones`
+    method."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AwsAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability.value
+        if self.ebs_volume_count is not None:
+            body["ebs_volume_count"] = self.ebs_volume_count
+        if self.ebs_volume_iops is not None:
+            body["ebs_volume_iops"] = self.ebs_volume_iops
+        if self.ebs_volume_size is not None:
+            body["ebs_volume_size"] = self.ebs_volume_size
+        if self.ebs_volume_throughput is not None:
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
+        if self.ebs_volume_type is not None:
+            body["ebs_volume_type"] = self.ebs_volume_type.value
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
+        if self.spot_bid_price_percent is not None:
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
+        if self.zone_id is not None:
+            body["zone_id"] = self.zone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AwsAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability
+        if self.ebs_volume_count is not None:
+            body["ebs_volume_count"] = self.ebs_volume_count
+        if self.ebs_volume_iops is not None:
+            body["ebs_volume_iops"] = self.ebs_volume_iops
+        if self.ebs_volume_size is not None:
+            body["ebs_volume_size"] = self.ebs_volume_size
+        if self.ebs_volume_throughput is not None:
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
+        if self.ebs_volume_type is not None:
+            body["ebs_volume_type"] = self.ebs_volume_type
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
+        if self.spot_bid_price_percent is not None:
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
+        if self.zone_id is not None:
+            body["zone_id"] = self.zone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AwsAttributes:
+        """Deserializes the AwsAttributes from a dictionary."""
+        return cls(
+            availability=_enum(d, "availability", AwsAvailability),
+            ebs_volume_count=d.get("ebs_volume_count", None),
+            ebs_volume_iops=d.get("ebs_volume_iops", None),
+            ebs_volume_size=d.get("ebs_volume_size", None),
+            ebs_volume_throughput=d.get("ebs_volume_throughput", None),
+            ebs_volume_type=_enum(d, "ebs_volume_type", EbsVolumeType),
+            first_on_demand=d.get("first_on_demand", None),
+            instance_profile_arn=d.get("instance_profile_arn", None),
+            spot_bid_price_percent=d.get("spot_bid_price_percent", None),
+            zone_id=d.get("zone_id", None),
+        )
+
+
+class AwsAvailability(Enum):
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
+
+    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+
+    ON_DEMAND = "ON_DEMAND"
+    SPOT = "SPOT"
+    SPOT_WITH_FALLBACK = "SPOT_WITH_FALLBACK"
+
+
+@dataclass
+class AzureAttributes:
+    """Attributes set during cluster creation which are related to Microsoft Azure."""
+
+    availability: Optional[AzureAvailability] = None
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
+    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+
+    first_on_demand: Optional[int] = None
+    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
+    value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
+    instance. If this value is greater than or equal to the current cluster size, all nodes will be
+    placed on on-demand instances. If this value is less than the current cluster size,
+    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
+    on `availability` instances. Note that this value does not affect cluster size and cannot
+    currently be mutated over the lifetime of a cluster."""
+
+    log_analytics_info: Optional[LogAnalyticsInfo] = None
+    """Defines values necessary to configure and run Azure Log Analytics agent"""
+
+    spot_bid_max_price: Optional[float] = None
+    """The max bid price to be used for Azure spot instances. The Max price for the bid cannot be
+    higher than the on-demand price of the instance. If not specified, the default value is -1,
+    which specifies that the instance cannot be evicted on the basis of price, and only on the basis
+    of availability. Further, the value should > 0 or -1."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability.value
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
+        if self.log_analytics_info:
+            body["log_analytics_info"] = self.log_analytics_info.as_dict()
+        if self.spot_bid_max_price is not None:
+            body["spot_bid_max_price"] = self.spot_bid_max_price
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AzureAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
+        if self.log_analytics_info:
+            body["log_analytics_info"] = self.log_analytics_info
+        if self.spot_bid_max_price is not None:
+            body["spot_bid_max_price"] = self.spot_bid_max_price
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AzureAttributes:
+        """Deserializes the AzureAttributes from a dictionary."""
+        return cls(
+            availability=_enum(d, "availability", AzureAvailability),
+            first_on_demand=d.get("first_on_demand", None),
+            log_analytics_info=_from_dict(d, "log_analytics_info", LogAnalyticsInfo),
+            spot_bid_max_price=d.get("spot_bid_max_price", None),
+        )
+
+
+class AzureAvailability(Enum):
+    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
+    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
+
+    ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
+    SPOT_AZURE = "SPOT_AZURE"
+    SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
+
+
+@dataclass
+class ClusterLogConf:
+    """Cluster log delivery config"""
+
+    dbfs: Optional[DbfsStorageInfo] = None
+    """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
+    }`"""
+
+    s3: Optional[S3StorageInfo] = None
+    """destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination"
+    : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to
+    access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to
+    write data to the s3 destination."""
+
+    volumes: Optional[VolumesStorageInfo] = None
+    """destination needs to be provided, e.g. `{ "volumes": { "destination":
+    "/Volumes/catalog/schema/volume/cluster_log" } }`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterLogConf into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dbfs:
+            body["dbfs"] = self.dbfs.as_dict()
+        if self.s3:
+            body["s3"] = self.s3.as_dict()
+        if self.volumes:
+            body["volumes"] = self.volumes.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterLogConf into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbfs:
+            body["dbfs"] = self.dbfs
+        if self.s3:
+            body["s3"] = self.s3
+        if self.volumes:
+            body["volumes"] = self.volumes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterLogConf:
+        """Deserializes the ClusterLogConf from a dictionary."""
+        return cls(
+            dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
+            s3=_from_dict(d, "s3", S3StorageInfo),
+            volumes=_from_dict(d, "volumes", VolumesStorageInfo),
+        )
 
 
 @dataclass
@@ -57,6 +362,9 @@ class CreatePipeline:
 
     edition: Optional[str] = None
     """Pipeline product edition."""
+
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
 
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
@@ -136,6 +444,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -193,6 +503,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -240,6 +552,7 @@ class CreatePipeline:
             development=d.get("development", None),
             dry_run=d.get("dry_run", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -368,6 +681,33 @@ class DayOfWeek(Enum):
 
 
 @dataclass
+class DbfsStorageInfo:
+    """A storage location in DBFS"""
+
+    destination: str
+    """dbfs destination, e.g. `dbfs:/my/path`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbfsStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbfsStorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
+        """Deserializes the DbfsStorageInfo from a dictionary."""
+        return cls(destination=d.get("destination", None))
+
+
+@dataclass
 class DeletePipelineResponse:
     def as_dict(self) -> dict:
         """Serializes the DeletePipelineResponse into a dictionary suitable for use as a JSON request body."""
@@ -390,6 +730,14 @@ class DeploymentKind(Enum):
     Databricks Asset Bundle."""
 
     BUNDLE = "BUNDLE"
+
+
+class EbsVolumeType(Enum):
+    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
+    details."""
+
+    GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
+    THROUGHPUT_OPTIMIZED_HDD = "THROUGHPUT_OPTIMIZED_HDD"
 
 
 @dataclass
@@ -426,6 +774,9 @@ class EditPipeline:
 
     edition: Optional[str] = None
     """Pipeline product edition."""
+
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
 
     expected_last_modified: Optional[int] = None
     """If present, the last-modified time of the pipeline settings before the edit. If the settings
@@ -510,6 +861,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -569,6 +922,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -619,6 +974,7 @@ class EditPipeline:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             expected_last_modified=d.get("expected_last_modified", None),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -699,6 +1055,47 @@ class EventLevel(Enum):
 
 
 @dataclass
+class EventLogSpec:
+    """Configurable event log parameters."""
+
+    catalog: Optional[str] = None
+    """The UC catalog the event log is published under."""
+
+    name: Optional[str] = None
+    """The name the event log is published to in UC."""
+
+    schema: Optional[str] = None
+    """The UC schema the event log is published under."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EventLogSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EventLogSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EventLogSpec:
+        """Deserializes the EventLogSpec from a dictionary."""
+        return cls(catalog=d.get("catalog", None), name=d.get("name", None), schema=d.get("schema", None))
+
+
+@dataclass
 class FileLibrary:
     path: Optional[str] = None
     """The absolute path of the file."""
@@ -753,6 +1150,124 @@ class Filters:
     def from_dict(cls, d: Dict[str, Any]) -> Filters:
         """Deserializes the Filters from a dictionary."""
         return cls(exclude=d.get("exclude", None), include=d.get("include", None))
+
+
+@dataclass
+class GcpAttributes:
+    """Attributes set during cluster creation which are related to GCP."""
+
+    availability: Optional[GcpAvailability] = None
+    """This field determines whether the spark executors will be scheduled to run on preemptible VMs,
+    on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
+
+    boot_disk_size: Optional[int] = None
+    """Boot disk size in GB"""
+
+    google_service_account: Optional[str] = None
+    """If provided, the cluster will impersonate the google service account when accessing gcloud
+    services (like GCS). The google service account must have previously been added to the
+    Databricks environment by an account administrator."""
+
+    local_ssd_count: Optional[int] = None
+    """If provided, each node (workers and driver) in the cluster will have this number of local SSDs
+    attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number
+    of local SSDs for each instance type.
+    
+    [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"""
+
+    use_preemptible_executors: Optional[bool] = None
+    """This field determines whether the spark executors will be scheduled to run on preemptible VMs
+    (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon
+    to be deprecated, use the 'availability' field instead."""
+
+    zone_id: Optional[str] = None
+    """Identifier for the availability zone in which the cluster resides. This can be one of the
+    following: - "HA" => High availability, spread nodes across availability zones for a Databricks
+    deployment region [default]. - "AUTO" => Databricks picks an availability zone to schedule the
+    cluster on. - A GCP availability zone => Pick One of the available zones for (machine type +
+    region) from https://cloud.google.com/compute/docs/regions-zones."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability.value
+        if self.boot_disk_size is not None:
+            body["boot_disk_size"] = self.boot_disk_size
+        if self.google_service_account is not None:
+            body["google_service_account"] = self.google_service_account
+        if self.local_ssd_count is not None:
+            body["local_ssd_count"] = self.local_ssd_count
+        if self.use_preemptible_executors is not None:
+            body["use_preemptible_executors"] = self.use_preemptible_executors
+        if self.zone_id is not None:
+            body["zone_id"] = self.zone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None:
+            body["availability"] = self.availability
+        if self.boot_disk_size is not None:
+            body["boot_disk_size"] = self.boot_disk_size
+        if self.google_service_account is not None:
+            body["google_service_account"] = self.google_service_account
+        if self.local_ssd_count is not None:
+            body["local_ssd_count"] = self.local_ssd_count
+        if self.use_preemptible_executors is not None:
+            body["use_preemptible_executors"] = self.use_preemptible_executors
+        if self.zone_id is not None:
+            body["zone_id"] = self.zone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpAttributes:
+        """Deserializes the GcpAttributes from a dictionary."""
+        return cls(
+            availability=_enum(d, "availability", GcpAvailability),
+            boot_disk_size=d.get("boot_disk_size", None),
+            google_service_account=d.get("google_service_account", None),
+            local_ssd_count=d.get("local_ssd_count", None),
+            use_preemptible_executors=d.get("use_preemptible_executors", None),
+            zone_id=d.get("zone_id", None),
+        )
+
+
+class GcpAvailability(Enum):
+    """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
+    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
+
+    ON_DEMAND_GCP = "ON_DEMAND_GCP"
+    PREEMPTIBLE_GCP = "PREEMPTIBLE_GCP"
+    PREEMPTIBLE_WITH_FALLBACK_GCP = "PREEMPTIBLE_WITH_FALLBACK_GCP"
+
+
+@dataclass
+class GcsStorageInfo:
+    """A storage location in Google Cloud Platform's GCS"""
+
+    destination: str
+    """GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcsStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcsStorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcsStorageInfo:
+        """Deserializes the GcsStorageInfo from a dictionary."""
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -1088,6 +1603,90 @@ class IngestionPipelineDefinition:
 
 
 @dataclass
+class InitScriptInfo:
+    """Config for an individual init script Next ID: 11"""
+
+    abfss: Optional[Adlsgen2Info] = None
+    """destination needs to be provided, e.g.
+    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
+
+    dbfs: Optional[DbfsStorageInfo] = None
+    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
+    }`"""
+
+    file: Optional[LocalFileInfo] = None
+    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
+
+    gcs: Optional[GcsStorageInfo] = None
+    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
+
+    s3: Optional[S3StorageInfo] = None
+    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
+    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
+    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
+    permission to write data to the s3 destination."""
+
+    volumes: Optional[VolumesStorageInfo] = None
+    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
+    \"/Volumes/my-init.sh\" } }`"""
+
+    workspace: Optional[WorkspaceStorageInfo] = None
+    """destination needs to be provided, e.g. `{ "workspace": { "destination":
+    "/cluster-init-scripts/setup-datadog.sh" } }`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.abfss:
+            body["abfss"] = self.abfss.as_dict()
+        if self.dbfs:
+            body["dbfs"] = self.dbfs.as_dict()
+        if self.file:
+            body["file"] = self.file.as_dict()
+        if self.gcs:
+            body["gcs"] = self.gcs.as_dict()
+        if self.s3:
+            body["s3"] = self.s3.as_dict()
+        if self.volumes:
+            body["volumes"] = self.volumes.as_dict()
+        if self.workspace:
+            body["workspace"] = self.workspace.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.abfss:
+            body["abfss"] = self.abfss
+        if self.dbfs:
+            body["dbfs"] = self.dbfs
+        if self.file:
+            body["file"] = self.file
+        if self.gcs:
+            body["gcs"] = self.gcs
+        if self.s3:
+            body["s3"] = self.s3
+        if self.volumes:
+            body["volumes"] = self.volumes
+        if self.workspace:
+            body["workspace"] = self.workspace
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfo:
+        """Deserializes the InitScriptInfo from a dictionary."""
+        return cls(
+            abfss=_from_dict(d, "abfss", Adlsgen2Info),
+            dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
+            file=_from_dict(d, "file", LocalFileInfo),
+            gcs=_from_dict(d, "gcs", GcsStorageInfo),
+            s3=_from_dict(d, "s3", S3StorageInfo),
+            volumes=_from_dict(d, "volumes", VolumesStorageInfo),
+            workspace=_from_dict(d, "workspace", WorkspaceStorageInfo),
+        )
+
+
+@dataclass
 class ListPipelineEventsResponse:
     events: Optional[List[PipelineEvent]] = None
     """The list of events matching the request criteria."""
@@ -1208,6 +1807,64 @@ class ListUpdatesResponse:
 
 
 @dataclass
+class LocalFileInfo:
+    destination: str
+    """local file destination, e.g. `file:/my/local/file.sh`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the LocalFileInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LocalFileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LocalFileInfo:
+        """Deserializes the LocalFileInfo from a dictionary."""
+        return cls(destination=d.get("destination", None))
+
+
+@dataclass
+class LogAnalyticsInfo:
+    log_analytics_primary_key: Optional[str] = None
+
+    log_analytics_workspace_id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.log_analytics_primary_key is not None:
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
+        if self.log_analytics_workspace_id is not None:
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogAnalyticsInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_analytics_primary_key is not None:
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
+        if self.log_analytics_workspace_id is not None:
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogAnalyticsInfo:
+        """Deserializes the LogAnalyticsInfo from a dictionary."""
+        return cls(
+            log_analytics_primary_key=d.get("log_analytics_primary_key", None),
+            log_analytics_workspace_id=d.get("log_analytics_workspace_id", None),
+        )
+
+
+@dataclass
 class ManualTrigger:
     def as_dict(self) -> dict:
         """Serializes the ManualTrigger into a dictionary suitable for use as a JSON request body."""
@@ -1231,6 +1888,51 @@ class MaturityLevel(Enum):
     DEPRECATED = "DEPRECATED"
     EVOLVING = "EVOLVING"
     STABLE = "STABLE"
+
+
+@dataclass
+class MavenLibrary:
+    coordinates: str
+    """Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2"."""
+
+    exclusions: Optional[List[str]] = None
+    """List of dependences to exclude. For example: `["slf4j:slf4j", "*:hadoop-client"]`.
+    
+    Maven dependency exclusions:
+    https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html."""
+
+    repo: Optional[str] = None
+    """Maven repo to install the Maven package from. If omitted, both Maven Central Repository and
+    Spark Packages are searched."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MavenLibrary into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.coordinates is not None:
+            body["coordinates"] = self.coordinates
+        if self.exclusions:
+            body["exclusions"] = [v for v in self.exclusions]
+        if self.repo is not None:
+            body["repo"] = self.repo
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MavenLibrary into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.coordinates is not None:
+            body["coordinates"] = self.coordinates
+        if self.exclusions:
+            body["exclusions"] = self.exclusions
+        if self.repo is not None:
+            body["repo"] = self.repo
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MavenLibrary:
+        """Deserializes the MavenLibrary from a dictionary."""
+        return cls(
+            coordinates=d.get("coordinates", None), exclusions=d.get("exclusions", None), repo=d.get("repo", None)
+        )
 
 
 @dataclass
@@ -1570,15 +2272,15 @@ class PipelineCluster:
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
     autoscaling works best with DB runtime versions 3.0 or later."""
 
-    aws_attributes: Optional[compute.AwsAttributes] = None
+    aws_attributes: Optional[AwsAttributes] = None
     """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
     creation, a set of default values will be used."""
 
-    azure_attributes: Optional[compute.AzureAttributes] = None
+    azure_attributes: Optional[AzureAttributes] = None
     """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
     a set of default values will be used."""
 
-    cluster_log_conf: Optional[compute.ClusterLogConf] = None
+    cluster_log_conf: Optional[ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Only dbfs
     destinations are supported. Only one destination can be specified for one cluster. If the conf
     is given, the logs will be delivered to the destination every `5 mins`. The destination of
@@ -1605,11 +2307,11 @@ class PipelineCluster:
     enable_local_disk_encryption: Optional[bool] = None
     """Whether to enable local disk encryption for the cluster."""
 
-    gcp_attributes: Optional[compute.GcpAttributes] = None
+    gcp_attributes: Optional[GcpAttributes] = None
     """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
     creation, a set of default values will be used."""
 
-    init_scripts: Optional[List[compute.InitScriptInfo]] = None
+    init_scripts: Optional[List[InitScriptInfo]] = None
     """The configuration for storing init scripts. Any number of destinations can be specified. The
     scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
     init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
@@ -1755,15 +2457,15 @@ class PipelineCluster:
         return cls(
             apply_policy_default_values=d.get("apply_policy_default_values", None),
             autoscale=_from_dict(d, "autoscale", PipelineClusterAutoscale),
-            aws_attributes=_from_dict(d, "aws_attributes", compute.AwsAttributes),
-            azure_attributes=_from_dict(d, "azure_attributes", compute.AzureAttributes),
-            cluster_log_conf=_from_dict(d, "cluster_log_conf", compute.ClusterLogConf),
+            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
+            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
+            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
             custom_tags=d.get("custom_tags", None),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
-            gcp_attributes=_from_dict(d, "gcp_attributes", compute.GcpAttributes),
-            init_scripts=_repeated_dict(d, "init_scripts", compute.InitScriptInfo),
+            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
+            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
             instance_pool_id=d.get("instance_pool_id", None),
             label=d.get("label", None),
             node_type_id=d.get("node_type_id", None),
@@ -1964,7 +2666,7 @@ class PipelineLibrary:
     jar: Optional[str] = None
     """URI of the jar to be installed. Currently only DBFS is supported."""
 
-    maven: Optional[compute.MavenLibrary] = None
+    maven: Optional[MavenLibrary] = None
     """Specification of a maven library to be installed."""
 
     notebook: Optional[NotebookLibrary] = None
@@ -2009,7 +2711,7 @@ class PipelineLibrary:
         return cls(
             file=_from_dict(d, "file", FileLibrary),
             jar=d.get("jar", None),
-            maven=_from_dict(d, "maven", compute.MavenLibrary),
+            maven=_from_dict(d, "maven", MavenLibrary),
             notebook=_from_dict(d, "notebook", NotebookLibrary),
             whl=d.get("whl", None),
         )
@@ -2205,6 +2907,9 @@ class PipelineSpec:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
 
@@ -2271,6 +2976,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -2322,6 +3029,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -2365,6 +3074,7 @@ class PipelineSpec:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -2662,6 +3372,95 @@ class RunAs:
     def from_dict(cls, d: Dict[str, Any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
         return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
+
+
+@dataclass
+class S3StorageInfo:
+    """A storage location in Amazon S3"""
+
+    destination: str
+    """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
+    iam role, please make sure you set cluster iam role and the role has write access to the
+    destination. Please also note that you cannot use AWS keys to deliver logs."""
+
+    canned_acl: Optional[str] = None
+    """(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If
+    `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on
+    the destination bucket and prefix. The full list of possible canned acl can be found at
+    http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note
+    that by default only the object owner gets full controls. If you are using cross account role
+    for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to
+    read the logs."""
+
+    enable_encryption: Optional[bool] = None
+    """(Optional) Flag to enable server side encryption, `false` by default."""
+
+    encryption_type: Optional[str] = None
+    """(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when
+    encryption is enabled and the default type is `sse-s3`."""
+
+    endpoint: Optional[str] = None
+    """S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be
+    set. If both are set, endpoint will be used."""
+
+    kms_key: Optional[str] = None
+    """(Optional) Kms key which will be used if encryption is enabled and encryption type is set to
+    `sse-kms`."""
+
+    region: Optional[str] = None
+    """S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set,
+    endpoint will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the S3StorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.canned_acl is not None:
+            body["canned_acl"] = self.canned_acl
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.enable_encryption is not None:
+            body["enable_encryption"] = self.enable_encryption
+        if self.encryption_type is not None:
+            body["encryption_type"] = self.encryption_type
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.kms_key is not None:
+            body["kms_key"] = self.kms_key
+        if self.region is not None:
+            body["region"] = self.region
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the S3StorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.canned_acl is not None:
+            body["canned_acl"] = self.canned_acl
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.enable_encryption is not None:
+            body["enable_encryption"] = self.enable_encryption
+        if self.encryption_type is not None:
+            body["encryption_type"] = self.encryption_type
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.kms_key is not None:
+            body["kms_key"] = self.kms_key
+        if self.region is not None:
+            body["region"] = self.region
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> S3StorageInfo:
+        """Deserializes the S3StorageInfo from a dictionary."""
+        return cls(
+            canned_acl=d.get("canned_acl", None),
+            destination=d.get("destination", None),
+            enable_encryption=d.get("enable_encryption", None),
+            encryption_type=d.get("encryption_type", None),
+            endpoint=d.get("endpoint", None),
+            kms_key=d.get("kms_key", None),
+            region=d.get("region", None),
+        )
 
 
 @dataclass
@@ -3310,6 +4109,61 @@ class UpdateStateInfoState(Enum):
     WAITING_FOR_RESOURCES = "WAITING_FOR_RESOURCES"
 
 
+@dataclass
+class VolumesStorageInfo:
+    """A storage location back by UC Volumes."""
+
+    destination: str
+    """UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
+    `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VolumesStorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> VolumesStorageInfo:
+        """Deserializes the VolumesStorageInfo from a dictionary."""
+        return cls(destination=d.get("destination", None))
+
+
+@dataclass
+class WorkspaceStorageInfo:
+    """A storage location in Workspace Filesystem (WSFS)"""
+
+    destination: str
+    """wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkspaceStorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceStorageInfo:
+        """Deserializes the WorkspaceStorageInfo from a dictionary."""
+        return cls(destination=d.get("destination", None))
+
+
 class PipelinesAPI:
     """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 
@@ -3403,6 +4257,7 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         dry_run: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
         id: Optional[str] = None,
@@ -3447,6 +4302,8 @@ class PipelinesAPI:
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
@@ -3510,6 +4367,8 @@ class PipelinesAPI:
             body["dry_run"] = dry_run
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if filters is not None:
             body["filters"] = filters.as_dict()
         if gateway_definition is not None:
@@ -3903,6 +4762,7 @@ class PipelinesAPI:
         deployment: Optional[PipelineDeployment] = None,
         development: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         expected_last_modified: Optional[int] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
@@ -3948,6 +4808,8 @@ class PipelinesAPI:
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
           If present, the last-modified time of the pipeline settings before the edit. If the settings were
           modified after that time, then the request will fail with a conflict.
@@ -4012,6 +4874,8 @@ class PipelinesAPI:
             body["development"] = development
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
             body["expected_last_modified"] = expected_last_modified
         if filters is not None:

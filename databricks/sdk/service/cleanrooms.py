@@ -7,12 +7,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import catalog, jobs, settings, sharing
 
 # all definitions in this file are in alphabetical order
 
@@ -280,7 +278,7 @@ class CleanRoomAssetAssetType(Enum):
 
 @dataclass
 class CleanRoomAssetForeignTable:
-    columns: Optional[List[catalog.ColumnInfo]] = None
+    columns: Optional[List[ColumnInfo]] = None
     """The metadata information of the columns in the foreign table"""
 
     def as_dict(self) -> dict:
@@ -300,7 +298,7 @@ class CleanRoomAssetForeignTable:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetForeignTable:
         """Deserializes the CleanRoomAssetForeignTable from a dictionary."""
-        return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -371,7 +369,7 @@ class CleanRoomAssetStatusEnum(Enum):
 
 @dataclass
 class CleanRoomAssetTable:
-    columns: Optional[List[catalog.ColumnInfo]] = None
+    columns: Optional[List[ColumnInfo]] = None
     """The metadata information of the columns in the table"""
 
     def as_dict(self) -> dict:
@@ -391,7 +389,7 @@ class CleanRoomAssetTable:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTable:
         """Deserializes the CleanRoomAssetTable from a dictionary."""
-        return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -400,7 +398,7 @@ class CleanRoomAssetTableLocalDetails:
     """The fully qualified name of the table in its owner's local metastore, in the format of
     *catalog*.*schema*.*table_name*"""
 
-    partitions: Optional[List[sharing.Partition]] = None
+    partitions: Optional[List[Partition]] = None
     """Partition filtering specification for a shared table."""
 
     def as_dict(self) -> dict:
@@ -424,12 +422,12 @@ class CleanRoomAssetTableLocalDetails:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTableLocalDetails:
         """Deserializes the CleanRoomAssetTableLocalDetails from a dictionary."""
-        return cls(local_name=d.get("local_name", None), partitions=_repeated_dict(d, "partitions", sharing.Partition))
+        return cls(local_name=d.get("local_name", None), partitions=_repeated_dict(d, "partitions", Partition))
 
 
 @dataclass
 class CleanRoomAssetView:
-    columns: Optional[List[catalog.ColumnInfo]] = None
+    columns: Optional[List[ColumnInfo]] = None
     """The metadata information of the columns in the view"""
 
     def as_dict(self) -> dict:
@@ -449,7 +447,7 @@ class CleanRoomAssetView:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetView:
         """Deserializes the CleanRoomAssetView from a dictionary."""
-        return cls(columns=_repeated_dict(d, "columns", catalog.ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -594,7 +592,7 @@ class CleanRoomNotebookTaskRun:
     LIST API. if the task was run within the same workspace the API is being called. If the task run
     was in a different workspace under the same metastore, only the workspace_id is included."""
 
-    notebook_job_run_state: Optional[jobs.CleanRoomTaskRunState] = None
+    notebook_job_run_state: Optional[CleanRoomTaskRunState] = None
     """State of the task run."""
 
     notebook_name: Optional[str] = None
@@ -655,7 +653,7 @@ class CleanRoomNotebookTaskRun:
         """Deserializes the CleanRoomNotebookTaskRun from a dictionary."""
         return cls(
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
-            notebook_job_run_state=_from_dict(d, "notebook_job_run_state", jobs.CleanRoomTaskRunState),
+            notebook_job_run_state=_from_dict(d, "notebook_job_run_state", CleanRoomTaskRunState),
             notebook_name=d.get("notebook_name", None),
             output_schema_expiration_time=d.get("output_schema_expiration_time", None),
             output_schema_name=d.get("output_schema_name", None),
@@ -732,7 +730,7 @@ class CleanRoomRemoteDetail:
     creator: Optional[CleanRoomCollaborator] = None
     """Collaborator who creates the clean room."""
 
-    egress_network_policy: Optional[settings.EgressNetworkPolicy] = None
+    egress_network_policy: Optional[EgressNetworkPolicy] = None
     """Egress network policy to apply to the central clean room workspace."""
 
     region: Optional[str] = None
@@ -785,7 +783,7 @@ class CleanRoomRemoteDetail:
             collaborators=_repeated_dict(d, "collaborators", CleanRoomCollaborator),
             compliance_security_profile=_from_dict(d, "compliance_security_profile", ComplianceSecurityProfile),
             creator=_from_dict(d, "creator", CleanRoomCollaborator),
-            egress_network_policy=_from_dict(d, "egress_network_policy", settings.EgressNetworkPolicy),
+            egress_network_policy=_from_dict(d, "egress_network_policy", EgressNetworkPolicy),
             region=d.get("region", None),
         )
 
@@ -796,6 +794,79 @@ class CleanRoomStatusEnum(Enum):
     DELETED = "DELETED"
     FAILED = "FAILED"
     PROVISIONING = "PROVISIONING"
+
+
+class CleanRoomTaskRunLifeCycleState(Enum):
+    """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to
+    remove coupling with jobs API definition"""
+
+    BLOCKED = "BLOCKED"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    PENDING = "PENDING"
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    RUN_LIFE_CYCLE_STATE_UNSPECIFIED = "RUN_LIFE_CYCLE_STATE_UNSPECIFIED"
+    SKIPPED = "SKIPPED"
+    TERMINATED = "TERMINATED"
+    TERMINATING = "TERMINATING"
+    WAITING_FOR_RETRY = "WAITING_FOR_RETRY"
+
+
+class CleanRoomTaskRunResultState(Enum):
+    """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to avoid
+    cyclic dependency."""
+
+    CANCELED = "CANCELED"
+    DISABLED = "DISABLED"
+    EVICTED = "EVICTED"
+    EXCLUDED = "EXCLUDED"
+    FAILED = "FAILED"
+    MAXIMUM_CONCURRENT_RUNS_REACHED = "MAXIMUM_CONCURRENT_RUNS_REACHED"
+    RUN_RESULT_STATE_UNSPECIFIED = "RUN_RESULT_STATE_UNSPECIFIED"
+    SUCCESS = "SUCCESS"
+    SUCCESS_WITH_FAILURES = "SUCCESS_WITH_FAILURES"
+    TIMEDOUT = "TIMEDOUT"
+    UPSTREAM_CANCELED = "UPSTREAM_CANCELED"
+    UPSTREAM_EVICTED = "UPSTREAM_EVICTED"
+    UPSTREAM_FAILED = "UPSTREAM_FAILED"
+
+
+@dataclass
+class CleanRoomTaskRunState:
+    """Stores the run state of the clean rooms notebook task."""
+
+    life_cycle_state: Optional[CleanRoomTaskRunLifeCycleState] = None
+    """A value indicating the run's current lifecycle state. This field is always available in the
+    response."""
+
+    result_state: Optional[CleanRoomTaskRunResultState] = None
+    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.life_cycle_state is not None:
+            body["life_cycle_state"] = self.life_cycle_state.value
+        if self.result_state is not None:
+            body["result_state"] = self.result_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.life_cycle_state is not None:
+            body["life_cycle_state"] = self.life_cycle_state
+        if self.result_state is not None:
+            body["result_state"] = self.result_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunState:
+        """Deserializes the CleanRoomTaskRunState from a dictionary."""
+        return cls(
+            life_cycle_state=_enum(d, "life_cycle_state", CleanRoomTaskRunLifeCycleState),
+            result_state=_enum(d, "result_state", CleanRoomTaskRunResultState),
+        )
 
 
 @dataclass
@@ -858,10 +929,183 @@ class CollaboratorJobRunInfo:
 
 
 @dataclass
+class ColumnInfo:
+    comment: Optional[str] = None
+    """User-provided free-form text description."""
+
+    mask: Optional[ColumnMask] = None
+
+    name: Optional[str] = None
+    """Name of Column."""
+
+    nullable: Optional[bool] = None
+    """Whether field may be Null (default: true)."""
+
+    partition_index: Optional[int] = None
+    """Partition index for column."""
+
+    position: Optional[int] = None
+    """Ordinal position of column (starting at position 0)."""
+
+    type_interval_type: Optional[str] = None
+    """Format of IntervalType."""
+
+    type_json: Optional[str] = None
+    """Full data type specification, JSON-serialized."""
+
+    type_name: Optional[ColumnTypeName] = None
+
+    type_precision: Optional[int] = None
+    """Digits of precision; required for DecimalTypes."""
+
+    type_scale: Optional[int] = None
+    """Digits to right of decimal; Required for DecimalTypes."""
+
+    type_text: Optional[str] = None
+    """Full data type specification as SQL/catalogString text."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.mask:
+            body["mask"] = self.mask.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.nullable is not None:
+            body["nullable"] = self.nullable
+        if self.partition_index is not None:
+            body["partition_index"] = self.partition_index
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_json is not None:
+            body["type_json"] = self.type_json
+        if self.type_name is not None:
+            body["type_name"] = self.type_name.value
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.mask:
+            body["mask"] = self.mask
+        if self.name is not None:
+            body["name"] = self.name
+        if self.nullable is not None:
+            body["nullable"] = self.nullable
+        if self.partition_index is not None:
+            body["partition_index"] = self.partition_index
+        if self.position is not None:
+            body["position"] = self.position
+        if self.type_interval_type is not None:
+            body["type_interval_type"] = self.type_interval_type
+        if self.type_json is not None:
+            body["type_json"] = self.type_json
+        if self.type_name is not None:
+            body["type_name"] = self.type_name
+        if self.type_precision is not None:
+            body["type_precision"] = self.type_precision
+        if self.type_scale is not None:
+            body["type_scale"] = self.type_scale
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
+        """Deserializes the ColumnInfo from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            mask=_from_dict(d, "mask", ColumnMask),
+            name=d.get("name", None),
+            nullable=d.get("nullable", None),
+            partition_index=d.get("partition_index", None),
+            position=d.get("position", None),
+            type_interval_type=d.get("type_interval_type", None),
+            type_json=d.get("type_json", None),
+            type_name=_enum(d, "type_name", ColumnTypeName),
+            type_precision=d.get("type_precision", None),
+            type_scale=d.get("type_scale", None),
+            type_text=d.get("type_text", None),
+        )
+
+
+@dataclass
+class ColumnMask:
+    function_name: Optional[str] = None
+    """The full name of the column mask SQL UDF."""
+
+    using_column_names: Optional[List[str]] = None
+    """The list of additional table columns to be passed as input to the column mask function. The
+    first arg of the mask function should be of the type of the column being masked and the types of
+    the rest of the args should match the types of columns in 'using_column_names'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnMask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using_column_names:
+            body["using_column_names"] = [v for v in self.using_column_names]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnMask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using_column_names:
+            body["using_column_names"] = self.using_column_names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
+        """Deserializes the ColumnMask from a dictionary."""
+        return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
+
+
+class ColumnTypeName(Enum):
+
+    ARRAY = "ARRAY"
+    BINARY = "BINARY"
+    BOOLEAN = "BOOLEAN"
+    BYTE = "BYTE"
+    CHAR = "CHAR"
+    DATE = "DATE"
+    DECIMAL = "DECIMAL"
+    DOUBLE = "DOUBLE"
+    FLOAT = "FLOAT"
+    INT = "INT"
+    INTERVAL = "INTERVAL"
+    LONG = "LONG"
+    MAP = "MAP"
+    NULL = "NULL"
+    SHORT = "SHORT"
+    STRING = "STRING"
+    STRUCT = "STRUCT"
+    TABLE_TYPE = "TABLE_TYPE"
+    TIMESTAMP = "TIMESTAMP"
+    TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
+    USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
+    VARIANT = "VARIANT"
+
+
+@dataclass
 class ComplianceSecurityProfile:
     """The compliance security profile used to process regulated data following compliance standards."""
 
-    compliance_standards: Optional[List[settings.ComplianceStandard]] = None
+    compliance_standards: Optional[List[ComplianceStandard]] = None
     """The list of compliance standards that the compliance security profile is configured to enforce."""
 
     is_enabled: Optional[bool] = None
@@ -871,7 +1115,7 @@ class ComplianceSecurityProfile:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_standards:
-            body["compliance_standards"] = [v.as_dict() for v in self.compliance_standards]
+            body["compliance_standards"] = [v.value for v in self.compliance_standards]
         if self.is_enabled is not None:
             body["is_enabled"] = self.is_enabled
         return body
@@ -889,9 +1133,26 @@ class ComplianceSecurityProfile:
     def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
-            compliance_standards=_repeated_dict(d, "compliance_standards", settings.ComplianceStandard),
+            compliance_standards=_repeated_enum(d, "compliance_standards", ComplianceStandard),
             is_enabled=d.get("is_enabled", None),
         )
+
+
+class ComplianceStandard(Enum):
+    """Compliance stardard for SHIELD customers"""
+
+    CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
+    CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
+    FEDRAMP_HIGH = "FEDRAMP_HIGH"
+    FEDRAMP_IL5 = "FEDRAMP_IL5"
+    FEDRAMP_MODERATE = "FEDRAMP_MODERATE"
+    HIPAA = "HIPAA"
+    HITRUST = "HITRUST"
+    IRAP_PROTECTED = "IRAP_PROTECTED"
+    ISMAP = "ISMAP"
+    ITAR_EAR = "ITAR_EAR"
+    NONE = "NONE"
+    PCI_DSS = "PCI_DSS"
 
 
 @dataclass
@@ -955,6 +1216,305 @@ class DeleteResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class EgressNetworkPolicy:
+    """The network policies applying for egress traffic. This message is used by the UI/REST API. We
+    translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
+    the format expected by the dataplane, see networkconfig.textproto)."""
+
+    internet_access: Optional[EgressNetworkPolicyInternetAccessPolicy] = None
+    """The access policy enforced for egress traffic to the internet."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.internet_access:
+            body["internet_access"] = self.internet_access.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.internet_access:
+            body["internet_access"] = self.internet_access
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicy:
+        """Deserializes the EgressNetworkPolicy from a dictionary."""
+        return cls(internet_access=_from_dict(d, "internet_access", EgressNetworkPolicyInternetAccessPolicy))
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicy:
+    allowed_internet_destinations: Optional[List[EgressNetworkPolicyInternetAccessPolicyInternetDestination]] = None
+
+    allowed_storage_destinations: Optional[List[EgressNetworkPolicyInternetAccessPolicyStorageDestination]] = None
+
+    log_only_mode: Optional[EgressNetworkPolicyInternetAccessPolicyLogOnlyMode] = None
+    """Optional. If not specified, assume the policy is enforced for all workloads."""
+
+    restriction_mode: Optional[EgressNetworkPolicyInternetAccessPolicyRestrictionMode] = None
+    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
+    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
+    only access explicitly allowed internet and storage destinations, as well as UC connections and
+    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
+    private link."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
+        if self.allowed_storage_destinations:
+            body["allowed_storage_destinations"] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.log_only_mode:
+            body["log_only_mode"] = self.log_only_mode.as_dict()
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body["allowed_internet_destinations"] = self.allowed_internet_destinations
+        if self.allowed_storage_destinations:
+            body["allowed_storage_destinations"] = self.allowed_storage_destinations
+        if self.log_only_mode:
+            body["log_only_mode"] = self.log_only_mode
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicy:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicy from a dictionary."""
+        return cls(
+            allowed_internet_destinations=_repeated_dict(
+                d, "allowed_internet_destinations", EgressNetworkPolicyInternetAccessPolicyInternetDestination
+            ),
+            allowed_storage_destinations=_repeated_dict(
+                d, "allowed_storage_destinations", EgressNetworkPolicyInternetAccessPolicyStorageDestination
+            ),
+            log_only_mode=_from_dict(d, "log_only_mode", EgressNetworkPolicyInternetAccessPolicyLogOnlyMode),
+            restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyInternetAccessPolicyRestrictionMode),
+        )
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+    """Users can specify accessible internet destinations when outbound access is restricted. We only
+    support domain name (FQDN) destinations for the time being, though going forwards we want to
+    support host names and IP addresses."""
+
+    destination: Optional[str] = None
+
+    protocol: Optional[
+        EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
+    ] = None
+    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
+    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
+    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
+    filtering (i.e. SNI based filtering, filtering by FQDN)."""
+
+    type: Optional[EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.protocol is not None:
+            body["protocol"] = self.protocol.value
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.protocol is not None:
+            body["protocol"] = self.protocol
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination from a dictionary."""
+        return cls(
+            destination=d.get("destination", None),
+            protocol=_enum(
+                d,
+                "protocol",
+                EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol,
+            ),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType),
+        )
+
+
+class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol(Enum):
+    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
+    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
+    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
+    filtering (i.e. SNI based filtering, filtering by FQDN)."""
+
+    TCP = "TCP"
+
+
+class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(Enum):
+
+    FQDN = "FQDN"
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+    log_only_mode_type: Optional[EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType] = None
+
+    workloads: Optional[List[EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.log_only_mode_type is not None:
+            body["log_only_mode_type"] = self.log_only_mode_type.value
+        if self.workloads:
+            body["workloads"] = [v.value for v in self.workloads]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_only_mode_type is not None:
+            body["log_only_mode_type"] = self.log_only_mode_type
+        if self.workloads:
+            body["workloads"] = self.workloads
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode from a dictionary."""
+        return cls(
+            log_only_mode_type=_enum(
+                d, "log_only_mode_type", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
+            ),
+            workloads=_repeated_enum(d, "workloads", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType),
+        )
+
+
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(Enum):
+
+    ALL_SERVICES = "ALL_SERVICES"
+    SELECTED_SERVICES = "SELECTED_SERVICES"
+
+
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType(Enum):
+    """The values should match the list of workloads used in networkconfig.proto"""
+
+    DBSQL = "DBSQL"
+    ML_SERVING = "ML_SERVING"
+
+
+class EgressNetworkPolicyInternetAccessPolicyRestrictionMode(Enum):
+    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
+    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
+    only access explicitly allowed internet and storage destinations, as well as UC connections and
+    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
+    private link."""
+
+    FULL_ACCESS = "FULL_ACCESS"
+    PRIVATE_ACCESS_ONLY = "PRIVATE_ACCESS_ONLY"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+    """Users can specify accessible storage destinations."""
+
+    allowed_paths: Optional[List[str]] = None
+
+    azure_container: Optional[str] = None
+
+    azure_dns_zone: Optional[str] = None
+
+    azure_storage_account: Optional[str] = None
+
+    azure_storage_service: Optional[str] = None
+
+    bucket_name: Optional[str] = None
+
+    region: Optional[str] = None
+
+    type: Optional[EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_paths:
+            body["allowed_paths"] = [v for v in self.allowed_paths]
+        if self.azure_container is not None:
+            body["azure_container"] = self.azure_container
+        if self.azure_dns_zone is not None:
+            body["azure_dns_zone"] = self.azure_dns_zone
+        if self.azure_storage_account is not None:
+            body["azure_storage_account"] = self.azure_storage_account
+        if self.azure_storage_service is not None:
+            body["azure_storage_service"] = self.azure_storage_service
+        if self.bucket_name is not None:
+            body["bucket_name"] = self.bucket_name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_paths:
+            body["allowed_paths"] = self.allowed_paths
+        if self.azure_container is not None:
+            body["azure_container"] = self.azure_container
+        if self.azure_dns_zone is not None:
+            body["azure_dns_zone"] = self.azure_dns_zone
+        if self.azure_storage_account is not None:
+            body["azure_storage_account"] = self.azure_storage_account
+        if self.azure_storage_service is not None:
+            body["azure_storage_service"] = self.azure_storage_service
+        if self.bucket_name is not None:
+            body["bucket_name"] = self.bucket_name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination from a dictionary."""
+        return cls(
+            allowed_paths=d.get("allowed_paths", None),
+            azure_container=d.get("azure_container", None),
+            azure_dns_zone=d.get("azure_dns_zone", None),
+            azure_storage_account=d.get("azure_storage_account", None),
+            azure_storage_service=d.get("azure_storage_service", None),
+            bucket_name=d.get("bucket_name", None),
+            region=d.get("region", None),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType),
+        )
+
+
+class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(Enum):
+
+    AWS_S3 = "AWS_S3"
+    AZURE_STORAGE = "AZURE_STORAGE"
+    CLOUDFLARE_R2 = "CLOUDFLARE_R2"
+    GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
 
 
 @dataclass
@@ -1057,6 +1617,90 @@ class ListCleanRoomsResponse:
         return cls(
             clean_rooms=_repeated_dict(d, "clean_rooms", CleanRoom), next_page_token=d.get("next_page_token", None)
         )
+
+
+@dataclass
+class Partition:
+    values: Optional[List[PartitionValue]] = None
+    """An array of partition values."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Partition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Partition into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Partition:
+        """Deserializes the Partition from a dictionary."""
+        return cls(values=_repeated_dict(d, "values", PartitionValue))
+
+
+@dataclass
+class PartitionValue:
+    name: Optional[str] = None
+    """The name of the partition column."""
+
+    op: Optional[PartitionValueOp] = None
+    """The operator to apply for the value."""
+
+    recipient_property_key: Optional[str] = None
+    """The key of a Delta Sharing recipient's property. For example "databricks-account-id". When this
+    field is set, field `value` can not be set."""
+
+    value: Optional[str] = None
+    """The value of the partition column. When this value is not set, it means `null` value. When this
+    field is set, field `recipient_property_key` can not be set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PartitionValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.op is not None:
+            body["op"] = self.op.value
+        if self.recipient_property_key is not None:
+            body["recipient_property_key"] = self.recipient_property_key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PartitionValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.op is not None:
+            body["op"] = self.op
+        if self.recipient_property_key is not None:
+            body["recipient_property_key"] = self.recipient_property_key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionValue:
+        """Deserializes the PartitionValue from a dictionary."""
+        return cls(
+            name=d.get("name", None),
+            op=_enum(d, "op", PartitionValueOp),
+            recipient_property_key=d.get("recipient_property_key", None),
+            value=d.get("value", None),
+        )
+
+
+class PartitionValueOp(Enum):
+
+    EQUAL = "EQUAL"
+    LIKE = "LIKE"
 
 
 @dataclass

@@ -408,6 +408,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LogOutputsRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogParam
    :members:
    :undoc-members:
@@ -425,6 +429,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelDatabricks
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelInput
    :members:
    :undoc-members:
 

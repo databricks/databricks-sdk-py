@@ -4,6 +4,10 @@ Dashboards
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.dashboards`` module.
 
 .. py:currentmodule:: databricks.sdk.service.dashboards
+.. autoclass:: BaseChunkInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: CancelQueryExecutionResponse
    :members:
    :undoc-members:
@@ -11,6 +15,71 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CancelQueryExecutionResponseStatus
    :members:
    :undoc-members:
+
+.. autoclass:: ColumnInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: ColumnInfoTypeName
+
+   The name of the base data type. This doesn't include details for complex types such as STRUCT, MAP or ARRAY.
+
+   .. py:attribute:: ARRAY
+      :value: "ARRAY"
+
+   .. py:attribute:: BINARY
+      :value: "BINARY"
+
+   .. py:attribute:: BOOLEAN
+      :value: "BOOLEAN"
+
+   .. py:attribute:: BYTE
+      :value: "BYTE"
+
+   .. py:attribute:: CHAR
+      :value: "CHAR"
+
+   .. py:attribute:: DATE
+      :value: "DATE"
+
+   .. py:attribute:: DECIMAL
+      :value: "DECIMAL"
+
+   .. py:attribute:: DOUBLE
+      :value: "DOUBLE"
+
+   .. py:attribute:: FLOAT
+      :value: "FLOAT"
+
+   .. py:attribute:: INT
+      :value: "INT"
+
+   .. py:attribute:: INTERVAL
+      :value: "INTERVAL"
+
+   .. py:attribute:: LONG
+      :value: "LONG"
+
+   .. py:attribute:: MAP
+      :value: "MAP"
+
+   .. py:attribute:: NULL
+      :value: "NULL"
+
+   .. py:attribute:: SHORT
+      :value: "SHORT"
+
+   .. py:attribute:: STRING
+      :value: "STRING"
+
+   .. py:attribute:: STRUCT
+      :value: "STRUCT"
+
+   .. py:attribute:: TIMESTAMP
+      :value: "TIMESTAMP"
+
+   .. py:attribute:: USER_DEFINED_TYPE
+      :value: "USER_DEFINED_TYPE"
 
 .. autoclass:: CronSchedule
    :members:
@@ -45,6 +114,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExternalLink
+   :members:
+   :undoc-members:
+
+.. py:class:: Format
+
+   .. py:attribute:: ARROW_STREAM
+      :value: "ARROW_STREAM"
+
+   .. py:attribute:: CSV
+      :value: "CSV"
+
+   .. py:attribute:: JSON_ARRAY
+      :value: "JSON_ARRAY"
+
 .. autoclass:: GenieAttachment
    :members:
    :undoc-members:
@@ -54,6 +138,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieCreateConversationMessageRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieGetDownloadFullQueryResultResponse
    :members:
    :undoc-members:
 
@@ -319,6 +411,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ResultData
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResultSchema
+   :members:
+   :undoc-members:
+
 .. autoclass:: Schedule
    :members:
    :undoc-members:
@@ -330,6 +434,84 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+.. autoclass:: ServiceError
+   :members:
+   :undoc-members:
+
+.. py:class:: ServiceErrorCode
+
+   .. py:attribute:: ABORTED
+      :value: "ABORTED"
+
+   .. py:attribute:: ALREADY_EXISTS
+      :value: "ALREADY_EXISTS"
+
+   .. py:attribute:: BAD_REQUEST
+      :value: "BAD_REQUEST"
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: DEADLINE_EXCEEDED
+      :value: "DEADLINE_EXCEEDED"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: IO_ERROR
+      :value: "IO_ERROR"
+
+   .. py:attribute:: NOT_FOUND
+      :value: "NOT_FOUND"
+
+   .. py:attribute:: RESOURCE_EXHAUSTED
+      :value: "RESOURCE_EXHAUSTED"
+
+   .. py:attribute:: SERVICE_UNDER_MAINTENANCE
+      :value: "SERVICE_UNDER_MAINTENANCE"
+
+   .. py:attribute:: TEMPORARILY_UNAVAILABLE
+      :value: "TEMPORARILY_UNAVAILABLE"
+
+   .. py:attribute:: UNAUTHENTICATED
+      :value: "UNAUTHENTICATED"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
+
+   .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
+      :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
+
+.. autoclass:: StatementResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: StatementState
+
+   Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running - `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution failed; reason for failure described in accomanying error message - `CANCELED`: user canceled; can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution successful, and statement closed; result no longer available for fetch
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: CLOSED
+      :value: "CLOSED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: StatementStatus
+   :members:
+   :undoc-members:
 
 .. autoclass:: Subscriber
    :members:

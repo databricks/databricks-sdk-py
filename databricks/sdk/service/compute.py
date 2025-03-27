@@ -3520,46 +3520,6 @@ class Created:
 
 
 @dataclass
-class CustomPolicyTag:
-    key: str
-    """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
-    “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
-    tags are preserved.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
-
-    value: Optional[str] = None
-    """The value of the tag.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CustomPolicyTag into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomPolicyTag:
-        """Deserializes the CustomPolicyTag from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-@dataclass
 class DataPlaneEventDetails:
     event_type: Optional[DataPlaneEventDetailsEventType] = None
 
@@ -4768,48 +4728,6 @@ class EnforceClusterComplianceResponse:
     def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceResponse:
         """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
         return cls(changes=_repeated_dict(d, "changes", ClusterSettingsChange), has_changes=d.get("has_changes", None))
-
-
-@dataclass
-class Environment:
-    """The environment entity used to preserve serverless environment side panel and jobs' environment
-    for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
-
-    client: str
-    """Client version used by the environment The client is the user-facing environment of the runtime.
-    Each client comes with a specific set of pre-installed libraries. The version is a string,
-    consisting of the major client version."""
-
-    dependencies: Optional[List[str]] = None
-    """List of pip dependencies, as supported by the version of pip in this environment. Each
-    dependency is a pip requirement file line
-    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
-    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
-    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
-    /Workspace/test/requirements.txt"]"""
-
-    def as_dict(self) -> dict:
-        """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.client is not None:
-            body["client"] = self.client
-        if self.dependencies:
-            body["dependencies"] = [v for v in self.dependencies]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Environment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.client is not None:
-            body["client"] = self.client
-        if self.dependencies:
-            body["dependencies"] = self.dependencies
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Environment:
-        """Deserializes the Environment from a dictionary."""
-        return cls(client=d.get("client", None), dependencies=d.get("dependencies", None))
 
 
 @dataclass

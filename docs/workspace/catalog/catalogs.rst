@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created.name, force=True)
+            w.catalogs.delete(name=created_catalog.name, force=True)
 
         Create a catalog.
 
