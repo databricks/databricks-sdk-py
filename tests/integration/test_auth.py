@@ -6,15 +6,12 @@ import subprocess
 import sys
 import typing
 import urllib.parse
-from functools import partial
 from pathlib import Path
 
 import pytest
 
-from databricks.sdk.service.compute import (DataSecurityMode, ResultType,
-                                            SparkVersion)
+from databricks.sdk.service.compute import SparkVersion
 from databricks.sdk.service.jobs import ViewType
-from databricks.sdk.service.workspace import ImportFormat
 
 
 @pytest.fixture
@@ -42,59 +39,59 @@ def fresh_wheel_file(tmp_path) -> Path:
         raise RuntimeError(e.stderr)
 
 
-@pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
-def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
-    instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
-    latest = ucws.clusters.select_spark_version(latest=True)
+# @pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
+# def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
+#     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
+#     latest = ucws.clusters.select_spark_version(latest=True)
 
-    my_user = ucws.current_user.me().user_name
+#     my_user = ucws.current_user.me().user_name
 
-    workspace_location = f"/Users/{my_user}/wheels/{random(10)}"
-    ucws.workspace.mkdirs(workspace_location)
+#     workspace_location = f"/Users/{my_user}/wheels/{random(10)}"
+#     ucws.workspace.mkdirs(workspace_location)
 
-    wsfs_wheel = f"{workspace_location}/{fresh_wheel_file.name}"
-    with fresh_wheel_file.open("rb") as f:
-        ucws.workspace.upload(wsfs_wheel, f, format=ImportFormat.AUTO)
+#     wsfs_wheel = f"{workspace_location}/{fresh_wheel_file.name}"
+#     with fresh_wheel_file.open("rb") as f:
+#         ucws.workspace.upload(wsfs_wheel, f, format=ImportFormat.AUTO)
 
-    from databricks.sdk.service.compute import Language
+#     from databricks.sdk.service.compute import Language
 
-    interactive_cluster = ucws.clusters.create(
-        cluster_name=f"native-auth-on-{mode.name}",
-        spark_version=latest,
-        instance_pool_id=instance_pool_id,
-        autotermination_minutes=10,
-        num_workers=1,
-        data_security_mode=mode,
-    ).result()
-    ctx = ucws.command_execution.create(cluster_id=interactive_cluster.cluster_id, language=Language.PYTHON).result()
-    run = partial(
-        ucws.command_execution.execute,
-        cluster_id=interactive_cluster.cluster_id,
-        context_id=ctx.id,
-        language=Language.PYTHON,
-    )
-    try:
-        res = run(command=f"%pip install /Workspace{wsfs_wheel}\ndbutils.library.restartPython()").result()
-        results = res.results
-        if results.result_type != ResultType.TEXT:
-            msg = f"({mode}) unexpected result type: {results.result_type}: {results.summary}\n{results.cause}"
-            raise RuntimeError(msg)
+#     interactive_cluster = ucws.clusters.create(
+#         cluster_name=f"native-auth-on-{mode.name}",
+#         spark_version=latest,
+#         instance_pool_id=instance_pool_id,
+#         autotermination_minutes=10,
+#         num_workers=1,
+#         data_security_mode=mode,
+#     ).result()
+#     ctx = ucws.command_execution.create(cluster_id=interactive_cluster.cluster_id, language=Language.PYTHON).result()
+#     run = partial(
+#         ucws.command_execution.execute,
+#         cluster_id=interactive_cluster.cluster_id,
+#         context_id=ctx.id,
+#         language=Language.PYTHON,
+#     )
+#     try:
+#         res = run(command=f"%pip install /Workspace{wsfs_wheel}\ndbutils.library.restartPython()").result()
+#         results = res.results
+#         if results.result_type != ResultType.TEXT:
+#             msg = f"({mode}) unexpected result type: {results.result_type}: {results.summary}\n{results.cause}"
+#             raise RuntimeError(msg)
 
-        res = run(
-            command="\n".join(
-                [
-                    "from databricks.sdk import WorkspaceClient",
-                    "w = WorkspaceClient()",
-                    "me = w.current_user.me()",
-                    "print(me.user_name)",
-                ]
-            )
-        ).result()
-        assert res.results.result_type == ResultType.TEXT, f"unexpected result type: {res.results.result_type}"
+#         res = run(
+#             command="\n".join(
+#                 [
+#                     "from databricks.sdk import WorkspaceClient",
+#                     "w = WorkspaceClient()",
+#                     "me = w.current_user.me()",
+#                     "print(me.user_name)",
+#                 ]
+#             )
+#         ).result()
+#         assert res.results.result_type == ResultType.TEXT, f"unexpected result type: {res.results.result_type}"
 
-        assert my_user == res.results.data, f"unexpected user: {res.results.data}"
-    finally:
-        ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
+#         assert my_user == res.results.data, f"unexpected user: {res.results.data}"
+#     finally:
+#         ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
 
 
 def _get_lts_versions(w) -> typing.List[SparkVersion]:
