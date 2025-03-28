@@ -82,41 +82,41 @@ class CleanRoom:
         """Serializes the CleanRoom into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_restricted is not None:
-            body["{access_restricted}"] = self.access_restricted
+            body["access_restricted"] = self.access_restricted
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.local_collaborator_alias is not None:
-            body["{local_collaborator_alias}"] = self.local_collaborator_alias
+            body["local_collaborator_alias"] = self.local_collaborator_alias
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.output_catalog:
-            body["{output_catalog}"] = self.output_catalog
+            body["output_catalog"] = self.output_catalog
         if self.owner is not None:
-            body["{owner}"] = self.owner
+            body["owner"] = self.owner
         if self.remote_detailed_info:
-            body["{remote_detailed_info}"] = self.remote_detailed_info
+            body["remote_detailed_info"] = self.remote_detailed_info
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoom:
         """Deserializes the CleanRoom from a dictionary."""
         return cls(
-            access_restricted=_enum(d, "{access_restricted}", CleanRoomAccessRestricted),
-            comment=d.get("{comment}", None),
-            created_at=d.get("{created_at}", None),
-            local_collaborator_alias=d.get("{local_collaborator_alias}", None),
-            name=d.get("{name}", None),
-            output_catalog=_from_dict(d, "{output_catalog}", CleanRoomOutputCatalog),
-            owner=d.get("{owner}", None),
-            remote_detailed_info=_from_dict(d, "{remote_detailed_info}", CleanRoomRemoteDetail),
-            status=_enum(d, "{status}", CleanRoomStatusEnum),
-            updated_at=d.get("{updated_at}", None),
+            access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            local_collaborator_alias=d.get("local_collaborator_alias", None),
+            name=d.get("name", None),
+            output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog),
+            owner=d.get("owner", None),
+            remote_detailed_info=_from_dict(d, "remote_detailed_info", CleanRoomRemoteDetail),
+            status=_enum(d, "status", CleanRoomStatusEnum),
+            updated_at=d.get("updated_at", None),
         )
 
 
@@ -218,52 +218,52 @@ class CleanRoomAsset:
         """Serializes the CleanRoomAsset into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.added_at is not None:
-            body["{added_at}"] = self.added_at
+            body["added_at"] = self.added_at
         if self.asset_type is not None:
-            body["{asset_type}"] = self.asset_type
+            body["asset_type"] = self.asset_type
         if self.foreign_table:
-            body["{foreign_table}"] = self.foreign_table
+            body["foreign_table"] = self.foreign_table
         if self.foreign_table_local_details:
-            body["{foreign_table_local_details}"] = self.foreign_table_local_details
+            body["foreign_table_local_details"] = self.foreign_table_local_details
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notebook:
-            body["{notebook}"] = self.notebook
+            body["notebook"] = self.notebook
         if self.owner_collaborator_alias is not None:
-            body["{owner_collaborator_alias}"] = self.owner_collaborator_alias
+            body["owner_collaborator_alias"] = self.owner_collaborator_alias
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.table:
-            body["{table}"] = self.table
+            body["table"] = self.table
         if self.table_local_details:
-            body["{table_local_details}"] = self.table_local_details
+            body["table_local_details"] = self.table_local_details
         if self.view:
-            body["{view}"] = self.view
+            body["view"] = self.view
         if self.view_local_details:
-            body["{view_local_details}"] = self.view_local_details
+            body["view_local_details"] = self.view_local_details
         if self.volume_local_details:
-            body["{volume_local_details}"] = self.volume_local_details
+            body["volume_local_details"] = self.volume_local_details
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAsset:
         """Deserializes the CleanRoomAsset from a dictionary."""
         return cls(
-            added_at=d.get("{added_at}", None),
-            asset_type=_enum(d, "{asset_type}", CleanRoomAssetAssetType),
-            foreign_table=_from_dict(d, "{foreign_table}", CleanRoomAssetForeignTable),
+            added_at=d.get("added_at", None),
+            asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
+            foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
             foreign_table_local_details=_from_dict(
-                d, "{foreign_table_local_details}", CleanRoomAssetForeignTableLocalDetails
+                d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
             ),
-            name=d.get("{name}", None),
-            notebook=_from_dict(d, "{notebook}", CleanRoomAssetNotebook),
-            owner_collaborator_alias=d.get("{owner_collaborator_alias}", None),
-            status=_enum(d, "{status}", CleanRoomAssetStatusEnum),
-            table=_from_dict(d, "{table}", CleanRoomAssetTable),
-            table_local_details=_from_dict(d, "{table_local_details}", CleanRoomAssetTableLocalDetails),
-            view=_from_dict(d, "{view}", CleanRoomAssetView),
-            view_local_details=_from_dict(d, "{view_local_details}", CleanRoomAssetViewLocalDetails),
-            volume_local_details=_from_dict(d, "{volume_local_details}", CleanRoomAssetVolumeLocalDetails),
+            name=d.get("name", None),
+            notebook=_from_dict(d, "notebook", CleanRoomAssetNotebook),
+            owner_collaborator_alias=d.get("owner_collaborator_alias", None),
+            status=_enum(d, "status", CleanRoomAssetStatusEnum),
+            table=_from_dict(d, "table", CleanRoomAssetTable),
+            table_local_details=_from_dict(d, "table_local_details", CleanRoomAssetTableLocalDetails),
+            view=_from_dict(d, "view", CleanRoomAssetView),
+            view_local_details=_from_dict(d, "view_local_details", CleanRoomAssetViewLocalDetails),
+            volume_local_details=_from_dict(d, "volume_local_details", CleanRoomAssetVolumeLocalDetails),
         )
 
 
@@ -292,13 +292,13 @@ class CleanRoomAssetForeignTable:
         """Serializes the CleanRoomAssetForeignTable into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetForeignTable:
         """Deserializes the CleanRoomAssetForeignTable from a dictionary."""
-        return cls(columns=_repeated_dict(d, "{columns}", ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -318,13 +318,13 @@ class CleanRoomAssetForeignTableLocalDetails:
         """Serializes the CleanRoomAssetForeignTableLocalDetails into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.local_name is not None:
-            body["{local_name}"] = self.local_name
+            body["local_name"] = self.local_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetForeignTableLocalDetails:
         """Deserializes the CleanRoomAssetForeignTableLocalDetails from a dictionary."""
-        return cls(local_name=d.get("{local_name}", None))
+        return cls(local_name=d.get("local_name", None))
 
 
 @dataclass
@@ -349,15 +349,15 @@ class CleanRoomAssetNotebook:
         """Serializes the CleanRoomAssetNotebook into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.notebook_content is not None:
-            body["{notebook_content}"] = self.notebook_content
+            body["notebook_content"] = self.notebook_content
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
-        return cls(etag=d.get("{etag}", None), notebook_content=d.get("{notebook_content}", None))
+        return cls(etag=d.get("etag", None), notebook_content=d.get("notebook_content", None))
 
 
 class CleanRoomAssetStatusEnum(Enum):
@@ -383,13 +383,13 @@ class CleanRoomAssetTable:
         """Serializes the CleanRoomAssetTable into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTable:
         """Deserializes the CleanRoomAssetTable from a dictionary."""
-        return cls(columns=_repeated_dict(d, "{columns}", ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -414,15 +414,15 @@ class CleanRoomAssetTableLocalDetails:
         """Serializes the CleanRoomAssetTableLocalDetails into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.local_name is not None:
-            body["{local_name}"] = self.local_name
+            body["local_name"] = self.local_name
         if self.partitions:
-            body["{partitions}"] = self.partitions
+            body["partitions"] = self.partitions
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetTableLocalDetails:
         """Deserializes the CleanRoomAssetTableLocalDetails from a dictionary."""
-        return cls(local_name=d.get("{local_name}", None), partitions=_repeated_dict(d, "{partitions}", Partition))
+        return cls(local_name=d.get("local_name", None), partitions=_repeated_dict(d, "partitions", Partition))
 
 
 @dataclass
@@ -441,13 +441,13 @@ class CleanRoomAssetView:
         """Serializes the CleanRoomAssetView into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetView:
         """Deserializes the CleanRoomAssetView from a dictionary."""
-        return cls(columns=_repeated_dict(d, "{columns}", ColumnInfo))
+        return cls(columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -467,13 +467,13 @@ class CleanRoomAssetViewLocalDetails:
         """Serializes the CleanRoomAssetViewLocalDetails into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.local_name is not None:
-            body["{local_name}"] = self.local_name
+            body["local_name"] = self.local_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetViewLocalDetails:
         """Deserializes the CleanRoomAssetViewLocalDetails from a dictionary."""
-        return cls(local_name=d.get("{local_name}", None))
+        return cls(local_name=d.get("local_name", None))
 
 
 @dataclass
@@ -493,13 +493,13 @@ class CleanRoomAssetVolumeLocalDetails:
         """Serializes the CleanRoomAssetVolumeLocalDetails into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.local_name is not None:
-            body["{local_name}"] = self.local_name
+            body["local_name"] = self.local_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetVolumeLocalDetails:
         """Deserializes the CleanRoomAssetVolumeLocalDetails from a dictionary."""
-        return cls(local_name=d.get("{local_name}", None))
+        return cls(local_name=d.get("local_name", None))
 
 
 @dataclass
@@ -557,29 +557,29 @@ class CleanRoomCollaborator:
         """Serializes the CleanRoomCollaborator into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.collaborator_alias is not None:
-            body["{collaborator_alias}"] = self.collaborator_alias
+            body["collaborator_alias"] = self.collaborator_alias
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.global_metastore_id is not None:
-            body["{global_metastore_id}"] = self.global_metastore_id
+            body["global_metastore_id"] = self.global_metastore_id
         if self.invite_recipient_email is not None:
-            body["{invite_recipient_email}"] = self.invite_recipient_email
+            body["invite_recipient_email"] = self.invite_recipient_email
         if self.invite_recipient_workspace_id is not None:
-            body["{invite_recipient_workspace_id}"] = self.invite_recipient_workspace_id
+            body["invite_recipient_workspace_id"] = self.invite_recipient_workspace_id
         if self.organization_name is not None:
-            body["{organization_name}"] = self.organization_name
+            body["organization_name"] = self.organization_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomCollaborator:
         """Deserializes the CleanRoomCollaborator from a dictionary."""
         return cls(
-            collaborator_alias=d.get("{collaborator_alias}", None),
-            display_name=d.get("{display_name}", None),
-            global_metastore_id=d.get("{global_metastore_id}", None),
-            invite_recipient_email=d.get("{invite_recipient_email}", None),
-            invite_recipient_workspace_id=d.get("{invite_recipient_workspace_id}", None),
-            organization_name=d.get("{organization_name}", None),
+            collaborator_alias=d.get("collaborator_alias", None),
+            display_name=d.get("display_name", None),
+            global_metastore_id=d.get("global_metastore_id", None),
+            invite_recipient_email=d.get("invite_recipient_email", None),
+            invite_recipient_workspace_id=d.get("invite_recipient_workspace_id", None),
+            organization_name=d.get("organization_name", None),
         )
 
 
@@ -633,32 +633,32 @@ class CleanRoomNotebookTaskRun:
         """Serializes the CleanRoomNotebookTaskRun into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.collaborator_job_run_info:
-            body["{collaborator_job_run_info}"] = self.collaborator_job_run_info
+            body["collaborator_job_run_info"] = self.collaborator_job_run_info
         if self.notebook_job_run_state:
-            body["{notebook_job_run_state}"] = self.notebook_job_run_state
+            body["notebook_job_run_state"] = self.notebook_job_run_state
         if self.notebook_name is not None:
-            body["{notebook_name}"] = self.notebook_name
+            body["notebook_name"] = self.notebook_name
         if self.output_schema_expiration_time is not None:
-            body["{output_schema_expiration_time}"] = self.output_schema_expiration_time
+            body["output_schema_expiration_time"] = self.output_schema_expiration_time
         if self.output_schema_name is not None:
-            body["{output_schema_name}"] = self.output_schema_name
+            body["output_schema_name"] = self.output_schema_name
         if self.run_duration is not None:
-            body["{run_duration}"] = self.run_duration
+            body["run_duration"] = self.run_duration
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomNotebookTaskRun:
         """Deserializes the CleanRoomNotebookTaskRun from a dictionary."""
         return cls(
-            collaborator_job_run_info=_from_dict(d, "{collaborator_job_run_info}", CollaboratorJobRunInfo),
-            notebook_job_run_state=_from_dict(d, "{notebook_job_run_state}", CleanRoomTaskRunState),
-            notebook_name=d.get("{notebook_name}", None),
-            output_schema_expiration_time=d.get("{output_schema_expiration_time}", None),
-            output_schema_name=d.get("{output_schema_name}", None),
-            run_duration=d.get("{run_duration}", None),
-            start_time=d.get("{start_time}", None),
+            collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
+            notebook_job_run_state=_from_dict(d, "notebook_job_run_state", CleanRoomTaskRunState),
+            notebook_name=d.get("notebook_name", None),
+            output_schema_expiration_time=d.get("output_schema_expiration_time", None),
+            output_schema_name=d.get("output_schema_name", None),
+            run_duration=d.get("run_duration", None),
+            start_time=d.get("start_time", None),
         )
 
 
@@ -685,17 +685,17 @@ class CleanRoomOutputCatalog:
         """Serializes the CleanRoomOutputCatalog into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomOutputCatalog:
         """Deserializes the CleanRoomOutputCatalog from a dictionary."""
         return cls(
-            catalog_name=d.get("{catalog_name}", None),
-            status=_enum(d, "{status}", CleanRoomOutputCatalogOutputCatalogStatus),
+            catalog_name=d.get("catalog_name", None),
+            status=_enum(d, "status", CleanRoomOutputCatalogOutputCatalogStatus),
         )
 
 
@@ -759,32 +759,32 @@ class CleanRoomRemoteDetail:
         """Serializes the CleanRoomRemoteDetail into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.central_clean_room_id is not None:
-            body["{central_clean_room_id}"] = self.central_clean_room_id
+            body["central_clean_room_id"] = self.central_clean_room_id
         if self.cloud_vendor is not None:
-            body["{cloud_vendor}"] = self.cloud_vendor
+            body["cloud_vendor"] = self.cloud_vendor
         if self.collaborators:
-            body["{collaborators}"] = self.collaborators
+            body["collaborators"] = self.collaborators
         if self.compliance_security_profile:
-            body["{compliance_security_profile}"] = self.compliance_security_profile
+            body["compliance_security_profile"] = self.compliance_security_profile
         if self.creator:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.egress_network_policy:
-            body["{egress_network_policy}"] = self.egress_network_policy
+            body["egress_network_policy"] = self.egress_network_policy
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomRemoteDetail:
         """Deserializes the CleanRoomRemoteDetail from a dictionary."""
         return cls(
-            central_clean_room_id=d.get("{central_clean_room_id}", None),
-            cloud_vendor=d.get("{cloud_vendor}", None),
-            collaborators=_repeated_dict(d, "{collaborators}", CleanRoomCollaborator),
-            compliance_security_profile=_from_dict(d, "{compliance_security_profile}", ComplianceSecurityProfile),
-            creator=_from_dict(d, "{creator}", CleanRoomCollaborator),
-            egress_network_policy=_from_dict(d, "{egress_network_policy}", EgressNetworkPolicy),
-            region=d.get("{region}", None),
+            central_clean_room_id=d.get("central_clean_room_id", None),
+            cloud_vendor=d.get("cloud_vendor", None),
+            collaborators=_repeated_dict(d, "collaborators", CleanRoomCollaborator),
+            compliance_security_profile=_from_dict(d, "compliance_security_profile", ComplianceSecurityProfile),
+            creator=_from_dict(d, "creator", CleanRoomCollaborator),
+            egress_network_policy=_from_dict(d, "egress_network_policy", EgressNetworkPolicy),
+            region=d.get("region", None),
         )
 
 
@@ -855,17 +855,17 @@ class CleanRoomTaskRunState:
         """Serializes the CleanRoomTaskRunState into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.life_cycle_state is not None:
-            body["{life_cycle_state}"] = self.life_cycle_state
+            body["life_cycle_state"] = self.life_cycle_state
         if self.result_state is not None:
-            body["{result_state}"] = self.result_state
+            body["result_state"] = self.result_state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTaskRunState:
         """Deserializes the CleanRoomTaskRunState from a dictionary."""
         return cls(
-            life_cycle_state=_enum(d, "{life_cycle_state}", CleanRoomTaskRunLifeCycleState),
-            result_state=_enum(d, "{result_state}", CleanRoomTaskRunResultState),
+            life_cycle_state=_enum(d, "life_cycle_state", CleanRoomTaskRunLifeCycleState),
+            result_state=_enum(d, "result_state", CleanRoomTaskRunResultState),
         )
 
 
@@ -905,26 +905,26 @@ class CollaboratorJobRunInfo:
         """Serializes the CollaboratorJobRunInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.collaborator_alias is not None:
-            body["{collaborator_alias}"] = self.collaborator_alias
+            body["collaborator_alias"] = self.collaborator_alias
         if self.collaborator_job_id is not None:
-            body["{collaborator_job_id}"] = self.collaborator_job_id
+            body["collaborator_job_id"] = self.collaborator_job_id
         if self.collaborator_job_run_id is not None:
-            body["{collaborator_job_run_id}"] = self.collaborator_job_run_id
+            body["collaborator_job_run_id"] = self.collaborator_job_run_id
         if self.collaborator_task_run_id is not None:
-            body["{collaborator_task_run_id}"] = self.collaborator_task_run_id
+            body["collaborator_task_run_id"] = self.collaborator_task_run_id
         if self.collaborator_workspace_id is not None:
-            body["{collaborator_workspace_id}"] = self.collaborator_workspace_id
+            body["collaborator_workspace_id"] = self.collaborator_workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CollaboratorJobRunInfo:
         """Deserializes the CollaboratorJobRunInfo from a dictionary."""
         return cls(
-            collaborator_alias=d.get("{collaborator_alias}", None),
-            collaborator_job_id=d.get("{collaborator_job_id}", None),
-            collaborator_job_run_id=d.get("{collaborator_job_run_id}", None),
-            collaborator_task_run_id=d.get("{collaborator_task_run_id}", None),
-            collaborator_workspace_id=d.get("{collaborator_workspace_id}", None),
+            collaborator_alias=d.get("collaborator_alias", None),
+            collaborator_job_id=d.get("collaborator_job_id", None),
+            collaborator_job_run_id=d.get("collaborator_job_run_id", None),
+            collaborator_task_run_id=d.get("collaborator_task_run_id", None),
+            collaborator_workspace_id=d.get("collaborator_workspace_id", None),
         )
 
 
@@ -997,47 +997,47 @@ class ColumnInfo:
         """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.mask:
-            body["{mask}"] = self.mask
+            body["mask"] = self.mask
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.nullable is not None:
-            body["{nullable}"] = self.nullable
+            body["nullable"] = self.nullable
         if self.partition_index is not None:
-            body["{partition_index}"] = self.partition_index
+            body["partition_index"] = self.partition_index
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.type_interval_type is not None:
-            body["{type_interval_type}"] = self.type_interval_type
+            body["type_interval_type"] = self.type_interval_type
         if self.type_json is not None:
-            body["{type_json}"] = self.type_json
+            body["type_json"] = self.type_json
         if self.type_name is not None:
-            body["{type_name}"] = self.type_name
+            body["type_name"] = self.type_name
         if self.type_precision is not None:
-            body["{type_precision}"] = self.type_precision
+            body["type_precision"] = self.type_precision
         if self.type_scale is not None:
-            body["{type_scale}"] = self.type_scale
+            body["type_scale"] = self.type_scale
         if self.type_text is not None:
-            body["{type_text}"] = self.type_text
+            body["type_text"] = self.type_text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(
-            comment=d.get("{comment}", None),
-            mask=_from_dict(d, "{mask}", ColumnMask),
-            name=d.get("{name}", None),
-            nullable=d.get("{nullable}", None),
-            partition_index=d.get("{partition_index}", None),
-            position=d.get("{position}", None),
-            type_interval_type=d.get("{type_interval_type}", None),
-            type_json=d.get("{type_json}", None),
-            type_name=_enum(d, "{type_name}", ColumnTypeName),
-            type_precision=d.get("{type_precision}", None),
-            type_scale=d.get("{type_scale}", None),
-            type_text=d.get("{type_text}", None),
+            comment=d.get("comment", None),
+            mask=_from_dict(d, "mask", ColumnMask),
+            name=d.get("name", None),
+            nullable=d.get("nullable", None),
+            partition_index=d.get("partition_index", None),
+            position=d.get("position", None),
+            type_interval_type=d.get("type_interval_type", None),
+            type_json=d.get("type_json", None),
+            type_name=_enum(d, "type_name", ColumnTypeName),
+            type_precision=d.get("type_precision", None),
+            type_scale=d.get("type_scale", None),
+            type_text=d.get("type_text", None),
         )
 
 
@@ -1064,15 +1064,15 @@ class ColumnMask:
         """Serializes the ColumnMask into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.function_name is not None:
-            body["{function_name}"] = self.function_name
+            body["function_name"] = self.function_name
         if self.using_column_names:
-            body["{using_column_names}"] = self.using_column_names
+            body["using_column_names"] = self.using_column_names
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
-        return cls(function_name=d.get("{function_name}", None), using_column_names=d.get("{using_column_names}", None))
+        return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
 
 
 class ColumnTypeName(Enum):
@@ -1124,17 +1124,17 @@ class ComplianceSecurityProfile:
         """Serializes the ComplianceSecurityProfile into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.compliance_standards:
-            body["{compliance_standards}"] = self.compliance_standards
+            body["compliance_standards"] = self.compliance_standards
         if self.is_enabled is not None:
-            body["{is_enabled}"] = self.is_enabled
+            body["is_enabled"] = self.is_enabled
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
-            compliance_standards=_repeated_enum(d, "{compliance_standards}", ComplianceStandard),
-            is_enabled=d.get("{is_enabled}", None),
+            compliance_standards=_repeated_enum(d, "compliance_standards", ComplianceStandard),
+            is_enabled=d.get("is_enabled", None),
         )
 
 
@@ -1170,13 +1170,13 @@ class CreateCleanRoomOutputCatalogResponse:
         """Serializes the CreateCleanRoomOutputCatalogResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.output_catalog:
-            body["{output_catalog}"] = self.output_catalog
+            body["output_catalog"] = self.output_catalog
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateCleanRoomOutputCatalogResponse:
         """Deserializes the CreateCleanRoomOutputCatalogResponse from a dictionary."""
-        return cls(output_catalog=_from_dict(d, "{output_catalog}", CleanRoomOutputCatalog))
+        return cls(output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog))
 
 
 @dataclass
@@ -1238,13 +1238,13 @@ class EgressNetworkPolicy:
         """Serializes the EgressNetworkPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.internet_access:
-            body["{internet_access}"] = self.internet_access
+            body["internet_access"] = self.internet_access
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicy:
         """Deserializes the EgressNetworkPolicy from a dictionary."""
-        return cls(internet_access=_from_dict(d, "{internet_access}", EgressNetworkPolicyInternetAccessPolicy))
+        return cls(internet_access=_from_dict(d, "internet_access", EgressNetworkPolicyInternetAccessPolicy))
 
 
 @dataclass
@@ -1280,13 +1280,13 @@ class EgressNetworkPolicyInternetAccessPolicy:
         """Serializes the EgressNetworkPolicyInternetAccessPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.allowed_internet_destinations:
-            body["{allowed_internet_destinations}"] = self.allowed_internet_destinations
+            body["allowed_internet_destinations"] = self.allowed_internet_destinations
         if self.allowed_storage_destinations:
-            body["{allowed_storage_destinations}"] = self.allowed_storage_destinations
+            body["allowed_storage_destinations"] = self.allowed_storage_destinations
         if self.log_only_mode:
-            body["{log_only_mode}"] = self.log_only_mode
+            body["log_only_mode"] = self.log_only_mode
         if self.restriction_mode is not None:
-            body["{restriction_mode}"] = self.restriction_mode
+            body["restriction_mode"] = self.restriction_mode
         return body
 
     @classmethod
@@ -1294,13 +1294,13 @@ class EgressNetworkPolicyInternetAccessPolicy:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicy from a dictionary."""
         return cls(
             allowed_internet_destinations=_repeated_dict(
-                d, "{allowed_internet_destinations}", EgressNetworkPolicyInternetAccessPolicyInternetDestination
+                d, "allowed_internet_destinations", EgressNetworkPolicyInternetAccessPolicyInternetDestination
             ),
             allowed_storage_destinations=_repeated_dict(
-                d, "{allowed_storage_destinations}", EgressNetworkPolicyInternetAccessPolicyStorageDestination
+                d, "allowed_storage_destinations", EgressNetworkPolicyInternetAccessPolicyStorageDestination
             ),
-            log_only_mode=_from_dict(d, "{log_only_mode}", EgressNetworkPolicyInternetAccessPolicyLogOnlyMode),
-            restriction_mode=_enum(d, "{restriction_mode}", EgressNetworkPolicyInternetAccessPolicyRestrictionMode),
+            log_only_mode=_from_dict(d, "log_only_mode", EgressNetworkPolicyInternetAccessPolicyLogOnlyMode),
+            restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyInternetAccessPolicyRestrictionMode),
         )
 
 
@@ -1337,24 +1337,24 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
         """Serializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         if self.protocol is not None:
-            body["{protocol}"] = self.protocol
+            body["protocol"] = self.protocol
         if self.type is not None:
-            body["{type}"] = self.type
+            body["type"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyInternetDestination:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination from a dictionary."""
         return cls(
-            destination=d.get("{destination}", None),
+            destination=d.get("destination", None),
             protocol=_enum(
                 d,
-                "{protocol}",
+                "protocol",
                 EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol,
             ),
-            type=_enum(d, "{type}", EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType),
         )
 
 
@@ -1391,9 +1391,9 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
         """Serializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_only_mode_type is not None:
-            body["{log_only_mode_type}"] = self.log_only_mode_type
+            body["log_only_mode_type"] = self.log_only_mode_type
         if self.workloads:
-            body["{workloads}"] = self.workloads
+            body["workloads"] = self.workloads
         return body
 
     @classmethod
@@ -1401,9 +1401,9 @@ class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode from a dictionary."""
         return cls(
             log_only_mode_type=_enum(
-                d, "{log_only_mode_type}", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
+                d, "log_only_mode_type", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
             ),
-            workloads=_repeated_enum(d, "{workloads}", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType),
+            workloads=_repeated_enum(d, "workloads", EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType),
         )
 
 
@@ -1477,35 +1477,35 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
         """Serializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.allowed_paths:
-            body["{allowed_paths}"] = self.allowed_paths
+            body["allowed_paths"] = self.allowed_paths
         if self.azure_container is not None:
-            body["{azure_container}"] = self.azure_container
+            body["azure_container"] = self.azure_container
         if self.azure_dns_zone is not None:
-            body["{azure_dns_zone}"] = self.azure_dns_zone
+            body["azure_dns_zone"] = self.azure_dns_zone
         if self.azure_storage_account is not None:
-            body["{azure_storage_account}"] = self.azure_storage_account
+            body["azure_storage_account"] = self.azure_storage_account
         if self.azure_storage_service is not None:
-            body["{azure_storage_service}"] = self.azure_storage_service
+            body["azure_storage_service"] = self.azure_storage_service
         if self.bucket_name is not None:
-            body["{bucket_name}"] = self.bucket_name
+            body["bucket_name"] = self.bucket_name
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         if self.type is not None:
-            body["{type}"] = self.type
+            body["type"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyInternetAccessPolicyStorageDestination:
         """Deserializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination from a dictionary."""
         return cls(
-            allowed_paths=d.get("{allowed_paths}", None),
-            azure_container=d.get("{azure_container}", None),
-            azure_dns_zone=d.get("{azure_dns_zone}", None),
-            azure_storage_account=d.get("{azure_storage_account}", None),
-            azure_storage_service=d.get("{azure_storage_service}", None),
-            bucket_name=d.get("{bucket_name}", None),
-            region=d.get("{region}", None),
-            type=_enum(d, "{type}", EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType),
+            allowed_paths=d.get("allowed_paths", None),
+            azure_container=d.get("azure_container", None),
+            azure_dns_zone=d.get("azure_dns_zone", None),
+            azure_storage_account=d.get("azure_storage_account", None),
+            azure_storage_service=d.get("azure_storage_service", None),
+            bucket_name=d.get("bucket_name", None),
+            region=d.get("region", None),
+            type=_enum(d, "type", EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType),
         )
 
 
@@ -1539,17 +1539,15 @@ class ListCleanRoomAssetsResponse:
         """Serializes the ListCleanRoomAssetsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.assets:
-            body["{assets}"] = self.assets
+            body["assets"] = self.assets
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomAssetsResponse:
         """Deserializes the ListCleanRoomAssetsResponse from a dictionary."""
-        return cls(
-            assets=_repeated_dict(d, "{assets}", CleanRoomAsset), next_page_token=d.get("{next_page_token}", None)
-        )
+        return cls(assets=_repeated_dict(d, "assets", CleanRoomAsset), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1574,16 +1572,16 @@ class ListCleanRoomNotebookTaskRunsResponse:
         """Serializes the ListCleanRoomNotebookTaskRunsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.runs:
-            body["{runs}"] = self.runs
+            body["runs"] = self.runs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomNotebookTaskRunsResponse:
         """Deserializes the ListCleanRoomNotebookTaskRunsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None), runs=_repeated_dict(d, "{runs}", CleanRoomNotebookTaskRun)
+            next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", CleanRoomNotebookTaskRun)
         )
 
 
@@ -1608,16 +1606,16 @@ class ListCleanRoomsResponse:
         """Serializes the ListCleanRoomsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.clean_rooms:
-            body["{clean_rooms}"] = self.clean_rooms
+            body["clean_rooms"] = self.clean_rooms
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomsResponse:
         """Deserializes the ListCleanRoomsResponse from a dictionary."""
         return cls(
-            clean_rooms=_repeated_dict(d, "{clean_rooms}", CleanRoom), next_page_token=d.get("{next_page_token}", None)
+            clean_rooms=_repeated_dict(d, "clean_rooms", CleanRoom), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -1637,13 +1635,13 @@ class Partition:
         """Serializes the Partition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.values:
-            body["{values}"] = self.values
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Partition:
         """Deserializes the Partition from a dictionary."""
-        return cls(values=_repeated_dict(d, "{values}", PartitionValue))
+        return cls(values=_repeated_dict(d, "values", PartitionValue))
 
 
 @dataclass
@@ -1679,23 +1677,23 @@ class PartitionValue:
         """Serializes the PartitionValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.op is not None:
-            body["{op}"] = self.op
+            body["op"] = self.op
         if self.recipient_property_key is not None:
-            body["{recipient_property_key}"] = self.recipient_property_key
+            body["recipient_property_key"] = self.recipient_property_key
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PartitionValue:
         """Deserializes the PartitionValue from a dictionary."""
         return cls(
-            name=d.get("{name}", None),
-            op=_enum(d, "{op}", PartitionValueOp),
-            recipient_property_key=d.get("{recipient_property_key}", None),
-            value=d.get("{value}", None),
+            name=d.get("name", None),
+            op=_enum(d, "op", PartitionValueOp),
+            recipient_property_key=d.get("recipient_property_key", None),
+            value=d.get("value", None),
         )
 
 
@@ -1725,15 +1723,15 @@ class UpdateCleanRoomRequest:
         """Serializes the UpdateCleanRoomRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.clean_room:
-            body["{clean_room}"] = self.clean_room
+            body["clean_room"] = self.clean_room
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCleanRoomRequest:
         """Deserializes the UpdateCleanRoomRequest from a dictionary."""
-        return cls(clean_room=_from_dict(d, "{clean_room}", CleanRoom), name=d.get("{name}", None))
+        return cls(clean_room=_from_dict(d, "clean_room", CleanRoom), name=d.get("name", None))
 
 
 class CleanRoomAssetsAPI:
@@ -1831,19 +1829,19 @@ class CleanRoomAssetsAPI:
 
         query = {}
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets", query=query, headers=headers)
-            if "{assets}" in json:
-                for v in json["{assets}"]:
+            if "assets" in json:
+                for v in json["assets"]:
                     yield CleanRoomAsset.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self,
@@ -1922,23 +1920,23 @@ class CleanRoomTaskRunsAPI:
 
         query = {}
         if notebook_name is not None:
-            query["{notebook_name}"] = notebook_name
+            query["notebook_name"] = notebook_name
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", f"/api/2.0/clean-rooms/{clean_room_name}/runs", query=query, headers=headers)
-            if "{runs}" in json:
-                for v in json["{runs}"]:
+            if "runs" in json:
+                for v in json["runs"]:
                     yield CleanRoomNotebookTaskRun.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class CleanRoomsAPI:
@@ -2049,21 +2047,21 @@ class CleanRoomsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/clean-rooms", query=query, headers=headers)
-            if "{clean_rooms}" in json:
-                for v in json["{clean_rooms}"]:
+            if "clean_rooms" in json:
+                for v in json["clean_rooms"]:
                     yield CleanRoom.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, name: str, *, clean_room: Optional[CleanRoom] = None) -> CleanRoom:
         """Update a clean room.
@@ -2081,7 +2079,7 @@ class CleanRoomsAPI:
         """
         body = {}
         if clean_room is not None:
-            body["{clean_room}"] = clean_room.as_dict()
+            body["clean_room"] = clean_room.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",

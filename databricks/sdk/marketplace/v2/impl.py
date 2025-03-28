@@ -34,15 +34,15 @@ class AddExchangeForListingRequest:
         """Serializes the AddExchangeForListingRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AddExchangeForListingRequest:
         """Deserializes the AddExchangeForListingRequest from a dictionary."""
-        return cls(exchange_id=d.get("{exchange_id}", None), listing_id=d.get("{listing_id}", None))
+        return cls(exchange_id=d.get("exchange_id", None), listing_id=d.get("listing_id", None))
 
 
 @dataclass
@@ -60,13 +60,13 @@ class AddExchangeForListingResponse:
         """Serializes the AddExchangeForListingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange_for_listing:
-            body["{exchange_for_listing}"] = self.exchange_for_listing
+            body["exchange_for_listing"] = self.exchange_for_listing
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AddExchangeForListingResponse:
         """Deserializes the AddExchangeForListingResponse from a dictionary."""
-        return cls(exchange_for_listing=_from_dict(d, "{exchange_for_listing}", ExchangeListing))
+        return cls(exchange_for_listing=_from_dict(d, "exchange_for_listing", ExchangeListing))
 
 
 class AssetType(Enum):
@@ -95,13 +95,13 @@ class BatchGetListingsResponse:
         """Serializes the BatchGetListingsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listings:
-            body["{listings}"] = self.listings
+            body["listings"] = self.listings
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BatchGetListingsResponse:
         """Deserializes the BatchGetListingsResponse from a dictionary."""
-        return cls(listings=_repeated_dict(d, "{listings}", Listing))
+        return cls(listings=_repeated_dict(d, "listings", Listing))
 
 
 @dataclass
@@ -119,13 +119,13 @@ class BatchGetProvidersResponse:
         """Serializes the BatchGetProvidersResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.providers:
-            body["{providers}"] = self.providers
+            body["providers"] = self.providers
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BatchGetProvidersResponse:
         """Deserializes the BatchGetProvidersResponse from a dictionary."""
-        return cls(providers=_repeated_dict(d, "{providers}", ProviderInfo))
+        return cls(providers=_repeated_dict(d, "providers", ProviderInfo))
 
 
 class Category(Enum):
@@ -169,13 +169,13 @@ class ConsumerTerms:
         """Serializes the ConsumerTerms into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ConsumerTerms:
         """Deserializes the ConsumerTerms from a dictionary."""
-        return cls(version=d.get("{version}", None))
+        return cls(version=d.get("version", None))
 
 
 @dataclass
@@ -207,23 +207,23 @@ class ContactInfo:
         """Serializes the ContactInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.company is not None:
-            body["{company}"] = self.company
+            body["company"] = self.company
         if self.email is not None:
-            body["{email}"] = self.email
+            body["email"] = self.email
         if self.first_name is not None:
-            body["{first_name}"] = self.first_name
+            body["first_name"] = self.first_name
         if self.last_name is not None:
-            body["{last_name}"] = self.last_name
+            body["last_name"] = self.last_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ContactInfo:
         """Deserializes the ContactInfo from a dictionary."""
         return cls(
-            company=d.get("{company}", None),
-            email=d.get("{email}", None),
-            first_name=d.get("{first_name}", None),
-            last_name=d.get("{last_name}", None),
+            company=d.get("company", None),
+            email=d.get("email", None),
+            first_name=d.get("first_name", None),
+            last_name=d.get("last_name", None),
         )
 
 
@@ -248,13 +248,13 @@ class CreateExchangeFilterRequest:
         """Serializes the CreateExchangeFilterRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter
+            body["filter"] = self.filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeFilterRequest:
         """Deserializes the CreateExchangeFilterRequest from a dictionary."""
-        return cls(filter=_from_dict(d, "{filter}", ExchangeFilter))
+        return cls(filter=_from_dict(d, "filter", ExchangeFilter))
 
 
 @dataclass
@@ -272,13 +272,13 @@ class CreateExchangeFilterResponse:
         """Serializes the CreateExchangeFilterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.filter_id is not None:
-            body["{filter_id}"] = self.filter_id
+            body["filter_id"] = self.filter_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeFilterResponse:
         """Deserializes the CreateExchangeFilterResponse from a dictionary."""
-        return cls(filter_id=d.get("{filter_id}", None))
+        return cls(filter_id=d.get("filter_id", None))
 
 
 @dataclass
@@ -296,13 +296,13 @@ class CreateExchangeRequest:
         """Serializes the CreateExchangeRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange
+            body["exchange"] = self.exchange
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeRequest:
         """Deserializes the CreateExchangeRequest from a dictionary."""
-        return cls(exchange=_from_dict(d, "{exchange}", Exchange))
+        return cls(exchange=_from_dict(d, "exchange", Exchange))
 
 
 @dataclass
@@ -320,13 +320,13 @@ class CreateExchangeResponse:
         """Serializes the CreateExchangeResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeResponse:
         """Deserializes the CreateExchangeResponse from a dictionary."""
-        return cls(exchange_id=d.get("{exchange_id}", None))
+        return cls(exchange_id=d.get("exchange_id", None))
 
 
 @dataclass
@@ -356,23 +356,23 @@ class CreateFileRequest:
         """Serializes the CreateFileRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.file_parent:
-            body["{file_parent}"] = self.file_parent
+            body["file_parent"] = self.file_parent
         if self.marketplace_file_type is not None:
-            body["{marketplace_file_type}"] = self.marketplace_file_type
+            body["marketplace_file_type"] = self.marketplace_file_type
         if self.mime_type is not None:
-            body["{mime_type}"] = self.mime_type
+            body["mime_type"] = self.mime_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateFileRequest:
         """Deserializes the CreateFileRequest from a dictionary."""
         return cls(
-            display_name=d.get("{display_name}", None),
-            file_parent=_from_dict(d, "{file_parent}", FileParent),
-            marketplace_file_type=_enum(d, "{marketplace_file_type}", MarketplaceFileType),
-            mime_type=d.get("{mime_type}", None),
+            display_name=d.get("display_name", None),
+            file_parent=_from_dict(d, "file_parent", FileParent),
+            marketplace_file_type=_enum(d, "marketplace_file_type", MarketplaceFileType),
+            mime_type=d.get("mime_type", None),
         )
 
 
@@ -396,15 +396,15 @@ class CreateFileResponse:
         """Serializes the CreateFileResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_info:
-            body["{file_info}"] = self.file_info
+            body["file_info"] = self.file_info
         if self.upload_url is not None:
-            body["{upload_url}"] = self.upload_url
+            body["upload_url"] = self.upload_url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateFileResponse:
         """Deserializes the CreateFileResponse from a dictionary."""
-        return cls(file_info=_from_dict(d, "{file_info}", FileInfo), upload_url=d.get("{upload_url}", None))
+        return cls(file_info=_from_dict(d, "file_info", FileInfo), upload_url=d.get("upload_url", None))
 
 
 @dataclass
@@ -443,29 +443,29 @@ class CreateInstallationRequest:
         """Serializes the CreateInstallationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.accepted_consumer_terms:
-            body["{accepted_consumer_terms}"] = self.accepted_consumer_terms
+            body["accepted_consumer_terms"] = self.accepted_consumer_terms
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type
+            body["recipient_type"] = self.recipient_type
         if self.repo_detail:
-            body["{repo_detail}"] = self.repo_detail
+            body["repo_detail"] = self.repo_detail
         if self.share_name is not None:
-            body["{share_name}"] = self.share_name
+            body["share_name"] = self.share_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateInstallationRequest:
         """Deserializes the CreateInstallationRequest from a dictionary."""
         return cls(
-            accepted_consumer_terms=_from_dict(d, "{accepted_consumer_terms}", ConsumerTerms),
-            catalog_name=d.get("{catalog_name}", None),
-            listing_id=d.get("{listing_id}", None),
-            recipient_type=_enum(d, "{recipient_type}", DeltaSharingRecipientType),
-            repo_detail=_from_dict(d, "{repo_detail}", RepoInstallation),
-            share_name=d.get("{share_name}", None),
+            accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
+            catalog_name=d.get("catalog_name", None),
+            listing_id=d.get("listing_id", None),
+            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
+            repo_detail=_from_dict(d, "repo_detail", RepoInstallation),
+            share_name=d.get("share_name", None),
         )
 
 
@@ -484,13 +484,13 @@ class CreateListingRequest:
         """Serializes the CreateListingRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing
+            body["listing"] = self.listing
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateListingRequest:
         """Deserializes the CreateListingRequest from a dictionary."""
-        return cls(listing=_from_dict(d, "{listing}", Listing))
+        return cls(listing=_from_dict(d, "listing", Listing))
 
 
 @dataclass
@@ -508,13 +508,13 @@ class CreateListingResponse:
         """Serializes the CreateListingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateListingResponse:
         """Deserializes the CreateListingResponse from a dictionary."""
-        return cls(listing_id=d.get("{listing_id}", None))
+        return cls(listing_id=d.get("listing_id", None))
 
 
 @dataclass
@@ -566,38 +566,38 @@ class CreatePersonalizationRequest:
         """Serializes the CreatePersonalizationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.accepted_consumer_terms:
-            body["{accepted_consumer_terms}"] = self.accepted_consumer_terms
+            body["accepted_consumer_terms"] = self.accepted_consumer_terms
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.company is not None:
-            body["{company}"] = self.company
+            body["company"] = self.company
         if self.first_name is not None:
-            body["{first_name}"] = self.first_name
+            body["first_name"] = self.first_name
         if self.intended_use is not None:
-            body["{intended_use}"] = self.intended_use
+            body["intended_use"] = self.intended_use
         if self.is_from_lighthouse is not None:
-            body["{is_from_lighthouse}"] = self.is_from_lighthouse
+            body["is_from_lighthouse"] = self.is_from_lighthouse
         if self.last_name is not None:
-            body["{last_name}"] = self.last_name
+            body["last_name"] = self.last_name
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type
+            body["recipient_type"] = self.recipient_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequest:
         """Deserializes the CreatePersonalizationRequest from a dictionary."""
         return cls(
-            accepted_consumer_terms=_from_dict(d, "{accepted_consumer_terms}", ConsumerTerms),
-            comment=d.get("{comment}", None),
-            company=d.get("{company}", None),
-            first_name=d.get("{first_name}", None),
-            intended_use=d.get("{intended_use}", None),
-            is_from_lighthouse=d.get("{is_from_lighthouse}", None),
-            last_name=d.get("{last_name}", None),
-            listing_id=d.get("{listing_id}", None),
-            recipient_type=_enum(d, "{recipient_type}", DeltaSharingRecipientType),
+            accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
+            comment=d.get("comment", None),
+            company=d.get("company", None),
+            first_name=d.get("first_name", None),
+            intended_use=d.get("intended_use", None),
+            is_from_lighthouse=d.get("is_from_lighthouse", None),
+            last_name=d.get("last_name", None),
+            listing_id=d.get("listing_id", None),
+            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
         )
 
 
@@ -616,13 +616,13 @@ class CreatePersonalizationRequestResponse:
         """Serializes the CreatePersonalizationRequestResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequestResponse:
         """Deserializes the CreatePersonalizationRequestResponse from a dictionary."""
-        return cls(id=d.get("{id}", None))
+        return cls(id=d.get("id", None))
 
 
 @dataclass
@@ -640,13 +640,13 @@ class CreateProviderRequest:
         """Serializes the CreateProviderRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider
+            body["provider"] = self.provider
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateProviderRequest:
         """Deserializes the CreateProviderRequest from a dictionary."""
-        return cls(provider=_from_dict(d, "{provider}", ProviderInfo))
+        return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass
@@ -664,13 +664,13 @@ class CreateProviderResponse:
         """Serializes the CreateProviderResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateProviderResponse:
         """Deserializes the CreateProviderResponse from a dictionary."""
-        return cls(id=d.get("{id}", None))
+        return cls(id=d.get("id", None))
 
 
 class DataRefresh(Enum):
@@ -705,15 +705,15 @@ class DataRefreshInfo:
         """Serializes the DataRefreshInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.interval is not None:
-            body["{interval}"] = self.interval
+            body["interval"] = self.interval
         if self.unit is not None:
-            body["{unit}"] = self.unit
+            body["unit"] = self.unit
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataRefreshInfo:
         """Deserializes the DataRefreshInfo from a dictionary."""
-        return cls(interval=d.get("{interval}", None), unit=_enum(d, "{unit}", DataRefresh))
+        return cls(interval=d.get("interval", None), unit=_enum(d, "unit", DataRefresh))
 
 
 @dataclass
@@ -877,38 +877,38 @@ class Exchange:
         """Serializes the Exchange into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.filters:
-            body["{filters}"] = self.filters
+            body["filters"] = self.filters
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.linked_listings:
-            body["{linked_listings}"] = self.linked_listings
+            body["linked_listings"] = self.linked_listings
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Exchange:
         """Deserializes the Exchange from a dictionary."""
         return cls(
-            comment=d.get("{comment}", None),
-            created_at=d.get("{created_at}", None),
-            created_by=d.get("{created_by}", None),
-            filters=_repeated_dict(d, "{filters}", ExchangeFilter),
-            id=d.get("{id}", None),
-            linked_listings=_repeated_dict(d, "{linked_listings}", ExchangeListing),
-            name=d.get("{name}", None),
-            updated_at=d.get("{updated_at}", None),
-            updated_by=d.get("{updated_by}", None),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            filters=_repeated_dict(d, "filters", ExchangeFilter),
+            id=d.get("id", None),
+            linked_listings=_repeated_dict(d, "linked_listings", ExchangeListing),
+            name=d.get("name", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
         )
 
 
@@ -959,38 +959,38 @@ class ExchangeFilter:
         """Serializes the ExchangeFilter into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.filter_type is not None:
-            body["{filter_type}"] = self.filter_type
+            body["filter_type"] = self.filter_type
         if self.filter_value is not None:
-            body["{filter_value}"] = self.filter_value
+            body["filter_value"] = self.filter_value
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExchangeFilter:
         """Deserializes the ExchangeFilter from a dictionary."""
         return cls(
-            created_at=d.get("{created_at}", None),
-            created_by=d.get("{created_by}", None),
-            exchange_id=d.get("{exchange_id}", None),
-            filter_type=_enum(d, "{filter_type}", ExchangeFilterType),
-            filter_value=d.get("{filter_value}", None),
-            id=d.get("{id}", None),
-            name=d.get("{name}", None),
-            updated_at=d.get("{updated_at}", None),
-            updated_by=d.get("{updated_by}", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            exchange_id=d.get("exchange_id", None),
+            filter_type=_enum(d, "filter_type", ExchangeFilterType),
+            filter_value=d.get("filter_value", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
         )
 
 
@@ -1038,32 +1038,32 @@ class ExchangeListing:
         """Serializes the ExchangeListing into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.exchange_name is not None:
-            body["{exchange_name}"] = self.exchange_name
+            body["exchange_name"] = self.exchange_name
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExchangeListing:
         """Deserializes the ExchangeListing from a dictionary."""
         return cls(
-            created_at=d.get("{created_at}", None),
-            created_by=d.get("{created_by}", None),
-            exchange_id=d.get("{exchange_id}", None),
-            exchange_name=d.get("{exchange_name}", None),
-            id=d.get("{id}", None),
-            listing_id=d.get("{listing_id}", None),
-            listing_name=d.get("{listing_name}", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            exchange_id=d.get("exchange_id", None),
+            exchange_name=d.get("exchange_name", None),
+            id=d.get("id", None),
+            listing_id=d.get("listing_id", None),
+            listing_name=d.get("listing_name", None),
         )
 
 
@@ -1120,41 +1120,41 @@ class FileInfo:
         """Serializes the FileInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.download_link is not None:
-            body["{download_link}"] = self.download_link
+            body["download_link"] = self.download_link
         if self.file_parent:
-            body["{file_parent}"] = self.file_parent
+            body["file_parent"] = self.file_parent
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.marketplace_file_type is not None:
-            body["{marketplace_file_type}"] = self.marketplace_file_type
+            body["marketplace_file_type"] = self.marketplace_file_type
         if self.mime_type is not None:
-            body["{mime_type}"] = self.mime_type
+            body["mime_type"] = self.mime_type
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.status_message is not None:
-            body["{status_message}"] = self.status_message
+            body["status_message"] = self.status_message
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
-            created_at=d.get("{created_at}", None),
-            display_name=d.get("{display_name}", None),
-            download_link=d.get("{download_link}", None),
-            file_parent=_from_dict(d, "{file_parent}", FileParent),
-            id=d.get("{id}", None),
-            marketplace_file_type=_enum(d, "{marketplace_file_type}", MarketplaceFileType),
-            mime_type=d.get("{mime_type}", None),
-            status=_enum(d, "{status}", FileStatus),
-            status_message=d.get("{status_message}", None),
-            updated_at=d.get("{updated_at}", None),
+            created_at=d.get("created_at", None),
+            display_name=d.get("display_name", None),
+            download_link=d.get("download_link", None),
+            file_parent=_from_dict(d, "file_parent", FileParent),
+            id=d.get("id", None),
+            marketplace_file_type=_enum(d, "marketplace_file_type", MarketplaceFileType),
+            mime_type=d.get("mime_type", None),
+            status=_enum(d, "status", FileStatus),
+            status_message=d.get("status_message", None),
+            updated_at=d.get("updated_at", None),
         )
 
 
@@ -1178,17 +1178,15 @@ class FileParent:
         """Serializes the FileParent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_parent_type is not None:
-            body["{file_parent_type}"] = self.file_parent_type
+            body["file_parent_type"] = self.file_parent_type
         if self.parent_id is not None:
-            body["{parent_id}"] = self.parent_id
+            body["parent_id"] = self.parent_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FileParent:
         """Deserializes the FileParent from a dictionary."""
-        return cls(
-            file_parent_type=_enum(d, "{file_parent_type}", FileParentType), parent_id=d.get("{parent_id}", None)
-        )
+        return cls(file_parent_type=_enum(d, "file_parent_type", FileParentType), parent_id=d.get("parent_id", None))
 
 
 class FileParentType(Enum):
@@ -1227,13 +1225,13 @@ class GetExchangeResponse:
         """Serializes the GetExchangeResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange
+            body["exchange"] = self.exchange
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetExchangeResponse:
         """Deserializes the GetExchangeResponse from a dictionary."""
-        return cls(exchange=_from_dict(d, "{exchange}", Exchange))
+        return cls(exchange=_from_dict(d, "exchange", Exchange))
 
 
 @dataclass
@@ -1251,13 +1249,13 @@ class GetFileResponse:
         """Serializes the GetFileResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_info:
-            body["{file_info}"] = self.file_info
+            body["file_info"] = self.file_info
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetFileResponse:
         """Deserializes the GetFileResponse from a dictionary."""
-        return cls(file_info=_from_dict(d, "{file_info}", FileInfo))
+        return cls(file_info=_from_dict(d, "file_info", FileInfo))
 
 
 @dataclass
@@ -1276,13 +1274,13 @@ class GetLatestVersionProviderAnalyticsDashboardResponse:
         """Serializes the GetLatestVersionProviderAnalyticsDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Deserializes the GetLatestVersionProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(version=d.get("{version}", None))
+        return cls(version=d.get("version", None))
 
 
 @dataclass
@@ -1304,17 +1302,17 @@ class GetListingContentMetadataResponse:
         """Serializes the GetListingContentMetadataResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.shared_data_objects:
-            body["{shared_data_objects}"] = self.shared_data_objects
+            body["shared_data_objects"] = self.shared_data_objects
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetListingContentMetadataResponse:
         """Deserializes the GetListingContentMetadataResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            shared_data_objects=_repeated_dict(d, "{shared_data_objects}", SharedDataObject),
+            next_page_token=d.get("next_page_token", None),
+            shared_data_objects=_repeated_dict(d, "shared_data_objects", SharedDataObject),
         )
 
 
@@ -1333,13 +1331,13 @@ class GetListingResponse:
         """Serializes the GetListingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing
+            body["listing"] = self.listing
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetListingResponse:
         """Deserializes the GetListingResponse from a dictionary."""
-        return cls(listing=_from_dict(d, "{listing}", Listing))
+        return cls(listing=_from_dict(d, "listing", Listing))
 
 
 @dataclass
@@ -1361,15 +1359,15 @@ class GetListingsResponse:
         """Serializes the GetListingsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listings:
-            body["{listings}"] = self.listings
+            body["listings"] = self.listings
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetListingsResponse:
         """Deserializes the GetListingsResponse from a dictionary."""
-        return cls(listings=_repeated_dict(d, "{listings}", Listing), next_page_token=d.get("{next_page_token}", None))
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1387,13 +1385,13 @@ class GetPersonalizationRequestResponse:
         """Serializes the GetPersonalizationRequestResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.personalization_requests:
-            body["{personalization_requests}"] = self.personalization_requests
+            body["personalization_requests"] = self.personalization_requests
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPersonalizationRequestResponse:
         """Deserializes the GetPersonalizationRequestResponse from a dictionary."""
-        return cls(personalization_requests=_repeated_dict(d, "{personalization_requests}", PersonalizationRequest))
+        return cls(personalization_requests=_repeated_dict(d, "personalization_requests", PersonalizationRequest))
 
 
 @dataclass
@@ -1411,13 +1409,13 @@ class GetProviderResponse:
         """Serializes the GetProviderResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider
+            body["provider"] = self.provider
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetProviderResponse:
         """Deserializes the GetProviderResponse from a dictionary."""
-        return cls(provider=_from_dict(d, "{provider}", ProviderInfo))
+        return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass
@@ -1435,13 +1433,13 @@ class Installation:
         """Serializes the Installation into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation
+            body["installation"] = self.installation
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Installation:
         """Deserializes the Installation from a dictionary."""
-        return cls(installation=_from_dict(d, "{installation}", InstallationDetail))
+        return cls(installation=_from_dict(d, "installation", InstallationDetail))
 
 
 @dataclass
@@ -1507,50 +1505,50 @@ class InstallationDetail:
         """Serializes the InstallationDetail into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.error_message is not None:
-            body["{error_message}"] = self.error_message
+            body["error_message"] = self.error_message
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.installed_on is not None:
-            body["{installed_on}"] = self.installed_on
+            body["installed_on"] = self.installed_on
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type
+            body["recipient_type"] = self.recipient_type
         if self.repo_name is not None:
-            body["{repo_name}"] = self.repo_name
+            body["repo_name"] = self.repo_name
         if self.repo_path is not None:
-            body["{repo_path}"] = self.repo_path
+            body["repo_path"] = self.repo_path
         if self.share_name is not None:
-            body["{share_name}"] = self.share_name
+            body["share_name"] = self.share_name
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.token_detail:
-            body["{token_detail}"] = self.token_detail
+            body["token_detail"] = self.token_detail
         if self.tokens:
-            body["{tokens}"] = self.tokens
+            body["tokens"] = self.tokens
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> InstallationDetail:
         """Deserializes the InstallationDetail from a dictionary."""
         return cls(
-            catalog_name=d.get("{catalog_name}", None),
-            error_message=d.get("{error_message}", None),
-            id=d.get("{id}", None),
-            installed_on=d.get("{installed_on}", None),
-            listing_id=d.get("{listing_id}", None),
-            listing_name=d.get("{listing_name}", None),
-            recipient_type=_enum(d, "{recipient_type}", DeltaSharingRecipientType),
-            repo_name=d.get("{repo_name}", None),
-            repo_path=d.get("{repo_path}", None),
-            share_name=d.get("{share_name}", None),
-            status=_enum(d, "{status}", InstallationStatus),
-            token_detail=_from_dict(d, "{token_detail}", TokenDetail),
-            tokens=_repeated_dict(d, "{tokens}", TokenInfo),
+            catalog_name=d.get("catalog_name", None),
+            error_message=d.get("error_message", None),
+            id=d.get("id", None),
+            installed_on=d.get("installed_on", None),
+            listing_id=d.get("listing_id", None),
+            listing_name=d.get("listing_name", None),
+            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
+            repo_name=d.get("repo_name", None),
+            repo_path=d.get("repo_path", None),
+            share_name=d.get("share_name", None),
+            status=_enum(d, "status", InstallationStatus),
+            token_detail=_from_dict(d, "token_detail", TokenDetail),
+            tokens=_repeated_dict(d, "tokens", TokenInfo),
         )
 
 
@@ -1579,17 +1577,17 @@ class ListAllInstallationsResponse:
         """Serializes the ListAllInstallationsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.installations:
-            body["{installations}"] = self.installations
+            body["installations"] = self.installations
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAllInstallationsResponse:
         """Deserializes the ListAllInstallationsResponse from a dictionary."""
         return cls(
-            installations=_repeated_dict(d, "{installations}", InstallationDetail),
-            next_page_token=d.get("{next_page_token}", None),
+            installations=_repeated_dict(d, "installations", InstallationDetail),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1612,17 +1610,17 @@ class ListAllPersonalizationRequestsResponse:
         """Serializes the ListAllPersonalizationRequestsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.personalization_requests:
-            body["{personalization_requests}"] = self.personalization_requests
+            body["personalization_requests"] = self.personalization_requests
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAllPersonalizationRequestsResponse:
         """Deserializes the ListAllPersonalizationRequestsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            personalization_requests=_repeated_dict(d, "{personalization_requests}", PersonalizationRequest),
+            next_page_token=d.get("next_page_token", None),
+            personalization_requests=_repeated_dict(d, "personalization_requests", PersonalizationRequest),
         )
 
 
@@ -1645,17 +1643,15 @@ class ListExchangeFiltersResponse:
         """Serializes the ListExchangeFiltersResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.filters:
-            body["{filters}"] = self.filters
+            body["filters"] = self.filters
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListExchangeFiltersResponse:
         """Deserializes the ListExchangeFiltersResponse from a dictionary."""
-        return cls(
-            filters=_repeated_dict(d, "{filters}", ExchangeFilter), next_page_token=d.get("{next_page_token}", None)
-        )
+        return cls(filters=_repeated_dict(d, "filters", ExchangeFilter), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1677,17 +1673,17 @@ class ListExchangesForListingResponse:
         """Serializes the ListExchangesForListingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange_listing:
-            body["{exchange_listing}"] = self.exchange_listing
+            body["exchange_listing"] = self.exchange_listing
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListExchangesForListingResponse:
         """Deserializes the ListExchangesForListingResponse from a dictionary."""
         return cls(
-            exchange_listing=_repeated_dict(d, "{exchange_listing}", ExchangeListing),
-            next_page_token=d.get("{next_page_token}", None),
+            exchange_listing=_repeated_dict(d, "exchange_listing", ExchangeListing),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1710,17 +1706,15 @@ class ListExchangesResponse:
         """Serializes the ListExchangesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchanges:
-            body["{exchanges}"] = self.exchanges
+            body["exchanges"] = self.exchanges
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListExchangesResponse:
         """Deserializes the ListExchangesResponse from a dictionary."""
-        return cls(
-            exchanges=_repeated_dict(d, "{exchanges}", Exchange), next_page_token=d.get("{next_page_token}", None)
-        )
+        return cls(exchanges=_repeated_dict(d, "exchanges", Exchange), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1742,17 +1736,15 @@ class ListFilesResponse:
         """Serializes the ListFilesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_infos:
-            body["{file_infos}"] = self.file_infos
+            body["file_infos"] = self.file_infos
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListFilesResponse:
         """Deserializes the ListFilesResponse from a dictionary."""
-        return cls(
-            file_infos=_repeated_dict(d, "{file_infos}", FileInfo), next_page_token=d.get("{next_page_token}", None)
-        )
+        return cls(file_infos=_repeated_dict(d, "file_infos", FileInfo), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1774,17 +1766,17 @@ class ListFulfillmentsResponse:
         """Serializes the ListFulfillmentsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.fulfillments:
-            body["{fulfillments}"] = self.fulfillments
+            body["fulfillments"] = self.fulfillments
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListFulfillmentsResponse:
         """Deserializes the ListFulfillmentsResponse from a dictionary."""
         return cls(
-            fulfillments=_repeated_dict(d, "{fulfillments}", ListingFulfillment),
-            next_page_token=d.get("{next_page_token}", None),
+            fulfillments=_repeated_dict(d, "fulfillments", ListingFulfillment),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1807,17 +1799,17 @@ class ListInstallationsResponse:
         """Serializes the ListInstallationsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.installations:
-            body["{installations}"] = self.installations
+            body["installations"] = self.installations
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListInstallationsResponse:
         """Deserializes the ListInstallationsResponse from a dictionary."""
         return cls(
-            installations=_repeated_dict(d, "{installations}", InstallationDetail),
-            next_page_token=d.get("{next_page_token}", None),
+            installations=_repeated_dict(d, "installations", InstallationDetail),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1840,17 +1832,17 @@ class ListListingsForExchangeResponse:
         """Serializes the ListListingsForExchangeResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange_listings:
-            body["{exchange_listings}"] = self.exchange_listings
+            body["exchange_listings"] = self.exchange_listings
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListListingsForExchangeResponse:
         """Deserializes the ListListingsForExchangeResponse from a dictionary."""
         return cls(
-            exchange_listings=_repeated_dict(d, "{exchange_listings}", ExchangeListing),
-            next_page_token=d.get("{next_page_token}", None),
+            exchange_listings=_repeated_dict(d, "exchange_listings", ExchangeListing),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -1873,15 +1865,15 @@ class ListListingsResponse:
         """Serializes the ListListingsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listings:
-            body["{listings}"] = self.listings
+            body["listings"] = self.listings
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListListingsResponse:
         """Deserializes the ListListingsResponse from a dictionary."""
-        return cls(listings=_repeated_dict(d, "{listings}", Listing), next_page_token=d.get("{next_page_token}", None))
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1908,17 +1900,17 @@ class ListProviderAnalyticsDashboardResponse:
         """Serializes the ListProviderAnalyticsDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListProviderAnalyticsDashboardResponse:
         """Deserializes the ListProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get("{dashboard_id}", None), id=d.get("{id}", None), version=d.get("{version}", None))
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -1940,16 +1932,16 @@ class ListProvidersResponse:
         """Serializes the ListProvidersResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.providers:
-            body["{providers}"] = self.providers
+            body["providers"] = self.providers
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None), providers=_repeated_dict(d, "{providers}", ProviderInfo)
+            next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
         )
 
 
@@ -1976,20 +1968,20 @@ class Listing:
         """Serializes the Listing into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.detail:
-            body["{detail}"] = self.detail
+            body["detail"] = self.detail
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.summary:
-            body["{summary}"] = self.summary
+            body["summary"] = self.summary
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Listing:
         """Deserializes the Listing from a dictionary."""
         return cls(
-            detail=_from_dict(d, "{detail}", ListingDetail),
-            id=d.get("{id}", None),
-            summary=_from_dict(d, "{summary}", ListingSummary),
+            detail=_from_dict(d, "detail", ListingDetail),
+            id=d.get("id", None),
+            summary=_from_dict(d, "summary", ListingSummary),
         )
 
 
@@ -2099,68 +2091,68 @@ class ListingDetail:
         """Serializes the ListingDetail into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.assets:
-            body["{assets}"] = self.assets
+            body["assets"] = self.assets
         if self.collection_date_end is not None:
-            body["{collection_date_end}"] = self.collection_date_end
+            body["collection_date_end"] = self.collection_date_end
         if self.collection_date_start is not None:
-            body["{collection_date_start}"] = self.collection_date_start
+            body["collection_date_start"] = self.collection_date_start
         if self.collection_granularity:
-            body["{collection_granularity}"] = self.collection_granularity
+            body["collection_granularity"] = self.collection_granularity
         if self.cost is not None:
-            body["{cost}"] = self.cost
+            body["cost"] = self.cost
         if self.data_source is not None:
-            body["{data_source}"] = self.data_source
+            body["data_source"] = self.data_source
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.documentation_link is not None:
-            body["{documentation_link}"] = self.documentation_link
+            body["documentation_link"] = self.documentation_link
         if self.embedded_notebook_file_infos:
-            body["{embedded_notebook_file_infos}"] = self.embedded_notebook_file_infos
+            body["embedded_notebook_file_infos"] = self.embedded_notebook_file_infos
         if self.file_ids:
-            body["{file_ids}"] = self.file_ids
+            body["file_ids"] = self.file_ids
         if self.geographical_coverage is not None:
-            body["{geographical_coverage}"] = self.geographical_coverage
+            body["geographical_coverage"] = self.geographical_coverage
         if self.license is not None:
-            body["{license}"] = self.license
+            body["license"] = self.license
         if self.pricing_model is not None:
-            body["{pricing_model}"] = self.pricing_model
+            body["pricing_model"] = self.pricing_model
         if self.privacy_policy_link is not None:
-            body["{privacy_policy_link}"] = self.privacy_policy_link
+            body["privacy_policy_link"] = self.privacy_policy_link
         if self.size is not None:
-            body["{size}"] = self.size
+            body["size"] = self.size
         if self.support_link is not None:
-            body["{support_link}"] = self.support_link
+            body["support_link"] = self.support_link
         if self.tags:
-            body["{tags}"] = self.tags
+            body["tags"] = self.tags
         if self.terms_of_service is not None:
-            body["{terms_of_service}"] = self.terms_of_service
+            body["terms_of_service"] = self.terms_of_service
         if self.update_frequency:
-            body["{update_frequency}"] = self.update_frequency
+            body["update_frequency"] = self.update_frequency
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListingDetail:
         """Deserializes the ListingDetail from a dictionary."""
         return cls(
-            assets=_repeated_enum(d, "{assets}", AssetType),
-            collection_date_end=d.get("{collection_date_end}", None),
-            collection_date_start=d.get("{collection_date_start}", None),
-            collection_granularity=_from_dict(d, "{collection_granularity}", DataRefreshInfo),
-            cost=_enum(d, "{cost}", Cost),
-            data_source=d.get("{data_source}", None),
-            description=d.get("{description}", None),
-            documentation_link=d.get("{documentation_link}", None),
-            embedded_notebook_file_infos=_repeated_dict(d, "{embedded_notebook_file_infos}", FileInfo),
-            file_ids=d.get("{file_ids}", None),
-            geographical_coverage=d.get("{geographical_coverage}", None),
-            license=d.get("{license}", None),
-            pricing_model=d.get("{pricing_model}", None),
-            privacy_policy_link=d.get("{privacy_policy_link}", None),
-            size=d.get("{size}", None),
-            support_link=d.get("{support_link}", None),
-            tags=_repeated_dict(d, "{tags}", ListingTag),
-            terms_of_service=d.get("{terms_of_service}", None),
-            update_frequency=_from_dict(d, "{update_frequency}", DataRefreshInfo),
+            assets=_repeated_enum(d, "assets", AssetType),
+            collection_date_end=d.get("collection_date_end", None),
+            collection_date_start=d.get("collection_date_start", None),
+            collection_granularity=_from_dict(d, "collection_granularity", DataRefreshInfo),
+            cost=_enum(d, "cost", Cost),
+            data_source=d.get("data_source", None),
+            description=d.get("description", None),
+            documentation_link=d.get("documentation_link", None),
+            embedded_notebook_file_infos=_repeated_dict(d, "embedded_notebook_file_infos", FileInfo),
+            file_ids=d.get("file_ids", None),
+            geographical_coverage=d.get("geographical_coverage", None),
+            license=d.get("license", None),
+            pricing_model=d.get("pricing_model", None),
+            privacy_policy_link=d.get("privacy_policy_link", None),
+            size=d.get("size", None),
+            support_link=d.get("support_link", None),
+            tags=_repeated_dict(d, "tags", ListingTag),
+            terms_of_service=d.get("terms_of_service", None),
+            update_frequency=_from_dict(d, "update_frequency", DataRefreshInfo),
         )
 
 
@@ -2195,26 +2187,26 @@ class ListingFulfillment:
         """Serializes the ListingFulfillment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.fulfillment_type is not None:
-            body["{fulfillment_type}"] = self.fulfillment_type
+            body["fulfillment_type"] = self.fulfillment_type
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type
+            body["recipient_type"] = self.recipient_type
         if self.repo_info:
-            body["{repo_info}"] = self.repo_info
+            body["repo_info"] = self.repo_info
         if self.share_info:
-            body["{share_info}"] = self.share_info
+            body["share_info"] = self.share_info
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListingFulfillment:
         """Deserializes the ListingFulfillment from a dictionary."""
         return cls(
-            fulfillment_type=_enum(d, "{fulfillment_type}", FulfillmentType),
-            listing_id=d.get("{listing_id}", None),
-            recipient_type=_enum(d, "{recipient_type}", DeltaSharingRecipientType),
-            repo_info=_from_dict(d, "{repo_info}", RepoInfo),
-            share_info=_from_dict(d, "{share_info}", ShareInfo),
+            fulfillment_type=_enum(d, "fulfillment_type", FulfillmentType),
+            listing_id=d.get("listing_id", None),
+            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
+            repo_info=_from_dict(d, "repo_info", RepoInfo),
+            share_info=_from_dict(d, "share_info", ShareInfo),
         )
 
 
@@ -2233,13 +2225,13 @@ class ListingSetting:
         """Serializes the ListingSetting into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.visibility is not None:
-            body["{visibility}"] = self.visibility
+            body["visibility"] = self.visibility
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListingSetting:
         """Deserializes the ListingSetting from a dictionary."""
-        return cls(visibility=_enum(d, "{visibility}", Visibility))
+        return cls(visibility=_enum(d, "visibility", Visibility))
 
 
 class ListingShareType(Enum):
@@ -2347,68 +2339,68 @@ class ListingSummary:
         """Serializes the ListingSummary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.categories:
-            body["{categories}"] = self.categories
+            body["categories"] = self.categories
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.created_by_id is not None:
-            body["{created_by_id}"] = self.created_by_id
+            body["created_by_id"] = self.created_by_id
         if self.exchange_ids:
-            body["{exchange_ids}"] = self.exchange_ids
+            body["exchange_ids"] = self.exchange_ids
         if self.git_repo:
-            body["{git_repo}"] = self.git_repo
+            body["git_repo"] = self.git_repo
         if self.listing_type is not None:
-            body["{listing_type}"] = self.listing_type
+            body["listingType"] = self.listing_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.provider_id is not None:
-            body["{provider_id}"] = self.provider_id
+            body["provider_id"] = self.provider_id
         if self.provider_region:
-            body["{provider_region}"] = self.provider_region
+            body["provider_region"] = self.provider_region
         if self.published_at is not None:
-            body["{published_at}"] = self.published_at
+            body["published_at"] = self.published_at
         if self.published_by is not None:
-            body["{published_by}"] = self.published_by
+            body["published_by"] = self.published_by
         if self.setting:
-            body["{setting}"] = self.setting
+            body["setting"] = self.setting
         if self.share:
-            body["{share}"] = self.share
+            body["share"] = self.share
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.subtitle is not None:
-            body["{subtitle}"] = self.subtitle
+            body["subtitle"] = self.subtitle
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         if self.updated_by_id is not None:
-            body["{updated_by_id}"] = self.updated_by_id
+            body["updated_by_id"] = self.updated_by_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListingSummary:
         """Deserializes the ListingSummary from a dictionary."""
         return cls(
-            categories=_repeated_enum(d, "{categories}", Category),
-            created_at=d.get("{created_at}", None),
-            created_by=d.get("{created_by}", None),
-            created_by_id=d.get("{created_by_id}", None),
-            exchange_ids=d.get("{exchange_ids}", None),
-            git_repo=_from_dict(d, "{git_repo}", RepoInfo),
-            listing_type=_enum(d, "{listing_type}", ListingType),
-            name=d.get("{name}", None),
-            provider_id=d.get("{provider_id}", None),
-            provider_region=_from_dict(d, "{provider_region}", RegionInfo),
-            published_at=d.get("{published_at}", None),
-            published_by=d.get("{published_by}", None),
-            setting=_from_dict(d, "{setting}", ListingSetting),
-            share=_from_dict(d, "{share}", ShareInfo),
-            status=_enum(d, "{status}", ListingStatus),
-            subtitle=d.get("{subtitle}", None),
-            updated_at=d.get("{updated_at}", None),
-            updated_by=d.get("{updated_by}", None),
-            updated_by_id=d.get("{updated_by_id}", None),
+            categories=_repeated_enum(d, "categories", Category),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            created_by_id=d.get("created_by_id", None),
+            exchange_ids=d.get("exchange_ids", None),
+            git_repo=_from_dict(d, "git_repo", RepoInfo),
+            listing_type=_enum(d, "listingType", ListingType),
+            name=d.get("name", None),
+            provider_id=d.get("provider_id", None),
+            provider_region=_from_dict(d, "provider_region", RegionInfo),
+            published_at=d.get("published_at", None),
+            published_by=d.get("published_by", None),
+            setting=_from_dict(d, "setting", ListingSetting),
+            share=_from_dict(d, "share", ShareInfo),
+            status=_enum(d, "status", ListingStatus),
+            subtitle=d.get("subtitle", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+            updated_by_id=d.get("updated_by_id", None),
         )
 
 
@@ -2433,15 +2425,15 @@ class ListingTag:
         """Serializes the ListingTag into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.tag_name is not None:
-            body["{tag_name}"] = self.tag_name
+            body["tag_name"] = self.tag_name
         if self.tag_values:
-            body["{tag_values}"] = self.tag_values
+            body["tag_values"] = self.tag_values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListingTag:
         """Deserializes the ListingTag from a dictionary."""
-        return cls(tag_name=_enum(d, "{tag_name}", ListingTagType), tag_values=d.get("{tag_values}", None))
+        return cls(tag_name=_enum(d, "tag_name", ListingTagType), tag_values=d.get("tag_values", None))
 
 
 class ListingTagType(Enum):
@@ -2539,59 +2531,59 @@ class PersonalizationRequest:
         """Serializes the PersonalizationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.consumer_region:
-            body["{consumer_region}"] = self.consumer_region
+            body["consumer_region"] = self.consumer_region
         if self.contact_info:
-            body["{contact_info}"] = self.contact_info
+            body["contact_info"] = self.contact_info
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.intended_use is not None:
-            body["{intended_use}"] = self.intended_use
+            body["intended_use"] = self.intended_use
         if self.is_from_lighthouse is not None:
-            body["{is_from_lighthouse}"] = self.is_from_lighthouse
+            body["is_from_lighthouse"] = self.is_from_lighthouse
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         if self.metastore_id is not None:
-            body["{metastore_id}"] = self.metastore_id
+            body["metastore_id"] = self.metastore_id
         if self.provider_id is not None:
-            body["{provider_id}"] = self.provider_id
+            body["provider_id"] = self.provider_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type
+            body["recipient_type"] = self.recipient_type
         if self.share:
-            body["{share}"] = self.share
+            body["share"] = self.share
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.status_message is not None:
-            body["{status_message}"] = self.status_message
+            body["status_message"] = self.status_message
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PersonalizationRequest:
         """Deserializes the PersonalizationRequest from a dictionary."""
         return cls(
-            comment=d.get("{comment}", None),
-            consumer_region=_from_dict(d, "{consumer_region}", RegionInfo),
-            contact_info=_from_dict(d, "{contact_info}", ContactInfo),
-            created_at=d.get("{created_at}", None),
-            id=d.get("{id}", None),
-            intended_use=d.get("{intended_use}", None),
-            is_from_lighthouse=d.get("{is_from_lighthouse}", None),
-            listing_id=d.get("{listing_id}", None),
-            listing_name=d.get("{listing_name}", None),
-            metastore_id=d.get("{metastore_id}", None),
-            provider_id=d.get("{provider_id}", None),
-            recipient_type=_enum(d, "{recipient_type}", DeltaSharingRecipientType),
-            share=_from_dict(d, "{share}", ShareInfo),
-            status=_enum(d, "{status}", PersonalizationRequestStatus),
-            status_message=d.get("{status_message}", None),
-            updated_at=d.get("{updated_at}", None),
+            comment=d.get("comment", None),
+            consumer_region=_from_dict(d, "consumer_region", RegionInfo),
+            contact_info=_from_dict(d, "contact_info", ContactInfo),
+            created_at=d.get("created_at", None),
+            id=d.get("id", None),
+            intended_use=d.get("intended_use", None),
+            is_from_lighthouse=d.get("is_from_lighthouse", None),
+            listing_id=d.get("listing_id", None),
+            listing_name=d.get("listing_name", None),
+            metastore_id=d.get("metastore_id", None),
+            provider_id=d.get("provider_id", None),
+            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
+            share=_from_dict(d, "share", ShareInfo),
+            status=_enum(d, "status", PersonalizationRequestStatus),
+            status_message=d.get("status_message", None),
+            updated_at=d.get("updated_at", None),
         )
 
 
@@ -2618,13 +2610,13 @@ class ProviderAnalyticsDashboard:
         """Serializes the ProviderAnalyticsDashboard into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ProviderAnalyticsDashboard:
         """Deserializes the ProviderAnalyticsDashboard from a dictionary."""
-        return cls(id=d.get("{id}", None))
+        return cls(id=d.get("id", None))
 
 
 @dataclass
@@ -2696,53 +2688,53 @@ class ProviderInfo:
         """Serializes the ProviderInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.business_contact_email is not None:
-            body["{business_contact_email}"] = self.business_contact_email
+            body["business_contact_email"] = self.business_contact_email
         if self.company_website_link is not None:
-            body["{company_website_link}"] = self.company_website_link
+            body["company_website_link"] = self.company_website_link
         if self.dark_mode_icon_file_id is not None:
-            body["{dark_mode_icon_file_id}"] = self.dark_mode_icon_file_id
+            body["dark_mode_icon_file_id"] = self.dark_mode_icon_file_id
         if self.dark_mode_icon_file_path is not None:
-            body["{dark_mode_icon_file_path}"] = self.dark_mode_icon_file_path
+            body["dark_mode_icon_file_path"] = self.dark_mode_icon_file_path
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.icon_file_id is not None:
-            body["{icon_file_id}"] = self.icon_file_id
+            body["icon_file_id"] = self.icon_file_id
         if self.icon_file_path is not None:
-            body["{icon_file_path}"] = self.icon_file_path
+            body["icon_file_path"] = self.icon_file_path
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.is_featured is not None:
-            body["{is_featured}"] = self.is_featured
+            body["is_featured"] = self.is_featured
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.privacy_policy_link is not None:
-            body["{privacy_policy_link}"] = self.privacy_policy_link
+            body["privacy_policy_link"] = self.privacy_policy_link
         if self.published_by is not None:
-            body["{published_by}"] = self.published_by
+            body["published_by"] = self.published_by
         if self.support_contact_email is not None:
-            body["{support_contact_email}"] = self.support_contact_email
+            body["support_contact_email"] = self.support_contact_email
         if self.term_of_service_link is not None:
-            body["{term_of_service_link}"] = self.term_of_service_link
+            body["term_of_service_link"] = self.term_of_service_link
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
         return cls(
-            business_contact_email=d.get("{business_contact_email}", None),
-            company_website_link=d.get("{company_website_link}", None),
-            dark_mode_icon_file_id=d.get("{dark_mode_icon_file_id}", None),
-            dark_mode_icon_file_path=d.get("{dark_mode_icon_file_path}", None),
-            description=d.get("{description}", None),
-            icon_file_id=d.get("{icon_file_id}", None),
-            icon_file_path=d.get("{icon_file_path}", None),
-            id=d.get("{id}", None),
-            is_featured=d.get("{is_featured}", None),
-            name=d.get("{name}", None),
-            privacy_policy_link=d.get("{privacy_policy_link}", None),
-            published_by=d.get("{published_by}", None),
-            support_contact_email=d.get("{support_contact_email}", None),
-            term_of_service_link=d.get("{term_of_service_link}", None),
+            business_contact_email=d.get("business_contact_email", None),
+            company_website_link=d.get("company_website_link", None),
+            dark_mode_icon_file_id=d.get("dark_mode_icon_file_id", None),
+            dark_mode_icon_file_path=d.get("dark_mode_icon_file_path", None),
+            description=d.get("description", None),
+            icon_file_id=d.get("icon_file_id", None),
+            icon_file_path=d.get("icon_file_path", None),
+            id=d.get("id", None),
+            is_featured=d.get("is_featured", None),
+            name=d.get("name", None),
+            privacy_policy_link=d.get("privacy_policy_link", None),
+            published_by=d.get("published_by", None),
+            support_contact_email=d.get("support_contact_email", None),
+            term_of_service_link=d.get("term_of_service_link", None),
         )
 
 
@@ -2765,15 +2757,15 @@ class RegionInfo:
         """Serializes the RegionInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cloud is not None:
-            body["{cloud}"] = self.cloud
+            body["cloud"] = self.cloud
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RegionInfo:
         """Deserializes the RegionInfo from a dictionary."""
-        return cls(cloud=d.get("{cloud}", None), region=d.get("{region}", None))
+        return cls(cloud=d.get("cloud", None), region=d.get("region", None))
 
 
 @dataclass
@@ -2810,13 +2802,13 @@ class RepoInfo:
         """Serializes the RepoInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.git_repo_url is not None:
-            body["{git_repo_url}"] = self.git_repo_url
+            body["git_repo_url"] = self.git_repo_url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoInfo:
         """Deserializes the RepoInfo from a dictionary."""
-        return cls(git_repo_url=d.get("{git_repo_url}", None))
+        return cls(git_repo_url=d.get("git_repo_url", None))
 
 
 @dataclass
@@ -2841,15 +2833,15 @@ class RepoInstallation:
         """Serializes the RepoInstallation into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.repo_name is not None:
-            body["{repo_name}"] = self.repo_name
+            body["repo_name"] = self.repo_name
         if self.repo_path is not None:
-            body["{repo_path}"] = self.repo_path
+            body["repo_path"] = self.repo_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoInstallation:
         """Deserializes the RepoInstallation from a dictionary."""
-        return cls(repo_name=d.get("{repo_name}", None), repo_path=d.get("{repo_path}", None))
+        return cls(repo_name=d.get("repo_name", None), repo_path=d.get("repo_path", None))
 
 
 @dataclass
@@ -2871,15 +2863,15 @@ class SearchListingsResponse:
         """Serializes the SearchListingsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listings:
-            body["{listings}"] = self.listings
+            body["listings"] = self.listings
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SearchListingsResponse:
         """Deserializes the SearchListingsResponse from a dictionary."""
-        return cls(listings=_repeated_dict(d, "{listings}", Listing), next_page_token=d.get("{next_page_token}", None))
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -2901,15 +2893,15 @@ class ShareInfo:
         """Serializes the ShareInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.type is not None:
-            body["{type}"] = self.type
+            body["type"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
-        return cls(name=d.get("{name}", None), type=_enum(d, "{type}", ListingShareType))
+        return cls(name=d.get("name", None), type=_enum(d, "type", ListingShareType))
 
 
 @dataclass
@@ -2933,15 +2925,15 @@ class SharedDataObject:
         """Serializes the SharedDataObject into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_object_type is not None:
-            body["{data_object_type}"] = self.data_object_type
+            body["data_object_type"] = self.data_object_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
-        return cls(data_object_type=d.get("{data_object_type}", None), name=d.get("{name}", None))
+        return cls(data_object_type=d.get("data_object_type", None), name=d.get("name", None))
 
 
 @dataclass
@@ -2973,23 +2965,23 @@ class TokenDetail:
         """Serializes the TokenDetail into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bearer_token is not None:
-            body["{bearer_token}"] = self.bearer_token
+            body["bearerToken"] = self.bearer_token
         if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.expiration_time is not None:
-            body["{expiration_time}"] = self.expiration_time
+            body["expirationTime"] = self.expiration_time
         if self.share_credentials_version is not None:
-            body["{share_credentials_version}"] = self.share_credentials_version
+            body["shareCredentialsVersion"] = self.share_credentials_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TokenDetail:
         """Deserializes the TokenDetail from a dictionary."""
         return cls(
-            bearer_token=d.get("{bearer_token}", None),
-            endpoint=d.get("{endpoint}", None),
-            expiration_time=d.get("{expiration_time}", None),
-            share_credentials_version=d.get("{share_credentials_version}", None),
+            bearer_token=d.get("bearerToken", None),
+            endpoint=d.get("endpoint", None),
+            expiration_time=d.get("expirationTime", None),
+            share_credentials_version=d.get("shareCredentialsVersion", None),
         )
 
 
@@ -3040,32 +3032,32 @@ class TokenInfo:
         """Serializes the TokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.activation_url is not None:
-            body["{activation_url}"] = self.activation_url
+            body["activation_url"] = self.activation_url
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.expiration_time is not None:
-            body["{expiration_time}"] = self.expiration_time
+            body["expiration_time"] = self.expiration_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(
-            activation_url=d.get("{activation_url}", None),
-            created_at=d.get("{created_at}", None),
-            created_by=d.get("{created_by}", None),
-            expiration_time=d.get("{expiration_time}", None),
-            id=d.get("{id}", None),
-            updated_at=d.get("{updated_at}", None),
-            updated_by=d.get("{updated_by}", None),
+            activation_url=d.get("activation_url", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            expiration_time=d.get("expiration_time", None),
+            id=d.get("id", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
         )
 
 
@@ -3088,15 +3080,15 @@ class UpdateExchangeFilterRequest:
         """Serializes the UpdateExchangeFilterRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter
+            body["filter"] = self.filter
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterRequest:
         """Deserializes the UpdateExchangeFilterRequest from a dictionary."""
-        return cls(filter=_from_dict(d, "{filter}", ExchangeFilter), id=d.get("{id}", None))
+        return cls(filter=_from_dict(d, "filter", ExchangeFilter), id=d.get("id", None))
 
 
 @dataclass
@@ -3114,13 +3106,13 @@ class UpdateExchangeFilterResponse:
         """Serializes the UpdateExchangeFilterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter
+            body["filter"] = self.filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterResponse:
         """Deserializes the UpdateExchangeFilterResponse from a dictionary."""
-        return cls(filter=_from_dict(d, "{filter}", ExchangeFilter))
+        return cls(filter=_from_dict(d, "filter", ExchangeFilter))
 
 
 @dataclass
@@ -3142,15 +3134,15 @@ class UpdateExchangeRequest:
         """Serializes the UpdateExchangeRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange
+            body["exchange"] = self.exchange
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeRequest:
         """Deserializes the UpdateExchangeRequest from a dictionary."""
-        return cls(exchange=_from_dict(d, "{exchange}", Exchange), id=d.get("{id}", None))
+        return cls(exchange=_from_dict(d, "exchange", Exchange), id=d.get("id", None))
 
 
 @dataclass
@@ -3168,13 +3160,13 @@ class UpdateExchangeResponse:
         """Serializes the UpdateExchangeResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange
+            body["exchange"] = self.exchange
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeResponse:
         """Deserializes the UpdateExchangeResponse from a dictionary."""
-        return cls(exchange=_from_dict(d, "{exchange}", Exchange))
+        return cls(exchange=_from_dict(d, "exchange", Exchange))
 
 
 @dataclass
@@ -3204,23 +3196,23 @@ class UpdateInstallationRequest:
         """Serializes the UpdateInstallationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation
+            body["installation"] = self.installation
         if self.installation_id is not None:
-            body["{installation_id}"] = self.installation_id
+            body["installation_id"] = self.installation_id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.rotate_token is not None:
-            body["{rotate_token}"] = self.rotate_token
+            body["rotate_token"] = self.rotate_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationRequest:
         """Deserializes the UpdateInstallationRequest from a dictionary."""
         return cls(
-            installation=_from_dict(d, "{installation}", InstallationDetail),
-            installation_id=d.get("{installation_id}", None),
-            listing_id=d.get("{listing_id}", None),
-            rotate_token=d.get("{rotate_token}", None),
+            installation=_from_dict(d, "installation", InstallationDetail),
+            installation_id=d.get("installation_id", None),
+            listing_id=d.get("listing_id", None),
+            rotate_token=d.get("rotate_token", None),
         )
 
 
@@ -3239,13 +3231,13 @@ class UpdateInstallationResponse:
         """Serializes the UpdateInstallationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation
+            body["installation"] = self.installation
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationResponse:
         """Deserializes the UpdateInstallationResponse from a dictionary."""
-        return cls(installation=_from_dict(d, "{installation}", InstallationDetail))
+        return cls(installation=_from_dict(d, "installation", InstallationDetail))
 
 
 @dataclass
@@ -3267,15 +3259,15 @@ class UpdateListingRequest:
         """Serializes the UpdateListingRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.listing:
-            body["{listing}"] = self.listing
+            body["listing"] = self.listing
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateListingRequest:
         """Deserializes the UpdateListingRequest from a dictionary."""
-        return cls(id=d.get("{id}", None), listing=_from_dict(d, "{listing}", Listing))
+        return cls(id=d.get("id", None), listing=_from_dict(d, "listing", Listing))
 
 
 @dataclass
@@ -3293,13 +3285,13 @@ class UpdateListingResponse:
         """Serializes the UpdateListingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing
+            body["listing"] = self.listing
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateListingResponse:
         """Deserializes the UpdateListingResponse from a dictionary."""
-        return cls(listing=_from_dict(d, "{listing}", Listing))
+        return cls(listing=_from_dict(d, "listing", Listing))
 
 
 @dataclass
@@ -3333,26 +3325,26 @@ class UpdatePersonalizationRequestRequest:
         """Serializes the UpdatePersonalizationRequestRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.reason is not None:
-            body["{reason}"] = self.reason
+            body["reason"] = self.reason
         if self.request_id is not None:
-            body["{request_id}"] = self.request_id
+            body["request_id"] = self.request_id
         if self.share:
-            body["{share}"] = self.share
+            body["share"] = self.share
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestRequest:
         """Deserializes the UpdatePersonalizationRequestRequest from a dictionary."""
         return cls(
-            listing_id=d.get("{listing_id}", None),
-            reason=d.get("{reason}", None),
-            request_id=d.get("{request_id}", None),
-            share=_from_dict(d, "{share}", ShareInfo),
-            status=_enum(d, "{status}", PersonalizationRequestStatus),
+            listing_id=d.get("listing_id", None),
+            reason=d.get("reason", None),
+            request_id=d.get("request_id", None),
+            share=_from_dict(d, "share", ShareInfo),
+            status=_enum(d, "status", PersonalizationRequestStatus),
         )
 
 
@@ -3371,13 +3363,13 @@ class UpdatePersonalizationRequestResponse:
         """Serializes the UpdatePersonalizationRequestResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.request:
-            body["{request}"] = self.request
+            body["request"] = self.request
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestResponse:
         """Deserializes the UpdatePersonalizationRequestResponse from a dictionary."""
-        return cls(request=_from_dict(d, "{request}", PersonalizationRequest))
+        return cls(request=_from_dict(d, "request", PersonalizationRequest))
 
 
 @dataclass
@@ -3402,15 +3394,15 @@ class UpdateProviderAnalyticsDashboardRequest:
         """Serializes the UpdateProviderAnalyticsDashboardRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardRequest:
         """Deserializes the UpdateProviderAnalyticsDashboardRequest from a dictionary."""
-        return cls(id=d.get("{id}", None), version=d.get("{version}", None))
+        return cls(id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -3438,17 +3430,17 @@ class UpdateProviderAnalyticsDashboardResponse:
         """Serializes the UpdateProviderAnalyticsDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardResponse:
         """Deserializes the UpdateProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get("{dashboard_id}", None), id=d.get("{id}", None), version=d.get("{version}", None))
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -3470,15 +3462,15 @@ class UpdateProviderRequest:
         """Serializes the UpdateProviderRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.provider:
-            body["{provider}"] = self.provider
+            body["provider"] = self.provider
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderRequest:
         """Deserializes the UpdateProviderRequest from a dictionary."""
-        return cls(id=d.get("{id}", None), provider=_from_dict(d, "{provider}", ProviderInfo))
+        return cls(id=d.get("id", None), provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass
@@ -3496,13 +3488,13 @@ class UpdateProviderResponse:
         """Serializes the UpdateProviderResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider
+            body["provider"] = self.provider
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderResponse:
         """Deserializes the UpdateProviderResponse from a dictionary."""
-        return cls(provider=_from_dict(d, "{provider}", ProviderInfo))
+        return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
 
 class Visibility(Enum):
@@ -3533,9 +3525,9 @@ class ConsumerFulfillmentsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3544,12 +3536,12 @@ class ConsumerFulfillmentsAPI:
             json = self._api.do(
                 "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/content", query=query, headers=headers
             )
-            if "{shared_data_objects}" in json:
-                for v in json["{shared_data_objects}"]:
+            if "shared_data_objects" in json:
+                for v in json["shared_data_objects"]:
                     yield SharedDataObject.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3570,9 +3562,9 @@ class ConsumerFulfillmentsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3581,12 +3573,12 @@ class ConsumerFulfillmentsAPI:
             json = self._api.do(
                 "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments", query=query, headers=headers
             )
-            if "{fulfillments}" in json:
-                for v in json["{fulfillments}"]:
+            if "fulfillments" in json:
+                for v in json["fulfillments"]:
                     yield ListingFulfillment.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class ConsumerInstallationsAPI:
@@ -3621,15 +3613,15 @@ class ConsumerInstallationsAPI:
         """
         body = {}
         if accepted_consumer_terms is not None:
-            body["{accepted_consumer_terms}"] = accepted_consumer_terms.as_dict()
+            body["accepted_consumer_terms"] = accepted_consumer_terms.as_dict()
         if catalog_name is not None:
-            body["{catalog_name}"] = catalog_name
+            body["catalog_name"] = catalog_name
         if recipient_type is not None:
-            body["{recipient_type}"] = recipient_type.value
+            body["recipient_type"] = recipient_type.value
         if repo_detail is not None:
-            body["{repo_detail}"] = repo_detail.as_dict()
+            body["repo_detail"] = repo_detail.as_dict()
         if share_name is not None:
-            body["{share_name}"] = share_name
+            body["share_name"] = share_name
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -3676,21 +3668,21 @@ class ConsumerInstallationsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/installations", query=query, headers=headers)
-            if "{installations}" in json:
-                for v in json["{installations}"]:
+            if "installations" in json:
+                for v in json["installations"]:
                     yield InstallationDetail.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_listing_installations(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3708,9 +3700,9 @@ class ConsumerInstallationsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3722,12 +3714,12 @@ class ConsumerInstallationsAPI:
                 query=query,
                 headers=headers,
             )
-            if "{installations}" in json:
-                for v in json["{installations}"]:
+            if "installations" in json:
+                for v in json["installations"]:
                     yield InstallationDetail.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self,
@@ -3753,9 +3745,9 @@ class ConsumerInstallationsAPI:
         """
         body = {}
         if installation is not None:
-            body["{installation}"] = installation.as_dict()
+            body["installation"] = installation.as_dict()
         if rotate_token is not None:
-            body["{rotate_token}"] = rotate_token
+            body["rotate_token"] = rotate_token
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -3789,7 +3781,7 @@ class ConsumerListingsAPI:
 
         query = {}
         if ids is not None:
-            query["{ids}"] = [v for v in ids]
+            query["ids"] = [v for v in ids]
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3853,35 +3845,35 @@ class ConsumerListingsAPI:
 
         query = {}
         if assets is not None:
-            query["{assets}"] = [v.value for v in assets]
+            query["assets"] = [v.value for v in assets]
         if categories is not None:
-            query["{categories}"] = [v.value for v in categories]
+            query["categories"] = [v.value for v in categories]
         if is_free is not None:
-            query["{is_free}"] = is_free
+            query["is_free"] = is_free
         if is_private_exchange is not None:
-            query["{is_private_exchange}"] = is_private_exchange
+            query["is_private_exchange"] = is_private_exchange
         if is_staff_pick is not None:
-            query["{is_staff_pick}"] = is_staff_pick
+            query["is_staff_pick"] = is_staff_pick
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         if provider_ids is not None:
-            query["{provider_ids}"] = [v for v in provider_ids]
+            query["provider_ids"] = [v for v in provider_ids]
         if tags is not None:
-            query["{tags}"] = [v.as_dict() for v in tags]
+            query["tags"] = [v.as_dict() for v in tags]
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/listings", query=query, headers=headers)
-            if "{listings}" in json:
-                for v in json["{listings}"]:
+            if "listings" in json:
+                for v in json["listings"]:
                     yield Listing.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def search(
         self,
@@ -3918,33 +3910,33 @@ class ConsumerListingsAPI:
 
         query = {}
         if assets is not None:
-            query["{assets}"] = [v.value for v in assets]
+            query["assets"] = [v.value for v in assets]
         if categories is not None:
-            query["{categories}"] = [v.value for v in categories]
+            query["categories"] = [v.value for v in categories]
         if is_free is not None:
-            query["{is_free}"] = is_free
+            query["is_free"] = is_free
         if is_private_exchange is not None:
-            query["{is_private_exchange}"] = is_private_exchange
+            query["is_private_exchange"] = is_private_exchange
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         if provider_ids is not None:
-            query["{provider_ids}"] = [v for v in provider_ids]
+            query["provider_ids"] = [v for v in provider_ids]
         if query is not None:
-            query["{query}"] = query
+            query["query"] = query
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/search-listings", query=query, headers=headers)
-            if "{listings}" in json:
-                for v in json["{listings}"]:
+            if "listings" in json:
+                for v in json["listings"]:
                     yield Listing.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class ConsumerPersonalizationRequestsAPI:
@@ -3984,21 +3976,21 @@ class ConsumerPersonalizationRequestsAPI:
         """
         body = {}
         if accepted_consumer_terms is not None:
-            body["{accepted_consumer_terms}"] = accepted_consumer_terms.as_dict()
+            body["accepted_consumer_terms"] = accepted_consumer_terms.as_dict()
         if comment is not None:
-            body["{comment}"] = comment
+            body["comment"] = comment
         if company is not None:
-            body["{company}"] = company
+            body["company"] = company
         if first_name is not None:
-            body["{first_name}"] = first_name
+            body["first_name"] = first_name
         if intended_use is not None:
-            body["{intended_use}"] = intended_use
+            body["intended_use"] = intended_use
         if is_from_lighthouse is not None:
-            body["{is_from_lighthouse}"] = is_from_lighthouse
+            body["is_from_lighthouse"] = is_from_lighthouse
         if last_name is not None:
-            body["{last_name}"] = last_name
+            body["last_name"] = last_name
         if recipient_type is not None:
-            body["{recipient_type}"] = recipient_type.value
+            body["recipient_type"] = recipient_type.value
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4047,9 +4039,9 @@ class ConsumerPersonalizationRequestsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4058,12 +4050,12 @@ class ConsumerPersonalizationRequestsAPI:
             json = self._api.do(
                 "GET", "/api/2.1/marketplace-consumer/personalization-requests", query=query, headers=headers
             )
-            if "{personalization_requests}" in json:
-                for v in json["{personalization_requests}"]:
+            if "personalization_requests" in json:
+                for v in json["personalization_requests"]:
                     yield PersonalizationRequest.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class ConsumerProvidersAPI:
@@ -4084,7 +4076,7 @@ class ConsumerProvidersAPI:
 
         query = {}
         if ids is not None:
-            query["{ids}"] = [v for v in ids]
+            query["ids"] = [v for v in ids]
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4125,23 +4117,23 @@ class ConsumerProvidersAPI:
 
         query = {}
         if is_featured is not None:
-            query["{is_featured}"] = is_featured
+            query["is_featured"] = is_featured
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.1/marketplace-consumer/providers", query=query, headers=headers)
-            if "{providers}" in json:
-                for v in json["{providers}"]:
+            if "providers" in json:
+                for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class ProviderExchangeFiltersAPI:
@@ -4161,7 +4153,7 @@ class ProviderExchangeFiltersAPI:
         """
         body = {}
         if filter is not None:
-            body["{filter}"] = filter.as_dict()
+            body["filter"] = filter.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4202,23 +4194,23 @@ class ProviderExchangeFiltersAPI:
 
         query = {}
         if exchange_id is not None:
-            query["{exchange_id}"] = exchange_id
+            query["exchange_id"] = exchange_id
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/filters", query=query, headers=headers)
-            if "{filters}" in json:
-                for v in json["{filters}"]:
+            if "filters" in json:
+                for v in json["filters"]:
                     yield ExchangeFilter.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, filter: ExchangeFilter) -> UpdateExchangeFilterResponse:
         """Update exchange filter.
@@ -4232,7 +4224,7 @@ class ProviderExchangeFiltersAPI:
         """
         body = {}
         if filter is not None:
-            body["{filter}"] = filter.as_dict()
+            body["filter"] = filter.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4260,9 +4252,9 @@ class ProviderExchangesAPI:
         """
         body = {}
         if exchange_id is not None:
-            body["{exchange_id}"] = exchange_id
+            body["exchange_id"] = exchange_id
         if listing_id is not None:
-            body["{listing_id}"] = listing_id
+            body["listing_id"] = listing_id
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4282,7 +4274,7 @@ class ProviderExchangesAPI:
         """
         body = {}
         if exchange is not None:
-            body["{exchange}"] = exchange.as_dict()
+            body["exchange"] = exchange.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4353,21 +4345,21 @@ class ProviderExchangesAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-exchange/exchanges", query=query, headers=headers)
-            if "{exchanges}" in json:
-                for v in json["{exchanges}"]:
+            if "exchanges" in json:
+                for v in json["exchanges"]:
                     yield Exchange.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_exchanges_for_listing(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -4385,11 +4377,11 @@ class ProviderExchangesAPI:
 
         query = {}
         if listing_id is not None:
-            query["{listing_id}"] = listing_id
+            query["listing_id"] = listing_id
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4398,12 +4390,12 @@ class ProviderExchangesAPI:
             json = self._api.do(
                 "GET", "/api/2.0/marketplace-exchange/exchanges-for-listing", query=query, headers=headers
             )
-            if "{exchange_listing}" in json:
-                for v in json["{exchange_listing}"]:
+            if "exchange_listing" in json:
+                for v in json["exchange_listing"]:
                     yield ExchangeListing.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_listings_for_exchange(
         self, exchange_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -4421,11 +4413,11 @@ class ProviderExchangesAPI:
 
         query = {}
         if exchange_id is not None:
-            query["{exchange_id}"] = exchange_id
+            query["exchange_id"] = exchange_id
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4434,12 +4426,12 @@ class ProviderExchangesAPI:
             json = self._api.do(
                 "GET", "/api/2.0/marketplace-exchange/listings-for-exchange", query=query, headers=headers
             )
-            if "{exchange_listings}" in json:
-                for v in json["{exchange_listings}"]:
+            if "exchange_listings" in json:
+                for v in json["exchange_listings"]:
                     yield ExchangeListing.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, exchange: Exchange) -> UpdateExchangeResponse:
         """Update exchange.
@@ -4453,7 +4445,7 @@ class ProviderExchangesAPI:
         """
         body = {}
         if exchange is not None:
-            body["{exchange}"] = exchange.as_dict()
+            body["exchange"] = exchange.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4490,13 +4482,13 @@ class ProviderFilesAPI:
         """
         body = {}
         if display_name is not None:
-            body["{display_name}"] = display_name
+            body["display_name"] = display_name
         if file_parent is not None:
-            body["{file_parent}"] = file_parent.as_dict()
+            body["file_parent"] = file_parent.as_dict()
         if marketplace_file_type is not None:
-            body["{marketplace_file_type}"] = marketplace_file_type.value
+            body["marketplace_file_type"] = marketplace_file_type.value
         if mime_type is not None:
-            body["{mime_type}"] = mime_type
+            body["mime_type"] = mime_type
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4554,23 +4546,23 @@ class ProviderFilesAPI:
 
         query = {}
         if file_parent is not None:
-            query["{file_parent}"] = file_parent.as_dict()
+            query["file_parent"] = file_parent.as_dict()
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/files", query=query, headers=headers)
-            if "{file_infos}" in json:
-                for v in json["{file_infos}"]:
+            if "file_infos" in json:
+                for v in json["file_infos"]:
                     yield FileInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class ProviderListingsAPI:
@@ -4591,7 +4583,7 @@ class ProviderListingsAPI:
         """
         body = {}
         if listing is not None:
-            body["{listing}"] = listing.as_dict()
+            body["listing"] = listing.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4646,21 +4638,21 @@ class ProviderListingsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/listings", query=query, headers=headers)
-            if "{listings}" in json:
-                for v in json["{listings}"]:
+            if "listings" in json:
+                for v in json["listings"]:
                     yield Listing.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, listing: Listing) -> UpdateListingResponse:
         """Update listing.
@@ -4674,7 +4666,7 @@ class ProviderListingsAPI:
         """
         body = {}
         if listing is not None:
-            body["{listing}"] = listing.as_dict()
+            body["listing"] = listing.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4707,9 +4699,9 @@ class ProviderPersonalizationRequestsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4718,12 +4710,12 @@ class ProviderPersonalizationRequestsAPI:
             json = self._api.do(
                 "GET", "/api/2.0/marketplace-provider/personalization-requests", query=query, headers=headers
             )
-            if "{personalization_requests}" in json:
-                for v in json["{personalization_requests}"]:
+            if "personalization_requests" in json:
+                for v in json["personalization_requests"]:
                     yield PersonalizationRequest.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self,
@@ -4748,11 +4740,11 @@ class ProviderPersonalizationRequestsAPI:
         """
         body = {}
         if reason is not None:
-            body["{reason}"] = reason
+            body["reason"] = reason
         if share is not None:
-            body["{share}"] = share.as_dict()
+            body["share"] = share.as_dict()
         if status is not None:
-            body["{status}"] = status.value
+            body["status"] = status.value
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4834,7 +4826,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         """
         body = {}
         if version is not None:
-            body["{version}"] = version
+            body["version"] = version
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4861,7 +4853,7 @@ class ProviderProvidersAPI:
         """
         body = {}
         if provider is not None:
-            body["{provider}"] = provider.as_dict()
+            body["provider"] = provider.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4916,21 +4908,21 @@ class ProviderProvidersAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/marketplace-provider/providers", query=query, headers=headers)
-            if "{providers}" in json:
-                for v in json["{providers}"]:
+            if "providers" in json:
+                for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, provider: ProviderInfo) -> UpdateProviderResponse:
         """Update provider.
@@ -4944,7 +4936,7 @@ class ProviderProvidersAPI:
         """
         body = {}
         if provider is not None:
-            body["{provider}"] = provider.as_dict()
+            body["provider"] = provider.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",

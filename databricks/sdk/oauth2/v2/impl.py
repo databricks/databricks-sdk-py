@@ -56,29 +56,29 @@ class CreateCustomAppIntegration:
         """Serializes the CreateCustomAppIntegration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.confidential is not None:
-            body["{confidential}"] = self.confidential
+            body["confidential"] = self.confidential
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = self.redirect_urls
+            body["redirect_urls"] = self.redirect_urls
         if self.scopes:
-            body["{scopes}"] = self.scopes
+            body["scopes"] = self.scopes
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = self.user_authorized_scopes
+            body["user_authorized_scopes"] = self.user_authorized_scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegration:
         """Deserializes the CreateCustomAppIntegration from a dictionary."""
         return cls(
-            confidential=d.get("{confidential}", None),
-            name=d.get("{name}", None),
-            redirect_urls=d.get("{redirect_urls}", None),
-            scopes=d.get("{scopes}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
-            user_authorized_scopes=d.get("{user_authorized_scopes}", None),
+            confidential=d.get("confidential", None),
+            name=d.get("name", None),
+            redirect_urls=d.get("redirect_urls", None),
+            scopes=d.get("scopes", None),
+            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
+            user_authorized_scopes=d.get("user_authorized_scopes", None),
         )
 
 
@@ -109,20 +109,20 @@ class CreateCustomAppIntegrationOutput:
         """Serializes the CreateCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.client_secret is not None:
-            body["{client_secret}"] = self.client_secret
+            body["client_secret"] = self.client_secret
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegrationOutput:
         """Deserializes the CreateCustomAppIntegrationOutput from a dictionary."""
         return cls(
-            client_id=d.get("{client_id}", None),
-            client_secret=d.get("{client_secret}", None),
-            integration_id=d.get("{integration_id}", None),
+            client_id=d.get("client_id", None),
+            client_secret=d.get("client_secret", None),
+            integration_id=d.get("integration_id", None),
         )
 
 
@@ -147,17 +147,16 @@ class CreatePublishedAppIntegration:
         """Serializes the CreatePublishedAppIntegration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegration:
         """Deserializes the CreatePublishedAppIntegration from a dictionary."""
         return cls(
-            app_id=d.get("{app_id}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
+            app_id=d.get("app_id", None), token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy)
         )
 
 
@@ -177,13 +176,13 @@ class CreatePublishedAppIntegrationOutput:
         """Serializes the CreatePublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegrationOutput:
         """Deserializes the CreatePublishedAppIntegrationOutput from a dictionary."""
-        return cls(integration_id=d.get("{integration_id}", None))
+        return cls(integration_id=d.get("integration_id", None))
 
 
 @dataclass
@@ -208,15 +207,15 @@ class CreateServicePrincipalSecretRequest:
         """Serializes the CreateServicePrincipalSecretRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.lifetime is not None:
-            body["{lifetime}"] = self.lifetime
+            body["lifetime"] = self.lifetime
         if self.service_principal_id is not None:
-            body["{service_principal_id}"] = self.service_principal_id
+            body["service_principal_id"] = self.service_principal_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateServicePrincipalSecretRequest:
         """Deserializes the CreateServicePrincipalSecretRequest from a dictionary."""
-        return cls(lifetime=d.get("{lifetime}", None), service_principal_id=d.get("{service_principal_id}", None))
+        return cls(lifetime=d.get("lifetime", None), service_principal_id=d.get("service_principal_id", None))
 
 
 @dataclass
@@ -265,32 +264,32 @@ class CreateServicePrincipalSecretResponse:
         """Serializes the CreateServicePrincipalSecretResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.expire_time is not None:
-            body["{expire_time}"] = self.expire_time
+            body["expire_time"] = self.expire_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.secret is not None:
-            body["{secret}"] = self.secret
+            body["secret"] = self.secret
         if self.secret_hash is not None:
-            body["{secret_hash}"] = self.secret_hash
+            body["secret_hash"] = self.secret_hash
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateServicePrincipalSecretResponse:
         """Deserializes the CreateServicePrincipalSecretResponse from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            expire_time=d.get("{expire_time}", None),
-            id=d.get("{id}", None),
-            secret=d.get("{secret}", None),
-            secret_hash=d.get("{secret_hash}", None),
-            status=d.get("{status}", None),
-            update_time=d.get("{update_time}", None),
+            create_time=d.get("create_time", None),
+            expire_time=d.get("expire_time", None),
+            id=d.get("id", None),
+            secret=d.get("secret", None),
+            secret_hash=d.get("secret_hash", None),
+            status=d.get("status", None),
+            update_time=d.get("update_time", None),
         )
 
 
@@ -395,29 +394,29 @@ class FederationPolicy:
         """Serializes the FederationPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.oidc_policy:
-            body["{oidc_policy}"] = self.oidc_policy
+            body["oidc_policy"] = self.oidc_policy
         if self.uid is not None:
-            body["{uid}"] = self.uid
+            body["uid"] = self.uid
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FederationPolicy:
         """Deserializes the FederationPolicy from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            description=d.get("{description}", None),
-            name=d.get("{name}", None),
-            oidc_policy=_from_dict(d, "{oidc_policy}", OidcFederationPolicy),
-            uid=d.get("{uid}", None),
-            update_time=d.get("{update_time}", None),
+            create_time=d.get("create_time", None),
+            description=d.get("description", None),
+            name=d.get("name", None),
+            oidc_policy=_from_dict(d, "oidc_policy", OidcFederationPolicy),
+            uid=d.get("uid", None),
+            update_time=d.get("update_time", None),
         )
 
 
@@ -484,44 +483,44 @@ class GetCustomAppIntegrationOutput:
         """Serializes the GetCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.confidential is not None:
-            body["{confidential}"] = self.confidential
+            body["confidential"] = self.confidential
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.creator_username is not None:
-            body["{creator_username}"] = self.creator_username
+            body["creator_username"] = self.creator_username
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = self.redirect_urls
+            body["redirect_urls"] = self.redirect_urls
         if self.scopes:
-            body["{scopes}"] = self.scopes
+            body["scopes"] = self.scopes
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = self.user_authorized_scopes
+            body["user_authorized_scopes"] = self.user_authorized_scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationOutput:
         """Deserializes the GetCustomAppIntegrationOutput from a dictionary."""
         return cls(
-            client_id=d.get("{client_id}", None),
-            confidential=d.get("{confidential}", None),
-            create_time=d.get("{create_time}", None),
-            created_by=d.get("{created_by}", None),
-            creator_username=d.get("{creator_username}", None),
-            integration_id=d.get("{integration_id}", None),
-            name=d.get("{name}", None),
-            redirect_urls=d.get("{redirect_urls}", None),
-            scopes=d.get("{scopes}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
-            user_authorized_scopes=d.get("{user_authorized_scopes}", None),
+            client_id=d.get("client_id", None),
+            confidential=d.get("confidential", None),
+            create_time=d.get("create_time", None),
+            created_by=d.get("created_by", None),
+            creator_username=d.get("creator_username", None),
+            integration_id=d.get("integration_id", None),
+            name=d.get("name", None),
+            redirect_urls=d.get("redirect_urls", None),
+            scopes=d.get("scopes", None),
+            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
+            user_authorized_scopes=d.get("user_authorized_scopes", None),
         )
 
 
@@ -545,17 +544,17 @@ class GetCustomAppIntegrationsOutput:
         """Serializes the GetCustomAppIntegrationsOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apps:
-            body["{apps}"] = self.apps
+            body["apps"] = self.apps
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationsOutput:
         """Deserializes the GetCustomAppIntegrationsOutput from a dictionary."""
         return cls(
-            apps=_repeated_dict(d, "{apps}", GetCustomAppIntegrationOutput),
-            next_page_token=d.get("{next_page_token}", None),
+            apps=_repeated_dict(d, "apps", GetCustomAppIntegrationOutput),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -598,29 +597,29 @@ class GetPublishedAppIntegrationOutput:
         """Serializes the GetPublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationOutput:
         """Deserializes the GetPublishedAppIntegrationOutput from a dictionary."""
         return cls(
-            app_id=d.get("{app_id}", None),
-            create_time=d.get("{create_time}", None),
-            created_by=d.get("{created_by}", None),
-            integration_id=d.get("{integration_id}", None),
-            name=d.get("{name}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
+            app_id=d.get("app_id", None),
+            create_time=d.get("create_time", None),
+            created_by=d.get("created_by", None),
+            integration_id=d.get("integration_id", None),
+            name=d.get("name", None),
+            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
         )
 
 
@@ -644,17 +643,17 @@ class GetPublishedAppIntegrationsOutput:
         """Serializes the GetPublishedAppIntegrationsOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apps:
-            body["{apps}"] = self.apps
+            body["apps"] = self.apps
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationsOutput:
         """Deserializes the GetPublishedAppIntegrationsOutput from a dictionary."""
         return cls(
-            apps=_repeated_dict(d, "{apps}", GetPublishedAppIntegrationOutput),
-            next_page_token=d.get("{next_page_token}", None),
+            apps=_repeated_dict(d, "apps", GetPublishedAppIntegrationOutput),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -680,17 +679,15 @@ class GetPublishedAppsOutput:
         """Serializes the GetPublishedAppsOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apps:
-            body["{apps}"] = self.apps
+            body["apps"] = self.apps
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppsOutput:
         """Deserializes the GetPublishedAppsOutput from a dictionary."""
-        return cls(
-            apps=_repeated_dict(d, "{apps}", PublishedAppOutput), next_page_token=d.get("{next_page_token}", None)
-        )
+        return cls(apps=_repeated_dict(d, "apps", PublishedAppOutput), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -712,16 +709,16 @@ class ListFederationPoliciesResponse:
         """Serializes the ListFederationPoliciesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.policies:
-            body["{policies}"] = self.policies
+            body["policies"] = self.policies
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListFederationPoliciesResponse:
         """Deserializes the ListFederationPoliciesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None), policies=_repeated_dict(d, "{policies}", FederationPolicy)
+            next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", FederationPolicy)
         )
 
 
@@ -746,15 +743,15 @@ class ListServicePrincipalSecretsResponse:
         """Serializes the ListServicePrincipalSecretsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.secrets:
-            body["{secrets}"] = self.secrets
+            body["secrets"] = self.secrets
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
-        return cls(next_page_token=d.get("{next_page_token}", None), secrets=_repeated_dict(d, "{secrets}", SecretInfo))
+        return cls(next_page_token=d.get("next_page_token", None), secrets=_repeated_dict(d, "secrets", SecretInfo))
 
 
 @dataclass
@@ -814,29 +811,29 @@ class OidcFederationPolicy:
         """Serializes the OidcFederationPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.audiences:
-            body["{audiences}"] = self.audiences
+            body["audiences"] = self.audiences
         if self.issuer is not None:
-            body["{issuer}"] = self.issuer
+            body["issuer"] = self.issuer
         if self.jwks_json is not None:
-            body["{jwks_json}"] = self.jwks_json
+            body["jwks_json"] = self.jwks_json
         if self.jwks_uri is not None:
-            body["{jwks_uri}"] = self.jwks_uri
+            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
-            body["{subject}"] = self.subject
+            body["subject"] = self.subject
         if self.subject_claim is not None:
-            body["{subject_claim}"] = self.subject_claim
+            body["subject_claim"] = self.subject_claim
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> OidcFederationPolicy:
         """Deserializes the OidcFederationPolicy from a dictionary."""
         return cls(
-            audiences=d.get("{audiences}", None),
-            issuer=d.get("{issuer}", None),
-            jwks_json=d.get("{jwks_json}", None),
-            jwks_uri=d.get("{jwks_uri}", None),
-            subject=d.get("{subject}", None),
-            subject_claim=d.get("{subject_claim}", None),
+            audiences=d.get("audiences", None),
+            issuer=d.get("issuer", None),
+            jwks_json=d.get("jwks_json", None),
+            jwks_uri=d.get("jwks_uri", None),
+            subject=d.get("subject", None),
+            subject_claim=d.get("subject_claim", None),
         )
 
 
@@ -887,32 +884,32 @@ class PublishedAppOutput:
         """Serializes the PublishedAppOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.is_confidential_client is not None:
-            body["{is_confidential_client}"] = self.is_confidential_client
+            body["is_confidential_client"] = self.is_confidential_client
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = self.redirect_urls
+            body["redirect_urls"] = self.redirect_urls
         if self.scopes:
-            body["{scopes}"] = self.scopes
+            body["scopes"] = self.scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PublishedAppOutput:
         """Deserializes the PublishedAppOutput from a dictionary."""
         return cls(
-            app_id=d.get("{app_id}", None),
-            client_id=d.get("{client_id}", None),
-            description=d.get("{description}", None),
-            is_confidential_client=d.get("{is_confidential_client}", None),
-            name=d.get("{name}", None),
-            redirect_urls=d.get("{redirect_urls}", None),
-            scopes=d.get("{scopes}", None),
+            app_id=d.get("app_id", None),
+            client_id=d.get("client_id", None),
+            description=d.get("description", None),
+            is_confidential_client=d.get("is_confidential_client", None),
+            name=d.get("name", None),
+            redirect_urls=d.get("redirect_urls", None),
+            scopes=d.get("scopes", None),
         )
 
 
@@ -957,29 +954,29 @@ class SecretInfo:
         """Serializes the SecretInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.expire_time is not None:
-            body["{expire_time}"] = self.expire_time
+            body["expire_time"] = self.expire_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.secret_hash is not None:
-            body["{secret_hash}"] = self.secret_hash
+            body["secret_hash"] = self.secret_hash
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SecretInfo:
         """Deserializes the SecretInfo from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            expire_time=d.get("{expire_time}", None),
-            id=d.get("{id}", None),
-            secret_hash=d.get("{secret_hash}", None),
-            status=d.get("{status}", None),
-            update_time=d.get("{update_time}", None),
+            create_time=d.get("create_time", None),
+            expire_time=d.get("expire_time", None),
+            id=d.get("id", None),
+            secret_hash=d.get("secret_hash", None),
+            status=d.get("status", None),
+            update_time=d.get("update_time", None),
         )
 
 
@@ -1004,17 +1001,17 @@ class TokenAccessPolicy:
         """Serializes the TokenAccessPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_token_ttl_in_minutes is not None:
-            body["{access_token_ttl_in_minutes}"] = self.access_token_ttl_in_minutes
+            body["access_token_ttl_in_minutes"] = self.access_token_ttl_in_minutes
         if self.refresh_token_ttl_in_minutes is not None:
-            body["{refresh_token_ttl_in_minutes}"] = self.refresh_token_ttl_in_minutes
+            body["refresh_token_ttl_in_minutes"] = self.refresh_token_ttl_in_minutes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TokenAccessPolicy:
         """Deserializes the TokenAccessPolicy from a dictionary."""
         return cls(
-            access_token_ttl_in_minutes=d.get("{access_token_ttl_in_minutes}", None),
-            refresh_token_ttl_in_minutes=d.get("{refresh_token_ttl_in_minutes}", None),
+            access_token_ttl_in_minutes=d.get("access_token_ttl_in_minutes", None),
+            refresh_token_ttl_in_minutes=d.get("refresh_token_ttl_in_minutes", None),
         )
 
 
@@ -1055,26 +1052,26 @@ class UpdateCustomAppIntegration:
         """Serializes the UpdateCustomAppIntegration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.redirect_urls:
-            body["{redirect_urls}"] = self.redirect_urls
+            body["redirect_urls"] = self.redirect_urls
         if self.scopes:
-            body["{scopes}"] = self.scopes
+            body["scopes"] = self.scopes
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = self.user_authorized_scopes
+            body["user_authorized_scopes"] = self.user_authorized_scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomAppIntegration:
         """Deserializes the UpdateCustomAppIntegration from a dictionary."""
         return cls(
-            integration_id=d.get("{integration_id}", None),
-            redirect_urls=d.get("{redirect_urls}", None),
-            scopes=d.get("{scopes}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
-            user_authorized_scopes=d.get("{user_authorized_scopes}", None),
+            integration_id=d.get("integration_id", None),
+            redirect_urls=d.get("redirect_urls", None),
+            scopes=d.get("scopes", None),
+            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
+            user_authorized_scopes=d.get("user_authorized_scopes", None),
         )
 
 
@@ -1116,17 +1113,17 @@ class UpdatePublishedAppIntegration:
         """Serializes the UpdatePublishedAppIntegration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy
+            body["token_access_policy"] = self.token_access_policy
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdatePublishedAppIntegration:
         """Deserializes the UpdatePublishedAppIntegration from a dictionary."""
         return cls(
-            integration_id=d.get("{integration_id}", None),
-            token_access_policy=_from_dict(d, "{token_access_policy}", TokenAccessPolicy),
+            integration_id=d.get("integration_id", None),
+            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
         )
 
 
@@ -1206,7 +1203,7 @@ class AccountFederationPolicyAPI:
         body = policy.as_dict()
         query = {}
         if policy_id is not None:
-            query["{policy_id}"] = policy_id
+            query["policy_id"] = policy_id
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1267,9 +1264,9 @@ class AccountFederationPolicyAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1278,12 +1275,12 @@ class AccountFederationPolicyAPI:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies", query=query, headers=headers
             )
-            if "{policies}" in json:
-                for v in json["{policies}"]:
+            if "policies" in json:
+                for v in json["policies"]:
                     yield FederationPolicy.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self, policy_id: str, *, policy: Optional[FederationPolicy] = None, update_mask: Optional[str] = None
@@ -1305,7 +1302,7 @@ class AccountFederationPolicyAPI:
         body = policy.as_dict()
         query = {}
         if update_mask is not None:
-            query["{update_mask}"] = update_mask
+            query["update_mask"] = update_mask
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1363,17 +1360,17 @@ class CustomAppIntegrationAPI:
         """
         body = {}
         if confidential is not None:
-            body["{confidential}"] = confidential
+            body["confidential"] = confidential
         if name is not None:
-            body["{name}"] = name
+            body["name"] = name
         if redirect_urls is not None:
-            body["{redirect_urls}"] = [v for v in redirect_urls]
+            body["redirect_urls"] = [v for v in redirect_urls]
         if scopes is not None:
-            body["{scopes}"] = [v for v in scopes]
+            body["scopes"] = [v for v in scopes]
         if token_access_policy is not None:
-            body["{token_access_policy}"] = token_access_policy.as_dict()
+            body["token_access_policy"] = token_access_policy.as_dict()
         if user_authorized_scopes is not None:
-            body["{user_authorized_scopes}"] = [v for v in user_authorized_scopes]
+            body["user_authorized_scopes"] = [v for v in user_authorized_scopes]
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1450,11 +1447,11 @@ class CustomAppIntegrationAPI:
 
         query = {}
         if include_creator_username is not None:
-            query["{include_creator_username}"] = include_creator_username
+            query["include_creator_username"] = include_creator_username
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1466,12 +1463,12 @@ class CustomAppIntegrationAPI:
                 query=query,
                 headers=headers,
             )
-            if "{apps}" in json:
-                for v in json["{apps}"]:
+            if "apps" in json:
+                for v in json["apps"]:
                     yield GetCustomAppIntegrationOutput.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self,
@@ -1503,13 +1500,13 @@ class CustomAppIntegrationAPI:
         """
         body = {}
         if redirect_urls is not None:
-            body["{redirect_urls}"] = [v for v in redirect_urls]
+            body["redirect_urls"] = [v for v in redirect_urls]
         if scopes is not None:
-            body["{scopes}"] = [v for v in scopes]
+            body["scopes"] = [v for v in scopes]
         if token_access_policy is not None:
-            body["{token_access_policy}"] = token_access_policy.as_dict()
+            body["token_access_policy"] = token_access_policy.as_dict()
         if user_authorized_scopes is not None:
-            body["{user_authorized_scopes}"] = [v for v in user_authorized_scopes]
+            body["user_authorized_scopes"] = [v for v in user_authorized_scopes]
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1548,9 +1545,9 @@ class OAuthPublishedAppsAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1559,12 +1556,12 @@ class OAuthPublishedAppsAPI:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps", query=query, headers=headers
             )
-            if "{apps}" in json:
-                for v in json["{apps}"]:
+            if "apps" in json:
+                for v in json["apps"]:
                     yield PublishedAppOutput.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class PublishedAppIntegrationAPI:
@@ -1592,9 +1589,9 @@ class PublishedAppIntegrationAPI:
         """
         body = {}
         if app_id is not None:
-            body["{app_id}"] = app_id
+            body["app_id"] = app_id
         if token_access_policy is not None:
-            body["{token_access_policy}"] = token_access_policy.as_dict()
+            body["token_access_policy"] = token_access_policy.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1665,9 +1662,9 @@ class PublishedAppIntegrationAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1679,12 +1676,12 @@ class PublishedAppIntegrationAPI:
                 query=query,
                 headers=headers,
             )
-            if "{apps}" in json:
-                for v in json["{apps}"]:
+            if "apps" in json:
+                for v in json["apps"]:
                     yield GetPublishedAppIntegrationOutput.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
@@ -1700,7 +1697,7 @@ class PublishedAppIntegrationAPI:
         """
         body = {}
         if token_access_policy is not None:
-            body["{token_access_policy}"] = token_access_policy.as_dict()
+            body["token_access_policy"] = token_access_policy.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1776,7 +1773,7 @@ class ServicePrincipalFederationPolicyAPI:
         body = policy.as_dict()
         query = {}
         if policy_id is not None:
-            query["{policy_id}"] = policy_id
+            query["policy_id"] = policy_id
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1849,9 +1846,9 @@ class ServicePrincipalFederationPolicyAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1863,12 +1860,12 @@ class ServicePrincipalFederationPolicyAPI:
                 query=query,
                 headers=headers,
             )
-            if "{policies}" in json:
-                for v in json["{policies}"]:
+            if "policies" in json:
+                for v in json["policies"]:
                     yield FederationPolicy.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def update(
         self,
@@ -1897,7 +1894,7 @@ class ServicePrincipalFederationPolicyAPI:
         body = policy.as_dict()
         query = {}
         if update_mask is not None:
-            query["{update_mask}"] = update_mask
+            query["update_mask"] = update_mask
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1947,7 +1944,7 @@ class ServicePrincipalSecretsAPI:
         """
         body = {}
         if lifetime is not None:
-            body["{lifetime}"] = lifetime
+            body["lifetime"] = lifetime
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -2003,7 +2000,7 @@ class ServicePrincipalSecretsAPI:
 
         query = {}
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -2015,9 +2012,9 @@ class ServicePrincipalSecretsAPI:
                 query=query,
                 headers=headers,
             )
-            if "{secrets}" in json:
-                for v in json["{secrets}"]:
+            if "secrets" in json:
+                for v in json["secrets"]:
                     yield SecretInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]

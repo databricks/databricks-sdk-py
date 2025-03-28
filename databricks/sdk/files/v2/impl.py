@@ -35,15 +35,15 @@ class AddBlock:
         """Serializes the AddBlock into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data is not None:
-            body["{data}"] = self.data
+            body["data"] = self.data
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AddBlock:
         """Deserializes the AddBlock from a dictionary."""
-        return cls(data=d.get("{data}", None), handle=d.get("{handle}", None))
+        return cls(data=d.get("data", None), handle=d.get("handle", None))
 
 
 @dataclass
@@ -80,13 +80,13 @@ class Close:
         """Serializes the Close into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Close:
         """Deserializes the Close from a dictionary."""
-        return cls(handle=d.get("{handle}", None))
+        return cls(handle=d.get("handle", None))
 
 
 @dataclass
@@ -128,15 +128,15 @@ class Create:
         """Serializes the Create into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.overwrite is not None:
-            body["{overwrite}"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Create:
         """Deserializes the Create from a dictionary."""
-        return cls(overwrite=d.get("{overwrite}", None), path=d.get("{path}", None))
+        return cls(overwrite=d.get("overwrite", None), path=d.get("path", None))
 
 
 @dataclass
@@ -174,13 +174,13 @@ class CreateResponse:
         """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
-        return cls(handle=d.get("{handle}", None))
+        return cls(handle=d.get("handle", None))
 
 
 @dataclass
@@ -205,15 +205,15 @@ class Delete:
         """Serializes the Delete into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         if self.recursive is not None:
-            body["{recursive}"] = self.recursive
+            body["recursive"] = self.recursive
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
-        return cls(path=d.get("{path}", None), recursive=d.get("{recursive}", None))
+        return cls(path=d.get("path", None), recursive=d.get("recursive", None))
 
 
 @dataclass
@@ -288,26 +288,26 @@ class DirectoryEntry:
         """Serializes the DirectoryEntry into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_size is not None:
-            body["{file_size}"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_directory is not None:
-            body["{is_directory}"] = self.is_directory
+            body["is_directory"] = self.is_directory
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last_modified"] = self.last_modified
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
         return cls(
-            file_size=d.get("{file_size}", None),
-            is_directory=d.get("{is_directory}", None),
-            last_modified=d.get("{last_modified}", None),
-            name=d.get("{name}", None),
-            path=d.get("{path}", None),
+            file_size=d.get("file_size", None),
+            is_directory=d.get("is_directory", None),
+            last_modified=d.get("last_modified", None),
+            name=d.get("name", None),
+            path=d.get("path", None),
         )
 
 
@@ -340,23 +340,23 @@ class DownloadResponse:
         """Serializes the DownloadResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content_length is not None:
-            body["{content_length}"] = self.content_length
+            body["content-length"] = self.content_length
         if self.content_type is not None:
-            body["{content_type}"] = self.content_type
+            body["content-type"] = self.content_type
         if self.contents:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last-modified"] = self.last_modified
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(
-            content_length=int(d.get("{content_length}", None)),
-            content_type=d.get("{content_type}", None),
-            contents=d.get("{contents}", None),
-            last_modified=d.get("{last_modified}", None),
+            content_length=int(d.get("content-length", None)),
+            content_type=d.get("content-type", None),
+            contents=d.get("contents", None),
+            last_modified=d.get("last-modified", None),
         )
 
 
@@ -391,23 +391,23 @@ class FileInfo:
         """Serializes the FileInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file_size is not None:
-            body["{file_size}"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_dir is not None:
-            body["{is_dir}"] = self.is_dir
+            body["is_dir"] = self.is_dir
         if self.modification_time is not None:
-            body["{modification_time}"] = self.modification_time
+            body["modification_time"] = self.modification_time
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(
-            file_size=d.get("{file_size}", None),
-            is_dir=d.get("{is_dir}", None),
-            modification_time=d.get("{modification_time}", None),
-            path=d.get("{path}", None),
+            file_size=d.get("file_size", None),
+            is_dir=d.get("is_dir", None),
+            modification_time=d.get("modification_time", None),
+            path=d.get("path", None),
         )
 
 
@@ -454,20 +454,20 @@ class GetMetadataResponse:
         """Serializes the GetMetadataResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content_length is not None:
-            body["{content_length}"] = self.content_length
+            body["content-length"] = self.content_length
         if self.content_type is not None:
-            body["{content_type}"] = self.content_type
+            body["content-type"] = self.content_type
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last-modified"] = self.last_modified
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetMetadataResponse:
         """Deserializes the GetMetadataResponse from a dictionary."""
         return cls(
-            content_length=int(d.get("{content_length}", None)),
-            content_type=d.get("{content_type}", None),
-            last_modified=d.get("{last_modified}", None),
+            content_length=int(d.get("content-length", None)),
+            content_type=d.get("content-type", None),
+            last_modified=d.get("last-modified", None),
         )
 
 
@@ -492,16 +492,16 @@ class ListDirectoryResponse:
         """Serializes the ListDirectoryResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.contents:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListDirectoryResponse:
         """Deserializes the ListDirectoryResponse from a dictionary."""
         return cls(
-            contents=_repeated_dict(d, "{contents}", DirectoryEntry), next_page_token=d.get("{next_page_token}", None)
+            contents=_repeated_dict(d, "contents", DirectoryEntry), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -521,13 +521,13 @@ class ListStatusResponse:
         """Serializes the ListStatusResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.files:
-            body["{files}"] = self.files
+            body["files"] = self.files
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListStatusResponse:
         """Deserializes the ListStatusResponse from a dictionary."""
-        return cls(files=_repeated_dict(d, "{files}", FileInfo))
+        return cls(files=_repeated_dict(d, "files", FileInfo))
 
 
 @dataclass
@@ -546,13 +546,13 @@ class MkDirs:
         """Serializes the MkDirs into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MkDirs:
         """Deserializes the MkDirs from a dictionary."""
-        return cls(path=d.get("{path}", None))
+        return cls(path=d.get("path", None))
 
 
 @dataclass
@@ -594,15 +594,15 @@ class Move:
         """Serializes the Move into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_path is not None:
-            body["{destination_path}"] = self.destination_path
+            body["destination_path"] = self.destination_path
         if self.source_path is not None:
-            body["{source_path}"] = self.source_path
+            body["source_path"] = self.source_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Move:
         """Deserializes the Move from a dictionary."""
-        return cls(destination_path=d.get("{destination_path}", None), source_path=d.get("{source_path}", None))
+        return cls(destination_path=d.get("destination_path", None), source_path=d.get("source_path", None))
 
 
 @dataclass
@@ -649,17 +649,17 @@ class Put:
         """Serializes the Put into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.contents is not None:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         if self.overwrite is not None:
-            body["{overwrite}"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Put:
         """Deserializes the Put from a dictionary."""
-        return cls(contents=d.get("{contents}", None), overwrite=d.get("{overwrite}", None), path=d.get("{path}", None))
+        return cls(contents=d.get("contents", None), overwrite=d.get("overwrite", None), path=d.get("path", None))
 
 
 @dataclass
@@ -702,15 +702,15 @@ class ReadResponse:
         """Serializes the ReadResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bytes_read is not None:
-            body["{bytes_read}"] = self.bytes_read
+            body["bytes_read"] = self.bytes_read
         if self.data is not None:
-            body["{data}"] = self.data
+            body["data"] = self.data
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
-        return cls(bytes_read=d.get("{bytes_read}", None), data=d.get("{data}", None))
+        return cls(bytes_read=d.get("bytes_read", None), data=d.get("data", None))
 
 
 @dataclass
@@ -755,9 +755,9 @@ class DbfsAPI:
         """
         body = {}
         if data is not None:
-            body["{data}"] = data
+            body["data"] = data
         if handle is not None:
-            body["{handle}"] = handle
+            body["handle"] = handle
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -778,7 +778,7 @@ class DbfsAPI:
         """
         body = {}
         if handle is not None:
-            body["{handle}"] = handle
+            body["handle"] = handle
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -807,9 +807,9 @@ class DbfsAPI:
         """
         body = {}
         if overwrite is not None:
-            body["{overwrite}"] = overwrite
+            body["overwrite"] = overwrite
         if path is not None:
-            body["{path}"] = path
+            body["path"] = path
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -846,9 +846,9 @@ class DbfsAPI:
         """
         body = {}
         if path is not None:
-            body["{path}"] = path
+            body["path"] = path
         if recursive is not None:
-            body["{recursive}"] = recursive
+            body["recursive"] = recursive
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -870,7 +870,7 @@ class DbfsAPI:
 
         query = {}
         if path is not None:
-            query["{path}"] = path
+            query["path"] = path
         headers = {
             "0": "{Accept application/json}",
         }
@@ -899,7 +899,7 @@ class DbfsAPI:
 
         query = {}
         if path is not None:
-            query["{path}"] = path
+            query["path"] = path
         headers = {
             "0": "{Accept application/json}",
         }
@@ -923,7 +923,7 @@ class DbfsAPI:
         """
         body = {}
         if path is not None:
-            body["{path}"] = path
+            body["path"] = path
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -948,9 +948,9 @@ class DbfsAPI:
         """
         body = {}
         if destination_path is not None:
-            body["{destination_path}"] = destination_path
+            body["destination_path"] = destination_path
         if source_path is not None:
-            body["{source_path}"] = source_path
+            body["source_path"] = source_path
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -983,11 +983,11 @@ class DbfsAPI:
         """
         body = {}
         if contents is not None:
-            body["{contents}"] = contents
+            body["contents"] = contents
         if overwrite is not None:
-            body["{overwrite}"] = overwrite
+            body["overwrite"] = overwrite
         if path is not None:
-            body["{path}"] = path
+            body["path"] = path
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1019,11 +1019,11 @@ class DbfsAPI:
 
         query = {}
         if length is not None:
-            query["{length}"] = length
+            query["length"] = length
         if offset is not None:
-            query["{offset}"] = offset
+            query["offset"] = offset
         if path is not None:
-            query["{path}"] = path
+            query["path"] = path
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1218,9 +1218,9 @@ class FilesAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -1232,12 +1232,12 @@ class FilesAPI:
                 query=query,
                 headers=headers,
             )
-            if "{contents}" in json:
-                for v in json["{contents}"]:
+            if "contents" in json:
+                for v in json["contents"]:
                     yield DirectoryEntry.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
@@ -1258,7 +1258,7 @@ class FilesAPI:
 
         query = {}
         if overwrite is not None:
-            query["{overwrite}"] = overwrite
+            query["overwrite"] = overwrite
         headers = {
             "0": "{Content-Type application/octet-stream}",
         }
