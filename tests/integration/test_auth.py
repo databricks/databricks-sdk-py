@@ -39,6 +39,13 @@ def fresh_wheel_file(tmp_path) -> Path:
         raise RuntimeError(e.stderr)
 
 
+# TODO: Re-enable these tests after updating Databricks Connect to use the new SDK Mod.
+# These tests uploads the current copy of the Python SDK to the workspace and uses that copy to run some notebook code.
+# The reason for commenting out these tests is that Databricks Connect depends on the Python SDK in the workspace.
+# However, Due to the directory changes, the dependency path in Databricks Connect no longer matches with SDK Mod.
+# As SDK Mod represents a complete architectural change of the SDK Beta, we cannot simply use it in the DB connect, 
+# and we need to update it accordingly.
+
 # @pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
 # def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
 #     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
