@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -3337,48 +3336,6 @@ class WorkspacesAPI:
             workspace_id=op_response["workspace_id"],
         )
 
-    def create_and_wait(
-        self,
-        workspace_name: str,
-        *,
-        aws_region: Optional[str] = None,
-        cloud: Optional[str] = None,
-        cloud_resource_container: Optional[CloudResourceContainer] = None,
-        credentials_id: Optional[str] = None,
-        custom_tags: Optional[Dict[str, str]] = None,
-        deployment_name: Optional[str] = None,
-        gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
-        gke_config: Optional[GkeConfig] = None,
-        is_no_public_ip_enabled: Optional[bool] = None,
-        location: Optional[str] = None,
-        managed_services_customer_managed_key_id: Optional[str] = None,
-        network_id: Optional[str] = None,
-        pricing_tier: Optional[PricingTier] = None,
-        private_access_settings_id: Optional[str] = None,
-        storage_configuration_id: Optional[str] = None,
-        storage_customer_managed_key_id: Optional[str] = None,
-        timeout=timedelta(minutes=20),
-    ) -> Workspace:
-        return self.create(
-            aws_region=aws_region,
-            cloud=cloud,
-            cloud_resource_container=cloud_resource_container,
-            credentials_id=credentials_id,
-            custom_tags=custom_tags,
-            deployment_name=deployment_name,
-            gcp_managed_network_config=gcp_managed_network_config,
-            gke_config=gke_config,
-            is_no_public_ip_enabled=is_no_public_ip_enabled,
-            location=location,
-            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
-            network_id=network_id,
-            pricing_tier=pricing_tier,
-            private_access_settings_id=private_access_settings_id,
-            storage_configuration_id=storage_configuration_id,
-            storage_customer_managed_key_id=storage_customer_managed_key_id,
-            workspace_name=workspace_name,
-        ).result(timeout=timeout)
-
     def delete(self, workspace_id: int):
         """Delete a workspace.
 
@@ -3624,31 +3581,3 @@ class WorkspacesAPI:
         return Wait(
             self.WaitGetWorkspaceRunning, response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
         )
-
-    def update_and_wait(
-        self,
-        workspace_id: int,
-        *,
-        aws_region: Optional[str] = None,
-        credentials_id: Optional[str] = None,
-        custom_tags: Optional[Dict[str, str]] = None,
-        managed_services_customer_managed_key_id: Optional[str] = None,
-        network_connectivity_config_id: Optional[str] = None,
-        network_id: Optional[str] = None,
-        private_access_settings_id: Optional[str] = None,
-        storage_configuration_id: Optional[str] = None,
-        storage_customer_managed_key_id: Optional[str] = None,
-        timeout=timedelta(minutes=20),
-    ) -> Workspace:
-        return self.update(
-            aws_region=aws_region,
-            credentials_id=credentials_id,
-            custom_tags=custom_tags,
-            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
-            network_connectivity_config_id=network_connectivity_config_id,
-            network_id=network_id,
-            private_access_settings_id=private_access_settings_id,
-            storage_configuration_id=storage_configuration_id,
-            storage_customer_managed_key_id=storage_customer_managed_key_id,
-            workspace_id=workspace_id,
-        ).result(timeout=timeout)

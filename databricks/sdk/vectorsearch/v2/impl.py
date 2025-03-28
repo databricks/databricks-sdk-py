@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -1653,11 +1652,6 @@ class VectorSearchEndpointsAPI:
             response=EndpointInfo.from_dict(op_response),
             endpoint_name=op_response["name"],
         )
-
-    def create_endpoint_and_wait(
-        self, name: str, endpoint_type: EndpointType, timeout=timedelta(minutes=20)
-    ) -> EndpointInfo:
-        return self.create_endpoint(endpoint_type=endpoint_type, name=name).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete an endpoint.

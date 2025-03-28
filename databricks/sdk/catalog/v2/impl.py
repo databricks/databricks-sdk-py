@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -12310,9 +12309,6 @@ class OnlineTablesAPI:
         return Wait(
             self.WaitGetOnlineTableActive, response=OnlineTable.from_dict(op_response), name=op_response["name"]
         )
-
-    def create_and_wait(self, *, table: Optional[OnlineTable] = None, timeout=timedelta(minutes=20)) -> OnlineTable:
-        return self.create(table=table).result(timeout=timeout)
 
     def delete(self, name: str):
         """Delete an Online Table.

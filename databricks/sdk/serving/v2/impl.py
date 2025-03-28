@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
@@ -4245,28 +4244,6 @@ class ServingEndpointsAPI:
             name=op_response["name"],
         )
 
-    def create_and_wait(
-        self,
-        name: str,
-        *,
-        ai_gateway: Optional[AiGatewayConfig] = None,
-        budget_policy_id: Optional[str] = None,
-        config: Optional[EndpointCoreConfigInput] = None,
-        rate_limits: Optional[List[RateLimit]] = None,
-        route_optimized: Optional[bool] = None,
-        tags: Optional[List[EndpointTag]] = None,
-        timeout=timedelta(minutes=20),
-    ) -> ServingEndpointDetailed:
-        return self.create(
-            ai_gateway=ai_gateway,
-            budget_policy_id=budget_policy_id,
-            config=config,
-            name=name,
-            rate_limits=rate_limits,
-            route_optimized=route_optimized,
-            tags=tags,
-        ).result(timeout=timeout)
-
     def delete(self, name: str):
         """Delete a serving endpoint.
 
@@ -4757,24 +4734,6 @@ class ServingEndpointsAPI:
             response=ServingEndpointDetailed.from_dict(op_response),
             name=op_response["name"],
         )
-
-    def update_config_and_wait(
-        self,
-        name: str,
-        *,
-        auto_capture_config: Optional[AutoCaptureConfigInput] = None,
-        served_entities: Optional[List[ServedEntityInput]] = None,
-        served_models: Optional[List[ServedModelInput]] = None,
-        traffic_config: Optional[TrafficConfig] = None,
-        timeout=timedelta(minutes=20),
-    ) -> ServingEndpointDetailed:
-        return self.update_config(
-            auto_capture_config=auto_capture_config,
-            name=name,
-            served_entities=served_entities,
-            served_models=served_models,
-            traffic_config=traffic_config,
-        ).result(timeout=timeout)
 
     def update_permissions(
         self,

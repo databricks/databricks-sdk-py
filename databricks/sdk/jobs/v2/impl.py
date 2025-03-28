@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -10118,9 +10117,6 @@ class JobsAPI:
             self.WaitGetRunJobTerminatedOrSkipped, response=CancelRunResponse.from_dict(op_response), run_id=run_id
         )
 
-    def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
-        return self.cancel_run(run_id=run_id).result(timeout=timeout)
-
     def create(
         self,
         *,
@@ -10800,42 +10796,6 @@ class JobsAPI:
             self.WaitGetRunJobTerminatedOrSkipped, response=RepairRunResponse.from_dict(op_response), run_id=run_id
         )
 
-    def repair_run_and_wait(
-        self,
-        run_id: int,
-        *,
-        dbt_commands: Optional[List[str]] = None,
-        jar_params: Optional[List[str]] = None,
-        job_parameters: Optional[Dict[str, str]] = None,
-        latest_repair_id: Optional[int] = None,
-        notebook_params: Optional[Dict[str, str]] = None,
-        pipeline_params: Optional[PipelineParams] = None,
-        python_named_params: Optional[Dict[str, str]] = None,
-        python_params: Optional[List[str]] = None,
-        rerun_all_failed_tasks: Optional[bool] = None,
-        rerun_dependent_tasks: Optional[bool] = None,
-        rerun_tasks: Optional[List[str]] = None,
-        spark_submit_params: Optional[List[str]] = None,
-        sql_params: Optional[Dict[str, str]] = None,
-        timeout=timedelta(minutes=20),
-    ) -> Run:
-        return self.repair_run(
-            dbt_commands=dbt_commands,
-            jar_params=jar_params,
-            job_parameters=job_parameters,
-            latest_repair_id=latest_repair_id,
-            notebook_params=notebook_params,
-            pipeline_params=pipeline_params,
-            python_named_params=python_named_params,
-            python_params=python_params,
-            rerun_all_failed_tasks=rerun_all_failed_tasks,
-            rerun_dependent_tasks=rerun_dependent_tasks,
-            rerun_tasks=rerun_tasks,
-            run_id=run_id,
-            spark_submit_params=spark_submit_params,
-            sql_params=sql_params,
-        ).result(timeout=timeout)
-
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
 
@@ -11023,42 +10983,6 @@ class JobsAPI:
             run_id=op_response["run_id"],
         )
 
-    def run_now_and_wait(
-        self,
-        job_id: int,
-        *,
-        dbt_commands: Optional[List[str]] = None,
-        idempotency_token: Optional[str] = None,
-        jar_params: Optional[List[str]] = None,
-        job_parameters: Optional[Dict[str, str]] = None,
-        notebook_params: Optional[Dict[str, str]] = None,
-        only: Optional[List[str]] = None,
-        performance_target: Optional[PerformanceTarget] = None,
-        pipeline_params: Optional[PipelineParams] = None,
-        python_named_params: Optional[Dict[str, str]] = None,
-        python_params: Optional[List[str]] = None,
-        queue: Optional[QueueSettings] = None,
-        spark_submit_params: Optional[List[str]] = None,
-        sql_params: Optional[Dict[str, str]] = None,
-        timeout=timedelta(minutes=20),
-    ) -> Run:
-        return self.run_now(
-            dbt_commands=dbt_commands,
-            idempotency_token=idempotency_token,
-            jar_params=jar_params,
-            job_id=job_id,
-            job_parameters=job_parameters,
-            notebook_params=notebook_params,
-            only=only,
-            performance_target=performance_target,
-            pipeline_params=pipeline_params,
-            python_named_params=python_named_params,
-            python_params=python_params,
-            queue=queue,
-            spark_submit_params=spark_submit_params,
-            sql_params=sql_params,
-        ).result(timeout=timeout)
-
     def set_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
@@ -11201,42 +11125,6 @@ class JobsAPI:
             response=SubmitRunResponse.from_dict(op_response),
             run_id=op_response["run_id"],
         )
-
-    def submit_and_wait(
-        self,
-        *,
-        access_control_list: Optional[List[JobAccessControlRequest]] = None,
-        budget_policy_id: Optional[str] = None,
-        email_notifications: Optional[JobEmailNotifications] = None,
-        environments: Optional[List[JobEnvironment]] = None,
-        git_source: Optional[GitSource] = None,
-        health: Optional[JobsHealthRules] = None,
-        idempotency_token: Optional[str] = None,
-        notification_settings: Optional[JobNotificationSettings] = None,
-        queue: Optional[QueueSettings] = None,
-        run_as: Optional[JobRunAs] = None,
-        run_name: Optional[str] = None,
-        tasks: Optional[List[SubmitTask]] = None,
-        timeout_seconds: Optional[int] = None,
-        webhook_notifications: Optional[WebhookNotifications] = None,
-        timeout=timedelta(minutes=20),
-    ) -> Run:
-        return self.submit(
-            access_control_list=access_control_list,
-            budget_policy_id=budget_policy_id,
-            email_notifications=email_notifications,
-            environments=environments,
-            git_source=git_source,
-            health=health,
-            idempotency_token=idempotency_token,
-            notification_settings=notification_settings,
-            queue=queue,
-            run_as=run_as,
-            run_name=run_name,
-            tasks=tasks,
-            timeout_seconds=timeout_seconds,
-            webhook_notifications=webhook_notifications,
-        ).result(timeout=timeout)
 
     def update(
         self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None
