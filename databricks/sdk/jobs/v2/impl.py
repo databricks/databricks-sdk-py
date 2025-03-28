@@ -16,297 +16,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class Adlsgen2Info:
-    """A storage location in Adls Gen2"""
-
-    destination: str
-    """abfss destination, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Adlsgen2Info into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Adlsgen2Info:
-        """Deserializes the Adlsgen2Info from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
-
-
-@dataclass
-class AutoScale:
-    max_workers: Optional[int] = None
-    """The maximum number of workers to which the cluster can scale up when overloaded. Note that
-    `max_workers` must be strictly greater than `min_workers`."""
-
-    min_workers: Optional[int] = None
-    """The minimum number of workers to which the cluster can scale down when underutilized. It is also
-    the initial number of workers the cluster will have after creation."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AutoScale into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.max_workers is not None:
-            body["{max_workers}"] = self.max_workers
-        if self.min_workers is not None:
-            body["{min_workers}"] = self.min_workers
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AutoScale into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.max_workers is not None:
-            body["{max_workers}"] = self.max_workers
-        if self.min_workers is not None:
-            body["{min_workers}"] = self.min_workers
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AutoScale:
-        """Deserializes the AutoScale from a dictionary."""
-        return cls(max_workers=d.get("{max_workers}", None), min_workers=d.get("{min_workers}", None))
-
-
-@dataclass
-class AwsAttributes:
-    """Attributes set during cluster creation which are related to Amazon Web Services."""
-
-    availability: Optional[AwsAvailability] = None
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
-    
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
-
-    ebs_volume_count: Optional[int] = None
-    """The number of volumes launched for each instance. Users can choose up to 10 volumes. This
-    feature is only enabled for supported node types. Legacy node types cannot specify custom EBS
-    volumes. For node types with no instance store, at least one EBS volume needs to be specified;
-    otherwise, cluster creation will fail.
-    
-    These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance store volumes will be
-    mounted at `/local_disk0`, `/local_disk1`, and etc.
-    
-    If EBS volumes are attached, Databricks will configure Spark to use only the EBS volumes for
-    scratch storage because heterogenously sized scratch devices can lead to inefficient disk
-    utilization. If no EBS volumes are attached, Databricks will configure Spark to use instance
-    store volumes.
-    
-    Please note that if EBS volumes are specified, then the Spark configuration `spark.local.dir`
-    will be overridden."""
-
-    ebs_volume_iops: Optional[int] = None
-    """If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance
-    of a gp2 volume with the same volume size will be used."""
-
-    ebs_volume_size: Optional[int] = None
-    """The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this
-    value must be within the range 100 - 4096. For throughput optimized HDD, this value must be
-    within the range 500 - 4096."""
-
-    ebs_volume_throughput: Optional[int] = None
-    """If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum
-    performance of a gp2 volume with the same volume size will be used."""
-
-    ebs_volume_type: Optional[EbsVolumeType] = None
-    """The type of EBS volumes that will be launched with this cluster."""
-
-    first_on_demand: Optional[int] = None
-    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. If this
-    value is greater than 0, the cluster driver node in particular will be placed on an on-demand
-    instance. If this value is greater than or equal to the current cluster size, all nodes will be
-    placed on on-demand instances. If this value is less than the current cluster size,
-    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
-    on `availability` instances. Note that this value does not affect cluster size and cannot
-    currently be mutated over the lifetime of a cluster."""
-
-    instance_profile_arn: Optional[str] = None
-    """Nodes for this cluster will only be placed on AWS instances with this instance profile. If
-    ommitted, nodes will be placed on instances without an IAM instance profile. The instance
-    profile must have previously been added to the Databricks environment by an account
-    administrator.
-    
-    This feature may only be available to certain customer plans."""
-
-    spot_bid_price_percent: Optional[int] = None
-    """The bid price for AWS spot instances, as a percentage of the corresponding instance type's
-    on-demand price. For example, if this field is set to 50, and the cluster needs a new
-    `r3.xlarge` spot instance, then the bid price is half of the price of on-demand `r3.xlarge`
-    instances. Similarly, if this field is set to 200, the bid price is twice the price of on-demand
-    `r3.xlarge` instances. If not specified, the default value is 100. When spot instances are
-    requested for this cluster, only spot instances whose bid price percentage matches this field
-    will be considered. Note that, for safety, we enforce this field to be no more than 10000."""
-
-    zone_id: Optional[str] = None
-    """Identifier for the availability zone/datacenter in which the cluster resides. This string will
-    be of a form like "us-west-2a". The provided availability zone must be in the same region as the
-    Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
-    deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
-    if not specified, a default zone will be used. If the zone specified is "auto", will try to
-    place cluster in a zone with high availability, and will retry placement in a different AZ if
-    there is not enough capacity.
-    
-    The list of available zones as well as the default value can be found by using the `List Zones`
-    method."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AwsAttributes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability.value
-        if self.ebs_volume_count is not None:
-            body["{ebs_volume_count}"] = self.ebs_volume_count
-        if self.ebs_volume_iops is not None:
-            body["{ebs_volume_iops}"] = self.ebs_volume_iops
-        if self.ebs_volume_size is not None:
-            body["{ebs_volume_size}"] = self.ebs_volume_size
-        if self.ebs_volume_throughput is not None:
-            body["{ebs_volume_throughput}"] = self.ebs_volume_throughput
-        if self.ebs_volume_type is not None:
-            body["{ebs_volume_type}"] = self.ebs_volume_type.value
-        if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
-        if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
-        if self.spot_bid_price_percent is not None:
-            body["{spot_bid_price_percent}"] = self.spot_bid_price_percent
-        if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AwsAttributes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability
-        if self.ebs_volume_count is not None:
-            body["{ebs_volume_count}"] = self.ebs_volume_count
-        if self.ebs_volume_iops is not None:
-            body["{ebs_volume_iops}"] = self.ebs_volume_iops
-        if self.ebs_volume_size is not None:
-            body["{ebs_volume_size}"] = self.ebs_volume_size
-        if self.ebs_volume_throughput is not None:
-            body["{ebs_volume_throughput}"] = self.ebs_volume_throughput
-        if self.ebs_volume_type is not None:
-            body["{ebs_volume_type}"] = self.ebs_volume_type
-        if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
-        if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
-        if self.spot_bid_price_percent is not None:
-            body["{spot_bid_price_percent}"] = self.spot_bid_price_percent
-        if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AwsAttributes:
-        """Deserializes the AwsAttributes from a dictionary."""
-        return cls(
-            availability=_enum(d, "{availability}", AwsAvailability),
-            ebs_volume_count=d.get("{ebs_volume_count}", None),
-            ebs_volume_iops=d.get("{ebs_volume_iops}", None),
-            ebs_volume_size=d.get("{ebs_volume_size}", None),
-            ebs_volume_throughput=d.get("{ebs_volume_throughput}", None),
-            ebs_volume_type=_enum(d, "{ebs_volume_type}", EbsVolumeType),
-            first_on_demand=d.get("{first_on_demand}", None),
-            instance_profile_arn=d.get("{instance_profile_arn}", None),
-            spot_bid_price_percent=d.get("{spot_bid_price_percent}", None),
-            zone_id=d.get("{zone_id}", None),
-        )
-
-
-class AwsAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
-
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
-
-    ON_DEMAND = "ON_DEMAND"
-    SPOT = "SPOT"
-    SPOT_WITH_FALLBACK = "SPOT_WITH_FALLBACK"
-
-
-@dataclass
-class AzureAttributes:
-    """Attributes set during cluster creation which are related to Microsoft Azure."""
-
-    availability: Optional[AzureAvailability] = None
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
-
-    first_on_demand: Optional[int] = None
-    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
-    value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
-    instance. If this value is greater than or equal to the current cluster size, all nodes will be
-    placed on on-demand instances. If this value is less than the current cluster size,
-    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
-    on `availability` instances. Note that this value does not affect cluster size and cannot
-    currently be mutated over the lifetime of a cluster."""
-
-    log_analytics_info: Optional[LogAnalyticsInfo] = None
-    """Defines values necessary to configure and run Azure Log Analytics agent"""
-
-    spot_bid_max_price: Optional[float] = None
-    """The max bid price to be used for Azure spot instances. The Max price for the bid cannot be
-    higher than the on-demand price of the instance. If not specified, the default value is -1,
-    which specifies that the instance cannot be evicted on the basis of price, and only on the basis
-    of availability. Further, the value should > 0 or -1."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AzureAttributes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability.value
-        if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
-        if self.log_analytics_info:
-            body["{log_analytics_info}"] = self.log_analytics_info.as_dict()
-        if self.spot_bid_max_price is not None:
-            body["{spot_bid_max_price}"] = self.spot_bid_max_price
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AzureAttributes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability
-        if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
-        if self.log_analytics_info:
-            body["{log_analytics_info}"] = self.log_analytics_info
-        if self.spot_bid_max_price is not None:
-            body["{spot_bid_max_price}"] = self.spot_bid_max_price
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AzureAttributes:
-        """Deserializes the AzureAttributes from a dictionary."""
-        return cls(
-            availability=_enum(d, "{availability}", AzureAvailability),
-            first_on_demand=d.get("{first_on_demand}", None),
-            log_analytics_info=_from_dict(d, "{log_analytics_info}", LogAnalyticsInfo),
-            spot_bid_max_price=d.get("{spot_bid_max_price}", None),
-        )
-
-
-class AzureAvailability(Enum):
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero, this availability type will be used for the entire cluster."""
-
-    ON_DEMAND_AZURE = "ON_DEMAND_AZURE"
-    SPOT_AZURE = "SPOT_AZURE"
-    SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
-
-
-@dataclass
 class BaseJob:
     created_time: Optional[int] = None
     """The time at which this job was created in epoch milliseconds (milliseconds since 1/1/1970 UTC)."""
@@ -337,17 +46,17 @@ class BaseJob:
         """Serializes the BaseJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_time is not None:
-            body["{created_time}"] = self.created_time
+            body["created_time"] = self.created_time
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
-            body["{effective_budget_policy_id}"] = self.effective_budget_policy_id
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.settings:
-            body["{settings}"] = self.settings.as_dict()
+            body["settings"] = self.settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -538,71 +247,71 @@ class BaseRun:
         """Serializes the BaseRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None:
-            body["{attempt_number}"] = self.attempt_number
+            body["attempt_number"] = self.attempt_number
         if self.cleanup_duration is not None:
-            body["{cleanup_duration}"] = self.cleanup_duration
+            body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
-            body["{cluster_instance}"] = self.cluster_instance.as_dict()
+            body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.cluster_spec:
-            body["{cluster_spec}"] = self.cluster_spec.as_dict()
+            body["cluster_spec"] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.effective_performance_target is not None:
-            body["{effective_performance_target}"] = self.effective_performance_target.value
+            body["effective_performance_target"] = self.effective_performance_target.value
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.execution_duration is not None:
-            body["{execution_duration}"] = self.execution_duration
+            body["execution_duration"] = self.execution_duration
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.job_clusters:
-            body["{job_clusters}"] = [v.as_dict() for v in self.job_clusters]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.job_parameters:
-            body["{job_parameters}"] = [v.as_dict() for v in self.job_parameters]
+            body["job_parameters"] = [v.as_dict() for v in self.job_parameters]
         if self.job_run_id is not None:
-            body["{job_run_id}"] = self.job_run_id
+            body["job_run_id"] = self.job_run_id
         if self.number_in_job is not None:
-            body["{number_in_job}"] = self.number_in_job
+            body["number_in_job"] = self.number_in_job
         if self.original_attempt_run_id is not None:
-            body["{original_attempt_run_id}"] = self.original_attempt_run_id
+            body["original_attempt_run_id"] = self.original_attempt_run_id
         if self.overriding_parameters:
-            body["{overriding_parameters}"] = self.overriding_parameters.as_dict()
+            body["overriding_parameters"] = self.overriding_parameters.as_dict()
         if self.queue_duration is not None:
-            body["{queue_duration}"] = self.queue_duration
+            body["queue_duration"] = self.queue_duration
         if self.repair_history:
-            body["{repair_history}"] = [v.as_dict() for v in self.repair_history]
+            body["repair_history"] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None:
-            body["{run_duration}"] = self.run_duration
+            body["run_duration"] = self.run_duration
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_name is not None:
-            body["{run_name}"] = self.run_name
+            body["run_name"] = self.run_name
         if self.run_page_url is not None:
-            body["{run_page_url}"] = self.run_page_url
+            body["run_page_url"] = self.run_page_url
         if self.run_type is not None:
-            body["{run_type}"] = self.run_type.value
+            body["run_type"] = self.run_type.value
         if self.schedule:
-            body["{schedule}"] = self.schedule.as_dict()
+            body["schedule"] = self.schedule.as_dict()
         if self.setup_duration is not None:
-            body["{setup_duration}"] = self.setup_duration
+            body["setup_duration"] = self.setup_duration
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            body["{state}"] = self.state.as_dict()
+            body["state"] = self.state.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         if self.tasks:
-            body["{tasks}"] = [v.as_dict() for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None:
-            body["{trigger}"] = self.trigger.value
+            body["trigger"] = self.trigger.value
         if self.trigger_info:
-            body["{trigger_info}"] = self.trigger_info.as_dict()
+            body["trigger_info"] = self.trigger_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -729,9 +438,9 @@ class CancelAllRuns:
         """Serializes the CancelAllRuns into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_queued_runs is not None:
-            body["{all_queued_runs}"] = self.all_queued_runs
+            body["all_queued_runs"] = self.all_queued_runs
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -776,7 +485,7 @@ class CancelRun:
         """Serializes the CancelRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -860,9 +569,9 @@ class CleanRoomTaskRunState:
         """Serializes the CleanRoomTaskRunState into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.life_cycle_state is not None:
-            body["{life_cycle_state}"] = self.life_cycle_state.value
+            body["life_cycle_state"] = self.life_cycle_state.value
         if self.result_state is not None:
-            body["{result_state}"] = self.result_state.value
+            body["result_state"] = self.result_state.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -902,13 +611,13 @@ class CleanRoomsNotebookTask:
         """Serializes the CleanRoomsNotebookTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_room_name is not None:
-            body["{clean_room_name}"] = self.clean_room_name
+            body["clean_room_name"] = self.clean_room_name
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.notebook_base_parameters:
-            body["{notebook_base_parameters}"] = self.notebook_base_parameters
+            body["notebook_base_parameters"] = self.notebook_base_parameters
         if self.notebook_name is not None:
-            body["{notebook_name}"] = self.notebook_name
+            body["notebook_name"] = self.notebook_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -950,11 +659,11 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
         """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_room_job_run_state:
-            body["{clean_room_job_run_state}"] = self.clean_room_job_run_state.as_dict()
+            body["clean_room_job_run_state"] = self.clean_room_job_run_state.as_dict()
         if self.notebook_output:
-            body["{notebook_output}"] = self.notebook_output.as_dict()
+            body["notebook_output"] = self.notebook_output.as_dict()
         if self.output_schema_info:
-            body["{output_schema_info}"] = self.output_schema_info.as_dict()
+            body["output_schema_info"] = self.output_schema_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -976,38 +685,6 @@ class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
             notebook_output=_from_dict(d, "{notebook_output}", NotebookOutput),
             output_schema_info=_from_dict(d, "{output_schema_info}", OutputSchemaInfo),
         )
-
-
-@dataclass
-class ClientsTypes:
-    jobs: Optional[bool] = None
-    """With jobs set, the cluster can be used for jobs"""
-
-    notebooks: Optional[bool] = None
-    """With notebooks set, this cluster can be used for notebooks"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClientsTypes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.jobs is not None:
-            body["{jobs}"] = self.jobs
-        if self.notebooks is not None:
-            body["{notebooks}"] = self.notebooks
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClientsTypes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.jobs is not None:
-            body["{jobs}"] = self.jobs
-        if self.notebooks is not None:
-            body["{notebooks}"] = self.notebooks
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClientsTypes:
-        """Deserializes the ClientsTypes from a dictionary."""
-        return cls(jobs=d.get("{jobs}", None), notebooks=d.get("{notebooks}", None))
 
 
 @dataclass
@@ -1033,9 +710,9 @@ class ClusterInstance:
         """Serializes the ClusterInstance into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.spark_context_id is not None:
-            body["{spark_context_id}"] = self.spark_context_id
+            body["spark_context_id"] = self.spark_context_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1051,56 +728,6 @@ class ClusterInstance:
     def from_dict(cls, d: Dict[str, Any]) -> ClusterInstance:
         """Deserializes the ClusterInstance from a dictionary."""
         return cls(cluster_id=d.get("{cluster_id}", None), spark_context_id=d.get("{spark_context_id}", None))
-
-
-@dataclass
-class ClusterLogConf:
-    """Cluster log delivery config"""
-
-    dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
-
-    s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination"
-    : "s3://cluster_log_bucket/prefix", "region" : "us-west-2" } }` Cluster iam role is used to
-    access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to
-    write data to the s3 destination."""
-
-    volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "volumes": { "destination":
-    "/Volumes/catalog/schema/volume/cluster_log" } }`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterLogConf into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dbfs:
-            body["{dbfs}"] = self.dbfs.as_dict()
-        if self.s3:
-            body["{s3}"] = self.s3.as_dict()
-        if self.volumes:
-            body["{volumes}"] = self.volumes.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterLogConf into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dbfs:
-            body["{dbfs}"] = self.dbfs
-        if self.s3:
-            body["{s3}"] = self.s3
-        if self.volumes:
-            body["{volumes}"] = self.volumes
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterLogConf:
-        """Deserializes the ClusterLogConf from a dictionary."""
-        return cls(
-            dbfs=_from_dict(d, "{dbfs}", DbfsStorageInfo),
-            s3=_from_dict(d, "{s3}", S3StorageInfo),
-            volumes=_from_dict(d, "{volumes}", VolumesStorageInfo),
-        )
 
 
 @dataclass
@@ -1125,13 +752,13 @@ class ClusterSpec:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.existing_cluster_id is not None:
-            body["{existing_cluster_id}"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.job_cluster_key is not None:
-            body["{job_cluster_key}"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.new_cluster:
-            body["{new_cluster}"] = self.new_cluster.as_dict()
+            body["new_cluster"] = self.new_cluster.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1175,11 +802,11 @@ class ComputeConfig:
         """Serializes the ComputeConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gpu_node_pool_id is not None:
-            body["{gpu_node_pool_id}"] = self.gpu_node_pool_id
+            body["gpu_node_pool_id"] = self.gpu_node_pool_id
         if self.gpu_type is not None:
-            body["{gpu_type}"] = self.gpu_type
+            body["gpu_type"] = self.gpu_type
         if self.num_gpus is not None:
-            body["{num_gpus}"] = self.num_gpus
+            body["num_gpus"] = self.num_gpus
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1234,11 +861,11 @@ class ConditionTask:
         """Serializes the ConditionTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None:
-            body["{left}"] = self.left
+            body["left"] = self.left
         if self.op is not None:
-            body["{op}"] = self.op.value
+            body["op"] = self.op.value
         if self.right is not None:
-            body["{right}"] = self.right
+            body["right"] = self.right
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1286,7 +913,7 @@ class Continuous:
         """Serializes the Continuous into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None:
-            body["{pause_status}"] = self.pause_status.value
+            body["pause_status"] = self.pause_status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1424,55 +1051,55 @@ class CreateJob:
         """Serializes the CreateJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.continuous:
-            body["{continuous}"] = self.continuous.as_dict()
+            body["continuous"] = self.continuous.as_dict()
         if self.deployment:
-            body["{deployment}"] = self.deployment.as_dict()
+            body["deployment"] = self.deployment.as_dict()
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.edit_mode is not None:
-            body["{edit_mode}"] = self.edit_mode.value
+            body["edit_mode"] = self.edit_mode.value
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.environments:
-            body["{environments}"] = [v.as_dict() for v in self.environments]
+            body["environments"] = [v.as_dict() for v in self.environments]
         if self.format is not None:
-            body["{format}"] = self.format.value
+            body["format"] = self.format.value
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.health:
-            body["{health}"] = self.health.as_dict()
+            body["health"] = self.health.as_dict()
         if self.job_clusters:
-            body["{job_clusters}"] = [v.as_dict() for v in self.job_clusters]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs is not None:
-            body["{max_concurrent_runs}"] = self.max_concurrent_runs
+            body["max_concurrent_runs"] = self.max_concurrent_runs
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.parameters:
-            body["{parameters}"] = [v.as_dict() for v in self.parameters]
+            body["parameters"] = [v.as_dict() for v in self.parameters]
         if self.performance_target is not None:
-            body["{performance_target}"] = self.performance_target.value
+            body["performance_target"] = self.performance_target.value
         if self.queue:
-            body["{queue}"] = self.queue.as_dict()
+            body["queue"] = self.queue.as_dict()
         if self.run_as:
-            body["{run_as}"] = self.run_as.as_dict()
+            body["run_as"] = self.run_as.as_dict()
         if self.schedule:
-            body["{schedule}"] = self.schedule.as_dict()
+            body["schedule"] = self.schedule.as_dict()
         if self.tags:
-            body["{tags}"] = self.tags
+            body["tags"] = self.tags
         if self.tasks:
-            body["{tasks}"] = [v.as_dict() for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
-            body["{trigger}"] = self.trigger.as_dict()
+            body["trigger"] = self.trigger.as_dict()
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1573,7 +1200,7 @@ class CreateResponse:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1610,11 +1237,11 @@ class CronSchedule:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None:
-            body["{pause_status}"] = self.pause_status.value
+            body["pause_status"] = self.pause_status.value
         if self.quartz_cron_expression is not None:
-            body["{quartz_cron_expression}"] = self.quartz_cron_expression
+            body["quartz_cron_expression"] = self.quartz_cron_expression
         if self.timezone_id is not None:
-            body["{timezone_id}"] = self.timezone_id
+            body["timezone_id"] = self.timezone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1638,71 +1265,6 @@ class CronSchedule:
         )
 
 
-class DataSecurityMode(Enum):
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
-
-    DATA_SECURITY_MODE_AUTO = "DATA_SECURITY_MODE_AUTO"
-    DATA_SECURITY_MODE_DEDICATED = "DATA_SECURITY_MODE_DEDICATED"
-    DATA_SECURITY_MODE_STANDARD = "DATA_SECURITY_MODE_STANDARD"
-    LEGACY_PASSTHROUGH = "LEGACY_PASSTHROUGH"
-    LEGACY_SINGLE_USER = "LEGACY_SINGLE_USER"
-    LEGACY_SINGLE_USER_STANDARD = "LEGACY_SINGLE_USER_STANDARD"
-    LEGACY_TABLE_ACL = "LEGACY_TABLE_ACL"
-    NONE = "NONE"
-    SINGLE_USER = "SINGLE_USER"
-    USER_ISOLATION = "USER_ISOLATION"
-
-
-@dataclass
-class DbfsStorageInfo:
-    """A storage location in DBFS"""
-
-    destination: str
-    """dbfs destination, e.g. `dbfs:/my/path`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the DbfsStorageInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DbfsStorageInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
-        """Deserializes the DbfsStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
-
-
 @dataclass
 class DbtOutput:
     artifacts_headers: Optional[Dict[str, str]] = None
@@ -1716,9 +1278,9 @@ class DbtOutput:
         """Serializes the DbtOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifacts_headers:
-            body["{artifacts_headers}"] = self.artifacts_headers
+            body["artifacts_headers"] = self.artifacts_headers
         if self.artifacts_link is not None:
-            body["{artifacts_link}"] = self.artifacts_link
+            body["artifacts_link"] = self.artifacts_link
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1777,19 +1339,19 @@ class DbtTask:
         """Serializes the DbtTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None:
-            body["{catalog}"] = self.catalog
+            body["catalog"] = self.catalog
         if self.commands:
-            body["{commands}"] = [v for v in self.commands]
+            body["commands"] = [v for v in self.commands]
         if self.profiles_directory is not None:
-            body["{profiles_directory}"] = self.profiles_directory
+            body["profiles_directory"] = self.profiles_directory
         if self.project_directory is not None:
-            body["{project_directory}"] = self.project_directory
+            body["project_directory"] = self.project_directory
         if self.schema is not None:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.source is not None:
-            body["{source}"] = self.source.value
+            body["source"] = self.source.value
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1834,7 +1396,7 @@ class DeleteJob:
         """Serializes the DeleteJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1877,7 +1439,7 @@ class DeleteRun:
         """Serializes the DeleteRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1912,78 +1474,6 @@ class DeleteRunResponse:
 
 
 @dataclass
-class DockerBasicAuth:
-    password: Optional[str] = None
-    """Password of the user"""
-
-    username: Optional[str] = None
-    """Name of the user"""
-
-    def as_dict(self) -> dict:
-        """Serializes the DockerBasicAuth into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.password is not None:
-            body["{password}"] = self.password
-        if self.username is not None:
-            body["{username}"] = self.username
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DockerBasicAuth into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.password is not None:
-            body["{password}"] = self.password
-        if self.username is not None:
-            body["{username}"] = self.username
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DockerBasicAuth:
-        """Deserializes the DockerBasicAuth from a dictionary."""
-        return cls(password=d.get("{password}", None), username=d.get("{username}", None))
-
-
-@dataclass
-class DockerImage:
-    basic_auth: Optional[DockerBasicAuth] = None
-    """Basic auth with username and password"""
-
-    url: Optional[str] = None
-    """URL of the docker image."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DockerImage into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.basic_auth:
-            body["{basic_auth}"] = self.basic_auth.as_dict()
-        if self.url is not None:
-            body["{url}"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DockerImage into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.basic_auth:
-            body["{basic_auth}"] = self.basic_auth
-        if self.url is not None:
-            body["{url}"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DockerImage:
-        """Deserializes the DockerImage from a dictionary."""
-        return cls(basic_auth=_from_dict(d, "{basic_auth}", DockerBasicAuth), url=d.get("{url}", None))
-
-
-class EbsVolumeType(Enum):
-    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
-    details."""
-
-    GENERAL_PURPOSE_SSD = "GENERAL_PURPOSE_SSD"
-    THROUGHPUT_OPTIMIZED_HDD = "THROUGHPUT_OPTIMIZED_HDD"
-
-
-@dataclass
 class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
     """Represents a change to the job cluster's settings that would be required for the job clusters to
     become compliant with their policies."""
@@ -2005,11 +1495,11 @@ class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         """Serializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.field is not None:
-            body["{field}"] = self.field
+            body["field"] = self.field
         if self.new_value is not None:
-            body["{new_value}"] = self.new_value
+            body["new_value"] = self.new_value
         if self.previous_value is not None:
-            body["{previous_value}"] = self.previous_value
+            body["previous_value"] = self.previous_value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2045,9 +1535,9 @@ class EnforcePolicyComplianceRequest:
         """Serializes the EnforcePolicyComplianceRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.validate_only is not None:
-            body["{validate_only}"] = self.validate_only
+            body["validate_only"] = self.validate_only
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2085,11 +1575,11 @@ class EnforcePolicyComplianceResponse:
         """Serializes the EnforcePolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_changes is not None:
-            body["{has_changes}"] = self.has_changes
+            body["has_changes"] = self.has_changes
         if self.job_cluster_changes:
-            body["{job_cluster_changes}"] = [v.as_dict() for v in self.job_cluster_changes]
+            body["job_cluster_changes"] = [v.as_dict() for v in self.job_cluster_changes]
         if self.settings:
-            body["{settings}"] = self.settings.as_dict()
+            body["settings"] = self.settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2137,9 +1627,9 @@ class Environment:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.client is not None:
-            body["{client}"] = self.client
+            body["client"] = self.client
         if self.dependencies:
-            body["{dependencies}"] = [v for v in self.dependencies]
+            body["dependencies"] = [v for v in self.dependencies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2171,7 +1661,7 @@ class ExportRunOutput:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.views:
-            body["{views}"] = [v.as_dict() for v in self.views]
+            body["views"] = [v.as_dict() for v in self.views]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2206,11 +1696,11 @@ class FileArrivalTriggerConfiguration:
         """Serializes the FileArrivalTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.min_time_between_triggers_seconds is not None:
-            body["{min_time_between_triggers_seconds}"] = self.min_time_between_triggers_seconds
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
         if self.url is not None:
-            body["{url}"] = self.url
+            body["url"] = self.url
         if self.wait_after_last_change_seconds is not None:
-            body["{wait_after_last_change_seconds}"] = self.wait_after_last_change_seconds
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2246,9 +1736,9 @@ class ForEachStats:
         """Serializes the ForEachStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error_message_stats:
-            body["{error_message_stats}"] = [v.as_dict() for v in self.error_message_stats]
+            body["error_message_stats"] = [v.as_dict() for v in self.error_message_stats]
         if self.task_run_stats:
-            body["{task_run_stats}"] = self.task_run_stats.as_dict()
+            body["task_run_stats"] = self.task_run_stats.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2285,11 +1775,11 @@ class ForEachTask:
         """Serializes the ForEachTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.concurrency is not None:
-            body["{concurrency}"] = self.concurrency
+            body["concurrency"] = self.concurrency
         if self.inputs is not None:
-            body["{inputs}"] = self.inputs
+            body["inputs"] = self.inputs
         if self.task:
-            body["{task}"] = self.task.as_dict()
+            body["task"] = self.task.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2326,11 +1816,11 @@ class ForEachTaskErrorMessageStats:
         """Serializes the ForEachTaskErrorMessageStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.count is not None:
-            body["{count}"] = self.count
+            body["count"] = self.count
         if self.error_message is not None:
-            body["{error_message}"] = self.error_message
+            body["error_message"] = self.error_message
         if self.termination_category is not None:
-            body["{termination_category}"] = self.termination_category
+            body["termination_category"] = self.termination_category
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2378,17 +1868,17 @@ class ForEachTaskTaskRunStats:
         """Serializes the ForEachTaskTaskRunStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active_iterations is not None:
-            body["{active_iterations}"] = self.active_iterations
+            body["active_iterations"] = self.active_iterations
         if self.completed_iterations is not None:
-            body["{completed_iterations}"] = self.completed_iterations
+            body["completed_iterations"] = self.completed_iterations
         if self.failed_iterations is not None:
-            body["{failed_iterations}"] = self.failed_iterations
+            body["failed_iterations"] = self.failed_iterations
         if self.scheduled_iterations is not None:
-            body["{scheduled_iterations}"] = self.scheduled_iterations
+            body["scheduled_iterations"] = self.scheduled_iterations
         if self.succeeded_iterations is not None:
-            body["{succeeded_iterations}"] = self.succeeded_iterations
+            body["succeeded_iterations"] = self.succeeded_iterations
         if self.total_iterations is not None:
-            body["{total_iterations}"] = self.total_iterations
+            body["total_iterations"] = self.total_iterations
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2425,124 +1915,6 @@ class Format(Enum):
 
     MULTI_TASK = "MULTI_TASK"
     SINGLE_TASK = "SINGLE_TASK"
-
-
-@dataclass
-class GcpAttributes:
-    """Attributes set during cluster creation which are related to GCP."""
-
-    availability: Optional[GcpAvailability] = None
-    """This field determines whether the spark executors will be scheduled to run on preemptible VMs,
-    on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
-
-    boot_disk_size: Optional[int] = None
-    """Boot disk size in GB"""
-
-    google_service_account: Optional[str] = None
-    """If provided, the cluster will impersonate the google service account when accessing gcloud
-    services (like GCS). The google service account must have previously been added to the
-    Databricks environment by an account administrator."""
-
-    local_ssd_count: Optional[int] = None
-    """If provided, each node (workers and driver) in the cluster will have this number of local SSDs
-    attached. Each local SSD is 375GB in size. Refer to [GCP documentation] for the supported number
-    of local SSDs for each instance type.
-    
-    [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"""
-
-    use_preemptible_executors: Optional[bool] = None
-    """This field determines whether the spark executors will be scheduled to run on preemptible VMs
-    (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon
-    to be deprecated, use the 'availability' field instead."""
-
-    zone_id: Optional[str] = None
-    """Identifier for the availability zone in which the cluster resides. This can be one of the
-    following: - "HA" => High availability, spread nodes across availability zones for a Databricks
-    deployment region [default]. - "AUTO" => Databricks picks an availability zone to schedule the
-    cluster on. - A GCP availability zone => Pick One of the available zones for (machine type +
-    region) from https://cloud.google.com/compute/docs/regions-zones."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GcpAttributes into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability.value
-        if self.boot_disk_size is not None:
-            body["{boot_disk_size}"] = self.boot_disk_size
-        if self.google_service_account is not None:
-            body["{google_service_account}"] = self.google_service_account
-        if self.local_ssd_count is not None:
-            body["{local_ssd_count}"] = self.local_ssd_count
-        if self.use_preemptible_executors is not None:
-            body["{use_preemptible_executors}"] = self.use_preemptible_executors
-        if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GcpAttributes into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.availability is not None:
-            body["{availability}"] = self.availability
-        if self.boot_disk_size is not None:
-            body["{boot_disk_size}"] = self.boot_disk_size
-        if self.google_service_account is not None:
-            body["{google_service_account}"] = self.google_service_account
-        if self.local_ssd_count is not None:
-            body["{local_ssd_count}"] = self.local_ssd_count
-        if self.use_preemptible_executors is not None:
-            body["{use_preemptible_executors}"] = self.use_preemptible_executors
-        if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GcpAttributes:
-        """Deserializes the GcpAttributes from a dictionary."""
-        return cls(
-            availability=_enum(d, "{availability}", GcpAvailability),
-            boot_disk_size=d.get("{boot_disk_size}", None),
-            google_service_account=d.get("{google_service_account}", None),
-            local_ssd_count=d.get("{local_ssd_count}", None),
-            use_preemptible_executors=d.get("{use_preemptible_executors}", None),
-            zone_id=d.get("{zone_id}", None),
-        )
-
-
-class GcpAvailability(Enum):
-    """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
-    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
-
-    ON_DEMAND_GCP = "ON_DEMAND_GCP"
-    PREEMPTIBLE_GCP = "PREEMPTIBLE_GCP"
-    PREEMPTIBLE_WITH_FALLBACK_GCP = "PREEMPTIBLE_WITH_FALLBACK_GCP"
-
-
-@dataclass
-class GcsStorageInfo:
-    """A storage location in Google Cloud Platform's GCS"""
-
-    destination: str
-    """GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GcsStorageInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GcsStorageInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GcsStorageInfo:
-        """Deserializes the GcsStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
 
 
 @dataclass
@@ -2586,21 +1958,21 @@ class GenAiComputeTask:
         """Serializes the GenAiComputeTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.command is not None:
-            body["{command}"] = self.command
+            body["command"] = self.command
         if self.compute:
-            body["{compute}"] = self.compute.as_dict()
+            body["compute"] = self.compute.as_dict()
         if self.dl_runtime_image is not None:
-            body["{dl_runtime_image}"] = self.dl_runtime_image
+            body["dl_runtime_image"] = self.dl_runtime_image
         if self.mlflow_experiment_name is not None:
-            body["{mlflow_experiment_name}"] = self.mlflow_experiment_name
+            body["mlflow_experiment_name"] = self.mlflow_experiment_name
         if self.source is not None:
-            body["{source}"] = self.source.value
+            body["source"] = self.source.value
         if self.training_script_path is not None:
-            body["{training_script_path}"] = self.training_script_path
+            body["training_script_path"] = self.training_script_path
         if self.yaml_parameters is not None:
-            body["{yaml_parameters}"] = self.yaml_parameters
+            body["yaml_parameters"] = self.yaml_parameters
         if self.yaml_parameters_file_path is not None:
-            body["{yaml_parameters_file_path}"] = self.yaml_parameters_file_path
+            body["yaml_parameters_file_path"] = self.yaml_parameters_file_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2648,7 +2020,7 @@ class GetJobPermissionLevelsResponse:
         """Serializes the GetJobPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2681,9 +2053,9 @@ class GetPolicyComplianceResponse:
         """Serializes the GetPolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_compliant is not None:
-            body["{is_compliant}"] = self.is_compliant
+            body["is_compliant"] = self.is_compliant
         if self.violations:
-            body["{violations}"] = self.violations
+            body["violations"] = self.violations
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2727,7 +2099,7 @@ class GitSnapshot:
         """Serializes the GitSnapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.used_commit is not None:
-            body["{used_commit}"] = self.used_commit
+            body["used_commit"] = self.used_commit
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2783,19 +2155,19 @@ class GitSource:
         """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_branch is not None:
-            body["{git_branch}"] = self.git_branch
+            body["git_branch"] = self.git_branch
         if self.git_commit is not None:
-            body["{git_commit}"] = self.git_commit
+            body["git_commit"] = self.git_commit
         if self.git_provider is not None:
-            body["{git_provider}"] = self.git_provider.value
+            body["git_provider"] = self.git_provider.value
         if self.git_snapshot:
-            body["{git_snapshot}"] = self.git_snapshot.as_dict()
+            body["git_snapshot"] = self.git_snapshot.as_dict()
         if self.git_tag is not None:
-            body["{git_tag}"] = self.git_tag
+            body["git_tag"] = self.git_tag
         if self.git_url is not None:
-            body["{git_url}"] = self.git_url
+            body["git_url"] = self.git_url
         if self.job_source:
-            body["{job_source}"] = self.job_source.as_dict()
+            body["job_source"] = self.job_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2828,90 +2200,6 @@ class GitSource:
             git_tag=d.get("{git_tag}", None),
             git_url=d.get("{git_url}", None),
             job_source=_from_dict(d, "{job_source}", JobSource),
-        )
-
-
-@dataclass
-class InitScriptInfo:
-    """Config for an individual init script Next ID: 11"""
-
-    abfss: Optional[Adlsgen2Info] = None
-    """destination needs to be provided, e.g.
-    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`"""
-
-    dbfs: Optional[DbfsStorageInfo] = None
-    """destination needs to be provided. e.g. `{ "dbfs": { "destination" : "dbfs:/home/cluster_log" }
-    }`"""
-
-    file: Optional[LocalFileInfo] = None
-    """destination needs to be provided, e.g. `{ "file": { "destination": "file:/my/local/file.sh" } }`"""
-
-    gcs: Optional[GcsStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
-
-    s3: Optional[S3StorageInfo] = None
-    """destination and either the region or endpoint need to be provided. e.g. `{ \"s3\": {
-    \"destination\": \"s3://cluster_log_bucket/prefix\", \"region\": \"us-west-2\" } }` Cluster iam
-    role is used to access s3, please make sure the cluster iam role in `instance_profile_arn` has
-    permission to write data to the s3 destination."""
-
-    volumes: Optional[VolumesStorageInfo] = None
-    """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
-    \"/Volumes/my-init.sh\" } }`"""
-
-    workspace: Optional[WorkspaceStorageInfo] = None
-    """destination needs to be provided, e.g. `{ "workspace": { "destination":
-    "/cluster-init-scripts/setup-datadog.sh" } }`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.abfss:
-            body["{abfss}"] = self.abfss.as_dict()
-        if self.dbfs:
-            body["{dbfs}"] = self.dbfs.as_dict()
-        if self.file:
-            body["{file}"] = self.file.as_dict()
-        if self.gcs:
-            body["{gcs}"] = self.gcs.as_dict()
-        if self.s3:
-            body["{s3}"] = self.s3.as_dict()
-        if self.volumes:
-            body["{volumes}"] = self.volumes.as_dict()
-        if self.workspace:
-            body["{workspace}"] = self.workspace.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InitScriptInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.abfss:
-            body["{abfss}"] = self.abfss
-        if self.dbfs:
-            body["{dbfs}"] = self.dbfs
-        if self.file:
-            body["{file}"] = self.file
-        if self.gcs:
-            body["{gcs}"] = self.gcs
-        if self.s3:
-            body["{s3}"] = self.s3
-        if self.volumes:
-            body["{volumes}"] = self.volumes
-        if self.workspace:
-            body["{workspace}"] = self.workspace
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfo:
-        """Deserializes the InitScriptInfo from a dictionary."""
-        return cls(
-            abfss=_from_dict(d, "{abfss}", Adlsgen2Info),
-            dbfs=_from_dict(d, "{dbfs}", DbfsStorageInfo),
-            file=_from_dict(d, "{file}", LocalFileInfo),
-            gcs=_from_dict(d, "{gcs}", GcsStorageInfo),
-            s3=_from_dict(d, "{s3}", S3StorageInfo),
-            volumes=_from_dict(d, "{volumes}", VolumesStorageInfo),
-            workspace=_from_dict(d, "{workspace}", WorkspaceStorageInfo),
         )
 
 
@@ -2960,21 +2248,21 @@ class Job:
         """Serializes the Job into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_time is not None:
-            body["{created_time}"] = self.created_time
+            body["created_time"] = self.created_time
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
-            body["{effective_budget_policy_id}"] = self.effective_budget_policy_id
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.run_as_user_name is not None:
-            body["{run_as_user_name}"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
-            body["{settings}"] = self.settings.as_dict()
+            body["settings"] = self.settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3031,13 +2319,13 @@ class JobAccessControlRequest:
         """Serializes the JobAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3085,15 +2373,15 @@ class JobAccessControlResponse:
         """Serializes the JobAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3130,16 +2418,16 @@ class JobCluster:
     `JobTaskSettings` may refer to this field to determine which cluster to launch for the task
     execution."""
 
-    new_cluster: JobsClusterSpec
+    new_cluster: ClusterSpec
     """If new_cluster, a description of a cluster that is created for each task."""
 
     def as_dict(self) -> dict:
         """Serializes the JobCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_cluster_key is not None:
-            body["{job_cluster_key}"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.new_cluster:
-            body["{new_cluster}"] = self.new_cluster.as_dict()
+            body["new_cluster"] = self.new_cluster.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3155,8 +2443,7 @@ class JobCluster:
     def from_dict(cls, d: Dict[str, Any]) -> JobCluster:
         """Deserializes the JobCluster from a dictionary."""
         return cls(
-            job_cluster_key=d.get("{job_cluster_key}", None),
-            new_cluster=_from_dict(d, "{new_cluster}", JobsClusterSpec),
+            job_cluster_key=d.get("{job_cluster_key}", None), new_cluster=_from_dict(d, "{new_cluster}", ClusterSpec)
         )
 
 
@@ -3178,11 +2465,11 @@ class JobCompliance:
         """Serializes the JobCompliance into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_compliant is not None:
-            body["{is_compliant}"] = self.is_compliant
+            body["is_compliant"] = self.is_compliant
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.violations:
-            body["{violations}"] = self.violations
+            body["violations"] = self.violations
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3220,9 +2507,9 @@ class JobDeployment:
         """Serializes the JobDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.metadata_file_path is not None:
-            body["{metadata_file_path}"] = self.metadata_file_path
+            body["metadata_file_path"] = self.metadata_file_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3295,17 +2582,17 @@ class JobEmailNotifications:
         """Serializes the JobEmailNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.no_alert_for_skipped_runs is not None:
-            body["{no_alert_for_skipped_runs}"] = self.no_alert_for_skipped_runs
+            body["no_alert_for_skipped_runs"] = self.no_alert_for_skipped_runs
         if self.on_duration_warning_threshold_exceeded:
-            body["{on_duration_warning_threshold_exceeded}"] = [v for v in self.on_duration_warning_threshold_exceeded]
+            body["on_duration_warning_threshold_exceeded"] = [v for v in self.on_duration_warning_threshold_exceeded]
         if self.on_failure:
-            body["{on_failure}"] = [v for v in self.on_failure]
+            body["on_failure"] = [v for v in self.on_failure]
         if self.on_start:
-            body["{on_start}"] = [v for v in self.on_start]
+            body["on_start"] = [v for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
-            body["{on_streaming_backlog_exceeded}"] = [v for v in self.on_streaming_backlog_exceeded]
+            body["on_streaming_backlog_exceeded"] = [v for v in self.on_streaming_backlog_exceeded]
         if self.on_success:
-            body["{on_success}"] = [v for v in self.on_success]
+            body["on_success"] = [v for v in self.on_success]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3351,9 +2638,9 @@ class JobEnvironment:
         """Serializes the JobEnvironment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.environment_key is not None:
-            body["{environment_key}"] = self.environment_key
+            body["environment_key"] = self.environment_key
         if self.spec:
-            body["{spec}"] = self.spec.as_dict()
+            body["spec"] = self.spec.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3385,9 +2672,9 @@ class JobNotificationSettings:
         """Serializes the JobNotificationSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.no_alert_for_canceled_runs is not None:
-            body["{no_alert_for_canceled_runs}"] = self.no_alert_for_canceled_runs
+            body["no_alert_for_canceled_runs"] = self.no_alert_for_canceled_runs
         if self.no_alert_for_skipped_runs is not None:
-            body["{no_alert_for_skipped_runs}"] = self.no_alert_for_skipped_runs
+            body["no_alert_for_skipped_runs"] = self.no_alert_for_skipped_runs
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3423,11 +2710,11 @@ class JobParameter:
         """Serializes the JobParameter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default is not None:
-            body["{default}"] = self.default
+            body["default"] = self.default
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3459,9 +2746,9 @@ class JobParameterDefinition:
         """Serializes the JobParameterDefinition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default is not None:
-            body["{default}"] = self.default
+            body["default"] = self.default
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3492,11 +2779,11 @@ class JobPermission:
         """Serializes the JobPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3541,11 +2828,11 @@ class JobPermissions:
         """Serializes the JobPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3580,9 +2867,9 @@ class JobPermissionsDescription:
         """Serializes the JobPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3614,9 +2901,9 @@ class JobPermissionsRequest:
         """Serializes the JobPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3656,9 +2943,9 @@ class JobRunAs:
         """Serializes the JobRunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3795,53 +3082,53 @@ class JobSettings:
         """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.continuous:
-            body["{continuous}"] = self.continuous.as_dict()
+            body["continuous"] = self.continuous.as_dict()
         if self.deployment:
-            body["{deployment}"] = self.deployment.as_dict()
+            body["deployment"] = self.deployment.as_dict()
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.edit_mode is not None:
-            body["{edit_mode}"] = self.edit_mode.value
+            body["edit_mode"] = self.edit_mode.value
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.environments:
-            body["{environments}"] = [v.as_dict() for v in self.environments]
+            body["environments"] = [v.as_dict() for v in self.environments]
         if self.format is not None:
-            body["{format}"] = self.format.value
+            body["format"] = self.format.value
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.health:
-            body["{health}"] = self.health.as_dict()
+            body["health"] = self.health.as_dict()
         if self.job_clusters:
-            body["{job_clusters}"] = [v.as_dict() for v in self.job_clusters]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.max_concurrent_runs is not None:
-            body["{max_concurrent_runs}"] = self.max_concurrent_runs
+            body["max_concurrent_runs"] = self.max_concurrent_runs
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.parameters:
-            body["{parameters}"] = [v.as_dict() for v in self.parameters]
+            body["parameters"] = [v.as_dict() for v in self.parameters]
         if self.performance_target is not None:
-            body["{performance_target}"] = self.performance_target.value
+            body["performance_target"] = self.performance_target.value
         if self.queue:
-            body["{queue}"] = self.queue.as_dict()
+            body["queue"] = self.queue.as_dict()
         if self.run_as:
-            body["{run_as}"] = self.run_as.as_dict()
+            body["run_as"] = self.run_as.as_dict()
         if self.schedule:
-            body["{schedule}"] = self.schedule.as_dict()
+            body["schedule"] = self.schedule.as_dict()
         if self.tags:
-            body["{tags}"] = self.tags
+            body["tags"] = self.tags
         if self.tasks:
-            body["{tasks}"] = [v.as_dict() for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
-            body["{trigger}"] = self.trigger.as_dict()
+            body["trigger"] = self.trigger.as_dict()
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3952,11 +3239,11 @@ class JobSource:
         """Serializes the JobSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dirty_state is not None:
-            body["{dirty_state}"] = self.dirty_state.value
+            body["dirty_state"] = self.dirty_state.value
         if self.import_from_git_branch is not None:
-            body["{import_from_git_branch}"] = self.import_from_git_branch
+            body["import_from_git_branch"] = self.import_from_git_branch
         if self.job_config_path is not None:
-            body["{job_config_path}"] = self.job_config_path
+            body["job_config_path"] = self.job_config_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4194,65 +3481,65 @@ class JobsClusterSpec:
         """Serializes the JobsClusterSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_policy_default_values is not None:
-            body["{apply_policy_default_values}"] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4404,11 +3691,11 @@ class JobsHealthRule:
         """Serializes the JobsHealthRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metric is not None:
-            body["{metric}"] = self.metric.value
+            body["metric"] = self.metric.value
         if self.op is not None:
-            body["{op}"] = self.op.value
+            body["op"] = self.op.value
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4442,7 +3729,7 @@ class JobsHealthRules:
         """Serializes the JobsHealthRules into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.rules:
-            body["{rules}"] = [v.as_dict() for v in self.rules]
+            body["rules"] = [v.as_dict() for v in self.rules]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4515,19 +3802,19 @@ class Library:
         """Serializes the Library into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cran:
-            body["{cran}"] = self.cran.as_dict()
+            body["cran"] = self.cran.as_dict()
         if self.egg is not None:
-            body["{egg}"] = self.egg
+            body["egg"] = self.egg
         if self.jar is not None:
-            body["{jar}"] = self.jar
+            body["jar"] = self.jar
         if self.maven:
-            body["{maven}"] = self.maven.as_dict()
+            body["maven"] = self.maven.as_dict()
         if self.pypi:
-            body["{pypi}"] = self.pypi.as_dict()
+            body["pypi"] = self.pypi.as_dict()
         if self.requirements is not None:
-            body["{requirements}"] = self.requirements
+            body["requirements"] = self.requirements
         if self.whl is not None:
-            body["{whl}"] = self.whl
+            body["whl"] = self.whl
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4580,11 +3867,11 @@ class ListJobComplianceForPolicyResponse:
         """Serializes the ListJobComplianceForPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jobs:
-            body["{jobs}"] = [v.as_dict() for v in self.jobs]
+            body["jobs"] = [v.as_dict() for v in self.jobs]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4628,13 +3915,13 @@ class ListJobsResponse:
         """Serializes the ListJobsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.jobs:
-            body["{jobs}"] = [v.as_dict() for v in self.jobs]
+            body["jobs"] = [v.as_dict() for v in self.jobs]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4682,13 +3969,13 @@ class ListRunsResponse:
         """Serializes the ListRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         if self.runs:
-            body["{runs}"] = [v.as_dict() for v in self.runs]
+            body["runs"] = [v.as_dict() for v in self.runs]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4716,64 +4003,6 @@ class ListRunsResponse:
 
 
 @dataclass
-class LocalFileInfo:
-    destination: str
-    """local file destination, e.g. `file:/my/local/file.sh`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the LocalFileInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LocalFileInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LocalFileInfo:
-        """Deserializes the LocalFileInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
-
-
-@dataclass
-class LogAnalyticsInfo:
-    log_analytics_primary_key: Optional[str] = None
-
-    log_analytics_workspace_id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.log_analytics_primary_key is not None:
-            body["{log_analytics_primary_key}"] = self.log_analytics_primary_key
-        if self.log_analytics_workspace_id is not None:
-            body["{log_analytics_workspace_id}"] = self.log_analytics_workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LogAnalyticsInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.log_analytics_primary_key is not None:
-            body["{log_analytics_primary_key}"] = self.log_analytics_primary_key
-        if self.log_analytics_workspace_id is not None:
-            body["{log_analytics_workspace_id}"] = self.log_analytics_workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LogAnalyticsInfo:
-        """Deserializes the LogAnalyticsInfo from a dictionary."""
-        return cls(
-            log_analytics_primary_key=d.get("{log_analytics_primary_key}", None),
-            log_analytics_workspace_id=d.get("{log_analytics_workspace_id}", None),
-        )
-
-
-@dataclass
 class MavenLibrary:
     coordinates: str
     """Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2"."""
@@ -4792,11 +4021,11 @@ class MavenLibrary:
         """Serializes the MavenLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.coordinates is not None:
-            body["{coordinates}"] = self.coordinates
+            body["coordinates"] = self.coordinates
         if self.exclusions:
-            body["{exclusions}"] = [v for v in self.exclusions]
+            body["exclusions"] = [v for v in self.exclusions]
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4834,9 +4063,9 @@ class NotebookOutput:
         """Serializes the NotebookOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.result is not None:
-            body["{result}"] = self.result
+            body["result"] = self.result
         if self.truncated is not None:
-            body["{truncated}"] = self.truncated
+            body["truncated"] = self.truncated
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4895,13 +4124,13 @@ class NotebookTask:
         """Serializes the NotebookTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.base_parameters:
-            body["{base_parameters}"] = self.base_parameters
+            body["base_parameters"] = self.base_parameters
         if self.notebook_path is not None:
-            body["{notebook_path}"] = self.notebook_path
+            body["notebook_path"] = self.notebook_path
         if self.source is not None:
-            body["{source}"] = self.source.value
+            body["source"] = self.source.value
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4944,11 +4173,11 @@ class OutputSchemaInfo:
         """Serializes the OutputSchemaInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.expiration_time is not None:
-            body["{expiration_time}"] = self.expiration_time
+            body["expiration_time"] = self.expiration_time
         if self.schema_name is not None:
-            body["{schema_name}"] = self.schema_name
+            body["schema_name"] = self.schema_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5000,9 +4229,9 @@ class PeriodicTriggerConfiguration:
         """Serializes the PeriodicTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.interval is not None:
-            body["{interval}"] = self.interval
+            body["interval"] = self.interval
         if self.unit is not None:
-            body["{unit}"] = self.unit.value
+            body["unit"] = self.unit.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5036,7 +4265,7 @@ class PipelineParams:
         """Serializes the PipelineParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None:
-            body["{full_refresh}"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5064,9 +4293,9 @@ class PipelineTask:
         """Serializes the PipelineTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None:
-            body["{full_refresh}"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5097,9 +4326,9 @@ class PythonPyPiLibrary:
         """Serializes the PythonPyPiLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.package is not None:
-            body["{package}"] = self.package
+            body["package"] = self.package
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5138,13 +4367,13 @@ class PythonWheelTask:
         """Serializes the PythonWheelTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.entry_point is not None:
-            body["{entry_point}"] = self.entry_point
+            body["entry_point"] = self.entry_point
         if self.named_parameters:
-            body["{named_parameters}"] = self.named_parameters
+            body["named_parameters"] = self.named_parameters
         if self.package_name is not None:
-            body["{package_name}"] = self.package_name
+            body["package_name"] = self.package_name
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5188,9 +4417,9 @@ class QueueDetails:
         """Serializes the QueueDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.code is not None:
-            body["{code}"] = self.code.value
+            body["code"] = self.code.value
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5229,7 +4458,7 @@ class QueueSettings:
         """Serializes the QueueSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5257,9 +4486,9 @@ class RCranLibrary:
         """Serializes the RCranLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.package is not None:
-            body["{package}"] = self.package
+            body["package"] = self.package
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5304,19 +4533,19 @@ class RepairHistoryItem:
         """Serializes the RepairHistoryItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            body["{state}"] = self.state.as_dict()
+            body["state"] = self.state.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         if self.task_run_ids:
-            body["{task_run_ids}"] = [v for v in self.task_run_ids]
+            body["task_run_ids"] = [v for v in self.task_run_ids]
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5460,33 +4689,33 @@ class RepairRun:
         """Serializes the RepairRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands:
-            body["{dbt_commands}"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.jar_params:
-            body["{jar_params}"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.job_parameters:
-            body["{job_parameters}"] = self.job_parameters
+            body["job_parameters"] = self.job_parameters
         if self.latest_repair_id is not None:
-            body["{latest_repair_id}"] = self.latest_repair_id
+            body["latest_repair_id"] = self.latest_repair_id
         if self.notebook_params:
-            body["{notebook_params}"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            body["{pipeline_params}"] = self.pipeline_params.as_dict()
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            body["{python_named_params}"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            body["{python_params}"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.rerun_all_failed_tasks is not None:
-            body["{rerun_all_failed_tasks}"] = self.rerun_all_failed_tasks
+            body["rerun_all_failed_tasks"] = self.rerun_all_failed_tasks
         if self.rerun_dependent_tasks is not None:
-            body["{rerun_dependent_tasks}"] = self.rerun_dependent_tasks
+            body["rerun_dependent_tasks"] = self.rerun_dependent_tasks
         if self.rerun_tasks:
-            body["{rerun_tasks}"] = [v for v in self.rerun_tasks]
+            body["rerun_tasks"] = [v for v in self.rerun_tasks]
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         if self.spark_submit_params:
-            body["{spark_submit_params}"] = [v for v in self.spark_submit_params]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            body["{sql_params}"] = self.sql_params
+            body["sql_params"] = self.sql_params
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5555,7 +4784,7 @@ class RepairRunResponse:
         """Serializes the RepairRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.repair_id is not None:
-            body["{repair_id}"] = self.repair_id
+            body["repair_id"] = self.repair_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5586,9 +4815,9 @@ class ResetJob:
         """Serializes the ResetJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.new_settings:
-            body["{new_settings}"] = self.new_settings.as_dict()
+            body["new_settings"] = self.new_settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5634,9 +4863,9 @@ class ResolvedConditionTaskValues:
         """Serializes the ResolvedConditionTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None:
-            body["{left}"] = self.left
+            body["left"] = self.left
         if self.right is not None:
-            body["{right}"] = self.right
+            body["right"] = self.right
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5662,7 +4891,7 @@ class ResolvedDbtTaskValues:
         """Serializes the ResolvedDbtTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.commands:
-            body["{commands}"] = [v for v in self.commands]
+            body["commands"] = [v for v in self.commands]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5686,7 +4915,7 @@ class ResolvedNotebookTaskValues:
         """Serializes the ResolvedNotebookTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.base_parameters:
-            body["{base_parameters}"] = self.base_parameters
+            body["base_parameters"] = self.base_parameters
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5710,7 +4939,7 @@ class ResolvedParamPairValues:
         """Serializes the ResolvedParamPairValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters:
-            body["{parameters}"] = self.parameters
+            body["parameters"] = self.parameters
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5736,9 +4965,9 @@ class ResolvedPythonWheelTaskValues:
         """Serializes the ResolvedPythonWheelTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.named_parameters:
-            body["{named_parameters}"] = self.named_parameters
+            body["named_parameters"] = self.named_parameters
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5766,9 +4995,9 @@ class ResolvedRunJobTaskValues:
         """Serializes the ResolvedRunJobTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_parameters:
-            body["{job_parameters}"] = self.job_parameters
+            body["job_parameters"] = self.job_parameters
         if self.parameters:
-            body["{parameters}"] = self.parameters
+            body["parameters"] = self.parameters
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5794,7 +5023,7 @@ class ResolvedStringParamsValues:
         """Serializes the ResolvedStringParamsValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5836,25 +5065,25 @@ class ResolvedValues:
         """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition_task:
-            body["{condition_task}"] = self.condition_task.as_dict()
+            body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
-            body["{dbt_task}"] = self.dbt_task.as_dict()
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.notebook_task:
-            body["{notebook_task}"] = self.notebook_task.as_dict()
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.python_wheel_task:
-            body["{python_wheel_task}"] = self.python_wheel_task.as_dict()
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.run_job_task:
-            body["{run_job_task}"] = self.run_job_task.as_dict()
+            body["run_job_task"] = self.run_job_task.as_dict()
         if self.simulation_task:
-            body["{simulation_task}"] = self.simulation_task.as_dict()
+            body["simulation_task"] = self.simulation_task.as_dict()
         if self.spark_jar_task:
-            body["{spark_jar_task}"] = self.spark_jar_task.as_dict()
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            body["{spark_python_task}"] = self.spark_python_task.as_dict()
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            body["{spark_submit_task}"] = self.spark_submit_task.as_dict()
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            body["{sql_task}"] = self.sql_task.as_dict()
+            body["sql_task"] = self.sql_task.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6065,75 +5294,75 @@ class Run:
         """Serializes the Run into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None:
-            body["{attempt_number}"] = self.attempt_number
+            body["attempt_number"] = self.attempt_number
         if self.cleanup_duration is not None:
-            body["{cleanup_duration}"] = self.cleanup_duration
+            body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
-            body["{cluster_instance}"] = self.cluster_instance.as_dict()
+            body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.cluster_spec:
-            body["{cluster_spec}"] = self.cluster_spec.as_dict()
+            body["cluster_spec"] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.effective_performance_target is not None:
-            body["{effective_performance_target}"] = self.effective_performance_target.value
+            body["effective_performance_target"] = self.effective_performance_target.value
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.execution_duration is not None:
-            body["{execution_duration}"] = self.execution_duration
+            body["execution_duration"] = self.execution_duration
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.has_more is not None:
-            body["{has_more}"] = self.has_more
+            body["has_more"] = self.has_more
         if self.iterations:
-            body["{iterations}"] = [v.as_dict() for v in self.iterations]
+            body["iterations"] = [v.as_dict() for v in self.iterations]
         if self.job_clusters:
-            body["{job_clusters}"] = [v.as_dict() for v in self.job_clusters]
+            body["job_clusters"] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.job_parameters:
-            body["{job_parameters}"] = [v.as_dict() for v in self.job_parameters]
+            body["job_parameters"] = [v.as_dict() for v in self.job_parameters]
         if self.job_run_id is not None:
-            body["{job_run_id}"] = self.job_run_id
+            body["job_run_id"] = self.job_run_id
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.number_in_job is not None:
-            body["{number_in_job}"] = self.number_in_job
+            body["number_in_job"] = self.number_in_job
         if self.original_attempt_run_id is not None:
-            body["{original_attempt_run_id}"] = self.original_attempt_run_id
+            body["original_attempt_run_id"] = self.original_attempt_run_id
         if self.overriding_parameters:
-            body["{overriding_parameters}"] = self.overriding_parameters.as_dict()
+            body["overriding_parameters"] = self.overriding_parameters.as_dict()
         if self.queue_duration is not None:
-            body["{queue_duration}"] = self.queue_duration
+            body["queue_duration"] = self.queue_duration
         if self.repair_history:
-            body["{repair_history}"] = [v.as_dict() for v in self.repair_history]
+            body["repair_history"] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None:
-            body["{run_duration}"] = self.run_duration
+            body["run_duration"] = self.run_duration
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_name is not None:
-            body["{run_name}"] = self.run_name
+            body["run_name"] = self.run_name
         if self.run_page_url is not None:
-            body["{run_page_url}"] = self.run_page_url
+            body["run_page_url"] = self.run_page_url
         if self.run_type is not None:
-            body["{run_type}"] = self.run_type.value
+            body["run_type"] = self.run_type.value
         if self.schedule:
-            body["{schedule}"] = self.schedule.as_dict()
+            body["schedule"] = self.schedule.as_dict()
         if self.setup_duration is not None:
-            body["{setup_duration}"] = self.setup_duration
+            body["setup_duration"] = self.setup_duration
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            body["{state}"] = self.state.as_dict()
+            body["state"] = self.state.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         if self.tasks:
-            body["{tasks}"] = [v.as_dict() for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None:
-            body["{trigger}"] = self.trigger.value
+            body["trigger"] = self.trigger.value
         if self.trigger_info:
-            body["{trigger_info}"] = self.trigger_info.as_dict()
+            body["trigger_info"] = self.trigger_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6282,13 +5511,13 @@ class RunConditionTask:
         """Serializes the RunConditionTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None:
-            body["{left}"] = self.left
+            body["left"] = self.left
         if self.op is not None:
-            body["{op}"] = self.op.value
+            body["op"] = self.op.value
         if self.outcome is not None:
-            body["{outcome}"] = self.outcome
+            body["outcome"] = self.outcome
         if self.right is not None:
-            body["{right}"] = self.right
+            body["right"] = self.right
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6335,13 +5564,13 @@ class RunForEachTask:
         """Serializes the RunForEachTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.concurrency is not None:
-            body["{concurrency}"] = self.concurrency
+            body["concurrency"] = self.concurrency
         if self.inputs is not None:
-            body["{inputs}"] = self.inputs
+            body["inputs"] = self.inputs
         if self.stats:
-            body["{stats}"] = self.stats.as_dict()
+            body["stats"] = self.stats.as_dict()
         if self.task:
-            body["{task}"] = self.task.as_dict()
+            body["task"] = self.task.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6395,7 +5624,7 @@ class RunJobOutput:
         """Serializes the RunJobOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6497,25 +5726,25 @@ class RunJobTask:
         """Serializes the RunJobTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands:
-            body["{dbt_commands}"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.jar_params:
-            body["{jar_params}"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.job_parameters:
-            body["{job_parameters}"] = self.job_parameters
+            body["job_parameters"] = self.job_parameters
         if self.notebook_params:
-            body["{notebook_params}"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            body["{pipeline_params}"] = self.pipeline_params.as_dict()
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            body["{python_named_params}"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            body["{python_params}"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.spark_submit_params:
-            body["{spark_submit_params}"] = [v for v in self.spark_submit_params]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            body["{sql_params}"] = self.sql_params
+            body["sql_params"] = self.sql_params
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6708,33 +5937,33 @@ class RunNow:
         """Serializes the RunNow into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands:
-            body["{dbt_commands}"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.idempotency_token is not None:
-            body["{idempotency_token}"] = self.idempotency_token
+            body["idempotency_token"] = self.idempotency_token
         if self.jar_params:
-            body["{jar_params}"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.job_parameters:
-            body["{job_parameters}"] = self.job_parameters
+            body["job_parameters"] = self.job_parameters
         if self.notebook_params:
-            body["{notebook_params}"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.only:
-            body["{only}"] = [v for v in self.only]
+            body["only"] = [v for v in self.only]
         if self.performance_target is not None:
-            body["{performance_target}"] = self.performance_target.value
+            body["performance_target"] = self.performance_target.value
         if self.pipeline_params:
-            body["{pipeline_params}"] = self.pipeline_params.as_dict()
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            body["{python_named_params}"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            body["{python_params}"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.queue:
-            body["{queue}"] = self.queue.as_dict()
+            body["queue"] = self.queue.as_dict()
         if self.spark_submit_params:
-            body["{spark_submit_params}"] = [v for v in self.spark_submit_params]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            body["{sql_params}"] = self.sql_params
+            body["sql_params"] = self.sql_params
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6805,9 +6034,9 @@ class RunNowResponse:
         """Serializes the RunNowResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.number_in_job is not None:
-            body["{number_in_job}"] = self.number_in_job
+            body["number_in_job"] = self.number_in_job
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6877,27 +6106,27 @@ class RunOutput:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_rooms_notebook_output:
-            body["{clean_rooms_notebook_output}"] = self.clean_rooms_notebook_output.as_dict()
+            body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output.as_dict()
         if self.dbt_output:
-            body["{dbt_output}"] = self.dbt_output.as_dict()
+            body["dbt_output"] = self.dbt_output.as_dict()
         if self.error is not None:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.error_trace is not None:
-            body["{error_trace}"] = self.error_trace
+            body["error_trace"] = self.error_trace
         if self.info is not None:
-            body["{info}"] = self.info
+            body["info"] = self.info
         if self.logs is not None:
-            body["{logs}"] = self.logs
+            body["logs"] = self.logs
         if self.logs_truncated is not None:
-            body["{logs_truncated}"] = self.logs_truncated
+            body["logs_truncated"] = self.logs_truncated
         if self.metadata:
-            body["{metadata}"] = self.metadata.as_dict()
+            body["metadata"] = self.metadata.as_dict()
         if self.notebook_output:
-            body["{notebook_output}"] = self.notebook_output.as_dict()
+            body["notebook_output"] = self.notebook_output.as_dict()
         if self.run_job_output:
-            body["{run_job_output}"] = self.run_job_output.as_dict()
+            body["run_job_output"] = self.run_job_output.as_dict()
         if self.sql_output:
-            body["{sql_output}"] = self.sql_output.as_dict()
+            body["sql_output"] = self.sql_output.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7027,21 +6256,21 @@ class RunParameters:
         """Serializes the RunParameters into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands:
-            body["{dbt_commands}"] = [v for v in self.dbt_commands]
+            body["dbt_commands"] = [v for v in self.dbt_commands]
         if self.jar_params:
-            body["{jar_params}"] = [v for v in self.jar_params]
+            body["jar_params"] = [v for v in self.jar_params]
         if self.notebook_params:
-            body["{notebook_params}"] = self.notebook_params
+            body["notebook_params"] = self.notebook_params
         if self.pipeline_params:
-            body["{pipeline_params}"] = self.pipeline_params.as_dict()
+            body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
-            body["{python_named_params}"] = self.python_named_params
+            body["python_named_params"] = self.python_named_params
         if self.python_params:
-            body["{python_params}"] = [v for v in self.python_params]
+            body["python_params"] = [v for v in self.python_params]
         if self.spark_submit_params:
-            body["{spark_submit_params}"] = [v for v in self.spark_submit_params]
+            body["spark_submit_params"] = [v for v in self.spark_submit_params]
         if self.sql_params:
-            body["{sql_params}"] = self.sql_params
+            body["sql_params"] = self.sql_params
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7129,15 +6358,15 @@ class RunState:
         """Serializes the RunState into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.life_cycle_state is not None:
-            body["{life_cycle_state}"] = self.life_cycle_state.value
+            body["life_cycle_state"] = self.life_cycle_state.value
         if self.queue_reason is not None:
-            body["{queue_reason}"] = self.queue_reason
+            body["queue_reason"] = self.queue_reason
         if self.result_state is not None:
-            body["{result_state}"] = self.result_state.value
+            body["result_state"] = self.result_state.value
         if self.state_message is not None:
-            body["{state_message}"] = self.state_message
+            body["state_message"] = self.state_message
         if self.user_cancelled_or_timedout is not None:
-            body["{user_cancelled_or_timedout}"] = self.user_cancelled_or_timedout
+            body["user_cancelled_or_timedout"] = self.user_cancelled_or_timedout
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7185,11 +6414,11 @@ class RunStatus:
         """Serializes the RunStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.queue_details:
-            body["{queue_details}"] = self.queue_details.as_dict()
+            body["queue_details"] = self.queue_details.as_dict()
         if self.state is not None:
-            body["{state}"] = self.state.value
+            body["state"] = self.state.value
         if self.termination_details:
-            body["{termination_details}"] = self.termination_details.as_dict()
+            body["termination_details"] = self.termination_details.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7413,91 +6642,91 @@ class RunTask:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None:
-            body["{attempt_number}"] = self.attempt_number
+            body["attempt_number"] = self.attempt_number
         if self.clean_rooms_notebook_task:
-            body["{clean_rooms_notebook_task}"] = self.clean_rooms_notebook_task.as_dict()
+            body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.cleanup_duration is not None:
-            body["{cleanup_duration}"] = self.cleanup_duration
+            body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
-            body["{cluster_instance}"] = self.cluster_instance.as_dict()
+            body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.condition_task:
-            body["{condition_task}"] = self.condition_task.as_dict()
+            body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
-            body["{dbt_task}"] = self.dbt_task.as_dict()
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
-            body["{depends_on}"] = [v.as_dict() for v in self.depends_on]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.disabled is not None:
-            body["{disabled}"] = self.disabled
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
-            body["{effective_performance_target}"] = self.effective_performance_target.value
+            body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.environment_key is not None:
-            body["{environment_key}"] = self.environment_key
+            body["environment_key"] = self.environment_key
         if self.execution_duration is not None:
-            body["{execution_duration}"] = self.execution_duration
+            body["execution_duration"] = self.execution_duration
         if self.existing_cluster_id is not None:
-            body["{existing_cluster_id}"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
-            body["{for_each_task}"] = self.for_each_task.as_dict()
+            body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
-            body["{gen_ai_compute_task}"] = self.gen_ai_compute_task.as_dict()
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.job_cluster_key is not None:
-            body["{job_cluster_key}"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.new_cluster:
-            body["{new_cluster}"] = self.new_cluster.as_dict()
+            body["new_cluster"] = self.new_cluster.as_dict()
         if self.notebook_task:
-            body["{notebook_task}"] = self.notebook_task.as_dict()
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
-            body["{pipeline_task}"] = self.pipeline_task.as_dict()
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            body["{python_wheel_task}"] = self.python_wheel_task.as_dict()
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.queue_duration is not None:
-            body["{queue_duration}"] = self.queue_duration
+            body["queue_duration"] = self.queue_duration
         if self.resolved_values:
-            body["{resolved_values}"] = self.resolved_values.as_dict()
+            body["resolved_values"] = self.resolved_values.as_dict()
         if self.run_duration is not None:
-            body["{run_duration}"] = self.run_duration
+            body["run_duration"] = self.run_duration
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         if self.run_if is not None:
-            body["{run_if}"] = self.run_if.value
+            body["run_if"] = self.run_if.value
         if self.run_job_task:
-            body["{run_job_task}"] = self.run_job_task.as_dict()
+            body["run_job_task"] = self.run_job_task.as_dict()
         if self.run_page_url is not None:
-            body["{run_page_url}"] = self.run_page_url
+            body["run_page_url"] = self.run_page_url
         if self.setup_duration is not None:
-            body["{setup_duration}"] = self.setup_duration
+            body["setup_duration"] = self.setup_duration
         if self.spark_jar_task:
-            body["{spark_jar_task}"] = self.spark_jar_task.as_dict()
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            body["{spark_python_task}"] = self.spark_python_task.as_dict()
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            body["{spark_submit_task}"] = self.spark_submit_task.as_dict()
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            body["{sql_task}"] = self.sql_task.as_dict()
+            body["sql_task"] = self.sql_task.as_dict()
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state:
-            body["{state}"] = self.state.as_dict()
+            body["state"] = self.state.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         if self.task_key is not None:
-            body["{task_key}"] = self.task_key
+            body["task_key"] = self.task_key
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7653,102 +6882,6 @@ class RunType(Enum):
     WORKFLOW_RUN = "WORKFLOW_RUN"
 
 
-class RuntimeEngine(Enum):
-
-    NULL = "NULL"
-    PHOTON = "PHOTON"
-    STANDARD = "STANDARD"
-
-
-@dataclass
-class S3StorageInfo:
-    """A storage location in Amazon S3"""
-
-    destination: str
-    """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
-    iam role, please make sure you set cluster iam role and the role has write access to the
-    destination. Please also note that you cannot use AWS keys to deliver logs."""
-
-    canned_acl: Optional[str] = None
-    """(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If
-    `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on
-    the destination bucket and prefix. The full list of possible canned acl can be found at
-    http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl. Please also note
-    that by default only the object owner gets full controls. If you are using cross account role
-    for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to
-    read the logs."""
-
-    enable_encryption: Optional[bool] = None
-    """(Optional) Flag to enable server side encryption, `false` by default."""
-
-    encryption_type: Optional[str] = None
-    """(Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It will be used only when
-    encryption is enabled and the default type is `sse-s3`."""
-
-    endpoint: Optional[str] = None
-    """S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or endpoint needs to be
-    set. If both are set, endpoint will be used."""
-
-    kms_key: Optional[str] = None
-    """(Optional) Kms key which will be used if encryption is enabled and encryption type is set to
-    `sse-kms`."""
-
-    region: Optional[str] = None
-    """S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set. If both are set,
-    endpoint will be used."""
-
-    def as_dict(self) -> dict:
-        """Serializes the S3StorageInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.canned_acl is not None:
-            body["{canned_acl}"] = self.canned_acl
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        if self.enable_encryption is not None:
-            body["{enable_encryption}"] = self.enable_encryption
-        if self.encryption_type is not None:
-            body["{encryption_type}"] = self.encryption_type
-        if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
-        if self.kms_key is not None:
-            body["{kms_key}"] = self.kms_key
-        if self.region is not None:
-            body["{region}"] = self.region
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the S3StorageInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.canned_acl is not None:
-            body["{canned_acl}"] = self.canned_acl
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        if self.enable_encryption is not None:
-            body["{enable_encryption}"] = self.enable_encryption
-        if self.encryption_type is not None:
-            body["{encryption_type}"] = self.encryption_type
-        if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
-        if self.kms_key is not None:
-            body["{kms_key}"] = self.kms_key
-        if self.region is not None:
-            body["{region}"] = self.region
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> S3StorageInfo:
-        """Deserializes the S3StorageInfo from a dictionary."""
-        return cls(
-            canned_acl=d.get("{canned_acl}", None),
-            destination=d.get("{destination}", None),
-            enable_encryption=d.get("{enable_encryption}", None),
-            encryption_type=d.get("{encryption_type}", None),
-            endpoint=d.get("{endpoint}", None),
-            kms_key=d.get("{kms_key}", None),
-            region=d.get("{region}", None),
-        )
-
-
 class Source(Enum):
     """Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file will be retrieved\
     from the local Databricks workspace. When set to `GIT`, the SQL file will be retrieved from a
@@ -7789,13 +6922,13 @@ class SparkJarTask:
         """Serializes the SparkJarTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jar_uri is not None:
-            body["{jar_uri}"] = self.jar_uri
+            body["jar_uri"] = self.jar_uri
         if self.main_class_name is not None:
-            body["{main_class_name}"] = self.main_class_name
+            body["main_class_name"] = self.main_class_name
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         if self.run_as_repl is not None:
-            body["{run_as_repl}"] = self.run_as_repl
+            body["run_as_repl"] = self.run_as_repl
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7850,11 +6983,11 @@ class SparkPythonTask:
         """Serializes the SparkPythonTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         if self.python_file is not None:
-            body["{python_file}"] = self.python_file
+            body["python_file"] = self.python_file
         if self.source is not None:
-            body["{source}"] = self.source.value
+            body["source"] = self.source.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7891,7 +7024,7 @@ class SparkSubmitTask:
         """Serializes the SparkSubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters:
-            body["{parameters}"] = [v for v in self.parameters]
+            body["parameters"] = [v for v in self.parameters]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7932,15 +7065,15 @@ class SqlAlertOutput:
         """Serializes the SqlAlertOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_state is not None:
-            body["{alert_state}"] = self.alert_state.value
+            body["alert_state"] = self.alert_state.value
         if self.output_link is not None:
-            body["{output_link}"] = self.output_link
+            body["output_link"] = self.output_link
         if self.query_text is not None:
-            body["{query_text}"] = self.query_text
+            body["query_text"] = self.query_text
         if self.sql_statements:
-            body["{sql_statements}"] = [v.as_dict() for v in self.sql_statements]
+            body["sql_statements"] = [v.as_dict() for v in self.sql_statements]
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7993,9 +7126,9 @@ class SqlDashboardOutput:
         """Serializes the SqlDashboardOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         if self.widgets:
-            body["{widgets}"] = [v.as_dict() for v in self.widgets]
+            body["widgets"] = [v.as_dict() for v in self.widgets]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8042,19 +7175,19 @@ class SqlDashboardWidgetOutput:
         """Serializes the SqlDashboardWidgetOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.error:
-            body["{error}"] = self.error.as_dict()
+            body["error"] = self.error.as_dict()
         if self.output_link is not None:
-            body["{output_link}"] = self.output_link
+            body["output_link"] = self.output_link
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.widget_id is not None:
-            body["{widget_id}"] = self.widget_id
+            body["widget_id"] = self.widget_id
         if self.widget_title is not None:
-            body["{widget_title}"] = self.widget_title
+            body["widget_title"] = self.widget_title
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8114,11 +7247,11 @@ class SqlOutput:
         """Serializes the SqlOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_output:
-            body["{alert_output}"] = self.alert_output.as_dict()
+            body["alert_output"] = self.alert_output.as_dict()
         if self.dashboard_output:
-            body["{dashboard_output}"] = self.dashboard_output.as_dict()
+            body["dashboard_output"] = self.dashboard_output.as_dict()
         if self.query_output:
-            body["{query_output}"] = self.query_output.as_dict()
+            body["query_output"] = self.query_output.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8151,7 +7284,7 @@ class SqlOutputError:
         """Serializes the SqlOutputError into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8187,15 +7320,15 @@ class SqlQueryOutput:
         """Serializes the SqlQueryOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoint_id is not None:
-            body["{endpoint_id}"] = self.endpoint_id
+            body["endpoint_id"] = self.endpoint_id
         if self.output_link is not None:
-            body["{output_link}"] = self.output_link
+            body["output_link"] = self.output_link
         if self.query_text is not None:
-            body["{query_text}"] = self.query_text
+            body["query_text"] = self.query_text
         if self.sql_statements:
-            body["{sql_statements}"] = [v.as_dict() for v in self.sql_statements]
+            body["sql_statements"] = [v.as_dict() for v in self.sql_statements]
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8234,7 +7367,7 @@ class SqlStatementOutput:
         """Serializes the SqlStatementOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.lookup_key is not None:
-            body["{lookup_key}"] = self.lookup_key
+            body["lookup_key"] = self.lookup_key
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8277,17 +7410,17 @@ class SqlTask:
         """Serializes the SqlTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert:
-            body["{alert}"] = self.alert.as_dict()
+            body["alert"] = self.alert.as_dict()
         if self.dashboard:
-            body["{dashboard}"] = self.dashboard.as_dict()
+            body["dashboard"] = self.dashboard.as_dict()
         if self.file:
-            body["{file}"] = self.file.as_dict()
+            body["file"] = self.file.as_dict()
         if self.parameters:
-            body["{parameters}"] = self.parameters
+            body["parameters"] = self.parameters
         if self.query:
-            body["{query}"] = self.query.as_dict()
+            body["query"] = self.query.as_dict()
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8335,11 +7468,11 @@ class SqlTaskAlert:
         """Serializes the SqlTaskAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_id is not None:
-            body["{alert_id}"] = self.alert_id
+            body["alert_id"] = self.alert_id
         if self.pause_subscriptions is not None:
-            body["{pause_subscriptions}"] = self.pause_subscriptions
+            body["pause_subscriptions"] = self.pause_subscriptions
         if self.subscriptions:
-            body["{subscriptions}"] = [v.as_dict() for v in self.subscriptions]
+            body["subscriptions"] = [v.as_dict() for v in self.subscriptions]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8381,13 +7514,13 @@ class SqlTaskDashboard:
         """Serializes the SqlTaskDashboard into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_subject is not None:
-            body["{custom_subject}"] = self.custom_subject
+            body["custom_subject"] = self.custom_subject
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.pause_subscriptions is not None:
-            body["{pause_subscriptions}"] = self.pause_subscriptions
+            body["pause_subscriptions"] = self.pause_subscriptions
         if self.subscriptions:
-            body["{subscriptions}"] = [v.as_dict() for v in self.subscriptions]
+            body["subscriptions"] = [v.as_dict() for v in self.subscriptions]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8433,9 +7566,9 @@ class SqlTaskFile:
         """Serializes the SqlTaskFile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         if self.source is not None:
-            body["{source}"] = self.source.value
+            body["source"] = self.source.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8462,7 +7595,7 @@ class SqlTaskQuery:
         """Serializes the SqlTaskQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query_id is not None:
-            body["{query_id}"] = self.query_id
+            body["query_id"] = self.query_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8493,9 +7626,9 @@ class SqlTaskSubscription:
         """Serializes the SqlTaskSubscription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination_id is not None:
-            body["{destination_id}"] = self.destination_id
+            body["destination_id"] = self.destination_id
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8581,33 +7714,33 @@ class SubmitRun:
         """Serializes the SubmitRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.environments:
-            body["{environments}"] = [v.as_dict() for v in self.environments]
+            body["environments"] = [v.as_dict() for v in self.environments]
         if self.git_source:
-            body["{git_source}"] = self.git_source.as_dict()
+            body["git_source"] = self.git_source.as_dict()
         if self.health:
-            body["{health}"] = self.health.as_dict()
+            body["health"] = self.health.as_dict()
         if self.idempotency_token is not None:
-            body["{idempotency_token}"] = self.idempotency_token
+            body["idempotency_token"] = self.idempotency_token
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.queue:
-            body["{queue}"] = self.queue.as_dict()
+            body["queue"] = self.queue.as_dict()
         if self.run_as:
-            body["{run_as}"] = self.run_as.as_dict()
+            body["run_as"] = self.run_as.as_dict()
         if self.run_name is not None:
-            body["{run_name}"] = self.run_name
+            body["run_name"] = self.run_name
         if self.tasks:
-            body["{tasks}"] = [v.as_dict() for v in self.tasks]
+            body["tasks"] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8675,7 +7808,7 @@ class SubmitRunResponse:
         """Serializes the SubmitRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8811,57 +7944,57 @@ class SubmitTask:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_rooms_notebook_task:
-            body["{clean_rooms_notebook_task}"] = self.clean_rooms_notebook_task.as_dict()
+            body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task:
-            body["{condition_task}"] = self.condition_task.as_dict()
+            body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
-            body["{dbt_task}"] = self.dbt_task.as_dict()
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
-            body["{depends_on}"] = [v.as_dict() for v in self.depends_on]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
-            body["{environment_key}"] = self.environment_key
+            body["environment_key"] = self.environment_key
         if self.existing_cluster_id is not None:
-            body["{existing_cluster_id}"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
-            body["{for_each_task}"] = self.for_each_task.as_dict()
+            body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
-            body["{gen_ai_compute_task}"] = self.gen_ai_compute_task.as_dict()
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.health:
-            body["{health}"] = self.health.as_dict()
+            body["health"] = self.health.as_dict()
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.new_cluster:
-            body["{new_cluster}"] = self.new_cluster.as_dict()
+            body["new_cluster"] = self.new_cluster.as_dict()
         if self.notebook_task:
-            body["{notebook_task}"] = self.notebook_task.as_dict()
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
-            body["{pipeline_task}"] = self.pipeline_task.as_dict()
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            body["{python_wheel_task}"] = self.python_wheel_task.as_dict()
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.run_if is not None:
-            body["{run_if}"] = self.run_if.value
+            body["run_if"] = self.run_if.value
         if self.run_job_task:
-            body["{run_job_task}"] = self.run_job_task.as_dict()
+            body["run_job_task"] = self.run_job_task.as_dict()
         if self.spark_jar_task:
-            body["{spark_jar_task}"] = self.spark_jar_task.as_dict()
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            body["{spark_python_task}"] = self.spark_python_task.as_dict()
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            body["{spark_submit_task}"] = self.spark_submit_task.as_dict()
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            body["{sql_task}"] = self.sql_task.as_dict()
+            body["sql_task"] = self.sql_task.as_dict()
         if self.task_key is not None:
-            body["{task_key}"] = self.task_key
+            body["task_key"] = self.task_key
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8976,13 +8109,13 @@ class TableUpdateTriggerConfiguration:
         """Serializes the TableUpdateTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition is not None:
-            body["{condition}"] = self.condition.value
+            body["condition"] = self.condition.value
         if self.min_time_between_triggers_seconds is not None:
-            body["{min_time_between_triggers_seconds}"] = self.min_time_between_triggers_seconds
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
         if self.table_names:
-            body["{table_names}"] = [v for v in self.table_names]
+            body["table_names"] = [v for v in self.table_names]
         if self.wait_after_last_change_seconds is not None:
-            body["{wait_after_last_change_seconds}"] = self.wait_after_last_change_seconds
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9083,7 +8216,7 @@ class Task:
     """An optional minimal interval in milliseconds between the start of the failed run and the
     subsequent retry run. The default behavior is that unsuccessful runs are immediately retried."""
 
-    new_cluster: Optional[JobsClusterSpec] = None
+    new_cluster: Optional[ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -9154,67 +8287,67 @@ class Task:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_rooms_notebook_task:
-            body["{clean_rooms_notebook_task}"] = self.clean_rooms_notebook_task.as_dict()
+            body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task:
-            body["{condition_task}"] = self.condition_task.as_dict()
+            body["condition_task"] = self.condition_task.as_dict()
         if self.dbt_task:
-            body["{dbt_task}"] = self.dbt_task.as_dict()
+            body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
-            body["{depends_on}"] = [v.as_dict() for v in self.depends_on]
+            body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.disable_auto_optimization is not None:
-            body["{disable_auto_optimization}"] = self.disable_auto_optimization
+            body["disable_auto_optimization"] = self.disable_auto_optimization
         if self.email_notifications:
-            body["{email_notifications}"] = self.email_notifications.as_dict()
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
-            body["{environment_key}"] = self.environment_key
+            body["environment_key"] = self.environment_key
         if self.existing_cluster_id is not None:
-            body["{existing_cluster_id}"] = self.existing_cluster_id
+            body["existing_cluster_id"] = self.existing_cluster_id
         if self.for_each_task:
-            body["{for_each_task}"] = self.for_each_task.as_dict()
+            body["for_each_task"] = self.for_each_task.as_dict()
         if self.gen_ai_compute_task:
-            body["{gen_ai_compute_task}"] = self.gen_ai_compute_task.as_dict()
+            body["gen_ai_compute_task"] = self.gen_ai_compute_task.as_dict()
         if self.health:
-            body["{health}"] = self.health.as_dict()
+            body["health"] = self.health.as_dict()
         if self.job_cluster_key is not None:
-            body["{job_cluster_key}"] = self.job_cluster_key
+            body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.max_retries is not None:
-            body["{max_retries}"] = self.max_retries
+            body["max_retries"] = self.max_retries
         if self.min_retry_interval_millis is not None:
-            body["{min_retry_interval_millis}"] = self.min_retry_interval_millis
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
-            body["{new_cluster}"] = self.new_cluster.as_dict()
+            body["new_cluster"] = self.new_cluster.as_dict()
         if self.notebook_task:
-            body["{notebook_task}"] = self.notebook_task.as_dict()
+            body["notebook_task"] = self.notebook_task.as_dict()
         if self.notification_settings:
-            body["{notification_settings}"] = self.notification_settings.as_dict()
+            body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
-            body["{pipeline_task}"] = self.pipeline_task.as_dict()
+            body["pipeline_task"] = self.pipeline_task.as_dict()
         if self.python_wheel_task:
-            body["{python_wheel_task}"] = self.python_wheel_task.as_dict()
+            body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout is not None:
-            body["{retry_on_timeout}"] = self.retry_on_timeout
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.run_if is not None:
-            body["{run_if}"] = self.run_if.value
+            body["run_if"] = self.run_if.value
         if self.run_job_task:
-            body["{run_job_task}"] = self.run_job_task.as_dict()
+            body["run_job_task"] = self.run_job_task.as_dict()
         if self.spark_jar_task:
-            body["{spark_jar_task}"] = self.spark_jar_task.as_dict()
+            body["spark_jar_task"] = self.spark_jar_task.as_dict()
         if self.spark_python_task:
-            body["{spark_python_task}"] = self.spark_python_task.as_dict()
+            body["spark_python_task"] = self.spark_python_task.as_dict()
         if self.spark_submit_task:
-            body["{spark_submit_task}"] = self.spark_submit_task.as_dict()
+            body["spark_submit_task"] = self.spark_submit_task.as_dict()
         if self.sql_task:
-            body["{sql_task}"] = self.sql_task.as_dict()
+            body["sql_task"] = self.sql_task.as_dict()
         if self.task_key is not None:
-            body["{task_key}"] = self.task_key
+            body["task_key"] = self.task_key
         if self.timeout_seconds is not None:
-            body["{timeout_seconds}"] = self.timeout_seconds
+            body["timeout_seconds"] = self.timeout_seconds
         if self.webhook_notifications:
-            body["{webhook_notifications}"] = self.webhook_notifications.as_dict()
+            body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9304,7 +8437,7 @@ class Task:
             libraries=_repeated_dict(d, "{libraries}", Library),
             max_retries=d.get("{max_retries}", None),
             min_retry_interval_millis=d.get("{min_retry_interval_millis}", None),
-            new_cluster=_from_dict(d, "{new_cluster}", JobsClusterSpec),
+            new_cluster=_from_dict(d, "{new_cluster}", ClusterSpec),
             notebook_task=_from_dict(d, "{notebook_task}", NotebookTask),
             notification_settings=_from_dict(d, "{notification_settings}", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "{pipeline_task}", PipelineTask),
@@ -9335,9 +8468,9 @@ class TaskDependency:
         """Serializes the TaskDependency into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.outcome is not None:
-            body["{outcome}"] = self.outcome
+            body["outcome"] = self.outcome
         if self.task_key is not None:
-            body["{task_key}"] = self.task_key
+            body["task_key"] = self.task_key
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9394,17 +8527,17 @@ class TaskEmailNotifications:
         """Serializes the TaskEmailNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.no_alert_for_skipped_runs is not None:
-            body["{no_alert_for_skipped_runs}"] = self.no_alert_for_skipped_runs
+            body["no_alert_for_skipped_runs"] = self.no_alert_for_skipped_runs
         if self.on_duration_warning_threshold_exceeded:
-            body["{on_duration_warning_threshold_exceeded}"] = [v for v in self.on_duration_warning_threshold_exceeded]
+            body["on_duration_warning_threshold_exceeded"] = [v for v in self.on_duration_warning_threshold_exceeded]
         if self.on_failure:
-            body["{on_failure}"] = [v for v in self.on_failure]
+            body["on_failure"] = [v for v in self.on_failure]
         if self.on_start:
-            body["{on_start}"] = [v for v in self.on_start]
+            body["on_start"] = [v for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
-            body["{on_streaming_backlog_exceeded}"] = [v for v in self.on_streaming_backlog_exceeded]
+            body["on_streaming_backlog_exceeded"] = [v for v in self.on_streaming_backlog_exceeded]
         if self.on_success:
-            body["{on_success}"] = [v for v in self.on_success]
+            body["on_success"] = [v for v in self.on_success]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9456,11 +8589,11 @@ class TaskNotificationSettings:
         """Serializes the TaskNotificationSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_on_last_attempt is not None:
-            body["{alert_on_last_attempt}"] = self.alert_on_last_attempt
+            body["alert_on_last_attempt"] = self.alert_on_last_attempt
         if self.no_alert_for_canceled_runs is not None:
-            body["{no_alert_for_canceled_runs}"] = self.no_alert_for_canceled_runs
+            body["no_alert_for_canceled_runs"] = self.no_alert_for_canceled_runs
         if self.no_alert_for_skipped_runs is not None:
-            body["{no_alert_for_skipped_runs}"] = self.no_alert_for_skipped_runs
+            body["no_alert_for_skipped_runs"] = self.no_alert_for_skipped_runs
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9602,11 +8735,11 @@ class TerminationDetails:
         """Serializes the TerminationDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.code is not None:
-            body["{code}"] = self.code.value
+            body["code"] = self.code.value
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9656,7 +8789,7 @@ class TriggerInfo:
         """Serializes the TriggerInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None:
-            body["{run_id}"] = self.run_id
+            body["run_id"] = self.run_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9692,15 +8825,15 @@ class TriggerSettings:
         """Serializes the TriggerSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_arrival:
-            body["{file_arrival}"] = self.file_arrival.as_dict()
+            body["file_arrival"] = self.file_arrival.as_dict()
         if self.pause_status is not None:
-            body["{pause_status}"] = self.pause_status.value
+            body["pause_status"] = self.pause_status.value
         if self.periodic:
-            body["{periodic}"] = self.periodic.as_dict()
+            body["periodic"] = self.periodic.as_dict()
         if self.table:
-            body["{table}"] = self.table.as_dict()
+            body["table"] = self.table.as_dict()
         if self.table_update:
-            body["{table_update}"] = self.table_update.as_dict()
+            body["table_update"] = self.table_update.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9775,11 +8908,11 @@ class UpdateJob:
         """Serializes the UpdateJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.fields_to_remove:
-            body["{fields_to_remove}"] = [v for v in self.fields_to_remove]
+            body["fields_to_remove"] = [v for v in self.fields_to_remove]
         if self.job_id is not None:
-            body["{job_id}"] = self.job_id
+            body["job_id"] = self.job_id
         if self.new_settings:
-            body["{new_settings}"] = self.new_settings.as_dict()
+            body["new_settings"] = self.new_settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9837,11 +8970,11 @@ class ViewItem:
         """Serializes the ViewItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None:
-            body["{content}"] = self.content
+            body["content"] = self.content
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9878,34 +9011,6 @@ class ViewsToExport(Enum):
 
 
 @dataclass
-class VolumesStorageInfo:
-    """A storage location back by UC Volumes."""
-
-    destination: str
-    """UC Volumes destination, e.g. `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
-    `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the VolumesStorageInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> VolumesStorageInfo:
-        """Deserializes the VolumesStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
-
-
-@dataclass
 class Webhook:
     id: str
 
@@ -9913,7 +9018,7 @@ class Webhook:
         """Serializes the Webhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9960,17 +9065,17 @@ class WebhookNotifications:
         """Serializes the WebhookNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.on_duration_warning_threshold_exceeded:
-            body["{on_duration_warning_threshold_exceeded}"] = [
+            body["on_duration_warning_threshold_exceeded"] = [
                 v.as_dict() for v in self.on_duration_warning_threshold_exceeded
             ]
         if self.on_failure:
-            body["{on_failure}"] = [v.as_dict() for v in self.on_failure]
+            body["on_failure"] = [v.as_dict() for v in self.on_failure]
         if self.on_start:
-            body["{on_start}"] = [v.as_dict() for v in self.on_start]
+            body["on_start"] = [v.as_dict() for v in self.on_start]
         if self.on_streaming_backlog_exceeded:
-            body["{on_streaming_backlog_exceeded}"] = [v.as_dict() for v in self.on_streaming_backlog_exceeded]
+            body["on_streaming_backlog_exceeded"] = [v.as_dict() for v in self.on_streaming_backlog_exceeded]
         if self.on_success:
-            body["{on_success}"] = [v.as_dict() for v in self.on_success]
+            body["on_success"] = [v.as_dict() for v in self.on_success]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -10000,60 +9105,6 @@ class WebhookNotifications:
             on_streaming_backlog_exceeded=_repeated_dict(d, "{on_streaming_backlog_exceeded}", Webhook),
             on_success=_repeated_dict(d, "{on_success}", Webhook),
         )
-
-
-@dataclass
-class WorkloadType:
-    """Cluster Attributes showing for clusters workload types."""
-
-    clients: ClientsTypes
-    """defined what type of clients can use the cluster. E.g. Notebooks, Jobs"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkloadType into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.clients:
-            body["{clients}"] = self.clients.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkloadType into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.clients:
-            body["{clients}"] = self.clients
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkloadType:
-        """Deserializes the WorkloadType from a dictionary."""
-        return cls(clients=_from_dict(d, "{clients}", ClientsTypes))
-
-
-@dataclass
-class WorkspaceStorageInfo:
-    """A storage location in Workspace Filesystem (WSFS)"""
-
-    destination: str
-    """wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceStorageInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination is not None:
-            body["{destination}"] = self.destination
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceStorageInfo:
-        """Deserializes the WorkspaceStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
 
 
 class JobsAPI:

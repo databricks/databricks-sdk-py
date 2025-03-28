@@ -37,11 +37,11 @@ class AccountIpAccessEnable:
         """Serializes the AccountIpAccessEnable into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.acct_ip_acl_enable:
-            body["{acct_ip_acl_enable}"] = self.acct_ip_acl_enable.as_dict()
+            body["acct_ip_acl_enable"] = self.acct_ip_acl_enable.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -73,7 +73,7 @@ class AibiDashboardEmbeddingAccessPolicy:
         """Serializes the AibiDashboardEmbeddingAccessPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_policy_type is not None:
-            body["{access_policy_type}"] = self.access_policy_type.value
+            body["access_policy_type"] = self.access_policy_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -120,11 +120,11 @@ class AibiDashboardEmbeddingAccessPolicySetting:
         """Serializes the AibiDashboardEmbeddingAccessPolicySetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aibi_dashboard_embedding_access_policy:
-            body["{aibi_dashboard_embedding_access_policy}"] = self.aibi_dashboard_embedding_access_policy.as_dict()
+            body["aibi_dashboard_embedding_access_policy"] = self.aibi_dashboard_embedding_access_policy.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -158,7 +158,7 @@ class AibiDashboardEmbeddingApprovedDomains:
         """Serializes the AibiDashboardEmbeddingApprovedDomains into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.approved_domains:
-            body["{approved_domains}"] = [v for v in self.approved_domains]
+            body["approved_domains"] = [v for v in self.approved_domains]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -196,13 +196,11 @@ class AibiDashboardEmbeddingApprovedDomainsSetting:
         """Serializes the AibiDashboardEmbeddingApprovedDomainsSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aibi_dashboard_embedding_approved_domains:
-            body["{aibi_dashboard_embedding_approved_domains}"] = (
-                self.aibi_dashboard_embedding_approved_domains.as_dict()
-            )
+            body["aibi_dashboard_embedding_approved_domains"] = self.aibi_dashboard_embedding_approved_domains.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -250,11 +248,11 @@ class AutomaticClusterUpdateSetting:
         """Serializes the AutomaticClusterUpdateSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.automatic_cluster_update_workspace:
-            body["{automatic_cluster_update_workspace}"] = self.automatic_cluster_update_workspace.as_dict()
+            body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -288,7 +286,7 @@ class BooleanMessage:
         """Serializes the BooleanMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -325,15 +323,15 @@ class ClusterAutoRestartMessage:
         """Serializes the ClusterAutoRestartMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.can_toggle is not None:
-            body["{can_toggle}"] = self.can_toggle
+            body["can_toggle"] = self.can_toggle
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.enablement_details:
-            body["{enablement_details}"] = self.enablement_details.as_dict()
+            body["enablement_details"] = self.enablement_details.as_dict()
         if self.maintenance_window:
-            body["{maintenance_window}"] = self.maintenance_window.as_dict()
+            body["maintenance_window"] = self.maintenance_window.as_dict()
         if self.restart_even_if_no_updates_available is not None:
-            body["{restart_even_if_no_updates_available}"] = self.restart_even_if_no_updates_available
+            body["restart_even_if_no_updates_available"] = self.restart_even_if_no_updates_available
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -385,11 +383,11 @@ class ClusterAutoRestartMessageEnablementDetails:
         """Serializes the ClusterAutoRestartMessageEnablementDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.forced_for_compliance_mode is not None:
-            body["{forced_for_compliance_mode}"] = self.forced_for_compliance_mode
+            body["forced_for_compliance_mode"] = self.forced_for_compliance_mode
         if self.unavailable_for_disabled_entitlement is not None:
-            body["{unavailable_for_disabled_entitlement}"] = self.unavailable_for_disabled_entitlement
+            body["unavailable_for_disabled_entitlement"] = self.unavailable_for_disabled_entitlement
         if self.unavailable_for_non_enterprise_tier is not None:
-            body["{unavailable_for_non_enterprise_tier}"] = self.unavailable_for_non_enterprise_tier
+            body["unavailable_for_non_enterprise_tier"] = self.unavailable_for_non_enterprise_tier
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -421,7 +419,7 @@ class ClusterAutoRestartMessageMaintenanceWindow:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.week_day_based_schedule:
-            body["{week_day_based_schedule}"] = self.week_day_based_schedule.as_dict()
+            body["week_day_based_schedule"] = self.week_day_based_schedule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -464,11 +462,11 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.day_of_week is not None:
-            body["{day_of_week}"] = self.day_of_week.value
+            body["day_of_week"] = self.day_of_week.value
         if self.frequency is not None:
-            body["{frequency}"] = self.frequency.value
+            body["frequency"] = self.frequency.value
         if self.window_start_time:
-            body["{window_start_time}"] = self.window_start_time.as_dict()
+            body["window_start_time"] = self.window_start_time.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -515,9 +513,9 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         """Serializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.hours is not None:
-            body["{hours}"] = self.hours
+            body["hours"] = self.hours
         if self.minutes is not None:
-            body["{minutes}"] = self.minutes
+            body["minutes"] = self.minutes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -548,9 +546,9 @@ class ComplianceSecurityProfile:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_standards:
-            body["{compliance_standards}"] = [v.value for v in self.compliance_standards]
+            body["compliance_standards"] = [v.value for v in self.compliance_standards]
         if self.is_enabled is not None:
-            body["{is_enabled}"] = self.is_enabled
+            body["is_enabled"] = self.is_enabled
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -594,11 +592,11 @@ class ComplianceSecurityProfileSetting:
         """Serializes the ComplianceSecurityProfileSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_security_profile_workspace:
-            body["{compliance_security_profile_workspace}"] = self.compliance_security_profile_workspace.as_dict()
+            body["compliance_security_profile_workspace"] = self.compliance_security_profile_workspace.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -657,15 +655,15 @@ class Config:
         """Serializes the Config into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.email:
-            body["{email}"] = self.email.as_dict()
+            body["email"] = self.email.as_dict()
         if self.generic_webhook:
-            body["{generic_webhook}"] = self.generic_webhook.as_dict()
+            body["generic_webhook"] = self.generic_webhook.as_dict()
         if self.microsoft_teams:
-            body["{microsoft_teams}"] = self.microsoft_teams.as_dict()
+            body["microsoft_teams"] = self.microsoft_teams.as_dict()
         if self.pagerduty:
-            body["{pagerduty}"] = self.pagerduty.as_dict()
+            body["pagerduty"] = self.pagerduty.as_dict()
         if self.slack:
-            body["{slack}"] = self.slack.as_dict()
+            body["slack"] = self.slack.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -714,11 +712,11 @@ class CreateIpAccessList:
         """Serializes the CreateIpAccessList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_addresses:
-            body["{ip_addresses}"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label is not None:
-            body["{label}"] = self.label
+            body["label"] = self.label
         if self.list_type is not None:
-            body["{list_type}"] = self.list_type.value
+            body["list_type"] = self.list_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -753,7 +751,7 @@ class CreateIpAccessListResponse:
         """Serializes the CreateIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_list:
-            body["{ip_access_list}"] = self.ip_access_list.as_dict()
+            body["ip_access_list"] = self.ip_access_list.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -784,9 +782,9 @@ class CreateNetworkConnectivityConfigRequest:
         """Serializes the CreateNetworkConnectivityConfigRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -816,9 +814,9 @@ class CreateNotificationDestinationRequest:
         """Serializes the CreateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config:
-            body["{config}"] = self.config.as_dict()
+            body["config"] = self.config.as_dict()
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -853,11 +851,11 @@ class CreateOboTokenRequest:
         """Serializes the CreateOboTokenRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.application_id is not None:
-            body["{application_id}"] = self.application_id
+            body["application_id"] = self.application_id
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.lifetime_seconds is not None:
-            body["{lifetime_seconds}"] = self.lifetime_seconds
+            body["lifetime_seconds"] = self.lifetime_seconds
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -894,9 +892,9 @@ class CreateOboTokenResponse:
         """Serializes the CreateOboTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info:
-            body["{token_info}"] = self.token_info.as_dict()
+            body["token_info"] = self.token_info.as_dict()
         if self.token_value is not None:
-            body["{token_value}"] = self.token_value
+            body["token_value"] = self.token_value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -930,11 +928,11 @@ class CreatePrivateEndpointRuleRequest:
         """Serializes the CreatePrivateEndpointRuleRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_id is not None:
-            body["{group_id}"] = self.group_id.value
+            body["group_id"] = self.group_id.value
         if self.network_connectivity_config_id is not None:
-            body["{network_connectivity_config_id}"] = self.network_connectivity_config_id
+            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
-            body["{resource_id}"] = self.resource_id
+            body["resource_id"] = self.resource_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -982,9 +980,9 @@ class CreateTokenRequest:
         """Serializes the CreateTokenRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.lifetime_seconds is not None:
-            body["{lifetime_seconds}"] = self.lifetime_seconds
+            body["lifetime_seconds"] = self.lifetime_seconds
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1014,9 +1012,9 @@ class CreateTokenResponse:
         """Serializes the CreateTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info:
-            body["{token_info}"] = self.token_info.as_dict()
+            body["token_info"] = self.token_info.as_dict()
         if self.token_value is not None:
-            body["{token_value}"] = self.token_value
+            body["token_value"] = self.token_value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1049,9 +1047,9 @@ class CspEnablementAccount:
         """Serializes the CspEnablementAccount into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_standards:
-            body["{compliance_standards}"] = [v.value for v in self.compliance_standards]
+            body["compliance_standards"] = [v.value for v in self.compliance_standards]
         if self.is_enforced is not None:
-            body["{is_enforced}"] = self.is_enforced
+            body["is_enforced"] = self.is_enforced
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1095,11 +1093,11 @@ class CspEnablementAccountSetting:
         """Serializes the CspEnablementAccountSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.csp_enablement_account:
-            body["{csp_enablement_account}"] = self.csp_enablement_account.as_dict()
+            body["csp_enablement_account"] = self.csp_enablement_account.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1153,11 +1151,11 @@ class DefaultNamespaceSetting:
         """Serializes the DefaultNamespaceSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.namespace:
-            body["{namespace}"] = self.namespace.as_dict()
+            body["namespace"] = self.namespace.as_dict()
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1197,7 +1195,7 @@ class DeleteAccountIpAccessEnableResponse:
         """Serializes the DeleteAccountIpAccessEnableResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1229,7 +1227,7 @@ class DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
         """Serializes the DeleteAibiDashboardEmbeddingAccessPolicySettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1261,7 +1259,7 @@ class DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
         """Serializes the DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1293,7 +1291,7 @@ class DeleteDefaultNamespaceSettingResponse:
         """Serializes the DeleteDefaultNamespaceSettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1325,7 +1323,7 @@ class DeleteDisableLegacyAccessResponse:
         """Serializes the DeleteDisableLegacyAccessResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1357,7 +1355,7 @@ class DeleteDisableLegacyDbfsResponse:
         """Serializes the DeleteDisableLegacyDbfsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1389,7 +1387,7 @@ class DeleteDisableLegacyFeaturesResponse:
         """Serializes the DeleteDisableLegacyFeaturesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1439,7 +1437,7 @@ class DeletePersonalComputeSettingResponse:
         """Serializes the DeletePersonalComputeSettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1489,7 +1487,7 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
         """Serializes the DeleteRestrictWorkspaceAdminsSettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1536,11 +1534,11 @@ class DisableLegacyAccess:
         """Serializes the DisableLegacyAccess into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.disable_legacy_access:
-            body["{disable_legacy_access}"] = self.disable_legacy_access.as_dict()
+            body["disable_legacy_access"] = self.disable_legacy_access.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1586,11 +1584,11 @@ class DisableLegacyDbfs:
         """Serializes the DisableLegacyDbfs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.disable_legacy_dbfs:
-            body["{disable_legacy_dbfs}"] = self.disable_legacy_dbfs.as_dict()
+            body["disable_legacy_dbfs"] = self.disable_legacy_dbfs.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1636,11 +1634,11 @@ class DisableLegacyFeatures:
         """Serializes the DisableLegacyFeatures into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.disable_legacy_features:
-            body["{disable_legacy_features}"] = self.disable_legacy_features.as_dict()
+            body["disable_legacy_features"] = self.disable_legacy_features.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1673,7 +1671,7 @@ class EmailConfig:
         """Serializes the EmailConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.addresses:
-            body["{addresses}"] = [v for v in self.addresses]
+            body["addresses"] = [v for v in self.addresses]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1717,7 +1715,7 @@ class EnhancedSecurityMonitoring:
         """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_enabled is not None:
-            body["{is_enabled}"] = self.is_enabled
+            body["is_enabled"] = self.is_enabled
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1756,11 +1754,11 @@ class EnhancedSecurityMonitoringSetting:
         """Serializes the EnhancedSecurityMonitoringSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enhanced_security_monitoring_workspace:
-            body["{enhanced_security_monitoring_workspace}"] = self.enhanced_security_monitoring_workspace.as_dict()
+            body["enhanced_security_monitoring_workspace"] = self.enhanced_security_monitoring_workspace.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1796,7 +1794,7 @@ class EsmEnablementAccount:
         """Serializes the EsmEnablementAccount into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_enforced is not None:
-            body["{is_enforced}"] = self.is_enforced
+            body["is_enforced"] = self.is_enforced
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1835,11 +1833,11 @@ class EsmEnablementAccountSetting:
         """Serializes the EsmEnablementAccountSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.esm_enablement_account:
-            body["{esm_enablement_account}"] = self.esm_enablement_account.as_dict()
+            body["esm_enablement_account"] = self.esm_enablement_account.as_dict()
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1886,15 +1884,15 @@ class ExchangeToken:
         """Serializes the ExchangeToken into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential is not None:
-            body["{credential}"] = self.credential
+            body["credential"] = self.credential
         if self.credential_eol_time is not None:
-            body["{credential_eol_time}"] = self.credential_eol_time
+            body["credentialEolTime"] = self.credential_eol_time
         if self.owner_id is not None:
-            body["{owner_id}"] = self.owner_id
+            body["ownerId"] = self.owner_id
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         if self.token_type is not None:
-            body["{token_type}"] = self.token_type.value
+            body["tokenType"] = self.token_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1941,11 +1939,11 @@ class ExchangeTokenRequest:
         """Serializes the ExchangeTokenRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.partition_id:
-            body["{partition_id}"] = self.partition_id.as_dict()
+            body["partitionId"] = self.partition_id.as_dict()
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         if self.token_type:
-            body["{token_type}"] = [v.value for v in self.token_type]
+            body["tokenType"] = [v.value for v in self.token_type]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1979,7 +1977,7 @@ class ExchangeTokenResponse:
         """Serializes the ExchangeTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.values:
-            body["{values}"] = [v.as_dict() for v in self.values]
+            body["values"] = [v.as_dict() for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2006,7 +2004,7 @@ class FetchIpAccessListResponse:
         """Serializes the FetchIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_list:
-            body["{ip_access_list}"] = self.ip_access_list.as_dict()
+            body["ip_access_list"] = self.ip_access_list.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2046,17 +2044,17 @@ class GenericWebhookConfig:
         """Serializes the GenericWebhookConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.password is not None:
-            body["{password}"] = self.password
+            body["password"] = self.password
         if self.password_set is not None:
-            body["{password_set}"] = self.password_set
+            body["password_set"] = self.password_set
         if self.url is not None:
-            body["{url}"] = self.url
+            body["url"] = self.url
         if self.url_set is not None:
-            body["{url_set}"] = self.url_set
+            body["url_set"] = self.url_set
         if self.username is not None:
-            body["{username}"] = self.username
+            body["username"] = self.username
         if self.username_set is not None:
-            body["{username_set}"] = self.username_set
+            body["username_set"] = self.username_set
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2098,7 +2096,7 @@ class GetIpAccessListResponse:
         """Serializes the GetIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_list:
-            body["{ip_access_list}"] = self.ip_access_list.as_dict()
+            body["ip_access_list"] = self.ip_access_list.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2124,7 +2122,7 @@ class GetIpAccessListsResponse:
         """Serializes the GetIpAccessListsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_lists:
-            body["{ip_access_lists}"] = [v.as_dict() for v in self.ip_access_lists]
+            body["ip_access_lists"] = [v.as_dict() for v in self.ip_access_lists]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2149,7 +2147,7 @@ class GetTokenPermissionLevelsResponse:
         """Serializes the GetTokenPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2175,7 +2173,7 @@ class GetTokenResponse:
         """Serializes the GetTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info:
-            body["{token_info}"] = self.token_info.as_dict()
+            body["token_info"] = self.token_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2231,25 +2229,25 @@ class IpAccessListInfo:
         """Serializes the IpAccessListInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.address_count is not None:
-            body["{address_count}"] = self.address_count
+            body["address_count"] = self.address_count
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_addresses:
-            body["{ip_addresses}"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label is not None:
-            body["{label}"] = self.label
+            body["label"] = self.label
         if self.list_id is not None:
-            body["{list_id}"] = self.list_id
+            body["list_id"] = self.list_id
         if self.list_type is not None:
-            body["{list_type}"] = self.list_type.value
+            body["list_type"] = self.list_type.value
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2304,7 +2302,7 @@ class ListIpAccessListResponse:
         """Serializes the ListIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_lists:
-            body["{ip_access_lists}"] = [v.as_dict() for v in self.ip_access_lists]
+            body["ip_access_lists"] = [v.as_dict() for v in self.ip_access_lists]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2332,9 +2330,9 @@ class ListNccAzurePrivateEndpointRulesResponse:
         """Serializes the ListNccAzurePrivateEndpointRulesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items:
-            body["{items}"] = [v.as_dict() for v in self.items]
+            body["items"] = [v.as_dict() for v in self.items]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2367,9 +2365,9 @@ class ListNetworkConnectivityConfigurationsResponse:
         """Serializes the ListNetworkConnectivityConfigurationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items:
-            body["{items}"] = [v.as_dict() for v in self.items]
+            body["items"] = [v.as_dict() for v in self.items]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2401,9 +2399,9 @@ class ListNotificationDestinationsResponse:
         """Serializes the ListNotificationDestinationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.results:
-            body["{results}"] = [v.as_dict() for v in self.results]
+            body["results"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2439,11 +2437,11 @@ class ListNotificationDestinationsResult:
         """Serializes the ListNotificationDestinationsResult into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination_type is not None:
-            body["{destination_type}"] = self.destination_type.value
+            body["destination_type"] = self.destination_type.value
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2476,7 +2474,7 @@ class ListPublicTokensResponse:
         """Serializes the ListPublicTokensResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_infos:
-            body["{token_infos}"] = [v.as_dict() for v in self.token_infos]
+            body["token_infos"] = [v.as_dict() for v in self.token_infos]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2503,7 +2501,7 @@ class ListTokensResponse:
         """Serializes the ListTokensResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_infos:
-            body["{token_infos}"] = [v.as_dict() for v in self.token_infos]
+            body["token_infos"] = [v.as_dict() for v in self.token_infos]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2541,9 +2539,9 @@ class MicrosoftTeamsConfig:
         """Serializes the MicrosoftTeamsConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.url is not None:
-            body["{url}"] = self.url
+            body["url"] = self.url
         if self.url_set is not None:
-            body["{url_set}"] = self.url_set
+            body["url_set"] = self.url_set
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2574,7 +2572,7 @@ class NccAwsStableIpRule:
         """Serializes the NccAwsStableIpRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cidr_blocks:
-            body["{cidr_blocks}"] = [v for v in self.cidr_blocks]
+            body["cidr_blocks"] = [v for v in self.cidr_blocks]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2637,25 +2635,25 @@ class NccAzurePrivateEndpointRule:
         """Serializes the NccAzurePrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.connection_state is not None:
-            body["{connection_state}"] = self.connection_state.value
+            body["connection_state"] = self.connection_state.value
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.deactivated is not None:
-            body["{deactivated}"] = self.deactivated
+            body["deactivated"] = self.deactivated
         if self.deactivated_at is not None:
-            body["{deactivated_at}"] = self.deactivated_at
+            body["deactivated_at"] = self.deactivated_at
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.group_id is not None:
-            body["{group_id}"] = self.group_id.value
+            body["group_id"] = self.group_id.value
         if self.network_connectivity_config_id is not None:
-            body["{network_connectivity_config_id}"] = self.network_connectivity_config_id
+            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
-            body["{resource_id}"] = self.resource_id
+            body["resource_id"] = self.resource_id
         if self.rule_id is not None:
-            body["{rule_id}"] = self.rule_id
+            body["rule_id"] = self.rule_id
         if self.updated_time is not None:
-            body["{updated_time}"] = self.updated_time
+            body["updated_time"] = self.updated_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2748,11 +2746,11 @@ class NccAzureServiceEndpointRule:
         """Serializes the NccAzureServiceEndpointRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.subnets:
-            body["{subnets}"] = [v for v in self.subnets]
+            body["subnets"] = [v for v in self.subnets]
         if self.target_region is not None:
-            body["{target_region}"] = self.target_region
+            body["target_region"] = self.target_region
         if self.target_services:
-            body["{target_services}"] = [v for v in self.target_services]
+            body["target_services"] = [v for v in self.target_services]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2794,9 +2792,9 @@ class NccEgressConfig:
         """Serializes the NccEgressConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default_rules:
-            body["{default_rules}"] = self.default_rules.as_dict()
+            body["default_rules"] = self.default_rules.as_dict()
         if self.target_rules:
-            body["{target_rules}"] = self.target_rules.as_dict()
+            body["target_rules"] = self.target_rules.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2835,9 +2833,9 @@ class NccEgressDefaultRules:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_stable_ip_rule:
-            body["{aws_stable_ip_rule}"] = self.aws_stable_ip_rule.as_dict()
+            body["aws_stable_ip_rule"] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
-            body["{azure_service_endpoint_rule}"] = self.azure_service_endpoint_rule.as_dict()
+            body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2869,7 +2867,7 @@ class NccEgressTargetRules:
         """Serializes the NccEgressTargetRules into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.azure_private_endpoint_rules:
-            body["{azure_private_endpoint_rules}"] = [v.as_dict() for v in self.azure_private_endpoint_rules]
+            body["azure_private_endpoint_rules"] = [v.as_dict() for v in self.azure_private_endpoint_rules]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2920,19 +2918,19 @@ class NetworkConnectivityConfiguration:
         """Serializes the NetworkConnectivityConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.egress_config:
-            body["{egress_config}"] = self.egress_config.as_dict()
+            body["egress_config"] = self.egress_config.as_dict()
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.network_connectivity_config_id is not None:
-            body["{network_connectivity_config_id}"] = self.network_connectivity_config_id
+            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         if self.updated_time is not None:
-            body["{updated_time}"] = self.updated_time
+            body["updated_time"] = self.updated_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2987,13 +2985,13 @@ class NotificationDestination:
         """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config:
-            body["{config}"] = self.config.as_dict()
+            body["config"] = self.config.as_dict()
         if self.destination_type is not None:
-            body["{destination_type}"] = self.destination_type.value
+            body["destination_type"] = self.destination_type.value
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3032,9 +3030,9 @@ class PagerdutyConfig:
         """Serializes the PagerdutyConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.integration_key is not None:
-            body["{integration_key}"] = self.integration_key
+            body["integration_key"] = self.integration_key
         if self.integration_key_set is not None:
-            body["{integration_key_set}"] = self.integration_key_set
+            body["integration_key_set"] = self.integration_key_set
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3065,7 +3063,7 @@ class PartitionId:
         """Serializes the PartitionId into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspaceId"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3094,7 +3092,7 @@ class PersonalComputeMessage:
         """Serializes the PersonalComputeMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["{value}"] = self.value.value
+            body["value"] = self.value.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3143,11 +3141,11 @@ class PersonalComputeSetting:
         """Serializes the PersonalComputeSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.personal_compute:
-            body["{personal_compute}"] = self.personal_compute.as_dict()
+            body["personal_compute"] = self.personal_compute.as_dict()
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3189,13 +3187,13 @@ class PublicTokenInfo:
         """Serializes the PublicTokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
-            body["{expiry_time}"] = self.expiry_time
+            body["expiry_time"] = self.expiry_time
         if self.token_id is not None:
-            body["{token_id}"] = self.token_id
+            body["token_id"] = self.token_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3247,15 +3245,15 @@ class ReplaceIpAccessList:
         """Serializes the ReplaceIpAccessList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_access_list_id is not None:
-            body["{ip_access_list_id}"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
         if self.ip_addresses:
-            body["{ip_addresses}"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label is not None:
-            body["{label}"] = self.label
+            body["label"] = self.label
         if self.list_type is not None:
-            body["{list_type}"] = self.list_type.value
+            body["list_type"] = self.list_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3311,7 +3309,7 @@ class RestrictWorkspaceAdminsMessage:
         """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3355,11 +3353,11 @@ class RestrictWorkspaceAdminsSetting:
         """Serializes the RestrictWorkspaceAdminsSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.restrict_workspace_admins:
-            body["{restrict_workspace_admins}"] = self.restrict_workspace_admins.as_dict()
+            body["restrict_workspace_admins"] = self.restrict_workspace_admins.as_dict()
         if self.setting_name is not None:
-            body["{setting_name}"] = self.setting_name
+            body["setting_name"] = self.setting_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3392,7 +3390,7 @@ class RevokeTokenRequest:
         """Serializes the RevokeTokenRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_id is not None:
-            body["{token_id}"] = self.token_id
+            body["token_id"] = self.token_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3456,9 +3454,9 @@ class SlackConfig:
         """Serializes the SlackConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.url is not None:
-            body["{url}"] = self.url
+            body["url"] = self.url
         if self.url_set is not None:
-            body["{url_set}"] = self.url_set
+            body["url_set"] = self.url_set
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3485,7 +3483,7 @@ class StringMessage:
         """Serializes the StringMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3519,13 +3517,13 @@ class TokenAccessControlRequest:
         """Serializes the TokenAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3573,15 +3571,15 @@ class TokenAccessControlResponse:
         """Serializes the TokenAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3644,23 +3642,23 @@ class TokenInfo:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.created_by_id is not None:
-            body["{created_by_id}"] = self.created_by_id
+            body["created_by_id"] = self.created_by_id
         if self.created_by_username is not None:
-            body["{created_by_username}"] = self.created_by_username
+            body["created_by_username"] = self.created_by_username
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
-            body["{expiry_time}"] = self.expiry_time
+            body["expiry_time"] = self.expiry_time
         if self.last_used_day is not None:
-            body["{last_used_day}"] = self.last_used_day
+            body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
-            body["{owner_id}"] = self.owner_id
+            body["owner_id"] = self.owner_id
         if self.token_id is not None:
-            body["{token_id}"] = self.token_id
+            body["token_id"] = self.token_id
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3715,11 +3713,11 @@ class TokenPermission:
         """Serializes the TokenPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3761,11 +3759,11 @@ class TokenPermissions:
         """Serializes the TokenPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3800,9 +3798,9 @@ class TokenPermissionsDescription:
         """Serializes the TokenPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3831,7 +3829,7 @@ class TokenPermissionsRequest:
         """Serializes the TokenPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3883,11 +3881,11 @@ class UpdateAccountIpAccessEnableRequest:
         """Serializes the UpdateAccountIpAccessEnableRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3935,11 +3933,11 @@ class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
         """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3987,11 +3985,11 @@ class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
         """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4039,11 +4037,11 @@ class UpdateAutomaticClusterUpdateSettingRequest:
         """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4091,11 +4089,11 @@ class UpdateComplianceSecurityProfileSettingRequest:
         """Serializes the UpdateComplianceSecurityProfileSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4143,11 +4141,11 @@ class UpdateCspEnablementAccountSettingRequest:
         """Serializes the UpdateCspEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4202,11 +4200,11 @@ class UpdateDefaultNamespaceSettingRequest:
         """Serializes the UpdateDefaultNamespaceSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4254,11 +4252,11 @@ class UpdateDisableLegacyAccessRequest:
         """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4306,11 +4304,11 @@ class UpdateDisableLegacyDbfsRequest:
         """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4358,11 +4356,11 @@ class UpdateDisableLegacyFeaturesRequest:
         """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4410,11 +4408,11 @@ class UpdateEnhancedSecurityMonitoringSettingRequest:
         """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4462,11 +4460,11 @@ class UpdateEsmEnablementAccountSettingRequest:
         """Serializes the UpdateEsmEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4515,15 +4513,15 @@ class UpdateIpAccessList:
         """Serializes the UpdateIpAccessList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.ip_access_list_id is not None:
-            body["{ip_access_list_id}"] = self.ip_access_list_id
+            body["ip_access_list_id"] = self.ip_access_list_id
         if self.ip_addresses:
-            body["{ip_addresses}"] = [v for v in self.ip_addresses]
+            body["ip_addresses"] = [v for v in self.ip_addresses]
         if self.label is not None:
-            body["{label}"] = self.label
+            body["label"] = self.label
         if self.list_type is not None:
-            body["{list_type}"] = self.list_type.value
+            body["list_type"] = self.list_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4568,11 +4566,11 @@ class UpdateNotificationDestinationRequest:
         """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config:
-            body["{config}"] = self.config.as_dict()
+            body["config"] = self.config.as_dict()
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4618,11 +4616,11 @@ class UpdatePersonalComputeSettingRequest:
         """Serializes the UpdatePersonalComputeSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4688,11 +4686,11 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
         """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_missing is not None:
-            body["{allow_missing}"] = self.allow_missing
+            body["allow_missing"] = self.allow_missing
         if self.field_mask is not None:
-            body["{field_mask}"] = self.field_mask
+            body["field_mask"] = self.field_mask
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:

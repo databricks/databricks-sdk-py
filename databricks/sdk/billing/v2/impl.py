@@ -29,11 +29,11 @@ class ActionConfiguration:
         """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configuration_id is not None:
-            body["{action_configuration_id}"] = self.action_configuration_id
+            body["action_configuration_id"] = self.action_configuration_id
         if self.action_type is not None:
-            body["{action_type}"] = self.action_type.value
+            body["action_type"] = self.action_type.value
         if self.target is not None:
-            body["{target}"] = self.target
+            body["target"] = self.target
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -89,17 +89,17 @@ class AlertConfiguration:
         """Serializes the AlertConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configurations:
-            body["{action_configurations}"] = [v.as_dict() for v in self.action_configurations]
+            body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.alert_configuration_id is not None:
-            body["{alert_configuration_id}"] = self.alert_configuration_id
+            body["alert_configuration_id"] = self.alert_configuration_id
         if self.quantity_threshold is not None:
-            body["{quantity_threshold}"] = self.quantity_threshold
+            body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
-            body["{quantity_type}"] = self.quantity_type.value
+            body["quantity_type"] = self.quantity_type.value
         if self.time_period is not None:
-            body["{time_period}"] = self.time_period.value
+            body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
-            body["{trigger_type}"] = self.trigger_type.value
+            body["trigger_type"] = self.trigger_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -177,19 +177,19 @@ class BudgetConfiguration:
         """Serializes the BudgetConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body["{alert_configurations}"] = [v.as_dict() for v in self.alert_configurations]
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
         if self.budget_configuration_id is not None:
-            body["{budget_configuration_id}"] = self.budget_configuration_id
+            body["budget_configuration_id"] = self.budget_configuration_id
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -239,9 +239,9 @@ class BudgetConfigurationFilter:
         """Serializes the BudgetConfigurationFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.tags:
-            body["{tags}"] = [v.as_dict() for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.workspace_id:
-            body["{workspace_id}"] = self.workspace_id.as_dict()
+            body["workspace_id"] = self.workspace_id.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -272,9 +272,9 @@ class BudgetConfigurationFilterClause:
         """Serializes the BudgetConfigurationFilterClause into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.operator is not None:
-            body["{operator}"] = self.operator.value
+            body["operator"] = self.operator.value
         if self.values:
-            body["{values}"] = [v for v in self.values]
+            body["values"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -307,9 +307,9 @@ class BudgetConfigurationFilterTagClause:
         """Serializes the BudgetConfigurationFilterTagClause into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["{key}"] = self.key
+            body["key"] = self.key
         if self.value:
-            body["{value}"] = self.value.as_dict()
+            body["value"] = self.value.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -337,9 +337,9 @@ class BudgetConfigurationFilterWorkspaceIdClause:
         """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.operator is not None:
-            body["{operator}"] = self.operator.value
+            body["operator"] = self.operator.value
         if self.values:
-            body["{values}"] = [v for v in self.values]
+            body["values"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -376,11 +376,11 @@ class BudgetPolicy:
         """Serializes the BudgetPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_tags:
-            body["{custom_tags}"] = [v.as_dict() for v in self.custom_tags]
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.policy_name is not None:
-            body["{policy_name}"] = self.policy_name
+            body["policy_name"] = self.policy_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -417,9 +417,9 @@ class CreateBillingUsageDashboardRequest:
         """Serializes the CreateBillingUsageDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_type is not None:
-            body["{dashboard_type}"] = self.dashboard_type.value
+            body["dashboard_type"] = self.dashboard_type.value
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -448,7 +448,7 @@ class CreateBillingUsageDashboardResponse:
         """Serializes the CreateBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -485,13 +485,13 @@ class CreateBudgetConfigurationBudget:
         """Serializes the CreateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body["{alert_configurations}"] = [v.as_dict() for v in self.alert_configurations]
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -532,9 +532,9 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
         """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_type is not None:
-            body["{action_type}"] = self.action_type.value
+            body["action_type"] = self.action_type.value
         if self.target is not None:
-            body["{target}"] = self.target
+            body["target"] = self.target
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -576,15 +576,15 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         """Serializes the CreateBudgetConfigurationBudgetAlertConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configurations:
-            body["{action_configurations}"] = [v.as_dict() for v in self.action_configurations]
+            body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.quantity_threshold is not None:
-            body["{quantity_threshold}"] = self.quantity_threshold
+            body["quantity_threshold"] = self.quantity_threshold
         if self.quantity_type is not None:
-            body["{quantity_type}"] = self.quantity_type.value
+            body["quantity_type"] = self.quantity_type.value
         if self.time_period is not None:
-            body["{time_period}"] = self.time_period.value
+            body["time_period"] = self.time_period.value
         if self.trigger_type is not None:
-            body["{trigger_type}"] = self.trigger_type.value
+            body["trigger_type"] = self.trigger_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -625,7 +625,7 @@ class CreateBudgetConfigurationRequest:
         """Serializes the CreateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget:
-            body["{budget}"] = self.budget.as_dict()
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -650,7 +650,7 @@ class CreateBudgetConfigurationResponse:
         """Serializes the CreateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget:
-            body["{budget}"] = self.budget.as_dict()
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -683,9 +683,9 @@ class CreateBudgetPolicyRequest:
         """Serializes the CreateBudgetPolicyRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.policy:
-            body["{policy}"] = self.policy.as_dict()
+            body["policy"] = self.policy.as_dict()
         if self.request_id is not None:
-            body["{request_id}"] = self.request_id
+            body["request_id"] = self.request_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -778,23 +778,23 @@ class CreateLogDeliveryConfigurationParams:
         """Serializes the CreateLogDeliveryConfigurationParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_name is not None:
-            body["{config_name}"] = self.config_name
+            body["config_name"] = self.config_name
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.delivery_path_prefix is not None:
-            body["{delivery_path_prefix}"] = self.delivery_path_prefix
+            body["delivery_path_prefix"] = self.delivery_path_prefix
         if self.delivery_start_time is not None:
-            body["{delivery_start_time}"] = self.delivery_start_time
+            body["delivery_start_time"] = self.delivery_start_time
         if self.log_type is not None:
-            body["{log_type}"] = self.log_type.value
+            body["log_type"] = self.log_type.value
         if self.output_format is not None:
-            body["{output_format}"] = self.output_format.value
+            body["output_format"] = self.output_format.value
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.workspace_ids_filter:
-            body["{workspace_ids_filter}"] = [v for v in self.workspace_ids_filter]
+            body["workspace_ids_filter"] = [v for v in self.workspace_ids_filter]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -856,9 +856,9 @@ class CustomPolicyTag:
         """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["{key}"] = self.key
+            body["key"] = self.key
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -936,7 +936,7 @@ class DownloadResponse:
         """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.contents:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -970,11 +970,11 @@ class Filter:
         """Serializes the Filter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creator_user_id is not None:
-            body["{creator_user_id}"] = self.creator_user_id
+            body["creator_user_id"] = self.creator_user_id
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.policy_name is not None:
-            body["{policy_name}"] = self.policy_name
+            body["policy_name"] = self.policy_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1010,9 +1010,9 @@ class GetBillingUsageDashboardResponse:
         """Serializes the GetBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.dashboard_url is not None:
-            body["{dashboard_url}"] = self.dashboard_url
+            body["dashboard_url"] = self.dashboard_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1038,7 +1038,7 @@ class GetBudgetConfigurationResponse:
         """Serializes the GetBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget:
-            body["{budget}"] = self.budget.as_dict()
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1087,9 +1087,9 @@ class ListBudgetConfigurationsResponse:
         """Serializes the ListBudgetConfigurationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budgets:
-            body["{budgets}"] = [v.as_dict() for v in self.budgets]
+            body["budgets"] = [v.as_dict() for v in self.budgets]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1128,11 +1128,11 @@ class ListBudgetPoliciesResponse:
         """Serializes the ListBudgetPoliciesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.policies:
-            body["{policies}"] = [v.as_dict() for v in self.policies]
+            body["policies"] = [v.as_dict() for v in self.policies]
         if self.previous_page_token is not None:
-            body["{previous_page_token}"] = self.previous_page_token
+            body["previous_page_token"] = self.previous_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1256,33 +1256,33 @@ class LogDeliveryConfiguration:
         """Serializes the LogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.config_id is not None:
-            body["{config_id}"] = self.config_id
+            body["config_id"] = self.config_id
         if self.config_name is not None:
-            body["{config_name}"] = self.config_name
+            body["config_name"] = self.config_name
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.delivery_path_prefix is not None:
-            body["{delivery_path_prefix}"] = self.delivery_path_prefix
+            body["delivery_path_prefix"] = self.delivery_path_prefix
         if self.delivery_start_time is not None:
-            body["{delivery_start_time}"] = self.delivery_start_time
+            body["delivery_start_time"] = self.delivery_start_time
         if self.log_delivery_status:
-            body["{log_delivery_status}"] = self.log_delivery_status.as_dict()
+            body["log_delivery_status"] = self.log_delivery_status.as_dict()
         if self.log_type is not None:
-            body["{log_type}"] = self.log_type.value
+            body["log_type"] = self.log_type.value
         if self.output_format is not None:
-            body["{output_format}"] = self.output_format.value
+            body["output_format"] = self.output_format.value
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         if self.workspace_ids_filter:
-            body["{workspace_ids_filter}"] = [v for v in self.workspace_ids_filter]
+            body["workspace_ids_filter"] = [v for v in self.workspace_ids_filter]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1366,13 +1366,13 @@ class LogDeliveryStatus:
         """Serializes the LogDeliveryStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.last_attempt_time is not None:
-            body["{last_attempt_time}"] = self.last_attempt_time
+            body["last_attempt_time"] = self.last_attempt_time
         if self.last_successful_attempt_time is not None:
-            body["{last_successful_attempt_time}"] = self.last_successful_attempt_time
+            body["last_successful_attempt_time"] = self.last_successful_attempt_time
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1463,9 +1463,9 @@ class SortSpec:
         """Serializes the SortSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.descending is not None:
-            body["{descending}"] = self.descending
+            body["descending"] = self.descending
         if self.field is not None:
-            body["{field}"] = self.field.value
+            body["field"] = self.field.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1512,15 +1512,15 @@ class UpdateBudgetConfigurationBudget:
         """Serializes the UpdateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body["{alert_configurations}"] = [v.as_dict() for v in self.alert_configurations]
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
         if self.budget_configuration_id is not None:
-            body["{budget_configuration_id}"] = self.budget_configuration_id
+            body["budget_configuration_id"] = self.budget_configuration_id
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1562,9 +1562,9 @@ class UpdateBudgetConfigurationRequest:
         """Serializes the UpdateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget:
-            body["{budget}"] = self.budget.as_dict()
+            body["budget"] = self.budget.as_dict()
         if self.budget_id is not None:
-            body["{budget_id}"] = self.budget_id
+            body["budget_id"] = self.budget_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1593,7 +1593,7 @@ class UpdateBudgetConfigurationResponse:
         """Serializes the UpdateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget:
-            body["{budget}"] = self.budget.as_dict()
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1624,9 +1624,9 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration_id is not None:
-            body["{log_delivery_configuration_id}"] = self.log_delivery_configuration_id
+            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1661,7 +1661,7 @@ class WrappedCreateLogDeliveryConfiguration:
         """Serializes the WrappedCreateLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
-            body["{log_delivery_configuration}"] = self.log_delivery_configuration.as_dict()
+            body["log_delivery_configuration"] = self.log_delivery_configuration.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1689,7 +1689,7 @@ class WrappedLogDeliveryConfiguration:
         """Serializes the WrappedLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
-            body["{log_delivery_configuration}"] = self.log_delivery_configuration.as_dict()
+            body["log_delivery_configuration"] = self.log_delivery_configuration.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1713,7 +1713,7 @@ class WrappedLogDeliveryConfigurations:
         """Serializes the WrappedLogDeliveryConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configurations:
-            body["{log_delivery_configurations}"] = [v.as_dict() for v in self.log_delivery_configurations]
+            body["log_delivery_configurations"] = [v.as_dict() for v in self.log_delivery_configurations]
         return body
 
     def as_shallow_dict(self) -> dict:
