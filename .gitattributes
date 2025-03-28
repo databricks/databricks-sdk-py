@@ -1,6 +1,6 @@
 databricks/sdk/__init__.py linguist-generated=true
-databricks/sdk/errors/overrides.py linguist-generated=true
-databricks/sdk/errors/platform.py linguist-generated=true
+databricks/sdk/databricks/errors/overrides.py linguist-generated=true
+databricks/sdk/databricks/errors/platform.py linguist-generated=true
 databricks/sdk/service/apps.py linguist-generated=true
 databricks/sdk/service/billing.py linguist-generated=true
 databricks/sdk/service/catalog.py linguist-generated=true

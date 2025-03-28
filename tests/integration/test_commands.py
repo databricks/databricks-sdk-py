@@ -1,6 +1,6 @@
 import pytest
 
-from databricks.sdk.core import DatabricksError
+from databricks.sdk.databricks.core import DatabricksError
 
 
 def test_error_unmarshall(w, random):

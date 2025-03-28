@@ -1,6 +1,6 @@
 import pytest
 
-from databricks.sdk.core import Config
+from databricks.sdk.databricks.core import Config
 
 from .conftest import set_az_path, set_home
 

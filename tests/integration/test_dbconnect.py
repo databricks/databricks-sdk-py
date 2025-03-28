@@ -59,15 +59,15 @@ def test_dbconnect_initialisation(w, setup_dbconnect_test):
 
 @pytest.mark.xdist_group(name="databricks-connect")
 def test_dbconnect_runtime_import(w, setup_dbconnect_test):
-    reload_modules("databricks.sdk.runtime")
-    from databricks.sdk.runtime import spark
+    reload_modules("databricks.sdk.databricks.runtime")
+    from databricks.sdk.databricks.runtime import spark
 
     assert spark.sql("SELECT 1").collect()[0][0] == 1
 
 
 @pytest.mark.xdist_group(name="databricks-connect")
 def test_dbconnect_runtime_import_no_error_if_doesnt_exist(w):
-    reload_modules("databricks.sdk.runtime")
-    from databricks.sdk.runtime import spark
+    reload_modules("databricks.sdk.databricks.runtime")
+    from databricks.sdk.databricks.runtime import spark
 
     assert spark is None
