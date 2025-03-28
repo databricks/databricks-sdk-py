@@ -1124,9 +1124,9 @@ class FilesAPI:
             "Accept": "application/octet-stream",
         }
         response_headers = [
-            "{content_length}",
-            "{content_type}",
-            "{last_modified}",
+            "content-length",
+            "content-type",
+            "last-modified",
         ]
         res = self._api.do(
             "GET",
@@ -1173,9 +1173,9 @@ class FilesAPI:
 
         headers = {}
         response_headers = [
-            "{content_length}",
-            "{content_type}",
-            "{last_modified}",
+            "content-length",
+            "content-type",
+            "last-modified",
         ]
         res = self._api.do(
             "HEAD",

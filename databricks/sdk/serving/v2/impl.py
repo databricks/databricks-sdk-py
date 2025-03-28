@@ -4662,7 +4662,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
         response_headers = [
-            "{served_model_name}",
+            "served-model-name",
         ]
         res = self._api.do(
             "POST",
@@ -4912,7 +4912,7 @@ class ServingEndpointsDataPlaneAPI:
             "Content-Type": "application/json",
         }
         response_headers = [
-            "{served_model_name}",
+            "served-model-name",
         ]
         res = self._api.do(
             "POST",
