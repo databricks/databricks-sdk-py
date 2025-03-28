@@ -2831,8 +2831,8 @@ class ProvidersAPI:
         if recipient_profile_str is not None:
             body["recipient_profile_str"] = recipient_profile_str
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body, headers=headers)
@@ -2867,7 +2867,7 @@ class ProvidersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
@@ -2911,7 +2911,7 @@ class ProvidersAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -2966,7 +2966,7 @@ class ProvidersAPI:
         if volume_max_results is not None:
             query["volume_max_results"] = volume_max_results
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3005,7 +3005,7 @@ class ProvidersAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -3058,8 +3058,8 @@ class ProvidersAPI:
         if recipient_profile_str is not None:
             body["recipient_profile_str"] = recipient_profile_str
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body, headers=headers)
@@ -3090,7 +3090,7 @@ class RecipientActivationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -3109,7 +3109,7 @@ class RecipientActivationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3200,8 +3200,8 @@ class RecipientsAPI:
         if sharing_code is not None:
             body["sharing_code"] = sharing_code
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body, headers=headers)
@@ -3236,7 +3236,7 @@ class RecipientsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
@@ -3281,7 +3281,7 @@ class RecipientsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -3314,8 +3314,8 @@ class RecipientsAPI:
         if existing_token_expire_in_seconds is not None:
             body["existing_token_expire_in_seconds"] = existing_token_expire_in_seconds
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body, headers=headers)
@@ -3351,7 +3351,7 @@ class RecipientsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3409,8 +3409,8 @@ class RecipientsAPI:
         if properties_kvpairs is not None:
             body["properties_kvpairs"] = properties_kvpairs.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body, headers=headers)
@@ -3449,8 +3449,8 @@ class SharesAPI:
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body, headers=headers)
@@ -3489,7 +3489,7 @@ class SharesAPI:
         if include_shared_data is not None:
             query["include_shared_data"] = include_shared_data
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
@@ -3521,7 +3521,7 @@ class SharesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -3565,7 +3565,7 @@ class SharesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
@@ -3626,8 +3626,8 @@ class SharesAPI:
         if updates is not None:
             body["updates"] = [v.as_dict() for v in updates]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body, headers=headers)
@@ -3655,8 +3655,8 @@ class SharesAPI:
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body, headers=headers)

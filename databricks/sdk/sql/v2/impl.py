@@ -7902,8 +7902,8 @@ class AlertsAPI:
         if alert is not None:
             body["alert"] = alert.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/alerts", body=body, headers=headers)
@@ -7922,7 +7922,7 @@ class AlertsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/alerts/{id}", headers=headers)
@@ -7938,7 +7938,7 @@ class AlertsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/alerts/{id}", headers=headers)
@@ -7964,7 +7964,7 @@ class AlertsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -8002,8 +8002,8 @@ class AlertsAPI:
         if update_mask is not None:
             body["update_mask"] = update_mask
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/alerts/{id}", body=body, headers=headers)
@@ -8069,8 +8069,8 @@ class AlertsLegacyAPI:
         if rearm is not None:
             body["rearm"] = rearm
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body, headers=headers)
@@ -8093,7 +8093,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
@@ -8114,7 +8114,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
@@ -8134,7 +8134,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
@@ -8173,8 +8173,8 @@ class AlertsLegacyAPI:
         if rearm is not None:
             body["rearm"] = rearm
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
@@ -8223,8 +8223,8 @@ class DashboardWidgetsAPI:
         if width is not None:
             body["width"] = width
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/widgets", body=body, headers=headers)
@@ -8240,7 +8240,7 @@ class DashboardWidgetsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/widgets/{id}", headers=headers)
@@ -8284,8 +8284,8 @@ class DashboardWidgetsAPI:
         if width is not None:
             body["width"] = width
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/widgets/{id}", body=body, headers=headers)
@@ -8343,8 +8343,8 @@ class DashboardsAPI:
         if tags is not None:
             body["tags"] = [v for v in tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body, headers=headers)
@@ -8362,7 +8362,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
@@ -8378,7 +8378,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
@@ -8421,7 +8421,7 @@ class DashboardsAPI:
         if q is not None:
             query["q"] = q
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -8451,7 +8451,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", headers=headers)
@@ -8489,8 +8489,8 @@ class DashboardsAPI:
         if tags is not None:
             body["tags"] = [v for v in tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body, headers=headers)
@@ -8529,7 +8529,7 @@ class DataSourcesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/sql/data_sources", headers=headers)
@@ -8575,7 +8575,7 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", headers=headers)
@@ -8610,8 +8610,8 @@ class DbsqlPermissionsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -8644,8 +8644,8 @@ class DbsqlPermissionsAPI:
         if new_owner is not None:
             body["new_owner"] = new_owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -8678,8 +8678,8 @@ class QueriesAPI:
         if query is not None:
             body["query"] = query.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/queries", body=body, headers=headers)
@@ -8698,7 +8698,7 @@ class QueriesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/queries/{id}", headers=headers)
@@ -8714,7 +8714,7 @@ class QueriesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/queries/{id}", headers=headers)
@@ -8740,7 +8740,7 @@ class QueriesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -8772,7 +8772,7 @@ class QueriesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -8810,8 +8810,8 @@ class QueriesAPI:
         if update_mask is not None:
             body["update_mask"] = update_mask
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/queries/{id}", body=body, headers=headers)
@@ -8901,8 +8901,8 @@ class QueriesLegacyAPI:
         if tags is not None:
             body["tags"] = [v for v in tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body, headers=headers)
@@ -8925,7 +8925,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
@@ -8947,7 +8947,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
@@ -9007,7 +9007,7 @@ class QueriesLegacyAPI:
         if q is not None:
             query["q"] = q
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -9043,7 +9043,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", headers=headers)
@@ -9110,8 +9110,8 @@ class QueriesLegacyAPI:
         if tags is not None:
             body["tags"] = [v for v in tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body, headers=headers)
@@ -9166,7 +9166,7 @@ class QueryHistoryAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/sql/history/queries", query=query, headers=headers)
@@ -9193,8 +9193,8 @@ class QueryVisualizationsAPI:
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/visualizations", body=body, headers=headers)
@@ -9211,7 +9211,7 @@ class QueryVisualizationsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
@@ -9244,8 +9244,8 @@ class QueryVisualizationsAPI:
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/visualizations/{id}", body=body, headers=headers)
@@ -9302,8 +9302,8 @@ class QueryVisualizationsLegacyAPI:
         if type is not None:
             body["type"] = type
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/visualizations", body=body, headers=headers)
@@ -9326,7 +9326,7 @@ class QueryVisualizationsLegacyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/visualizations/{id}", headers=headers)
@@ -9385,8 +9385,8 @@ class QueryVisualizationsLegacyAPI:
         if updated_at is not None:
             body["updated_at"] = updated_at
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/visualizations/{id}", body=body, headers=headers)
@@ -9406,7 +9406,7 @@ class RedashConfigAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/redash-v2/config", headers=headers)
@@ -9666,8 +9666,8 @@ class StatementExecutionAPI:
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/statements/", body=body, headers=headers)
@@ -9692,7 +9692,7 @@ class StatementExecutionAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/statements/{statement_id}", headers=headers)
@@ -9717,7 +9717,7 @@ class StatementExecutionAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -9842,8 +9842,8 @@ class WarehousesAPI:
         if warehouse_type is not None:
             body["warehouse_type"] = warehouse_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
@@ -9897,7 +9897,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", headers=headers)
@@ -10013,8 +10013,8 @@ class WarehousesAPI:
         if warehouse_type is not None:
             body["warehouse_type"] = warehouse_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
@@ -10068,7 +10068,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", headers=headers)
@@ -10086,7 +10086,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
@@ -10105,7 +10105,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
@@ -10120,7 +10120,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/sql/config/warehouses", headers=headers)
@@ -10142,7 +10142,7 @@ class WarehousesAPI:
         if run_as_user_id is not None:
             query["run_as_user_id"] = run_as_user_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
@@ -10167,8 +10167,8 @@ class WarehousesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
@@ -10236,8 +10236,8 @@ class WarehousesAPI:
         if sql_configuration_parameters is not None:
             body["sql_configuration_parameters"] = sql_configuration_parameters.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
@@ -10256,7 +10256,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
@@ -10279,7 +10279,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
@@ -10306,8 +10306,8 @@ class WarehousesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)

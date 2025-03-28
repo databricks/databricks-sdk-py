@@ -4333,8 +4333,8 @@ class PipelinesAPI:
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
@@ -4351,7 +4351,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
@@ -4365,7 +4365,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
@@ -4383,7 +4383,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
@@ -4401,7 +4401,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
@@ -4421,7 +4421,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", headers=headers)
@@ -4473,7 +4473,7 @@ class PipelinesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4529,7 +4529,7 @@ class PipelinesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4573,7 +4573,7 @@ class PipelinesAPI:
         if until_update_id is not None:
             query["until_update_id"] = until_update_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
@@ -4597,8 +4597,8 @@ class PipelinesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
@@ -4649,8 +4649,8 @@ class PipelinesAPI:
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
@@ -4670,7 +4670,7 @@ class PipelinesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
@@ -4842,8 +4842,8 @@ class PipelinesAPI:
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
@@ -4865,8 +4865,8 @@ class PipelinesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)

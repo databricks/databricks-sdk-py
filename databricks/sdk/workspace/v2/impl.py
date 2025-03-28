@@ -2403,8 +2403,8 @@ class GitCredentialsAPI:
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/git-credentials", body=body, headers=headers)
@@ -2422,7 +2422,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
@@ -2439,7 +2439,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
@@ -2454,7 +2454,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/git-credentials", headers=headers)
@@ -2501,8 +2501,8 @@ class GitCredentialsAPI:
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body, headers=headers)
@@ -2555,8 +2555,8 @@ class ReposAPI:
         if url is not None:
             body["url"] = url
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/repos", body=body, headers=headers)
@@ -2574,7 +2574,7 @@ class ReposAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", headers=headers)
@@ -2591,7 +2591,7 @@ class ReposAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/repos/{repo_id}", headers=headers)
@@ -2609,7 +2609,7 @@ class ReposAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
@@ -2627,7 +2627,7 @@ class ReposAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
@@ -2656,7 +2656,7 @@ class ReposAPI:
         if path_prefix is not None:
             query["path_prefix"] = path_prefix
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -2686,8 +2686,8 @@ class ReposAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
@@ -2728,8 +2728,8 @@ class ReposAPI:
         if tag is not None:
             body["tag"] = tag
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
@@ -2751,8 +2751,8 @@ class ReposAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
@@ -2807,8 +2807,8 @@ class SecretsAPI:
         if scope_backend_type is not None:
             body["scope_backend_type"] = scope_backend_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
@@ -2835,8 +2835,8 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body, headers=headers)
@@ -2858,8 +2858,8 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
@@ -2886,8 +2886,8 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
@@ -2915,7 +2915,7 @@ class SecretsAPI:
         if scope is not None:
             query["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, headers=headers)
@@ -2948,7 +2948,7 @@ class SecretsAPI:
         if scope is not None:
             query["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/secrets/get", query=query, headers=headers)
@@ -2972,7 +2972,7 @@ class SecretsAPI:
         if scope is not None:
             query["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, headers=headers)
@@ -2990,7 +2990,7 @@ class SecretsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/scopes/list", headers=headers)
@@ -3017,7 +3017,7 @@ class SecretsAPI:
         if scope is not None:
             query["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/list", query=query, headers=headers)
@@ -3069,8 +3069,8 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/acls/put", body=body, headers=headers)
@@ -3117,8 +3117,8 @@ class SecretsAPI:
         if string_value is not None:
             body["string_value"] = string_value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/put", body=body, headers=headers)
@@ -3158,8 +3158,8 @@ class WorkspaceAPI:
         if recursive is not None:
             body["recursive"] = recursive
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
@@ -3198,7 +3198,7 @@ class WorkspaceAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers)
@@ -3220,7 +3220,7 @@ class WorkspaceAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3245,7 +3245,7 @@ class WorkspaceAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3269,7 +3269,7 @@ class WorkspaceAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/workspace/get-status", query=query, headers=headers)
@@ -3331,8 +3331,8 @@ class WorkspaceAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/workspace/import", body=body, headers=headers)
@@ -3357,7 +3357,7 @@ class WorkspaceAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, headers=headers)
@@ -3384,8 +3384,8 @@ class WorkspaceAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body, headers=headers)
@@ -3415,8 +3415,8 @@ class WorkspaceAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3448,8 +3448,8 @@ class WorkspaceAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(

@@ -2087,7 +2087,7 @@ class AccessControlAPI:
         if resource_info is not None:
             query["resource_info"] = resource_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/access-control/check-policy-v2", query=query, headers=headers)
@@ -2118,7 +2118,7 @@ class AccountAccessControlAPI:
         if resource is not None:
             query["resource"] = resource
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2154,7 +2154,7 @@ class AccountAccessControlAPI:
         if name is not None:
             query["name"] = name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2183,8 +2183,8 @@ class AccountAccessControlAPI:
         if rule_set is not None:
             body["rule_set"] = rule_set.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2220,7 +2220,7 @@ class AccountAccessControlProxyAPI:
         if resource is not None:
             query["resource"] = resource
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2253,7 +2253,7 @@ class AccountAccessControlProxyAPI:
         if name is not None:
             query["name"] = name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/accounts/access-control/rule-sets", query=query, headers=headers)
@@ -2277,8 +2277,8 @@ class AccountAccessControlProxyAPI:
         if rule_set is not None:
             body["rule_set"] = rule_set.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", "/api/2.0/preview/accounts/access-control/rule-sets", body=body, headers=headers)
@@ -2354,8 +2354,8 @@ class AccountGroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2390,7 +2390,7 @@ class AccountGroupsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
@@ -2450,7 +2450,7 @@ class AccountGroupsAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -2492,7 +2492,7 @@ class AccountGroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -2555,7 +2555,7 @@ class AccountGroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -2630,8 +2630,8 @@ class AccountServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2668,7 +2668,7 @@ class AccountServicePrincipalsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2730,7 +2730,7 @@ class AccountServicePrincipalsAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -2775,7 +2775,7 @@ class AccountServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -2844,7 +2844,7 @@ class AccountServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -2942,8 +2942,8 @@ class AccountUsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3025,7 +3025,7 @@ class AccountUsersAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3088,7 +3088,7 @@ class AccountUsersAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -3130,7 +3130,7 @@ class AccountUsersAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -3207,7 +3207,7 @@ class AccountUsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
@@ -3228,7 +3228,7 @@ class CurrentUserAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", headers=headers)
@@ -3304,8 +3304,8 @@ class GroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
@@ -3338,7 +3338,7 @@ class GroupsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
@@ -3398,7 +3398,7 @@ class GroupsAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -3438,7 +3438,7 @@ class GroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -3499,7 +3499,7 @@ class GroupsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -3542,8 +3542,8 @@ class PermissionMigrationAPI:
         if workspace_id is not None:
             body["workspace_id"] = workspace_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/permissionmigration", body=body, headers=headers)
@@ -3621,7 +3621,7 @@ class PermissionsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", headers=headers)
@@ -3641,7 +3641,7 @@ class PermissionsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3676,8 +3676,8 @@ class PermissionsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3711,8 +3711,8 @@ class PermissionsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3790,8 +3790,8 @@ class ServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
@@ -3824,7 +3824,7 @@ class ServicePrincipalsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
@@ -3884,7 +3884,7 @@ class ServicePrincipalsAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -3924,7 +3924,7 @@ class ServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
@@ -3988,7 +3988,7 @@ class ServicePrincipalsAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
@@ -4081,8 +4081,8 @@ class UsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
@@ -4162,7 +4162,7 @@ class UsersAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
@@ -4177,7 +4177,7 @@ class UsersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
@@ -4192,7 +4192,7 @@ class UsersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
@@ -4253,7 +4253,7 @@ class UsersAPI:
         if start_index is not None:
             query["startIndex"] = start_index
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         # deduplicate items that may have been added during iteration
@@ -4293,7 +4293,7 @@ class UsersAPI:
         if schemas is not None:
             body["schemas"] = [v.value for v in schemas]
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
@@ -4314,8 +4314,8 @@ class UsersAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
@@ -4391,7 +4391,7 @@ class UsersAPI:
         if user_name is not None:
             body["userName"] = user_name
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
@@ -4411,8 +4411,8 @@ class UsersAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
@@ -4441,7 +4441,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -4462,7 +4462,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4484,7 +4484,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do(
@@ -4520,8 +4520,8 @@ class WorkspaceAssignmentAPI:
         if permissions is not None:
             body["permissions"] = [v.value for v in permissions]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(

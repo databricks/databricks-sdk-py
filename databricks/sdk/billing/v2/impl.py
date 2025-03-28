@@ -1765,7 +1765,7 @@ class BillableUsageAPI:
         if start_month is not None:
             query["start_month"] = start_month
         headers = {
-            "0": "{Accept text/plain}",
+            "Accept": "text/plain",
         }
 
         res = self._api.do(
@@ -1801,8 +1801,8 @@ class BudgetPolicyAPI:
         if request_id is not None:
             body["request_id"] = request_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1822,7 +1822,7 @@ class BudgetPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers)
@@ -1839,7 +1839,7 @@ class BudgetPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1886,7 +1886,7 @@ class BudgetPolicyAPI:
         if sort_spec is not None:
             query["sort_spec"] = sort_spec.as_dict()
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1921,8 +1921,8 @@ class BudgetPolicyAPI:
         if limit_config is not None:
             query["limit_config"] = limit_config.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1958,8 +1958,8 @@ class BudgetsAPI:
         if budget is not None:
             body["budget"] = budget.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.1/accounts/{self._api.account_id}/budgets", body=body, headers=headers)
@@ -1978,7 +1978,7 @@ class BudgetsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
@@ -1995,7 +1995,7 @@ class BudgetsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
@@ -2017,7 +2017,7 @@ class BudgetsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -2048,8 +2048,8 @@ class BudgetsAPI:
         if budget is not None:
             body["budget"] = budget.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2143,8 +2143,8 @@ class LogDeliveryAPI:
         if log_delivery_configuration is not None:
             body["log_delivery_configuration"] = log_delivery_configuration.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", body=body, headers=headers)
@@ -2162,7 +2162,7 @@ class LogDeliveryAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2201,7 +2201,7 @@ class LogDeliveryAPI:
         if storage_configuration_id is not None:
             query["storage_configuration_id"] = storage_configuration_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do(
@@ -2232,8 +2232,8 @@ class LogDeliveryAPI:
         if status is not None:
             body["status"] = status.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -2273,8 +2273,8 @@ class UsageDashboardsAPI:
         if workspace_id is not None:
             body["workspace_id"] = workspace_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/dashboard", body=body, headers=headers)
@@ -2302,7 +2302,7 @@ class UsageDashboardsAPI:
         if workspace_id is not None:
             query["workspace_id"] = workspace_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/dashboard", query=query, headers=headers)

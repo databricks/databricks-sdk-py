@@ -2556,8 +2556,8 @@ class GenieAPI:
         if content is not None:
             body["content"] = content
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do(
@@ -2602,7 +2602,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2630,7 +2630,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2665,7 +2665,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2708,7 +2708,7 @@ class GenieAPI:
         if transient_statement_id is not None:
             query["transient_statement_id"] = transient_statement_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2735,7 +2735,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2766,7 +2766,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2795,7 +2795,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2826,7 +2826,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2848,7 +2848,7 @@ class GenieAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
@@ -2872,8 +2872,8 @@ class GenieAPI:
         if content is not None:
             body["content"] = content
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do(
@@ -2909,8 +2909,8 @@ class LakeviewAPI:
         """
         body = dashboard.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/lakeview/dashboards", body=body, headers=headers)
@@ -2927,8 +2927,8 @@ class LakeviewAPI:
         """
         body = schedule.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", body=body, headers=headers)
@@ -2949,8 +2949,8 @@ class LakeviewAPI:
         """
         body = subscription.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2979,7 +2979,7 @@ class LakeviewAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -3011,7 +3011,7 @@ class LakeviewAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -3033,7 +3033,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
@@ -3051,7 +3051,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
@@ -3069,7 +3069,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3091,7 +3091,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3135,7 +3135,7 @@ class LakeviewAPI:
         if view is not None:
             query["view"] = view.value
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3169,7 +3169,7 @@ class LakeviewAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3207,7 +3207,7 @@ class LakeviewAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3258,8 +3258,8 @@ class LakeviewAPI:
         if update_parameter_syntax is not None:
             body["update_parameter_syntax"] = update_parameter_syntax
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/lakeview/dashboards/migrate", body=body, headers=headers)
@@ -3288,8 +3288,8 @@ class LakeviewAPI:
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", body=body, headers=headers)
@@ -3307,7 +3307,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
@@ -3324,7 +3324,7 @@ class LakeviewAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
@@ -3342,8 +3342,8 @@ class LakeviewAPI:
         """
         body = dashboard.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", body=body, headers=headers)
@@ -3362,8 +3362,8 @@ class LakeviewAPI:
         """
         body = schedule.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3390,7 +3390,7 @@ class LakeviewEmbeddedAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
@@ -3423,7 +3423,7 @@ class QueryExecutionAPI:
         if tokens is not None:
             query["tokens"] = [v for v in tokens]
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("DELETE", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)
@@ -3452,8 +3452,8 @@ class QueryExecutionAPI:
         if override_warehouse_id is not None:
             body["override_warehouse_id"] = override_warehouse_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/lakeview-query/query/published", body=body, headers=headers)
@@ -3479,7 +3479,7 @@ class QueryExecutionAPI:
         if tokens is not None:
             query["tokens"] = [v for v in tokens]
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)

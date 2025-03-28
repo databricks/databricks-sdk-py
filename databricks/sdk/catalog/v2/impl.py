@@ -10024,8 +10024,8 @@ class AccountMetastoreAssignmentsAPI:
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -10049,7 +10049,7 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -10072,7 +10072,7 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -10092,7 +10092,7 @@ class AccountMetastoreAssignmentsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do(
@@ -10121,8 +10121,8 @@ class AccountMetastoreAssignmentsAPI:
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -10153,8 +10153,8 @@ class AccountMetastoresAPI:
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
@@ -10177,7 +10177,7 @@ class AccountMetastoresAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -10199,7 +10199,7 @@ class AccountMetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -10216,7 +10216,7 @@ class AccountMetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
@@ -10238,8 +10238,8 @@ class AccountMetastoresAPI:
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -10277,8 +10277,8 @@ class AccountStorageCredentialsAPI:
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -10309,7 +10309,7 @@ class AccountStorageCredentialsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -10334,7 +10334,7 @@ class AccountStorageCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -10356,7 +10356,7 @@ class AccountStorageCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do(
@@ -10391,8 +10391,8 @@ class AccountStorageCredentialsAPI:
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -10424,7 +10424,7 @@ class ArtifactAllowlistsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", headers=headers)
@@ -10448,8 +10448,8 @@ class ArtifactAllowlistsAPI:
         if artifact_matchers is not None:
             body["artifact_matchers"] = [v.as_dict() for v in artifact_matchers]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -10525,8 +10525,8 @@ class CatalogsAPI:
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/catalogs", body=body, headers=headers)
@@ -10550,7 +10550,7 @@ class CatalogsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
@@ -10574,7 +10574,7 @@ class CatalogsAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
@@ -10619,7 +10619,7 @@ class CatalogsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -10685,8 +10685,8 @@ class CatalogsAPI:
         if properties is not None:
             body["properties"] = properties
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body, headers=headers)
@@ -10752,8 +10752,8 @@ class ConnectionsAPI:
         if read_only is not None:
             body["read_only"] = read_only
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/connections", body=body, headers=headers)
@@ -10771,7 +10771,7 @@ class ConnectionsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
@@ -10788,7 +10788,7 @@ class ConnectionsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
@@ -10816,7 +10816,7 @@ class ConnectionsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -10856,8 +10856,8 @@ class ConnectionsAPI:
         if owner is not None:
             body["owner"] = owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/connections/{name}", body=body, headers=headers)
@@ -10940,8 +10940,8 @@ class CredentialsAPI:
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/credentials", body=body, headers=headers)
@@ -10966,7 +10966,7 @@ class CredentialsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/credentials/{name_arg}", query=query, headers=headers)
@@ -11000,8 +11000,8 @@ class CredentialsAPI:
         if gcp_options is not None:
             body["gcp_options"] = gcp_options.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/temporary-service-credentials", body=body, headers=headers)
@@ -11020,7 +11020,7 @@ class CredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/credentials/{name_arg}", headers=headers)
@@ -11062,7 +11062,7 @@ class CredentialsAPI:
         if purpose is not None:
             query["purpose"] = purpose.value
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -11150,8 +11150,8 @@ class CredentialsAPI:
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/credentials/{name_arg}", body=body, headers=headers)
@@ -11224,8 +11224,8 @@ class CredentialsAPI:
         if url is not None:
             body["url"] = url
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
@@ -11309,8 +11309,8 @@ class ExternalLocationsAPI:
         if url is not None:
             body["url"] = url
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/external-locations", body=body, headers=headers)
@@ -11334,7 +11334,7 @@ class ExternalLocationsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
@@ -11358,7 +11358,7 @@ class ExternalLocationsAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
@@ -11399,7 +11399,7 @@ class ExternalLocationsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -11492,8 +11492,8 @@ class ExternalLocationsAPI:
         if url is not None:
             body["url"] = url
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body, headers=headers)
@@ -11530,8 +11530,8 @@ class FunctionsAPI:
         if function_info is not None:
             body["function_info"] = function_info.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/functions", body=body, headers=headers)
@@ -11559,7 +11559,7 @@ class FunctionsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
@@ -11588,7 +11588,7 @@ class FunctionsAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
@@ -11641,7 +11641,7 @@ class FunctionsAPI:
         if schema_name is not None:
             query["schema_name"] = schema_name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -11675,8 +11675,8 @@ class FunctionsAPI:
         if owner is not None:
             body["owner"] = owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/functions/{name}", body=body, headers=headers)
@@ -11716,7 +11716,7 @@ class GrantsAPI:
         if principal is not None:
             query["principal"] = principal
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -11749,7 +11749,7 @@ class GrantsAPI:
         if principal is not None:
             query["principal"] = principal
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -11780,8 +11780,8 @@ class GrantsAPI:
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -11832,8 +11832,8 @@ class MetastoresAPI:
         if metastore_id is not None:
             body["metastore_id"] = metastore_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
@@ -11865,8 +11865,8 @@ class MetastoresAPI:
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/metastores", body=body, headers=headers)
@@ -11881,7 +11881,7 @@ class MetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/unity-catalog/current-metastore-assignment", headers=headers)
@@ -11904,7 +11904,7 @@ class MetastoresAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, headers=headers)
@@ -11922,7 +11922,7 @@ class MetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", headers=headers)
@@ -11938,7 +11938,7 @@ class MetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.1/unity-catalog/metastores", headers=headers)
@@ -11955,7 +11955,7 @@ class MetastoresAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/unity-catalog/metastore_summary", headers=headers)
@@ -11978,7 +11978,7 @@ class MetastoresAPI:
         if metastore_id is not None:
             query["metastore_id"] = metastore_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -12040,8 +12040,8 @@ class MetastoresAPI:
         if storage_root_credential_id is not None:
             body["storage_root_credential_id"] = storage_root_credential_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body, headers=headers)
@@ -12073,8 +12073,8 @@ class MetastoresAPI:
         if metastore_id is not None:
             body["metastore_id"] = metastore_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
@@ -12148,7 +12148,7 @@ class ModelVersionsAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -12179,7 +12179,7 @@ class ModelVersionsAPI:
         if include_aliases is not None:
             query["include_aliases"] = include_aliases
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -12234,7 +12234,7 @@ class ModelVersionsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -12272,8 +12272,8 @@ class ModelVersionsAPI:
         if comment is not None:
             body["comment"] = comment
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -12302,8 +12302,8 @@ class OnlineTablesAPI:
         """
         body = table.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
@@ -12328,7 +12328,7 @@ class OnlineTablesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/online-tables/{name}", headers=headers)
@@ -12345,7 +12345,7 @@ class OnlineTablesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/online-tables/{name}", headers=headers)
@@ -12483,8 +12483,8 @@ class QualityMonitorsAPI:
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
@@ -12536,7 +12536,7 @@ class QualityMonitorsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
@@ -12563,7 +12563,7 @@ class QualityMonitorsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -12590,7 +12590,7 @@ class QualityMonitorsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
@@ -12623,8 +12623,8 @@ class QualityMonitorsAPI:
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -12652,7 +12652,7 @@ class QualityMonitorsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
@@ -12744,8 +12744,8 @@ class QualityMonitorsAPI:
         if time_series is not None:
             body["time_series"] = time_series.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
@@ -12827,8 +12827,8 @@ class RegisteredModelsAPI:
         if storage_location is not None:
             body["storage_location"] = storage_location
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/models", body=body, headers=headers)
@@ -12902,7 +12902,7 @@ class RegisteredModelsAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{full_name}", query=query, headers=headers)
@@ -12971,7 +12971,7 @@ class RegisteredModelsAPI:
         if schema_name is not None:
             query["schema_name"] = schema_name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -13005,8 +13005,8 @@ class RegisteredModelsAPI:
         if version_num is not None:
             body["version_num"] = version_num
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -13051,8 +13051,8 @@ class RegisteredModelsAPI:
         if owner is not None:
             body["owner"] = owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{full_name}", body=body, headers=headers)
@@ -13089,7 +13089,7 @@ class ResourceQuotasAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -13121,7 +13121,7 @@ class ResourceQuotasAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -13184,8 +13184,8 @@ class SchemasAPI:
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/schemas", body=body, headers=headers)
@@ -13209,7 +13209,7 @@ class SchemasAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
@@ -13233,7 +13233,7 @@ class SchemasAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
@@ -13280,7 +13280,7 @@ class SchemasAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -13338,8 +13338,8 @@ class SchemasAPI:
         if properties is not None:
             body["properties"] = properties
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body, headers=headers)
@@ -13419,8 +13419,8 @@ class StorageCredentialsAPI:
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/storage-credentials", body=body, headers=headers)
@@ -13444,7 +13444,7 @@ class StorageCredentialsAPI:
         if force is not None:
             query["force"] = force
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/storage-credentials/{name}", query=query, headers=headers)
@@ -13462,7 +13462,7 @@ class StorageCredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", headers=headers)
@@ -13496,7 +13496,7 @@ class StorageCredentialsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -13585,8 +13585,8 @@ class StorageCredentialsAPI:
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body, headers=headers)
@@ -13658,8 +13658,8 @@ class StorageCredentialsAPI:
         if url is not None:
             body["url"] = url
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-storage-credentials", body=body, headers=headers)
@@ -13688,7 +13688,7 @@ class SystemSchemasAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -13710,7 +13710,7 @@ class SystemSchemasAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -13744,7 +13744,7 @@ class SystemSchemasAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -13802,8 +13802,8 @@ class TableConstraintsAPI:
         if full_name_arg is not None:
             body["full_name_arg"] = full_name_arg
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/constraints", body=body, headers=headers)
@@ -13838,7 +13838,7 @@ class TableConstraintsAPI:
         if constraint_name is not None:
             query["constraint_name"] = constraint_name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{full_name}", query=query, headers=headers)
@@ -13872,7 +13872,7 @@ class TablesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
@@ -13894,7 +13894,7 @@ class TablesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
@@ -13937,7 +13937,7 @@ class TablesAPI:
         if include_manifest_capabilities is not None:
             query["include_manifest_capabilities"] = include_manifest_capabilities
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
@@ -14016,7 +14016,7 @@ class TablesAPI:
         if schema_name is not None:
             query["schema_name"] = schema_name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -14087,7 +14087,7 @@ class TablesAPI:
         if table_name_pattern is not None:
             query["table_name_pattern"] = table_name_pattern
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         if "max_results" not in query:
@@ -14119,8 +14119,8 @@ class TablesAPI:
         if owner is not None:
             body["owner"] = owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
@@ -14167,8 +14167,8 @@ class TemporaryTableCredentialsAPI:
         if table_id is not None:
             body["table_id"] = table_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-table-credentials", body=body, headers=headers)
@@ -14247,8 +14247,8 @@ class VolumesAPI:
         if volume_type is not None:
             body["volume_type"] = volume_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/volumes", body=body, headers=headers)
@@ -14332,7 +14332,7 @@ class VolumesAPI:
         if schema_name is not None:
             query["schema_name"] = schema_name
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -14366,7 +14366,7 @@ class VolumesAPI:
         if include_browse is not None:
             query["include_browse"] = include_browse
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/volumes/{name}", query=query, headers=headers)
@@ -14404,8 +14404,8 @@ class VolumesAPI:
         if owner is not None:
             body["owner"] = owner
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/volumes/{name}", body=body, headers=headers)
@@ -14444,7 +14444,7 @@ class WorkspaceBindingsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", headers=headers)
@@ -14484,7 +14484,7 @@ class WorkspaceBindingsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -14528,8 +14528,8 @@ class WorkspaceBindingsAPI:
         if unassign_workspaces is not None:
             body["unassign_workspaces"] = [v for v in unassign_workspaces]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -14567,8 +14567,8 @@ class WorkspaceBindingsAPI:
         if remove is not None:
             body["remove"] = [v.as_dict() for v in remove]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(

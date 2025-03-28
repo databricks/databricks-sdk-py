@@ -1643,8 +1643,8 @@ class VectorSearchEndpointsAPI:
         if name is not None:
             body["name"] = name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
@@ -1682,7 +1682,7 @@ class VectorSearchEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
@@ -1701,7 +1701,7 @@ class VectorSearchEndpointsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1774,8 +1774,8 @@ class VectorSearchIndexesAPI:
         if primary_key is not None:
             body["primary_key"] = primary_key
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/vector-search/indexes", body=body, headers=headers)
@@ -1797,8 +1797,8 @@ class VectorSearchIndexesAPI:
         if primary_keys is not None:
             body["primary_keys"] = [v for v in primary_keys]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1833,7 +1833,7 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
@@ -1858,7 +1858,7 @@ class VectorSearchIndexesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1931,8 +1931,8 @@ class VectorSearchIndexesAPI:
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/query", body=body, headers=headers)
@@ -1961,8 +1961,8 @@ class VectorSearchIndexesAPI:
         if page_token is not None:
             body["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1993,8 +1993,8 @@ class VectorSearchIndexesAPI:
         if num_results is not None:
             body["num_results"] = num_results
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/scan", body=body, headers=headers)
@@ -2031,8 +2031,8 @@ class VectorSearchIndexesAPI:
         if inputs_json is not None:
             body["inputs_json"] = inputs_json
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(

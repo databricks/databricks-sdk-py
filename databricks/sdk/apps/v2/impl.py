@@ -1087,8 +1087,8 @@ class AppsAPI:
         if no_compute is not None:
             query["no_compute"] = no_compute
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
@@ -1111,7 +1111,7 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
@@ -1132,8 +1132,8 @@ class AppsAPI:
         """
         body = app_deployment.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
@@ -1161,7 +1161,7 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/apps/{name}", headers=headers)
@@ -1181,7 +1181,7 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments/{deployment_id}", headers=headers)
@@ -1199,7 +1199,7 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}/permissionLevels", headers=headers)
@@ -1217,7 +1217,7 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
@@ -1242,7 +1242,7 @@ class AppsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1277,7 +1277,7 @@ class AppsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1307,8 +1307,8 @@ class AppsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
@@ -1328,8 +1328,8 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
@@ -1352,8 +1352,8 @@ class AppsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
@@ -1376,8 +1376,8 @@ class AppsAPI:
         """
         body = app.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}", body=body, headers=headers)
@@ -1400,8 +1400,8 @@ class AppsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)

@@ -9717,8 +9717,8 @@ class ClusterPoliciesAPI:
         if policy_family_id is not None:
             body["policy_family_id"] = policy_family_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/policies/clusters/create", body=body, headers=headers)
@@ -9738,8 +9738,8 @@ class ClusterPoliciesAPI:
         if policy_id is not None:
             body["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/policies/clusters/delete", body=body, headers=headers)
@@ -9813,8 +9813,8 @@ class ClusterPoliciesAPI:
         if policy_id is not None:
             body["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
@@ -9834,7 +9834,7 @@ class ClusterPoliciesAPI:
         if policy_id is not None:
             query["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get", query=query, headers=headers)
@@ -9852,7 +9852,7 @@ class ClusterPoliciesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -9873,7 +9873,7 @@ class ClusterPoliciesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/cluster-policies/{cluster_policy_id}", headers=headers)
@@ -9902,7 +9902,7 @@ class ClusterPoliciesAPI:
         if sort_order is not None:
             query["sort_order"] = sort_order.value
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/policies/clusters/list", query=query, headers=headers)
@@ -9927,8 +9927,8 @@ class ClusterPoliciesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -9954,8 +9954,8 @@ class ClusterPoliciesAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -10008,8 +10008,8 @@ class ClustersAPI:
         if owner_username is not None:
             body["owner_username"] = owner_username
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.1/clusters/change-owner", body=body, headers=headers)
@@ -10296,8 +10296,8 @@ class ClustersAPI:
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
@@ -10395,8 +10395,8 @@ class ClustersAPI:
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
@@ -10686,8 +10686,8 @@ class ClustersAPI:
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
@@ -10816,8 +10816,8 @@ class ClustersAPI:
         if start_time is not None:
             body["start_time"] = start_time
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         while True:
@@ -10845,7 +10845,7 @@ class ClustersAPI:
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/clusters/get", query=query, headers=headers)
@@ -10863,7 +10863,7 @@ class ClustersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}/permissionLevels", headers=headers)
@@ -10881,7 +10881,7 @@ class ClustersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/clusters/{cluster_id}", headers=headers)
@@ -10924,7 +10924,7 @@ class ClustersAPI:
         if sort_by is not None:
             query["sort_by"] = sort_by.as_dict()
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -10945,7 +10945,7 @@ class ClustersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/clusters/list-node-types", headers=headers)
@@ -10961,7 +10961,7 @@ class ClustersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/clusters/list-zones", headers=headers)
@@ -10985,8 +10985,8 @@ class ClustersAPI:
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.1/clusters/permanent-delete", body=body, headers=headers)
@@ -11005,8 +11005,8 @@ class ClustersAPI:
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
@@ -11046,8 +11046,8 @@ class ClustersAPI:
         if num_workers is not None:
             body["num_workers"] = num_workers
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
@@ -11085,8 +11085,8 @@ class ClustersAPI:
         if restart_user is not None:
             body["restart_user"] = restart_user
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
@@ -11117,8 +11117,8 @@ class ClustersAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
@@ -11133,7 +11133,7 @@ class ClustersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/clusters/spark-versions", headers=headers)
@@ -11159,8 +11159,8 @@ class ClustersAPI:
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
@@ -11186,8 +11186,8 @@ class ClustersAPI:
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
@@ -11236,8 +11236,8 @@ class ClustersAPI:
         if update_mask is not None:
             body["update_mask"] = update_mask
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
@@ -11272,8 +11272,8 @@ class ClustersAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/clusters/{cluster_id}", body=body, headers=headers)
@@ -11312,8 +11312,8 @@ class CommandExecutionAPI:
         if context_id is not None:
             body["contextId"] = context_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
@@ -11357,7 +11357,7 @@ class CommandExecutionAPI:
         if context_id is not None:
             query["contextId"] = context_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/1.2/commands/status", query=query, headers=headers)
@@ -11380,7 +11380,7 @@ class CommandExecutionAPI:
         if context_id is not None:
             query["contextId"] = context_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/1.2/contexts/status", query=query, headers=headers)
@@ -11409,8 +11409,8 @@ class CommandExecutionAPI:
         if language is not None:
             body["language"] = language.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
@@ -11442,8 +11442,8 @@ class CommandExecutionAPI:
         if context_id is not None:
             body["contextId"] = context_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/1.2/contexts/destroy", body=body, headers=headers)
@@ -11484,8 +11484,8 @@ class CommandExecutionAPI:
         if language is not None:
             body["language"] = language.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
@@ -11559,8 +11559,8 @@ class GlobalInitScriptsAPI:
         if script is not None:
             body["script"] = script
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/global-init-scripts", body=body, headers=headers)
@@ -11578,7 +11578,7 @@ class GlobalInitScriptsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
@@ -11595,7 +11595,7 @@ class GlobalInitScriptsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
@@ -11612,7 +11612,7 @@ class GlobalInitScriptsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/global-init-scripts", headers=headers)
@@ -11658,8 +11658,8 @@ class GlobalInitScriptsAPI:
         if script is not None:
             body["script"] = script
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/global-init-scripts/{script_id}", body=body, headers=headers)
@@ -11782,8 +11782,8 @@ class InstancePoolsAPI:
         if preloaded_spark_versions is not None:
             body["preloaded_spark_versions"] = [v for v in preloaded_spark_versions]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/instance-pools/create", body=body, headers=headers)
@@ -11803,8 +11803,8 @@ class InstancePoolsAPI:
         if instance_pool_id is not None:
             body["instance_pool_id"] = instance_pool_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/instance-pools/delete", body=body, headers=headers)
@@ -11870,8 +11870,8 @@ class InstancePoolsAPI:
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/instance-pools/edit", body=body, headers=headers)
@@ -11891,7 +11891,7 @@ class InstancePoolsAPI:
         if instance_pool_id is not None:
             query["instance_pool_id"] = instance_pool_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/instance-pools/get", query=query, headers=headers)
@@ -11909,7 +11909,7 @@ class InstancePoolsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -11930,7 +11930,7 @@ class InstancePoolsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", headers=headers)
@@ -11945,7 +11945,7 @@ class InstancePoolsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/instance-pools/list", headers=headers)
@@ -11970,8 +11970,8 @@ class InstancePoolsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/instance-pools/{instance_pool_id}", body=body, headers=headers)
@@ -11995,8 +11995,8 @@ class InstancePoolsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -12063,8 +12063,8 @@ class InstanceProfilesAPI:
         if skip_validation is not None:
             body["skip_validation"] = skip_validation
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/instance-profiles/add", body=body, headers=headers)
@@ -12117,8 +12117,8 @@ class InstanceProfilesAPI:
         if is_meta_instance_profile is not None:
             body["is_meta_instance_profile"] = is_meta_instance_profile
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body, headers=headers)
@@ -12134,7 +12134,7 @@ class InstanceProfilesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/instance-profiles/list", headers=headers)
@@ -12158,8 +12158,8 @@ class InstanceProfilesAPI:
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/instance-profiles/remove", body=body, headers=headers)
@@ -12193,7 +12193,7 @@ class LibrariesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/libraries/all-cluster-statuses", headers=headers)
@@ -12219,7 +12219,7 @@ class LibrariesAPI:
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/libraries/cluster-status", query=query, headers=headers)
@@ -12245,8 +12245,8 @@ class LibrariesAPI:
         if libraries is not None:
             body["libraries"] = [v.as_dict() for v in libraries]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
@@ -12270,8 +12270,8 @@ class LibrariesAPI:
         if libraries is not None:
             body["libraries"] = [v.as_dict() for v in libraries]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
@@ -12321,8 +12321,8 @@ class PolicyComplianceForClustersAPI:
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/policies/clusters/enforce-compliance", body=body, headers=headers)
@@ -12344,7 +12344,7 @@ class PolicyComplianceForClustersAPI:
         if cluster_id is not None:
             query["cluster_id"] = cluster_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/policies/clusters/get-compliance", query=query, headers=headers)
@@ -12378,7 +12378,7 @@ class PolicyComplianceForClustersAPI:
         if policy_id is not None:
             query["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -12422,7 +12422,7 @@ class PolicyFamiliesAPI:
         if version is not None:
             query["version"] = version
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/policy-families/{policy_family_id}", query=query, headers=headers)
@@ -12448,7 +12448,7 @@ class PolicyFamiliesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:

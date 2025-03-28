@@ -1758,8 +1758,8 @@ class CleanRoomAssetsAPI:
         """
         body = asset.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
@@ -1781,7 +1781,7 @@ class CleanRoomAssetsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -1806,7 +1806,7 @@ class CleanRoomAssetsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1831,7 +1831,7 @@ class CleanRoomAssetsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1875,8 +1875,8 @@ class CleanRoomAssetsAPI:
         """
         body = asset.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1926,7 +1926,7 @@ class CleanRoomTaskRunsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1964,8 +1964,8 @@ class CleanRoomsAPI:
         """
         body = clean_room.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
@@ -1986,8 +1986,8 @@ class CleanRoomsAPI:
         """
         body = output_catalog.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2009,7 +2009,7 @@ class CleanRoomsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
@@ -2025,7 +2025,7 @@ class CleanRoomsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/clean-rooms/{name}", headers=headers)
@@ -2051,7 +2051,7 @@ class CleanRoomsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -2081,8 +2081,8 @@ class CleanRoomsAPI:
         if clean_room is not None:
             body["clean_room"] = clean_room.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/clean-rooms/{name}", body=body, headers=headers)

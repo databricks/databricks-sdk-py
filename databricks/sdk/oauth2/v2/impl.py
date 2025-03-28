@@ -1205,8 +1205,8 @@ class AccountFederationPolicyAPI:
         if policy_id is not None:
             query["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1228,7 +1228,7 @@ class AccountFederationPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -1245,7 +1245,7 @@ class AccountFederationPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1268,7 +1268,7 @@ class AccountFederationPolicyAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1304,8 +1304,8 @@ class AccountFederationPolicyAPI:
         if update_mask is not None:
             query["update_mask"] = update_mask
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1372,8 +1372,8 @@ class CustomAppIntegrationAPI:
         if user_authorized_scopes is not None:
             body["user_authorized_scopes"] = [v for v in user_authorized_scopes]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1396,7 +1396,7 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -1417,7 +1417,7 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1453,7 +1453,7 @@ class CustomAppIntegrationAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1508,8 +1508,8 @@ class CustomAppIntegrationAPI:
         if user_authorized_scopes is not None:
             body["user_authorized_scopes"] = [v for v in user_authorized_scopes]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -1549,7 +1549,7 @@ class OAuthPublishedAppsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1593,8 +1593,8 @@ class PublishedAppIntegrationAPI:
         if token_access_policy is not None:
             body["token_access_policy"] = token_access_policy.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1617,7 +1617,7 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -1637,7 +1637,7 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1666,7 +1666,7 @@ class PublishedAppIntegrationAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1699,8 +1699,8 @@ class PublishedAppIntegrationAPI:
         if token_access_policy is not None:
             body["token_access_policy"] = token_access_policy.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -1775,8 +1775,8 @@ class ServicePrincipalFederationPolicyAPI:
         if policy_id is not None:
             query["policy_id"] = policy_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1800,7 +1800,7 @@ class ServicePrincipalFederationPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -1821,7 +1821,7 @@ class ServicePrincipalFederationPolicyAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -1850,7 +1850,7 @@ class ServicePrincipalFederationPolicyAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1896,8 +1896,8 @@ class ServicePrincipalFederationPolicyAPI:
         if update_mask is not None:
             query["update_mask"] = update_mask
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -1946,8 +1946,8 @@ class ServicePrincipalSecretsAPI:
         if lifetime is not None:
             body["lifetime"] = lifetime
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2002,7 +2002,7 @@ class ServicePrincipalSecretsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:

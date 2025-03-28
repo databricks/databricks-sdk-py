@@ -2353,8 +2353,8 @@ class CredentialsAPI:
         if credentials_name is not None:
             body["credentials_name"] = credentials_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/credentials", body=body, headers=headers)
@@ -2373,7 +2373,7 @@ class CredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -2392,7 +2392,7 @@ class CredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2409,7 +2409,7 @@ class CredentialsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/credentials", headers=headers)
@@ -2472,8 +2472,8 @@ class EncryptionKeysAPI:
         if use_cases is not None:
             body["use_cases"] = [v.value for v in use_cases]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2494,7 +2494,7 @@ class EncryptionKeysAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -2526,7 +2526,7 @@ class EncryptionKeysAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2554,7 +2554,7 @@ class EncryptionKeysAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/customer-managed-keys", headers=headers)
@@ -2619,8 +2619,8 @@ class NetworksAPI:
         if vpc_id is not None:
             body["vpc_id"] = vpc_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/networks", body=body, headers=headers)
@@ -2641,7 +2641,7 @@ class NetworksAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}", headers=headers)
@@ -2658,7 +2658,7 @@ class NetworksAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}", headers=headers)
@@ -2675,7 +2675,7 @@ class NetworksAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/networks", headers=headers)
@@ -2754,8 +2754,8 @@ class PrivateAccessAPI:
         if region is not None:
             body["region"] = region
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2781,7 +2781,7 @@ class PrivateAccessAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -2808,7 +2808,7 @@ class PrivateAccessAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -2827,7 +2827,7 @@ class PrivateAccessAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/private-access-settings", headers=headers)
@@ -2907,8 +2907,8 @@ class PrivateAccessAPI:
         if region is not None:
             body["region"] = region
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -2954,8 +2954,8 @@ class StorageAPI:
         if storage_configuration_name is not None:
             body["storage_configuration_name"] = storage_configuration_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -2976,7 +2976,7 @@ class StorageAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -2997,7 +2997,7 @@ class StorageAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3016,7 +3016,7 @@ class StorageAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/storage-configurations", headers=headers)
@@ -3073,8 +3073,8 @@ class VpcEndpointsAPI:
         if vpc_endpoint_name is not None:
             body["vpc_endpoint_name"] = vpc_endpoint_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3101,7 +3101,7 @@ class VpcEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -3124,7 +3124,7 @@ class VpcEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3145,7 +3145,7 @@ class VpcEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/vpc-endpoints", headers=headers)
@@ -3324,8 +3324,8 @@ class WorkspacesAPI:
         if workspace_name is not None:
             body["workspace_name"] = workspace_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do(
@@ -3396,7 +3396,7 @@ class WorkspacesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", headers=headers)
@@ -3424,7 +3424,7 @@ class WorkspacesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -3444,7 +3444,7 @@ class WorkspacesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces", headers=headers)
@@ -3614,8 +3614,8 @@ class WorkspacesAPI:
         if storage_customer_managed_key_id is not None:
             body["storage_customer_managed_key_id"] = storage_customer_managed_key_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do(
