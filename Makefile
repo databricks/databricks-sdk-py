@@ -6,7 +6,7 @@ else
 	. .venv/bin/activate
 endif
 	pip install '.[dev]'
-
+	
 install:
 	pip install .
 

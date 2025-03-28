@@ -1,7 +1,7 @@
 import pytest
 
-from databricks.sdk import errors
-from databricks.sdk.core import DatabricksError
+from databricks.sdk.databricks import errors
+from databricks.sdk.databricks.core import DatabricksError
 
 
 def test_filtering_groups(w, random):

@@ -280,10 +280,11 @@
         API](/api/workspace/files/listdirectorycontents).
 
         :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
-          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
+          The token indicating the page of artifact results to fetch. `page_token` is not supported when
+          listing artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
+          Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which
+          supports pagination. See [List directory contents | Files
+          API](/api/workspace/files/listdirectorycontents).
         :param path: str (optional)
           Filter artifacts matching this path (a relative path from the root artifact directory).
         :param run_id: str (optional)
@@ -385,7 +386,7 @@
 
         
 
-    .. py:method:: log_inputs(run_id: str [, datasets: Optional[List[DatasetInput]]])
+    .. py:method:: log_inputs(run_id: str [, datasets: Optional[List[DatasetInput]], models: Optional[List[ModelInput]]])
 
         Log inputs to a run.
 
@@ -397,11 +398,13 @@
           ID of the run to log under
         :param datasets: List[:class:`DatasetInput`] (optional)
           Dataset inputs
+        :param models: List[:class:`ModelInput`] (optional)
+          Model inputs
 
 
         
 
-    .. py:method:: log_metric(key: str, value: float, timestamp: int [, run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
+    .. py:method:: log_metric(key: str, value: float, timestamp: int [, dataset_digest: Optional[str], dataset_name: Optional[str], model_id: Optional[str], run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
 
         Log a metric for a run.
 
@@ -415,6 +418,14 @@
           Double value of the metric being logged.
         :param timestamp: int
           Unix timestamp in milliseconds at the time metric was logged.
+        :param dataset_digest: str (optional)
+          Dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that
+          uniquely identifies it within datasets of the same name.
+        :param dataset_name: str (optional)
+          The name of the dataset associated with the metric. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
+          “fantastic-elk-3”
+        :param model_id: str (optional)
+          ID of the logged model associated with the metric, if applicable
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
