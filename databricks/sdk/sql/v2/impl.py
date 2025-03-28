@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -9748,7 +9748,7 @@ class WarehousesAPI:
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
-    ) -> Wait[GetWarehouseResponse]:
+    ) -> CreateWarehouseResponse:
         """Create a warehouse.
 
         Creates a new SQL warehouse.
@@ -9845,10 +9845,8 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
-        return Wait(
-            self.WaitGetWarehouseRunning, response=CreateWarehouseResponse.from_dict(op_response), id=op_response["id"]
-        )
+        res = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
+        return CreateWarehouseResponse.from_dict(res)
 
     def delete(self, id: str):
         """Delete a warehouse.
@@ -9884,7 +9882,7 @@ class WarehousesAPI:
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
-    ) -> Wait[GetWarehouseResponse]:
+    ):
         """Update a warehouse.
 
         Updates the configuration for a SQL warehouse.
@@ -9982,8 +9980,7 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
-        return Wait(self.WaitGetWarehouseRunning, response=EditWarehouseResponse.from_dict(op_response), id=id)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
 
     def get(self, id: str) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -10171,7 +10168,7 @@ class WarehousesAPI:
 
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
 
-    def start(self, id: str) -> Wait[GetWarehouseResponse]:
+    def start(self, id: str):
         """Start a warehouse.
 
         Starts a SQL warehouse.
@@ -10188,10 +10185,9 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return Wait(self.WaitGetWarehouseRunning, response=StartWarehouseResponse.from_dict(op_response), id=id)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
 
-    def stop(self, id: str) -> Wait[GetWarehouseResponse]:
+    def stop(self, id: str):
         """Stop a warehouse.
 
         Stops a SQL warehouse.
@@ -10208,8 +10204,7 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return Wait(self.WaitGetWarehouseStopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
+        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None

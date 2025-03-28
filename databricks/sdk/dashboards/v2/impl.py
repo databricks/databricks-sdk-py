@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -2534,7 +2534,7 @@ class GenieAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
+    def create_message(self, space_id: str, conversation_id: str, content: str) -> GenieMessage:
         """Create conversation message.
 
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
@@ -2559,19 +2559,13 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
+        res = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages",
             body=body,
             headers=headers,
         )
-        return Wait(
-            self.WaitGetMessageGenieCompleted,
-            response=GenieMessage.from_dict(op_response),
-            conversation_id=conversation_id,
-            message_id=op_response["id"],
-            space_id=space_id,
-        )
+        return GenieMessage.from_dict(res)
 
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
@@ -2846,7 +2840,7 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
-    def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
+    def start_conversation(self, space_id: str, content: str) -> GenieStartConversationResponse:
         """Start conversation.
 
         Start a new conversation.
@@ -2868,16 +2862,8 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers
-        )
-        return Wait(
-            self.WaitGetMessageGenieCompleted,
-            response=GenieStartConversationResponse.from_dict(op_response),
-            conversation_id=op_response["conversation_id"],
-            message_id=op_response["message_id"],
-            space_id=space_id,
-        )
+        res = self._api.do("POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers)
+        return GenieStartConversationResponse.from_dict(res)
 
 
 class LakeviewAPI:

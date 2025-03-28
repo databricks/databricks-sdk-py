@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
-from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -4192,7 +4192,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
-    ) -> Wait[ServingEndpointDetailed]:
+    ) -> ServingEndpointDetailed:
         """Create a new serving endpoint.
 
         :param name: str
@@ -4237,12 +4237,8 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
-        return Wait(
-            self.WaitGetServingEndpointNotUpdating,
-            response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
-        )
+        res = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
+        return ServingEndpointDetailed.from_dict(res)
 
     def delete(self, name: str):
         """Delete a serving endpoint.
@@ -4688,7 +4684,7 @@ class ServingEndpointsAPI:
         served_entities: Optional[List[ServedEntityInput]] = None,
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
-    ) -> Wait[ServingEndpointDetailed]:
+    ) -> ServingEndpointDetailed:
         """Update config of a serving endpoint.
 
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
@@ -4728,12 +4724,8 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
-        return Wait(
-            self.WaitGetServingEndpointNotUpdating,
-            response=ServingEndpointDetailed.from_dict(op_response),
-            name=op_response["name"],
-        )
+        res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
+        return ServingEndpointDetailed.from_dict(res)
 
     def update_permissions(
         self,

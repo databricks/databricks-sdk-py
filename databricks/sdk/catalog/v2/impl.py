@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -12287,7 +12287,7 @@ class OnlineTablesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, table: Optional[OnlineTable] = None) -> Wait[OnlineTable]:
+    def create(self, *, table: Optional[OnlineTable] = None) -> OnlineTable:
         """Create an Online Table.
 
         Create a new Online Table.
@@ -12305,10 +12305,8 @@ class OnlineTablesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
-        return Wait(
-            self.WaitGetOnlineTableActive, response=OnlineTable.from_dict(op_response), name=op_response["name"]
-        )
+        res = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
+        return OnlineTable.from_dict(res)
 
     def delete(self, name: str):
         """Delete an Online Table.
