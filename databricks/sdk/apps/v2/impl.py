@@ -3,18 +3,14 @@
 from __future__ import annotations
 
 import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
-from ..databricks.errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
-
 
 # all definitions in this file are in alphabetical order
 
@@ -88,131 +84,131 @@ class App:
         """Serializes the App into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active_deployment:
-            body["active_deployment"] = self.active_deployment.as_dict()
+            body["{active_deployment}"] = self.active_deployment.as_dict()
         if self.app_status:
-            body["app_status"] = self.app_status.as_dict()
+            body["{app_status}"] = self.app_status.as_dict()
         if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
+            body["{budget_policy_id}"] = self.budget_policy_id
         if self.compute_status:
-            body["compute_status"] = self.compute_status.as_dict()
+            body["{compute_status}"] = self.compute_status.as_dict()
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.creator is not None:
-            body["creator"] = self.creator
+            body["{creator}"] = self.creator
         if self.default_source_code_path is not None:
-            body["default_source_code_path"] = self.default_source_code_path
+            body["{default_source_code_path}"] = self.default_source_code_path
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.effective_budget_policy_id is not None:
-            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+            body["{effective_budget_policy_id}"] = self.effective_budget_policy_id
         if self.effective_user_api_scopes:
-            body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
+            body["{effective_user_api_scopes}"] = [v for v in self.effective_user_api_scopes]
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+            body["{oauth2_app_client_id}"] = self.oauth2_app_client_id
         if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
+            body["{oauth2_app_integration_id}"] = self.oauth2_app_integration_id
         if self.pending_deployment:
-            body["pending_deployment"] = self.pending_deployment.as_dict()
+            body["{pending_deployment}"] = self.pending_deployment.as_dict()
         if self.resources:
-            body["resources"] = [v.as_dict() for v in self.resources]
+            body["{resources}"] = [v.as_dict() for v in self.resources]
         if self.service_principal_client_id is not None:
-            body["service_principal_client_id"] = self.service_principal_client_id
+            body["{service_principal_client_id}"] = self.service_principal_client_id
         if self.service_principal_id is not None:
-            body["service_principal_id"] = self.service_principal_id
+            body["{service_principal_id}"] = self.service_principal_id
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.updater is not None:
-            body["updater"] = self.updater
+            body["{updater}"] = self.updater
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         if self.user_api_scopes:
-            body["user_api_scopes"] = [v for v in self.user_api_scopes]
+            body["{user_api_scopes}"] = [v for v in self.user_api_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the App into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.active_deployment:
-            body["active_deployment"] = self.active_deployment
+            body["{active_deployment}"] = self.active_deployment
         if self.app_status:
-            body["app_status"] = self.app_status
+            body["{app_status}"] = self.app_status
         if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
+            body["{budget_policy_id}"] = self.budget_policy_id
         if self.compute_status:
-            body["compute_status"] = self.compute_status
+            body["{compute_status}"] = self.compute_status
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.creator is not None:
-            body["creator"] = self.creator
+            body["{creator}"] = self.creator
         if self.default_source_code_path is not None:
-            body["default_source_code_path"] = self.default_source_code_path
+            body["{default_source_code_path}"] = self.default_source_code_path
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.effective_budget_policy_id is not None:
-            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+            body["{effective_budget_policy_id}"] = self.effective_budget_policy_id
         if self.effective_user_api_scopes:
-            body["effective_user_api_scopes"] = self.effective_user_api_scopes
+            body["{effective_user_api_scopes}"] = self.effective_user_api_scopes
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.oauth2_app_client_id is not None:
-            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+            body["{oauth2_app_client_id}"] = self.oauth2_app_client_id
         if self.oauth2_app_integration_id is not None:
-            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
+            body["{oauth2_app_integration_id}"] = self.oauth2_app_integration_id
         if self.pending_deployment:
-            body["pending_deployment"] = self.pending_deployment
+            body["{pending_deployment}"] = self.pending_deployment
         if self.resources:
-            body["resources"] = self.resources
+            body["{resources}"] = self.resources
         if self.service_principal_client_id is not None:
-            body["service_principal_client_id"] = self.service_principal_client_id
+            body["{service_principal_client_id}"] = self.service_principal_client_id
         if self.service_principal_id is not None:
-            body["service_principal_id"] = self.service_principal_id
+            body["{service_principal_id}"] = self.service_principal_id
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.updater is not None:
-            body["updater"] = self.updater
+            body["{updater}"] = self.updater
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         if self.user_api_scopes:
-            body["user_api_scopes"] = self.user_api_scopes
+            body["{user_api_scopes}"] = self.user_api_scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> App:
         """Deserializes the App from a dictionary."""
         return cls(
-            active_deployment=_from_dict(d, "active_deployment", AppDeployment),
-            app_status=_from_dict(d, "app_status", ApplicationStatus),
-            budget_policy_id=d.get("budget_policy_id", None),
-            compute_status=_from_dict(d, "compute_status", ComputeStatus),
-            create_time=d.get("create_time", None),
-            creator=d.get("creator", None),
-            default_source_code_path=d.get("default_source_code_path", None),
-            description=d.get("description", None),
-            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
-            effective_user_api_scopes=d.get("effective_user_api_scopes", None),
-            id=d.get("id", None),
-            name=d.get("name", None),
-            oauth2_app_client_id=d.get("oauth2_app_client_id", None),
-            oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
-            pending_deployment=_from_dict(d, "pending_deployment", AppDeployment),
-            resources=_repeated_dict(d, "resources", AppResource),
-            service_principal_client_id=d.get("service_principal_client_id", None),
-            service_principal_id=d.get("service_principal_id", None),
-            service_principal_name=d.get("service_principal_name", None),
-            update_time=d.get("update_time", None),
-            updater=d.get("updater", None),
-            url=d.get("url", None),
-            user_api_scopes=d.get("user_api_scopes", None),
+            active_deployment=_from_dict(d, "{active_deployment}", AppDeployment),
+            app_status=_from_dict(d, "{app_status}", ApplicationStatus),
+            budget_policy_id=d.get("{budget_policy_id}", None),
+            compute_status=_from_dict(d, "{compute_status}", ComputeStatus),
+            create_time=d.get("{create_time}", None),
+            creator=d.get("{creator}", None),
+            default_source_code_path=d.get("{default_source_code_path}", None),
+            description=d.get("{description}", None),
+            effective_budget_policy_id=d.get("{effective_budget_policy_id}", None),
+            effective_user_api_scopes=d.get("{effective_user_api_scopes}", None),
+            id=d.get("{id}", None),
+            name=d.get("{name}", None),
+            oauth2_app_client_id=d.get("{oauth2_app_client_id}", None),
+            oauth2_app_integration_id=d.get("{oauth2_app_integration_id}", None),
+            pending_deployment=_from_dict(d, "{pending_deployment}", AppDeployment),
+            resources=_repeated_dict(d, "{resources}", AppResource),
+            service_principal_client_id=d.get("{service_principal_client_id}", None),
+            service_principal_id=d.get("{service_principal_id}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            update_time=d.get("{update_time}", None),
+            updater=d.get("{updater}", None),
+            url=d.get("{url}", None),
+            user_api_scopes=d.get("{user_api_scopes}", None),
         )
 
 
@@ -234,36 +230,36 @@ class AppAccessControlRequest:
         """Serializes the AppAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlRequest:
         """Deserializes the AppAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", AppPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", AppPermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -288,41 +284,41 @@ class AppAccessControlResponse:
         """Serializes the AppAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppAccessControlResponse:
         """Deserializes the AppAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", AppPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", AppPermission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -360,56 +356,56 @@ class AppDeployment:
         """Serializes the AppDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.creator is not None:
-            body["creator"] = self.creator
+            body["{creator}"] = self.creator
         if self.deployment_artifacts:
-            body["deployment_artifacts"] = self.deployment_artifacts.as_dict()
+            body["{deployment_artifacts}"] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None:
-            body["deployment_id"] = self.deployment_id
+            body["{deployment_id}"] = self.deployment_id
         if self.mode is not None:
-            body["mode"] = self.mode.value
+            body["{mode}"] = self.mode.value
         if self.source_code_path is not None:
-            body["source_code_path"] = self.source_code_path
+            body["{source_code_path}"] = self.source_code_path
         if self.status:
-            body["status"] = self.status.as_dict()
+            body["{status}"] = self.status.as_dict()
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppDeployment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.creator is not None:
-            body["creator"] = self.creator
+            body["{creator}"] = self.creator
         if self.deployment_artifacts:
-            body["deployment_artifacts"] = self.deployment_artifacts
+            body["{deployment_artifacts}"] = self.deployment_artifacts
         if self.deployment_id is not None:
-            body["deployment_id"] = self.deployment_id
+            body["{deployment_id}"] = self.deployment_id
         if self.mode is not None:
-            body["mode"] = self.mode
+            body["{mode}"] = self.mode
         if self.source_code_path is not None:
-            body["source_code_path"] = self.source_code_path
+            body["{source_code_path}"] = self.source_code_path
         if self.status:
-            body["status"] = self.status
+            body["{status}"] = self.status
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(
-            create_time=d.get("create_time", None),
-            creator=d.get("creator", None),
-            deployment_artifacts=_from_dict(d, "deployment_artifacts", AppDeploymentArtifacts),
-            deployment_id=d.get("deployment_id", None),
-            mode=_enum(d, "mode", AppDeploymentMode),
-            source_code_path=d.get("source_code_path", None),
-            status=_from_dict(d, "status", AppDeploymentStatus),
-            update_time=d.get("update_time", None),
+            create_time=d.get("{create_time}", None),
+            creator=d.get("{creator}", None),
+            deployment_artifacts=_from_dict(d, "{deployment_artifacts}", AppDeploymentArtifacts),
+            deployment_id=d.get("{deployment_id}", None),
+            mode=_enum(d, "{mode}", AppDeploymentMode),
+            source_code_path=d.get("{source_code_path}", None),
+            status=_from_dict(d, "{status}", AppDeploymentStatus),
+            update_time=d.get("{update_time}", None),
         )
 
 
@@ -422,20 +418,20 @@ class AppDeploymentArtifacts:
         """Serializes the AppDeploymentArtifacts into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.source_code_path is not None:
-            body["source_code_path"] = self.source_code_path
+            body["{source_code_path}"] = self.source_code_path
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppDeploymentArtifacts into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.source_code_path is not None:
-            body["source_code_path"] = self.source_code_path
+            body["{source_code_path}"] = self.source_code_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentArtifacts:
         """Deserializes the AppDeploymentArtifacts from a dictionary."""
-        return cls(source_code_path=d.get("source_code_path", None))
+        return cls(source_code_path=d.get("{source_code_path}", None))
 
 
 class AppDeploymentMode(Enum):
@@ -464,24 +460,24 @@ class AppDeploymentStatus:
         """Serializes the AppDeploymentStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppDeploymentStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppDeploymentStatus:
         """Deserializes the AppDeploymentStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", AppDeploymentState))
+        return cls(message=d.get("{message}", None), state=_enum(d, "{state}", AppDeploymentState))
 
 
 @dataclass
@@ -497,31 +493,31 @@ class AppPermission:
         """Serializes the AppPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppPermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppPermission:
         """Deserializes the AppPermission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", AppPermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", AppPermissionLevel),
         )
 
 
@@ -544,31 +540,31 @@ class AppPermissions:
         """Serializes the AppPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppPermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppPermissions:
         """Deserializes the AppPermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AppAccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -583,25 +579,26 @@ class AppPermissionsDescription:
         """Serializes the AppPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppPermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsDescription:
         """Deserializes the AppPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", AppPermissionLevel)
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", AppPermissionLevel),
         )
 
 
@@ -616,26 +613,26 @@ class AppPermissionsRequest:
         """Serializes the AppPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.app_name is not None:
-            body["app_name"] = self.app_name
+            body["{app_name}"] = self.app_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppPermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.app_name is not None:
-            body["app_name"] = self.app_name
+            body["{app_name}"] = self.app_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsRequest:
         """Deserializes the AppPermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlRequest),
-            app_name=d.get("app_name", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AppAccessControlRequest),
+            app_name=d.get("{app_name}", None),
         )
 
 
@@ -659,46 +656,46 @@ class AppResource:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.job:
-            body["job"] = self.job.as_dict()
+            body["{job}"] = self.job.as_dict()
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.secret:
-            body["secret"] = self.secret.as_dict()
+            body["{secret}"] = self.secret.as_dict()
         if self.serving_endpoint:
-            body["serving_endpoint"] = self.serving_endpoint.as_dict()
+            body["{serving_endpoint}"] = self.serving_endpoint.as_dict()
         if self.sql_warehouse:
-            body["sql_warehouse"] = self.sql_warehouse.as_dict()
+            body["{sql_warehouse}"] = self.sql_warehouse.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResource into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.job:
-            body["job"] = self.job
+            body["{job}"] = self.job
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.secret:
-            body["secret"] = self.secret
+            body["{secret}"] = self.secret
         if self.serving_endpoint:
-            body["serving_endpoint"] = self.serving_endpoint
+            body["{serving_endpoint}"] = self.serving_endpoint
         if self.sql_warehouse:
-            body["sql_warehouse"] = self.sql_warehouse
+            body["{sql_warehouse}"] = self.sql_warehouse
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            job=_from_dict(d, "job", AppResourceJob),
-            name=d.get("name", None),
-            secret=_from_dict(d, "secret", AppResourceSecret),
-            serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
-            sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
+            description=d.get("{description}", None),
+            job=_from_dict(d, "{job}", AppResourceJob),
+            name=d.get("{name}", None),
+            secret=_from_dict(d, "{secret}", AppResourceSecret),
+            serving_endpoint=_from_dict(d, "{serving_endpoint}", AppResourceServingEndpoint),
+            sql_warehouse=_from_dict(d, "{sql_warehouse}", AppResourceSqlWarehouse),
         )
 
 
@@ -715,24 +712,24 @@ class AppResourceJob:
         """Serializes the AppResourceJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceJob into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceJob:
         """Deserializes the AppResourceJob from a dictionary."""
-        return cls(id=d.get("id", None), permission=_enum(d, "permission", AppResourceJobJobPermission))
+        return cls(id=d.get("{id}", None), permission=_enum(d, "{permission}", AppResourceJobJobPermission))
 
 
 class AppResourceJobJobPermission(Enum):
@@ -759,31 +756,31 @@ class AppResourceSecret:
         """Serializes the AppResourceSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceSecret into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceSecret:
         """Deserializes the AppResourceSecret from a dictionary."""
         return cls(
-            key=d.get("key", None),
-            permission=_enum(d, "permission", AppResourceSecretSecretPermission),
-            scope=d.get("scope", None),
+            key=d.get("{key}", None),
+            permission=_enum(d, "{permission}", AppResourceSecretSecretPermission),
+            scope=d.get("{scope}", None),
         )
 
 
@@ -808,26 +805,26 @@ class AppResourceServingEndpoint:
         """Serializes the AppResourceServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceServingEndpoint into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceServingEndpoint:
         """Deserializes the AppResourceServingEndpoint from a dictionary."""
         return cls(
-            name=d.get("name", None),
-            permission=_enum(d, "permission", AppResourceServingEndpointServingEndpointPermission),
+            name=d.get("{name}", None),
+            permission=_enum(d, "{permission}", AppResourceServingEndpointServingEndpointPermission),
         )
 
 
@@ -851,25 +848,25 @@ class AppResourceSqlWarehouse:
         """Serializes the AppResourceSqlWarehouse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResourceSqlWarehouse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AppResourceSqlWarehouse:
         """Deserializes the AppResourceSqlWarehouse from a dictionary."""
         return cls(
-            id=d.get("id", None), permission=_enum(d, "permission", AppResourceSqlWarehouseSqlWarehousePermission)
+            id=d.get("{id}", None), permission=_enum(d, "{permission}", AppResourceSqlWarehouseSqlWarehousePermission)
         )
 
 
@@ -900,24 +897,24 @@ class ApplicationStatus:
         """Serializes the ApplicationStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ApplicationStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
+        return cls(message=d.get("{message}", None), state=_enum(d, "{state}", ApplicationState))
 
 
 class ComputeState(Enum):
@@ -943,24 +940,24 @@ class ComputeStatus:
         """Serializes the ComputeStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ComputeStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ComputeStatus:
         """Deserializes the ComputeStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ComputeState))
+        return cls(message=d.get("{message}", None), state=_enum(d, "{state}", ComputeState))
 
 
 @dataclass
@@ -972,20 +969,20 @@ class GetAppPermissionLevelsResponse:
         """Serializes the GetAppPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetAppPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetAppPermissionLevelsResponse:
         """Deserializes the GetAppPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", AppPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", AppPermissionsDescription))
 
 
 @dataclass
@@ -1000,26 +997,26 @@ class ListAppDeploymentsResponse:
         """Serializes the ListAppDeploymentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_deployments:
-            body["app_deployments"] = [v.as_dict() for v in self.app_deployments]
+            body["{app_deployments}"] = [v.as_dict() for v in self.app_deployments]
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAppDeploymentsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.app_deployments:
-            body["app_deployments"] = self.app_deployments
+            body["{app_deployments}"] = self.app_deployments
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAppDeploymentsResponse:
         """Deserializes the ListAppDeploymentsResponse from a dictionary."""
         return cls(
-            app_deployments=_repeated_dict(d, "app_deployments", AppDeployment),
-            next_page_token=d.get("next_page_token", None),
+            app_deployments=_repeated_dict(d, "{app_deployments}", AppDeployment),
+            next_page_token=d.get("{next_page_token}", None),
         )
 
 
@@ -1034,24 +1031,24 @@ class ListAppsResponse:
         """Serializes the ListAppsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps:
-            body["apps"] = [v.as_dict() for v in self.apps]
+            body["{apps}"] = [v.as_dict() for v in self.apps]
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAppsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apps:
-            body["apps"] = self.apps
+            body["{apps}"] = self.apps
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
-        return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
+        return cls(apps=_repeated_dict(d, "{apps}", App), next_page_token=d.get("{next_page_token}", None))
 
 
 @dataclass
@@ -1073,106 +1070,6 @@ class AppsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_app_active(
-        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[App], None]] = None
-    ) -> App:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ComputeState.ACTIVE,)
-        failure_states = (
-            ComputeState.ERROR,
-            ComputeState.STOPPED,
-        )
-        status_message = "polling..."
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(name=name)
-            status = poll.compute_status.state
-            status_message = f"current status: {status}"
-            if poll.compute_status:
-                status_message = poll.compute_status.message
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f"failed to reach ACTIVE, got {status}: {status_message}"
-                raise OperationFailed(msg)
-            prefix = f"name={name}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f"timed out after {timeout}: {status_message}")
-
-    def wait_get_deployment_app_succeeded(
-        self,
-        app_name: str,
-        deployment_id: str,
-        timeout=timedelta(minutes=20),
-        callback: Optional[Callable[[AppDeployment], None]] = None,
-    ) -> AppDeployment:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (AppDeploymentState.SUCCEEDED,)
-        failure_states = (AppDeploymentState.FAILED,)
-        status_message = "polling..."
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get_deployment(app_name=app_name, deployment_id=deployment_id)
-            status = poll.status.state
-            status_message = f"current status: {status}"
-            if poll.status:
-                status_message = poll.status.message
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f"failed to reach SUCCEEDED, got {status}: {status_message}"
-                raise OperationFailed(msg)
-            prefix = f"app_name={app_name}, deployment_id={deployment_id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f"timed out after {timeout}: {status_message}")
-
-    def wait_get_app_stopped(
-        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[App], None]] = None
-    ) -> App:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ComputeState.STOPPED,)
-        failure_states = (ComputeState.ERROR,)
-        status_message = "polling..."
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(name=name)
-            status = poll.compute_status.state
-            status_message = f"current status: {status}"
-            if poll.compute_status:
-                status_message = poll.compute_status.message
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f"failed to reach STOPPED, got {status}: {status_message}"
-                raise OperationFailed(msg)
-            prefix = f"name={name}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f"timed out after {timeout}: {status_message}")
-
     def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
         """Create an app.
 
@@ -1184,19 +1081,19 @@ class AppsAPI:
 
         :returns:
           Long-running operation waiter for :class:`App`.
-          See :method:wait_get_app_active for more details.
+          See :method:WaitGetAppActive for more details.
         """
         body = app.as_dict()
         query = {}
         if no_compute is not None:
-            query["no_compute"] = no_compute
+            query["{no_compute}"] = no_compute
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
-        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
+        return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["{name}"])
 
     def create_and_wait(
         self, *, app: Optional[App] = None, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)
@@ -1215,7 +1112,7 @@ class AppsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
@@ -1232,20 +1129,20 @@ class AppsAPI:
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
-          See :method:wait_get_deployment_app_succeeded for more details.
+          See :method:WaitGetDeploymentAppSucceeded for more details.
         """
         body = app_deployment.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
         return Wait(
-            self.wait_get_deployment_app_succeeded,
+            self.WaitGetDeploymentAppSucceeded,
             response=AppDeployment.from_dict(op_response),
             app_name=app_name,
-            deployment_id=op_response["deployment_id"],
+            deployment_id=op_response["{deployment_id}"],
         )
 
     def deploy_and_wait(
@@ -1265,7 +1162,7 @@ class AppsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/apps/{name}", headers=headers)
@@ -1285,7 +1182,7 @@ class AppsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments/{deployment_id}", headers=headers)
@@ -1303,7 +1200,7 @@ class AppsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}/permissionLevels", headers=headers)
@@ -1321,7 +1218,7 @@ class AppsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
@@ -1342,21 +1239,21 @@ class AppsAPI:
 
         query = {}
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/apps", query=query, headers=headers)
-            if "apps" in json:
-                for v in json["apps"]:
+            if "{apps}" in json:
+                for v in json["{apps}"]:
                     yield App.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["page_token"] = json["next_page_token"]
+            query["{page_token}"] = json["{next_page_token}"]
 
     def list_deployments(
         self, app_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -1377,21 +1274,21 @@ class AppsAPI:
 
         query = {}
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments", query=query, headers=headers)
-            if "app_deployments" in json:
-                for v in json["app_deployments"]:
+            if "{app_deployments}" in json:
+                for v in json["{app_deployments}"]:
                     yield AppDeployment.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["page_token"] = json["next_page_token"]
+            query["{page_token}"] = json["{next_page_token}"]
 
     def set_permissions(
         self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
@@ -1409,10 +1306,10 @@ class AppsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
@@ -1428,16 +1325,16 @@ class AppsAPI:
 
         :returns:
           Long-running operation waiter for :class:`App`.
-          See :method:wait_get_app_active for more details.
+          See :method:WaitGetAppActive for more details.
         """
 
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
-        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
+        return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["{name}"])
 
     def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.start(name=name).result(timeout=timeout)
@@ -1452,16 +1349,16 @@ class AppsAPI:
 
         :returns:
           Long-running operation waiter for :class:`App`.
-          See :method:wait_get_app_stopped for more details.
+          See :method:WaitGetAppStopped for more details.
         """
 
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
-        return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
+        return Wait(self.WaitGetAppStopped, response=App.from_dict(op_response), name=op_response["{name}"])
 
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
@@ -1480,8 +1377,8 @@ class AppsAPI:
         """
         body = app.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}", body=body, headers=headers)
@@ -1502,10 +1399,10 @@ class AppsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)

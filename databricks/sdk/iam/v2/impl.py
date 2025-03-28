@@ -7,10 +7,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
+                                  _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
-
 
 # all definitions in this file are in alphabetical order
 
@@ -33,36 +33,36 @@ class AccessControlRequest:
         """Serializes the AccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AccessControlRequest:
         """Deserializes the AccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", PermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", PermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -87,41 +87,41 @@ class AccessControlResponse:
         """Serializes the AccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AccessControlResponse:
         """Deserializes the AccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", Permission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", Permission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -136,20 +136,20 @@ class Actor:
         """Serializes the Actor into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.actor_id is not None:
-            body["actor_id"] = self.actor_id
+            body["{actor_id}"] = self.actor_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Actor into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.actor_id is not None:
-            body["actor_id"] = self.actor_id
+            body["{actor_id}"] = self.actor_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Actor:
         """Deserializes the Actor from a dictionary."""
-        return cls(actor_id=d.get("actor_id", None))
+        return cls(actor_id=d.get("{actor_id}", None))
 
 
 @dataclass
@@ -162,26 +162,26 @@ class CheckPolicyResponse:
         """Serializes the CheckPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.consistency_token:
-            body["consistency_token"] = self.consistency_token.as_dict()
+            body["{consistency_token}"] = self.consistency_token.as_dict()
         if self.is_permitted is not None:
-            body["is_permitted"] = self.is_permitted
+            body["{is_permitted}"] = self.is_permitted
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CheckPolicyResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.consistency_token:
-            body["consistency_token"] = self.consistency_token
+            body["{consistency_token}"] = self.consistency_token
         if self.is_permitted is not None:
-            body["is_permitted"] = self.is_permitted
+            body["{is_permitted}"] = self.is_permitted
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CheckPolicyResponse:
         """Deserializes the CheckPolicyResponse from a dictionary."""
         return cls(
-            consistency_token=_from_dict(d, "consistency_token", ConsistencyToken),
-            is_permitted=d.get("is_permitted", None),
+            consistency_token=_from_dict(d, "{consistency_token}", ConsistencyToken),
+            is_permitted=d.get("{is_permitted}", None),
         )
 
 
@@ -201,41 +201,41 @@ class ComplexValue:
         """Serializes the ComplexValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display is not None:
-            body["display"] = self.display
+            body["{display}"] = self.display
         if self.primary is not None:
-            body["primary"] = self.primary
+            body["{primary}"] = self.primary
         if self.ref is not None:
-            body["$ref"] = self.ref
+            body["{ref}"] = self.ref
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ComplexValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display is not None:
-            body["display"] = self.display
+            body["{display}"] = self.display
         if self.primary is not None:
-            body["primary"] = self.primary
+            body["{primary}"] = self.primary
         if self.ref is not None:
-            body["$ref"] = self.ref
+            body["{ref}"] = self.ref
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ComplexValue:
         """Deserializes the ComplexValue from a dictionary."""
         return cls(
-            display=d.get("display", None),
-            primary=d.get("primary", None),
-            ref=d.get("$ref", None),
-            type=d.get("type", None),
-            value=d.get("value", None),
+            display=d.get("{display}", None),
+            primary=d.get("{primary}", None),
+            ref=d.get("{ref}", None),
+            type=d.get("{type}", None),
+            value=d.get("{value}", None),
         )
 
 
@@ -247,20 +247,20 @@ class ConsistencyToken:
         """Serializes the ConsistencyToken into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ConsistencyToken into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ConsistencyToken:
         """Deserializes the ConsistencyToken from a dictionary."""
-        return cls(value=d.get("value", None))
+        return cls(value=d.get("{value}", None))
 
 
 @dataclass
@@ -307,20 +307,20 @@ class GetAssignableRolesForResourceResponse:
         """Serializes the GetAssignableRolesForResourceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.roles:
-            body["roles"] = [v.as_dict() for v in self.roles]
+            body["{roles}"] = [v.as_dict() for v in self.roles]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetAssignableRolesForResourceResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.roles:
-            body["roles"] = self.roles
+            body["{roles}"] = self.roles
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetAssignableRolesForResourceResponse:
         """Deserializes the GetAssignableRolesForResourceResponse from a dictionary."""
-        return cls(roles=_repeated_dict(d, "roles", Role))
+        return cls(roles=_repeated_dict(d, "{roles}", Role))
 
 
 @dataclass
@@ -332,20 +332,20 @@ class GetPasswordPermissionLevelsResponse:
         """Serializes the GetPasswordPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetPasswordPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPasswordPermissionLevelsResponse:
         """Deserializes the GetPasswordPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", PasswordPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", PasswordPermissionsDescription))
 
 
 @dataclass
@@ -357,20 +357,20 @@ class GetPermissionLevelsResponse:
         """Serializes the GetPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPermissionLevelsResponse:
         """Deserializes the GetPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", PermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", PermissionsDescription))
 
 
 class GetSortOrder(Enum):
@@ -391,24 +391,24 @@ class GrantRule:
         """Serializes the GrantRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principals:
-            body["principals"] = [v for v in self.principals]
+            body["{principals}"] = [v for v in self.principals]
         if self.role is not None:
-            body["role"] = self.role
+            body["{role}"] = self.role
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GrantRule into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.principals:
-            body["principals"] = self.principals
+            body["{principals}"] = self.principals
         if self.role is not None:
-            body["role"] = self.role
+            body["{role}"] = self.role
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GrantRule:
         """Deserializes the GrantRule from a dictionary."""
-        return cls(principals=d.get("principals", None), role=d.get("role", None))
+        return cls(principals=d.get("{principals}", None), role=d.get("{role}", None))
 
 
 @dataclass
@@ -444,61 +444,61 @@ class Group:
         """Serializes the Group into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.entitlements:
-            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = [v.as_dict() for v in self.groups]
+            body["{groups}"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.members:
-            body["members"] = [v.as_dict() for v in self.members]
+            body["{members}"] = [v.as_dict() for v in self.members]
         if self.meta:
-            body["meta"] = self.meta.as_dict()
+            body["{meta}"] = self.meta.as_dict()
         if self.roles:
-            body["roles"] = [v.as_dict() for v in self.roles]
+            body["{roles}"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Group into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.entitlements:
-            body["entitlements"] = self.entitlements
+            body["{entitlements}"] = self.entitlements
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = self.groups
+            body["{groups}"] = self.groups
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.members:
-            body["members"] = self.members
+            body["{members}"] = self.members
         if self.meta:
-            body["meta"] = self.meta
+            body["{meta}"] = self.meta
         if self.roles:
-            body["roles"] = self.roles
+            body["{roles}"] = self.roles
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Group:
         """Deserializes the Group from a dictionary."""
         return cls(
-            display_name=d.get("displayName", None),
-            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
-            external_id=d.get("externalId", None),
-            groups=_repeated_dict(d, "groups", ComplexValue),
-            id=d.get("id", None),
-            members=_repeated_dict(d, "members", ComplexValue),
-            meta=_from_dict(d, "meta", ResourceMeta),
-            roles=_repeated_dict(d, "roles", ComplexValue),
-            schemas=_repeated_enum(d, "schemas", GroupSchema),
+            display_name=d.get("{display_name}", None),
+            entitlements=_repeated_dict(d, "{entitlements}", ComplexValue),
+            external_id=d.get("{external_id}", None),
+            groups=_repeated_dict(d, "{groups}", ComplexValue),
+            id=d.get("{id}", None),
+            members=_repeated_dict(d, "{members}", ComplexValue),
+            meta=_from_dict(d, "{meta}", ResourceMeta),
+            roles=_repeated_dict(d, "{roles}", ComplexValue),
+            schemas=_repeated_enum(d, "{schemas}", GroupSchema),
         )
 
 
@@ -528,41 +528,41 @@ class ListGroupsResponse:
         """Serializes the ListGroupsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = [v.as_dict() for v in self.resources]
+            body["{resources}"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListGroupsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = self.resources
+            body["{resources}"] = self.resources
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
-            resources=_repeated_dict(d, "Resources", Group),
-            schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            items_per_page=d.get("{items_per_page}", None),
+            resources=_repeated_dict(d, "{resources}", Group),
+            schemas=_repeated_enum(d, "{schemas}", ListResponseSchema),
+            start_index=d.get("{start_index}", None),
+            total_results=d.get("{total_results}", None),
         )
 
 
@@ -592,41 +592,41 @@ class ListServicePrincipalResponse:
         """Serializes the ListServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = [v.as_dict() for v in self.resources]
+            body["{resources}"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListServicePrincipalResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = self.resources
+            body["{resources}"] = self.resources
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalResponse:
         """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
-            resources=_repeated_dict(d, "Resources", ServicePrincipal),
-            schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            items_per_page=d.get("{items_per_page}", None),
+            resources=_repeated_dict(d, "{resources}", ServicePrincipal),
+            schemas=_repeated_enum(d, "{schemas}", ListResponseSchema),
+            start_index=d.get("{start_index}", None),
+            total_results=d.get("{total_results}", None),
         )
 
 
@@ -657,41 +657,41 @@ class ListUsersResponse:
         """Serializes the ListUsersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = [v.as_dict() for v in self.resources]
+            body["{resources}"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListUsersResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.items_per_page is not None:
-            body["itemsPerPage"] = self.items_per_page
+            body["{items_per_page}"] = self.items_per_page
         if self.resources:
-            body["Resources"] = self.resources
+            body["{resources}"] = self.resources
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         if self.start_index is not None:
-            body["startIndex"] = self.start_index
+            body["{start_index}"] = self.start_index
         if self.total_results is not None:
-            body["totalResults"] = self.total_results
+            body["{total_results}"] = self.total_results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(
-            items_per_page=d.get("itemsPerPage", None),
-            resources=_repeated_dict(d, "Resources", User),
-            schemas=_repeated_enum(d, "schemas", ListResponseSchema),
-            start_index=d.get("startIndex", None),
-            total_results=d.get("totalResults", None),
+            items_per_page=d.get("{items_per_page}", None),
+            resources=_repeated_dict(d, "{resources}", User),
+            schemas=_repeated_enum(d, "{schemas}", ListResponseSchema),
+            start_index=d.get("{start_index}", None),
+            total_results=d.get("{total_results}", None),
         )
 
 
@@ -713,36 +713,36 @@ class MigratePermissionsRequest:
         """Serializes the MigratePermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.from_workspace_group_name is not None:
-            body["from_workspace_group_name"] = self.from_workspace_group_name
+            body["{from_workspace_group_name}"] = self.from_workspace_group_name
         if self.size is not None:
-            body["size"] = self.size
+            body["{size}"] = self.size
         if self.to_account_group_name is not None:
-            body["to_account_group_name"] = self.to_account_group_name
+            body["{to_account_group_name}"] = self.to_account_group_name
         if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
+            body["{workspace_id}"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MigratePermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.from_workspace_group_name is not None:
-            body["from_workspace_group_name"] = self.from_workspace_group_name
+            body["{from_workspace_group_name}"] = self.from_workspace_group_name
         if self.size is not None:
-            body["size"] = self.size
+            body["{size}"] = self.size
         if self.to_account_group_name is not None:
-            body["to_account_group_name"] = self.to_account_group_name
+            body["{to_account_group_name}"] = self.to_account_group_name
         if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
+            body["{workspace_id}"] = self.workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MigratePermissionsRequest:
         """Deserializes the MigratePermissionsRequest from a dictionary."""
         return cls(
-            from_workspace_group_name=d.get("from_workspace_group_name", None),
-            size=d.get("size", None),
-            to_account_group_name=d.get("to_account_group_name", None),
-            workspace_id=d.get("workspace_id", None),
+            from_workspace_group_name=d.get("{from_workspace_group_name}", None),
+            size=d.get("{size}", None),
+            to_account_group_name=d.get("{to_account_group_name}", None),
+            workspace_id=d.get("{workspace_id}", None),
         )
 
 
@@ -755,20 +755,20 @@ class MigratePermissionsResponse:
         """Serializes the MigratePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions_migrated is not None:
-            body["permissions_migrated"] = self.permissions_migrated
+            body["{permissions_migrated}"] = self.permissions_migrated
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MigratePermissionsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permissions_migrated is not None:
-            body["permissions_migrated"] = self.permissions_migrated
+            body["{permissions_migrated}"] = self.permissions_migrated
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MigratePermissionsResponse:
         """Deserializes the MigratePermissionsResponse from a dictionary."""
-        return cls(permissions_migrated=d.get("permissions_migrated", None))
+        return cls(permissions_migrated=d.get("{permissions_migrated}", None))
 
 
 @dataclass
@@ -783,24 +783,24 @@ class Name:
         """Serializes the Name into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.family_name is not None:
-            body["familyName"] = self.family_name
+            body["{family_name}"] = self.family_name
         if self.given_name is not None:
-            body["givenName"] = self.given_name
+            body["{given_name}"] = self.given_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Name into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.family_name is not None:
-            body["familyName"] = self.family_name
+            body["{family_name}"] = self.family_name
         if self.given_name is not None:
-            body["givenName"] = self.given_name
+            body["{given_name}"] = self.given_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Name:
         """Deserializes the Name from a dictionary."""
-        return cls(family_name=d.get("familyName", None), given_name=d.get("givenName", None))
+        return cls(family_name=d.get("{family_name}", None), given_name=d.get("{given_name}", None))
 
 
 @dataclass
@@ -815,31 +815,31 @@ class ObjectPermissions:
         """Serializes the ObjectPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ObjectPermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ObjectPermissions:
         """Deserializes the ObjectPermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -857,31 +857,31 @@ class PartialUpdate:
         """Serializes the PartialUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.operations:
-            body["Operations"] = [v.as_dict() for v in self.operations]
+            body["{operations}"] = [v.as_dict() for v in self.operations]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PartialUpdate into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.operations:
-            body["Operations"] = self.operations
+            body["{operations}"] = self.operations
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PartialUpdate:
         """Deserializes the PartialUpdate from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            operations=_repeated_dict(d, "Operations", Patch),
-            schemas=_repeated_enum(d, "schemas", PatchSchema),
+            id=d.get("{id}", None),
+            operations=_repeated_dict(d, "{operations}", Patch),
+            schemas=_repeated_enum(d, "{schemas}", PatchSchema),
         )
 
 
@@ -903,36 +903,36 @@ class PasswordAccessControlRequest:
         """Serializes the PasswordAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlRequest:
         """Deserializes the PasswordAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", PasswordPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", PasswordPermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -957,41 +957,41 @@ class PasswordAccessControlResponse:
         """Serializes the PasswordAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlResponse:
         """Deserializes the PasswordAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", PasswordPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", PasswordPermission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -1008,31 +1008,31 @@ class PasswordPermission:
         """Serializes the PasswordPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordPermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordPermission:
         """Deserializes the PasswordPermission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", PasswordPermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", PasswordPermissionLevel),
         )
 
 
@@ -1054,31 +1054,31 @@ class PasswordPermissions:
         """Serializes the PasswordPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordPermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissions:
         """Deserializes the PasswordPermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", PasswordAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", PasswordAccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -1093,26 +1093,26 @@ class PasswordPermissionsDescription:
         """Serializes the PasswordPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordPermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsDescription:
         """Deserializes the PasswordPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", PasswordPermissionLevel),
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", PasswordPermissionLevel),
         )
 
 
@@ -1124,20 +1124,20 @@ class PasswordPermissionsRequest:
         """Serializes the PasswordPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PasswordPermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsRequest:
         """Deserializes the PasswordPermissionsRequest from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, "access_control_list", PasswordAccessControlRequest))
+        return cls(access_control_list=_repeated_dict(d, "{access_control_list}", PasswordAccessControlRequest))
 
 
 @dataclass
@@ -1155,28 +1155,28 @@ class Patch:
         """Serializes the Patch into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.op is not None:
-            body["op"] = self.op.value
+            body["{op}"] = self.op.value
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Patch into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.op is not None:
-            body["op"] = self.op
+            body["{op}"] = self.op
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Patch:
         """Deserializes the Patch from a dictionary."""
-        return cls(op=_enum(d, "op", PatchOp), path=d.get("path", None), value=d.get("value", None))
+        return cls(op=_enum(d, "{op}", PatchOp), path=d.get("{path}", None), value=d.get("{value}", None))
 
 
 class PatchOp(Enum):
@@ -1223,31 +1223,31 @@ class Permission:
         """Serializes the Permission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Permission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Permission:
         """Deserializes the Permission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", PermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", PermissionLevel),
         )
 
 
@@ -1269,31 +1269,31 @@ class PermissionAssignment:
         """Serializes the PermissionAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error is not None:
-            body["error"] = self.error
+            body["{error}"] = self.error
         if self.permissions:
-            body["permissions"] = [v.value for v in self.permissions]
+            body["{permissions}"] = [v.value for v in self.permissions]
         if self.principal:
-            body["principal"] = self.principal.as_dict()
+            body["{principal}"] = self.principal.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionAssignment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error is not None:
-            body["error"] = self.error
+            body["{error}"] = self.error
         if self.permissions:
-            body["permissions"] = self.permissions
+            body["{permissions}"] = self.permissions
         if self.principal:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignment:
         """Deserializes the PermissionAssignment from a dictionary."""
         return cls(
-            error=d.get("error", None),
-            permissions=_repeated_enum(d, "permissions", WorkspacePermission),
-            principal=_from_dict(d, "principal", PrincipalOutput),
+            error=d.get("{error}", None),
+            permissions=_repeated_enum(d, "{permissions}", WorkspacePermission),
+            principal=_from_dict(d, "{principal}", PrincipalOutput),
         )
 
 
@@ -1306,20 +1306,20 @@ class PermissionAssignments:
         """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_assignments:
-            body["permission_assignments"] = [v.as_dict() for v in self.permission_assignments]
+            body["{permission_assignments}"] = [v.as_dict() for v in self.permission_assignments]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionAssignments into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_assignments:
-            body["permission_assignments"] = self.permission_assignments
+            body["{permission_assignments}"] = self.permission_assignments
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
-        return cls(permission_assignments=_repeated_dict(d, "permission_assignments", PermissionAssignment))
+        return cls(permission_assignments=_repeated_dict(d, "{permission_assignments}", PermissionAssignment))
 
 
 class PermissionLevel(Enum):
@@ -1355,25 +1355,26 @@ class PermissionOutput:
         """Serializes the PermissionOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionOutput:
         """Deserializes the PermissionOutput from a dictionary."""
         return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", WorkspacePermission)
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", WorkspacePermission),
         )
 
 
@@ -1388,25 +1389,25 @@ class PermissionsDescription:
         """Serializes the PermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsDescription:
         """Deserializes the PermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", PermissionLevel)
+            description=d.get("{description}", None), permission_level=_enum(d, "{permission_level}", PermissionLevel)
         )
 
 
@@ -1426,31 +1427,31 @@ class PermissionsRequest:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
+            body["{request_object_id}"] = self.request_object_id
         if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
+            body["{request_object_type}"] = self.request_object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
+            body["{request_object_id}"] = self.request_object_id
         if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
+            body["{request_object_type}"] = self.request_object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsRequest:
         """Deserializes the PermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AccessControlRequest),
+            request_object_id=d.get("{request_object_id}", None),
+            request_object_type=d.get("{request_object_type}", None),
         )
 
 
@@ -1477,41 +1478,41 @@ class PrincipalOutput:
         """Serializes the PrincipalOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
+            body["{principal_id}"] = self.principal_id
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PrincipalOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
+            body["{principal_id}"] = self.principal_id
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrincipalOutput:
         """Deserializes the PrincipalOutput from a dictionary."""
         return cls(
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            principal_id=d.get("principal_id", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            principal_id=d.get("{principal_id}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -1538,31 +1539,31 @@ class ResourceInfo:
         """Serializes the ResourceInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.legacy_acl_path is not None:
-            body["legacy_acl_path"] = self.legacy_acl_path
+            body["{legacy_acl_path}"] = self.legacy_acl_path
         if self.parent_resource_info:
-            body["parent_resource_info"] = self.parent_resource_info.as_dict()
+            body["{parent_resource_info}"] = self.parent_resource_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResourceInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.legacy_acl_path is not None:
-            body["legacy_acl_path"] = self.legacy_acl_path
+            body["{legacy_acl_path}"] = self.legacy_acl_path
         if self.parent_resource_info:
-            body["parent_resource_info"] = self.parent_resource_info
+            body["{parent_resource_info}"] = self.parent_resource_info
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResourceInfo:
         """Deserializes the ResourceInfo from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            legacy_acl_path=d.get("legacy_acl_path", None),
-            parent_resource_info=_from_dict(d, "parent_resource_info", ResourceInfo),
+            id=d.get("{id}", None),
+            legacy_acl_path=d.get("{legacy_acl_path}", None),
+            parent_resource_info=_from_dict(d, "{parent_resource_info}", ResourceInfo),
         )
 
 
@@ -1576,20 +1577,20 @@ class ResourceMeta:
         """Serializes the ResourceMeta into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.resource_type is not None:
-            body["resourceType"] = self.resource_type
+            body["{resource_type}"] = self.resource_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResourceMeta into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.resource_type is not None:
-            body["resourceType"] = self.resource_type
+            body["{resource_type}"] = self.resource_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResourceMeta:
         """Deserializes the ResourceMeta from a dictionary."""
-        return cls(resource_type=d.get("resourceType", None))
+        return cls(resource_type=d.get("{resource_type}", None))
 
 
 @dataclass
@@ -1601,20 +1602,20 @@ class Role:
         """Serializes the Role into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Role into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Role:
         """Deserializes the Role from a dictionary."""
-        return cls(name=d.get("name", None))
+        return cls(name=d.get("{name}", None))
 
 
 @dataclass
@@ -1631,29 +1632,31 @@ class RuleSetResponse:
         """Serializes the RuleSetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["etag"] = self.etag
+            body["{etag}"] = self.etag
         if self.grant_rules:
-            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
+            body["{grant_rules}"] = [v.as_dict() for v in self.grant_rules]
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RuleSetResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None:
-            body["etag"] = self.etag
+            body["{etag}"] = self.etag
         if self.grant_rules:
-            body["grant_rules"] = self.grant_rules
+            body["{grant_rules}"] = self.grant_rules
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RuleSetResponse:
         """Deserializes the RuleSetResponse from a dictionary."""
         return cls(
-            etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
+            etag=d.get("{etag}", None),
+            grant_rules=_repeated_dict(d, "{grant_rules}", GrantRule),
+            name=d.get("{name}", None),
         )
 
 
@@ -1672,29 +1675,31 @@ class RuleSetUpdateRequest:
         """Serializes the RuleSetUpdateRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["etag"] = self.etag
+            body["{etag}"] = self.etag
         if self.grant_rules:
-            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
+            body["{grant_rules}"] = [v.as_dict() for v in self.grant_rules]
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RuleSetUpdateRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None:
-            body["etag"] = self.etag
+            body["{etag}"] = self.etag
         if self.grant_rules:
-            body["grant_rules"] = self.grant_rules
+            body["{grant_rules}"] = self.grant_rules
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RuleSetUpdateRequest:
         """Deserializes the RuleSetUpdateRequest from a dictionary."""
         return cls(
-            etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
+            etag=d.get("{etag}", None),
+            grant_rules=_repeated_dict(d, "{grant_rules}", GrantRule),
+            name=d.get("{name}", None),
         )
 
 
@@ -1732,61 +1737,61 @@ class ServicePrincipal:
         """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None:
-            body["active"] = self.active
+            body["{active}"] = self.active
         if self.application_id is not None:
-            body["applicationId"] = self.application_id
+            body["{application_id}"] = self.application_id
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.entitlements:
-            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = [v.as_dict() for v in self.groups]
+            body["{groups}"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.roles:
-            body["roles"] = [v.as_dict() for v in self.roles]
+            body["{roles}"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ServicePrincipal into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.active is not None:
-            body["active"] = self.active
+            body["{active}"] = self.active
         if self.application_id is not None:
-            body["applicationId"] = self.application_id
+            body["{application_id}"] = self.application_id
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.entitlements:
-            body["entitlements"] = self.entitlements
+            body["{entitlements}"] = self.entitlements
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = self.groups
+            body["{groups}"] = self.groups
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.roles:
-            body["roles"] = self.roles
+            body["{roles}"] = self.roles
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ServicePrincipal:
         """Deserializes the ServicePrincipal from a dictionary."""
         return cls(
-            active=d.get("active", None),
-            application_id=d.get("applicationId", None),
-            display_name=d.get("displayName", None),
-            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
-            external_id=d.get("externalId", None),
-            groups=_repeated_dict(d, "groups", ComplexValue),
-            id=d.get("id", None),
-            roles=_repeated_dict(d, "roles", ComplexValue),
-            schemas=_repeated_enum(d, "schemas", ServicePrincipalSchema),
+            active=d.get("{active}", None),
+            application_id=d.get("{application_id}", None),
+            display_name=d.get("{display_name}", None),
+            entitlements=_repeated_dict(d, "{entitlements}", ComplexValue),
+            external_id=d.get("{external_id}", None),
+            groups=_repeated_dict(d, "{groups}", ComplexValue),
+            id=d.get("{id}", None),
+            roles=_repeated_dict(d, "{roles}", ComplexValue),
+            schemas=_repeated_enum(d, "{schemas}", ServicePrincipalSchema),
         )
 
 
@@ -1824,24 +1829,24 @@ class UpdateRuleSetRequest:
         """Serializes the UpdateRuleSetRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.rule_set:
-            body["rule_set"] = self.rule_set.as_dict()
+            body["{rule_set}"] = self.rule_set.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateRuleSetRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.rule_set:
-            body["rule_set"] = self.rule_set
+            body["{rule_set}"] = self.rule_set
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateRuleSetRequest:
         """Deserializes the UpdateRuleSetRequest from a dictionary."""
-        return cls(name=d.get("name", None), rule_set=_from_dict(d, "rule_set", RuleSetUpdateRequest))
+        return cls(name=d.get("{name}", None), rule_set=_from_dict(d, "{rule_set}", RuleSetUpdateRequest))
 
 
 @dataclass
@@ -1863,31 +1868,31 @@ class UpdateWorkspaceAssignments:
         """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions:
-            body["permissions"] = [v.value for v in self.permissions]
+            body["{permissions}"] = [v.value for v in self.permissions]
         if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
+            body["{principal_id}"] = self.principal_id
         if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
+            body["{workspace_id}"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateWorkspaceAssignments into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permissions:
-            body["permissions"] = self.permissions
+            body["{permissions}"] = self.permissions
         if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
+            body["{principal_id}"] = self.principal_id
         if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
+            body["{workspace_id}"] = self.workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceAssignments:
         """Deserializes the UpdateWorkspaceAssignments from a dictionary."""
         return cls(
-            permissions=_repeated_enum(d, "permissions", WorkspacePermission),
-            principal_id=d.get("principal_id", None),
-            workspace_id=d.get("workspace_id", None),
+            permissions=_repeated_enum(d, "{permissions}", WorkspacePermission),
+            principal_id=d.get("{principal_id}", None),
+            workspace_id=d.get("{workspace_id}", None),
         )
 
 
@@ -1935,71 +1940,71 @@ class User:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None:
-            body["active"] = self.active
+            body["{active}"] = self.active
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.emails:
-            body["emails"] = [v.as_dict() for v in self.emails]
+            body["{emails}"] = [v.as_dict() for v in self.emails]
         if self.entitlements:
-            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = [v.as_dict() for v in self.groups]
+            body["{groups}"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name:
-            body["name"] = self.name.as_dict()
+            body["{name}"] = self.name.as_dict()
         if self.roles:
-            body["roles"] = [v.as_dict() for v in self.roles]
+            body["{roles}"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
+            body["{schemas}"] = [v.value for v in self.schemas]
         if self.user_name is not None:
-            body["userName"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the User into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.active is not None:
-            body["active"] = self.active
+            body["{active}"] = self.active
         if self.display_name is not None:
-            body["displayName"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.emails:
-            body["emails"] = self.emails
+            body["{emails}"] = self.emails
         if self.entitlements:
-            body["entitlements"] = self.entitlements
+            body["{entitlements}"] = self.entitlements
         if self.external_id is not None:
-            body["externalId"] = self.external_id
+            body["{external_id}"] = self.external_id
         if self.groups:
-            body["groups"] = self.groups
+            body["{groups}"] = self.groups
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.roles:
-            body["roles"] = self.roles
+            body["{roles}"] = self.roles
         if self.schemas:
-            body["schemas"] = self.schemas
+            body["{schemas}"] = self.schemas
         if self.user_name is not None:
-            body["userName"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> User:
         """Deserializes the User from a dictionary."""
         return cls(
-            active=d.get("active", None),
-            display_name=d.get("displayName", None),
-            emails=_repeated_dict(d, "emails", ComplexValue),
-            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
-            external_id=d.get("externalId", None),
-            groups=_repeated_dict(d, "groups", ComplexValue),
-            id=d.get("id", None),
-            name=_from_dict(d, "name", Name),
-            roles=_repeated_dict(d, "roles", ComplexValue),
-            schemas=_repeated_enum(d, "schemas", UserSchema),
-            user_name=d.get("userName", None),
+            active=d.get("{active}", None),
+            display_name=d.get("{display_name}", None),
+            emails=_repeated_dict(d, "{emails}", ComplexValue),
+            entitlements=_repeated_dict(d, "{entitlements}", ComplexValue),
+            external_id=d.get("{external_id}", None),
+            groups=_repeated_dict(d, "{groups}", ComplexValue),
+            id=d.get("{id}", None),
+            name=_from_dict(d, "{name}", Name),
+            roles=_repeated_dict(d, "{roles}", ComplexValue),
+            schemas=_repeated_enum(d, "{schemas}", UserSchema),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -2027,20 +2032,20 @@ class WorkspacePermissions:
         """Serializes the WorkspacePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions:
-            body["permissions"] = [v.as_dict() for v in self.permissions]
+            body["{permissions}"] = [v.as_dict() for v in self.permissions]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspacePermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permissions:
-            body["permissions"] = self.permissions
+            body["{permissions}"] = self.permissions
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspacePermissions:
         """Deserializes the WorkspacePermissions from a dictionary."""
-        return cls(permissions=_repeated_dict(d, "permissions", PermissionOutput))
+        return cls(permissions=_repeated_dict(d, "{permissions}", PermissionOutput))
 
 
 class AccessControlAPI:
@@ -2075,19 +2080,19 @@ class AccessControlAPI:
 
         query = {}
         if actor is not None:
-            query["actor"] = actor.as_dict()
+            query["{actor}"] = actor.as_dict()
         if authz_identity is not None:
-            query["authz_identity"] = authz_identity.value
+            query["{authz_identity}"] = authz_identity.value
         if consistency_token is not None:
-            query["consistency_token"] = consistency_token.as_dict()
+            query["{consistency_token}"] = consistency_token.as_dict()
         if permission is not None:
-            query["permission"] = permission
+            query["{permission}"] = permission
         if resource is not None:
-            query["resource"] = resource
+            query["{resource}"] = resource
         if resource_info is not None:
-            query["resource_info"] = resource_info.as_dict()
+            query["{resource_info}"] = resource_info.as_dict()
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/access-control/check-policy-v2", query=query, headers=headers)
@@ -2116,9 +2121,9 @@ class AccountAccessControlAPI:
 
         query = {}
         if resource is not None:
-            query["resource"] = resource
+            query["{resource}"] = resource
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -2150,11 +2155,11 @@ class AccountAccessControlAPI:
 
         query = {}
         if etag is not None:
-            query["etag"] = etag
+            query["{etag}"] = etag
         if name is not None:
-            query["name"] = name
+            query["{name}"] = name
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -2179,12 +2184,12 @@ class AccountAccessControlAPI:
         """
         body = {}
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if rule_set is not None:
-            body["rule_set"] = rule_set.as_dict()
+            body["{rule_set}"] = rule_set.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -2218,9 +2223,9 @@ class AccountAccessControlProxyAPI:
 
         query = {}
         if resource is not None:
-            query["resource"] = resource
+            query["{resource}"] = resource
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -2249,11 +2254,11 @@ class AccountAccessControlProxyAPI:
 
         query = {}
         if etag is not None:
-            query["etag"] = etag
+            query["{etag}"] = etag
         if name is not None:
-            query["name"] = name
+            query["{name}"] = name
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/accounts/access-control/rule-sets", query=query, headers=headers)
@@ -2273,12 +2278,12 @@ class AccountAccessControlProxyAPI:
         """
         body = {}
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if rule_set is not None:
-            body["rule_set"] = rule_set.as_dict()
+            body["{rule_set}"] = rule_set.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PUT", "/api/2.0/preview/accounts/access-control/rule-sets", body=body, headers=headers)
@@ -2336,26 +2341,26 @@ class AccountGroupsAPI:
         """
         body = {}
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if members is not None:
-            body["members"] = [v.as_dict() for v in members]
+            body["{members}"] = [v.as_dict() for v in members]
         if meta is not None:
-            body["meta"] = meta.as_dict()
+            body["{meta}"] = meta.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -2390,7 +2395,7 @@ class AccountGroupsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
@@ -2436,42 +2441,42 @@ class AccountGroupsAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", query=query, headers=headers
             )
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield Group.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
@@ -2488,11 +2493,11 @@ class AccountGroupsAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do(
@@ -2539,23 +2544,23 @@ class AccountGroupsAPI:
         """
         body = {}
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if members is not None:
-            body["members"] = [v.as_dict() for v in members]
+            body["{members}"] = [v.as_dict() for v in members]
         if meta is not None:
-            body["meta"] = meta.as_dict()
+            body["{meta}"] = meta.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -2612,26 +2617,26 @@ class AccountServicePrincipalsAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if application_id is not None:
-            body["applicationId"] = application_id
+            body["{application_id}"] = application_id
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -2668,7 +2673,7 @@ class AccountServicePrincipalsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -2716,28 +2721,28 @@ class AccountServicePrincipalsAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do(
                 "GET",
@@ -2745,16 +2750,16 @@ class AccountServicePrincipalsAPI:
                 query=query,
                 headers=headers,
             )
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield ServicePrincipal.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
@@ -2771,11 +2776,11 @@ class AccountServicePrincipalsAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do(
@@ -2828,23 +2833,23 @@ class AccountServicePrincipalsAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if application_id is not None:
-            body["applicationId"] = application_id
+            body["{application_id}"] = application_id
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do(
@@ -2920,30 +2925,30 @@ class AccountUsersAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if emails is not None:
-            body["emails"] = [v.as_dict() for v in emails]
+            body["{emails}"] = [v.as_dict() for v in emails]
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if name is not None:
-            body["name"] = name.as_dict()
+            body["{name}"] = name.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         if user_name is not None:
-            body["userName"] = user_name
+            body["{user_name}"] = user_name
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -3011,21 +3016,21 @@ class AccountUsersAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -3074,42 +3079,42 @@ class AccountUsersAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", query=query, headers=headers
             )
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield User.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
@@ -3126,11 +3131,11 @@ class AccountUsersAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do(
@@ -3187,27 +3192,27 @@ class AccountUsersAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if emails is not None:
-            body["emails"] = [v.as_dict() for v in emails]
+            body["{emails}"] = [v.as_dict() for v in emails]
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if name is not None:
-            body["name"] = name.as_dict()
+            body["{name}"] = name.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         if user_name is not None:
-            body["userName"] = user_name
+            body["{user_name}"] = user_name
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
@@ -3228,7 +3233,7 @@ class CurrentUserAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/scim/v2/Me", headers=headers)
@@ -3286,26 +3291,26 @@ class GroupsAPI:
         """
         body = {}
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if members is not None:
-            body["members"] = [v.as_dict() for v in members]
+            body["{members}"] = [v.as_dict() for v in members]
         if meta is not None:
-            body["meta"] = meta.as_dict()
+            body["{meta}"] = meta.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
@@ -3338,7 +3343,7 @@ class GroupsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
@@ -3384,40 +3389,40 @@ class GroupsAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query, headers=headers)
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield Group.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
@@ -3434,11 +3439,11 @@ class GroupsAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -3483,23 +3488,23 @@ class GroupsAPI:
         """
         body = {}
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if members is not None:
-            body["members"] = [v.as_dict() for v in members]
+            body["{members}"] = [v.as_dict() for v in members]
         if meta is not None:
-            body["meta"] = meta.as_dict()
+            body["{meta}"] = meta.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
@@ -3534,16 +3539,16 @@ class PermissionMigrationAPI:
         """
         body = {}
         if from_workspace_group_name is not None:
-            body["from_workspace_group_name"] = from_workspace_group_name
+            body["{from_workspace_group_name}"] = from_workspace_group_name
         if size is not None:
-            body["size"] = size
+            body["{size}"] = size
         if to_account_group_name is not None:
-            body["to_account_group_name"] = to_account_group_name
+            body["{to_account_group_name}"] = to_account_group_name
         if workspace_id is not None:
-            body["workspace_id"] = workspace_id
+            body["{workspace_id}"] = workspace_id
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/permissionmigration", body=body, headers=headers)
@@ -3621,7 +3626,7 @@ class PermissionsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", headers=headers)
@@ -3641,7 +3646,7 @@ class PermissionsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -3674,10 +3679,10 @@ class PermissionsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -3709,10 +3714,10 @@ class PermissionsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -3772,26 +3777,26 @@ class ServicePrincipalsAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if application_id is not None:
-            body["applicationId"] = application_id
+            body["{application_id}"] = application_id
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
@@ -3824,7 +3829,7 @@ class ServicePrincipalsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
@@ -3870,40 +3875,40 @@ class ServicePrincipalsAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, headers=headers)
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield ServicePrincipal.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
@@ -3920,11 +3925,11 @@ class ServicePrincipalsAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
@@ -3972,23 +3977,23 @@ class ServicePrincipalsAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if application_id is not None:
-            body["applicationId"] = application_id
+            body["{application_id}"] = application_id
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
@@ -4059,30 +4064,30 @@ class UsersAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if emails is not None:
-            body["emails"] = [v.as_dict() for v in emails]
+            body["{emails}"] = [v.as_dict() for v in emails]
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if id is not None:
-            body["id"] = id
+            body["{id}"] = id
         if name is not None:
-            body["name"] = name.as_dict()
+            body["{name}"] = name.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         if user_name is not None:
-            body["userName"] = user_name
+            body["{user_name}"] = user_name
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
@@ -4148,21 +4153,21 @@ class UsersAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
@@ -4177,7 +4182,7 @@ class UsersAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
@@ -4192,7 +4197,7 @@ class UsersAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
@@ -4239,40 +4244,40 @@ class UsersAPI:
 
         query = {}
         if attributes is not None:
-            query["attributes"] = attributes
+            query["{attributes}"] = attributes
         if count is not None:
-            query["count"] = count
+            query["{count}"] = count
         if excluded_attributes is not None:
-            query["excludedAttributes"] = excluded_attributes
+            query["{excluded_attributes}"] = excluded_attributes
         if filter is not None:
-            query["filter"] = filter
+            query["{filter}"] = filter
         if sort_by is not None:
-            query["sortBy"] = sort_by
+            query["{sort_by}"] = sort_by
         if sort_order is not None:
-            query["sortOrder"] = sort_order.value
+            query["{sort_order}"] = sort_order.value
         if start_index is not None:
-            query["startIndex"] = start_index
+            query["{start_index}"] = start_index
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["startIndex"] = 1
-        if "count" not in query:
-            query["count"] = 100
+        query["{start_index}"] = 1
+        if "{count}" not in query:
+            query["{count}"] = 100
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query, headers=headers)
-            if "Resources" in json:
-                for v in json["Resources"]:
-                    i = v["id"]
+            if "{resources}" in json:
+                for v in json["{resources}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield User.from_dict(v)
-            if "Resources" not in json or not json["Resources"]:
+            if "{resources}" not in json or not json["{resources}"]:
                 return
-            query["startIndex"] += len(json["Resources"])
+            query["{start_index}"] += len(json["{resources}"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
@@ -4289,11 +4294,11 @@ class UsersAPI:
         """
         body = {}
         if operations is not None:
-            body["Operations"] = [v.as_dict() for v in operations]
+            body["{operations}"] = [v.as_dict() for v in operations]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
@@ -4312,10 +4317,10 @@ class UsersAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
@@ -4371,27 +4376,27 @@ class UsersAPI:
         """
         body = {}
         if active is not None:
-            body["active"] = active
+            body["{active}"] = active
         if display_name is not None:
-            body["displayName"] = display_name
+            body["{display_name}"] = display_name
         if emails is not None:
-            body["emails"] = [v.as_dict() for v in emails]
+            body["{emails}"] = [v.as_dict() for v in emails]
         if entitlements is not None:
-            body["entitlements"] = [v.as_dict() for v in entitlements]
+            body["{entitlements}"] = [v.as_dict() for v in entitlements]
         if external_id is not None:
-            body["externalId"] = external_id
+            body["{external_id}"] = external_id
         if groups is not None:
-            body["groups"] = [v.as_dict() for v in groups]
+            body["{groups}"] = [v.as_dict() for v in groups]
         if name is not None:
-            body["name"] = name.as_dict()
+            body["{name}"] = name.as_dict()
         if roles is not None:
-            body["roles"] = [v.as_dict() for v in roles]
+            body["{roles}"] = [v.as_dict() for v in roles]
         if schemas is not None:
-            body["schemas"] = [v.value for v in schemas]
+            body["{schemas}"] = [v.value for v in schemas]
         if user_name is not None:
-            body["userName"] = user_name
+            body["{user_name}"] = user_name
         headers = {
-            "Content-Type": "application/json",
+            "0": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
@@ -4409,10 +4414,10 @@ class UsersAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
@@ -4441,7 +4446,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do(
@@ -4462,7 +4467,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -4484,7 +4489,7 @@ class WorkspaceAssignmentAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do(
@@ -4518,10 +4523,10 @@ class WorkspaceAssignmentAPI:
         """
         body = {}
         if permissions is not None:
-            body["permissions"] = [v.value for v in permissions]
+            body["{permissions}"] = [v.value for v in permissions]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
