@@ -759,8 +759,8 @@ class DbfsAPI:
         if handle is not None:
             body["handle"] = handle
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/add-block", body=body, headers=headers)
@@ -780,8 +780,8 @@ class DbfsAPI:
         if handle is not None:
             body["handle"] = handle
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/close", body=body, headers=headers)
@@ -811,8 +811,8 @@ class DbfsAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/dbfs/create", body=body, headers=headers)
@@ -850,8 +850,8 @@ class DbfsAPI:
         if recursive is not None:
             body["recursive"] = recursive
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/delete", body=body, headers=headers)
@@ -872,7 +872,7 @@ class DbfsAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/dbfs/get-status", query=query, headers=headers)
@@ -901,7 +901,7 @@ class DbfsAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/dbfs/list", query=query, headers=headers)
@@ -925,8 +925,8 @@ class DbfsAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/mkdirs", body=body, headers=headers)
@@ -952,8 +952,8 @@ class DbfsAPI:
         if source_path is not None:
             body["source_path"] = source_path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/move", body=body, headers=headers)
@@ -989,8 +989,8 @@ class DbfsAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/dbfs/put", body=body, headers=headers)
@@ -1025,7 +1025,7 @@ class DbfsAPI:
         if path is not None:
             query["path"] = path
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/dbfs/read", query=query, headers=headers)
@@ -1121,7 +1121,7 @@ class FilesAPI:
         """
 
         headers = {
-            "0": "{Accept application/octet-stream}",
+            "Accept": "application/octet-stream",
         }
         response_headers = [
             "{content_length}",
@@ -1222,7 +1222,7 @@ class FilesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -1260,7 +1260,7 @@ class FilesAPI:
         if overwrite is not None:
             query["overwrite"] = overwrite
         headers = {
-            "0": "{Content-Type application/octet-stream}",
+            "Content-Type": "application/octet-stream",
         }
 
         self._api.do(

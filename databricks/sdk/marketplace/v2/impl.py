@@ -3529,7 +3529,7 @@ class ConsumerFulfillmentsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3566,7 +3566,7 @@ class ConsumerFulfillmentsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3623,8 +3623,8 @@ class ConsumerInstallationsAPI:
         if share_name is not None:
             body["share_name"] = share_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3644,7 +3644,7 @@ class ConsumerInstallationsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -3672,7 +3672,7 @@ class ConsumerInstallationsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3704,7 +3704,7 @@ class ConsumerInstallationsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3749,8 +3749,8 @@ class ConsumerInstallationsAPI:
         if rotate_token is not None:
             body["rotate_token"] = rotate_token
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -3783,7 +3783,7 @@ class ConsumerListingsAPI:
         if ids is not None:
             query["ids"] = [v for v in ids]
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/listings:batchGet", query=query, headers=headers)
@@ -3800,7 +3800,7 @@ class ConsumerListingsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/listings/{id}", headers=headers)
@@ -3863,7 +3863,7 @@ class ConsumerListingsAPI:
         if tags is not None:
             query["tags"] = [v.as_dict() for v in tags]
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3926,7 +3926,7 @@ class ConsumerListingsAPI:
         if query is not None:
             query["query"] = query
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -3992,8 +3992,8 @@ class ConsumerPersonalizationRequestsAPI:
         if recipient_type is not None:
             body["recipient_type"] = recipient_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -4016,7 +4016,7 @@ class ConsumerPersonalizationRequestsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4043,7 +4043,7 @@ class ConsumerPersonalizationRequestsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4078,7 +4078,7 @@ class ConsumerProvidersAPI:
         if ids is not None:
             query["ids"] = [v for v in ids]
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.1/marketplace-consumer/providers:batchGet", query=query, headers=headers)
@@ -4095,7 +4095,7 @@ class ConsumerProvidersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.1/marketplace-consumer/providers/{id}", headers=headers)
@@ -4123,7 +4123,7 @@ class ConsumerProvidersAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4155,8 +4155,8 @@ class ProviderExchangeFiltersAPI:
         if filter is not None:
             body["filter"] = filter.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/filters", body=body, headers=headers)
@@ -4173,7 +4173,7 @@ class ProviderExchangeFiltersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/filters/{id}", headers=headers)
@@ -4200,7 +4200,7 @@ class ProviderExchangeFiltersAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4226,8 +4226,8 @@ class ProviderExchangeFiltersAPI:
         if filter is not None:
             body["filter"] = filter.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/filters/{id}", body=body, headers=headers)
@@ -4256,8 +4256,8 @@ class ProviderExchangesAPI:
         if listing_id is not None:
             body["listing_id"] = listing_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges-for-listing", body=body, headers=headers)
@@ -4276,8 +4276,8 @@ class ProviderExchangesAPI:
         if exchange is not None:
             body["exchange"] = exchange.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges", body=body, headers=headers)
@@ -4294,7 +4294,7 @@ class ProviderExchangesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
@@ -4310,7 +4310,7 @@ class ProviderExchangesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges-for-listing/{id}", headers=headers)
@@ -4326,7 +4326,7 @@ class ProviderExchangesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
@@ -4349,7 +4349,7 @@ class ProviderExchangesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4383,7 +4383,7 @@ class ProviderExchangesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4419,7 +4419,7 @@ class ProviderExchangesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4447,8 +4447,8 @@ class ProviderExchangesAPI:
         if exchange is not None:
             body["exchange"] = exchange.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/exchanges/{id}", body=body, headers=headers)
@@ -4490,8 +4490,8 @@ class ProviderFilesAPI:
         if mime_type is not None:
             body["mime_type"] = mime_type
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/files", body=body, headers=headers)
@@ -4508,7 +4508,7 @@ class ProviderFilesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
@@ -4524,7 +4524,7 @@ class ProviderFilesAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
@@ -4552,7 +4552,7 @@ class ProviderFilesAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4585,8 +4585,8 @@ class ProviderListingsAPI:
         if listing is not None:
             body["listing"] = listing.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/listing", body=body, headers=headers)
@@ -4603,7 +4603,7 @@ class ProviderListingsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
@@ -4619,7 +4619,7 @@ class ProviderListingsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
@@ -4642,7 +4642,7 @@ class ProviderListingsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4668,8 +4668,8 @@ class ProviderListingsAPI:
         if listing is not None:
             body["listing"] = listing.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/listings/{id}", body=body, headers=headers)
@@ -4703,7 +4703,7 @@ class ProviderPersonalizationRequestsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4746,8 +4746,8 @@ class ProviderPersonalizationRequestsAPI:
         if status is not None:
             body["status"] = status.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -4775,7 +4775,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
@@ -4790,7 +4790,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
@@ -4805,7 +4805,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard/latest", headers=headers)
@@ -4828,8 +4828,8 @@ class ProviderProviderAnalyticsDashboardsAPI:
         if version is not None:
             body["version"] = version
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/analytics_dashboard/{id}", body=body, headers=headers)
@@ -4855,8 +4855,8 @@ class ProviderProvidersAPI:
         if provider is not None:
             body["provider"] = provider.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/marketplace-provider/provider", body=body, headers=headers)
@@ -4873,7 +4873,7 @@ class ProviderProvidersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
@@ -4889,7 +4889,7 @@ class ProviderProvidersAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
@@ -4912,7 +4912,7 @@ class ProviderProvidersAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -4938,8 +4938,8 @@ class ProviderProvidersAPI:
         if provider is not None:
             body["provider"] = provider.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/marketplace-provider/providers/{id}", body=body, headers=headers)

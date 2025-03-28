@@ -4175,7 +4175,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4234,8 +4234,8 @@ class ServingEndpointsAPI:
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
@@ -4292,7 +4292,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept text/plain}",
+            "Accept": "text/plain",
         }
 
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers, raw=True)
@@ -4310,7 +4310,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}", headers=headers)
@@ -4329,7 +4329,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept text/plain}",
+            "Accept": "text/plain",
         }
 
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers, raw=True)
@@ -4347,7 +4347,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4368,7 +4368,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", headers=headers)
@@ -4416,8 +4416,8 @@ class ServingEndpointsAPI:
         if path is not None:
             body["path"] = path
         headers = {
-            "0": "{Accept text/plain}",
-            "1": "{Content-Type application/json}",
+            "Accept": "text/plain",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers, raw=True)
@@ -4430,7 +4430,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/serving-endpoints", headers=headers)
@@ -4451,7 +4451,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4481,8 +4481,8 @@ class ServingEndpointsAPI:
         if delete_tags is not None:
             body["delete_tags"] = [v for v in delete_tags]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/tags", body=body, headers=headers)
@@ -4505,8 +4505,8 @@ class ServingEndpointsAPI:
         if rate_limits is not None:
             body["rate_limits"] = [v.as_dict() for v in rate_limits]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/rate-limits", body=body, headers=headers)
@@ -4557,8 +4557,8 @@ class ServingEndpointsAPI:
         if usage_tracking_config is not None:
             body["usage_tracking_config"] = usage_tracking_config.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/ai-gateway", body=body, headers=headers)
@@ -4658,8 +4658,8 @@ class ServingEndpointsAPI:
         if temperature is not None:
             body["temperature"] = temperature
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
         response_headers = [
             "{served_model_name}",
@@ -4694,8 +4694,8 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -4747,8 +4747,8 @@ class ServingEndpointsAPI:
         if traffic_config is not None:
             body["traffic_config"] = traffic_config.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
@@ -4797,8 +4797,8 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -4908,8 +4908,8 @@ class ServingEndpointsDataPlaneAPI:
         if temperature is not None:
             body["temperature"] = temperature
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
         response_headers = [
             "{served_model_name}",

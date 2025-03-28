@@ -4775,8 +4775,8 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -4813,7 +4813,7 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -4830,7 +4830,7 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/ip-access-lists", headers=headers)
@@ -4883,7 +4883,7 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -4943,7 +4943,7 @@ class AccountIpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
@@ -4987,7 +4987,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5018,7 +5018,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5057,8 +5057,8 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5094,7 +5094,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5124,7 +5124,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5167,8 +5167,8 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5206,7 +5206,7 @@ class AutomaticClusterUpdateAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5248,8 +5248,8 @@ class AutomaticClusterUpdateAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5286,7 +5286,7 @@ class ComplianceSecurityProfileAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5328,8 +5328,8 @@ class ComplianceSecurityProfileAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5370,8 +5370,8 @@ class CredentialsManagerAPI:
         if token_type is not None:
             body["tokenType"] = [v.value for v in token_type]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/credentials-manager/exchange-tokens/token", body=body, headers=headers)
@@ -5408,7 +5408,7 @@ class CspEnablementAccountAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5450,8 +5450,8 @@ class CspEnablementAccountAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5500,7 +5500,7 @@ class DefaultNamespaceAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5527,7 +5527,7 @@ class DefaultNamespaceAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5576,8 +5576,8 @@ class DefaultNamespaceAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5616,7 +5616,7 @@ class DisableLegacyAccessAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5643,7 +5643,7 @@ class DisableLegacyAccessAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5680,8 +5680,8 @@ class DisableLegacyAccessAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5716,7 +5716,7 @@ class DisableLegacyDbfsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5743,7 +5743,7 @@ class DisableLegacyDbfsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5780,8 +5780,8 @@ class DisableLegacyDbfsAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5819,7 +5819,7 @@ class DisableLegacyFeaturesAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5849,7 +5849,7 @@ class DisableLegacyFeaturesAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5889,8 +5889,8 @@ class DisableLegacyFeaturesAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -5928,7 +5928,7 @@ class EnableIpAccessListsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5958,7 +5958,7 @@ class EnableIpAccessListsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -5998,8 +5998,8 @@ class EnableIpAccessListsAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6041,7 +6041,7 @@ class EnhancedSecurityMonitoringAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6083,8 +6083,8 @@ class EnhancedSecurityMonitoringAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6120,7 +6120,7 @@ class EsmEnablementAccountAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6162,8 +6162,8 @@ class EsmEnablementAccountAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6236,8 +6236,8 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/ip-access-lists", body=body, headers=headers)
@@ -6270,7 +6270,7 @@ class IpAccessListsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
@@ -6285,7 +6285,7 @@ class IpAccessListsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/ip-access-lists", headers=headers)
@@ -6339,7 +6339,7 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
@@ -6395,7 +6395,7 @@ class IpAccessListsAPI:
         if list_type is not None:
             body["list_type"] = list_type.value
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
@@ -6427,8 +6427,8 @@ class NetworkConnectivityAPI:
         if region is not None:
             body["region"] = region
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6467,8 +6467,8 @@ class NetworkConnectivityAPI:
         if resource_id is not None:
             body["resource_id"] = resource_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6491,7 +6491,7 @@ class NetworkConnectivityAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do(
@@ -6519,7 +6519,7 @@ class NetworkConnectivityAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6543,7 +6543,7 @@ class NetworkConnectivityAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6569,7 +6569,7 @@ class NetworkConnectivityAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6596,7 +6596,7 @@ class NetworkConnectivityAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -6632,7 +6632,7 @@ class NetworkConnectivityAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -6677,8 +6677,8 @@ class NotificationDestinationsAPI:
         if display_name is not None:
             body["display_name"] = display_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/notification-destinations", body=body, headers=headers)
@@ -6695,7 +6695,7 @@ class NotificationDestinationsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         self._api.do("DELETE", f"/api/2.0/notification-destinations/{id}", headers=headers)
@@ -6711,7 +6711,7 @@ class NotificationDestinationsAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/notification-destinations/{id}", headers=headers)
@@ -6736,7 +6736,7 @@ class NotificationDestinationsAPI:
         if page_token is not None:
             query["page_token"] = page_token
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         while True:
@@ -6771,8 +6771,8 @@ class NotificationDestinationsAPI:
         if display_name is not None:
             body["display_name"] = display_name
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/notification-destinations/{id}", body=body, headers=headers)
@@ -6810,7 +6810,7 @@ class PersonalComputeAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6840,7 +6840,7 @@ class PersonalComputeAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6880,8 +6880,8 @@ class PersonalComputeAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -6929,7 +6929,7 @@ class RestrictWorkspaceAdminsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6956,7 +6956,7 @@ class RestrictWorkspaceAdminsAPI:
         if etag is not None:
             query["etag"] = etag
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do(
@@ -6998,8 +6998,8 @@ class RestrictWorkspaceAdminsAPI:
         if setting is not None:
             body["setting"] = setting.as_dict()
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do(
@@ -7046,8 +7046,8 @@ class TokenManagementAPI:
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/token-management/on-behalf-of/tokens", body=body, headers=headers)
@@ -7080,7 +7080,7 @@ class TokenManagementAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
@@ -7095,7 +7095,7 @@ class TokenManagementAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens/permissionLevels", headers=headers)
@@ -7110,7 +7110,7 @@ class TokenManagementAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens", headers=headers)
@@ -7137,7 +7137,7 @@ class TokenManagementAPI:
         if created_by_username is not None:
             query["created_by_username"] = created_by_username
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query, headers=headers)
@@ -7160,8 +7160,8 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
@@ -7182,8 +7182,8 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
@@ -7219,8 +7219,8 @@ class TokensAPI:
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         res = self._api.do("POST", "/api/2.0/token/create", body=body, headers=headers)
@@ -7242,8 +7242,8 @@ class TokensAPI:
         if token_id is not None:
             body["token_id"] = token_id
         headers = {
-            "0": "{Accept application/json}",
-            "1": "{Content-Type application/json}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/token/delete", body=body, headers=headers)
@@ -7257,7 +7257,7 @@ class TokensAPI:
         """
 
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         json = self._api.do("GET", "/api/2.0/token/list", headers=headers)
@@ -7285,7 +7285,7 @@ class WorkspaceConfAPI:
         if keys is not None:
             query["keys"] = keys
         headers = {
-            "0": "{Accept application/json}",
+            "Accept": "application/json",
         }
 
         res = self._api.do("GET", "/api/2.0/workspace-conf", query=query, headers=headers)
@@ -7301,7 +7301,7 @@ class WorkspaceConfAPI:
         """
 
         headers = {
-            "0": "{Content-Type application/json}",
+            "Content-Type": "application/json",
         }
 
         self._api.do("PATCH", "/api/2.0/workspace-conf", body=contents, headers=headers)
