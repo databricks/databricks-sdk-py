@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -7219,44 +7218,6 @@ class ForecastingAPI:
             response=CreateForecastingExperimentResponse.from_dict(op_response),
             experiment_id=op_response["experiment_id"],
         )
-
-    def create_experiment_and_wait(
-        self,
-        train_data_path: str,
-        target_column: str,
-        time_column: str,
-        forecast_granularity: str,
-        forecast_horizon: int,
-        *,
-        custom_weights_column: Optional[str] = None,
-        experiment_path: Optional[str] = None,
-        holiday_regions: Optional[List[str]] = None,
-        max_runtime: Optional[int] = None,
-        prediction_data_path: Optional[str] = None,
-        primary_metric: Optional[str] = None,
-        register_to: Optional[str] = None,
-        split_column: Optional[str] = None,
-        timeseries_identifier_columns: Optional[List[str]] = None,
-        training_frameworks: Optional[List[str]] = None,
-        timeout=timedelta(minutes=120),
-    ) -> ForecastingExperiment:
-        return self.create_experiment(
-            custom_weights_column=custom_weights_column,
-            experiment_path=experiment_path,
-            forecast_granularity=forecast_granularity,
-            forecast_horizon=forecast_horizon,
-            holiday_regions=holiday_regions,
-            max_runtime=max_runtime,
-            prediction_data_path=prediction_data_path,
-            primary_metric=primary_metric,
-            register_to=register_to,
-            split_column=split_column,
-            target_column=target_column,
-            time_column=time_column,
-            timeseries_identifier_columns=timeseries_identifier_columns,
-            train_data_path=train_data_path,
-            training_frameworks=training_frameworks,
-        ).result(timeout=timeout)
 
     def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
         """Get a forecasting experiment.

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -1094,11 +1093,6 @@ class AppsAPI:
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
         return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["name"])
 
-    def create_and_wait(
-        self, *, app: Optional[App] = None, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)
-    ) -> App:
-        return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
-
     def delete(self, name: str) -> App:
         """Delete an app.
 
@@ -1143,11 +1137,6 @@ class AppsAPI:
             app_name=app_name,
             deployment_id=op_response["deployment_id"],
         )
-
-    def deploy_and_wait(
-        self, app_name: str, *, app_deployment: Optional[AppDeployment] = None, timeout=timedelta(minutes=20)
-    ) -> AppDeployment:
-        return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
     def get(self, name: str) -> App:
         """Get an app.
@@ -1335,9 +1324,6 @@ class AppsAPI:
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
         return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["name"])
 
-    def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
-        return self.start(name=name).result(timeout=timeout)
-
     def stop(self, name: str) -> Wait[App]:
         """Stop an app.
 
@@ -1358,9 +1344,6 @@ class AppsAPI:
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
         return Wait(self.WaitGetAppStopped, response=App.from_dict(op_response), name=op_response["name"])
-
-    def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
-        return self.stop(name=name).result(timeout=timeout)
 
     def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.

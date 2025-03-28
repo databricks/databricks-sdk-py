@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -9851,40 +9850,6 @@ class WarehousesAPI:
             self.WaitGetWarehouseRunning, response=CreateWarehouseResponse.from_dict(op_response), id=op_response["id"]
         )
 
-    def create_and_wait(
-        self,
-        *,
-        auto_stop_mins: Optional[int] = None,
-        channel: Optional[Channel] = None,
-        cluster_size: Optional[str] = None,
-        creator_name: Optional[str] = None,
-        enable_photon: Optional[bool] = None,
-        enable_serverless_compute: Optional[bool] = None,
-        instance_profile_arn: Optional[str] = None,
-        max_num_clusters: Optional[int] = None,
-        min_num_clusters: Optional[int] = None,
-        name: Optional[str] = None,
-        spot_instance_policy: Optional[SpotInstancePolicy] = None,
-        tags: Optional[EndpointTags] = None,
-        warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
-        timeout=timedelta(minutes=20),
-    ) -> GetWarehouseResponse:
-        return self.create(
-            auto_stop_mins=auto_stop_mins,
-            channel=channel,
-            cluster_size=cluster_size,
-            creator_name=creator_name,
-            enable_photon=enable_photon,
-            enable_serverless_compute=enable_serverless_compute,
-            instance_profile_arn=instance_profile_arn,
-            max_num_clusters=max_num_clusters,
-            min_num_clusters=min_num_clusters,
-            name=name,
-            spot_instance_policy=spot_instance_policy,
-            tags=tags,
-            warehouse_type=warehouse_type,
-        ).result(timeout=timeout)
-
     def delete(self, id: str):
         """Delete a warehouse.
 
@@ -10019,42 +9984,6 @@ class WarehousesAPI:
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
         return Wait(self.WaitGetWarehouseRunning, response=EditWarehouseResponse.from_dict(op_response), id=id)
-
-    def edit_and_wait(
-        self,
-        id: str,
-        *,
-        auto_stop_mins: Optional[int] = None,
-        channel: Optional[Channel] = None,
-        cluster_size: Optional[str] = None,
-        creator_name: Optional[str] = None,
-        enable_photon: Optional[bool] = None,
-        enable_serverless_compute: Optional[bool] = None,
-        instance_profile_arn: Optional[str] = None,
-        max_num_clusters: Optional[int] = None,
-        min_num_clusters: Optional[int] = None,
-        name: Optional[str] = None,
-        spot_instance_policy: Optional[SpotInstancePolicy] = None,
-        tags: Optional[EndpointTags] = None,
-        warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
-        timeout=timedelta(minutes=20),
-    ) -> GetWarehouseResponse:
-        return self.edit(
-            auto_stop_mins=auto_stop_mins,
-            channel=channel,
-            cluster_size=cluster_size,
-            creator_name=creator_name,
-            enable_photon=enable_photon,
-            enable_serverless_compute=enable_serverless_compute,
-            id=id,
-            instance_profile_arn=instance_profile_arn,
-            max_num_clusters=max_num_clusters,
-            min_num_clusters=min_num_clusters,
-            name=name,
-            spot_instance_policy=spot_instance_policy,
-            tags=tags,
-            warehouse_type=warehouse_type,
-        ).result(timeout=timeout)
 
     def get(self, id: str) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -10262,9 +10191,6 @@ class WarehousesAPI:
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
         return Wait(self.WaitGetWarehouseRunning, response=StartWarehouseResponse.from_dict(op_response), id=id)
 
-    def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
-        return self.start(id=id).result(timeout=timeout)
-
     def stop(self, id: str) -> Wait[GetWarehouseResponse]:
         """Stop a warehouse.
 
@@ -10284,9 +10210,6 @@ class WarehousesAPI:
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
         return Wait(self.WaitGetWarehouseStopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
-
-    def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
-        return self.stop(id=id).result(timeout=timeout)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None

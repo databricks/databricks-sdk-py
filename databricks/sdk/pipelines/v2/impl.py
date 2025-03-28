@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -4677,9 +4676,6 @@ class PipelinesAPI:
         return Wait(
             self.WaitGetPipelineIdle, response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
         )
-
-    def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
-        return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
 
     def update(
         self,

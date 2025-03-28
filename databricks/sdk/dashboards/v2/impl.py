@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
@@ -2574,13 +2573,6 @@ class GenieAPI:
             space_id=space_id,
         )
 
-    def create_message_and_wait(
-        self, space_id: str, conversation_id: str, content: str, timeout=timedelta(minutes=20)
-    ) -> GenieMessage:
-        return self.create_message(content=content, conversation_id=conversation_id, space_id=space_id).result(
-            timeout=timeout
-        )
-
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
@@ -2886,9 +2878,6 @@ class GenieAPI:
             message_id=op_response["message_id"],
             space_id=space_id,
         )
-
-    def start_conversation_and_wait(self, space_id: str, content: str, timeout=timedelta(minutes=20)) -> GenieMessage:
-        return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
 
 class LakeviewAPI:
