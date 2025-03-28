@@ -84,6 +84,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WARN
       :value: "WARN"
 
+.. autoclass:: EventLogSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: FileLibrary
    :members:
    :undoc-members:

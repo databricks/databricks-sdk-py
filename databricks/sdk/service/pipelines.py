@@ -58,6 +58,9 @@ class CreatePipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
 
@@ -69,7 +72,7 @@ class CreatePipeline:
 
     ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
-    'libraries', 'target' or 'catalog' settings."""
+    'libraries', 'schema', 'target', or 'catalog' settings."""
 
     libraries: Optional[List[PipelineLibrary]] = None
     """Libraries or code needed by this deployment."""
@@ -95,8 +98,7 @@ class CreatePipeline:
     is thrown."""
 
     schema: Optional[str] = None
-    """The default schema (database) where tables are read from or published to. The presence of this
-    field implies that the pipeline is in direct publishing mode."""
+    """The default schema (database) where tables are read from or published to."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -105,9 +107,9 @@ class CreatePipeline:
     """DBFS root directory for storing checkpoints and tables."""
 
     target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
-    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
-    `catalog`."""
+    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
+    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
+    deprecated for pipeline creation in favor of the `schema` field."""
 
     trigger: Optional[PipelineTrigger] = None
     """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
@@ -137,6 +139,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -194,6 +198,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -241,6 +247,7 @@ class CreatePipeline:
             development=d.get("development", None),
             dry_run=d.get("dry_run", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -428,6 +435,9 @@ class EditPipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     expected_last_modified: Optional[int] = None
     """If present, the last-modified time of the pipeline settings before the edit. If the settings
     were modified after that time, then the request will fail with a conflict."""
@@ -443,7 +453,7 @@ class EditPipeline:
 
     ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
-    'libraries', 'target' or 'catalog' settings."""
+    'libraries', 'schema', 'target', or 'catalog' settings."""
 
     libraries: Optional[List[PipelineLibrary]] = None
     """Libraries or code needed by this deployment."""
@@ -472,8 +482,7 @@ class EditPipeline:
     is thrown."""
 
     schema: Optional[str] = None
-    """The default schema (database) where tables are read from or published to. The presence of this
-    field implies that the pipeline is in direct publishing mode."""
+    """The default schema (database) where tables are read from or published to."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -482,9 +491,9 @@ class EditPipeline:
     """DBFS root directory for storing checkpoints and tables."""
 
     target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
-    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
-    `catalog`."""
+    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
+    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
+    deprecated for pipeline creation in favor of the `schema` field."""
 
     trigger: Optional[PipelineTrigger] = None
     """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
@@ -512,6 +521,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -571,6 +582,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -621,6 +634,7 @@ class EditPipeline:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             expected_last_modified=d.get("expected_last_modified", None),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -698,6 +712,47 @@ class EventLevel(Enum):
     INFO = "INFO"
     METRICS = "METRICS"
     WARN = "WARN"
+
+
+@dataclass
+class EventLogSpec:
+    """Configurable event log parameters."""
+
+    catalog: Optional[str] = None
+    """The UC catalog the event log is published under."""
+
+    name: Optional[str] = None
+    """The name the event log is published to in UC."""
+
+    schema: Optional[str] = None
+    """The UC schema the event log is published under."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EventLogSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EventLogSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EventLogSpec:
+        """Deserializes the EventLogSpec from a dictionary."""
+        return cls(catalog=d.get("catalog", None), name=d.get("name", None), schema=d.get("schema", None))
 
 
 @dataclass
@@ -2207,6 +2262,9 @@ class PipelineSpec:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
 
@@ -2218,7 +2276,7 @@ class PipelineSpec:
 
     ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
-    'libraries', 'target' or 'catalog' settings."""
+    'libraries', 'schema', 'target', or 'catalog' settings."""
 
     libraries: Optional[List[PipelineLibrary]] = None
     """Libraries or code needed by this deployment."""
@@ -2236,8 +2294,7 @@ class PipelineSpec:
     """Restart window of this pipeline."""
 
     schema: Optional[str] = None
-    """The default schema (database) where tables are read from or published to. The presence of this
-    field implies that the pipeline is in direct publishing mode."""
+    """The default schema (database) where tables are read from or published to."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -2246,9 +2303,9 @@ class PipelineSpec:
     """DBFS root directory for storing checkpoints and tables."""
 
     target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
-    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
-    `catalog`."""
+    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
+    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
+    deprecated for pipeline creation in favor of the `schema` field."""
 
     trigger: Optional[PipelineTrigger] = None
     """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
@@ -2274,6 +2331,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -2325,6 +2384,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -2368,6 +2429,7 @@ class PipelineSpec:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -3406,6 +3468,7 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         dry_run: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
         id: Optional[str] = None,
@@ -3450,6 +3513,8 @@ class PipelinesAPI:
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
@@ -3458,7 +3523,7 @@ class PipelinesAPI:
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
-          'libraries', 'target' or 'catalog' settings.
+          'libraries', 'schema', 'target', or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)
@@ -3476,15 +3541,15 @@ class PipelinesAPI:
           Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
           thrown.
         :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
+          The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
-          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 
@@ -3513,6 +3578,8 @@ class PipelinesAPI:
             body["dry_run"] = dry_run
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if filters is not None:
             body["filters"] = filters.as_dict()
         if gateway_definition is not None:
@@ -3906,6 +3973,7 @@ class PipelinesAPI:
         deployment: Optional[PipelineDeployment] = None,
         development: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         expected_last_modified: Optional[int] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
@@ -3951,6 +4019,8 @@ class PipelinesAPI:
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
           If present, the last-modified time of the pipeline settings before the edit. If the settings were
           modified after that time, then the request will fail with a conflict.
@@ -3962,7 +4032,7 @@ class PipelinesAPI:
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
-          'libraries', 'target' or 'catalog' settings.
+          'libraries', 'schema', 'target', or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)
@@ -3980,15 +4050,15 @@ class PipelinesAPI:
           Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
           thrown.
         :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
+          The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
         :param target: str (optional)
-          Target schema (database) to add tables in this pipeline to. If not specified, no data is published
-          to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 
@@ -4015,6 +4085,8 @@ class PipelinesAPI:
             body["development"] = development
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
             body["expected_last_modified"] = expected_last_modified
         if filters is not None:

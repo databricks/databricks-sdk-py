@@ -482,6 +482,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run on serverless compute should be. The performance mode on the job or pipeline should map to a performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget).
 
+   .. py:attribute:: BALANCED
+      :value: "BALANCED"
+
    .. py:attribute:: COST_OPTIMIZED
       :value: "COST_OPTIMIZED"
 
