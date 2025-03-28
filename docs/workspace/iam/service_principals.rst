@@ -176,7 +176,7 @@
         Partially updates the details of a single service principal in the Databricks workspace.
 
         :param id: str
-          Unique ID for a service principal in the Databricks workspace.
+          Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].

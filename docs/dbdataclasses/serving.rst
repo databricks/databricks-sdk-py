@@ -79,6 +79,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ApiKeyAuth
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutoCaptureConfigInput
    :members:
    :undoc-members:
@@ -88,6 +92,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: AutoCaptureState
+   :members:
+   :undoc-members:
+
+.. autoclass:: BearerTokenAuth
    :members:
    :undoc-members:
 
@@ -117,6 +125,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateServingEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: CustomProviderConfig
    :members:
    :undoc-members:
 
@@ -240,6 +252,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: COHERE
       :value: "COHERE"
 
+   .. py:attribute:: CUSTOM
+      :value: "CUSTOM"
+
    .. py:attribute:: DATABRICKS_MODEL_SERVING
       :value: "DATABRICKS_MODEL_SERVING"
 
@@ -253,6 +268,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "PALM"
 
 .. autoclass:: ExternalModelUsageElement
+   :members:
+   :undoc-members:
+
+.. autoclass:: FallbackConfig
    :members:
    :undoc-members:
 
@@ -387,6 +406,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadType
 
+   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
+
    .. py:attribute:: CPU
       :value: "CPU"
 
@@ -492,6 +513,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ServingModelWorkloadType
+
+   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
 
    .. py:attribute:: CPU
       :value: "CPU"

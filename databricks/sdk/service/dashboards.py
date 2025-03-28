@@ -530,6 +530,49 @@ class GenieCreateConversationMessageRequest:
 
 
 @dataclass
+class GenieGenerateDownloadFullQueryResultResponse:
+    error: Optional[str] = None
+    """Error message if Genie failed to download the result"""
+
+    status: Optional[MessageStatus] = None
+    """Download result status"""
+
+    transient_statement_id: Optional[str] = None
+    """Transient Statement ID. Use this ID to track the download request in subsequent polling calls"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error is not None:
+            body["error"] = self.error
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error is not None:
+            body["error"] = self.error
+        if self.status is not None:
+            body["status"] = self.status
+        if self.transient_statement_id is not None:
+            body["transient_statement_id"] = self.transient_statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
+        return cls(
+            error=d.get("error", None),
+            status=_enum(d, "status", MessageStatus),
+            transient_statement_id=d.get("transient_statement_id", None),
+        )
+
+
+@dataclass
 class GenieGetMessageQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
     """SQL Statement Execution response. See [Get status, manifest, and result first
@@ -1082,6 +1125,7 @@ class MessageErrorType(Enum):
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION"
     FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION = "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION"
+    GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION = "GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION"
     GENERIC_CHAT_COMPLETION_EXCEPTION = "GENERIC_CHAT_COMPLETION_EXCEPTION"
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
     GENERIC_SQL_EXEC_API_CALL_EXCEPTION = "GENERIC_SQL_EXEC_API_CALL_EXCEPTION"
@@ -1096,6 +1140,7 @@ class MessageErrorType(Enum):
     MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
+    MISSING_SQL_QUERY_EXCEPTION = "MISSING_SQL_QUERY_EXCEPTION"
     NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
     NO_QUERY_TO_VISUALIZE_EXCEPTION = "NO_QUERY_TO_VISUALIZE_EXCEPTION"
     NO_TABLES_TO_QUERY_EXCEPTION = "NO_TABLES_TO_QUERY_EXCEPTION"
@@ -1986,6 +2031,37 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def generate_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
+    ) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Generate full query result download.
+
+        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
+        This call initiates a new SQL execution to generate the query result.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/generate-download",
+            headers=headers,
+        )
+        return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
         """Get conversation message.

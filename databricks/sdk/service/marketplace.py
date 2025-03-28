@@ -1192,6 +1192,7 @@ class FileParent:
 class FileParentType(Enum):
 
     LISTING = "LISTING"
+    LISTING_RESOURCE = "LISTING_RESOURCE"
     PROVIDER = "PROVIDER"
 
 
@@ -1947,7 +1948,6 @@ class ListProvidersResponse:
 @dataclass
 class Listing:
     summary: ListingSummary
-    """Next Number: 26"""
 
     detail: Optional[ListingDetail] = None
 
@@ -2251,8 +2251,6 @@ class ListingStatus(Enum):
 
 @dataclass
 class ListingSummary:
-    """Next Number: 26"""
-
     name: str
 
     listing_type: ListingType
@@ -2452,6 +2450,7 @@ class ListingType(Enum):
 
 class MarketplaceFileType(Enum):
 
+    APP = "APP"
     EMBEDDED_NOTEBOOK = "EMBEDDED_NOTEBOOK"
     PROVIDER_ICON = "PROVIDER_ICON"
 

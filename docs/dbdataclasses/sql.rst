@@ -443,6 +443,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExternalQuerySource
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalQuerySourceJobInfo
+   :members:
+   :undoc-members:
+
 .. py:class:: Format
 
    .. py:attribute:: ARROW_STREAM

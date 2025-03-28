@@ -1065,6 +1065,7 @@ class CatalogType(Enum):
     """The type of the catalog."""
 
     DELTASHARING_CATALOG = "DELTASHARING_CATALOG"
+    FOREIGN_CATALOG = "FOREIGN_CATALOG"
     MANAGED_CATALOG = "MANAGED_CATALOG"
     SYSTEM_CATALOG = "SYSTEM_CATALOG"
 
@@ -6664,6 +6665,7 @@ class Privilege(Enum):
     ACCESS = "ACCESS"
     ALL_PRIVILEGES = "ALL_PRIVILEGES"
     APPLY_TAG = "APPLY_TAG"
+    BROWSE = "BROWSE"
     CREATE = "CREATE"
     CREATE_CATALOG = "CREATE_CATALOG"
     CREATE_CONNECTION = "CREATE_CONNECTION"
@@ -9471,6 +9473,8 @@ class UpdateWorkspaceBindingsParameters:
 
 @dataclass
 class ValidateCredentialRequest:
+    """Next ID: 17"""
+
     aws_iam_role: Optional[AwsIamRole] = None
     """The AWS IAM role configuration"""
 
