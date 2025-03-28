@@ -7,10 +7,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
-
 
 # all definitions in this file are in alphabetical order
 
@@ -27,24 +26,24 @@ class AclItem:
         """Serializes the AclItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AclItem into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AclItem:
         """Deserializes the AclItem from a dictionary."""
-        return cls(permission=_enum(d, "permission", AclPermission), principal=d.get("principal", None))
+        return cls(permission=_enum(d, "{permission}", AclPermission), principal=d.get("{principal}", None))
 
 
 class AclPermission(Enum):
@@ -66,24 +65,24 @@ class AzureKeyVaultSecretScopeMetadata:
         """Serializes the AzureKeyVaultSecretScopeMetadata into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dns_name is not None:
-            body["dns_name"] = self.dns_name
+            body["{dns_name}"] = self.dns_name
         if self.resource_id is not None:
-            body["resource_id"] = self.resource_id
+            body["{resource_id}"] = self.resource_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AzureKeyVaultSecretScopeMetadata into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dns_name is not None:
-            body["dns_name"] = self.dns_name
+            body["{dns_name}"] = self.dns_name
         if self.resource_id is not None:
-            body["resource_id"] = self.resource_id
+            body["{resource_id}"] = self.resource_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AzureKeyVaultSecretScopeMetadata:
         """Deserializes the AzureKeyVaultSecretScopeMetadata from a dictionary."""
-        return cls(dns_name=d.get("dns_name", None), resource_id=d.get("resource_id", None))
+        return cls(dns_name=d.get("{dns_name}", None), resource_id=d.get("{resource_id}", None))
 
 
 @dataclass
@@ -110,31 +109,31 @@ class CreateCredentialsRequest:
         """Serializes the CreateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
+            body["{personal_access_token}"] = self.personal_access_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateCredentialsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
+            body["{personal_access_token}"] = self.personal_access_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsRequest:
         """Deserializes the CreateCredentialsRequest from a dictionary."""
         return cls(
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
+            git_provider=d.get("{git_provider}", None),
+            git_username=d.get("{git_username}", None),
+            personal_access_token=d.get("{personal_access_token}", None),
         )
 
 
@@ -154,31 +153,31 @@ class CreateCredentialsResponse:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsResponse:
         """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
+            credential_id=d.get("{credential_id}", None),
+            git_provider=d.get("{git_provider}", None),
+            git_username=d.get("{git_username}", None),
         )
 
 
@@ -204,36 +203,36 @@ class CreateRepoRequest:
         """Serializes the CreateRepoRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = self.sparse_checkout.as_dict()
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateRepoRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
+            body["{sparse_checkout}"] = self.sparse_checkout
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateRepoRequest:
         """Deserializes the CreateRepoRequest from a dictionary."""
         return cls(
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
+            path=d.get("{path}", None),
+            provider=d.get("{provider}", None),
+            sparse_checkout=_from_dict(d, "{sparse_checkout}", SparseCheckout),
+            url=d.get("{url}", None),
         )
 
 
@@ -264,51 +263,51 @@ class CreateRepoResponse:
         """Serializes the CreateRepoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = self.sparse_checkout.as_dict()
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateRepoResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
+            body["{sparse_checkout}"] = self.sparse_checkout
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateRepoResponse:
         """Deserializes the CreateRepoResponse from a dictionary."""
         return cls(
-            branch=d.get("branch", None),
-            head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
+            branch=d.get("{branch}", None),
+            head_commit_id=d.get("{head_commit_id}", None),
+            id=d.get("{id}", None),
+            path=d.get("{path}", None),
+            provider=d.get("{provider}", None),
+            sparse_checkout=_from_dict(d, "{sparse_checkout}", SparseCheckout),
+            url=d.get("{url}", None),
         )
 
 
@@ -330,36 +329,36 @@ class CreateScope:
         """Serializes the CreateScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault.as_dict()
+            body["{backend_azure_keyvault}"] = self.backend_azure_keyvault.as_dict()
         if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
+            body["{initial_manage_principal}"] = self.initial_manage_principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type.value
+            body["{scope_backend_type}"] = self.scope_backend_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateScope into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault
+            body["{backend_azure_keyvault}"] = self.backend_azure_keyvault
         if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
+            body["{initial_manage_principal}"] = self.initial_manage_principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type
+            body["{scope_backend_type}"] = self.scope_backend_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateScope:
         """Deserializes the CreateScope from a dictionary."""
         return cls(
-            backend_azure_keyvault=_from_dict(d, "backend_azure_keyvault", AzureKeyVaultSecretScopeMetadata),
-            initial_manage_principal=d.get("initial_manage_principal", None),
-            scope=d.get("scope", None),
-            scope_backend_type=_enum(d, "scope_backend_type", ScopeBackendType),
+            backend_azure_keyvault=_from_dict(d, "{backend_azure_keyvault}", AzureKeyVaultSecretScopeMetadata),
+            initial_manage_principal=d.get("{initial_manage_principal}", None),
+            scope=d.get("{scope}", None),
+            scope_backend_type=_enum(d, "{scope_backend_type}", ScopeBackendType),
         )
 
 
@@ -397,31 +396,31 @@ class CredentialInfo:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CredentialInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
+            credential_id=d.get("{credential_id}", None),
+            git_provider=d.get("{git_provider}", None),
+            git_username=d.get("{git_username}", None),
         )
 
 
@@ -439,24 +438,24 @@ class Delete:
         """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.recursive is not None:
-            body["recursive"] = self.recursive
+            body["{recursive}"] = self.recursive
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Delete into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.recursive is not None:
-            body["recursive"] = self.recursive
+            body["{recursive}"] = self.recursive
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
-        return cls(path=d.get("path", None), recursive=d.get("recursive", None))
+        return cls(path=d.get("{path}", None), recursive=d.get("{recursive}", None))
 
 
 @dataclass
@@ -471,24 +470,24 @@ class DeleteAcl:
         """Serializes the DeleteAcl into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DeleteAcl into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteAcl:
         """Deserializes the DeleteAcl from a dictionary."""
-        return cls(principal=d.get("principal", None), scope=d.get("scope", None))
+        return cls(principal=d.get("{principal}", None), scope=d.get("{scope}", None))
 
 
 @dataclass
@@ -572,20 +571,20 @@ class DeleteScope:
         """Serializes the DeleteScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DeleteScope into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteScope:
         """Deserializes the DeleteScope from a dictionary."""
-        return cls(scope=d.get("scope", None))
+        return cls(scope=d.get("{scope}", None))
 
 
 @dataclass
@@ -618,24 +617,24 @@ class DeleteSecret:
         """Serializes the DeleteSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DeleteSecret into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteSecret:
         """Deserializes the DeleteSecret from a dictionary."""
-        return cls(key=d.get("key", None), scope=d.get("scope", None))
+        return cls(key=d.get("{key}", None), scope=d.get("{scope}", None))
 
 
 @dataclass
@@ -684,24 +683,24 @@ class ExportResponse:
         """Serializes the ExportResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None:
-            body["content"] = self.content
+            body["{content}"] = self.content
         if self.file_type is not None:
-            body["file_type"] = self.file_type
+            body["{file_type}"] = self.file_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ExportResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None:
-            body["content"] = self.content
+            body["{content}"] = self.content
         if self.file_type is not None:
-            body["file_type"] = self.file_type
+            body["{file_type}"] = self.file_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExportResponse:
         """Deserializes the ExportResponse from a dictionary."""
-        return cls(content=d.get("content", None), file_type=d.get("file_type", None))
+        return cls(content=d.get("{content}", None), file_type=d.get("{file_type}", None))
 
 
 @dataclass
@@ -720,31 +719,31 @@ class GetCredentialsResponse:
         """Serializes the GetCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetCredentialsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
+            credential_id=d.get("{credential_id}", None),
+            git_provider=d.get("{git_provider}", None),
+            git_username=d.get("{git_username}", None),
         )
 
 
@@ -757,20 +756,20 @@ class GetRepoPermissionLevelsResponse:
         """Serializes the GetRepoPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetRepoPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetRepoPermissionLevelsResponse:
         """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", RepoPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", RepoPermissionsDescription))
 
 
 @dataclass
@@ -800,51 +799,51 @@ class GetRepoResponse:
         """Serializes the GetRepoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = self.sparse_checkout.as_dict()
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetRepoResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
+            body["{sparse_checkout}"] = self.sparse_checkout
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetRepoResponse:
         """Deserializes the GetRepoResponse from a dictionary."""
         return cls(
-            branch=d.get("branch", None),
-            head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
+            branch=d.get("{branch}", None),
+            head_commit_id=d.get("{head_commit_id}", None),
+            id=d.get("{id}", None),
+            path=d.get("{path}", None),
+            provider=d.get("{provider}", None),
+            sparse_checkout=_from_dict(d, "{sparse_checkout}", SparseCheckout),
+            url=d.get("{url}", None),
         )
 
 
@@ -860,24 +859,24 @@ class GetSecretResponse:
         """Serializes the GetSecretResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetSecretResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetSecretResponse:
         """Deserializes the GetSecretResponse from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
+        return cls(key=d.get("{key}", None), value=d.get("{value}", None))
 
 
 @dataclass
@@ -889,20 +888,20 @@ class GetWorkspaceObjectPermissionLevelsResponse:
         """Serializes the GetWorkspaceObjectPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetWorkspaceObjectPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", WorkspaceObjectPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", WorkspaceObjectPermissionsDescription))
 
 
 @dataclass
@@ -941,41 +940,41 @@ class Import:
         """Serializes the Import into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None:
-            body["content"] = self.content
+            body["{content}"] = self.content
         if self.format is not None:
-            body["format"] = self.format.value
+            body["{format}"] = self.format.value
         if self.language is not None:
-            body["language"] = self.language.value
+            body["{language}"] = self.language.value
         if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
+            body["{overwrite}"] = self.overwrite
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Import into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None:
-            body["content"] = self.content
+            body["{content}"] = self.content
         if self.format is not None:
-            body["format"] = self.format
+            body["{format}"] = self.format
         if self.language is not None:
-            body["language"] = self.language
+            body["{language}"] = self.language
         if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
+            body["{overwrite}"] = self.overwrite
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Import:
         """Deserializes the Import from a dictionary."""
         return cls(
-            content=d.get("content", None),
-            format=_enum(d, "format", ImportFormat),
-            language=_enum(d, "language", Language),
-            overwrite=d.get("overwrite", None),
-            path=d.get("path", None),
+            content=d.get("{content}", None),
+            format=_enum(d, "{format}", ImportFormat),
+            language=_enum(d, "{language}", Language),
+            overwrite=d.get("{overwrite}", None),
+            path=d.get("{path}", None),
         )
 
 
@@ -1027,20 +1026,20 @@ class ListAclsResponse:
         """Serializes the ListAclsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items:
-            body["items"] = [v.as_dict() for v in self.items]
+            body["{items}"] = [v.as_dict() for v in self.items]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAclsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.items:
-            body["items"] = self.items
+            body["{items}"] = self.items
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAclsResponse:
         """Deserializes the ListAclsResponse from a dictionary."""
-        return cls(items=_repeated_dict(d, "items", AclItem))
+        return cls(items=_repeated_dict(d, "{items}", AclItem))
 
 
 @dataclass
@@ -1052,20 +1051,20 @@ class ListCredentialsResponse:
         """Serializes the ListCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credentials:
-            body["credentials"] = [v.as_dict() for v in self.credentials]
+            body["{credentials}"] = [v.as_dict() for v in self.credentials]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListCredentialsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.credentials:
-            body["credentials"] = self.credentials
+            body["{credentials}"] = self.credentials
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
-        return cls(credentials=_repeated_dict(d, "credentials", CredentialInfo))
+        return cls(credentials=_repeated_dict(d, "{credentials}", CredentialInfo))
 
 
 @dataclass
@@ -1081,24 +1080,24 @@ class ListReposResponse:
         """Serializes the ListReposResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.repos:
-            body["repos"] = [v.as_dict() for v in self.repos]
+            body["{repos}"] = [v.as_dict() for v in self.repos]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListReposResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.repos:
-            body["repos"] = self.repos
+            body["{repos}"] = self.repos
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListReposResponse:
         """Deserializes the ListReposResponse from a dictionary."""
-        return cls(next_page_token=d.get("next_page_token", None), repos=_repeated_dict(d, "repos", RepoInfo))
+        return cls(next_page_token=d.get("{next_page_token}", None), repos=_repeated_dict(d, "{repos}", RepoInfo))
 
 
 @dataclass
@@ -1110,20 +1109,20 @@ class ListResponse:
         """Serializes the ListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.objects:
-            body["objects"] = [v.as_dict() for v in self.objects]
+            body["{objects}"] = [v.as_dict() for v in self.objects]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.objects:
-            body["objects"] = self.objects
+            body["{objects}"] = self.objects
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListResponse:
         """Deserializes the ListResponse from a dictionary."""
-        return cls(objects=_repeated_dict(d, "objects", ObjectInfo))
+        return cls(objects=_repeated_dict(d, "{objects}", ObjectInfo))
 
 
 @dataclass
@@ -1135,20 +1134,20 @@ class ListScopesResponse:
         """Serializes the ListScopesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.scopes:
-            body["scopes"] = [v.as_dict() for v in self.scopes]
+            body["{scopes}"] = [v.as_dict() for v in self.scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListScopesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.scopes:
-            body["scopes"] = self.scopes
+            body["{scopes}"] = self.scopes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListScopesResponse:
         """Deserializes the ListScopesResponse from a dictionary."""
-        return cls(scopes=_repeated_dict(d, "scopes", SecretScope))
+        return cls(scopes=_repeated_dict(d, "{scopes}", SecretScope))
 
 
 @dataclass
@@ -1160,20 +1159,20 @@ class ListSecretsResponse:
         """Serializes the ListSecretsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.secrets:
-            body["secrets"] = [v.as_dict() for v in self.secrets]
+            body["{secrets}"] = [v.as_dict() for v in self.secrets]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListSecretsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.secrets:
-            body["secrets"] = self.secrets
+            body["{secrets}"] = self.secrets
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListSecretsResponse:
         """Deserializes the ListSecretsResponse from a dictionary."""
-        return cls(secrets=_repeated_dict(d, "secrets", SecretMetadata))
+        return cls(secrets=_repeated_dict(d, "{secrets}", SecretMetadata))
 
 
 @dataclass
@@ -1186,20 +1185,20 @@ class Mkdirs:
         """Serializes the Mkdirs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Mkdirs into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Mkdirs:
         """Deserializes the Mkdirs from a dictionary."""
-        return cls(path=d.get("path", None))
+        return cls(path=d.get("{path}", None))
 
 
 @dataclass
@@ -1256,56 +1255,56 @@ class ObjectInfo:
         """Serializes the ObjectInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.language is not None:
-            body["language"] = self.language.value
+            body["{language}"] = self.language.value
         if self.modified_at is not None:
-            body["modified_at"] = self.modified_at
+            body["{modified_at}"] = self.modified_at
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type.value
+            body["{object_type}"] = self.object_type.value
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.resource_id is not None:
-            body["resource_id"] = self.resource_id
+            body["{resource_id}"] = self.resource_id
         if self.size is not None:
-            body["size"] = self.size
+            body["{size}"] = self.size
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ObjectInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.language is not None:
-            body["language"] = self.language
+            body["{language}"] = self.language
         if self.modified_at is not None:
-            body["modified_at"] = self.modified_at
+            body["{modified_at}"] = self.modified_at
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.resource_id is not None:
-            body["resource_id"] = self.resource_id
+            body["{resource_id}"] = self.resource_id
         if self.size is not None:
-            body["size"] = self.size
+            body["{size}"] = self.size
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ObjectInfo:
         """Deserializes the ObjectInfo from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
-            language=_enum(d, "language", Language),
-            modified_at=d.get("modified_at", None),
-            object_id=d.get("object_id", None),
-            object_type=_enum(d, "object_type", ObjectType),
-            path=d.get("path", None),
-            resource_id=d.get("resource_id", None),
-            size=d.get("size", None),
+            created_at=d.get("{created_at}", None),
+            language=_enum(d, "{language}", Language),
+            modified_at=d.get("{modified_at}", None),
+            object_id=d.get("{object_id}", None),
+            object_type=_enum(d, "{object_type}", ObjectType),
+            path=d.get("{path}", None),
+            resource_id=d.get("{resource_id}", None),
+            size=d.get("{size}", None),
         )
 
 
@@ -1335,31 +1334,31 @@ class PutAcl:
         """Serializes the PutAcl into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission is not None:
-            body["permission"] = self.permission.value
+            body["{permission}"] = self.permission.value
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PutAcl into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission is not None:
-            body["permission"] = self.permission
+            body["{permission}"] = self.permission
         if self.principal is not None:
-            body["principal"] = self.principal
+            body["{principal}"] = self.principal
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PutAcl:
         """Deserializes the PutAcl from a dictionary."""
         return cls(
-            permission=_enum(d, "permission", AclPermission),
-            principal=d.get("principal", None),
-            scope=d.get("scope", None),
+            permission=_enum(d, "{permission}", AclPermission),
+            principal=d.get("{principal}", None),
+            scope=d.get("{scope}", None),
         )
 
 
@@ -1399,36 +1398,36 @@ class PutSecret:
         """Serializes the PutSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
+            body["{bytes_value}"] = self.bytes_value
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         if self.string_value is not None:
-            body["string_value"] = self.string_value
+            body["{string_value}"] = self.string_value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PutSecret into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
+            body["{bytes_value}"] = self.bytes_value
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.scope is not None:
-            body["scope"] = self.scope
+            body["{scope}"] = self.scope
         if self.string_value is not None:
-            body["string_value"] = self.string_value
+            body["{string_value}"] = self.string_value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PutSecret:
         """Deserializes the PutSecret from a dictionary."""
         return cls(
-            bytes_value=d.get("bytes_value", None),
-            key=d.get("key", None),
-            scope=d.get("scope", None),
-            string_value=d.get("string_value", None),
+            bytes_value=d.get("{bytes_value}", None),
+            key=d.get("{key}", None),
+            scope=d.get("{scope}", None),
+            string_value=d.get("{string_value}", None),
         )
 
 
@@ -1468,36 +1467,36 @@ class RepoAccessControlRequest:
         """Serializes the RepoAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlRequest:
         """Deserializes the RepoAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", RepoPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", RepoPermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -1522,41 +1521,41 @@ class RepoAccessControlResponse:
         """Serializes the RepoAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlResponse:
         """Deserializes the RepoAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", RepoPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", RepoPermission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -1589,51 +1588,51 @@ class RepoInfo:
         """Serializes the RepoInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = self.sparse_checkout.as_dict()
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.head_commit_id is not None:
-            body["head_commit_id"] = self.head_commit_id
+            body["{head_commit_id}"] = self.head_commit_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.provider is not None:
-            body["provider"] = self.provider
+            body["{provider}"] = self.provider
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
+            body["{sparse_checkout}"] = self.sparse_checkout
         if self.url is not None:
-            body["url"] = self.url
+            body["{url}"] = self.url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoInfo:
         """Deserializes the RepoInfo from a dictionary."""
         return cls(
-            branch=d.get("branch", None),
-            head_commit_id=d.get("head_commit_id", None),
-            id=d.get("id", None),
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
+            branch=d.get("{branch}", None),
+            head_commit_id=d.get("{head_commit_id}", None),
+            id=d.get("{id}", None),
+            path=d.get("{path}", None),
+            provider=d.get("{provider}", None),
+            sparse_checkout=_from_dict(d, "{sparse_checkout}", SparseCheckout),
+            url=d.get("{url}", None),
         )
 
 
@@ -1650,31 +1649,31 @@ class RepoPermission:
         """Serializes the RepoPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoPermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoPermission:
         """Deserializes the RepoPermission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", RepoPermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", RepoPermissionLevel),
         )
 
 
@@ -1699,31 +1698,31 @@ class RepoPermissions:
         """Serializes the RepoPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoPermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoPermissions:
         """Deserializes the RepoPermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", RepoAccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -1738,25 +1737,26 @@ class RepoPermissionsDescription:
         """Serializes the RepoPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoPermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsDescription:
         """Deserializes the RepoPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None), permission_level=_enum(d, "permission_level", RepoPermissionLevel)
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", RepoPermissionLevel),
         )
 
 
@@ -1771,26 +1771,26 @@ class RepoPermissionsRequest:
         """Serializes the RepoPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
+            body["{repo_id}"] = self.repo_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepoPermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
+            body["{repo_id}"] = self.repo_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsRequest:
         """Deserializes the RepoPermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlRequest),
-            repo_id=d.get("repo_id", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", RepoAccessControlRequest),
+            repo_id=d.get("{repo_id}", None),
         )
 
 
@@ -1812,24 +1812,24 @@ class SecretMetadata:
         """Serializes the SecretMetadata into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["{last_updated_timestamp}"] = self.last_updated_timestamp
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SecretMetadata into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.last_updated_timestamp is not None:
-            body["last_updated_timestamp"] = self.last_updated_timestamp
+            body["{last_updated_timestamp}"] = self.last_updated_timestamp
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SecretMetadata:
         """Deserializes the SecretMetadata from a dictionary."""
-        return cls(key=d.get("key", None), last_updated_timestamp=d.get("last_updated_timestamp", None))
+        return cls(key=d.get("{key}", None), last_updated_timestamp=d.get("{last_updated_timestamp}", None))
 
 
 @dataclass
@@ -1847,31 +1847,31 @@ class SecretScope:
         """Serializes the SecretScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.backend_type is not None:
-            body["backend_type"] = self.backend_type.value
+            body["{backend_type}"] = self.backend_type.value
         if self.keyvault_metadata:
-            body["keyvault_metadata"] = self.keyvault_metadata.as_dict()
+            body["{keyvault_metadata}"] = self.keyvault_metadata.as_dict()
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SecretScope into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.backend_type is not None:
-            body["backend_type"] = self.backend_type
+            body["{backend_type}"] = self.backend_type
         if self.keyvault_metadata:
-            body["keyvault_metadata"] = self.keyvault_metadata
+            body["{keyvault_metadata}"] = self.keyvault_metadata
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SecretScope:
         """Deserializes the SecretScope from a dictionary."""
         return cls(
-            backend_type=_enum(d, "backend_type", ScopeBackendType),
-            keyvault_metadata=_from_dict(d, "keyvault_metadata", AzureKeyVaultSecretScopeMetadata),
-            name=d.get("name", None),
+            backend_type=_enum(d, "{backend_type}", ScopeBackendType),
+            keyvault_metadata=_from_dict(d, "{keyvault_metadata}", AzureKeyVaultSecretScopeMetadata),
+            name=d.get("{name}", None),
         )
 
 
@@ -1888,20 +1888,20 @@ class SparseCheckout:
         """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.patterns:
-            body["patterns"] = [v for v in self.patterns]
+            body["{patterns}"] = [v for v in self.patterns]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SparseCheckout into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.patterns:
-            body["patterns"] = self.patterns
+            body["{patterns}"] = self.patterns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SparseCheckout:
         """Deserializes the SparseCheckout from a dictionary."""
-        return cls(patterns=d.get("patterns", None))
+        return cls(patterns=d.get("{patterns}", None))
 
 
 @dataclass
@@ -1917,20 +1917,20 @@ class SparseCheckoutUpdate:
         """Serializes the SparseCheckoutUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.patterns:
-            body["patterns"] = [v for v in self.patterns]
+            body["{patterns}"] = [v for v in self.patterns]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SparseCheckoutUpdate into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.patterns:
-            body["patterns"] = self.patterns
+            body["{patterns}"] = self.patterns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SparseCheckoutUpdate:
         """Deserializes the SparseCheckoutUpdate from a dictionary."""
-        return cls(patterns=d.get("patterns", None))
+        return cls(patterns=d.get("{patterns}", None))
 
 
 @dataclass
@@ -1960,36 +1960,36 @@ class UpdateCredentialsRequest:
         """Serializes the UpdateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
+            body["{personal_access_token}"] = self.personal_access_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateCredentialsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
+            body["{credential_id}"] = self.credential_id
         if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
+            body["{git_provider}"] = self.git_provider
         if self.git_username is not None:
-            body["git_username"] = self.git_username
+            body["{git_username}"] = self.git_username
         if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
+            body["{personal_access_token}"] = self.personal_access_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsRequest:
         """Deserializes the UpdateCredentialsRequest from a dictionary."""
         return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
+            credential_id=d.get("{credential_id}", None),
+            git_provider=d.get("{git_provider}", None),
+            git_username=d.get("{git_username}", None),
+            personal_access_token=d.get("{personal_access_token}", None),
         )
 
 
@@ -2032,36 +2032,36 @@ class UpdateRepoRequest:
         """Serializes the UpdateRepoRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
+            body["{repo_id}"] = self.repo_id
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = self.sparse_checkout.as_dict()
         if self.tag is not None:
-            body["tag"] = self.tag
+            body["{tag}"] = self.tag
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateRepoRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.branch is not None:
-            body["branch"] = self.branch
+            body["{branch}"] = self.branch
         if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
+            body["{repo_id}"] = self.repo_id
         if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
+            body["{sparse_checkout}"] = self.sparse_checkout
         if self.tag is not None:
-            body["tag"] = self.tag
+            body["{tag}"] = self.tag
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateRepoRequest:
         """Deserializes the UpdateRepoRequest from a dictionary."""
         return cls(
-            branch=d.get("branch", None),
-            repo_id=d.get("repo_id", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckoutUpdate),
-            tag=d.get("tag", None),
+            branch=d.get("{branch}", None),
+            repo_id=d.get("{repo_id}", None),
+            sparse_checkout=_from_dict(d, "{sparse_checkout}", SparseCheckoutUpdate),
+            tag=d.get("{tag}", None),
         )
 
 
@@ -2101,36 +2101,36 @@ class WorkspaceObjectAccessControlRequest:
         """Serializes the WorkspaceObjectAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlRequest:
         """Deserializes the WorkspaceObjectAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", WorkspaceObjectPermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -2155,41 +2155,41 @@ class WorkspaceObjectAccessControlResponse:
         """Serializes the WorkspaceObjectAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlResponse:
         """Deserializes the WorkspaceObjectAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", WorkspaceObjectPermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", WorkspaceObjectPermission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -2206,31 +2206,31 @@ class WorkspaceObjectPermission:
         """Serializes the WorkspaceObjectPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermission:
         """Deserializes the WorkspaceObjectPermission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", WorkspaceObjectPermissionLevel),
         )
 
 
@@ -2255,31 +2255,31 @@ class WorkspaceObjectPermissions:
         """Serializes the WorkspaceObjectPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissions:
         """Deserializes the WorkspaceObjectPermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", WorkspaceObjectAccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -2294,26 +2294,26 @@ class WorkspaceObjectPermissionsDescription:
         """Serializes the WorkspaceObjectPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsDescription:
         """Deserializes the WorkspaceObjectPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", WorkspaceObjectPermissionLevel),
         )
 
 
@@ -2331,31 +2331,31 @@ class WorkspaceObjectPermissionsRequest:
         """Serializes the WorkspaceObjectPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
+            body["{workspace_object_id}"] = self.workspace_object_id
         if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
+            body["{workspace_object_type}"] = self.workspace_object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
+            body["{workspace_object_id}"] = self.workspace_object_id
         if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
+            body["{workspace_object_type}"] = self.workspace_object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsRequest:
         """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlRequest),
-            workspace_object_id=d.get("workspace_object_id", None),
-            workspace_object_type=d.get("workspace_object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", WorkspaceObjectAccessControlRequest),
+            workspace_object_id=d.get("{workspace_object_id}", None),
+            workspace_object_type=d.get("{workspace_object_type}", None),
         )
 
 
@@ -2398,14 +2398,14 @@ class GitCredentialsAPI:
         """
         body = {}
         if git_provider is not None:
-            body["git_provider"] = git_provider
+            body["{git_provider}"] = git_provider
         if git_username is not None:
-            body["git_username"] = git_username
+            body["{git_username}"] = git_username
         if personal_access_token is not None:
-            body["personal_access_token"] = personal_access_token
+            body["{personal_access_token}"] = personal_access_token
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/git-credentials", body=body, headers=headers)
@@ -2423,7 +2423,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
@@ -2440,7 +2440,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
@@ -2455,7 +2455,7 @@ class GitCredentialsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/git-credentials", headers=headers)
@@ -2496,14 +2496,14 @@ class GitCredentialsAPI:
         """
         body = {}
         if git_provider is not None:
-            body["git_provider"] = git_provider
+            body["{git_provider}"] = git_provider
         if git_username is not None:
-            body["git_username"] = git_username
+            body["{git_username}"] = git_username
         if personal_access_token is not None:
-            body["personal_access_token"] = personal_access_token
+            body["{personal_access_token}"] = personal_access_token
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body, headers=headers)
@@ -2548,16 +2548,16 @@ class ReposAPI:
         """
         body = {}
         if path is not None:
-            body["path"] = path
+            body["{path}"] = path
         if provider is not None:
-            body["provider"] = provider
+            body["{provider}"] = provider
         if sparse_checkout is not None:
-            body["sparse_checkout"] = sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = sparse_checkout.as_dict()
         if url is not None:
-            body["url"] = url
+            body["{url}"] = url
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/repos", body=body, headers=headers)
@@ -2575,7 +2575,7 @@ class ReposAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", headers=headers)
@@ -2592,7 +2592,7 @@ class ReposAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/repos/{repo_id}", headers=headers)
@@ -2610,7 +2610,7 @@ class ReposAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
@@ -2628,7 +2628,7 @@ class ReposAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
@@ -2653,21 +2653,21 @@ class ReposAPI:
 
         query = {}
         if next_page_token is not None:
-            query["next_page_token"] = next_page_token
+            query["{next_page_token}"] = next_page_token
         if path_prefix is not None:
-            query["path_prefix"] = path_prefix
+            query["{path_prefix}"] = path_prefix
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/repos", query=query, headers=headers)
-            if "repos" in json:
-                for v in json["repos"]:
+            if "{repos}" in json:
+                for v in json["{repos}"]:
                     yield RepoInfo.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["next_page_token"] = json["next_page_token"]
+            query["{next_page_token}"] = json["{next_page_token}"]
 
     def set_permissions(
         self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
@@ -2685,10 +2685,10 @@ class ReposAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
@@ -2723,14 +2723,14 @@ class ReposAPI:
         """
         body = {}
         if branch is not None:
-            body["branch"] = branch
+            body["{branch}"] = branch
         if sparse_checkout is not None:
-            body["sparse_checkout"] = sparse_checkout.as_dict()
+            body["{sparse_checkout}"] = sparse_checkout.as_dict()
         if tag is not None:
-            body["tag"] = tag
+            body["{tag}"] = tag
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
@@ -2750,10 +2750,10 @@ class ReposAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
@@ -2800,16 +2800,16 @@ class SecretsAPI:
         """
         body = {}
         if backend_azure_keyvault is not None:
-            body["backend_azure_keyvault"] = backend_azure_keyvault.as_dict()
+            body["{backend_azure_keyvault}"] = backend_azure_keyvault.as_dict()
         if initial_manage_principal is not None:
-            body["initial_manage_principal"] = initial_manage_principal
+            body["{initial_manage_principal}"] = initial_manage_principal
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         if scope_backend_type is not None:
-            body["scope_backend_type"] = scope_backend_type.value
+            body["{scope_backend_type}"] = scope_backend_type.value
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
@@ -2832,12 +2832,12 @@ class SecretsAPI:
         """
         body = {}
         if principal is not None:
-            body["principal"] = principal
+            body["{principal}"] = principal
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body, headers=headers)
@@ -2857,10 +2857,10 @@ class SecretsAPI:
         """
         body = {}
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
@@ -2883,12 +2883,12 @@ class SecretsAPI:
         """
         body = {}
         if key is not None:
-            body["key"] = key
+            body["{key}"] = key
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
@@ -2912,11 +2912,11 @@ class SecretsAPI:
 
         query = {}
         if principal is not None:
-            query["principal"] = principal
+            query["{principal}"] = principal
         if scope is not None:
-            query["scope"] = scope
+            query["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, headers=headers)
@@ -2945,11 +2945,11 @@ class SecretsAPI:
 
         query = {}
         if key is not None:
-            query["key"] = key
+            query["{key}"] = key
         if scope is not None:
-            query["scope"] = scope
+            query["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/secrets/get", query=query, headers=headers)
@@ -2971,9 +2971,9 @@ class SecretsAPI:
 
         query = {}
         if scope is not None:
-            query["scope"] = scope
+            query["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, headers=headers)
@@ -2991,7 +2991,7 @@ class SecretsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/scopes/list", headers=headers)
@@ -3016,9 +3016,9 @@ class SecretsAPI:
 
         query = {}
         if scope is not None:
-            query["scope"] = scope
+            query["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/secrets/list", query=query, headers=headers)
@@ -3064,14 +3064,14 @@ class SecretsAPI:
         """
         body = {}
         if permission is not None:
-            body["permission"] = permission.value
+            body["{permission}"] = permission.value
         if principal is not None:
-            body["principal"] = principal
+            body["{principal}"] = principal
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/acls/put", body=body, headers=headers)
@@ -3110,16 +3110,16 @@ class SecretsAPI:
         """
         body = {}
         if bytes_value is not None:
-            body["bytes_value"] = bytes_value
+            body["{bytes_value}"] = bytes_value
         if key is not None:
-            body["key"] = key
+            body["{key}"] = key
         if scope is not None:
-            body["scope"] = scope
+            body["{scope}"] = scope
         if string_value is not None:
-            body["string_value"] = string_value
+            body["{string_value}"] = string_value
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/secrets/put", body=body, headers=headers)
@@ -3155,12 +3155,12 @@ class WorkspaceAPI:
         """
         body = {}
         if path is not None:
-            body["path"] = path
+            body["{path}"] = path
         if recursive is not None:
-            body["recursive"] = recursive
+            body["{recursive}"] = recursive
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
@@ -3195,11 +3195,11 @@ class WorkspaceAPI:
 
         query = {}
         if format is not None:
-            query["format"] = format.value
+            query["{format}"] = format.value
         if path is not None:
-            query["path"] = path
+            query["{path}"] = path
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers)
@@ -3221,7 +3221,7 @@ class WorkspaceAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -3246,7 +3246,7 @@ class WorkspaceAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -3268,9 +3268,9 @@ class WorkspaceAPI:
 
         query = {}
         if path is not None:
-            query["path"] = path
+            query["{path}"] = path
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/workspace/get-status", query=query, headers=headers)
@@ -3322,18 +3322,18 @@ class WorkspaceAPI:
         """
         body = {}
         if content is not None:
-            body["content"] = content
+            body["{content}"] = content
         if format is not None:
-            body["format"] = format.value
+            body["{format}"] = format.value
         if language is not None:
-            body["language"] = language.value
+            body["{language}"] = language.value
         if overwrite is not None:
-            body["overwrite"] = overwrite
+            body["{overwrite}"] = overwrite
         if path is not None:
-            body["path"] = path
+            body["{path}"] = path
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/workspace/import", body=body, headers=headers)
@@ -3354,11 +3354,11 @@ class WorkspaceAPI:
 
         query = {}
         if notebooks_modified_after is not None:
-            query["notebooks_modified_after"] = notebooks_modified_after
+            query["{notebooks_modified_after}"] = notebooks_modified_after
         if path is not None:
-            query["path"] = path
+            query["{path}"] = path
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, headers=headers)
@@ -3383,10 +3383,10 @@ class WorkspaceAPI:
         """
         body = {}
         if path is not None:
-            body["path"] = path
+            body["{path}"] = path
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body, headers=headers)
@@ -3414,10 +3414,10 @@ class WorkspaceAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -3447,10 +3447,10 @@ class WorkspaceAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(

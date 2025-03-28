@@ -3,18 +3,15 @@
 from __future__ import annotations
 
 import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
-from ..databricks.errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
+from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+                                  _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
-
 
 # all definitions in this file are in alphabetical order
 
@@ -33,31 +30,31 @@ class AccessControl:
         """Serializes the AccessControl into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AccessControl into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AccessControl:
         """Deserializes the AccessControl from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", PermissionLevel),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", PermissionLevel),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -119,91 +116,91 @@ class Alert:
         """Serializes the Alert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition.as_dict()
+            body["{condition}"] = self.condition.as_dict()
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state.value
+            body["{lifecycle_state}"] = self.lifecycle_state.value
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         if self.trigger_time is not None:
-            body["trigger_time"] = self.trigger_time
+            body["{trigger_time}"] = self.trigger_time
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Alert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition
+            body["{condition}"] = self.condition
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state
+            body["{lifecycle_state}"] = self.lifecycle_state
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         if self.trigger_time is not None:
-            body["trigger_time"] = self.trigger_time
+            body["{trigger_time}"] = self.trigger_time
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Alert:
         """Deserializes the Alert from a dictionary."""
         return cls(
-            condition=_from_dict(d, "condition", AlertCondition),
-            create_time=d.get("create_time", None),
-            custom_body=d.get("custom_body", None),
-            custom_subject=d.get("custom_subject", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
-            notify_on_ok=d.get("notify_on_ok", None),
-            owner_user_name=d.get("owner_user_name", None),
-            parent_path=d.get("parent_path", None),
-            query_id=d.get("query_id", None),
-            seconds_to_retrigger=d.get("seconds_to_retrigger", None),
-            state=_enum(d, "state", AlertState),
-            trigger_time=d.get("trigger_time", None),
-            update_time=d.get("update_time", None),
+            condition=_from_dict(d, "{condition}", AlertCondition),
+            create_time=d.get("{create_time}", None),
+            custom_body=d.get("{custom_body}", None),
+            custom_subject=d.get("{custom_subject}", None),
+            display_name=d.get("{display_name}", None),
+            id=d.get("{id}", None),
+            lifecycle_state=_enum(d, "{lifecycle_state}", LifecycleState),
+            notify_on_ok=d.get("{notify_on_ok}", None),
+            owner_user_name=d.get("{owner_user_name}", None),
+            parent_path=d.get("{parent_path}", None),
+            query_id=d.get("{query_id}", None),
+            seconds_to_retrigger=d.get("{seconds_to_retrigger}", None),
+            state=_enum(d, "{state}", AlertState),
+            trigger_time=d.get("{trigger_time}", None),
+            update_time=d.get("{update_time}", None),
         )
 
 
@@ -225,36 +222,36 @@ class AlertCondition:
         """Serializes the AlertCondition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.empty_result_state is not None:
-            body["empty_result_state"] = self.empty_result_state.value
+            body["{empty_result_state}"] = self.empty_result_state.value
         if self.op is not None:
-            body["op"] = self.op.value
+            body["{op}"] = self.op.value
         if self.operand:
-            body["operand"] = self.operand.as_dict()
+            body["{operand}"] = self.operand.as_dict()
         if self.threshold:
-            body["threshold"] = self.threshold.as_dict()
+            body["{threshold}"] = self.threshold.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertCondition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.empty_result_state is not None:
-            body["empty_result_state"] = self.empty_result_state
+            body["{empty_result_state}"] = self.empty_result_state
         if self.op is not None:
-            body["op"] = self.op
+            body["{op}"] = self.op
         if self.operand:
-            body["operand"] = self.operand
+            body["{operand}"] = self.operand
         if self.threshold:
-            body["threshold"] = self.threshold
+            body["{threshold}"] = self.threshold
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertCondition:
         """Deserializes the AlertCondition from a dictionary."""
         return cls(
-            empty_result_state=_enum(d, "empty_result_state", AlertState),
-            op=_enum(d, "op", AlertOperator),
-            operand=_from_dict(d, "operand", AlertConditionOperand),
-            threshold=_from_dict(d, "threshold", AlertConditionThreshold),
+            empty_result_state=_enum(d, "{empty_result_state}", AlertState),
+            op=_enum(d, "{op}", AlertOperator),
+            operand=_from_dict(d, "{operand}", AlertConditionOperand),
+            threshold=_from_dict(d, "{threshold}", AlertConditionThreshold),
         )
 
 
@@ -266,20 +263,20 @@ class AlertConditionOperand:
         """Serializes the AlertConditionOperand into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.column:
-            body["column"] = self.column.as_dict()
+            body["{column}"] = self.column.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertConditionOperand into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.column:
-            body["column"] = self.column
+            body["{column}"] = self.column
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertConditionOperand:
         """Deserializes the AlertConditionOperand from a dictionary."""
-        return cls(column=_from_dict(d, "column", AlertOperandColumn))
+        return cls(column=_from_dict(d, "{column}", AlertOperandColumn))
 
 
 @dataclass
@@ -290,20 +287,20 @@ class AlertConditionThreshold:
         """Serializes the AlertConditionThreshold into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value:
-            body["value"] = self.value.as_dict()
+            body["{value}"] = self.value.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertConditionThreshold into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertConditionThreshold:
         """Deserializes the AlertConditionThreshold from a dictionary."""
-        return cls(value=_from_dict(d, "value", AlertOperandValue))
+        return cls(value=_from_dict(d, "{value}", AlertOperandValue))
 
 
 @dataclass
@@ -314,20 +311,20 @@ class AlertOperandColumn:
         """Serializes the AlertOperandColumn into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertOperandColumn into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertOperandColumn:
         """Deserializes the AlertOperandColumn from a dictionary."""
-        return cls(name=d.get("name", None))
+        return cls(name=d.get("{name}", None))
 
 
 @dataclass
@@ -342,31 +339,31 @@ class AlertOperandValue:
         """Serializes the AlertOperandValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bool_value is not None:
-            body["bool_value"] = self.bool_value
+            body["{bool_value}"] = self.bool_value
         if self.double_value is not None:
-            body["double_value"] = self.double_value
+            body["{double_value}"] = self.double_value
         if self.string_value is not None:
-            body["string_value"] = self.string_value
+            body["{string_value}"] = self.string_value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertOperandValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bool_value is not None:
-            body["bool_value"] = self.bool_value
+            body["{bool_value}"] = self.bool_value
         if self.double_value is not None:
-            body["double_value"] = self.double_value
+            body["{double_value}"] = self.double_value
         if self.string_value is not None:
-            body["string_value"] = self.string_value
+            body["{string_value}"] = self.string_value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertOperandValue:
         """Deserializes the AlertOperandValue from a dictionary."""
         return cls(
-            bool_value=d.get("bool_value", None),
-            double_value=d.get("double_value", None),
-            string_value=d.get("string_value", None),
+            bool_value=d.get("{bool_value}", None),
+            double_value=d.get("{double_value}", None),
+            string_value=d.get("{string_value}", None),
         )
 
 
@@ -417,51 +414,51 @@ class AlertOptions:
         """Serializes the AlertOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.column is not None:
-            body["column"] = self.column
+            body["{column}"] = self.column
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.empty_result_state is not None:
-            body["empty_result_state"] = self.empty_result_state.value
+            body["{empty_result_state}"] = self.empty_result_state.value
         if self.muted is not None:
-            body["muted"] = self.muted
+            body["{muted}"] = self.muted
         if self.op is not None:
-            body["op"] = self.op
+            body["{op}"] = self.op
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertOptions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.column is not None:
-            body["column"] = self.column
+            body["{column}"] = self.column
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.empty_result_state is not None:
-            body["empty_result_state"] = self.empty_result_state
+            body["{empty_result_state}"] = self.empty_result_state
         if self.muted is not None:
-            body["muted"] = self.muted
+            body["{muted}"] = self.muted
         if self.op is not None:
-            body["op"] = self.op
+            body["{op}"] = self.op
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertOptions:
         """Deserializes the AlertOptions from a dictionary."""
         return cls(
-            column=d.get("column", None),
-            custom_body=d.get("custom_body", None),
-            custom_subject=d.get("custom_subject", None),
-            empty_result_state=_enum(d, "empty_result_state", AlertOptionsEmptyResultState),
-            muted=d.get("muted", None),
-            op=d.get("op", None),
-            value=d.get("value", None),
+            column=d.get("{column}", None),
+            custom_body=d.get("{custom_body}", None),
+            custom_subject=d.get("{custom_subject}", None),
+            empty_result_state=_enum(d, "{empty_result_state}", AlertOptionsEmptyResultState),
+            muted=d.get("{muted}", None),
+            op=d.get("{op}", None),
+            value=d.get("{value}", None),
         )
 
 
@@ -524,81 +521,81 @@ class AlertQuery:
         """Serializes the AlertQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_safe is not None:
-            body["is_safe"] = self.is_safe
+            body["{is_safe}"] = self.is_safe
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_safe is not None:
-            body["is_safe"] = self.is_safe
+            body["{is_safe}"] = self.is_safe
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AlertQuery:
         """Deserializes the AlertQuery from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            id=d.get("id", None),
-            is_archived=d.get("is_archived", None),
-            is_draft=d.get("is_draft", None),
-            is_safe=d.get("is_safe", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", QueryOptions),
-            query=d.get("query", None),
-            tags=d.get("tags", None),
-            updated_at=d.get("updated_at", None),
-            user_id=d.get("user_id", None),
+            created_at=d.get("{created_at}", None),
+            data_source_id=d.get("{data_source_id}", None),
+            description=d.get("{description}", None),
+            id=d.get("{id}", None),
+            is_archived=d.get("{is_archived}", None),
+            is_draft=d.get("{is_draft}", None),
+            is_safe=d.get("{is_safe}", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", QueryOptions),
+            query=d.get("{query}", None),
+            tags=d.get("{tags}", None),
+            updated_at=d.get("{updated_at}", None),
+            user_id=d.get("{user_id}", None),
         )
 
 
@@ -631,36 +628,36 @@ class BaseChunkInfo:
         """Serializes the BaseChunkInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BaseChunkInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BaseChunkInfo:
         """Deserializes the BaseChunkInfo from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
-            chunk_index=d.get("chunk_index", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            byte_count=d.get("{byte_count}", None),
+            chunk_index=d.get("{chunk_index}", None),
+            row_count=d.get("{row_count}", None),
+            row_offset=d.get("{row_offset}", None),
         )
 
 
@@ -695,24 +692,24 @@ class Channel:
         """Serializes the Channel into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbsql_version is not None:
-            body["dbsql_version"] = self.dbsql_version
+            body["{dbsql_version}"] = self.dbsql_version
         if self.name is not None:
-            body["name"] = self.name.value
+            body["{name}"] = self.name.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Channel into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dbsql_version is not None:
-            body["dbsql_version"] = self.dbsql_version
+            body["{dbsql_version}"] = self.dbsql_version
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Channel:
         """Deserializes the Channel from a dictionary."""
-        return cls(dbsql_version=d.get("dbsql_version", None), name=_enum(d, "name", ChannelName))
+        return cls(dbsql_version=d.get("{dbsql_version}", None), name=_enum(d, "{name}", ChannelName))
 
 
 @dataclass
@@ -729,24 +726,24 @@ class ChannelInfo:
         """Serializes the ChannelInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbsql_version is not None:
-            body["dbsql_version"] = self.dbsql_version
+            body["{dbsql_version}"] = self.dbsql_version
         if self.name is not None:
-            body["name"] = self.name.value
+            body["{name}"] = self.name.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ChannelInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dbsql_version is not None:
-            body["dbsql_version"] = self.dbsql_version
+            body["{dbsql_version}"] = self.dbsql_version
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ChannelInfo:
         """Deserializes the ChannelInfo from a dictionary."""
-        return cls(dbsql_version=d.get("dbsql_version", None), name=_enum(d, "name", ChannelName))
+        return cls(dbsql_version=d.get("{dbsql_version}", None), name=_enum(d, "{name}", ChannelName))
 
 
 class ChannelName(Enum):
@@ -783,66 +780,66 @@ class ClientConfig:
         """Serializes the ClientConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_custom_js_visualizations is not None:
-            body["allow_custom_js_visualizations"] = self.allow_custom_js_visualizations
+            body["{allow_custom_js_visualizations}"] = self.allow_custom_js_visualizations
         if self.allow_downloads is not None:
-            body["allow_downloads"] = self.allow_downloads
+            body["{allow_downloads}"] = self.allow_downloads
         if self.allow_external_shares is not None:
-            body["allow_external_shares"] = self.allow_external_shares
+            body["{allow_external_shares}"] = self.allow_external_shares
         if self.allow_subscriptions is not None:
-            body["allow_subscriptions"] = self.allow_subscriptions
+            body["{allow_subscriptions}"] = self.allow_subscriptions
         if self.date_format is not None:
-            body["date_format"] = self.date_format
+            body["{date_format}"] = self.date_format
         if self.date_time_format is not None:
-            body["date_time_format"] = self.date_time_format
+            body["{date_time_format}"] = self.date_time_format
         if self.disable_publish is not None:
-            body["disable_publish"] = self.disable_publish
+            body["{disable_publish}"] = self.disable_publish
         if self.enable_legacy_autodetect_types is not None:
-            body["enable_legacy_autodetect_types"] = self.enable_legacy_autodetect_types
+            body["{enable_legacy_autodetect_types}"] = self.enable_legacy_autodetect_types
         if self.feature_show_permissions_control is not None:
-            body["feature_show_permissions_control"] = self.feature_show_permissions_control
+            body["{feature_show_permissions_control}"] = self.feature_show_permissions_control
         if self.hide_plotly_mode_bar is not None:
-            body["hide_plotly_mode_bar"] = self.hide_plotly_mode_bar
+            body["{hide_plotly_mode_bar}"] = self.hide_plotly_mode_bar
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ClientConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.allow_custom_js_visualizations is not None:
-            body["allow_custom_js_visualizations"] = self.allow_custom_js_visualizations
+            body["{allow_custom_js_visualizations}"] = self.allow_custom_js_visualizations
         if self.allow_downloads is not None:
-            body["allow_downloads"] = self.allow_downloads
+            body["{allow_downloads}"] = self.allow_downloads
         if self.allow_external_shares is not None:
-            body["allow_external_shares"] = self.allow_external_shares
+            body["{allow_external_shares}"] = self.allow_external_shares
         if self.allow_subscriptions is not None:
-            body["allow_subscriptions"] = self.allow_subscriptions
+            body["{allow_subscriptions}"] = self.allow_subscriptions
         if self.date_format is not None:
-            body["date_format"] = self.date_format
+            body["{date_format}"] = self.date_format
         if self.date_time_format is not None:
-            body["date_time_format"] = self.date_time_format
+            body["{date_time_format}"] = self.date_time_format
         if self.disable_publish is not None:
-            body["disable_publish"] = self.disable_publish
+            body["{disable_publish}"] = self.disable_publish
         if self.enable_legacy_autodetect_types is not None:
-            body["enable_legacy_autodetect_types"] = self.enable_legacy_autodetect_types
+            body["{enable_legacy_autodetect_types}"] = self.enable_legacy_autodetect_types
         if self.feature_show_permissions_control is not None:
-            body["feature_show_permissions_control"] = self.feature_show_permissions_control
+            body["{feature_show_permissions_control}"] = self.feature_show_permissions_control
         if self.hide_plotly_mode_bar is not None:
-            body["hide_plotly_mode_bar"] = self.hide_plotly_mode_bar
+            body["{hide_plotly_mode_bar}"] = self.hide_plotly_mode_bar
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ClientConfig:
         """Deserializes the ClientConfig from a dictionary."""
         return cls(
-            allow_custom_js_visualizations=d.get("allow_custom_js_visualizations", None),
-            allow_downloads=d.get("allow_downloads", None),
-            allow_external_shares=d.get("allow_external_shares", None),
-            allow_subscriptions=d.get("allow_subscriptions", None),
-            date_format=d.get("date_format", None),
-            date_time_format=d.get("date_time_format", None),
-            disable_publish=d.get("disable_publish", None),
-            enable_legacy_autodetect_types=d.get("enable_legacy_autodetect_types", None),
-            feature_show_permissions_control=d.get("feature_show_permissions_control", None),
-            hide_plotly_mode_bar=d.get("hide_plotly_mode_bar", None),
+            allow_custom_js_visualizations=d.get("{allow_custom_js_visualizations}", None),
+            allow_downloads=d.get("{allow_downloads}", None),
+            allow_external_shares=d.get("{allow_external_shares}", None),
+            allow_subscriptions=d.get("{allow_subscriptions}", None),
+            date_format=d.get("{date_format}", None),
+            date_time_format=d.get("{date_time_format}", None),
+            disable_publish=d.get("{disable_publish}", None),
+            enable_legacy_autodetect_types=d.get("{enable_legacy_autodetect_types}", None),
+            feature_show_permissions_control=d.get("{feature_show_permissions_control}", None),
+            hide_plotly_mode_bar=d.get("{hide_plotly_mode_bar}", None),
         )
 
 
@@ -875,51 +872,51 @@ class ColumnInfo:
         """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.position is not None:
-            body["position"] = self.position
+            body["{position}"] = self.position
         if self.type_interval_type is not None:
-            body["type_interval_type"] = self.type_interval_type
+            body["{type_interval_type}"] = self.type_interval_type
         if self.type_name is not None:
-            body["type_name"] = self.type_name.value
+            body["{type_name}"] = self.type_name.value
         if self.type_precision is not None:
-            body["type_precision"] = self.type_precision
+            body["{type_precision}"] = self.type_precision
         if self.type_scale is not None:
-            body["type_scale"] = self.type_scale
+            body["{type_scale}"] = self.type_scale
         if self.type_text is not None:
-            body["type_text"] = self.type_text
+            body["{type_text}"] = self.type_text
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.position is not None:
-            body["position"] = self.position
+            body["{position}"] = self.position
         if self.type_interval_type is not None:
-            body["type_interval_type"] = self.type_interval_type
+            body["{type_interval_type}"] = self.type_interval_type
         if self.type_name is not None:
-            body["type_name"] = self.type_name
+            body["{type_name}"] = self.type_name
         if self.type_precision is not None:
-            body["type_precision"] = self.type_precision
+            body["{type_precision}"] = self.type_precision
         if self.type_scale is not None:
-            body["type_scale"] = self.type_scale
+            body["{type_scale}"] = self.type_scale
         if self.type_text is not None:
-            body["type_text"] = self.type_text
+            body["{type_text}"] = self.type_text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(
-            name=d.get("name", None),
-            position=d.get("position", None),
-            type_interval_type=d.get("type_interval_type", None),
-            type_name=_enum(d, "type_name", ColumnInfoTypeName),
-            type_precision=d.get("type_precision", None),
-            type_scale=d.get("type_scale", None),
-            type_text=d.get("type_text", None),
+            name=d.get("{name}", None),
+            position=d.get("{position}", None),
+            type_interval_type=d.get("{type_interval_type}", None),
+            type_name=_enum(d, "{type_name}", ColumnInfoTypeName),
+            type_precision=d.get("{type_precision}", None),
+            type_scale=d.get("{type_scale}", None),
+            type_text=d.get("{type_text}", None),
         )
 
 
@@ -970,41 +967,41 @@ class CreateAlert:
         """Serializes the CreateAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAlert:
         """Deserializes the CreateAlert from a dictionary."""
         return cls(
-            name=d.get("name", None),
-            options=_from_dict(d, "options", AlertOptions),
-            parent=d.get("parent", None),
-            query_id=d.get("query_id", None),
-            rearm=d.get("rearm", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", AlertOptions),
+            parent=d.get("{parent}", None),
+            query_id=d.get("{query_id}", None),
+            rearm=d.get("{rearm}", None),
         )
 
 
@@ -1016,20 +1013,20 @@ class CreateAlertRequest:
         """Serializes the CreateAlertRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert:
-            body["alert"] = self.alert.as_dict()
+            body["{alert}"] = self.alert.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateAlertRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alert:
-            body["alert"] = self.alert
+            body["{alert}"] = self.alert
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAlertRequest:
         """Deserializes the CreateAlertRequest from a dictionary."""
-        return cls(alert=_from_dict(d, "alert", CreateAlertRequestAlert))
+        return cls(alert=_from_dict(d, "{alert}", CreateAlertRequestAlert))
 
 
 @dataclass
@@ -1068,56 +1065,56 @@ class CreateAlertRequestAlert:
         """Serializes the CreateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition.as_dict()
+            body["{condition}"] = self.condition.as_dict()
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateAlertRequestAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition
+            body["{condition}"] = self.condition
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAlertRequestAlert:
         """Deserializes the CreateAlertRequestAlert from a dictionary."""
         return cls(
-            condition=_from_dict(d, "condition", AlertCondition),
-            custom_body=d.get("custom_body", None),
-            custom_subject=d.get("custom_subject", None),
-            display_name=d.get("display_name", None),
-            notify_on_ok=d.get("notify_on_ok", None),
-            parent_path=d.get("parent_path", None),
-            query_id=d.get("query_id", None),
-            seconds_to_retrigger=d.get("seconds_to_retrigger", None),
+            condition=_from_dict(d, "{condition}", AlertCondition),
+            custom_body=d.get("{custom_body}", None),
+            custom_subject=d.get("{custom_subject}", None),
+            display_name=d.get("{display_name}", None),
+            notify_on_ok=d.get("{notify_on_ok}", None),
+            parent_path=d.get("{parent_path}", None),
+            query_id=d.get("{query_id}", None),
+            seconds_to_retrigger=d.get("{seconds_to_retrigger}", None),
         )
 
 
@@ -1129,20 +1126,20 @@ class CreateQueryRequest:
         """Serializes the CreateQueryRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query:
-            body["query"] = self.query.as_dict()
+            body["{query}"] = self.query.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateQueryRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.query:
-            body["query"] = self.query
+            body["{query}"] = self.query
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateQueryRequest:
         """Deserializes the CreateQueryRequest from a dictionary."""
-        return cls(query=_from_dict(d, "query", CreateQueryRequestQuery))
+        return cls(query=_from_dict(d, "{query}", CreateQueryRequestQuery))
 
 
 @dataclass
@@ -1183,71 +1180,71 @@ class CreateQueryRequestQuery:
         """Serializes the CreateQueryRequestQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode.value
+            body["{run_as_mode}"] = self.run_as_mode.value
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateQueryRequestQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode
+            body["{run_as_mode}"] = self.run_as_mode
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateQueryRequestQuery:
         """Deserializes the CreateQueryRequestQuery from a dictionary."""
         return cls(
-            apply_auto_limit=d.get("apply_auto_limit", None),
-            catalog=d.get("catalog", None),
-            description=d.get("description", None),
-            display_name=d.get("display_name", None),
-            parameters=_repeated_dict(d, "parameters", QueryParameter),
-            parent_path=d.get("parent_path", None),
-            query_text=d.get("query_text", None),
-            run_as_mode=_enum(d, "run_as_mode", RunAsMode),
-            schema=d.get("schema", None),
-            tags=d.get("tags", None),
-            warehouse_id=d.get("warehouse_id", None),
+            apply_auto_limit=d.get("{apply_auto_limit}", None),
+            catalog=d.get("{catalog}", None),
+            description=d.get("{description}", None),
+            display_name=d.get("{display_name}", None),
+            parameters=_repeated_dict(d, "{parameters}", QueryParameter),
+            parent_path=d.get("{parent_path}", None),
+            query_text=d.get("{query_text}", None),
+            run_as_mode=_enum(d, "{run_as_mode}", RunAsMode),
+            schema=d.get("{schema}", None),
+            tags=d.get("{tags}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -1259,20 +1256,20 @@ class CreateVisualizationRequest:
         """Serializes the CreateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.visualization:
-            body["visualization"] = self.visualization.as_dict()
+            body["{visualization}"] = self.visualization.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateVisualizationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.visualization:
-            body["visualization"] = self.visualization
+            body["{visualization}"] = self.visualization
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateVisualizationRequest:
         """Deserializes the CreateVisualizationRequest from a dictionary."""
-        return cls(visualization=_from_dict(d, "visualization", CreateVisualizationRequestVisualization))
+        return cls(visualization=_from_dict(d, "{visualization}", CreateVisualizationRequestVisualization))
 
 
 @dataclass
@@ -1298,41 +1295,41 @@ class CreateVisualizationRequestVisualization:
         """Serializes the CreateVisualizationRequestVisualization into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateVisualizationRequestVisualization into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateVisualizationRequestVisualization:
         """Deserializes the CreateVisualizationRequestVisualization from a dictionary."""
         return cls(
-            display_name=d.get("display_name", None),
-            query_id=d.get("query_id", None),
-            serialized_options=d.get("serialized_options", None),
-            serialized_query_plan=d.get("serialized_query_plan", None),
-            type=d.get("type", None),
+            display_name=d.get("{display_name}", None),
+            query_id=d.get("{query_id}", None),
+            serialized_options=d.get("{serialized_options}", None),
+            serialized_query_plan=d.get("{serialized_query_plan}", None),
+            type=d.get("{type}", None),
         )
 
 
@@ -1411,81 +1408,81 @@ class CreateWarehouseRequest:
         """Serializes the CreateWarehouseRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
+            body["{spot_instance_policy}"] = self.spot_instance_policy.value
         if self.tags:
-            body["tags"] = self.tags.as_dict()
+            body["{tags}"] = self.tags.as_dict()
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
+            body["{warehouse_type}"] = self.warehouse_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateWarehouseRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
+            body["{spot_instance_policy}"] = self.spot_instance_policy
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
+            body["{warehouse_type}"] = self.warehouse_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateWarehouseRequest:
         """Deserializes the CreateWarehouseRequest from a dictionary."""
         return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", CreateWarehouseRequestWarehouseType),
+            auto_stop_mins=d.get("{auto_stop_mins}", None),
+            channel=_from_dict(d, "{channel}", Channel),
+            cluster_size=d.get("{cluster_size}", None),
+            creator_name=d.get("{creator_name}", None),
+            enable_photon=d.get("{enable_photon}", None),
+            enable_serverless_compute=d.get("{enable_serverless_compute}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            max_num_clusters=d.get("{max_num_clusters}", None),
+            min_num_clusters=d.get("{min_num_clusters}", None),
+            name=d.get("{name}", None),
+            spot_instance_policy=_enum(d, "{spot_instance_policy}", SpotInstancePolicy),
+            tags=_from_dict(d, "{tags}", EndpointTags),
+            warehouse_type=_enum(d, "{warehouse_type}", CreateWarehouseRequestWarehouseType),
         )
 
 
@@ -1507,20 +1504,20 @@ class CreateWarehouseResponse:
         """Serializes the CreateWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateWarehouseResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateWarehouseResponse:
         """Deserializes the CreateWarehouseResponse from a dictionary."""
-        return cls(id=d.get("id", None))
+        return cls(id=d.get("{id}", None))
 
 
 @dataclass
@@ -1547,46 +1544,46 @@ class CreateWidget:
         """Serializes the CreateWidget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.text is not None:
-            body["text"] = self.text
+            body["{text}"] = self.text
         if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
+            body["{visualization_id}"] = self.visualization_id
         if self.width is not None:
-            body["width"] = self.width
+            body["{width}"] = self.width
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateWidget into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.text is not None:
-            body["text"] = self.text
+            body["{text}"] = self.text
         if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
+            body["{visualization_id}"] = self.visualization_id
         if self.width is not None:
-            body["width"] = self.width
+            body["{width}"] = self.width
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateWidget:
         """Deserializes the CreateWidget from a dictionary."""
         return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            id=d.get("id", None),
-            options=_from_dict(d, "options", WidgetOptions),
-            text=d.get("text", None),
-            visualization_id=d.get("visualization_id", None),
-            width=d.get("width", None),
+            dashboard_id=d.get("{dashboard_id}", None),
+            id=d.get("{id}", None),
+            options=_from_dict(d, "{options}", WidgetOptions),
+            text=d.get("{text}", None),
+            visualization_id=d.get("{visualization_id}", None),
+            width=d.get("{width}", None),
         )
 
 
@@ -1651,101 +1648,101 @@ class Dashboard:
         """Serializes the Dashboard into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.can_edit is not None:
-            body["can_edit"] = self.can_edit
+            body["{can_edit}"] = self.can_edit
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
+            body["{dashboard_filters_enabled}"] = self.dashboard_filters_enabled
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.permission_tier is not None:
-            body["permission_tier"] = self.permission_tier.value
+            body["{permission_tier}"] = self.permission_tier.value
         if self.slug is not None:
-            body["slug"] = self.slug
+            body["{slug}"] = self.slug
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user.as_dict()
+            body["{user}"] = self.user.as_dict()
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.widgets:
-            body["widgets"] = [v.as_dict() for v in self.widgets]
+            body["{widgets}"] = [v.as_dict() for v in self.widgets]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Dashboard into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.can_edit is not None:
-            body["can_edit"] = self.can_edit
+            body["{can_edit}"] = self.can_edit
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
+            body["{dashboard_filters_enabled}"] = self.dashboard_filters_enabled
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.permission_tier is not None:
-            body["permission_tier"] = self.permission_tier
+            body["{permission_tier}"] = self.permission_tier
         if self.slug is not None:
-            body["slug"] = self.slug
+            body["{slug}"] = self.slug
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user
+            body["{user}"] = self.user
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.widgets:
-            body["widgets"] = self.widgets
+            body["{widgets}"] = self.widgets
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Dashboard:
         """Deserializes the Dashboard from a dictionary."""
         return cls(
-            can_edit=d.get("can_edit", None),
-            created_at=d.get("created_at", None),
-            dashboard_filters_enabled=d.get("dashboard_filters_enabled", None),
-            id=d.get("id", None),
-            is_archived=d.get("is_archived", None),
-            is_draft=d.get("is_draft", None),
-            is_favorite=d.get("is_favorite", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", DashboardOptions),
-            parent=d.get("parent", None),
-            permission_tier=_enum(d, "permission_tier", PermissionLevel),
-            slug=d.get("slug", None),
-            tags=d.get("tags", None),
-            updated_at=d.get("updated_at", None),
-            user=_from_dict(d, "user", User),
-            user_id=d.get("user_id", None),
-            widgets=_repeated_dict(d, "widgets", Widget),
+            can_edit=d.get("{can_edit}", None),
+            created_at=d.get("{created_at}", None),
+            dashboard_filters_enabled=d.get("{dashboard_filters_enabled}", None),
+            id=d.get("{id}", None),
+            is_archived=d.get("{is_archived}", None),
+            is_draft=d.get("{is_draft}", None),
+            is_favorite=d.get("{is_favorite}", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", DashboardOptions),
+            parent=d.get("{parent}", None),
+            permission_tier=_enum(d, "{permission_tier}", PermissionLevel),
+            slug=d.get("{slug}", None),
+            tags=d.get("{tags}", None),
+            updated_at=d.get("{updated_at}", None),
+            user=_from_dict(d, "{user}", User),
+            user_id=d.get("{user_id}", None),
+            widgets=_repeated_dict(d, "{widgets}", Widget),
         )
 
 
@@ -1766,36 +1763,36 @@ class DashboardEditContent:
         """Serializes the DashboardEditContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
+            body["{run_as_role}"] = self.run_as_role.value
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DashboardEditContent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
+            body["{run_as_role}"] = self.run_as_role
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DashboardEditContent:
         """Deserializes the DashboardEditContent from a dictionary."""
         return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            name=d.get("name", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
+            dashboard_id=d.get("{dashboard_id}", None),
+            name=d.get("{name}", None),
+            run_as_role=_enum(d, "{run_as_role}", RunAsRole),
+            tags=d.get("{tags}", None),
         )
 
 
@@ -1809,20 +1806,20 @@ class DashboardOptions:
         """Serializes the DashboardOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.moved_to_trash_at is not None:
-            body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["{moved_to_trash_at}"] = self.moved_to_trash_at
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DashboardOptions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.moved_to_trash_at is not None:
-            body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["{moved_to_trash_at}"] = self.moved_to_trash_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DashboardOptions:
         """Deserializes the DashboardOptions from a dictionary."""
-        return cls(moved_to_trash_at=d.get("moved_to_trash_at", None))
+        return cls(moved_to_trash_at=d.get("{moved_to_trash_at}", None))
 
 
 @dataclass
@@ -1849,46 +1846,46 @@ class DashboardPostContent:
         """Serializes the DashboardPostContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
+            body["{dashboard_filters_enabled}"] = self.dashboard_filters_enabled
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
+            body["{run_as_role}"] = self.run_as_role.value
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DashboardPostContent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
+            body["{dashboard_filters_enabled}"] = self.dashboard_filters_enabled
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
+            body["{run_as_role}"] = self.run_as_role
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DashboardPostContent:
         """Deserializes the DashboardPostContent from a dictionary."""
         return cls(
-            dashboard_filters_enabled=d.get("dashboard_filters_enabled", None),
-            is_favorite=d.get("is_favorite", None),
-            name=d.get("name", None),
-            parent=d.get("parent", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
+            dashboard_filters_enabled=d.get("{dashboard_filters_enabled}", None),
+            is_favorite=d.get("{is_favorite}", None),
+            name=d.get("{name}", None),
+            parent=d.get("{parent}", None),
+            run_as_role=_enum(d, "{run_as_role}", RunAsRole),
+            tags=d.get("{tags}", None),
         )
 
 
@@ -1931,61 +1928,61 @@ class DataSource:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.pause_reason is not None:
-            body["pause_reason"] = self.pause_reason
+            body["{pause_reason}"] = self.pause_reason
         if self.paused is not None:
-            body["paused"] = self.paused
+            body["{paused}"] = self.paused
         if self.supports_auto_limit is not None:
-            body["supports_auto_limit"] = self.supports_auto_limit
+            body["{supports_auto_limit}"] = self.supports_auto_limit
         if self.syntax is not None:
-            body["syntax"] = self.syntax
+            body["{syntax}"] = self.syntax
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.view_only is not None:
-            body["view_only"] = self.view_only
+            body["{view_only}"] = self.view_only
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DataSource into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.pause_reason is not None:
-            body["pause_reason"] = self.pause_reason
+            body["{pause_reason}"] = self.pause_reason
         if self.paused is not None:
-            body["paused"] = self.paused
+            body["{paused}"] = self.paused
         if self.supports_auto_limit is not None:
-            body["supports_auto_limit"] = self.supports_auto_limit
+            body["{supports_auto_limit}"] = self.supports_auto_limit
         if self.syntax is not None:
-            body["syntax"] = self.syntax
+            body["{syntax}"] = self.syntax
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.view_only is not None:
-            body["view_only"] = self.view_only
+            body["{view_only}"] = self.view_only
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataSource:
         """Deserializes the DataSource from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            name=d.get("name", None),
-            pause_reason=d.get("pause_reason", None),
-            paused=d.get("paused", None),
-            supports_auto_limit=d.get("supports_auto_limit", None),
-            syntax=d.get("syntax", None),
-            type=d.get("type", None),
-            view_only=d.get("view_only", None),
-            warehouse_id=d.get("warehouse_id", None),
+            id=d.get("{id}", None),
+            name=d.get("{name}", None),
+            pause_reason=d.get("{pause_reason}", None),
+            paused=d.get("{paused}", None),
+            supports_auto_limit=d.get("{supports_auto_limit}", None),
+            syntax=d.get("{syntax}", None),
+            type=d.get("{type}", None),
+            view_only=d.get("{view_only}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -2006,24 +2003,24 @@ class DateRange:
         """Serializes the DateRange into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end is not None:
-            body["end"] = self.end
+            body["{end}"] = self.end
         if self.start is not None:
-            body["start"] = self.start
+            body["{start}"] = self.start
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DateRange into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.end is not None:
-            body["end"] = self.end
+            body["{end}"] = self.end
         if self.start is not None:
-            body["start"] = self.start
+            body["{start}"] = self.start
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DateRange:
         """Deserializes the DateRange from a dictionary."""
-        return cls(end=d.get("end", None), start=d.get("start", None))
+        return cls(end=d.get("{end}", None), start=d.get("{start}", None))
 
 
 @dataclass
@@ -2044,36 +2041,36 @@ class DateRangeValue:
         """Serializes the DateRangeValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.date_range_value:
-            body["date_range_value"] = self.date_range_value.as_dict()
+            body["{date_range_value}"] = self.date_range_value.as_dict()
         if self.dynamic_date_range_value is not None:
-            body["dynamic_date_range_value"] = self.dynamic_date_range_value.value
+            body["{dynamic_date_range_value}"] = self.dynamic_date_range_value.value
         if self.precision is not None:
-            body["precision"] = self.precision.value
+            body["{precision}"] = self.precision.value
         if self.start_day_of_week is not None:
-            body["start_day_of_week"] = self.start_day_of_week
+            body["{start_day_of_week}"] = self.start_day_of_week
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DateRangeValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.date_range_value:
-            body["date_range_value"] = self.date_range_value
+            body["{date_range_value}"] = self.date_range_value
         if self.dynamic_date_range_value is not None:
-            body["dynamic_date_range_value"] = self.dynamic_date_range_value
+            body["{dynamic_date_range_value}"] = self.dynamic_date_range_value
         if self.precision is not None:
-            body["precision"] = self.precision
+            body["{precision}"] = self.precision
         if self.start_day_of_week is not None:
-            body["start_day_of_week"] = self.start_day_of_week
+            body["{start_day_of_week}"] = self.start_day_of_week
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DateRangeValue:
         """Deserializes the DateRangeValue from a dictionary."""
         return cls(
-            date_range_value=_from_dict(d, "date_range_value", DateRange),
-            dynamic_date_range_value=_enum(d, "dynamic_date_range_value", DateRangeValueDynamicDateRange),
-            precision=_enum(d, "precision", DatePrecision),
-            start_day_of_week=d.get("start_day_of_week", None),
+            date_range_value=_from_dict(d, "{date_range_value}", DateRange),
+            dynamic_date_range_value=_enum(d, "{dynamic_date_range_value}", DateRangeValueDynamicDateRange),
+            precision=_enum(d, "{precision}", DatePrecision),
+            start_day_of_week=d.get("{start_day_of_week}", None),
         )
 
 
@@ -2114,31 +2111,31 @@ class DateValue:
         """Serializes the DateValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.date_value is not None:
-            body["date_value"] = self.date_value
+            body["{date_value}"] = self.date_value
         if self.dynamic_date_value is not None:
-            body["dynamic_date_value"] = self.dynamic_date_value.value
+            body["{dynamic_date_value}"] = self.dynamic_date_value.value
         if self.precision is not None:
-            body["precision"] = self.precision.value
+            body["{precision}"] = self.precision.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DateValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.date_value is not None:
-            body["date_value"] = self.date_value
+            body["{date_value}"] = self.date_value
         if self.dynamic_date_value is not None:
-            body["dynamic_date_value"] = self.dynamic_date_value
+            body["{dynamic_date_value}"] = self.dynamic_date_value
         if self.precision is not None:
-            body["precision"] = self.precision
+            body["{precision}"] = self.precision
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DateValue:
         """Deserializes the DateValue from a dictionary."""
         return cls(
-            date_value=d.get("date_value", None),
-            dynamic_date_value=_enum(d, "dynamic_date_value", DateValueDynamicDate),
-            precision=_enum(d, "precision", DatePrecision),
+            date_value=d.get("{date_value}", None),
+            dynamic_date_value=_enum(d, "{dynamic_date_value}", DateValueDynamicDate),
+            precision=_enum(d, "{precision}", DatePrecision),
         )
 
 
@@ -2211,41 +2208,41 @@ class EditAlert:
         """Serializes the EditAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
+            body["{alert_id}"] = self.alert_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EditAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
+            body["{alert_id}"] = self.alert_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EditAlert:
         """Deserializes the EditAlert from a dictionary."""
         return cls(
-            alert_id=d.get("alert_id", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", AlertOptions),
-            query_id=d.get("query_id", None),
-            rearm=d.get("rearm", None),
+            alert_id=d.get("{alert_id}", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", AlertOptions),
+            query_id=d.get("{query_id}", None),
+            rearm=d.get("{rearm}", None),
         )
 
 
@@ -2326,86 +2323,86 @@ class EditWarehouseRequest:
         """Serializes the EditWarehouseRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
+            body["{spot_instance_policy}"] = self.spot_instance_policy.value
         if self.tags:
-            body["tags"] = self.tags.as_dict()
+            body["{tags}"] = self.tags.as_dict()
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
+            body["{warehouse_type}"] = self.warehouse_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EditWarehouseRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
+            body["{spot_instance_policy}"] = self.spot_instance_policy
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
+            body["{warehouse_type}"] = self.warehouse_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EditWarehouseRequest:
         """Deserializes the EditWarehouseRequest from a dictionary."""
         return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            id=d.get("id", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", EditWarehouseRequestWarehouseType),
+            auto_stop_mins=d.get("{auto_stop_mins}", None),
+            channel=_from_dict(d, "{channel}", Channel),
+            cluster_size=d.get("{cluster_size}", None),
+            creator_name=d.get("{creator_name}", None),
+            enable_photon=d.get("{enable_photon}", None),
+            enable_serverless_compute=d.get("{enable_serverless_compute}", None),
+            id=d.get("{id}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            max_num_clusters=d.get("{max_num_clusters}", None),
+            min_num_clusters=d.get("{min_num_clusters}", None),
+            name=d.get("{name}", None),
+            spot_instance_policy=_enum(d, "{spot_instance_policy}", SpotInstancePolicy),
+            tags=_from_dict(d, "{tags}", EndpointTags),
+            warehouse_type=_enum(d, "{warehouse_type}", EditWarehouseRequestWarehouseType),
         )
 
 
@@ -2467,24 +2464,24 @@ class EndpointConfPair:
         """Serializes the EndpointConfPair into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointConfPair into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointConfPair:
         """Deserializes the EndpointConfPair from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
+        return cls(key=d.get("{key}", None), value=d.get("{value}", None))
 
 
 @dataclass
@@ -2509,41 +2506,41 @@ class EndpointHealth:
         """Serializes the EndpointHealth into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.details is not None:
-            body["details"] = self.details
+            body["{details}"] = self.details
         if self.failure_reason:
-            body["failure_reason"] = self.failure_reason.as_dict()
+            body["{failure_reason}"] = self.failure_reason.as_dict()
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.status is not None:
-            body["status"] = self.status.value
+            body["{status}"] = self.status.value
         if self.summary is not None:
-            body["summary"] = self.summary
+            body["{summary}"] = self.summary
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointHealth into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.details is not None:
-            body["details"] = self.details
+            body["{details}"] = self.details
         if self.failure_reason:
-            body["failure_reason"] = self.failure_reason
+            body["{failure_reason}"] = self.failure_reason
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         if self.status is not None:
-            body["status"] = self.status
+            body["{status}"] = self.status
         if self.summary is not None:
-            body["summary"] = self.summary
+            body["{summary}"] = self.summary
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointHealth:
         """Deserializes the EndpointHealth from a dictionary."""
         return cls(
-            details=d.get("details", None),
-            failure_reason=_from_dict(d, "failure_reason", TerminationReason),
-            message=d.get("message", None),
-            status=_enum(d, "status", Status),
-            summary=d.get("summary", None),
+            details=d.get("{details}", None),
+            failure_reason=_from_dict(d, "{failure_reason}", TerminationReason),
+            message=d.get("{message}", None),
+            status=_enum(d, "{status}", Status),
+            summary=d.get("{summary}", None),
         )
 
 
@@ -2642,116 +2639,116 @@ class EndpointInfo:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.health:
-            body["health"] = self.health.as_dict()
+            body["{health}"] = self.health.as_dict()
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.jdbc_url is not None:
-            body["jdbc_url"] = self.jdbc_url
+            body["{jdbc_url}"] = self.jdbc_url
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.num_active_sessions is not None:
-            body["num_active_sessions"] = self.num_active_sessions
+            body["{num_active_sessions}"] = self.num_active_sessions
         if self.num_clusters is not None:
-            body["num_clusters"] = self.num_clusters
+            body["{num_clusters}"] = self.num_clusters
         if self.odbc_params:
-            body["odbc_params"] = self.odbc_params.as_dict()
+            body["{odbc_params}"] = self.odbc_params.as_dict()
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
+            body["{spot_instance_policy}"] = self.spot_instance_policy.value
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         if self.tags:
-            body["tags"] = self.tags.as_dict()
+            body["{tags}"] = self.tags.as_dict()
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
+            body["{warehouse_type}"] = self.warehouse_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.health:
-            body["health"] = self.health
+            body["{health}"] = self.health
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.jdbc_url is not None:
-            body["jdbc_url"] = self.jdbc_url
+            body["{jdbc_url}"] = self.jdbc_url
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.num_active_sessions is not None:
-            body["num_active_sessions"] = self.num_active_sessions
+            body["{num_active_sessions}"] = self.num_active_sessions
         if self.num_clusters is not None:
-            body["num_clusters"] = self.num_clusters
+            body["{num_clusters}"] = self.num_clusters
         if self.odbc_params:
-            body["odbc_params"] = self.odbc_params
+            body["{odbc_params}"] = self.odbc_params
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
+            body["{spot_instance_policy}"] = self.spot_instance_policy
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
+            body["{warehouse_type}"] = self.warehouse_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            health=_from_dict(d, "health", EndpointHealth),
-            id=d.get("id", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            jdbc_url=d.get("jdbc_url", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
-            num_clusters=d.get("num_clusters", None),
-            odbc_params=_from_dict(d, "odbc_params", OdbcParams),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            state=_enum(d, "state", State),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", EndpointInfoWarehouseType),
+            auto_stop_mins=d.get("{auto_stop_mins}", None),
+            channel=_from_dict(d, "{channel}", Channel),
+            cluster_size=d.get("{cluster_size}", None),
+            creator_name=d.get("{creator_name}", None),
+            enable_photon=d.get("{enable_photon}", None),
+            enable_serverless_compute=d.get("{enable_serverless_compute}", None),
+            health=_from_dict(d, "{health}", EndpointHealth),
+            id=d.get("{id}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            jdbc_url=d.get("{jdbc_url}", None),
+            max_num_clusters=d.get("{max_num_clusters}", None),
+            min_num_clusters=d.get("{min_num_clusters}", None),
+            name=d.get("{name}", None),
+            num_active_sessions=d.get("{num_active_sessions}", None),
+            num_clusters=d.get("{num_clusters}", None),
+            odbc_params=_from_dict(d, "{odbc_params}", OdbcParams),
+            spot_instance_policy=_enum(d, "{spot_instance_policy}", SpotInstancePolicy),
+            state=_enum(d, "{state}", State),
+            tags=_from_dict(d, "{tags}", EndpointTags),
+            warehouse_type=_enum(d, "{warehouse_type}", EndpointInfoWarehouseType),
         )
 
 
@@ -2774,24 +2771,24 @@ class EndpointTagPair:
         """Serializes the EndpointTagPair into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointTagPair into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["key"] = self.key
+            body["{key}"] = self.key
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointTagPair:
         """Deserializes the EndpointTagPair from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
+        return cls(key=d.get("{key}", None), value=d.get("{value}", None))
 
 
 @dataclass
@@ -2802,20 +2799,20 @@ class EndpointTags:
         """Serializes the EndpointTags into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_tags:
-            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+            body["{custom_tags}"] = [v.as_dict() for v in self.custom_tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EndpointTags into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
+            body["{custom_tags}"] = self.custom_tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointTags:
         """Deserializes the EndpointTags from a dictionary."""
-        return cls(custom_tags=_repeated_dict(d, "custom_tags", EndpointTagPair))
+        return cls(custom_tags=_repeated_dict(d, "{custom_tags}", EndpointTagPair))
 
 
 @dataclass
@@ -2833,31 +2830,31 @@ class EnumValue:
         """Serializes the EnumValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enum_options is not None:
-            body["enum_options"] = self.enum_options
+            body["{enum_options}"] = self.enum_options
         if self.multi_values_options:
-            body["multi_values_options"] = self.multi_values_options.as_dict()
+            body["{multi_values_options}"] = self.multi_values_options.as_dict()
         if self.values:
-            body["values"] = [v for v in self.values]
+            body["{values}"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the EnumValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enum_options is not None:
-            body["enum_options"] = self.enum_options
+            body["{enum_options}"] = self.enum_options
         if self.multi_values_options:
-            body["multi_values_options"] = self.multi_values_options
+            body["{multi_values_options}"] = self.multi_values_options
         if self.values:
-            body["values"] = self.values
+            body["{values}"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EnumValue:
         """Deserializes the EnumValue from a dictionary."""
         return cls(
-            enum_options=d.get("enum_options", None),
-            multi_values_options=_from_dict(d, "multi_values_options", MultiValuesOptions),
-            values=d.get("values", None),
+            enum_options=d.get("{enum_options}", None),
+            multi_values_options=_from_dict(d, "{multi_values_options}", MultiValuesOptions),
+            values=d.get("{values}", None),
         )
 
 
@@ -2982,71 +2979,71 @@ class ExecuteStatementRequest:
         """Serializes the ExecuteStatementRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.byte_limit is not None:
-            body["byte_limit"] = self.byte_limit
+            body["{byte_limit}"] = self.byte_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.disposition is not None:
-            body["disposition"] = self.disposition.value
+            body["{disposition}"] = self.disposition.value
         if self.format is not None:
-            body["format"] = self.format.value
+            body["{format}"] = self.format.value
         if self.on_wait_timeout is not None:
-            body["on_wait_timeout"] = self.on_wait_timeout.value
+            body["{on_wait_timeout}"] = self.on_wait_timeout.value
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.row_limit is not None:
-            body["row_limit"] = self.row_limit
+            body["{row_limit}"] = self.row_limit
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.statement is not None:
-            body["statement"] = self.statement
+            body["{statement}"] = self.statement
         if self.wait_timeout is not None:
-            body["wait_timeout"] = self.wait_timeout
+            body["{wait_timeout}"] = self.wait_timeout
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ExecuteStatementRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_limit is not None:
-            body["byte_limit"] = self.byte_limit
+            body["{byte_limit}"] = self.byte_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.disposition is not None:
-            body["disposition"] = self.disposition
+            body["{disposition}"] = self.disposition
         if self.format is not None:
-            body["format"] = self.format
+            body["{format}"] = self.format
         if self.on_wait_timeout is not None:
-            body["on_wait_timeout"] = self.on_wait_timeout
+            body["{on_wait_timeout}"] = self.on_wait_timeout
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.row_limit is not None:
-            body["row_limit"] = self.row_limit
+            body["{row_limit}"] = self.row_limit
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.statement is not None:
-            body["statement"] = self.statement
+            body["{statement}"] = self.statement
         if self.wait_timeout is not None:
-            body["wait_timeout"] = self.wait_timeout
+            body["{wait_timeout}"] = self.wait_timeout
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExecuteStatementRequest:
         """Deserializes the ExecuteStatementRequest from a dictionary."""
         return cls(
-            byte_limit=d.get("byte_limit", None),
-            catalog=d.get("catalog", None),
-            disposition=_enum(d, "disposition", Disposition),
-            format=_enum(d, "format", Format),
-            on_wait_timeout=_enum(d, "on_wait_timeout", ExecuteStatementRequestOnWaitTimeout),
-            parameters=_repeated_dict(d, "parameters", StatementParameterListItem),
-            row_limit=d.get("row_limit", None),
-            schema=d.get("schema", None),
-            statement=d.get("statement", None),
-            wait_timeout=d.get("wait_timeout", None),
-            warehouse_id=d.get("warehouse_id", None),
+            byte_limit=d.get("{byte_limit}", None),
+            catalog=d.get("{catalog}", None),
+            disposition=_enum(d, "{disposition}", Disposition),
+            format=_enum(d, "{format}", Format),
+            on_wait_timeout=_enum(d, "{on_wait_timeout}", ExecuteStatementRequestOnWaitTimeout),
+            parameters=_repeated_dict(d, "{parameters}", StatementParameterListItem),
+            row_limit=d.get("{row_limit}", None),
+            schema=d.get("{schema}", None),
+            statement=d.get("{statement}", None),
+            wait_timeout=d.get("{wait_timeout}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -3103,61 +3100,61 @@ class ExternalLink:
         """Serializes the ExternalLink into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.expiration is not None:
-            body["expiration"] = self.expiration
+            body["{expiration}"] = self.expiration
         if self.external_link is not None:
-            body["external_link"] = self.external_link
+            body["{external_link}"] = self.external_link
         if self.http_headers:
-            body["http_headers"] = self.http_headers
+            body["{http_headers}"] = self.http_headers
         if self.next_chunk_index is not None:
-            body["next_chunk_index"] = self.next_chunk_index
+            body["{next_chunk_index}"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ExternalLink into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.expiration is not None:
-            body["expiration"] = self.expiration
+            body["{expiration}"] = self.expiration
         if self.external_link is not None:
-            body["external_link"] = self.external_link
+            body["{external_link}"] = self.external_link
         if self.http_headers:
-            body["http_headers"] = self.http_headers
+            body["{http_headers}"] = self.http_headers
         if self.next_chunk_index is not None:
-            body["next_chunk_index"] = self.next_chunk_index
+            body["{next_chunk_index}"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLink:
         """Deserializes the ExternalLink from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
-            chunk_index=d.get("chunk_index", None),
-            expiration=d.get("expiration", None),
-            external_link=d.get("external_link", None),
-            http_headers=d.get("http_headers", None),
-            next_chunk_index=d.get("next_chunk_index", None),
-            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            byte_count=d.get("{byte_count}", None),
+            chunk_index=d.get("{chunk_index}", None),
+            expiration=d.get("{expiration}", None),
+            external_link=d.get("{external_link}", None),
+            http_headers=d.get("{http_headers}", None),
+            next_chunk_index=d.get("{next_chunk_index}", None),
+            next_chunk_internal_link=d.get("{next_chunk_internal_link}", None),
+            row_count=d.get("{row_count}", None),
+            row_offset=d.get("{row_offset}", None),
         )
 
 
@@ -3187,51 +3184,51 @@ class ExternalQuerySource:
         """Serializes the ExternalQuerySource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
+            body["{alert_id}"] = self.alert_id
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.genie_space_id is not None:
-            body["genie_space_id"] = self.genie_space_id
+            body["{genie_space_id}"] = self.genie_space_id
         if self.job_info:
-            body["job_info"] = self.job_info.as_dict()
+            body["{job_info}"] = self.job_info.as_dict()
         if self.legacy_dashboard_id is not None:
-            body["legacy_dashboard_id"] = self.legacy_dashboard_id
+            body["{legacy_dashboard_id}"] = self.legacy_dashboard_id
         if self.notebook_id is not None:
-            body["notebook_id"] = self.notebook_id
+            body["{notebook_id}"] = self.notebook_id
         if self.sql_query_id is not None:
-            body["sql_query_id"] = self.sql_query_id
+            body["{sql_query_id}"] = self.sql_query_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ExternalQuerySource into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
+            body["{alert_id}"] = self.alert_id
         if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
+            body["{dashboard_id}"] = self.dashboard_id
         if self.genie_space_id is not None:
-            body["genie_space_id"] = self.genie_space_id
+            body["{genie_space_id}"] = self.genie_space_id
         if self.job_info:
-            body["job_info"] = self.job_info
+            body["{job_info}"] = self.job_info
         if self.legacy_dashboard_id is not None:
-            body["legacy_dashboard_id"] = self.legacy_dashboard_id
+            body["{legacy_dashboard_id}"] = self.legacy_dashboard_id
         if self.notebook_id is not None:
-            body["notebook_id"] = self.notebook_id
+            body["{notebook_id}"] = self.notebook_id
         if self.sql_query_id is not None:
-            body["sql_query_id"] = self.sql_query_id
+            body["{sql_query_id}"] = self.sql_query_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExternalQuerySource:
         """Deserializes the ExternalQuerySource from a dictionary."""
         return cls(
-            alert_id=d.get("alert_id", None),
-            dashboard_id=d.get("dashboard_id", None),
-            genie_space_id=d.get("genie_space_id", None),
-            job_info=_from_dict(d, "job_info", ExternalQuerySourceJobInfo),
-            legacy_dashboard_id=d.get("legacy_dashboard_id", None),
-            notebook_id=d.get("notebook_id", None),
-            sql_query_id=d.get("sql_query_id", None),
+            alert_id=d.get("{alert_id}", None),
+            dashboard_id=d.get("{dashboard_id}", None),
+            genie_space_id=d.get("{genie_space_id}", None),
+            job_info=_from_dict(d, "{job_info}", ExternalQuerySourceJobInfo),
+            legacy_dashboard_id=d.get("{legacy_dashboard_id}", None),
+            notebook_id=d.get("{notebook_id}", None),
+            sql_query_id=d.get("{sql_query_id}", None),
         )
 
 
@@ -3250,31 +3247,31 @@ class ExternalQuerySourceJobInfo:
         """Serializes the ExternalQuerySourceJobInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None:
-            body["job_id"] = self.job_id
+            body["{job_id}"] = self.job_id
         if self.job_run_id is not None:
-            body["job_run_id"] = self.job_run_id
+            body["{job_run_id}"] = self.job_run_id
         if self.job_task_run_id is not None:
-            body["job_task_run_id"] = self.job_task_run_id
+            body["{job_task_run_id}"] = self.job_task_run_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ExternalQuerySourceJobInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.job_id is not None:
-            body["job_id"] = self.job_id
+            body["{job_id}"] = self.job_id
         if self.job_run_id is not None:
-            body["job_run_id"] = self.job_run_id
+            body["{job_run_id}"] = self.job_run_id
         if self.job_task_run_id is not None:
-            body["job_task_run_id"] = self.job_task_run_id
+            body["{job_task_run_id}"] = self.job_task_run_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExternalQuerySourceJobInfo:
         """Deserializes the ExternalQuerySourceJobInfo from a dictionary."""
         return cls(
-            job_id=d.get("job_id", None),
-            job_run_id=d.get("job_run_id", None),
-            job_task_run_id=d.get("job_task_run_id", None),
+            job_id=d.get("{job_id}", None),
+            job_run_id=d.get("{job_run_id}", None),
+            job_task_run_id=d.get("{job_task_run_id}", None),
         )
 
 
@@ -3299,31 +3296,31 @@ class GetResponse:
         """Serializes the GetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type.value
+            body["{object_type}"] = self.object_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetResponse:
         """Deserializes the GetResponse from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
-            object_id=d.get("object_id", None),
-            object_type=_enum(d, "object_type", ObjectType),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AccessControl),
+            object_id=d.get("{object_id}", None),
+            object_type=_enum(d, "{object_type}", ObjectType),
         )
 
 
@@ -3336,20 +3333,20 @@ class GetWarehousePermissionLevelsResponse:
         """Serializes the GetWarehousePermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
+            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetWarehousePermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["permission_levels"] = self.permission_levels
+            body["{permission_levels}"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetWarehousePermissionLevelsResponse:
         """Deserializes the GetWarehousePermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "permission_levels", WarehousePermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", WarehousePermissionsDescription))
 
 
 @dataclass
@@ -3447,116 +3444,116 @@ class GetWarehouseResponse:
         """Serializes the GetWarehouseResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.health:
-            body["health"] = self.health.as_dict()
+            body["{health}"] = self.health.as_dict()
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.jdbc_url is not None:
-            body["jdbc_url"] = self.jdbc_url
+            body["{jdbc_url}"] = self.jdbc_url
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.num_active_sessions is not None:
-            body["num_active_sessions"] = self.num_active_sessions
+            body["{num_active_sessions}"] = self.num_active_sessions
         if self.num_clusters is not None:
-            body["num_clusters"] = self.num_clusters
+            body["{num_clusters}"] = self.num_clusters
         if self.odbc_params:
-            body["odbc_params"] = self.odbc_params.as_dict()
+            body["{odbc_params}"] = self.odbc_params.as_dict()
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
+            body["{spot_instance_policy}"] = self.spot_instance_policy.value
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         if self.tags:
-            body["tags"] = self.tags.as_dict()
+            body["{tags}"] = self.tags.as_dict()
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
+            body["{warehouse_type}"] = self.warehouse_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetWarehouseResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
+            body["{auto_stop_mins}"] = self.auto_stop_mins
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
+            body["{cluster_size}"] = self.cluster_size
         if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
+            body["{creator_name}"] = self.creator_name
         if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
+            body["{enable_photon}"] = self.enable_photon
         if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
+            body["{enable_serverless_compute}"] = self.enable_serverless_compute
         if self.health:
-            body["health"] = self.health
+            body["{health}"] = self.health
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.jdbc_url is not None:
-            body["jdbc_url"] = self.jdbc_url
+            body["{jdbc_url}"] = self.jdbc_url
         if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
+            body["{max_num_clusters}"] = self.max_num_clusters
         if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
+            body["{min_num_clusters}"] = self.min_num_clusters
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.num_active_sessions is not None:
-            body["num_active_sessions"] = self.num_active_sessions
+            body["{num_active_sessions}"] = self.num_active_sessions
         if self.num_clusters is not None:
-            body["num_clusters"] = self.num_clusters
+            body["{num_clusters}"] = self.num_clusters
         if self.odbc_params:
-            body["odbc_params"] = self.odbc_params
+            body["{odbc_params}"] = self.odbc_params
         if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
+            body["{spot_instance_policy}"] = self.spot_instance_policy
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
+            body["{warehouse_type}"] = self.warehouse_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetWarehouseResponse:
         """Deserializes the GetWarehouseResponse from a dictionary."""
         return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            health=_from_dict(d, "health", EndpointHealth),
-            id=d.get("id", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            jdbc_url=d.get("jdbc_url", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            num_active_sessions=d.get("num_active_sessions", None),
-            num_clusters=d.get("num_clusters", None),
-            odbc_params=_from_dict(d, "odbc_params", OdbcParams),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            state=_enum(d, "state", State),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", GetWarehouseResponseWarehouseType),
+            auto_stop_mins=d.get("{auto_stop_mins}", None),
+            channel=_from_dict(d, "{channel}", Channel),
+            cluster_size=d.get("{cluster_size}", None),
+            creator_name=d.get("{creator_name}", None),
+            enable_photon=d.get("{enable_photon}", None),
+            enable_serverless_compute=d.get("{enable_serverless_compute}", None),
+            health=_from_dict(d, "{health}", EndpointHealth),
+            id=d.get("{id}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            jdbc_url=d.get("{jdbc_url}", None),
+            max_num_clusters=d.get("{max_num_clusters}", None),
+            min_num_clusters=d.get("{min_num_clusters}", None),
+            name=d.get("{name}", None),
+            num_active_sessions=d.get("{num_active_sessions}", None),
+            num_clusters=d.get("{num_clusters}", None),
+            odbc_params=_from_dict(d, "{odbc_params}", OdbcParams),
+            spot_instance_policy=_enum(d, "{spot_instance_policy}", SpotInstancePolicy),
+            state=_enum(d, "{state}", State),
+            tags=_from_dict(d, "{tags}", EndpointTags),
+            warehouse_type=_enum(d, "{warehouse_type}", GetWarehouseResponseWarehouseType),
         )
 
 
@@ -3607,61 +3604,61 @@ class GetWorkspaceWarehouseConfigResponse:
         """Serializes the GetWorkspaceWarehouseConfigResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.config_param:
-            body["config_param"] = self.config_param.as_dict()
+            body["{config_param}"] = self.config_param.as_dict()
         if self.data_access_config:
-            body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
+            body["{data_access_config}"] = [v.as_dict() for v in self.data_access_config]
         if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = [v.as_dict() for v in self.enabled_warehouse_types]
+            body["{enabled_warehouse_types}"] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param:
-            body["global_param"] = self.global_param.as_dict()
+            body["{global_param}"] = self.global_param.as_dict()
         if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
+            body["{google_service_account}"] = self.google_service_account
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.security_policy is not None:
-            body["security_policy"] = self.security_policy.value
+            body["{security_policy}"] = self.security_policy.value
         if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters.as_dict()
+            body["{sql_configuration_parameters}"] = self.sql_configuration_parameters.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetWorkspaceWarehouseConfigResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.config_param:
-            body["config_param"] = self.config_param
+            body["{config_param}"] = self.config_param
         if self.data_access_config:
-            body["data_access_config"] = self.data_access_config
+            body["{data_access_config}"] = self.data_access_config
         if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = self.enabled_warehouse_types
+            body["{enabled_warehouse_types}"] = self.enabled_warehouse_types
         if self.global_param:
-            body["global_param"] = self.global_param
+            body["{global_param}"] = self.global_param
         if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
+            body["{google_service_account}"] = self.google_service_account
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.security_policy is not None:
-            body["security_policy"] = self.security_policy
+            body["{security_policy}"] = self.security_policy
         if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters
+            body["{sql_configuration_parameters}"] = self.sql_configuration_parameters
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceWarehouseConfigResponse:
         """Deserializes the GetWorkspaceWarehouseConfigResponse from a dictionary."""
         return cls(
-            channel=_from_dict(d, "channel", Channel),
-            config_param=_from_dict(d, "config_param", RepeatedEndpointConfPairs),
-            data_access_config=_repeated_dict(d, "data_access_config", EndpointConfPair),
-            enabled_warehouse_types=_repeated_dict(d, "enabled_warehouse_types", WarehouseTypePair),
-            global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
-            google_service_account=d.get("google_service_account", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            security_policy=_enum(d, "security_policy", GetWorkspaceWarehouseConfigResponseSecurityPolicy),
-            sql_configuration_parameters=_from_dict(d, "sql_configuration_parameters", RepeatedEndpointConfPairs),
+            channel=_from_dict(d, "{channel}", Channel),
+            config_param=_from_dict(d, "{config_param}", RepeatedEndpointConfPairs),
+            data_access_config=_repeated_dict(d, "{data_access_config}", EndpointConfPair),
+            enabled_warehouse_types=_repeated_dict(d, "{enabled_warehouse_types}", WarehouseTypePair),
+            global_param=_from_dict(d, "{global_param}", RepeatedEndpointConfPairs),
+            google_service_account=d.get("{google_service_account}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            security_policy=_enum(d, "{security_policy}", GetWorkspaceWarehouseConfigResponseSecurityPolicy),
+            sql_configuration_parameters=_from_dict(d, "{sql_configuration_parameters}", RepeatedEndpointConfPairs),
         )
 
 
@@ -3712,71 +3709,71 @@ class LegacyAlert:
         """Serializes the LegacyAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_triggered_at is not None:
-            body["last_triggered_at"] = self.last_triggered_at
+            body["{last_triggered_at}"] = self.last_triggered_at
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query:
-            body["query"] = self.query.as_dict()
+            body["{query}"] = self.query.as_dict()
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user.as_dict()
+            body["{user}"] = self.user.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the LegacyAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_triggered_at is not None:
-            body["last_triggered_at"] = self.last_triggered_at
+            body["{last_triggered_at}"] = self.last_triggered_at
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.rearm is not None:
-            body["rearm"] = self.rearm
+            body["{rearm}"] = self.rearm
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user
+            body["{user}"] = self.user
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LegacyAlert:
         """Deserializes the LegacyAlert from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
-            id=d.get("id", None),
-            last_triggered_at=d.get("last_triggered_at", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", AlertOptions),
-            parent=d.get("parent", None),
-            query=_from_dict(d, "query", AlertQuery),
-            rearm=d.get("rearm", None),
-            state=_enum(d, "state", LegacyAlertState),
-            updated_at=d.get("updated_at", None),
-            user=_from_dict(d, "user", User),
+            created_at=d.get("{created_at}", None),
+            id=d.get("{id}", None),
+            last_triggered_at=d.get("{last_triggered_at}", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", AlertOptions),
+            parent=d.get("{parent}", None),
+            query=_from_dict(d, "{query}", AlertQuery),
+            rearm=d.get("{rearm}", None),
+            state=_enum(d, "{state}", LegacyAlertState),
+            updated_at=d.get("{updated_at}", None),
+            user=_from_dict(d, "{user}", User),
         )
 
 
@@ -3874,136 +3871,136 @@ class LegacyQuery:
         """Serializes the LegacyQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.can_edit is not None:
-            body["can_edit"] = self.can_edit
+            body["{can_edit}"] = self.can_edit
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.is_safe is not None:
-            body["is_safe"] = self.is_safe
+            body["{is_safe}"] = self.is_safe
         if self.last_modified_by:
-            body["last_modified_by"] = self.last_modified_by.as_dict()
+            body["{last_modified_by}"] = self.last_modified_by.as_dict()
         if self.last_modified_by_id is not None:
-            body["last_modified_by_id"] = self.last_modified_by_id
+            body["{last_modified_by_id}"] = self.last_modified_by_id
         if self.latest_query_data_id is not None:
-            body["latest_query_data_id"] = self.latest_query_data_id
+            body["{latest_query_data_id}"] = self.latest_query_data_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.permission_tier is not None:
-            body["permission_tier"] = self.permission_tier.value
+            body["{permission_tier}"] = self.permission_tier.value
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.query_hash is not None:
-            body["query_hash"] = self.query_hash
+            body["{query_hash}"] = self.query_hash
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
+            body["{run_as_role}"] = self.run_as_role.value
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user.as_dict()
+            body["{user}"] = self.user.as_dict()
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.visualizations:
-            body["visualizations"] = [v.as_dict() for v in self.visualizations]
+            body["{visualizations}"] = [v.as_dict() for v in self.visualizations]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the LegacyQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.can_edit is not None:
-            body["can_edit"] = self.can_edit
+            body["{can_edit}"] = self.can_edit
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.is_archived is not None:
-            body["is_archived"] = self.is_archived
+            body["{is_archived}"] = self.is_archived
         if self.is_draft is not None:
-            body["is_draft"] = self.is_draft
+            body["{is_draft}"] = self.is_draft
         if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
+            body["{is_favorite}"] = self.is_favorite
         if self.is_safe is not None:
-            body["is_safe"] = self.is_safe
+            body["{is_safe}"] = self.is_safe
         if self.last_modified_by:
-            body["last_modified_by"] = self.last_modified_by
+            body["{last_modified_by}"] = self.last_modified_by
         if self.last_modified_by_id is not None:
-            body["last_modified_by_id"] = self.last_modified_by_id
+            body["{last_modified_by_id}"] = self.last_modified_by_id
         if self.latest_query_data_id is not None:
-            body["latest_query_data_id"] = self.latest_query_data_id
+            body["{latest_query_data_id}"] = self.latest_query_data_id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.permission_tier is not None:
-            body["permission_tier"] = self.permission_tier
+            body["{permission_tier}"] = self.permission_tier
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.query_hash is not None:
-            body["query_hash"] = self.query_hash
+            body["{query_hash}"] = self.query_hash
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
+            body["{run_as_role}"] = self.run_as_role
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         if self.user:
-            body["user"] = self.user
+            body["{user}"] = self.user
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.visualizations:
-            body["visualizations"] = self.visualizations
+            body["{visualizations}"] = self.visualizations
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LegacyQuery:
         """Deserializes the LegacyQuery from a dictionary."""
         return cls(
-            can_edit=d.get("can_edit", None),
-            created_at=d.get("created_at", None),
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            id=d.get("id", None),
-            is_archived=d.get("is_archived", None),
-            is_draft=d.get("is_draft", None),
-            is_favorite=d.get("is_favorite", None),
-            is_safe=d.get("is_safe", None),
-            last_modified_by=_from_dict(d, "last_modified_by", User),
-            last_modified_by_id=d.get("last_modified_by_id", None),
-            latest_query_data_id=d.get("latest_query_data_id", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", QueryOptions),
-            parent=d.get("parent", None),
-            permission_tier=_enum(d, "permission_tier", PermissionLevel),
-            query=d.get("query", None),
-            query_hash=d.get("query_hash", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
-            updated_at=d.get("updated_at", None),
-            user=_from_dict(d, "user", User),
-            user_id=d.get("user_id", None),
-            visualizations=_repeated_dict(d, "visualizations", LegacyVisualization),
+            can_edit=d.get("{can_edit}", None),
+            created_at=d.get("{created_at}", None),
+            data_source_id=d.get("{data_source_id}", None),
+            description=d.get("{description}", None),
+            id=d.get("{id}", None),
+            is_archived=d.get("{is_archived}", None),
+            is_draft=d.get("{is_draft}", None),
+            is_favorite=d.get("{is_favorite}", None),
+            is_safe=d.get("{is_safe}", None),
+            last_modified_by=_from_dict(d, "{last_modified_by}", User),
+            last_modified_by_id=d.get("{last_modified_by_id}", None),
+            latest_query_data_id=d.get("{latest_query_data_id}", None),
+            name=d.get("{name}", None),
+            options=_from_dict(d, "{options}", QueryOptions),
+            parent=d.get("{parent}", None),
+            permission_tier=_enum(d, "{permission_tier}", PermissionLevel),
+            query=d.get("{query}", None),
+            query_hash=d.get("{query_hash}", None),
+            run_as_role=_enum(d, "{run_as_role}", RunAsRole),
+            tags=d.get("{tags}", None),
+            updated_at=d.get("{updated_at}", None),
+            user=_from_dict(d, "{user}", User),
+            user_id=d.get("{user_id}", None),
+            visualizations=_repeated_dict(d, "{visualizations}", LegacyVisualization),
         )
 
 
@@ -4040,56 +4037,56 @@ class LegacyVisualization:
         """Serializes the LegacyVisualization into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query:
-            body["query"] = self.query.as_dict()
+            body["{query}"] = self.query.as_dict()
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the LegacyVisualization into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LegacyVisualization:
         """Deserializes the LegacyVisualization from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
-            description=d.get("description", None),
-            id=d.get("id", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            query=_from_dict(d, "query", LegacyQuery),
-            type=d.get("type", None),
-            updated_at=d.get("updated_at", None),
+            created_at=d.get("{created_at}", None),
+            description=d.get("{description}", None),
+            id=d.get("{id}", None),
+            name=d.get("{name}", None),
+            options=d.get("{options}", None),
+            query=_from_dict(d, "{query}", LegacyQuery),
+            type=d.get("{type}", None),
+            updated_at=d.get("{updated_at}", None),
         )
 
 
@@ -4109,26 +4106,26 @@ class ListAlertsResponse:
         """Serializes the ListAlertsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
+            body["{results}"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAlertsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = self.results
+            body["{results}"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsResponse:
         """Deserializes the ListAlertsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            results=_repeated_dict(d, "results", ListAlertsResponseAlert),
+            next_page_token=d.get("{next_page_token}", None),
+            results=_repeated_dict(d, "{results}", ListAlertsResponseAlert),
         )
 
 
@@ -4187,86 +4184,86 @@ class ListAlertsResponseAlert:
         """Serializes the ListAlertsResponseAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition.as_dict()
+            body["{condition}"] = self.condition.as_dict()
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state.value
+            body["{lifecycle_state}"] = self.lifecycle_state.value
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         if self.trigger_time is not None:
-            body["trigger_time"] = self.trigger_time
+            body["{trigger_time}"] = self.trigger_time
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAlertsResponseAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition
+            body["{condition}"] = self.condition
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state
+            body["{lifecycle_state}"] = self.lifecycle_state
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         if self.trigger_time is not None:
-            body["trigger_time"] = self.trigger_time
+            body["{trigger_time}"] = self.trigger_time
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsResponseAlert:
         """Deserializes the ListAlertsResponseAlert from a dictionary."""
         return cls(
-            condition=_from_dict(d, "condition", AlertCondition),
-            create_time=d.get("create_time", None),
-            custom_body=d.get("custom_body", None),
-            custom_subject=d.get("custom_subject", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
-            notify_on_ok=d.get("notify_on_ok", None),
-            owner_user_name=d.get("owner_user_name", None),
-            query_id=d.get("query_id", None),
-            seconds_to_retrigger=d.get("seconds_to_retrigger", None),
-            state=_enum(d, "state", AlertState),
-            trigger_time=d.get("trigger_time", None),
-            update_time=d.get("update_time", None),
+            condition=_from_dict(d, "{condition}", AlertCondition),
+            create_time=d.get("{create_time}", None),
+            custom_body=d.get("{custom_body}", None),
+            custom_subject=d.get("{custom_subject}", None),
+            display_name=d.get("{display_name}", None),
+            id=d.get("{id}", None),
+            lifecycle_state=_enum(d, "{lifecycle_state}", LifecycleState),
+            notify_on_ok=d.get("{notify_on_ok}", None),
+            owner_user_name=d.get("{owner_user_name}", None),
+            query_id=d.get("{query_id}", None),
+            seconds_to_retrigger=d.get("{seconds_to_retrigger}", None),
+            state=_enum(d, "{state}", AlertState),
+            trigger_time=d.get("{trigger_time}", None),
+            update_time=d.get("{update_time}", None),
         )
 
 
@@ -4290,31 +4287,31 @@ class ListQueriesResponse:
         """Serializes the ListQueriesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_next_page is not None:
-            body["has_next_page"] = self.has_next_page
+            body["{has_next_page}"] = self.has_next_page
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.res:
-            body["res"] = [v.as_dict() for v in self.res]
+            body["{res}"] = [v.as_dict() for v in self.res]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListQueriesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.has_next_page is not None:
-            body["has_next_page"] = self.has_next_page
+            body["{has_next_page}"] = self.has_next_page
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.res:
-            body["res"] = self.res
+            body["{res}"] = self.res
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListQueriesResponse:
         """Deserializes the ListQueriesResponse from a dictionary."""
         return cls(
-            has_next_page=d.get("has_next_page", None),
-            next_page_token=d.get("next_page_token", None),
-            res=_repeated_dict(d, "res", QueryInfo),
+            has_next_page=d.get("{has_next_page}", None),
+            next_page_token=d.get("{next_page_token}", None),
+            res=_repeated_dict(d, "{res}", QueryInfo),
         )
 
 
@@ -4328,26 +4325,26 @@ class ListQueryObjectsResponse:
         """Serializes the ListQueryObjectsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
+            body["{results}"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListQueryObjectsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = self.results
+            body["{results}"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListQueryObjectsResponse:
         """Deserializes the ListQueryObjectsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            results=_repeated_dict(d, "results", ListQueryObjectsResponseQuery),
+            next_page_token=d.get("{next_page_token}", None),
+            results=_repeated_dict(d, "{results}", ListQueryObjectsResponseQuery),
         )
 
 
@@ -4404,96 +4401,96 @@ class ListQueryObjectsResponseQuery:
         """Serializes the ListQueryObjectsResponseQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_modifier_user_name is not None:
-            body["last_modifier_user_name"] = self.last_modifier_user_name
+            body["{last_modifier_user_name}"] = self.last_modifier_user_name
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state.value
+            body["{lifecycle_state}"] = self.lifecycle_state.value
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode.value
+            body["{run_as_mode}"] = self.run_as_mode.value
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListQueryObjectsResponseQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_modifier_user_name is not None:
-            body["last_modifier_user_name"] = self.last_modifier_user_name
+            body["{last_modifier_user_name}"] = self.last_modifier_user_name
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state
+            body["{lifecycle_state}"] = self.lifecycle_state
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode
+            body["{run_as_mode}"] = self.run_as_mode
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListQueryObjectsResponseQuery:
         """Deserializes the ListQueryObjectsResponseQuery from a dictionary."""
         return cls(
-            apply_auto_limit=d.get("apply_auto_limit", None),
-            catalog=d.get("catalog", None),
-            create_time=d.get("create_time", None),
-            description=d.get("description", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            last_modifier_user_name=d.get("last_modifier_user_name", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
-            owner_user_name=d.get("owner_user_name", None),
-            parameters=_repeated_dict(d, "parameters", QueryParameter),
-            query_text=d.get("query_text", None),
-            run_as_mode=_enum(d, "run_as_mode", RunAsMode),
-            schema=d.get("schema", None),
-            tags=d.get("tags", None),
-            update_time=d.get("update_time", None),
-            warehouse_id=d.get("warehouse_id", None),
+            apply_auto_limit=d.get("{apply_auto_limit}", None),
+            catalog=d.get("{catalog}", None),
+            create_time=d.get("{create_time}", None),
+            description=d.get("{description}", None),
+            display_name=d.get("{display_name}", None),
+            id=d.get("{id}", None),
+            last_modifier_user_name=d.get("{last_modifier_user_name}", None),
+            lifecycle_state=_enum(d, "{lifecycle_state}", LifecycleState),
+            owner_user_name=d.get("{owner_user_name}", None),
+            parameters=_repeated_dict(d, "{parameters}", QueryParameter),
+            query_text=d.get("{query_text}", None),
+            run_as_mode=_enum(d, "{run_as_mode}", RunAsMode),
+            schema=d.get("{schema}", None),
+            tags=d.get("{tags}", None),
+            update_time=d.get("{update_time}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -4515,36 +4512,36 @@ class ListResponse:
         """Serializes the ListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.count is not None:
-            body["count"] = self.count
+            body["{count}"] = self.count
         if self.page is not None:
-            body["page"] = self.page
+            body["{page}"] = self.page
         if self.page_size is not None:
-            body["page_size"] = self.page_size
+            body["{page_size}"] = self.page_size
         if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
+            body["{results}"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.count is not None:
-            body["count"] = self.count
+            body["{count}"] = self.count
         if self.page is not None:
-            body["page"] = self.page
+            body["{page}"] = self.page
         if self.page_size is not None:
-            body["page_size"] = self.page_size
+            body["{page_size}"] = self.page_size
         if self.results:
-            body["results"] = self.results
+            body["{results}"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListResponse:
         """Deserializes the ListResponse from a dictionary."""
         return cls(
-            count=d.get("count", None),
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            results=_repeated_dict(d, "results", Dashboard),
+            count=d.get("{count}", None),
+            page=d.get("{page}", None),
+            page_size=d.get("{page_size}", None),
+            results=_repeated_dict(d, "{results}", Dashboard),
         )
 
 
@@ -4558,24 +4555,26 @@ class ListVisualizationsForQueryResponse:
         """Serializes the ListVisualizationsForQueryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
+            body["{results}"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListVisualizationsForQueryResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
+            body["{next_page_token}"] = self.next_page_token
         if self.results:
-            body["results"] = self.results
+            body["{results}"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListVisualizationsForQueryResponse:
         """Deserializes the ListVisualizationsForQueryResponse from a dictionary."""
-        return cls(next_page_token=d.get("next_page_token", None), results=_repeated_dict(d, "results", Visualization))
+        return cls(
+            next_page_token=d.get("{next_page_token}", None), results=_repeated_dict(d, "{results}", Visualization)
+        )
 
 
 @dataclass
@@ -4587,20 +4586,20 @@ class ListWarehousesResponse:
         """Serializes the ListWarehousesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.warehouses:
-            body["warehouses"] = [v.as_dict() for v in self.warehouses]
+            body["{warehouses}"] = [v.as_dict() for v in self.warehouses]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListWarehousesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.warehouses:
-            body["warehouses"] = self.warehouses
+            body["{warehouses}"] = self.warehouses
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListWarehousesResponse:
         """Deserializes the ListWarehousesResponse from a dictionary."""
-        return cls(warehouses=_repeated_dict(d, "warehouses", EndpointInfo))
+        return cls(warehouses=_repeated_dict(d, "{warehouses}", EndpointInfo))
 
 
 @dataclass
@@ -4618,28 +4617,28 @@ class MultiValuesOptions:
         """Serializes the MultiValuesOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.prefix is not None:
-            body["prefix"] = self.prefix
+            body["{prefix}"] = self.prefix
         if self.separator is not None:
-            body["separator"] = self.separator
+            body["{separator}"] = self.separator
         if self.suffix is not None:
-            body["suffix"] = self.suffix
+            body["{suffix}"] = self.suffix
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the MultiValuesOptions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.prefix is not None:
-            body["prefix"] = self.prefix
+            body["{prefix}"] = self.prefix
         if self.separator is not None:
-            body["separator"] = self.separator
+            body["{separator}"] = self.separator
         if self.suffix is not None:
-            body["suffix"] = self.suffix
+            body["{suffix}"] = self.suffix
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MultiValuesOptions:
         """Deserializes the MultiValuesOptions from a dictionary."""
-        return cls(prefix=d.get("prefix", None), separator=d.get("separator", None), suffix=d.get("suffix", None))
+        return cls(prefix=d.get("{prefix}", None), separator=d.get("{separator}", None), suffix=d.get("{suffix}", None))
 
 
 @dataclass
@@ -4650,20 +4649,20 @@ class NumericValue:
         """Serializes the NumericValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the NumericValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NumericValue:
         """Deserializes the NumericValue from a dictionary."""
-        return cls(value=d.get("value", None))
+        return cls(value=d.get("{value}", None))
 
 
 class ObjectType(Enum):
@@ -4698,36 +4697,36 @@ class OdbcParams:
         """Serializes the OdbcParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.hostname is not None:
-            body["hostname"] = self.hostname
+            body["{hostname}"] = self.hostname
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.port is not None:
-            body["port"] = self.port
+            body["{port}"] = self.port
         if self.protocol is not None:
-            body["protocol"] = self.protocol
+            body["{protocol}"] = self.protocol
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the OdbcParams into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.hostname is not None:
-            body["hostname"] = self.hostname
+            body["{hostname}"] = self.hostname
         if self.path is not None:
-            body["path"] = self.path
+            body["{path}"] = self.path
         if self.port is not None:
-            body["port"] = self.port
+            body["{port}"] = self.port
         if self.protocol is not None:
-            body["protocol"] = self.protocol
+            body["{protocol}"] = self.protocol
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> OdbcParams:
         """Deserializes the OdbcParams from a dictionary."""
         return cls(
-            hostname=d.get("hostname", None),
-            path=d.get("path", None),
-            port=d.get("port", None),
-            protocol=d.get("protocol", None),
+            hostname=d.get("{hostname}", None),
+            path=d.get("{path}", None),
+            port=d.get("{port}", None),
+            protocol=d.get("{protocol}", None),
         )
 
 
@@ -4768,51 +4767,51 @@ class Parameter:
         """Serializes the Parameter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enum_options is not None:
-            body["enumOptions"] = self.enum_options
+            body["{enum_options}"] = self.enum_options
         if self.multi_values_options:
-            body["multiValuesOptions"] = self.multi_values_options.as_dict()
+            body["{multi_values_options}"] = self.multi_values_options.as_dict()
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.query_id is not None:
-            body["queryId"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         if self.type is not None:
-            body["type"] = self.type.value
+            body["{type}"] = self.type.value
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Parameter into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enum_options is not None:
-            body["enumOptions"] = self.enum_options
+            body["{enum_options}"] = self.enum_options
         if self.multi_values_options:
-            body["multiValuesOptions"] = self.multi_values_options
+            body["{multi_values_options}"] = self.multi_values_options
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.query_id is not None:
-            body["queryId"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.value:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Parameter:
         """Deserializes the Parameter from a dictionary."""
         return cls(
-            enum_options=d.get("enumOptions", None),
-            multi_values_options=_from_dict(d, "multiValuesOptions", MultiValuesOptions),
-            name=d.get("name", None),
-            query_id=d.get("queryId", None),
-            title=d.get("title", None),
-            type=_enum(d, "type", ParameterType),
-            value=d.get("value", None),
+            enum_options=d.get("{enum_options}", None),
+            multi_values_options=_from_dict(d, "{multi_values_options}", MultiValuesOptions),
+            name=d.get("{name}", None),
+            query_id=d.get("{query_id}", None),
+            title=d.get("{title}", None),
+            type=_enum(d, "{type}", ParameterType),
+            value=d.get("{value}", None),
         )
 
 
@@ -4903,101 +4902,101 @@ class Query:
         """Serializes the Query into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_modifier_user_name is not None:
-            body["last_modifier_user_name"] = self.last_modifier_user_name
+            body["{last_modifier_user_name}"] = self.last_modifier_user_name
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state.value
+            body["{lifecycle_state}"] = self.lifecycle_state.value
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode.value
+            body["{run_as_mode}"] = self.run_as_mode.value
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Query into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.last_modifier_user_name is not None:
-            body["last_modifier_user_name"] = self.last_modifier_user_name
+            body["{last_modifier_user_name}"] = self.last_modifier_user_name
         if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state
+            body["{lifecycle_state}"] = self.lifecycle_state
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
+            body["{parent_path}"] = self.parent_path
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode
+            body["{run_as_mode}"] = self.run_as_mode
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Query:
         """Deserializes the Query from a dictionary."""
         return cls(
-            apply_auto_limit=d.get("apply_auto_limit", None),
-            catalog=d.get("catalog", None),
-            create_time=d.get("create_time", None),
-            description=d.get("description", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            last_modifier_user_name=d.get("last_modifier_user_name", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
-            owner_user_name=d.get("owner_user_name", None),
-            parameters=_repeated_dict(d, "parameters", QueryParameter),
-            parent_path=d.get("parent_path", None),
-            query_text=d.get("query_text", None),
-            run_as_mode=_enum(d, "run_as_mode", RunAsMode),
-            schema=d.get("schema", None),
-            tags=d.get("tags", None),
-            update_time=d.get("update_time", None),
-            warehouse_id=d.get("warehouse_id", None),
+            apply_auto_limit=d.get("{apply_auto_limit}", None),
+            catalog=d.get("{catalog}", None),
+            create_time=d.get("{create_time}", None),
+            description=d.get("{description}", None),
+            display_name=d.get("{display_name}", None),
+            id=d.get("{id}", None),
+            last_modifier_user_name=d.get("{last_modifier_user_name}", None),
+            lifecycle_state=_enum(d, "{lifecycle_state}", LifecycleState),
+            owner_user_name=d.get("{owner_user_name}", None),
+            parameters=_repeated_dict(d, "{parameters}", QueryParameter),
+            parent_path=d.get("{parent_path}", None),
+            query_text=d.get("{query_text}", None),
+            run_as_mode=_enum(d, "{run_as_mode}", RunAsMode),
+            schema=d.get("{schema}", None),
+            tags=d.get("{tags}", None),
+            update_time=d.get("{update_time}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -5016,31 +5015,31 @@ class QueryBackedValue:
         """Serializes the QueryBackedValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.multi_values_options:
-            body["multi_values_options"] = self.multi_values_options.as_dict()
+            body["{multi_values_options}"] = self.multi_values_options.as_dict()
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.values:
-            body["values"] = [v for v in self.values]
+            body["{values}"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryBackedValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.multi_values_options:
-            body["multi_values_options"] = self.multi_values_options
+            body["{multi_values_options}"] = self.multi_values_options
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.values:
-            body["values"] = self.values
+            body["{values}"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryBackedValue:
         """Deserializes the QueryBackedValue from a dictionary."""
         return cls(
-            multi_values_options=_from_dict(d, "multi_values_options", MultiValuesOptions),
-            query_id=d.get("query_id", None),
-            values=d.get("values", None),
+            multi_values_options=_from_dict(d, "{multi_values_options}", MultiValuesOptions),
+            query_id=d.get("{query_id}", None),
+            values=d.get("{values}", None),
         )
 
 
@@ -5078,56 +5077,56 @@ class QueryEditContent:
         """Serializes the QueryEditContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
+            body["{run_as_role}"] = self.run_as_role.value
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryEditContent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
+            body["{run_as_role}"] = self.run_as_role
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryEditContent:
         """Deserializes the QueryEditContent from a dictionary."""
         return cls(
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            query=d.get("query", None),
-            query_id=d.get("query_id", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
+            data_source_id=d.get("{data_source_id}", None),
+            description=d.get("{description}", None),
+            name=d.get("{name}", None),
+            options=d.get("{options}", None),
+            query=d.get("{query}", None),
+            query_id=d.get("{query_id}", None),
+            run_as_role=_enum(d, "{run_as_role}", RunAsRole),
+            tags=d.get("{tags}", None),
         )
 
 
@@ -5151,41 +5150,41 @@ class QueryFilter:
         """Serializes the QueryFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query_start_time_range:
-            body["query_start_time_range"] = self.query_start_time_range.as_dict()
+            body["{query_start_time_range}"] = self.query_start_time_range.as_dict()
         if self.statement_ids:
-            body["statement_ids"] = [v for v in self.statement_ids]
+            body["{statement_ids}"] = [v for v in self.statement_ids]
         if self.statuses:
-            body["statuses"] = [v.value for v in self.statuses]
+            body["{statuses}"] = [v.value for v in self.statuses]
         if self.user_ids:
-            body["user_ids"] = [v for v in self.user_ids]
+            body["{user_ids}"] = [v for v in self.user_ids]
         if self.warehouse_ids:
-            body["warehouse_ids"] = [v for v in self.warehouse_ids]
+            body["{warehouse_ids}"] = [v for v in self.warehouse_ids]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryFilter into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.query_start_time_range:
-            body["query_start_time_range"] = self.query_start_time_range
+            body["{query_start_time_range}"] = self.query_start_time_range
         if self.statement_ids:
-            body["statement_ids"] = self.statement_ids
+            body["{statement_ids}"] = self.statement_ids
         if self.statuses:
-            body["statuses"] = self.statuses
+            body["{statuses}"] = self.statuses
         if self.user_ids:
-            body["user_ids"] = self.user_ids
+            body["{user_ids}"] = self.user_ids
         if self.warehouse_ids:
-            body["warehouse_ids"] = self.warehouse_ids
+            body["{warehouse_ids}"] = self.warehouse_ids
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryFilter:
         """Deserializes the QueryFilter from a dictionary."""
         return cls(
-            query_start_time_range=_from_dict(d, "query_start_time_range", TimeRange),
-            statement_ids=d.get("statement_ids", None),
-            statuses=_repeated_enum(d, "statuses", QueryStatus),
-            user_ids=d.get("user_ids", None),
-            warehouse_ids=d.get("warehouse_ids", None),
+            query_start_time_range=_from_dict(d, "{query_start_time_range}", TimeRange),
+            statement_ids=d.get("{statement_ids}", None),
+            statuses=_repeated_enum(d, "{statuses}", QueryStatus),
+            user_ids=d.get("{user_ids}", None),
+            warehouse_ids=d.get("{warehouse_ids}", None),
         )
 
 
@@ -5270,131 +5269,131 @@ class QueryInfo:
         """Serializes the QueryInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.channel_used:
-            body["channel_used"] = self.channel_used.as_dict()
+            body["{channel_used}"] = self.channel_used.as_dict()
         if self.duration is not None:
-            body["duration"] = self.duration
+            body["{duration}"] = self.duration
         if self.endpoint_id is not None:
-            body["endpoint_id"] = self.endpoint_id
+            body["{endpoint_id}"] = self.endpoint_id
         if self.error_message is not None:
-            body["error_message"] = self.error_message
+            body["{error_message}"] = self.error_message
         if self.executed_as_user_id is not None:
-            body["executed_as_user_id"] = self.executed_as_user_id
+            body["{executed_as_user_id}"] = self.executed_as_user_id
         if self.executed_as_user_name is not None:
-            body["executed_as_user_name"] = self.executed_as_user_name
+            body["{executed_as_user_name}"] = self.executed_as_user_name
         if self.execution_end_time_ms is not None:
-            body["execution_end_time_ms"] = self.execution_end_time_ms
+            body["{execution_end_time_ms}"] = self.execution_end_time_ms
         if self.is_final is not None:
-            body["is_final"] = self.is_final
+            body["{is_final}"] = self.is_final
         if self.lookup_key is not None:
-            body["lookup_key"] = self.lookup_key
+            body["{lookup_key}"] = self.lookup_key
         if self.metrics:
-            body["metrics"] = self.metrics.as_dict()
+            body["{metrics}"] = self.metrics.as_dict()
         if self.plans_state is not None:
-            body["plans_state"] = self.plans_state.value
+            body["{plans_state}"] = self.plans_state.value
         if self.query_end_time_ms is not None:
-            body["query_end_time_ms"] = self.query_end_time_ms
+            body["{query_end_time_ms}"] = self.query_end_time_ms
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.query_source:
-            body["query_source"] = self.query_source.as_dict()
+            body["{query_source}"] = self.query_source.as_dict()
         if self.query_start_time_ms is not None:
-            body["query_start_time_ms"] = self.query_start_time_ms
+            body["{query_start_time_ms}"] = self.query_start_time_ms
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.rows_produced is not None:
-            body["rows_produced"] = self.rows_produced
+            body["{rows_produced}"] = self.rows_produced
         if self.spark_ui_url is not None:
-            body["spark_ui_url"] = self.spark_ui_url
+            body["{spark_ui_url}"] = self.spark_ui_url
         if self.statement_type is not None:
-            body["statement_type"] = self.statement_type.value
+            body["{statement_type}"] = self.statement_type.value
         if self.status is not None:
-            body["status"] = self.status.value
+            body["{status}"] = self.status.value
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.channel_used:
-            body["channel_used"] = self.channel_used
+            body["{channel_used}"] = self.channel_used
         if self.duration is not None:
-            body["duration"] = self.duration
+            body["{duration}"] = self.duration
         if self.endpoint_id is not None:
-            body["endpoint_id"] = self.endpoint_id
+            body["{endpoint_id}"] = self.endpoint_id
         if self.error_message is not None:
-            body["error_message"] = self.error_message
+            body["{error_message}"] = self.error_message
         if self.executed_as_user_id is not None:
-            body["executed_as_user_id"] = self.executed_as_user_id
+            body["{executed_as_user_id}"] = self.executed_as_user_id
         if self.executed_as_user_name is not None:
-            body["executed_as_user_name"] = self.executed_as_user_name
+            body["{executed_as_user_name}"] = self.executed_as_user_name
         if self.execution_end_time_ms is not None:
-            body["execution_end_time_ms"] = self.execution_end_time_ms
+            body["{execution_end_time_ms}"] = self.execution_end_time_ms
         if self.is_final is not None:
-            body["is_final"] = self.is_final
+            body["{is_final}"] = self.is_final
         if self.lookup_key is not None:
-            body["lookup_key"] = self.lookup_key
+            body["{lookup_key}"] = self.lookup_key
         if self.metrics:
-            body["metrics"] = self.metrics
+            body["{metrics}"] = self.metrics
         if self.plans_state is not None:
-            body["plans_state"] = self.plans_state
+            body["{plans_state}"] = self.plans_state
         if self.query_end_time_ms is not None:
-            body["query_end_time_ms"] = self.query_end_time_ms
+            body["{query_end_time_ms}"] = self.query_end_time_ms
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.query_source:
-            body["query_source"] = self.query_source
+            body["{query_source}"] = self.query_source
         if self.query_start_time_ms is not None:
-            body["query_start_time_ms"] = self.query_start_time_ms
+            body["{query_start_time_ms}"] = self.query_start_time_ms
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.rows_produced is not None:
-            body["rows_produced"] = self.rows_produced
+            body["{rows_produced}"] = self.rows_produced
         if self.spark_ui_url is not None:
-            body["spark_ui_url"] = self.spark_ui_url
+            body["{spark_ui_url}"] = self.spark_ui_url
         if self.statement_type is not None:
-            body["statement_type"] = self.statement_type
+            body["{statement_type}"] = self.statement_type
         if self.status is not None:
-            body["status"] = self.status
+            body["{status}"] = self.status
         if self.user_id is not None:
-            body["user_id"] = self.user_id
+            body["{user_id}"] = self.user_id
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryInfo:
         """Deserializes the QueryInfo from a dictionary."""
         return cls(
-            channel_used=_from_dict(d, "channel_used", ChannelInfo),
-            duration=d.get("duration", None),
-            endpoint_id=d.get("endpoint_id", None),
-            error_message=d.get("error_message", None),
-            executed_as_user_id=d.get("executed_as_user_id", None),
-            executed_as_user_name=d.get("executed_as_user_name", None),
-            execution_end_time_ms=d.get("execution_end_time_ms", None),
-            is_final=d.get("is_final", None),
-            lookup_key=d.get("lookup_key", None),
-            metrics=_from_dict(d, "metrics", QueryMetrics),
-            plans_state=_enum(d, "plans_state", PlansState),
-            query_end_time_ms=d.get("query_end_time_ms", None),
-            query_id=d.get("query_id", None),
-            query_source=_from_dict(d, "query_source", ExternalQuerySource),
-            query_start_time_ms=d.get("query_start_time_ms", None),
-            query_text=d.get("query_text", None),
-            rows_produced=d.get("rows_produced", None),
-            spark_ui_url=d.get("spark_ui_url", None),
-            statement_type=_enum(d, "statement_type", QueryStatementType),
-            status=_enum(d, "status", QueryStatus),
-            user_id=d.get("user_id", None),
-            user_name=d.get("user_name", None),
-            warehouse_id=d.get("warehouse_id", None),
+            channel_used=_from_dict(d, "{channel_used}", ChannelInfo),
+            duration=d.get("{duration}", None),
+            endpoint_id=d.get("{endpoint_id}", None),
+            error_message=d.get("{error_message}", None),
+            executed_as_user_id=d.get("{executed_as_user_id}", None),
+            executed_as_user_name=d.get("{executed_as_user_name}", None),
+            execution_end_time_ms=d.get("{execution_end_time_ms}", None),
+            is_final=d.get("{is_final}", None),
+            lookup_key=d.get("{lookup_key}", None),
+            metrics=_from_dict(d, "{metrics}", QueryMetrics),
+            plans_state=_enum(d, "{plans_state}", PlansState),
+            query_end_time_ms=d.get("{query_end_time_ms}", None),
+            query_id=d.get("{query_id}", None),
+            query_source=_from_dict(d, "{query_source}", ExternalQuerySource),
+            query_start_time_ms=d.get("{query_start_time_ms}", None),
+            query_text=d.get("{query_text}", None),
+            rows_produced=d.get("{rows_produced}", None),
+            spark_ui_url=d.get("{spark_ui_url}", None),
+            statement_type=_enum(d, "{statement_type}", QueryStatementType),
+            status=_enum(d, "{status}", QueryStatus),
+            user_id=d.get("{user_id}", None),
+            user_name=d.get("{user_name}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -5416,36 +5415,36 @@ class QueryList:
         """Serializes the QueryList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.count is not None:
-            body["count"] = self.count
+            body["{count}"] = self.count
         if self.page is not None:
-            body["page"] = self.page
+            body["{page}"] = self.page
         if self.page_size is not None:
-            body["page_size"] = self.page_size
+            body["{page_size}"] = self.page_size
         if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
+            body["{results}"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryList into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.count is not None:
-            body["count"] = self.count
+            body["{count}"] = self.count
         if self.page is not None:
-            body["page"] = self.page
+            body["{page}"] = self.page
         if self.page_size is not None:
-            body["page_size"] = self.page_size
+            body["{page_size}"] = self.page_size
         if self.results:
-            body["results"] = self.results
+            body["{results}"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryList:
         """Deserializes the QueryList from a dictionary."""
         return cls(
-            count=d.get("count", None),
-            page=d.get("page", None),
-            page_size=d.get("page_size", None),
-            results=_repeated_dict(d, "results", LegacyQuery),
+            count=d.get("{count}", None),
+            page=d.get("{page}", None),
+            page_size=d.get("{page_size}", None),
+            results=_repeated_dict(d, "{results}", LegacyQuery),
         )
 
 
@@ -5527,126 +5526,126 @@ class QueryMetrics:
         """Serializes the QueryMetrics into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compilation_time_ms is not None:
-            body["compilation_time_ms"] = self.compilation_time_ms
+            body["{compilation_time_ms}"] = self.compilation_time_ms
         if self.execution_time_ms is not None:
-            body["execution_time_ms"] = self.execution_time_ms
+            body["{execution_time_ms}"] = self.execution_time_ms
         if self.network_sent_bytes is not None:
-            body["network_sent_bytes"] = self.network_sent_bytes
+            body["{network_sent_bytes}"] = self.network_sent_bytes
         if self.overloading_queue_start_timestamp is not None:
-            body["overloading_queue_start_timestamp"] = self.overloading_queue_start_timestamp
+            body["{overloading_queue_start_timestamp}"] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None:
-            body["photon_total_time_ms"] = self.photon_total_time_ms
+            body["{photon_total_time_ms}"] = self.photon_total_time_ms
         if self.provisioning_queue_start_timestamp is not None:
-            body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
+            body["{provisioning_queue_start_timestamp}"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
-            body["pruned_bytes"] = self.pruned_bytes
+            body["{pruned_bytes}"] = self.pruned_bytes
         if self.pruned_files_count is not None:
-            body["pruned_files_count"] = self.pruned_files_count
+            body["{pruned_files_count}"] = self.pruned_files_count
         if self.query_compilation_start_timestamp is not None:
-            body["query_compilation_start_timestamp"] = self.query_compilation_start_timestamp
+            body["{query_compilation_start_timestamp}"] = self.query_compilation_start_timestamp
         if self.read_bytes is not None:
-            body["read_bytes"] = self.read_bytes
+            body["{read_bytes}"] = self.read_bytes
         if self.read_cache_bytes is not None:
-            body["read_cache_bytes"] = self.read_cache_bytes
+            body["{read_cache_bytes}"] = self.read_cache_bytes
         if self.read_files_count is not None:
-            body["read_files_count"] = self.read_files_count
+            body["{read_files_count}"] = self.read_files_count
         if self.read_partitions_count is not None:
-            body["read_partitions_count"] = self.read_partitions_count
+            body["{read_partitions_count}"] = self.read_partitions_count
         if self.read_remote_bytes is not None:
-            body["read_remote_bytes"] = self.read_remote_bytes
+            body["{read_remote_bytes}"] = self.read_remote_bytes
         if self.result_fetch_time_ms is not None:
-            body["result_fetch_time_ms"] = self.result_fetch_time_ms
+            body["{result_fetch_time_ms}"] = self.result_fetch_time_ms
         if self.result_from_cache is not None:
-            body["result_from_cache"] = self.result_from_cache
+            body["{result_from_cache}"] = self.result_from_cache
         if self.rows_produced_count is not None:
-            body["rows_produced_count"] = self.rows_produced_count
+            body["{rows_produced_count}"] = self.rows_produced_count
         if self.rows_read_count is not None:
-            body["rows_read_count"] = self.rows_read_count
+            body["{rows_read_count}"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
-            body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+            body["{spill_to_disk_bytes}"] = self.spill_to_disk_bytes
         if self.task_total_time_ms is not None:
-            body["task_total_time_ms"] = self.task_total_time_ms
+            body["{task_total_time_ms}"] = self.task_total_time_ms
         if self.total_time_ms is not None:
-            body["total_time_ms"] = self.total_time_ms
+            body["{total_time_ms}"] = self.total_time_ms
         if self.write_remote_bytes is not None:
-            body["write_remote_bytes"] = self.write_remote_bytes
+            body["{write_remote_bytes}"] = self.write_remote_bytes
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryMetrics into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.compilation_time_ms is not None:
-            body["compilation_time_ms"] = self.compilation_time_ms
+            body["{compilation_time_ms}"] = self.compilation_time_ms
         if self.execution_time_ms is not None:
-            body["execution_time_ms"] = self.execution_time_ms
+            body["{execution_time_ms}"] = self.execution_time_ms
         if self.network_sent_bytes is not None:
-            body["network_sent_bytes"] = self.network_sent_bytes
+            body["{network_sent_bytes}"] = self.network_sent_bytes
         if self.overloading_queue_start_timestamp is not None:
-            body["overloading_queue_start_timestamp"] = self.overloading_queue_start_timestamp
+            body["{overloading_queue_start_timestamp}"] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None:
-            body["photon_total_time_ms"] = self.photon_total_time_ms
+            body["{photon_total_time_ms}"] = self.photon_total_time_ms
         if self.provisioning_queue_start_timestamp is not None:
-            body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
+            body["{provisioning_queue_start_timestamp}"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
-            body["pruned_bytes"] = self.pruned_bytes
+            body["{pruned_bytes}"] = self.pruned_bytes
         if self.pruned_files_count is not None:
-            body["pruned_files_count"] = self.pruned_files_count
+            body["{pruned_files_count}"] = self.pruned_files_count
         if self.query_compilation_start_timestamp is not None:
-            body["query_compilation_start_timestamp"] = self.query_compilation_start_timestamp
+            body["{query_compilation_start_timestamp}"] = self.query_compilation_start_timestamp
         if self.read_bytes is not None:
-            body["read_bytes"] = self.read_bytes
+            body["{read_bytes}"] = self.read_bytes
         if self.read_cache_bytes is not None:
-            body["read_cache_bytes"] = self.read_cache_bytes
+            body["{read_cache_bytes}"] = self.read_cache_bytes
         if self.read_files_count is not None:
-            body["read_files_count"] = self.read_files_count
+            body["{read_files_count}"] = self.read_files_count
         if self.read_partitions_count is not None:
-            body["read_partitions_count"] = self.read_partitions_count
+            body["{read_partitions_count}"] = self.read_partitions_count
         if self.read_remote_bytes is not None:
-            body["read_remote_bytes"] = self.read_remote_bytes
+            body["{read_remote_bytes}"] = self.read_remote_bytes
         if self.result_fetch_time_ms is not None:
-            body["result_fetch_time_ms"] = self.result_fetch_time_ms
+            body["{result_fetch_time_ms}"] = self.result_fetch_time_ms
         if self.result_from_cache is not None:
-            body["result_from_cache"] = self.result_from_cache
+            body["{result_from_cache}"] = self.result_from_cache
         if self.rows_produced_count is not None:
-            body["rows_produced_count"] = self.rows_produced_count
+            body["{rows_produced_count}"] = self.rows_produced_count
         if self.rows_read_count is not None:
-            body["rows_read_count"] = self.rows_read_count
+            body["{rows_read_count}"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
-            body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+            body["{spill_to_disk_bytes}"] = self.spill_to_disk_bytes
         if self.task_total_time_ms is not None:
-            body["task_total_time_ms"] = self.task_total_time_ms
+            body["{task_total_time_ms}"] = self.task_total_time_ms
         if self.total_time_ms is not None:
-            body["total_time_ms"] = self.total_time_ms
+            body["{total_time_ms}"] = self.total_time_ms
         if self.write_remote_bytes is not None:
-            body["write_remote_bytes"] = self.write_remote_bytes
+            body["{write_remote_bytes}"] = self.write_remote_bytes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryMetrics:
         """Deserializes the QueryMetrics from a dictionary."""
         return cls(
-            compilation_time_ms=d.get("compilation_time_ms", None),
-            execution_time_ms=d.get("execution_time_ms", None),
-            network_sent_bytes=d.get("network_sent_bytes", None),
-            overloading_queue_start_timestamp=d.get("overloading_queue_start_timestamp", None),
-            photon_total_time_ms=d.get("photon_total_time_ms", None),
-            provisioning_queue_start_timestamp=d.get("provisioning_queue_start_timestamp", None),
-            pruned_bytes=d.get("pruned_bytes", None),
-            pruned_files_count=d.get("pruned_files_count", None),
-            query_compilation_start_timestamp=d.get("query_compilation_start_timestamp", None),
-            read_bytes=d.get("read_bytes", None),
-            read_cache_bytes=d.get("read_cache_bytes", None),
-            read_files_count=d.get("read_files_count", None),
-            read_partitions_count=d.get("read_partitions_count", None),
-            read_remote_bytes=d.get("read_remote_bytes", None),
-            result_fetch_time_ms=d.get("result_fetch_time_ms", None),
-            result_from_cache=d.get("result_from_cache", None),
-            rows_produced_count=d.get("rows_produced_count", None),
-            rows_read_count=d.get("rows_read_count", None),
-            spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
-            task_total_time_ms=d.get("task_total_time_ms", None),
-            total_time_ms=d.get("total_time_ms", None),
-            write_remote_bytes=d.get("write_remote_bytes", None),
+            compilation_time_ms=d.get("{compilation_time_ms}", None),
+            execution_time_ms=d.get("{execution_time_ms}", None),
+            network_sent_bytes=d.get("{network_sent_bytes}", None),
+            overloading_queue_start_timestamp=d.get("{overloading_queue_start_timestamp}", None),
+            photon_total_time_ms=d.get("{photon_total_time_ms}", None),
+            provisioning_queue_start_timestamp=d.get("{provisioning_queue_start_timestamp}", None),
+            pruned_bytes=d.get("{pruned_bytes}", None),
+            pruned_files_count=d.get("{pruned_files_count}", None),
+            query_compilation_start_timestamp=d.get("{query_compilation_start_timestamp}", None),
+            read_bytes=d.get("{read_bytes}", None),
+            read_cache_bytes=d.get("{read_cache_bytes}", None),
+            read_files_count=d.get("{read_files_count}", None),
+            read_partitions_count=d.get("{read_partitions_count}", None),
+            read_remote_bytes=d.get("{read_remote_bytes}", None),
+            result_fetch_time_ms=d.get("{result_fetch_time_ms}", None),
+            result_from_cache=d.get("{result_from_cache}", None),
+            rows_produced_count=d.get("{rows_produced_count}", None),
+            rows_read_count=d.get("{rows_read_count}", None),
+            spill_to_disk_bytes=d.get("{spill_to_disk_bytes}", None),
+            task_total_time_ms=d.get("{task_total_time_ms}", None),
+            total_time_ms=d.get("{total_time_ms}", None),
+            write_remote_bytes=d.get("{write_remote_bytes}", None),
         )
 
 
@@ -5668,36 +5667,36 @@ class QueryOptions:
         """Serializes the QueryOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.moved_to_trash_at is not None:
-            body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["{moved_to_trash_at}"] = self.moved_to_trash_at
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryOptions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.moved_to_trash_at is not None:
-            body["moved_to_trash_at"] = self.moved_to_trash_at
+            body["{moved_to_trash_at}"] = self.moved_to_trash_at
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryOptions:
         """Deserializes the QueryOptions from a dictionary."""
         return cls(
-            catalog=d.get("catalog", None),
-            moved_to_trash_at=d.get("moved_to_trash_at", None),
-            parameters=_repeated_dict(d, "parameters", Parameter),
-            schema=d.get("schema", None),
+            catalog=d.get("{catalog}", None),
+            moved_to_trash_at=d.get("{moved_to_trash_at}", None),
+            parameters=_repeated_dict(d, "{parameters}", Parameter),
+            schema=d.get("{schema}", None),
         )
 
 
@@ -5732,56 +5731,56 @@ class QueryParameter:
         """Serializes the QueryParameter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.date_range_value:
-            body["date_range_value"] = self.date_range_value.as_dict()
+            body["{date_range_value}"] = self.date_range_value.as_dict()
         if self.date_value:
-            body["date_value"] = self.date_value.as_dict()
+            body["{date_value}"] = self.date_value.as_dict()
         if self.enum_value:
-            body["enum_value"] = self.enum_value.as_dict()
+            body["{enum_value}"] = self.enum_value.as_dict()
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.numeric_value:
-            body["numeric_value"] = self.numeric_value.as_dict()
+            body["{numeric_value}"] = self.numeric_value.as_dict()
         if self.query_backed_value:
-            body["query_backed_value"] = self.query_backed_value.as_dict()
+            body["{query_backed_value}"] = self.query_backed_value.as_dict()
         if self.text_value:
-            body["text_value"] = self.text_value.as_dict()
+            body["{text_value}"] = self.text_value.as_dict()
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryParameter into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.date_range_value:
-            body["date_range_value"] = self.date_range_value
+            body["{date_range_value}"] = self.date_range_value
         if self.date_value:
-            body["date_value"] = self.date_value
+            body["{date_value}"] = self.date_value
         if self.enum_value:
-            body["enum_value"] = self.enum_value
+            body["{enum_value}"] = self.enum_value
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.numeric_value:
-            body["numeric_value"] = self.numeric_value
+            body["{numeric_value}"] = self.numeric_value
         if self.query_backed_value:
-            body["query_backed_value"] = self.query_backed_value
+            body["{query_backed_value}"] = self.query_backed_value
         if self.text_value:
-            body["text_value"] = self.text_value
+            body["{text_value}"] = self.text_value
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryParameter:
         """Deserializes the QueryParameter from a dictionary."""
         return cls(
-            date_range_value=_from_dict(d, "date_range_value", DateRangeValue),
-            date_value=_from_dict(d, "date_value", DateValue),
-            enum_value=_from_dict(d, "enum_value", EnumValue),
-            name=d.get("name", None),
-            numeric_value=_from_dict(d, "numeric_value", NumericValue),
-            query_backed_value=_from_dict(d, "query_backed_value", QueryBackedValue),
-            text_value=_from_dict(d, "text_value", TextValue),
-            title=d.get("title", None),
+            date_range_value=_from_dict(d, "{date_range_value}", DateRangeValue),
+            date_value=_from_dict(d, "{date_value}", DateValue),
+            enum_value=_from_dict(d, "{enum_value}", EnumValue),
+            name=d.get("{name}", None),
+            numeric_value=_from_dict(d, "{numeric_value}", NumericValue),
+            query_backed_value=_from_dict(d, "{query_backed_value}", QueryBackedValue),
+            text_value=_from_dict(d, "{text_value}", TextValue),
+            title=d.get("{title}", None),
         )
 
 
@@ -5820,56 +5819,56 @@ class QueryPostContent:
         """Serializes the QueryPostContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
+            body["{run_as_role}"] = self.run_as_role.value
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryPostContent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
+            body["{data_source_id}"] = self.data_source_id
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.parent is not None:
-            body["parent"] = self.parent
+            body["{parent}"] = self.parent
         if self.query is not None:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
+            body["{run_as_role}"] = self.run_as_role
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryPostContent:
         """Deserializes the QueryPostContent from a dictionary."""
         return cls(
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            parent=d.get("parent", None),
-            query=d.get("query", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
+            data_source_id=d.get("{data_source_id}", None),
+            description=d.get("{description}", None),
+            name=d.get("{name}", None),
+            options=d.get("{options}", None),
+            parent=d.get("{parent}", None),
+            query=d.get("{query}", None),
+            run_as_role=_enum(d, "{run_as_role}", RunAsRole),
+            tags=d.get("{tags}", None),
         )
 
 
@@ -5923,26 +5922,26 @@ class RepeatedEndpointConfPairs:
         """Serializes the RepeatedEndpointConfPairs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_pair:
-            body["config_pair"] = [v.as_dict() for v in self.config_pair]
+            body["{config_pair}"] = [v.as_dict() for v in self.config_pair]
         if self.configuration_pairs:
-            body["configuration_pairs"] = [v.as_dict() for v in self.configuration_pairs]
+            body["{configuration_pairs}"] = [v.as_dict() for v in self.configuration_pairs]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RepeatedEndpointConfPairs into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.config_pair:
-            body["config_pair"] = self.config_pair
+            body["{config_pair}"] = self.config_pair
         if self.configuration_pairs:
-            body["configuration_pairs"] = self.configuration_pairs
+            body["{configuration_pairs}"] = self.configuration_pairs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RepeatedEndpointConfPairs:
         """Deserializes the RepeatedEndpointConfPairs from a dictionary."""
         return cls(
-            config_pair=_repeated_dict(d, "config_pair", EndpointConfPair),
-            configuration_pairs=_repeated_dict(d, "configuration_pairs", EndpointConfPair),
+            config_pair=_repeated_dict(d, "{config_pair}", EndpointConfPair),
+            configuration_pairs=_repeated_dict(d, "{configuration_pairs}", EndpointConfPair),
         )
 
 
@@ -5999,56 +5998,56 @@ class ResultData:
         """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.data_array:
-            body["data_array"] = [v for v in self.data_array]
+            body["{data_array}"] = [v for v in self.data_array]
         if self.external_links:
-            body["external_links"] = [v.as_dict() for v in self.external_links]
+            body["{external_links}"] = [v.as_dict() for v in self.external_links]
         if self.next_chunk_index is not None:
-            body["next_chunk_index"] = self.next_chunk_index
+            body["{next_chunk_index}"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResultData into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["byte_count"] = self.byte_count
+            body["{byte_count}"] = self.byte_count
         if self.chunk_index is not None:
-            body["chunk_index"] = self.chunk_index
+            body["{chunk_index}"] = self.chunk_index
         if self.data_array:
-            body["data_array"] = self.data_array
+            body["{data_array}"] = self.data_array
         if self.external_links:
-            body["external_links"] = self.external_links
+            body["{external_links}"] = self.external_links
         if self.next_chunk_index is not None:
-            body["next_chunk_index"] = self.next_chunk_index
+            body["{next_chunk_index}"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["next_chunk_internal_link"] = self.next_chunk_internal_link
+            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["row_count"] = self.row_count
+            body["{row_count}"] = self.row_count
         if self.row_offset is not None:
-            body["row_offset"] = self.row_offset
+            body["{row_offset}"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(
-            byte_count=d.get("byte_count", None),
-            chunk_index=d.get("chunk_index", None),
-            data_array=d.get("data_array", None),
-            external_links=_repeated_dict(d, "external_links", ExternalLink),
-            next_chunk_index=d.get("next_chunk_index", None),
-            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
-            row_count=d.get("row_count", None),
-            row_offset=d.get("row_offset", None),
+            byte_count=d.get("{byte_count}", None),
+            chunk_index=d.get("{chunk_index}", None),
+            data_array=d.get("{data_array}", None),
+            external_links=_repeated_dict(d, "{external_links}", ExternalLink),
+            next_chunk_index=d.get("{next_chunk_index}", None),
+            next_chunk_internal_link=d.get("{next_chunk_internal_link}", None),
+            row_count=d.get("{row_count}", None),
+            row_offset=d.get("{row_offset}", None),
         )
 
 
@@ -6081,51 +6080,51 @@ class ResultManifest:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.chunks:
-            body["chunks"] = [v.as_dict() for v in self.chunks]
+            body["{chunks}"] = [v.as_dict() for v in self.chunks]
         if self.format is not None:
-            body["format"] = self.format.value
+            body["{format}"] = self.format.value
         if self.schema:
-            body["schema"] = self.schema.as_dict()
+            body["{schema}"] = self.schema.as_dict()
         if self.total_byte_count is not None:
-            body["total_byte_count"] = self.total_byte_count
+            body["{total_byte_count}"] = self.total_byte_count
         if self.total_chunk_count is not None:
-            body["total_chunk_count"] = self.total_chunk_count
+            body["{total_chunk_count}"] = self.total_chunk_count
         if self.total_row_count is not None:
-            body["total_row_count"] = self.total_row_count
+            body["{total_row_count}"] = self.total_row_count
         if self.truncated is not None:
-            body["truncated"] = self.truncated
+            body["{truncated}"] = self.truncated
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResultManifest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.chunks:
-            body["chunks"] = self.chunks
+            body["{chunks}"] = self.chunks
         if self.format is not None:
-            body["format"] = self.format
+            body["{format}"] = self.format
         if self.schema:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.total_byte_count is not None:
-            body["total_byte_count"] = self.total_byte_count
+            body["{total_byte_count}"] = self.total_byte_count
         if self.total_chunk_count is not None:
-            body["total_chunk_count"] = self.total_chunk_count
+            body["{total_chunk_count}"] = self.total_chunk_count
         if self.total_row_count is not None:
-            body["total_row_count"] = self.total_row_count
+            body["{total_row_count}"] = self.total_row_count
         if self.truncated is not None:
-            body["truncated"] = self.truncated
+            body["{truncated}"] = self.truncated
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
         return cls(
-            chunks=_repeated_dict(d, "chunks", BaseChunkInfo),
-            format=_enum(d, "format", Format),
-            schema=_from_dict(d, "schema", ResultSchema),
-            total_byte_count=d.get("total_byte_count", None),
-            total_chunk_count=d.get("total_chunk_count", None),
-            total_row_count=d.get("total_row_count", None),
-            truncated=d.get("truncated", None),
+            chunks=_repeated_dict(d, "{chunks}", BaseChunkInfo),
+            format=_enum(d, "{format}", Format),
+            schema=_from_dict(d, "{schema}", ResultSchema),
+            total_byte_count=d.get("{total_byte_count}", None),
+            total_chunk_count=d.get("{total_chunk_count}", None),
+            total_row_count=d.get("{total_row_count}", None),
+            truncated=d.get("{truncated}", None),
         )
 
 
@@ -6141,24 +6140,24 @@ class ResultSchema:
         """Serializes the ResultSchema into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.column_count is not None:
-            body["column_count"] = self.column_count
+            body["{column_count}"] = self.column_count
         if self.columns:
-            body["columns"] = [v.as_dict() for v in self.columns]
+            body["{columns}"] = [v.as_dict() for v in self.columns]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ResultSchema into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.column_count is not None:
-            body["column_count"] = self.column_count
+            body["{column_count}"] = self.column_count
         if self.columns:
-            body["columns"] = self.columns
+            body["{columns}"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultSchema:
         """Deserializes the ResultSchema from a dictionary."""
-        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+        return cls(column_count=d.get("{column_count}", None), columns=_repeated_dict(d, "{columns}", ColumnInfo))
 
 
 class RunAsMode(Enum):
@@ -6186,24 +6185,24 @@ class ServiceError:
         """Serializes the ServiceError into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error_code is not None:
-            body["error_code"] = self.error_code.value
+            body["{error_code}"] = self.error_code.value
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ServiceError into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error_code is not None:
-            body["error_code"] = self.error_code
+            body["{error_code}"] = self.error_code
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ServiceError:
         """Deserializes the ServiceError from a dictionary."""
-        return cls(error_code=_enum(d, "error_code", ServiceErrorCode), message=d.get("message", None))
+        return cls(error_code=_enum(d, "{error_code}", ServiceErrorCode), message=d.get("{message}", None))
 
 
 class ServiceErrorCode(Enum):
@@ -6238,31 +6237,31 @@ class SetResponse:
         """Serializes the SetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type.value
+            body["{object_type}"] = self.object_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SetResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SetResponse:
         """Deserializes the SetResponse from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
-            object_id=d.get("object_id", None),
-            object_type=_enum(d, "object_type", ObjectType),
+            access_control_list=_repeated_dict(d, "{access_control_list}", AccessControl),
+            object_id=d.get("{object_id}", None),
+            object_type=_enum(d, "{object_type}", ObjectType),
         )
 
 
@@ -6304,61 +6303,61 @@ class SetWorkspaceWarehouseConfigRequest:
         """Serializes the SetWorkspaceWarehouseConfigRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.channel:
-            body["channel"] = self.channel.as_dict()
+            body["{channel}"] = self.channel.as_dict()
         if self.config_param:
-            body["config_param"] = self.config_param.as_dict()
+            body["{config_param}"] = self.config_param.as_dict()
         if self.data_access_config:
-            body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
+            body["{data_access_config}"] = [v.as_dict() for v in self.data_access_config]
         if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = [v.as_dict() for v in self.enabled_warehouse_types]
+            body["{enabled_warehouse_types}"] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param:
-            body["global_param"] = self.global_param.as_dict()
+            body["{global_param}"] = self.global_param.as_dict()
         if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
+            body["{google_service_account}"] = self.google_service_account
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.security_policy is not None:
-            body["security_policy"] = self.security_policy.value
+            body["{security_policy}"] = self.security_policy.value
         if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters.as_dict()
+            body["{sql_configuration_parameters}"] = self.sql_configuration_parameters.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SetWorkspaceWarehouseConfigRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.channel:
-            body["channel"] = self.channel
+            body["{channel}"] = self.channel
         if self.config_param:
-            body["config_param"] = self.config_param
+            body["{config_param}"] = self.config_param
         if self.data_access_config:
-            body["data_access_config"] = self.data_access_config
+            body["{data_access_config}"] = self.data_access_config
         if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = self.enabled_warehouse_types
+            body["{enabled_warehouse_types}"] = self.enabled_warehouse_types
         if self.global_param:
-            body["global_param"] = self.global_param
+            body["{global_param}"] = self.global_param
         if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
+            body["{google_service_account}"] = self.google_service_account
         if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
+            body["{instance_profile_arn}"] = self.instance_profile_arn
         if self.security_policy is not None:
-            body["security_policy"] = self.security_policy
+            body["{security_policy}"] = self.security_policy
         if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters
+            body["{sql_configuration_parameters}"] = self.sql_configuration_parameters
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SetWorkspaceWarehouseConfigRequest:
         """Deserializes the SetWorkspaceWarehouseConfigRequest from a dictionary."""
         return cls(
-            channel=_from_dict(d, "channel", Channel),
-            config_param=_from_dict(d, "config_param", RepeatedEndpointConfPairs),
-            data_access_config=_repeated_dict(d, "data_access_config", EndpointConfPair),
-            enabled_warehouse_types=_repeated_dict(d, "enabled_warehouse_types", WarehouseTypePair),
-            global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
-            google_service_account=d.get("google_service_account", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            security_policy=_enum(d, "security_policy", SetWorkspaceWarehouseConfigRequestSecurityPolicy),
-            sql_configuration_parameters=_from_dict(d, "sql_configuration_parameters", RepeatedEndpointConfPairs),
+            channel=_from_dict(d, "{channel}", Channel),
+            config_param=_from_dict(d, "{config_param}", RepeatedEndpointConfPairs),
+            data_access_config=_repeated_dict(d, "{data_access_config}", EndpointConfPair),
+            enabled_warehouse_types=_repeated_dict(d, "{enabled_warehouse_types}", WarehouseTypePair),
+            global_param=_from_dict(d, "{global_param}", RepeatedEndpointConfPairs),
+            google_service_account=d.get("{google_service_account}", None),
+            instance_profile_arn=d.get("{instance_profile_arn}", None),
+            security_policy=_enum(d, "{security_policy}", SetWorkspaceWarehouseConfigRequestSecurityPolicy),
+            sql_configuration_parameters=_from_dict(d, "{sql_configuration_parameters}", RepeatedEndpointConfPairs),
         )
 
 
@@ -6445,28 +6444,28 @@ class StatementParameterListItem:
         """Serializes the StatementParameterListItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the StatementParameterListItem into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementParameterListItem:
         """Deserializes the StatementParameterListItem from a dictionary."""
-        return cls(name=d.get("name", None), type=d.get("type", None), value=d.get("value", None))
+        return cls(name=d.get("{name}", None), type=d.get("{type}", None), value=d.get("{value}", None))
 
 
 @dataclass
@@ -6487,36 +6486,36 @@ class StatementResponse:
         """Serializes the StatementResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.manifest:
-            body["manifest"] = self.manifest.as_dict()
+            body["{manifest}"] = self.manifest.as_dict()
         if self.result:
-            body["result"] = self.result.as_dict()
+            body["{result}"] = self.result.as_dict()
         if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
+            body["{statement_id}"] = self.statement_id
         if self.status:
-            body["status"] = self.status.as_dict()
+            body["{status}"] = self.status.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the StatementResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.manifest:
-            body["manifest"] = self.manifest
+            body["{manifest}"] = self.manifest
         if self.result:
-            body["result"] = self.result
+            body["{result}"] = self.result
         if self.statement_id is not None:
-            body["statement_id"] = self.statement_id
+            body["{statement_id}"] = self.statement_id
         if self.status:
-            body["status"] = self.status
+            body["{status}"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementResponse:
         """Deserializes the StatementResponse from a dictionary."""
         return cls(
-            manifest=_from_dict(d, "manifest", ResultManifest),
-            result=_from_dict(d, "result", ResultData),
-            statement_id=d.get("statement_id", None),
-            status=_from_dict(d, "status", StatementStatus),
+            manifest=_from_dict(d, "{manifest}", ResultManifest),
+            result=_from_dict(d, "{result}", ResultData),
+            statement_id=d.get("{statement_id}", None),
+            status=_from_dict(d, "{status}", StatementStatus),
         )
 
 
@@ -6552,24 +6551,24 @@ class StatementStatus:
         """Serializes the StatementStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error:
-            body["error"] = self.error.as_dict()
+            body["{error}"] = self.error.as_dict()
         if self.state is not None:
-            body["state"] = self.state.value
+            body["{state}"] = self.state.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the StatementStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error:
-            body["error"] = self.error
+            body["{error}"] = self.error
         if self.state is not None:
-            body["state"] = self.state
+            body["{state}"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementStatus:
         """Deserializes the StatementStatus from a dictionary."""
-        return cls(error=_from_dict(d, "error", ServiceError), state=_enum(d, "state", StatementState))
+        return cls(error=_from_dict(d, "{error}", ServiceError), state=_enum(d, "{state}", StatementState))
 
 
 class Status(Enum):
@@ -6607,20 +6606,20 @@ class Success:
         """Serializes the Success into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message.value
+            body["{message}"] = self.message.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Success into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None:
-            body["message"] = self.message
+            body["{message}"] = self.message
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Success:
         """Deserializes the Success from a dictionary."""
-        return cls(message=_enum(d, "message", SuccessMessage))
+        return cls(message=_enum(d, "{message}", SuccessMessage))
 
 
 class SuccessMessage(Enum):
@@ -6643,31 +6642,31 @@ class TerminationReason:
         """Serializes the TerminationReason into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.code is not None:
-            body["code"] = self.code.value
+            body["{code}"] = self.code.value
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.type is not None:
-            body["type"] = self.type.value
+            body["{type}"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TerminationReason into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.code is not None:
-            body["code"] = self.code
+            body["{code}"] = self.code
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TerminationReason:
         """Deserializes the TerminationReason from a dictionary."""
         return cls(
-            code=_enum(d, "code", TerminationReasonCode),
-            parameters=d.get("parameters", None),
-            type=_enum(d, "type", TerminationReasonType),
+            code=_enum(d, "{code}", TerminationReasonCode),
+            parameters=d.get("{parameters}", None),
+            type=_enum(d, "{type}", TerminationReasonType),
         )
 
 
@@ -6772,20 +6771,20 @@ class TextValue:
         """Serializes the TextValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TextValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value is not None:
-            body["value"] = self.value
+            body["{value}"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TextValue:
         """Deserializes the TextValue from a dictionary."""
-        return cls(value=d.get("value", None))
+        return cls(value=d.get("{value}", None))
 
 
 @dataclass
@@ -6800,24 +6799,24 @@ class TimeRange:
         """Serializes the TimeRange into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time_ms is not None:
-            body["end_time_ms"] = self.end_time_ms
+            body["{end_time_ms}"] = self.end_time_ms
         if self.start_time_ms is not None:
-            body["start_time_ms"] = self.start_time_ms
+            body["{start_time_ms}"] = self.start_time_ms
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TimeRange into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.end_time_ms is not None:
-            body["end_time_ms"] = self.end_time_ms
+            body["{end_time_ms}"] = self.end_time_ms
         if self.start_time_ms is not None:
-            body["start_time_ms"] = self.start_time_ms
+            body["{start_time_ms}"] = self.start_time_ms
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TimeRange:
         """Deserializes the TimeRange from a dictionary."""
-        return cls(end_time_ms=d.get("end_time_ms", None), start_time_ms=d.get("start_time_ms", None))
+        return cls(end_time_ms=d.get("{end_time_ms}", None), start_time_ms=d.get("{start_time_ms}", None))
 
 
 @dataclass
@@ -6829,20 +6828,20 @@ class TransferOwnershipObjectId:
         """Serializes the TransferOwnershipObjectId into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.new_owner is not None:
-            body["new_owner"] = self.new_owner
+            body["{new_owner}"] = self.new_owner
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TransferOwnershipObjectId into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.new_owner is not None:
-            body["new_owner"] = self.new_owner
+            body["{new_owner}"] = self.new_owner
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipObjectId:
         """Deserializes the TransferOwnershipObjectId from a dictionary."""
-        return cls(new_owner=d.get("new_owner", None))
+        return cls(new_owner=d.get("{new_owner}", None))
 
 
 @dataclass
@@ -6866,31 +6865,31 @@ class UpdateAlertRequest:
         """Serializes the UpdateAlertRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert:
-            body["alert"] = self.alert.as_dict()
+            body["{alert}"] = self.alert.as_dict()
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateAlertRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alert:
-            body["alert"] = self.alert
+            body["{alert}"] = self.alert
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateAlertRequest:
         """Deserializes the UpdateAlertRequest from a dictionary."""
         return cls(
-            alert=_from_dict(d, "alert", UpdateAlertRequestAlert),
-            id=d.get("id", None),
-            update_mask=d.get("update_mask", None),
+            alert=_from_dict(d, "{alert}", UpdateAlertRequestAlert),
+            id=d.get("{id}", None),
+            update_mask=d.get("{update_mask}", None),
         )
 
 
@@ -6930,56 +6929,56 @@ class UpdateAlertRequestAlert:
         """Serializes the UpdateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition.as_dict()
+            body["{condition}"] = self.condition.as_dict()
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateAlertRequestAlert into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.condition:
-            body["condition"] = self.condition
+            body["{condition}"] = self.condition
         if self.custom_body is not None:
-            body["custom_body"] = self.custom_body
+            body["{custom_body}"] = self.custom_body
         if self.custom_subject is not None:
-            body["custom_subject"] = self.custom_subject
+            body["{custom_subject}"] = self.custom_subject
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.notify_on_ok is not None:
-            body["notify_on_ok"] = self.notify_on_ok
+            body["{notify_on_ok}"] = self.notify_on_ok
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.seconds_to_retrigger is not None:
-            body["seconds_to_retrigger"] = self.seconds_to_retrigger
+            body["{seconds_to_retrigger}"] = self.seconds_to_retrigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateAlertRequestAlert:
         """Deserializes the UpdateAlertRequestAlert from a dictionary."""
         return cls(
-            condition=_from_dict(d, "condition", AlertCondition),
-            custom_body=d.get("custom_body", None),
-            custom_subject=d.get("custom_subject", None),
-            display_name=d.get("display_name", None),
-            notify_on_ok=d.get("notify_on_ok", None),
-            owner_user_name=d.get("owner_user_name", None),
-            query_id=d.get("query_id", None),
-            seconds_to_retrigger=d.get("seconds_to_retrigger", None),
+            condition=_from_dict(d, "{condition}", AlertCondition),
+            custom_body=d.get("{custom_body}", None),
+            custom_subject=d.get("{custom_subject}", None),
+            display_name=d.get("{display_name}", None),
+            notify_on_ok=d.get("{notify_on_ok}", None),
+            owner_user_name=d.get("{owner_user_name}", None),
+            query_id=d.get("{query_id}", None),
+            seconds_to_retrigger=d.get("{seconds_to_retrigger}", None),
         )
 
 
@@ -7004,31 +7003,31 @@ class UpdateQueryRequest:
         """Serializes the UpdateQueryRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.query:
-            body["query"] = self.query.as_dict()
+            body["{query}"] = self.query.as_dict()
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateQueryRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.query:
-            body["query"] = self.query
+            body["{query}"] = self.query
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateQueryRequest:
         """Deserializes the UpdateQueryRequest from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            query=_from_dict(d, "query", UpdateQueryRequestQuery),
-            update_mask=d.get("update_mask", None),
+            id=d.get("{id}", None),
+            query=_from_dict(d, "{query}", UpdateQueryRequestQuery),
+            update_mask=d.get("{update_mask}", None),
         )
 
 
@@ -7070,71 +7069,71 @@ class UpdateQueryRequestQuery:
         """Serializes the UpdateQueryRequestQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
+            body["{parameters}"] = [v.as_dict() for v in self.parameters]
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode.value
+            body["{run_as_mode}"] = self.run_as_mode.value
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = [v for v in self.tags]
+            body["{tags}"] = [v for v in self.tags]
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateQueryRequestQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apply_auto_limit is not None:
-            body["apply_auto_limit"] = self.apply_auto_limit
+            body["{apply_auto_limit}"] = self.apply_auto_limit
         if self.catalog is not None:
-            body["catalog"] = self.catalog
+            body["{catalog}"] = self.catalog
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
+            body["{owner_user_name}"] = self.owner_user_name
         if self.parameters:
-            body["parameters"] = self.parameters
+            body["{parameters}"] = self.parameters
         if self.query_text is not None:
-            body["query_text"] = self.query_text
+            body["{query_text}"] = self.query_text
         if self.run_as_mode is not None:
-            body["run_as_mode"] = self.run_as_mode
+            body["{run_as_mode}"] = self.run_as_mode
         if self.schema is not None:
-            body["schema"] = self.schema
+            body["{schema}"] = self.schema
         if self.tags:
-            body["tags"] = self.tags
+            body["{tags}"] = self.tags
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateQueryRequestQuery:
         """Deserializes the UpdateQueryRequestQuery from a dictionary."""
         return cls(
-            apply_auto_limit=d.get("apply_auto_limit", None),
-            catalog=d.get("catalog", None),
-            description=d.get("description", None),
-            display_name=d.get("display_name", None),
-            owner_user_name=d.get("owner_user_name", None),
-            parameters=_repeated_dict(d, "parameters", QueryParameter),
-            query_text=d.get("query_text", None),
-            run_as_mode=_enum(d, "run_as_mode", RunAsMode),
-            schema=d.get("schema", None),
-            tags=d.get("tags", None),
-            warehouse_id=d.get("warehouse_id", None),
+            apply_auto_limit=d.get("{apply_auto_limit}", None),
+            catalog=d.get("{catalog}", None),
+            description=d.get("{description}", None),
+            display_name=d.get("{display_name}", None),
+            owner_user_name=d.get("{owner_user_name}", None),
+            parameters=_repeated_dict(d, "{parameters}", QueryParameter),
+            query_text=d.get("{query_text}", None),
+            run_as_mode=_enum(d, "{run_as_mode}", RunAsMode),
+            schema=d.get("{schema}", None),
+            tags=d.get("{tags}", None),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -7177,31 +7176,31 @@ class UpdateVisualizationRequest:
         """Serializes the UpdateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         if self.visualization:
-            body["visualization"] = self.visualization.as_dict()
+            body["{visualization}"] = self.visualization.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateVisualizationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
+            body["{update_mask}"] = self.update_mask
         if self.visualization:
-            body["visualization"] = self.visualization
+            body["{visualization}"] = self.visualization
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateVisualizationRequest:
         """Deserializes the UpdateVisualizationRequest from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            update_mask=d.get("update_mask", None),
-            visualization=_from_dict(d, "visualization", UpdateVisualizationRequestVisualization),
+            id=d.get("{id}", None),
+            update_mask=d.get("{update_mask}", None),
+            visualization=_from_dict(d, "{visualization}", UpdateVisualizationRequestVisualization),
         )
 
 
@@ -7225,36 +7224,36 @@ class UpdateVisualizationRequestVisualization:
         """Serializes the UpdateVisualizationRequestVisualization into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateVisualizationRequestVisualization into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateVisualizationRequestVisualization:
         """Deserializes the UpdateVisualizationRequestVisualization from a dictionary."""
         return cls(
-            display_name=d.get("display_name", None),
-            serialized_options=d.get("serialized_options", None),
-            serialized_query_plan=d.get("serialized_query_plan", None),
-            type=d.get("type", None),
+            display_name=d.get("{display_name}", None),
+            serialized_options=d.get("{serialized_options}", None),
+            serialized_query_plan=d.get("{serialized_query_plan}", None),
+            type=d.get("{type}", None),
         )
 
 
@@ -7270,28 +7269,28 @@ class User:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.email is not None:
-            body["email"] = self.email
+            body["{email}"] = self.email
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the User into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.email is not None:
-            body["email"] = self.email
+            body["{email}"] = self.email
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.name is not None:
-            body["name"] = self.name
+            body["{name}"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> User:
         """Deserializes the User from a dictionary."""
-        return cls(email=d.get("email", None), id=d.get("id", None), name=d.get("name", None))
+        return cls(email=d.get("{email}", None), id=d.get("{id}", None), name=d.get("{name}", None))
 
 
 @dataclass
@@ -7326,56 +7325,56 @@ class Visualization:
         """Serializes the Visualization into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Visualization into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["create_time"] = self.create_time
+            body["{create_time}"] = self.create_time
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.query_id is not None:
-            body["query_id"] = self.query_id
+            body["{query_id}"] = self.query_id
         if self.serialized_options is not None:
-            body["serialized_options"] = self.serialized_options
+            body["{serialized_options}"] = self.serialized_options
         if self.serialized_query_plan is not None:
-            body["serialized_query_plan"] = self.serialized_query_plan
+            body["{serialized_query_plan}"] = self.serialized_query_plan
         if self.type is not None:
-            body["type"] = self.type
+            body["{type}"] = self.type
         if self.update_time is not None:
-            body["update_time"] = self.update_time
+            body["{update_time}"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Visualization:
         """Deserializes the Visualization from a dictionary."""
         return cls(
-            create_time=d.get("create_time", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            query_id=d.get("query_id", None),
-            serialized_options=d.get("serialized_options", None),
-            serialized_query_plan=d.get("serialized_query_plan", None),
-            type=d.get("type", None),
-            update_time=d.get("update_time", None),
+            create_time=d.get("{create_time}", None),
+            display_name=d.get("{display_name}", None),
+            id=d.get("{id}", None),
+            query_id=d.get("{query_id}", None),
+            serialized_options=d.get("{serialized_options}", None),
+            serialized_query_plan=d.get("{serialized_query_plan}", None),
+            type=d.get("{type}", None),
+            update_time=d.get("{update_time}", None),
         )
 
 
@@ -7397,36 +7396,36 @@ class WarehouseAccessControlRequest:
         """Serializes the WarehouseAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehouseAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehouseAccessControlRequest:
         """Deserializes the WarehouseAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("group_name", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            group_name=d.get("{group_name}", None),
+            permission_level=_enum(d, "{permission_level}", WarehousePermissionLevel),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -7451,41 +7450,41 @@ class WarehouseAccessControlResponse:
         """Serializes the WarehouseAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
+            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehouseAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["all_permissions"] = self.all_permissions
+            body["{all_permissions}"] = self.all_permissions
         if self.display_name is not None:
-            body["display_name"] = self.display_name
+            body["{display_name}"] = self.display_name
         if self.group_name is not None:
-            body["group_name"] = self.group_name
+            body["{group_name}"] = self.group_name
         if self.service_principal_name is not None:
-            body["service_principal_name"] = self.service_principal_name
+            body["{service_principal_name}"] = self.service_principal_name
         if self.user_name is not None:
-            body["user_name"] = self.user_name
+            body["{user_name}"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehouseAccessControlResponse:
         """Deserializes the WarehouseAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "all_permissions", WarehousePermission),
-            display_name=d.get("display_name", None),
-            group_name=d.get("group_name", None),
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
+            all_permissions=_repeated_dict(d, "{all_permissions}", WarehousePermission),
+            display_name=d.get("{display_name}", None),
+            group_name=d.get("{group_name}", None),
+            service_principal_name=d.get("{service_principal_name}", None),
+            user_name=d.get("{user_name}", None),
         )
 
 
@@ -7502,31 +7501,31 @@ class WarehousePermission:
         """Serializes the WarehousePermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = [v for v in self.inherited_from_object]
+            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehousePermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["inherited"] = self.inherited
+            body["{inherited}"] = self.inherited
         if self.inherited_from_object:
-            body["inherited_from_object"] = self.inherited_from_object
+            body["{inherited_from_object}"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehousePermission:
         """Deserializes the WarehousePermission from a dictionary."""
         return cls(
-            inherited=d.get("inherited", None),
-            inherited_from_object=d.get("inherited_from_object", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
+            inherited=d.get("{inherited}", None),
+            inherited_from_object=d.get("{inherited_from_object}", None),
+            permission_level=_enum(d, "{permission_level}", WarehousePermissionLevel),
         )
 
 
@@ -7552,31 +7551,31 @@ class WarehousePermissions:
         """Serializes the WarehousePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehousePermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.object_id is not None:
-            body["object_id"] = self.object_id
+            body["{object_id}"] = self.object_id
         if self.object_type is not None:
-            body["object_type"] = self.object_type
+            body["{object_type}"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissions:
         """Deserializes the WarehousePermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WarehouseAccessControlResponse),
-            object_id=d.get("object_id", None),
-            object_type=d.get("object_type", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", WarehouseAccessControlResponse),
+            object_id=d.get("{object_id}", None),
+            object_type=d.get("{object_type}", None),
         )
 
 
@@ -7591,26 +7590,26 @@ class WarehousePermissionsDescription:
         """Serializes the WarehousePermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level.value
+            body["{permission_level}"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehousePermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.permission_level is not None:
-            body["permission_level"] = self.permission_level
+            body["{permission_level}"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissionsDescription:
         """Deserializes the WarehousePermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
+            description=d.get("{description}", None),
+            permission_level=_enum(d, "{permission_level}", WarehousePermissionLevel),
         )
 
 
@@ -7625,26 +7624,26 @@ class WarehousePermissionsRequest:
         """Serializes the WarehousePermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehousePermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
+            body["{access_control_list}"] = self.access_control_list
         if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
+            body["{warehouse_id}"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissionsRequest:
         """Deserializes the WarehousePermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WarehouseAccessControlRequest),
-            warehouse_id=d.get("warehouse_id", None),
+            access_control_list=_repeated_dict(d, "{access_control_list}", WarehouseAccessControlRequest),
+            warehouse_id=d.get("{warehouse_id}", None),
         )
 
 
@@ -7661,25 +7660,26 @@ class WarehouseTypePair:
         """Serializes the WarehouseTypePair into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["enabled"] = self.enabled
+            body["{enabled}"] = self.enabled
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
+            body["{warehouse_type}"] = self.warehouse_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WarehouseTypePair into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enabled is not None:
-            body["enabled"] = self.enabled
+            body["{enabled}"] = self.enabled
         if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
+            body["{warehouse_type}"] = self.warehouse_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WarehouseTypePair:
         """Deserializes the WarehouseTypePair from a dictionary."""
         return cls(
-            enabled=d.get("enabled", None), warehouse_type=_enum(d, "warehouse_type", WarehouseTypePairWarehouseType)
+            enabled=d.get("{enabled}", None),
+            warehouse_type=_enum(d, "{warehouse_type}", WarehouseTypePairWarehouseType),
         )
 
 
@@ -7711,36 +7711,36 @@ class Widget:
         """Serializes the Widget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.options:
-            body["options"] = self.options.as_dict()
+            body["{options}"] = self.options.as_dict()
         if self.visualization:
-            body["visualization"] = self.visualization.as_dict()
+            body["{visualization}"] = self.visualization.as_dict()
         if self.width is not None:
-            body["width"] = self.width
+            body["{width}"] = self.width
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Widget into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None:
-            body["id"] = self.id
+            body["{id}"] = self.id
         if self.options:
-            body["options"] = self.options
+            body["{options}"] = self.options
         if self.visualization:
-            body["visualization"] = self.visualization
+            body["{visualization}"] = self.visualization
         if self.width is not None:
-            body["width"] = self.width
+            body["{width}"] = self.width
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Widget:
         """Deserializes the Widget from a dictionary."""
         return cls(
-            id=d.get("id", None),
-            options=_from_dict(d, "options", WidgetOptions),
-            visualization=_from_dict(d, "visualization", LegacyVisualization),
-            width=d.get("width", None),
+            id=d.get("{id}", None),
+            options=_from_dict(d, "{options}", WidgetOptions),
+            visualization=_from_dict(d, "{visualization}", LegacyVisualization),
+            width=d.get("{width}", None),
         )
 
 
@@ -7773,51 +7773,51 @@ class WidgetOptions:
         """Serializes the WidgetOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.is_hidden is not None:
-            body["isHidden"] = self.is_hidden
+            body["{is_hidden}"] = self.is_hidden
         if self.parameter_mappings:
-            body["parameterMappings"] = self.parameter_mappings
+            body["{parameter_mappings}"] = self.parameter_mappings
         if self.position:
-            body["position"] = self.position.as_dict()
+            body["{position}"] = self.position.as_dict()
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WidgetOptions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None:
-            body["created_at"] = self.created_at
+            body["{created_at}"] = self.created_at
         if self.description is not None:
-            body["description"] = self.description
+            body["{description}"] = self.description
         if self.is_hidden is not None:
-            body["isHidden"] = self.is_hidden
+            body["{is_hidden}"] = self.is_hidden
         if self.parameter_mappings:
-            body["parameterMappings"] = self.parameter_mappings
+            body["{parameter_mappings}"] = self.parameter_mappings
         if self.position:
-            body["position"] = self.position
+            body["{position}"] = self.position
         if self.title is not None:
-            body["title"] = self.title
+            body["{title}"] = self.title
         if self.updated_at is not None:
-            body["updated_at"] = self.updated_at
+            body["{updated_at}"] = self.updated_at
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WidgetOptions:
         """Deserializes the WidgetOptions from a dictionary."""
         return cls(
-            created_at=d.get("created_at", None),
-            description=d.get("description", None),
-            is_hidden=d.get("isHidden", None),
-            parameter_mappings=d.get("parameterMappings", None),
-            position=_from_dict(d, "position", WidgetPosition),
-            title=d.get("title", None),
-            updated_at=d.get("updated_at", None),
+            created_at=d.get("{created_at}", None),
+            description=d.get("{description}", None),
+            is_hidden=d.get("{is_hidden}", None),
+            parameter_mappings=d.get("{parameter_mappings}", None),
+            position=_from_dict(d, "{position}", WidgetPosition),
+            title=d.get("{title}", None),
+            updated_at=d.get("{updated_at}", None),
         )
 
 
@@ -7845,41 +7845,41 @@ class WidgetPosition:
         """Serializes the WidgetPosition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.auto_height is not None:
-            body["autoHeight"] = self.auto_height
+            body["{auto_height}"] = self.auto_height
         if self.col is not None:
-            body["col"] = self.col
+            body["{col}"] = self.col
         if self.row is not None:
-            body["row"] = self.row
+            body["{row}"] = self.row
         if self.size_x is not None:
-            body["sizeX"] = self.size_x
+            body["{size_x}"] = self.size_x
         if self.size_y is not None:
-            body["sizeY"] = self.size_y
+            body["{size_y}"] = self.size_y
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WidgetPosition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.auto_height is not None:
-            body["autoHeight"] = self.auto_height
+            body["{auto_height}"] = self.auto_height
         if self.col is not None:
-            body["col"] = self.col
+            body["{col}"] = self.col
         if self.row is not None:
-            body["row"] = self.row
+            body["{row}"] = self.row
         if self.size_x is not None:
-            body["sizeX"] = self.size_x
+            body["{size_x}"] = self.size_x
         if self.size_y is not None:
-            body["sizeY"] = self.size_y
+            body["{size_y}"] = self.size_y
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WidgetPosition:
         """Deserializes the WidgetPosition from a dictionary."""
         return cls(
-            auto_height=d.get("autoHeight", None),
-            col=d.get("col", None),
-            row=d.get("row", None),
-            size_x=d.get("sizeX", None),
-            size_y=d.get("sizeY", None),
+            auto_height=d.get("{auto_height}", None),
+            col=d.get("{col}", None),
+            row=d.get("{row}", None),
+            size_x=d.get("{size_x}", None),
+            size_y=d.get("{size_y}", None),
         )
 
 
@@ -7903,10 +7903,10 @@ class AlertsAPI:
         """
         body = {}
         if alert is not None:
-            body["alert"] = alert.as_dict()
+            body["{alert}"] = alert.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/alerts", body=body, headers=headers)
@@ -7925,7 +7925,7 @@ class AlertsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/alerts/{id}", headers=headers)
@@ -7941,7 +7941,7 @@ class AlertsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/alerts/{id}", headers=headers)
@@ -7963,21 +7963,21 @@ class AlertsAPI:
 
         query = {}
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/alerts", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
+            if "{results}" in json:
+                for v in json["{results}"]:
                     yield ListAlertsResponseAlert.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["page_token"] = json["next_page_token"]
+            query["{page_token}"] = json["{next_page_token}"]
 
     def update(self, id: str, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None) -> Alert:
         """Update an alert.
@@ -8001,12 +8001,12 @@ class AlertsAPI:
         """
         body = {}
         if alert is not None:
-            body["alert"] = alert.as_dict()
+            body["{alert}"] = alert.as_dict()
         if update_mask is not None:
-            body["update_mask"] = update_mask
+            body["{update_mask}"] = update_mask
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/alerts/{id}", body=body, headers=headers)
@@ -8062,18 +8062,18 @@ class AlertsLegacyAPI:
         """
         body = {}
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options.as_dict()
+            body["{options}"] = options.as_dict()
         if parent is not None:
-            body["parent"] = parent
+            body["{parent}"] = parent
         if query_id is not None:
-            body["query_id"] = query_id
+            body["{query_id}"] = query_id
         if rearm is not None:
-            body["rearm"] = rearm
+            body["{rearm}"] = rearm
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body, headers=headers)
@@ -8096,7 +8096,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
@@ -8117,7 +8117,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
@@ -8137,7 +8137,7 @@ class AlertsLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
@@ -8168,16 +8168,16 @@ class AlertsLegacyAPI:
         """
         body = {}
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options.as_dict()
+            body["{options}"] = options.as_dict()
         if query_id is not None:
-            body["query_id"] = query_id
+            body["{query_id}"] = query_id
         if rearm is not None:
-            body["rearm"] = rearm
+            body["{rearm}"] = rearm
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
@@ -8216,18 +8216,18 @@ class DashboardWidgetsAPI:
         """
         body = {}
         if dashboard_id is not None:
-            body["dashboard_id"] = dashboard_id
+            body["{dashboard_id}"] = dashboard_id
         if options is not None:
-            body["options"] = options.as_dict()
+            body["{options}"] = options.as_dict()
         if text is not None:
-            body["text"] = text
+            body["{text}"] = text
         if visualization_id is not None:
-            body["visualization_id"] = visualization_id
+            body["{visualization_id}"] = visualization_id
         if width is not None:
-            body["width"] = width
+            body["{width}"] = width
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/widgets", body=body, headers=headers)
@@ -8243,7 +8243,7 @@ class DashboardWidgetsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/widgets/{id}", headers=headers)
@@ -8277,18 +8277,18 @@ class DashboardWidgetsAPI:
         """
         body = {}
         if dashboard_id is not None:
-            body["dashboard_id"] = dashboard_id
+            body["{dashboard_id}"] = dashboard_id
         if options is not None:
-            body["options"] = options.as_dict()
+            body["{options}"] = options.as_dict()
         if text is not None:
-            body["text"] = text
+            body["{text}"] = text
         if visualization_id is not None:
-            body["visualization_id"] = visualization_id
+            body["{visualization_id}"] = visualization_id
         if width is not None:
-            body["width"] = width
+            body["{width}"] = width
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/widgets/{id}", body=body, headers=headers)
@@ -8334,20 +8334,20 @@ class DashboardsAPI:
         """
         body = {}
         if dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = dashboard_filters_enabled
+            body["{dashboard_filters_enabled}"] = dashboard_filters_enabled
         if is_favorite is not None:
-            body["is_favorite"] = is_favorite
+            body["{is_favorite}"] = is_favorite
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if parent is not None:
-            body["parent"] = parent
+            body["{parent}"] = parent
         if run_as_role is not None:
-            body["run_as_role"] = run_as_role.value
+            body["{run_as_role}"] = run_as_role.value
         if tags is not None:
-            body["tags"] = [v for v in tags]
+            body["{tags}"] = [v for v in tags]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body, headers=headers)
@@ -8365,7 +8365,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
@@ -8381,7 +8381,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
@@ -8416,32 +8416,32 @@ class DashboardsAPI:
 
         query = {}
         if order is not None:
-            query["order"] = order.value
+            query["{order}"] = order.value
         if page is not None:
-            query["page"] = page
+            query["{page}"] = page
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if q is not None:
-            query["q"] = q
+            query["{q}"] = q
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["page"] = 1
+        query["{page}"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
-                    i = v["id"]
+            if "{results}" in json:
+                for v in json["{results}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield Dashboard.from_dict(v)
-            if "results" not in json or not json["results"]:
+            if "{results}" not in json or not json["{results}"]:
                 return
-            query["page"] += 1
+            query["{page}"] += 1
 
     def restore(self, dashboard_id: str):
         """Restore a dashboard.
@@ -8454,7 +8454,7 @@ class DashboardsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", headers=headers)
@@ -8486,14 +8486,14 @@ class DashboardsAPI:
         """
         body = {}
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if run_as_role is not None:
-            body["run_as_role"] = run_as_role.value
+            body["{run_as_role}"] = run_as_role.value
         if tags is not None:
-            body["tags"] = [v for v in tags]
+            body["{tags}"] = [v for v in tags]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body, headers=headers)
@@ -8532,7 +8532,7 @@ class DataSourcesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/preview/sql/data_sources", headers=headers)
@@ -8578,7 +8578,7 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", headers=headers)
@@ -8611,10 +8611,10 @@ class DbsqlPermissionsAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -8645,10 +8645,10 @@ class DbsqlPermissionsAPI:
         """
         body = {}
         if new_owner is not None:
-            body["new_owner"] = new_owner
+            body["{new_owner}"] = new_owner
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do(
@@ -8679,10 +8679,10 @@ class QueriesAPI:
         """
         body = {}
         if query is not None:
-            body["query"] = query.as_dict()
+            body["{query}"] = query.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/queries", body=body, headers=headers)
@@ -8701,7 +8701,7 @@ class QueriesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/queries/{id}", headers=headers)
@@ -8717,7 +8717,7 @@ class QueriesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/queries/{id}", headers=headers)
@@ -8739,21 +8739,21 @@ class QueriesAPI:
 
         query = {}
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/queries", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
+            if "{results}" in json:
+                for v in json["{results}"]:
                     yield ListQueryObjectsResponseQuery.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["page_token"] = json["next_page_token"]
+            query["{page_token}"] = json["{next_page_token}"]
 
     def list_visualizations(
         self, id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -8771,21 +8771,21 @@ class QueriesAPI:
 
         query = {}
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", f"/api/2.0/sql/queries/{id}/visualizations", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
+            if "{results}" in json:
+                for v in json["{results}"]:
                     yield Visualization.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
+            if "{next_page_token}" not in json or not json["{next_page_token}"]:
                 return
-            query["page_token"] = json["next_page_token"]
+            query["{page_token}"] = json["{next_page_token}"]
 
     def update(self, id: str, update_mask: str, *, query: Optional[UpdateQueryRequestQuery] = None) -> Query:
         """Update a query.
@@ -8809,12 +8809,12 @@ class QueriesAPI:
         """
         body = {}
         if query is not None:
-            body["query"] = query.as_dict()
+            body["{query}"] = query.as_dict()
         if update_mask is not None:
-            body["update_mask"] = update_mask
+            body["{update_mask}"] = update_mask
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/queries/{id}", body=body, headers=headers)
@@ -8888,24 +8888,24 @@ class QueriesLegacyAPI:
         """
         body = {}
         if data_source_id is not None:
-            body["data_source_id"] = data_source_id
+            body["{data_source_id}"] = data_source_id
         if description is not None:
-            body["description"] = description
+            body["{description}"] = description
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options
+            body["{options}"] = options
         if parent is not None:
-            body["parent"] = parent
+            body["{parent}"] = parent
         if query is not None:
-            body["query"] = query
+            body["{query}"] = query
         if run_as_role is not None:
-            body["run_as_role"] = run_as_role.value
+            body["{run_as_role}"] = run_as_role.value
         if tags is not None:
-            body["tags"] = [v for v in tags]
+            body["{tags}"] = [v for v in tags]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body, headers=headers)
@@ -8928,7 +8928,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
@@ -8950,7 +8950,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
@@ -9002,32 +9002,32 @@ class QueriesLegacyAPI:
 
         query = {}
         if order is not None:
-            query["order"] = order
+            query["{order}"] = order
         if page is not None:
-            query["page"] = page
+            query["{page}"] = page
         if page_size is not None:
-            query["page_size"] = page_size
+            query["{page_size}"] = page_size
         if q is not None:
-            query["q"] = q
+            query["{q}"] = q
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         # deduplicate items that may have been added during iteration
         seen = set()
-        query["page"] = 1
+        query["{page}"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
-                    i = v["id"]
+            if "{results}" in json:
+                for v in json["{results}"]:
+                    i = v["{id}"]
                     if i in seen:
                         continue
                     seen.add(i)
                     yield LegacyQuery.from_dict(v)
-            if "results" not in json or not json["results"]:
+            if "{results}" not in json or not json["{results}"]:
                 return
-            query["page"] += 1
+            query["{page}"] += 1
 
     def restore(self, query_id: str):
         """Restore a query.
@@ -9046,7 +9046,7 @@ class QueriesLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", headers=headers)
@@ -9099,22 +9099,22 @@ class QueriesLegacyAPI:
         """
         body = {}
         if data_source_id is not None:
-            body["data_source_id"] = data_source_id
+            body["{data_source_id}"] = data_source_id
         if description is not None:
-            body["description"] = description
+            body["{description}"] = description
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options
+            body["{options}"] = options
         if query is not None:
-            body["query"] = query
+            body["{query}"] = query
         if run_as_role is not None:
-            body["run_as_role"] = run_as_role.value
+            body["{run_as_role}"] = run_as_role.value
         if tags is not None:
-            body["tags"] = [v for v in tags]
+            body["{tags}"] = [v for v in tags]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body, headers=headers)
@@ -9161,15 +9161,15 @@ class QueryHistoryAPI:
 
         query = {}
         if filter_by is not None:
-            query["filter_by"] = filter_by.as_dict()
+            query["{filter_by}"] = filter_by.as_dict()
         if include_metrics is not None:
-            query["include_metrics"] = include_metrics
+            query["{include_metrics}"] = include_metrics
         if max_results is not None:
-            query["max_results"] = max_results
+            query["{max_results}"] = max_results
         if page_token is not None:
-            query["page_token"] = page_token
+            query["{page_token}"] = page_token
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/sql/history/queries", query=query, headers=headers)
@@ -9194,10 +9194,10 @@ class QueryVisualizationsAPI:
         """
         body = {}
         if visualization is not None:
-            body["visualization"] = visualization.as_dict()
+            body["{visualization}"] = visualization.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/visualizations", body=body, headers=headers)
@@ -9214,7 +9214,7 @@ class QueryVisualizationsAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
@@ -9243,12 +9243,12 @@ class QueryVisualizationsAPI:
         """
         body = {}
         if update_mask is not None:
-            body["update_mask"] = update_mask
+            body["{update_mask}"] = update_mask
         if visualization is not None:
-            body["visualization"] = visualization.as_dict()
+            body["{visualization}"] = visualization.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/sql/visualizations/{id}", body=body, headers=headers)
@@ -9295,18 +9295,18 @@ class QueryVisualizationsLegacyAPI:
         """
         body = {}
         if description is not None:
-            body["description"] = description
+            body["{description}"] = description
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options
+            body["{options}"] = options
         if query_id is not None:
-            body["query_id"] = query_id
+            body["{query_id}"] = query_id
         if type is not None:
-            body["type"] = type
+            body["{type}"] = type
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/preview/sql/visualizations", body=body, headers=headers)
@@ -9329,7 +9329,7 @@ class QueryVisualizationsLegacyAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/visualizations/{id}", headers=headers)
@@ -9374,22 +9374,22 @@ class QueryVisualizationsLegacyAPI:
         """
         body = {}
         if created_at is not None:
-            body["created_at"] = created_at
+            body["{created_at}"] = created_at
         if description is not None:
-            body["description"] = description
+            body["{description}"] = description
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if options is not None:
-            body["options"] = options
+            body["{options}"] = options
         if query is not None:
-            body["query"] = query.as_dict()
+            body["{query}"] = query.as_dict()
         if type is not None:
-            body["type"] = type
+            body["{type}"] = type
         if updated_at is not None:
-            body["updated_at"] = updated_at
+            body["{updated_at}"] = updated_at
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/visualizations/{id}", body=body, headers=headers)
@@ -9409,7 +9409,7 @@ class RedashConfigAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/redash-v2/config", headers=headers)
@@ -9647,30 +9647,30 @@ class StatementExecutionAPI:
         """
         body = {}
         if byte_limit is not None:
-            body["byte_limit"] = byte_limit
+            body["{byte_limit}"] = byte_limit
         if catalog is not None:
-            body["catalog"] = catalog
+            body["{catalog}"] = catalog
         if disposition is not None:
-            body["disposition"] = disposition.value
+            body["{disposition}"] = disposition.value
         if format is not None:
-            body["format"] = format.value
+            body["{format}"] = format.value
         if on_wait_timeout is not None:
-            body["on_wait_timeout"] = on_wait_timeout.value
+            body["{on_wait_timeout}"] = on_wait_timeout.value
         if parameters is not None:
-            body["parameters"] = [v.as_dict() for v in parameters]
+            body["{parameters}"] = [v.as_dict() for v in parameters]
         if row_limit is not None:
-            body["row_limit"] = row_limit
+            body["{row_limit}"] = row_limit
         if schema is not None:
-            body["schema"] = schema
+            body["{schema}"] = schema
         if statement is not None:
-            body["statement"] = statement
+            body["{statement}"] = statement
         if wait_timeout is not None:
-            body["wait_timeout"] = wait_timeout
+            body["{wait_timeout}"] = wait_timeout
         if warehouse_id is not None:
-            body["warehouse_id"] = warehouse_id
+            body["{warehouse_id}"] = warehouse_id
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("POST", "/api/2.0/sql/statements/", body=body, headers=headers)
@@ -9695,7 +9695,7 @@ class StatementExecutionAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/statements/{statement_id}", headers=headers)
@@ -9720,7 +9720,7 @@ class StatementExecutionAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do(
@@ -9735,67 +9735,6 @@ class WarehousesAPI:
 
     def __init__(self, api_client):
         self._api = api_client
-
-    def wait_get_warehouse_running(
-        self, id: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[GetWarehouseResponse], None]] = None
-    ) -> GetWarehouseResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (State.RUNNING,)
-        failure_states = (
-            State.STOPPED,
-            State.DELETED,
-        )
-        status_message = "polling..."
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(id=id)
-            status = poll.state
-            status_message = f"current status: {status}"
-            if poll.health:
-                status_message = poll.health.summary
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f"failed to reach RUNNING, got {status}: {status_message}"
-                raise OperationFailed(msg)
-            prefix = f"id={id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f"timed out after {timeout}: {status_message}")
-
-    def wait_get_warehouse_stopped(
-        self, id: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[GetWarehouseResponse], None]] = None
-    ) -> GetWarehouseResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (State.STOPPED,)
-        status_message = "polling..."
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(id=id)
-            status = poll.state
-            status_message = f"current status: {status}"
-            if poll.health:
-                status_message = poll.health.summary
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            prefix = f"id={id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create(
         self,
@@ -9876,45 +9815,45 @@ class WarehousesAPI:
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
-          See :method:wait_get_warehouse_running for more details.
+          See :method:WaitGetWarehouseRunning for more details.
         """
         body = {}
         if auto_stop_mins is not None:
-            body["auto_stop_mins"] = auto_stop_mins
+            body["{auto_stop_mins}"] = auto_stop_mins
         if channel is not None:
-            body["channel"] = channel.as_dict()
+            body["{channel}"] = channel.as_dict()
         if cluster_size is not None:
-            body["cluster_size"] = cluster_size
+            body["{cluster_size}"] = cluster_size
         if creator_name is not None:
-            body["creator_name"] = creator_name
+            body["{creator_name}"] = creator_name
         if enable_photon is not None:
-            body["enable_photon"] = enable_photon
+            body["{enable_photon}"] = enable_photon
         if enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = enable_serverless_compute
+            body["{enable_serverless_compute}"] = enable_serverless_compute
         if instance_profile_arn is not None:
-            body["instance_profile_arn"] = instance_profile_arn
+            body["{instance_profile_arn}"] = instance_profile_arn
         if max_num_clusters is not None:
-            body["max_num_clusters"] = max_num_clusters
+            body["{max_num_clusters}"] = max_num_clusters
         if min_num_clusters is not None:
-            body["min_num_clusters"] = min_num_clusters
+            body["{min_num_clusters}"] = min_num_clusters
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if spot_instance_policy is not None:
-            body["spot_instance_policy"] = spot_instance_policy.value
+            body["{spot_instance_policy}"] = spot_instance_policy.value
         if tags is not None:
-            body["tags"] = tags.as_dict()
+            body["{tags}"] = tags.as_dict()
         if warehouse_type is not None:
-            body["warehouse_type"] = warehouse_type.value
+            body["{warehouse_type}"] = warehouse_type.value
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
         return Wait(
-            self.wait_get_warehouse_running,
+            self.WaitGetWarehouseRunning,
             response=CreateWarehouseResponse.from_dict(op_response),
-            id=op_response["id"],
+            id=op_response["{id}"],
         )
 
     def create_and_wait(
@@ -9963,7 +9902,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", headers=headers)
@@ -10049,42 +9988,42 @@ class WarehousesAPI:
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
-          See :method:wait_get_warehouse_running for more details.
+          See :method:WaitGetWarehouseRunning for more details.
         """
         body = {}
         if auto_stop_mins is not None:
-            body["auto_stop_mins"] = auto_stop_mins
+            body["{auto_stop_mins}"] = auto_stop_mins
         if channel is not None:
-            body["channel"] = channel.as_dict()
+            body["{channel}"] = channel.as_dict()
         if cluster_size is not None:
-            body["cluster_size"] = cluster_size
+            body["{cluster_size}"] = cluster_size
         if creator_name is not None:
-            body["creator_name"] = creator_name
+            body["{creator_name}"] = creator_name
         if enable_photon is not None:
-            body["enable_photon"] = enable_photon
+            body["{enable_photon}"] = enable_photon
         if enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = enable_serverless_compute
+            body["{enable_serverless_compute}"] = enable_serverless_compute
         if instance_profile_arn is not None:
-            body["instance_profile_arn"] = instance_profile_arn
+            body["{instance_profile_arn}"] = instance_profile_arn
         if max_num_clusters is not None:
-            body["max_num_clusters"] = max_num_clusters
+            body["{max_num_clusters}"] = max_num_clusters
         if min_num_clusters is not None:
-            body["min_num_clusters"] = min_num_clusters
+            body["{min_num_clusters}"] = min_num_clusters
         if name is not None:
-            body["name"] = name
+            body["{name}"] = name
         if spot_instance_policy is not None:
-            body["spot_instance_policy"] = spot_instance_policy.value
+            body["{spot_instance_policy}"] = spot_instance_policy.value
         if tags is not None:
-            body["tags"] = tags.as_dict()
+            body["{tags}"] = tags.as_dict()
         if warehouse_type is not None:
-            body["warehouse_type"] = warehouse_type.value
+            body["{warehouse_type}"] = warehouse_type.value
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=EditWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.WaitGetWarehouseRunning, response=EditWarehouseResponse.from_dict(op_response), id=id)
 
     def edit_and_wait(
         self,
@@ -10134,7 +10073,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", headers=headers)
@@ -10152,7 +10091,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
@@ -10171,7 +10110,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
@@ -10186,7 +10125,7 @@ class WarehousesAPI:
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         res = self._api.do("GET", "/api/2.0/sql/config/warehouses", headers=headers)
@@ -10206,9 +10145,9 @@ class WarehousesAPI:
 
         query = {}
         if run_as_user_id is not None:
-            query["run_as_user_id"] = run_as_user_id
+            query["{run_as_user_id}"] = run_as_user_id
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
@@ -10231,10 +10170,10 @@ class WarehousesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
@@ -10284,26 +10223,26 @@ class WarehousesAPI:
         """
         body = {}
         if channel is not None:
-            body["channel"] = channel.as_dict()
+            body["{channel}"] = channel.as_dict()
         if config_param is not None:
-            body["config_param"] = config_param.as_dict()
+            body["{config_param}"] = config_param.as_dict()
         if data_access_config is not None:
-            body["data_access_config"] = [v.as_dict() for v in data_access_config]
+            body["{data_access_config}"] = [v.as_dict() for v in data_access_config]
         if enabled_warehouse_types is not None:
-            body["enabled_warehouse_types"] = [v.as_dict() for v in enabled_warehouse_types]
+            body["{enabled_warehouse_types}"] = [v.as_dict() for v in enabled_warehouse_types]
         if global_param is not None:
-            body["global_param"] = global_param.as_dict()
+            body["{global_param}"] = global_param.as_dict()
         if google_service_account is not None:
-            body["google_service_account"] = google_service_account
+            body["{google_service_account}"] = google_service_account
         if instance_profile_arn is not None:
-            body["instance_profile_arn"] = instance_profile_arn
+            body["{instance_profile_arn}"] = instance_profile_arn
         if security_policy is not None:
-            body["security_policy"] = security_policy.value
+            body["{security_policy}"] = security_policy.value
         if sql_configuration_parameters is not None:
-            body["sql_configuration_parameters"] = sql_configuration_parameters.as_dict()
+            body["{sql_configuration_parameters}"] = sql_configuration_parameters.as_dict()
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
@@ -10318,15 +10257,15 @@ class WarehousesAPI:
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
-          See :method:wait_get_warehouse_running for more details.
+          See :method:WaitGetWarehouseRunning for more details.
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=StartWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.WaitGetWarehouseRunning, response=StartWarehouseResponse.from_dict(op_response), id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -10341,15 +10280,15 @@ class WarehousesAPI:
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
-          See :method:wait_get_warehouse_stopped for more details.
+          See :method:WaitGetWarehouseStopped for more details.
         """
 
         headers = {
-            "Accept": "application/json",
+            "0": "{Accept application/json}",
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return Wait(self.wait_get_warehouse_stopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.WaitGetWarehouseStopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
@@ -10370,10 +10309,10 @@ class WarehousesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["access_control_list"] = [v.as_dict() for v in access_control_list]
+            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "0": "{Accept application/json}",
+            "1": "{Content-Type application/json}",
         }
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
