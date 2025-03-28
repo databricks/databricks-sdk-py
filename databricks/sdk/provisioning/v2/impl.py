@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -3182,7 +3182,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
-    ) -> Wait[Workspace]:
+    ) -> Workspace:
         """Create a new workspace.
 
         Creates a new workspace.
@@ -3327,14 +3327,8 @@ class WorkspacesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers
-        )
-        return Wait(
-            self.WaitGetWorkspaceRunning,
-            response=Workspace.from_dict(op_response),
-            workspace_id=op_response["workspace_id"],
-        )
+        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers)
+        return Workspace.from_dict(res)
 
     def delete(self, workspace_id: int):
         """Delete a workspace.
@@ -3420,7 +3414,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
-    ) -> Wait[Workspace]:
+    ):
         """Update workspace configuration.
 
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
@@ -3575,9 +3569,6 @@ class WorkspacesAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
+        self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", body=body, headers=headers
-        )
-        return Wait(
-            self.WaitGetWorkspaceRunning, response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
         )

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -10047,7 +10047,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
-    ) -> Wait[ClusterDetails]:
+    ) -> CreateClusterResponse:
         """Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -10299,14 +10299,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning,
-            response=CreateClusterResponse.from_dict(op_response),
-            cluster_id=op_response["cluster_id"],
-        )
+        res = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
+        return CreateClusterResponse.from_dict(res)
 
-    def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
+    def delete(self, cluster_id: str):
         """Terminate cluster.
 
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -10328,10 +10324,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterTerminated, response=DeleteClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
 
     def edit(
         self,
@@ -10367,7 +10360,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
-    ) -> Wait[ClusterDetails]:
+    ):
         """Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -10616,10 +10609,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
 
     def events(
         self,
@@ -10867,9 +10857,7 @@ class ClustersAPI:
 
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
 
-    def resize(
-        self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None
-    ) -> Wait[ClusterDetails]:
+    def resize(self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None):
         """Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
@@ -10906,12 +10894,9 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
 
-    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> Wait[ClusterDetails]:
+    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None):
         """Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -10935,10 +10920,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
 
     def set_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
@@ -10980,7 +10962,7 @@ class ClustersAPI:
         res = self._api.do("GET", "/api/2.1/clusters/spark-versions", headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
 
-    def start(self, cluster_id: str) -> Wait[ClusterDetails]:
+    def start(self, cluster_id: str):
         """Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -11004,10 +10986,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
 
     def unpin(self, cluster_id: str):
         """Unpin cluster.
@@ -11030,9 +11009,7 @@ class ClustersAPI:
 
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
 
-    def update(
-        self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None
-    ) -> Wait[ClusterDetails]:
+    def update(self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None):
         """Update cluster configuration (partial).
 
         Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
@@ -11078,10 +11055,7 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
-        return Wait(
-            self.WaitGetClusterRunning, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
 
     def update_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
@@ -11117,7 +11091,7 @@ class CommandExecutionAPI:
 
     def cancel(
         self, *, cluster_id: Optional[str] = None, command_id: Optional[str] = None, context_id: Optional[str] = None
-    ) -> Wait[CommandStatusResponse]:
+    ):
         """Cancel a command.
 
         Cancels a currently running command within an execution context.
@@ -11144,14 +11118,7 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
-        return Wait(
-            self.WaitCommandStatusCommandExecutionCancelled,
-            response=CancelResponse.from_dict(op_response),
-            cluster_id=cluster_id,
-            command_id=command_id,
-            context_id=context_id,
-        )
+        self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
         """Get command info.
@@ -11204,9 +11171,7 @@ class CommandExecutionAPI:
         res = self._api.do("GET", "/api/1.2/contexts/status", query=query, headers=headers)
         return ContextStatusResponse.from_dict(res)
 
-    def create(
-        self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None
-    ) -> Wait[ContextStatusResponse]:
+    def create(self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None) -> Created:
         """Create an execution context.
 
         Creates an execution context for running cluster commands.
@@ -11231,13 +11196,8 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
-        return Wait(
-            self.WaitContextStatusCommandExecutionRunning,
-            response=Created.from_dict(op_response),
-            cluster_id=cluster_id,
-            context_id=op_response["id"],
-        )
+        res = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
+        return Created.from_dict(res)
 
     def destroy(self, cluster_id: str, context_id: str):
         """Delete an execution context.
@@ -11268,7 +11228,7 @@ class CommandExecutionAPI:
         command: Optional[str] = None,
         context_id: Optional[str] = None,
         language: Optional[Language] = None,
-    ) -> Wait[CommandStatusResponse]:
+    ) -> Created:
         """Run a command.
 
         Runs a cluster command in the given execution context, using the provided language.
@@ -11301,14 +11261,8 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
-        return Wait(
-            self.WaitCommandStatusCommandExecutionFinishedOrError,
-            response=Created.from_dict(op_response),
-            cluster_id=cluster_id,
-            command_id=op_response["id"],
-            context_id=context_id,
-        )
+        res = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
+        return Created.from_dict(res)
 
 
 class GlobalInitScriptsAPI:

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -8740,7 +8740,7 @@ class SubmitTask:
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[ClusterSpec] = None
+    new_cluster: Optional[JobsClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -8930,7 +8930,7 @@ class SubmitTask:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", Library),
-            new_cluster=_from_dict(d, "new_cluster", ClusterSpec),
+            new_cluster=_from_dict(d, "new_cluster", JobsClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
@@ -10092,7 +10092,7 @@ class JobsAPI:
 
         self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
-    def cancel_run(self, run_id: int) -> Wait[Run]:
+    def cancel_run(self, run_id: int):
         """Cancel a run.
 
         Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
@@ -10112,10 +10112,7 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
-        return Wait(
-            self.WaitGetRunJobTerminatedOrSkipped, response=CancelRunResponse.from_dict(op_response), run_id=run_id
-        )
+        self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
 
     def create(
         self,
@@ -10666,7 +10663,7 @@ class JobsAPI:
         rerun_tasks: Optional[List[str]] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> Wait[Run]:
+    ) -> RepairRunResponse:
         """Repair a job run.
 
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
@@ -10791,10 +10788,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
-        return Wait(
-            self.WaitGetRunJobTerminatedOrSkipped, response=RepairRunResponse.from_dict(op_response), run_id=run_id
-        )
+        res = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
+        return RepairRunResponse.from_dict(res)
 
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
@@ -10840,7 +10835,7 @@ class JobsAPI:
         queue: Optional[QueueSettings] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> Wait[Run]:
+    ) -> RunNowResponse:
         """Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run.
@@ -10976,12 +10971,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
-        return Wait(
-            self.WaitGetRunJobTerminatedOrSkipped,
-            response=RunNowResponse.from_dict(op_response),
-            run_id=op_response["run_id"],
-        )
+        res = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
+        return RunNowResponse.from_dict(res)
 
     def set_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
@@ -11025,7 +11016,7 @@ class JobsAPI:
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
-    ) -> Wait[Run]:
+    ) -> SubmitRunResponse:
         """Create and trigger a one-time run.
 
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -11119,12 +11110,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
-        return Wait(
-            self.WaitGetRunJobTerminatedOrSkipped,
-            response=SubmitRunResponse.from_dict(op_response),
-            run_id=op_response["run_id"],
-        )
+        res = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
+        return SubmitRunResponse.from_dict(res)
 
     def update(
         self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None

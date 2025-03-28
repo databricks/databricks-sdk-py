@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1068,7 +1068,7 @@ class AppsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
+    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> App:
         """Create an app.
 
         Creates a new app.
@@ -1090,8 +1090,8 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
-        return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["name"])
+        res = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
+        return App.from_dict(res)
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -1111,7 +1111,7 @@ class AppsAPI:
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
-    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> Wait[AppDeployment]:
+    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> AppDeployment:
         """Create an app deployment.
 
         Creates an app deployment for the app with the supplied name.
@@ -1130,13 +1130,8 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
-        return Wait(
-            self.WaitGetDeploymentAppSucceeded,
-            response=AppDeployment.from_dict(op_response),
-            app_name=app_name,
-            deployment_id=op_response["deployment_id"],
-        )
+        res = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
+        return AppDeployment.from_dict(res)
 
     def get(self, name: str) -> App:
         """Get an app.
@@ -1303,7 +1298,7 @@ class AppsAPI:
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
-    def start(self, name: str) -> Wait[App]:
+    def start(self, name: str) -> App:
         """Start an app.
 
         Start the last active deployment of the app in the workspace.
@@ -1321,10 +1316,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
-        return Wait(self.WaitGetAppActive, response=App.from_dict(op_response), name=op_response["name"])
+        res = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
+        return App.from_dict(res)
 
-    def stop(self, name: str) -> Wait[App]:
+    def stop(self, name: str) -> App:
         """Stop an app.
 
         Stops the active deployment of the app in the workspace.
@@ -1342,8 +1337,8 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
-        return Wait(self.WaitGetAppStopped, response=App.from_dict(op_response), name=op_response["name"])
+        res = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
+        return App.from_dict(res)
 
     def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.

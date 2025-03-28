@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -7126,7 +7126,7 @@ class ForecastingAPI:
         split_column: Optional[str] = None,
         timeseries_identifier_columns: Optional[List[str]] = None,
         training_frameworks: Optional[List[str]] = None,
-    ) -> Wait[ForecastingExperiment]:
+    ) -> CreateForecastingExperimentResponse:
         """Create a forecasting experiment.
 
         Creates a serverless forecasting experiment. Returns the experiment ID.
@@ -7212,12 +7212,8 @@ class ForecastingAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
-        return Wait(
-            self.WaitGetExperimentForecastingSucceeded,
-            response=CreateForecastingExperimentResponse.from_dict(op_response),
-            experiment_id=op_response["experiment_id"],
-        )
+        res = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
+        return CreateForecastingExperimentResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
         """Get a forecasting experiment.

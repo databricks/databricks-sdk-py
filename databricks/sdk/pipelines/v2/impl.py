@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (Wait, _enum, _from_dict, _repeated_dict,
+from ...service._internal import (_enum, _from_dict, _repeated_dict,
                                   _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -4655,7 +4655,7 @@ class PipelinesAPI:
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
 
-    def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
+    def stop(self, pipeline_id: str):
         """Stop a pipeline.
 
         Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
@@ -4672,10 +4672,7 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
-        return Wait(
-            self.WaitGetPipelineIdle, response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
-        )
+        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
 
     def update(
         self,

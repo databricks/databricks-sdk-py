@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import Wait, _enum, _from_dict, _repeated_dict
+from ...service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1622,7 +1622,7 @@ class VectorSearchEndpointsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_endpoint(self, name: str, endpoint_type: EndpointType) -> Wait[EndpointInfo]:
+    def create_endpoint(self, name: str, endpoint_type: EndpointType) -> EndpointInfo:
         """Create an endpoint.
 
         Create a new endpoint.
@@ -1646,12 +1646,8 @@ class VectorSearchEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
-        return Wait(
-            self.WaitGetEndpointVectorSearchEndpointOnline,
-            response=EndpointInfo.from_dict(op_response),
-            endpoint_name=op_response["name"],
-        )
+        res = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
+        return EndpointInfo.from_dict(res)
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete an endpoint.
