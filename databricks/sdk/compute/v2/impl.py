@@ -47,13 +47,13 @@ class AddInstanceProfile:
         """Serializes the AddInstanceProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.iam_role_arn is not None:
-            body["{iam_role_arn}"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile is not None:
-            body["{is_meta_instance_profile}"] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
         if self.skip_validation is not None:
-            body["{skip_validation}"] = self.skip_validation
+            body["skip_validation"] = self.skip_validation
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -110,7 +110,7 @@ class Adlsgen2Info:
         """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -140,9 +140,9 @@ class AutoScale:
         """Serializes the AutoScale into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.max_workers is not None:
-            body["{max_workers}"] = self.max_workers
+            body["max_workers"] = self.max_workers
         if self.min_workers is not None:
-            body["{min_workers}"] = self.min_workers
+            body["min_workers"] = self.min_workers
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -244,25 +244,25 @@ class AwsAttributes:
         """Serializes the AwsAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.ebs_volume_count is not None:
-            body["{ebs_volume_count}"] = self.ebs_volume_count
+            body["ebs_volume_count"] = self.ebs_volume_count
         if self.ebs_volume_iops is not None:
-            body["{ebs_volume_iops}"] = self.ebs_volume_iops
+            body["ebs_volume_iops"] = self.ebs_volume_iops
         if self.ebs_volume_size is not None:
-            body["{ebs_volume_size}"] = self.ebs_volume_size
+            body["ebs_volume_size"] = self.ebs_volume_size
         if self.ebs_volume_throughput is not None:
-            body["{ebs_volume_throughput}"] = self.ebs_volume_throughput
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
         if self.ebs_volume_type is not None:
-            body["{ebs_volume_type}"] = self.ebs_volume_type.value
+            body["ebs_volume_type"] = self.ebs_volume_type.value
         if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
-            body["{spot_bid_price_percent}"] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -347,13 +347,13 @@ class AzureAttributes:
         """Serializes the AzureAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
-            body["{log_analytics_info}"] = self.log_analytics_info.as_dict()
+            body["log_analytics_info"] = self.log_analytics_info.as_dict()
         if self.spot_bid_max_price is not None:
-            body["{spot_bid_max_price}"] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -401,11 +401,11 @@ class CancelCommand:
         """Serializes the CancelCommand into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["clusterId"] = self.cluster_id
         if self.command_id is not None:
-            body["{command_id}"] = self.command_id
+            body["commandId"] = self.command_id
         if self.context_id is not None:
-            body["{context_id}"] = self.context_id
+            body["contextId"] = self.context_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -458,9 +458,9 @@ class ChangeClusterOwner:
         """Serializes the ChangeClusterOwner into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.owner_username is not None:
-            body["{owner_username}"] = self.owner_username
+            body["owner_username"] = self.owner_username
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -508,9 +508,9 @@ class ClientsTypes:
         """Serializes the ClientsTypes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jobs is not None:
-            body["{jobs}"] = self.jobs
+            body["jobs"] = self.jobs
         if self.notebooks is not None:
-            body["{notebooks}"] = self.notebooks
+            body["notebooks"] = self.notebooks
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -537,7 +537,7 @@ class CloneCluster:
         """Serializes the CloneCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.source_cluster_id is not None:
-            body["{source_cluster_id}"] = self.source_cluster_id
+            body["source_cluster_id"] = self.source_cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -562,7 +562,7 @@ class CloudProviderNodeInfo:
         """Serializes the CloudProviderNodeInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.status:
-            body["{status}"] = [v.value for v in self.status]
+            body["status"] = [v.value for v in self.status]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -602,13 +602,13 @@ class ClusterAccessControlRequest:
         """Serializes the ClusterAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -656,15 +656,15 @@ class ClusterAccessControlResponse:
         """Serializes the ClusterAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -876,59 +876,59 @@ class ClusterAttributes:
         """Serializes the ClusterAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1041,11 +1041,11 @@ class ClusterCompliance:
         """Serializes the ClusterCompliance into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.is_compliant is not None:
-            body["{is_compliant}"] = self.is_compliant
+            body["is_compliant"] = self.is_compliant
         if self.violations:
-            body["{violations}"] = self.violations
+            body["violations"] = self.violations
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1344,101 +1344,101 @@ class ClusterDetails:
         """Serializes the ClusterDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_cores is not None:
-            body["{cluster_cores}"] = self.cluster_cores
+            body["cluster_cores"] = self.cluster_cores
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_log_status:
-            body["{cluster_log_status}"] = self.cluster_log_status.as_dict()
+            body["cluster_log_status"] = self.cluster_log_status.as_dict()
         if self.cluster_memory_mb is not None:
-            body["{cluster_memory_mb}"] = self.cluster_memory_mb
+            body["cluster_memory_mb"] = self.cluster_memory_mb
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.cluster_source is not None:
-            body["{cluster_source}"] = self.cluster_source.value
+            body["cluster_source"] = self.cluster_source.value
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.default_tags:
-            body["{default_tags}"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver:
-            body["{driver}"] = self.driver.as_dict()
+            body["driver"] = self.driver.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.executors:
-            body["{executors}"] = [v.as_dict() for v in self.executors]
+            body["executors"] = [v.as_dict() for v in self.executors]
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.jdbc_port is not None:
-            body["{jdbc_port}"] = self.jdbc_port
+            body["jdbc_port"] = self.jdbc_port
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.last_restarted_time is not None:
-            body["{last_restarted_time}"] = self.last_restarted_time
+            body["last_restarted_time"] = self.last_restarted_time
         if self.last_state_loss_time is not None:
-            body["{last_state_loss_time}"] = self.last_state_loss_time
+            body["last_state_loss_time"] = self.last_state_loss_time
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_context_id is not None:
-            body["{spark_context_id}"] = self.spark_context_id
+            body["spark_context_id"] = self.spark_context_id
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.spec:
-            body["{spec}"] = self.spec.as_dict()
+            body["spec"] = self.spec.as_dict()
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         if self.state is not None:
-            body["{state}"] = self.state.value
+            body["state"] = self.state.value
         if self.state_message is not None:
-            body["{state_message}"] = self.state_message
+            body["state_message"] = self.state_message
         if self.terminated_time is not None:
-            body["{terminated_time}"] = self.terminated_time
+            body["terminated_time"] = self.terminated_time
         if self.termination_reason:
-            body["{termination_reason}"] = self.termination_reason.as_dict()
+            body["termination_reason"] = self.termination_reason.as_dict()
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1615,15 +1615,15 @@ class ClusterEvent:
         """Serializes the ClusterEvent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.data_plane_event_details:
-            body["{data_plane_event_details}"] = self.data_plane_event_details.as_dict()
+            body["data_plane_event_details"] = self.data_plane_event_details.as_dict()
         if self.details:
-            body["{details}"] = self.details.as_dict()
+            body["details"] = self.details.as_dict()
         if self.timestamp is not None:
-            body["{timestamp}"] = self.timestamp
+            body["timestamp"] = self.timestamp
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1665,9 +1665,9 @@ class ClusterLibraryStatuses:
         """Serializes the ClusterLibraryStatuses into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.library_statuses:
-            body["{library_statuses}"] = [v.as_dict() for v in self.library_statuses]
+            body["library_statuses"] = [v.as_dict() for v in self.library_statuses]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1710,11 +1710,11 @@ class ClusterLogConf:
         """Serializes the ClusterLogConf into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbfs:
-            body["{dbfs}"] = self.dbfs.as_dict()
+            body["dbfs"] = self.dbfs.as_dict()
         if self.s3:
-            body["{s3}"] = self.s3.as_dict()
+            body["s3"] = self.s3.as_dict()
         if self.volumes:
-            body["{volumes}"] = self.volumes.as_dict()
+            body["volumes"] = self.volumes.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1751,11 +1751,11 @@ class ClusterPermission:
         """Serializes the ClusterPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1799,11 +1799,11 @@ class ClusterPermissions:
         """Serializes the ClusterPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1838,9 +1838,9 @@ class ClusterPermissionsDescription:
         """Serializes the ClusterPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1872,9 +1872,9 @@ class ClusterPermissionsRequest:
         """Serializes the ClusterPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1913,13 +1913,13 @@ class ClusterPolicyAccessControlRequest:
         """Serializes the ClusterPolicyAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1967,15 +1967,15 @@ class ClusterPolicyAccessControlResponse:
         """Serializes the ClusterPolicyAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2018,11 +2018,11 @@ class ClusterPolicyPermission:
         """Serializes the ClusterPolicyPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2064,11 +2064,11 @@ class ClusterPolicyPermissions:
         """Serializes the ClusterPolicyPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2103,9 +2103,9 @@ class ClusterPolicyPermissionsDescription:
         """Serializes the ClusterPolicyPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2137,9 +2137,9 @@ class ClusterPolicyPermissionsRequest:
         """Serializes the ClusterPolicyPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.cluster_policy_id is not None:
-            body["{cluster_policy_id}"] = self.cluster_policy_id
+            body["cluster_policy_id"] = self.cluster_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2182,11 +2182,11 @@ class ClusterSettingsChange:
         """Serializes the ClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.field is not None:
-            body["{field}"] = self.field
+            body["field"] = self.field
         if self.new_value is not None:
-            body["{new_value}"] = self.new_value
+            body["new_value"] = self.new_value
         if self.previous_value is not None:
-            body["{previous_value}"] = self.previous_value
+            body["previous_value"] = self.previous_value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2230,9 +2230,9 @@ class ClusterSize:
         """Serializes the ClusterSize into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2463,65 +2463,65 @@ class ClusterSpec:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_policy_default_values is not None:
-            body["{apply_policy_default_values}"] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2643,13 +2643,13 @@ class Command:
         """Serializes the Command into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["clusterId"] = self.cluster_id
         if self.command is not None:
-            body["{command}"] = self.command
+            body["command"] = self.command
         if self.context_id is not None:
-            body["{context_id}"] = self.context_id
+            body["contextId"] = self.context_id
         if self.language is not None:
-            body["{language}"] = self.language.value
+            body["language"] = self.language.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2698,11 +2698,11 @@ class CommandStatusResponse:
         """Serializes the CommandStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.results:
-            body["{results}"] = self.results.as_dict()
+            body["results"] = self.results.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2743,9 +2743,9 @@ class ContextStatusResponse:
         """Serializes the ContextStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2964,67 +2964,67 @@ class CreateCluster:
         """Serializes the CreateCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_policy_default_values is not None:
-            body["{apply_policy_default_values}"] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.clone_from:
-            body["{clone_from}"] = self.clone_from.as_dict()
+            body["clone_from"] = self.clone_from.as_dict()
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3140,7 +3140,7 @@ class CreateClusterResponse:
         """Serializes the CreateClusterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3167,9 +3167,9 @@ class CreateContext:
         """Serializes the CreateContext into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["clusterId"] = self.cluster_id
         if self.language is not None:
-            body["{language}"] = self.language.value
+            body["language"] = self.language.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3253,31 +3253,31 @@ class CreateInstancePool:
         """Serializes the CreateInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.disk_spec:
-            body["{disk_spec}"] = self.disk_spec.as_dict()
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
-            body["{idle_instance_autotermination_minutes}"] = self.idle_instance_autotermination_minutes
+            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_name is not None:
-            body["{instance_pool_name}"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity is not None:
-            body["{max_capacity}"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
-            body["{min_idle_instances}"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            body["{preloaded_docker_images}"] = [v.as_dict() for v in self.preloaded_docker_images]
+            body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
-            body["{preloaded_spark_versions}"] = [v for v in self.preloaded_spark_versions]
+            body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3340,7 +3340,7 @@ class CreateInstancePoolResponse:
         """Serializes the CreateInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3398,19 +3398,19 @@ class CreatePolicy:
         """Serializes the CreatePolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.definition is not None:
-            body["{definition}"] = self.definition
+            body["definition"] = self.definition
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None:
-            body["{max_clusters_per_user}"] = self.max_clusters_per_user
+            body["max_clusters_per_user"] = self.max_clusters_per_user
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.policy_family_definition_overrides is not None:
-            body["{policy_family_definition_overrides}"] = self.policy_family_definition_overrides
+            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
         if self.policy_family_id is not None:
-            body["{policy_family_id}"] = self.policy_family_id
+            body["policy_family_id"] = self.policy_family_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3455,7 +3455,7 @@ class CreatePolicyResponse:
         """Serializes the CreatePolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3480,7 +3480,7 @@ class CreateResponse:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.script_id is not None:
-            body["{script_id}"] = self.script_id
+            body["script_id"] = self.script_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3504,7 +3504,7 @@ class Created:
         """Serializes the Created into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3534,13 +3534,13 @@ class DataPlaneEventDetails:
         """Serializes the DataPlaneEventDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.event_type is not None:
-            body["{event_type}"] = self.event_type.value
+            body["event_type"] = self.event_type.value
         if self.executor_failures is not None:
-            body["{executor_failures}"] = self.executor_failures
+            body["executor_failures"] = self.executor_failures
         if self.host_id is not None:
-            body["{host_id}"] = self.host_id
+            body["host_id"] = self.host_id
         if self.timestamp is not None:
-            body["{timestamp}"] = self.timestamp
+            body["timestamp"] = self.timestamp
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3622,7 +3622,7 @@ class DbfsStorageInfo:
         """Serializes the DbfsStorageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3647,7 +3647,7 @@ class DeleteCluster:
         """Serializes the DeleteCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3690,7 +3690,7 @@ class DeleteInstancePool:
         """Serializes the DeleteInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3733,7 +3733,7 @@ class DeletePolicy:
         """Serializes the DeletePolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3795,9 +3795,9 @@ class DestroyContext:
         """Serializes the DestroyContext into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["clusterId"] = self.cluster_id
         if self.context_id is not None:
-            body["{context_id}"] = self.context_id
+            body["contextId"] = self.context_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3873,15 +3873,15 @@ class DiskSpec:
         """Serializes the DiskSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.disk_count is not None:
-            body["{disk_count}"] = self.disk_count
+            body["disk_count"] = self.disk_count
         if self.disk_iops is not None:
-            body["{disk_iops}"] = self.disk_iops
+            body["disk_iops"] = self.disk_iops
         if self.disk_size is not None:
-            body["{disk_size}"] = self.disk_size
+            body["disk_size"] = self.disk_size
         if self.disk_throughput is not None:
-            body["{disk_throughput}"] = self.disk_throughput
+            body["disk_throughput"] = self.disk_throughput
         if self.disk_type:
-            body["{disk_type}"] = self.disk_type.as_dict()
+            body["disk_type"] = self.disk_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3927,9 +3927,9 @@ class DiskType:
         """Serializes the DiskType into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.azure_disk_volume_type is not None:
-            body["{azure_disk_volume_type}"] = self.azure_disk_volume_type.value
+            body["azure_disk_volume_type"] = self.azure_disk_volume_type.value
         if self.ebs_volume_type is not None:
-            body["{ebs_volume_type}"] = self.ebs_volume_type.value
+            body["ebs_volume_type"] = self.ebs_volume_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3978,9 +3978,9 @@ class DockerBasicAuth:
         """Serializes the DockerBasicAuth into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.password is not None:
-            body["{password}"] = self.password
+            body["password"] = self.password
         if self.username is not None:
-            body["{username}"] = self.username
+            body["username"] = self.username
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4010,9 +4010,9 @@ class DockerImage:
         """Serializes the DockerImage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.basic_auth:
-            body["{basic_auth}"] = self.basic_auth.as_dict()
+            body["basic_auth"] = self.basic_auth.as_dict()
         if self.url is not None:
-            body["{url}"] = self.url
+            body["url"] = self.url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4238,67 +4238,67 @@ class EditCluster:
         """Serializes the EditCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_policy_default_values is not None:
-            body["{apply_policy_default_values}"] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4464,19 +4464,19 @@ class EditInstancePool:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.idle_instance_autotermination_minutes is not None:
-            body["{idle_instance_autotermination_minutes}"] = self.idle_instance_autotermination_minutes
+            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name is not None:
-            body["{instance_pool_name}"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity is not None:
-            body["{max_capacity}"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
-            body["{min_idle_instances}"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4575,21 +4575,21 @@ class EditPolicy:
         """Serializes the EditPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.definition is not None:
-            body["{definition}"] = self.definition
+            body["definition"] = self.definition
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None:
-            body["{max_clusters_per_user}"] = self.max_clusters_per_user
+            body["max_clusters_per_user"] = self.max_clusters_per_user
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.policy_family_definition_overrides is not None:
-            body["{policy_family_definition_overrides}"] = self.policy_family_definition_overrides
+            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
         if self.policy_family_id is not None:
-            body["{policy_family_id}"] = self.policy_family_id
+            body["policy_family_id"] = self.policy_family_id
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4677,9 +4677,9 @@ class EnforceClusterComplianceRequest:
         """Serializes the EnforceClusterComplianceRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.validate_only is not None:
-            body["{validate_only}"] = self.validate_only
+            body["validate_only"] = self.validate_only
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4711,9 +4711,9 @@ class EnforceClusterComplianceResponse:
         """Serializes the EnforceClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.changes:
-            body["{changes}"] = [v.as_dict() for v in self.changes]
+            body["changes"] = [v.as_dict() for v in self.changes]
         if self.has_changes is not None:
-            body["{has_changes}"] = self.has_changes
+            body["has_changes"] = self.has_changes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4800,45 +4800,45 @@ class EventDetails:
         """Serializes the EventDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attributes:
-            body["{attributes}"] = self.attributes.as_dict()
+            body["attributes"] = self.attributes.as_dict()
         if self.cause is not None:
-            body["{cause}"] = self.cause.value
+            body["cause"] = self.cause.value
         if self.cluster_size:
-            body["{cluster_size}"] = self.cluster_size.as_dict()
+            body["cluster_size"] = self.cluster_size.as_dict()
         if self.current_num_vcpus is not None:
-            body["{current_num_vcpus}"] = self.current_num_vcpus
+            body["current_num_vcpus"] = self.current_num_vcpus
         if self.current_num_workers is not None:
-            body["{current_num_workers}"] = self.current_num_workers
+            body["current_num_workers"] = self.current_num_workers
         if self.did_not_expand_reason is not None:
-            body["{did_not_expand_reason}"] = self.did_not_expand_reason
+            body["did_not_expand_reason"] = self.did_not_expand_reason
         if self.disk_size is not None:
-            body["{disk_size}"] = self.disk_size
+            body["disk_size"] = self.disk_size
         if self.driver_state_message is not None:
-            body["{driver_state_message}"] = self.driver_state_message
+            body["driver_state_message"] = self.driver_state_message
         if self.enable_termination_for_node_blocklisted is not None:
-            body["{enable_termination_for_node_blocklisted}"] = self.enable_termination_for_node_blocklisted
+            body["enable_termination_for_node_blocklisted"] = self.enable_termination_for_node_blocklisted
         if self.free_space is not None:
-            body["{free_space}"] = self.free_space
+            body["free_space"] = self.free_space
         if self.init_scripts:
-            body["{init_scripts}"] = self.init_scripts.as_dict()
+            body["init_scripts"] = self.init_scripts.as_dict()
         if self.instance_id is not None:
-            body["{instance_id}"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.job_run_name is not None:
-            body["{job_run_name}"] = self.job_run_name
+            body["job_run_name"] = self.job_run_name
         if self.previous_attributes:
-            body["{previous_attributes}"] = self.previous_attributes.as_dict()
+            body["previous_attributes"] = self.previous_attributes.as_dict()
         if self.previous_cluster_size:
-            body["{previous_cluster_size}"] = self.previous_cluster_size.as_dict()
+            body["previous_cluster_size"] = self.previous_cluster_size.as_dict()
         if self.previous_disk_size is not None:
-            body["{previous_disk_size}"] = self.previous_disk_size
+            body["previous_disk_size"] = self.previous_disk_size
         if self.reason:
-            body["{reason}"] = self.reason.as_dict()
+            body["reason"] = self.reason.as_dict()
         if self.target_num_vcpus is not None:
-            body["{target_num_vcpus}"] = self.target_num_vcpus
+            body["target_num_vcpus"] = self.target_num_vcpus
         if self.target_num_workers is not None:
-            body["{target_num_workers}"] = self.target_num_workers
+            body["target_num_workers"] = self.target_num_workers
         if self.user is not None:
-            body["{user}"] = self.user
+            body["user"] = self.user
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4994,17 +4994,17 @@ class GcpAttributes:
         """Serializes the GcpAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
-            body["{boot_disk_size}"] = self.boot_disk_size
+            body["boot_disk_size"] = self.boot_disk_size
         if self.google_service_account is not None:
-            body["{google_service_account}"] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
-            body["{local_ssd_count}"] = self.local_ssd_count
+            body["local_ssd_count"] = self.local_ssd_count
         if self.use_preemptible_executors is not None:
-            body["{use_preemptible_executors}"] = self.use_preemptible_executors
+            body["use_preemptible_executors"] = self.use_preemptible_executors
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5057,7 +5057,7 @@ class GcsStorageInfo:
         """Serializes the GcsStorageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5088,9 +5088,9 @@ class GetClusterComplianceResponse:
         """Serializes the GetClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_compliant is not None:
-            body["{is_compliant}"] = self.is_compliant
+            body["is_compliant"] = self.is_compliant
         if self.violations:
-            body["{violations}"] = self.violations
+            body["violations"] = self.violations
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5117,7 +5117,7 @@ class GetClusterPermissionLevelsResponse:
         """Serializes the GetClusterPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5142,7 +5142,7 @@ class GetClusterPolicyPermissionLevelsResponse:
         """Serializes the GetClusterPolicyPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5188,19 +5188,19 @@ class GetEvents:
         """Serializes the GetEvents into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.end_time is not None:
-            body["{end_time}"] = self.end_time
+            body["end_time"] = self.end_time
         if self.event_types:
-            body["{event_types}"] = [v.value for v in self.event_types]
+            body["event_types"] = [v.value for v in self.event_types]
         if self.limit is not None:
-            body["{limit}"] = self.limit
+            body["limit"] = self.limit
         if self.offset is not None:
-            body["{offset}"] = self.offset
+            body["offset"] = self.offset
         if self.order is not None:
-            body["{order}"] = self.order.value
+            body["order"] = self.order.value
         if self.start_time is not None:
-            body["{start_time}"] = self.start_time
+            body["start_time"] = self.start_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5257,11 +5257,11 @@ class GetEventsResponse:
         """Serializes the GetEventsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.events:
-            body["{events}"] = [v.as_dict() for v in self.events]
+            body["events"] = [v.as_dict() for v in self.events]
         if self.next_page:
-            body["{next_page}"] = self.next_page.as_dict()
+            body["next_page"] = self.next_page.as_dict()
         if self.total_count is not None:
-            body["{total_count}"] = self.total_count
+            body["total_count"] = self.total_count
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5374,41 +5374,41 @@ class GetInstancePool:
         """Serializes the GetInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.default_tags:
-            body["{default_tags}"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.disk_spec:
-            body["{disk_spec}"] = self.disk_spec.as_dict()
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
-            body["{idle_instance_autotermination_minutes}"] = self.idle_instance_autotermination_minutes
+            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name is not None:
-            body["{instance_pool_name}"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity is not None:
-            body["{max_capacity}"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
-            body["{min_idle_instances}"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            body["{preloaded_docker_images}"] = [v.as_dict() for v in self.preloaded_docker_images]
+            body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
-            body["{preloaded_spark_versions}"] = [v for v in self.preloaded_spark_versions]
+            body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
         if self.state is not None:
-            body["{state}"] = self.state.value
+            body["state"] = self.state.value
         if self.stats:
-            body["{stats}"] = self.stats.as_dict()
+            body["stats"] = self.stats.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5486,7 +5486,7 @@ class GetInstancePoolPermissionLevelsResponse:
         """Serializes the GetInstancePoolPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5511,7 +5511,7 @@ class GetSparkVersionsResponse:
         """Serializes the GetSparkVersionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.versions:
-            body["{versions}"] = [v.as_dict() for v in self.versions]
+            body["versions"] = [v.as_dict() for v in self.versions]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5553,13 +5553,13 @@ class GlobalInitScriptCreateRequest:
         """Serializes the GlobalInitScriptCreateRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.script is not None:
-            body["{script}"] = self.script
+            body["script"] = self.script
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5617,21 +5617,21 @@ class GlobalInitScriptDetails:
         """Serializes the GlobalInitScriptDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.script_id is not None:
-            body["{script_id}"] = self.script_id
+            body["script_id"] = self.script_id
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5704,23 +5704,23 @@ class GlobalInitScriptDetailsWithContent:
         """Serializes the GlobalInitScriptDetailsWithContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.script is not None:
-            body["{script}"] = self.script
+            body["script"] = self.script
         if self.script_id is not None:
-            body["{script_id}"] = self.script_id
+            body["script_id"] = self.script_id
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5791,15 +5791,15 @@ class GlobalInitScriptUpdateRequest:
         """Serializes the GlobalInitScriptUpdateRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enabled is not None:
-            body["{enabled}"] = self.enabled
+            body["enabled"] = self.enabled
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.script is not None:
-            body["{script}"] = self.script
+            body["script"] = self.script
         if self.script_id is not None:
-            body["{script_id}"] = self.script_id
+            body["script_id"] = self.script_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5848,11 +5848,11 @@ class InitScriptEventDetails:
         """Serializes the InitScriptEventDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster:
-            body["{cluster}"] = [v.as_dict() for v in self.cluster]
+            body["cluster"] = [v.as_dict() for v in self.cluster]
         if self.global_:
-            body["{global}"] = [v.as_dict() for v in self.global_]
+            body["global"] = [v.as_dict() for v in self.global_]
         if self.reported_for_node is not None:
-            body["{reported_for_node}"] = self.reported_for_node
+            body["reported_for_node"] = self.reported_for_node
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5924,19 +5924,19 @@ class InitScriptInfo:
         """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.abfss:
-            body["{abfss}"] = self.abfss.as_dict()
+            body["abfss"] = self.abfss.as_dict()
         if self.dbfs:
-            body["{dbfs}"] = self.dbfs.as_dict()
+            body["dbfs"] = self.dbfs.as_dict()
         if self.file:
-            body["{file}"] = self.file.as_dict()
+            body["file"] = self.file.as_dict()
         if self.gcs:
-            body["{gcs}"] = self.gcs.as_dict()
+            body["gcs"] = self.gcs.as_dict()
         if self.s3:
-            body["{s3}"] = self.s3.as_dict()
+            body["s3"] = self.s3.as_dict()
         if self.volumes:
-            body["{volumes}"] = self.volumes.as_dict()
+            body["volumes"] = self.volumes.as_dict()
         if self.workspace:
-            body["{workspace}"] = self.workspace.as_dict()
+            body["workspace"] = self.workspace.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6017,25 +6017,25 @@ class InitScriptInfoAndExecutionDetails:
         """Serializes the InitScriptInfoAndExecutionDetails into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.abfss:
-            body["{abfss}"] = self.abfss.as_dict()
+            body["abfss"] = self.abfss.as_dict()
         if self.dbfs:
-            body["{dbfs}"] = self.dbfs.as_dict()
+            body["dbfs"] = self.dbfs.as_dict()
         if self.error_message is not None:
-            body["{error_message}"] = self.error_message
+            body["error_message"] = self.error_message
         if self.execution_duration_seconds is not None:
-            body["{execution_duration_seconds}"] = self.execution_duration_seconds
+            body["execution_duration_seconds"] = self.execution_duration_seconds
         if self.file:
-            body["{file}"] = self.file.as_dict()
+            body["file"] = self.file.as_dict()
         if self.gcs:
-            body["{gcs}"] = self.gcs.as_dict()
+            body["gcs"] = self.gcs.as_dict()
         if self.s3:
-            body["{s3}"] = self.s3.as_dict()
+            body["s3"] = self.s3.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.volumes:
-            body["{volumes}"] = self.volumes.as_dict()
+            body["volumes"] = self.volumes.as_dict()
         if self.workspace:
-            body["{workspace}"] = self.workspace.as_dict()
+            body["workspace"] = self.workspace.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6092,9 +6092,9 @@ class InstallLibraries:
         """Serializes the InstallLibraries into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6148,13 +6148,13 @@ class InstancePoolAccessControlRequest:
         """Serializes the InstancePoolAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6202,15 +6202,15 @@ class InstancePoolAccessControlResponse:
         """Serializes the InstancePoolAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6329,41 +6329,41 @@ class InstancePoolAndStats:
         """Serializes the InstancePoolAndStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.default_tags:
-            body["{default_tags}"] = self.default_tags
+            body["default_tags"] = self.default_tags
         if self.disk_spec:
-            body["{disk_spec}"] = self.disk_spec.as_dict()
+            body["disk_spec"] = self.disk_spec.as_dict()
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.idle_instance_autotermination_minutes is not None:
-            body["{idle_instance_autotermination_minutes}"] = self.idle_instance_autotermination_minutes
+            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.instance_pool_name is not None:
-            body["{instance_pool_name}"] = self.instance_pool_name
+            body["instance_pool_name"] = self.instance_pool_name
         if self.max_capacity is not None:
-            body["{max_capacity}"] = self.max_capacity
+            body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
-            body["{min_idle_instances}"] = self.min_idle_instances
+            body["min_idle_instances"] = self.min_idle_instances
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
-            body["{preloaded_docker_images}"] = [v.as_dict() for v in self.preloaded_docker_images]
+            body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
-            body["{preloaded_spark_versions}"] = [v for v in self.preloaded_spark_versions]
+            body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
         if self.state is not None:
-            body["{state}"] = self.state.value
+            body["state"] = self.state.value
         if self.stats:
-            body["{stats}"] = self.stats.as_dict()
+            body["stats"] = self.stats.as_dict()
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6460,11 +6460,11 @@ class InstancePoolAwsAttributes:
         """Serializes the InstancePoolAwsAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.spot_bid_price_percent is not None:
-            body["{spot_bid_price_percent}"] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6512,9 +6512,9 @@ class InstancePoolAzureAttributes:
         """Serializes the InstancePoolAzureAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability.value
+            body["availability"] = self.availability.value
         if self.spot_bid_max_price is not None:
-            body["{spot_bid_max_price}"] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6575,11 +6575,11 @@ class InstancePoolGcpAttributes:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gcp_availability is not None:
-            body["{gcp_availability}"] = self.gcp_availability.value
+            body["gcp_availability"] = self.gcp_availability.value
         if self.local_ssd_count is not None:
-            body["{local_ssd_count}"] = self.local_ssd_count
+            body["local_ssd_count"] = self.local_ssd_count
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6616,11 +6616,11 @@ class InstancePoolPermission:
         """Serializes the InstancePoolPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6663,11 +6663,11 @@ class InstancePoolPermissions:
         """Serializes the InstancePoolPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6702,9 +6702,9 @@ class InstancePoolPermissionsDescription:
         """Serializes the InstancePoolPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6736,9 +6736,9 @@ class InstancePoolPermissionsRequest:
         """Serializes the InstancePoolPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6788,13 +6788,13 @@ class InstancePoolStats:
         """Serializes the InstancePoolStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.idle_count is not None:
-            body["{idle_count}"] = self.idle_count
+            body["idle_count"] = self.idle_count
         if self.pending_idle_count is not None:
-            body["{pending_idle_count}"] = self.pending_idle_count
+            body["pending_idle_count"] = self.pending_idle_count
         if self.pending_used_count is not None:
-            body["{pending_used_count}"] = self.pending_used_count
+            body["pending_used_count"] = self.pending_used_count
         if self.used_count is not None:
-            body["{used_count}"] = self.used_count
+            body["used_count"] = self.used_count
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6832,7 +6832,7 @@ class InstancePoolStatus:
         """Serializes the InstancePoolStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pending_instance_errors:
-            body["{pending_instance_errors}"] = [v.as_dict() for v in self.pending_instance_errors]
+            body["pending_instance_errors"] = [v.as_dict() for v in self.pending_instance_errors]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6872,11 +6872,11 @@ class InstanceProfile:
         """Serializes the InstanceProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.iam_role_arn is not None:
-            body["{iam_role_arn}"] = self.iam_role_arn
+            body["iam_role_arn"] = self.iam_role_arn
         if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.is_meta_instance_profile is not None:
-            body["{is_meta_instance_profile}"] = self.is_meta_instance_profile
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6964,19 +6964,19 @@ class Library:
         """Serializes the Library into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cran:
-            body["{cran}"] = self.cran.as_dict()
+            body["cran"] = self.cran.as_dict()
         if self.egg is not None:
-            body["{egg}"] = self.egg
+            body["egg"] = self.egg
         if self.jar is not None:
-            body["{jar}"] = self.jar
+            body["jar"] = self.jar
         if self.maven:
-            body["{maven}"] = self.maven.as_dict()
+            body["maven"] = self.maven.as_dict()
         if self.pypi:
-            body["{pypi}"] = self.pypi.as_dict()
+            body["pypi"] = self.pypi.as_dict()
         if self.requirements is not None:
-            body["{requirements}"] = self.requirements
+            body["requirements"] = self.requirements
         if self.whl is not None:
-            body["{whl}"] = self.whl
+            body["whl"] = self.whl
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7032,13 +7032,13 @@ class LibraryFullStatus:
         """Serializes the LibraryFullStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_library_for_all_clusters is not None:
-            body["{is_library_for_all_clusters}"] = self.is_library_for_all_clusters
+            body["is_library_for_all_clusters"] = self.is_library_for_all_clusters
         if self.library:
-            body["{library}"] = self.library.as_dict()
+            body["library"] = self.library.as_dict()
         if self.messages:
-            body["{messages}"] = [v for v in self.messages]
+            body["messages"] = [v for v in self.messages]
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7087,7 +7087,7 @@ class ListAllClusterLibraryStatusesResponse:
         """Serializes the ListAllClusterLibraryStatusesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.statuses:
-            body["{statuses}"] = [v.as_dict() for v in self.statuses]
+            body["statuses"] = [v.as_dict() for v in self.statuses]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7115,9 +7115,9 @@ class ListAvailableZonesResponse:
         """Serializes the ListAvailableZonesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default_zone is not None:
-            body["{default_zone}"] = self.default_zone
+            body["default_zone"] = self.default_zone
         if self.zones:
-            body["{zones}"] = [v for v in self.zones]
+            body["zones"] = [v for v in self.zones]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7152,11 +7152,11 @@ class ListClusterCompliancesResponse:
         """Serializes the ListClusterCompliancesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clusters:
-            body["{clusters}"] = [v.as_dict() for v in self.clusters]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7198,13 +7198,13 @@ class ListClustersFilterBy:
         """Serializes the ListClustersFilterBy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_sources:
-            body["{cluster_sources}"] = [v.value for v in self.cluster_sources]
+            body["cluster_sources"] = [v.value for v in self.cluster_sources]
         if self.cluster_states:
-            body["{cluster_states}"] = [v.value for v in self.cluster_states]
+            body["cluster_states"] = [v.value for v in self.cluster_states]
         if self.is_pinned is not None:
-            body["{is_pinned}"] = self.is_pinned
+            body["is_pinned"] = self.is_pinned
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7247,11 +7247,11 @@ class ListClustersResponse:
         """Serializes the ListClustersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clusters:
-            body["{clusters}"] = [v.as_dict() for v in self.clusters]
+            body["clusters"] = [v.as_dict() for v in self.clusters]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7288,9 +7288,9 @@ class ListClustersSortBy:
         """Serializes the ListClustersSortBy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.direction is not None:
-            body["{direction}"] = self.direction.value
+            body["direction"] = self.direction.value
         if self.field is not None:
-            body["{field}"] = self.field.value
+            body["field"] = self.field.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7331,7 +7331,7 @@ class ListGlobalInitScriptsResponse:
         """Serializes the ListGlobalInitScriptsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.scripts:
-            body["{scripts}"] = [v.as_dict() for v in self.scripts]
+            body["scripts"] = [v.as_dict() for v in self.scripts]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7355,7 +7355,7 @@ class ListInstancePools:
         """Serializes the ListInstancePools into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_pools:
-            body["{instance_pools}"] = [v.as_dict() for v in self.instance_pools]
+            body["instance_pools"] = [v.as_dict() for v in self.instance_pools]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7380,7 +7380,7 @@ class ListInstanceProfilesResponse:
         """Serializes the ListInstanceProfilesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_profiles:
-            body["{instance_profiles}"] = [v.as_dict() for v in self.instance_profiles]
+            body["instance_profiles"] = [v.as_dict() for v in self.instance_profiles]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7405,7 +7405,7 @@ class ListNodeTypesResponse:
         """Serializes the ListNodeTypesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.node_types:
-            body["{node_types}"] = [v.as_dict() for v in self.node_types]
+            body["node_types"] = [v.as_dict() for v in self.node_types]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7430,7 +7430,7 @@ class ListPoliciesResponse:
         """Serializes the ListPoliciesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.policies:
-            body["{policies}"] = [v.as_dict() for v in self.policies]
+            body["policies"] = [v.as_dict() for v in self.policies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7459,9 +7459,9 @@ class ListPolicyFamiliesResponse:
         """Serializes the ListPolicyFamiliesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.policy_families:
-            body["{policy_families}"] = [v.as_dict() for v in self.policy_families]
+            body["policy_families"] = [v.as_dict() for v in self.policy_families]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7503,7 +7503,7 @@ class LocalFileInfo:
         """Serializes the LocalFileInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7529,9 +7529,9 @@ class LogAnalyticsInfo:
         """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_analytics_primary_key is not None:
-            body["{log_analytics_primary_key}"] = self.log_analytics_primary_key
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
         if self.log_analytics_workspace_id is not None:
-            body["{log_analytics_workspace_id}"] = self.log_analytics_workspace_id
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7568,9 +7568,9 @@ class LogSyncStatus:
         """Serializes the LogSyncStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.last_attempted is not None:
-            body["{last_attempted}"] = self.last_attempted
+            body["last_attempted"] = self.last_attempted
         if self.last_exception is not None:
-            body["{last_exception}"] = self.last_exception
+            body["last_exception"] = self.last_exception
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7607,11 +7607,11 @@ class MavenLibrary:
         """Serializes the MavenLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.coordinates is not None:
-            body["{coordinates}"] = self.coordinates
+            body["coordinates"] = self.coordinates
         if self.exclusions:
-            body["{exclusions}"] = [v for v in self.exclusions]
+            body["exclusions"] = [v for v in self.exclusions]
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7658,15 +7658,15 @@ class NodeInstanceType:
         """Serializes the NodeInstanceType into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_type_id is not None:
-            body["{instance_type_id}"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.local_disk_size_gb is not None:
-            body["{local_disk_size_gb}"] = self.local_disk_size_gb
+            body["local_disk_size_gb"] = self.local_disk_size_gb
         if self.local_disks is not None:
-            body["{local_disks}"] = self.local_disks
+            body["local_disks"] = self.local_disks
         if self.local_nvme_disk_size_gb is not None:
-            body["{local_nvme_disk_size_gb}"] = self.local_nvme_disk_size_gb
+            body["local_nvme_disk_size_gb"] = self.local_nvme_disk_size_gb
         if self.local_nvme_disks is not None:
-            body["{local_nvme_disks}"] = self.local_nvme_disks
+            body["local_nvme_disks"] = self.local_nvme_disks
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7769,45 +7769,45 @@ class NodeType:
         """Serializes the NodeType into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.category is not None:
-            body["{category}"] = self.category
+            body["category"] = self.category
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.display_order is not None:
-            body["{display_order}"] = self.display_order
+            body["display_order"] = self.display_order
         if self.instance_type_id is not None:
-            body["{instance_type_id}"] = self.instance_type_id
+            body["instance_type_id"] = self.instance_type_id
         if self.is_deprecated is not None:
-            body["{is_deprecated}"] = self.is_deprecated
+            body["is_deprecated"] = self.is_deprecated
         if self.is_encrypted_in_transit is not None:
-            body["{is_encrypted_in_transit}"] = self.is_encrypted_in_transit
+            body["is_encrypted_in_transit"] = self.is_encrypted_in_transit
         if self.is_graviton is not None:
-            body["{is_graviton}"] = self.is_graviton
+            body["is_graviton"] = self.is_graviton
         if self.is_hidden is not None:
-            body["{is_hidden}"] = self.is_hidden
+            body["is_hidden"] = self.is_hidden
         if self.is_io_cache_enabled is not None:
-            body["{is_io_cache_enabled}"] = self.is_io_cache_enabled
+            body["is_io_cache_enabled"] = self.is_io_cache_enabled
         if self.memory_mb is not None:
-            body["{memory_mb}"] = self.memory_mb
+            body["memory_mb"] = self.memory_mb
         if self.node_info:
-            body["{node_info}"] = self.node_info.as_dict()
+            body["node_info"] = self.node_info.as_dict()
         if self.node_instance_type:
-            body["{node_instance_type}"] = self.node_instance_type.as_dict()
+            body["node_instance_type"] = self.node_instance_type.as_dict()
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_cores is not None:
-            body["{num_cores}"] = self.num_cores
+            body["num_cores"] = self.num_cores
         if self.num_gpus is not None:
-            body["{num_gpus}"] = self.num_gpus
+            body["num_gpus"] = self.num_gpus
         if self.photon_driver_capable is not None:
-            body["{photon_driver_capable}"] = self.photon_driver_capable
+            body["photon_driver_capable"] = self.photon_driver_capable
         if self.photon_worker_capable is not None:
-            body["{photon_worker_capable}"] = self.photon_worker_capable
+            body["photon_worker_capable"] = self.photon_worker_capable
         if self.support_cluster_tags is not None:
-            body["{support_cluster_tags}"] = self.support_cluster_tags
+            body["support_cluster_tags"] = self.support_cluster_tags
         if self.support_ebs_volumes is not None:
-            body["{support_ebs_volumes}"] = self.support_ebs_volumes
+            body["support_ebs_volumes"] = self.support_ebs_volumes
         if self.support_port_forwarding is not None:
-            body["{support_port_forwarding}"] = self.support_port_forwarding
+            body["support_port_forwarding"] = self.support_port_forwarding
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7894,9 +7894,9 @@ class PendingInstanceError:
         """Serializes the PendingInstanceError into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_id is not None:
-            body["{instance_id}"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7923,7 +7923,7 @@ class PermanentDeleteCluster:
         """Serializes the PermanentDeleteCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7965,7 +7965,7 @@ class PinCluster:
         """Serializes the PinCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8057,27 +8057,27 @@ class Policy:
         """Serializes the Policy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at_timestamp is not None:
-            body["{created_at_timestamp}"] = self.created_at_timestamp
+            body["created_at_timestamp"] = self.created_at_timestamp
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.definition is not None:
-            body["{definition}"] = self.definition
+            body["definition"] = self.definition
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.is_default is not None:
-            body["{is_default}"] = self.is_default
+            body["is_default"] = self.is_default
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         if self.max_clusters_per_user is not None:
-            body["{max_clusters_per_user}"] = self.max_clusters_per_user
+            body["max_clusters_per_user"] = self.max_clusters_per_user
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.policy_family_definition_overrides is not None:
-            body["{policy_family_definition_overrides}"] = self.policy_family_definition_overrides
+            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
         if self.policy_family_id is not None:
-            body["{policy_family_id}"] = self.policy_family_id
+            body["policy_family_id"] = self.policy_family_id
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8145,13 +8145,13 @@ class PolicyFamily:
         """Serializes the PolicyFamily into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.definition is not None:
-            body["{definition}"] = self.definition
+            body["definition"] = self.definition
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.policy_family_id is not None:
-            body["{policy_family_id}"] = self.policy_family_id
+            body["policy_family_id"] = self.policy_family_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8191,9 +8191,9 @@ class PythonPyPiLibrary:
         """Serializes the PythonPyPiLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.package is not None:
-            body["{package}"] = self.package
+            body["package"] = self.package
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8223,9 +8223,9 @@ class RCranLibrary:
         """Serializes the RCranLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.package is not None:
-            body["{package}"] = self.package
+            body["package"] = self.package
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8252,7 +8252,7 @@ class RemoveInstanceProfile:
         """Serializes the RemoveInstanceProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8309,11 +8309,11 @@ class ResizeCluster:
         """Serializes the ResizeCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8366,9 +8366,9 @@ class RestartCluster:
         """Serializes the RestartCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.restart_user is not None:
-            body["{restart_user}"] = self.restart_user
+            body["restart_user"] = self.restart_user
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8446,25 +8446,25 @@ class Results:
         """Serializes the Results into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cause is not None:
-            body["{cause}"] = self.cause
+            body["cause"] = self.cause
         if self.data:
-            body["{data}"] = self.data
+            body["data"] = self.data
         if self.file_name is not None:
-            body["{file_name}"] = self.file_name
+            body["fileName"] = self.file_name
         if self.file_names:
-            body["{file_names}"] = [v for v in self.file_names]
+            body["fileNames"] = [v for v in self.file_names]
         if self.is_json_schema is not None:
-            body["{is_json_schema}"] = self.is_json_schema
+            body["isJsonSchema"] = self.is_json_schema
         if self.pos is not None:
-            body["{pos}"] = self.pos
+            body["pos"] = self.pos
         if self.result_type is not None:
-            body["{result_type}"] = self.result_type.value
+            body["resultType"] = self.result_type.value
         if self.schema:
-            body["{schema}"] = [v for v in self.schema]
+            body["schema"] = [v for v in self.schema]
         if self.summary is not None:
-            body["{summary}"] = self.summary
+            body["summary"] = self.summary
         if self.truncated is not None:
-            body["{truncated}"] = self.truncated
+            body["truncated"] = self.truncated
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8557,19 +8557,19 @@ class S3StorageInfo:
         """Serializes the S3StorageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.canned_acl is not None:
-            body["{canned_acl}"] = self.canned_acl
+            body["canned_acl"] = self.canned_acl
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         if self.enable_encryption is not None:
-            body["{enable_encryption}"] = self.enable_encryption
+            body["enable_encryption"] = self.enable_encryption
         if self.encryption_type is not None:
-            body["{encryption_type}"] = self.encryption_type
+            body["encryption_type"] = self.encryption_type
         if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.kms_key is not None:
-            body["{kms_key}"] = self.kms_key
+            body["kms_key"] = self.kms_key
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8637,19 +8637,19 @@ class SparkNode:
         """Serializes the SparkNode into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.host_private_ip is not None:
-            body["{host_private_ip}"] = self.host_private_ip
+            body["host_private_ip"] = self.host_private_ip
         if self.instance_id is not None:
-            body["{instance_id}"] = self.instance_id
+            body["instance_id"] = self.instance_id
         if self.node_aws_attributes:
-            body["{node_aws_attributes}"] = self.node_aws_attributes.as_dict()
+            body["node_aws_attributes"] = self.node_aws_attributes.as_dict()
         if self.node_id is not None:
-            body["{node_id}"] = self.node_id
+            body["node_id"] = self.node_id
         if self.private_ip is not None:
-            body["{private_ip}"] = self.private_ip
+            body["private_ip"] = self.private_ip
         if self.public_dns is not None:
-            body["{public_dns}"] = self.public_dns
+            body["public_dns"] = self.public_dns
         if self.start_timestamp is not None:
-            body["{start_timestamp}"] = self.start_timestamp
+            body["start_timestamp"] = self.start_timestamp
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8696,7 +8696,7 @@ class SparkNodeAwsAttributes:
         """Serializes the SparkNodeAwsAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_spot is not None:
-            body["{is_spot}"] = self.is_spot
+            body["is_spot"] = self.is_spot
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8727,9 +8727,9 @@ class SparkVersion:
         """Serializes the SparkVersion into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["{key}"] = self.key
+            body["key"] = self.key
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8756,7 +8756,7 @@ class StartCluster:
         """Serializes the StartCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8823,11 +8823,11 @@ class TerminationReason:
         """Serializes the TerminationReason into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.code is not None:
-            body["{code}"] = self.code.value
+            body["code"] = self.code.value
         if self.parameters:
-            body["{parameters}"] = self.parameters
+            body["parameters"] = self.parameters
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9035,9 +9035,9 @@ class UninstallLibraries:
         """Serializes the UninstallLibraries into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.libraries:
-            body["{libraries}"] = [v.as_dict() for v in self.libraries]
+            body["libraries"] = [v.as_dict() for v in self.libraries]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9081,7 +9081,7 @@ class UnpinCluster:
         """Serializes the UnpinCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9141,11 +9141,11 @@ class UpdateCluster:
         """Serializes the UpdateCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster:
-            body["{cluster}"] = self.cluster.as_dict()
+            body["cluster"] = self.cluster.as_dict()
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.update_mask is not None:
-            body["{update_mask}"] = self.update_mask
+            body["update_mask"] = self.update_mask
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9362,63 +9362,63 @@ class UpdateClusterResource:
         """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale.as_dict()
+            body["autoscale"] = self.autoscale.as_dict()
         if self.autotermination_minutes is not None:
-            body["{autotermination_minutes}"] = self.autotermination_minutes
+            body["autotermination_minutes"] = self.autotermination_minutes
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes.as_dict()
+            body["aws_attributes"] = self.aws_attributes.as_dict()
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes.as_dict()
+            body["azure_attributes"] = self.azure_attributes.as_dict()
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf.as_dict()
+            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None:
-            body["{cluster_name}"] = self.cluster_name
+            body["cluster_name"] = self.cluster_name
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.data_security_mode is not None:
-            body["{data_security_mode}"] = self.data_security_mode.value
+            body["data_security_mode"] = self.data_security_mode.value
         if self.docker_image:
-            body["{docker_image}"] = self.docker_image.as_dict()
+            body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
-            body["{enable_elastic_disk}"] = self.enable_elastic_disk
+            body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes.as_dict()
+            body["gcp_attributes"] = self.gcp_attributes.as_dict()
         if self.init_scripts:
-            body["{init_scripts}"] = [v.as_dict() for v in self.init_scripts]
+            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.is_single_node is not None:
-            body["{is_single_node}"] = self.is_single_node
+            body["is_single_node"] = self.is_single_node
         if self.kind is not None:
-            body["{kind}"] = self.kind.value
+            body["kind"] = self.kind.value
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.runtime_engine is not None:
-            body["{runtime_engine}"] = self.runtime_engine.value
+            body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
-            body["{single_user_name}"] = self.single_user_name
+            body["single_user_name"] = self.single_user_name
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.spark_version is not None:
-            body["{spark_version}"] = self.spark_version
+            body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = [v for v in self.ssh_public_keys]
+            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
         if self.use_ml_runtime is not None:
-            body["{use_ml_runtime}"] = self.use_ml_runtime
+            body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
-            body["{workload_type}"] = self.workload_type.as_dict()
+            body["workload_type"] = self.workload_type.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9568,7 +9568,7 @@ class VolumesStorageInfo:
         """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9595,7 +9595,7 @@ class WorkloadType:
         """Serializes the WorkloadType into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clients:
-            body["{clients}"] = self.clients.as_dict()
+            body["clients"] = self.clients.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9622,7 +9622,7 @@ class WorkspaceStorageInfo:
         """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     def as_shallow_dict(self) -> dict:

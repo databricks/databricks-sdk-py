@@ -26,9 +26,9 @@ class AddBlock:
         """Serializes the AddBlock into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data is not None:
-            body["{data}"] = self.data
+            body["data"] = self.data
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -73,7 +73,7 @@ class Close:
         """Serializes the Close into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -119,9 +119,9 @@ class Create:
         """Serializes the Create into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.overwrite is not None:
-            body["{overwrite}"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -167,7 +167,7 @@ class CreateResponse:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.handle is not None:
-            body["{handle}"] = self.handle
+            body["handle"] = self.handle
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -196,9 +196,9 @@ class Delete:
         """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         if self.recursive is not None:
-            body["{recursive}"] = self.recursive
+            body["recursive"] = self.recursive
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -273,15 +273,15 @@ class DirectoryEntry:
         """Serializes the DirectoryEntry into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_size is not None:
-            body["{file_size}"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_directory is not None:
-            body["{is_directory}"] = self.is_directory
+            body["is_directory"] = self.is_directory
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last_modified"] = self.last_modified
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -327,13 +327,13 @@ class DownloadResponse:
         """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content_length is not None:
-            body["{content_length}"] = self.content_length
+            body["content-length"] = self.content_length
         if self.content_type is not None:
-            body["{content_type}"] = self.content_type
+            body["content-type"] = self.content_type
         if self.contents:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last-modified"] = self.last_modified
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -378,13 +378,13 @@ class FileInfo:
         """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_size is not None:
-            body["{file_size}"] = self.file_size
+            body["file_size"] = self.file_size
         if self.is_dir is not None:
-            body["{is_dir}"] = self.is_dir
+            body["is_dir"] = self.is_dir
         if self.modification_time is not None:
-            body["{modification_time}"] = self.modification_time
+            body["modification_time"] = self.modification_time
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -443,11 +443,11 @@ class GetMetadataResponse:
         """Serializes the GetMetadataResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content_length is not None:
-            body["{content_length}"] = self.content_length
+            body["content-length"] = self.content_length
         if self.content_type is not None:
-            body["{content_type}"] = self.content_type
+            body["content-type"] = self.content_type
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last-modified"] = self.last_modified
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -483,9 +483,9 @@ class ListDirectoryResponse:
         """Serializes the ListDirectoryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.contents:
-            body["{contents}"] = [v.as_dict() for v in self.contents]
+            body["contents"] = [v.as_dict() for v in self.contents]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -514,7 +514,7 @@ class ListStatusResponse:
         """Serializes the ListStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.files:
-            body["{files}"] = [v.as_dict() for v in self.files]
+            body["files"] = [v.as_dict() for v in self.files]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -539,7 +539,7 @@ class MkDirs:
         """Serializes the MkDirs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -585,9 +585,9 @@ class Move:
         """Serializes the Move into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination_path is not None:
-            body["{destination_path}"] = self.destination_path
+            body["destination_path"] = self.destination_path
         if self.source_path is not None:
-            body["{source_path}"] = self.source_path
+            body["source_path"] = self.source_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -638,11 +638,11 @@ class Put:
         """Serializes the Put into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.contents is not None:
-            body["{contents}"] = self.contents
+            body["contents"] = self.contents
         if self.overwrite is not None:
-            body["{overwrite}"] = self.overwrite
+            body["overwrite"] = self.overwrite
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -693,9 +693,9 @@ class ReadResponse:
         """Serializes the ReadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bytes_read is not None:
-            body["{bytes_read}"] = self.bytes_read
+            body["bytes_read"] = self.bytes_read
         if self.data is not None:
-            body["{data}"] = self.data
+            body["data"] = self.data
         return body
 
     def as_shallow_dict(self) -> dict:

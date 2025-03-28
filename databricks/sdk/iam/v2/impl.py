@@ -33,13 +33,13 @@ class AccessControlRequest:
         """Serializes the AccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -87,15 +87,15 @@ class AccessControlResponse:
         """Serializes the AccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -136,7 +136,7 @@ class Actor:
         """Serializes the Actor into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.actor_id is not None:
-            body["{actor_id}"] = self.actor_id
+            body["actor_id"] = self.actor_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -162,9 +162,9 @@ class CheckPolicyResponse:
         """Serializes the CheckPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.consistency_token:
-            body["{consistency_token}"] = self.consistency_token.as_dict()
+            body["consistency_token"] = self.consistency_token.as_dict()
         if self.is_permitted is not None:
-            body["{is_permitted}"] = self.is_permitted
+            body["is_permitted"] = self.is_permitted
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -201,15 +201,15 @@ class ComplexValue:
         """Serializes the ComplexValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display is not None:
-            body["{display}"] = self.display
+            body["display"] = self.display
         if self.primary is not None:
-            body["{primary}"] = self.primary
+            body["primary"] = self.primary
         if self.ref is not None:
-            body["{ref}"] = self.ref
+            body["$ref"] = self.ref
         if self.type is not None:
-            body["{type}"] = self.type
+            body["type"] = self.type
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -247,7 +247,7 @@ class ConsistencyToken:
         """Serializes the ConsistencyToken into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -307,7 +307,7 @@ class GetAssignableRolesForResourceResponse:
         """Serializes the GetAssignableRolesForResourceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.roles:
-            body["{roles}"] = [v.as_dict() for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -332,7 +332,7 @@ class GetPasswordPermissionLevelsResponse:
         """Serializes the GetPasswordPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -357,7 +357,7 @@ class GetPermissionLevelsResponse:
         """Serializes the GetPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = [v.as_dict() for v in self.permission_levels]
+            body["permission_levels"] = [v.as_dict() for v in self.permission_levels]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -391,9 +391,9 @@ class GrantRule:
         """Serializes the GrantRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principals:
-            body["{principals}"] = [v for v in self.principals]
+            body["principals"] = [v for v in self.principals]
         if self.role is not None:
-            body["{role}"] = self.role
+            body["role"] = self.role
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -444,23 +444,23 @@ class Group:
         """Serializes the Group into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["displayName"] = self.display_name
         if self.entitlements:
-            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["{external_id}"] = self.external_id
+            body["externalId"] = self.external_id
         if self.groups:
-            body["{groups}"] = [v.as_dict() for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.members:
-            body["{members}"] = [v.as_dict() for v in self.members]
+            body["members"] = [v.as_dict() for v in self.members]
         if self.meta:
-            body["{meta}"] = self.meta.as_dict()
+            body["meta"] = self.meta.as_dict()
         if self.roles:
-            body["{roles}"] = [v.as_dict() for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -528,15 +528,15 @@ class ListGroupsResponse:
         """Serializes the ListGroupsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["{items_per_page}"] = self.items_per_page
+            body["itemsPerPage"] = self.items_per_page
         if self.resources:
-            body["{resources}"] = [v.as_dict() for v in self.resources]
+            body["Resources"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["{start_index}"] = self.start_index
+            body["startIndex"] = self.start_index
         if self.total_results is not None:
-            body["{total_results}"] = self.total_results
+            body["totalResults"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -592,15 +592,15 @@ class ListServicePrincipalResponse:
         """Serializes the ListServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["{items_per_page}"] = self.items_per_page
+            body["itemsPerPage"] = self.items_per_page
         if self.resources:
-            body["{resources}"] = [v.as_dict() for v in self.resources]
+            body["Resources"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["{start_index}"] = self.start_index
+            body["startIndex"] = self.start_index
         if self.total_results is not None:
-            body["{total_results}"] = self.total_results
+            body["totalResults"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -657,15 +657,15 @@ class ListUsersResponse:
         """Serializes the ListUsersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None:
-            body["{items_per_page}"] = self.items_per_page
+            body["itemsPerPage"] = self.items_per_page
         if self.resources:
-            body["{resources}"] = [v.as_dict() for v in self.resources]
+            body["Resources"] = [v.as_dict() for v in self.resources]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         if self.start_index is not None:
-            body["{start_index}"] = self.start_index
+            body["startIndex"] = self.start_index
         if self.total_results is not None:
-            body["{total_results}"] = self.total_results
+            body["totalResults"] = self.total_results
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -713,13 +713,13 @@ class MigratePermissionsRequest:
         """Serializes the MigratePermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.from_workspace_group_name is not None:
-            body["{from_workspace_group_name}"] = self.from_workspace_group_name
+            body["from_workspace_group_name"] = self.from_workspace_group_name
         if self.size is not None:
-            body["{size}"] = self.size
+            body["size"] = self.size
         if self.to_account_group_name is not None:
-            body["{to_account_group_name}"] = self.to_account_group_name
+            body["to_account_group_name"] = self.to_account_group_name
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -755,7 +755,7 @@ class MigratePermissionsResponse:
         """Serializes the MigratePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions_migrated is not None:
-            body["{permissions_migrated}"] = self.permissions_migrated
+            body["permissions_migrated"] = self.permissions_migrated
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -783,9 +783,9 @@ class Name:
         """Serializes the Name into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.family_name is not None:
-            body["{family_name}"] = self.family_name
+            body["familyName"] = self.family_name
         if self.given_name is not None:
-            body["{given_name}"] = self.given_name
+            body["givenName"] = self.given_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -815,11 +815,11 @@ class ObjectPermissions:
         """Serializes the ObjectPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -857,11 +857,11 @@ class PartialUpdate:
         """Serializes the PartialUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.operations:
-            body["{operations}"] = [v.as_dict() for v in self.operations]
+            body["Operations"] = [v.as_dict() for v in self.operations]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -903,13 +903,13 @@ class PasswordAccessControlRequest:
         """Serializes the PasswordAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -957,15 +957,15 @@ class PasswordAccessControlResponse:
         """Serializes the PasswordAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = [v.as_dict() for v in self.all_permissions]
+            body["all_permissions"] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1008,11 +1008,11 @@ class PasswordPermission:
         """Serializes the PasswordPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1054,11 +1054,11 @@ class PasswordPermissions:
         """Serializes the PasswordPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1093,9 +1093,9 @@ class PasswordPermissionsDescription:
         """Serializes the PasswordPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1124,7 +1124,7 @@ class PasswordPermissionsRequest:
         """Serializes the PasswordPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1155,11 +1155,11 @@ class Patch:
         """Serializes the Patch into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.op is not None:
-            body["{op}"] = self.op.value
+            body["op"] = self.op.value
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         if self.value:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1223,11 +1223,11 @@ class Permission:
         """Serializes the Permission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = [v for v in self.inherited_from_object]
+            body["inherited_from_object"] = [v for v in self.inherited_from_object]
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1269,11 +1269,11 @@ class PermissionAssignment:
         """Serializes the PermissionAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error is not None:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.permissions:
-            body["{permissions}"] = [v.value for v in self.permissions]
+            body["permissions"] = [v.value for v in self.permissions]
         if self.principal:
-            body["{principal}"] = self.principal.as_dict()
+            body["principal"] = self.principal.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1306,7 +1306,7 @@ class PermissionAssignments:
         """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_assignments:
-            body["{permission_assignments}"] = [v.as_dict() for v in self.permission_assignments]
+            body["permission_assignments"] = [v.as_dict() for v in self.permission_assignments]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1355,9 +1355,9 @@ class PermissionOutput:
         """Serializes the PermissionOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1389,9 +1389,9 @@ class PermissionsDescription:
         """Serializes the PermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level.value
+            body["permission_level"] = self.permission_level.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1427,11 +1427,11 @@ class PermissionsRequest:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = [v.as_dict() for v in self.access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
         if self.request_object_id is not None:
-            body["{request_object_id}"] = self.request_object_id
+            body["request_object_id"] = self.request_object_id
         if self.request_object_type is not None:
-            body["{request_object_type}"] = self.request_object_type
+            body["request_object_type"] = self.request_object_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1478,15 +1478,15 @@ class PrincipalOutput:
         """Serializes the PrincipalOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.principal_id is not None:
-            body["{principal_id}"] = self.principal_id
+            body["principal_id"] = self.principal_id
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1539,11 +1539,11 @@ class ResourceInfo:
         """Serializes the ResourceInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.legacy_acl_path is not None:
-            body["{legacy_acl_path}"] = self.legacy_acl_path
+            body["legacy_acl_path"] = self.legacy_acl_path
         if self.parent_resource_info:
-            body["{parent_resource_info}"] = self.parent_resource_info.as_dict()
+            body["parent_resource_info"] = self.parent_resource_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1577,7 +1577,7 @@ class ResourceMeta:
         """Serializes the ResourceMeta into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.resource_type is not None:
-            body["{resource_type}"] = self.resource_type
+            body["resourceType"] = self.resource_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1602,7 +1602,7 @@ class Role:
         """Serializes the Role into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1632,11 +1632,11 @@ class RuleSetResponse:
         """Serializes the RuleSetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.grant_rules:
-            body["{grant_rules}"] = [v.as_dict() for v in self.grant_rules]
+            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1675,11 +1675,11 @@ class RuleSetUpdateRequest:
         """Serializes the RuleSetUpdateRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.grant_rules:
-            body["{grant_rules}"] = [v.as_dict() for v in self.grant_rules]
+            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1737,23 +1737,23 @@ class ServicePrincipal:
         """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None:
-            body["{active}"] = self.active
+            body["active"] = self.active
         if self.application_id is not None:
-            body["{application_id}"] = self.application_id
+            body["applicationId"] = self.application_id
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["displayName"] = self.display_name
         if self.entitlements:
-            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["{external_id}"] = self.external_id
+            body["externalId"] = self.external_id
         if self.groups:
-            body["{groups}"] = [v.as_dict() for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.roles:
-            body["{roles}"] = [v.as_dict() for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1829,9 +1829,9 @@ class UpdateRuleSetRequest:
         """Serializes the UpdateRuleSetRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.rule_set:
-            body["{rule_set}"] = self.rule_set.as_dict()
+            body["rule_set"] = self.rule_set.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1868,11 +1868,11 @@ class UpdateWorkspaceAssignments:
         """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions:
-            body["{permissions}"] = [v.value for v in self.permissions]
+            body["permissions"] = [v.value for v in self.permissions]
         if self.principal_id is not None:
-            body["{principal_id}"] = self.principal_id
+            body["principal_id"] = self.principal_id
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1940,27 +1940,27 @@ class User:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None:
-            body["{active}"] = self.active
+            body["active"] = self.active
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["displayName"] = self.display_name
         if self.emails:
-            body["{emails}"] = [v.as_dict() for v in self.emails]
+            body["emails"] = [v.as_dict() for v in self.emails]
         if self.entitlements:
-            body["{entitlements}"] = [v.as_dict() for v in self.entitlements]
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
         if self.external_id is not None:
-            body["{external_id}"] = self.external_id
+            body["externalId"] = self.external_id
         if self.groups:
-            body["{groups}"] = [v.as_dict() for v in self.groups]
+            body["groups"] = [v.as_dict() for v in self.groups]
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.name:
-            body["{name}"] = self.name.as_dict()
+            body["name"] = self.name.as_dict()
         if self.roles:
-            body["{roles}"] = [v.as_dict() for v in self.roles]
+            body["roles"] = [v.as_dict() for v in self.roles]
         if self.schemas:
-            body["{schemas}"] = [v.value for v in self.schemas]
+            body["schemas"] = [v.value for v in self.schemas]
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["userName"] = self.user_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2032,7 +2032,7 @@ class WorkspacePermissions:
         """Serializes the WorkspacePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions:
-            body["{permissions}"] = [v.as_dict() for v in self.permissions]
+            body["permissions"] = [v.as_dict() for v in self.permissions]
         return body
 
     def as_shallow_dict(self) -> dict:

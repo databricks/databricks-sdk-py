@@ -24,7 +24,7 @@ class AwsCredentials:
         """Serializes the AwsCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.sts_role:
-            body["{sts_role}"] = self.sts_role.as_dict()
+            body["sts_role"] = self.sts_role.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -60,13 +60,13 @@ class AwsKeyInfo:
         """Serializes the AwsKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key_alias is not None:
-            body["{key_alias}"] = self.key_alias
+            body["key_alias"] = self.key_alias
         if self.key_arn is not None:
-            body["{key_arn}"] = self.key_arn
+            body["key_arn"] = self.key_arn
         if self.key_region is not None:
-            body["{key_region}"] = self.key_region
+            body["key_region"] = self.key_region
         if self.reuse_key_for_cluster_volumes is not None:
-            body["{reuse_key_for_cluster_volumes}"] = self.reuse_key_for_cluster_volumes
+            body["reuse_key_for_cluster_volumes"] = self.reuse_key_for_cluster_volumes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -105,9 +105,9 @@ class AzureWorkspaceInfo:
         """Serializes the AzureWorkspaceInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.resource_group is not None:
-            body["{resource_group}"] = self.resource_group
+            body["resource_group"] = self.resource_group
         if self.subscription_id is not None:
-            body["{subscription_id}"] = self.subscription_id
+            body["subscription_id"] = self.subscription_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -136,7 +136,7 @@ class CloudResourceContainer:
         """Serializes the CloudResourceContainer into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gcp:
-            body["{gcp}"] = self.gcp.as_dict()
+            body["gcp"] = self.gcp.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -170,11 +170,11 @@ class CreateAwsKeyInfo:
         """Serializes the CreateAwsKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key_alias is not None:
-            body["{key_alias}"] = self.key_alias
+            body["key_alias"] = self.key_alias
         if self.key_arn is not None:
-            body["{key_arn}"] = self.key_arn
+            body["key_arn"] = self.key_arn
         if self.reuse_key_for_cluster_volumes is not None:
-            body["{reuse_key_for_cluster_volumes}"] = self.reuse_key_for_cluster_volumes
+            body["reuse_key_for_cluster_volumes"] = self.reuse_key_for_cluster_volumes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -206,7 +206,7 @@ class CreateCredentialAwsCredentials:
         """Serializes the CreateCredentialAwsCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.sts_role:
-            body["{sts_role}"] = self.sts_role.as_dict()
+            body["sts_role"] = self.sts_role.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -233,9 +233,9 @@ class CreateCredentialRequest:
         """Serializes the CreateCredentialRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_credentials:
-            body["{aws_credentials}"] = self.aws_credentials.as_dict()
+            body["aws_credentials"] = self.aws_credentials.as_dict()
         if self.credentials_name is not None:
-            body["{credentials_name}"] = self.credentials_name
+            body["credentials_name"] = self.credentials_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -265,7 +265,7 @@ class CreateCredentialStsRole:
         """Serializes the CreateCredentialStsRole into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.role_arn is not None:
-            body["{role_arn}"] = self.role_arn
+            body["role_arn"] = self.role_arn
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -294,11 +294,11 @@ class CreateCustomerManagedKeyRequest:
         """Serializes the CreateCustomerManagedKeyRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_key_info:
-            body["{aws_key_info}"] = self.aws_key_info.as_dict()
+            body["aws_key_info"] = self.aws_key_info.as_dict()
         if self.gcp_key_info:
-            body["{gcp_key_info}"] = self.gcp_key_info.as_dict()
+            body["gcp_key_info"] = self.gcp_key_info.as_dict()
         if self.use_cases:
-            body["{use_cases}"] = [v.value for v in self.use_cases]
+            body["use_cases"] = [v.value for v in self.use_cases]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -331,7 +331,7 @@ class CreateGcpKeyInfo:
         """Serializes the CreateGcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.kms_key_id is not None:
-            body["{kms_key_id}"] = self.kms_key_id
+            body["kms_key_id"] = self.kms_key_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -378,17 +378,17 @@ class CreateNetworkRequest:
         """Serializes the CreateNetworkRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gcp_network_info:
-            body["{gcp_network_info}"] = self.gcp_network_info.as_dict()
+            body["gcp_network_info"] = self.gcp_network_info.as_dict()
         if self.network_name is not None:
-            body["{network_name}"] = self.network_name
+            body["network_name"] = self.network_name
         if self.security_group_ids:
-            body["{security_group_ids}"] = [v for v in self.security_group_ids]
+            body["security_group_ids"] = [v for v in self.security_group_ids]
         if self.subnet_ids:
-            body["{subnet_ids}"] = [v for v in self.subnet_ids]
+            body["subnet_ids"] = [v for v in self.subnet_ids]
         if self.vpc_endpoints:
-            body["{vpc_endpoints}"] = self.vpc_endpoints.as_dict()
+            body["vpc_endpoints"] = self.vpc_endpoints.as_dict()
         if self.vpc_id is not None:
-            body["{vpc_id}"] = self.vpc_id
+            body["vpc_id"] = self.vpc_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -433,9 +433,9 @@ class CreateStorageConfigurationRequest:
         """Serializes the CreateStorageConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.root_bucket_info:
-            body["{root_bucket_info}"] = self.root_bucket_info.as_dict()
+            body["root_bucket_info"] = self.root_bucket_info.as_dict()
         if self.storage_configuration_name is not None:
-            body["{storage_configuration_name}"] = self.storage_configuration_name
+            body["storage_configuration_name"] = self.storage_configuration_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -474,13 +474,13 @@ class CreateVpcEndpointRequest:
         """Serializes the CreateVpcEndpointRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_vpc_endpoint_id is not None:
-            body["{aws_vpc_endpoint_id}"] = self.aws_vpc_endpoint_id
+            body["aws_vpc_endpoint_id"] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info:
-            body["{gcp_vpc_endpoint_info}"] = self.gcp_vpc_endpoint_info.as_dict()
+            body["gcp_vpc_endpoint_info"] = self.gcp_vpc_endpoint_info.as_dict()
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         if self.vpc_endpoint_name is not None:
-            body["{vpc_endpoint_name}"] = self.vpc_endpoint_name
+            body["vpc_endpoint_name"] = self.vpc_endpoint_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -620,39 +620,39 @@ class CreateWorkspaceRequest:
         """Serializes the CreateWorkspaceRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_region is not None:
-            body["{aws_region}"] = self.aws_region
+            body["aws_region"] = self.aws_region
         if self.cloud is not None:
-            body["{cloud}"] = self.cloud
+            body["cloud"] = self.cloud
         if self.cloud_resource_container:
-            body["{cloud_resource_container}"] = self.cloud_resource_container.as_dict()
+            body["cloud_resource_container"] = self.cloud_resource_container.as_dict()
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.deployment_name is not None:
-            body["{deployment_name}"] = self.deployment_name
+            body["deployment_name"] = self.deployment_name
         if self.gcp_managed_network_config:
-            body["{gcp_managed_network_config}"] = self.gcp_managed_network_config.as_dict()
+            body["gcp_managed_network_config"] = self.gcp_managed_network_config.as_dict()
         if self.gke_config:
-            body["{gke_config}"] = self.gke_config.as_dict()
+            body["gke_config"] = self.gke_config.as_dict()
         if self.is_no_public_ip_enabled is not None:
-            body["{is_no_public_ip_enabled}"] = self.is_no_public_ip_enabled
+            body["is_no_public_ip_enabled"] = self.is_no_public_ip_enabled
         if self.location is not None:
-            body["{location}"] = self.location
+            body["location"] = self.location
         if self.managed_services_customer_managed_key_id is not None:
-            body["{managed_services_customer_managed_key_id}"] = self.managed_services_customer_managed_key_id
+            body["managed_services_customer_managed_key_id"] = self.managed_services_customer_managed_key_id
         if self.network_id is not None:
-            body["{network_id}"] = self.network_id
+            body["network_id"] = self.network_id
         if self.pricing_tier is not None:
-            body["{pricing_tier}"] = self.pricing_tier.value
+            body["pricing_tier"] = self.pricing_tier.value
         if self.private_access_settings_id is not None:
-            body["{private_access_settings_id}"] = self.private_access_settings_id
+            body["private_access_settings_id"] = self.private_access_settings_id
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.storage_customer_managed_key_id is not None:
-            body["{storage_customer_managed_key_id}"] = self.storage_customer_managed_key_id
+            body["storage_customer_managed_key_id"] = self.storage_customer_managed_key_id
         if self.workspace_name is not None:
-            body["{workspace_name}"] = self.workspace_name
+            body["workspace_name"] = self.workspace_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -738,15 +738,15 @@ class Credential:
         """Serializes the Credential into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.aws_credentials:
-            body["{aws_credentials}"] = self.aws_credentials.as_dict()
+            body["aws_credentials"] = self.aws_credentials.as_dict()
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.credentials_name is not None:
-            body["{credentials_name}"] = self.credentials_name
+            body["credentials_name"] = self.credentials_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -791,7 +791,7 @@ class CustomerFacingGcpCloudResourceContainer:
         """Serializes the CustomerFacingGcpCloudResourceContainer into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.project_id is not None:
-            body["{project_id}"] = self.project_id
+            body["project_id"] = self.project_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -829,17 +829,17 @@ class CustomerManagedKey:
         """Serializes the CustomerManagedKey into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.aws_key_info:
-            body["{aws_key_info}"] = self.aws_key_info.as_dict()
+            body["aws_key_info"] = self.aws_key_info.as_dict()
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.customer_managed_key_id is not None:
-            body["{customer_managed_key_id}"] = self.customer_managed_key_id
+            body["customer_managed_key_id"] = self.customer_managed_key_id
         if self.gcp_key_info:
-            body["{gcp_key_info}"] = self.gcp_key_info.as_dict()
+            body["gcp_key_info"] = self.gcp_key_info.as_dict()
         if self.use_cases:
-            body["{use_cases}"] = [v.value for v in self.use_cases]
+            body["use_cases"] = [v.value for v in self.use_cases]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -926,11 +926,11 @@ class ExternalCustomerInfo:
         """Serializes the ExternalCustomerInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.authoritative_user_email is not None:
-            body["{authoritative_user_email}"] = self.authoritative_user_email
+            body["authoritative_user_email"] = self.authoritative_user_email
         if self.authoritative_user_full_name is not None:
-            body["{authoritative_user_full_name}"] = self.authoritative_user_full_name
+            body["authoritative_user_full_name"] = self.authoritative_user_full_name
         if self.customer_name is not None:
-            body["{customer_name}"] = self.customer_name
+            body["customer_name"] = self.customer_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -963,7 +963,7 @@ class GcpKeyInfo:
         """Serializes the GcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.kms_key_id is not None:
-            body["{kms_key_id}"] = self.kms_key_id
+            body["kms_key_id"] = self.kms_key_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1017,11 +1017,11 @@ class GcpManagedNetworkConfig:
         """Serializes the GcpManagedNetworkConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gke_cluster_pod_ip_range is not None:
-            body["{gke_cluster_pod_ip_range}"] = self.gke_cluster_pod_ip_range
+            body["gke_cluster_pod_ip_range"] = self.gke_cluster_pod_ip_range
         if self.gke_cluster_service_ip_range is not None:
-            body["{gke_cluster_service_ip_range}"] = self.gke_cluster_service_ip_range
+            body["gke_cluster_service_ip_range"] = self.gke_cluster_service_ip_range
         if self.subnet_cidr is not None:
-            body["{subnet_cidr}"] = self.subnet_cidr
+            body["subnet_cidr"] = self.subnet_cidr
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1075,17 +1075,17 @@ class GcpNetworkInfo:
         """Serializes the GcpNetworkInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.network_project_id is not None:
-            body["{network_project_id}"] = self.network_project_id
+            body["network_project_id"] = self.network_project_id
         if self.pod_ip_range_name is not None:
-            body["{pod_ip_range_name}"] = self.pod_ip_range_name
+            body["pod_ip_range_name"] = self.pod_ip_range_name
         if self.service_ip_range_name is not None:
-            body["{service_ip_range_name}"] = self.service_ip_range_name
+            body["service_ip_range_name"] = self.service_ip_range_name
         if self.subnet_id is not None:
-            body["{subnet_id}"] = self.subnet_id
+            body["subnet_id"] = self.subnet_id
         if self.subnet_region is not None:
-            body["{subnet_region}"] = self.subnet_region
+            body["subnet_region"] = self.subnet_region
         if self.vpc_id is not None:
-            body["{vpc_id}"] = self.vpc_id
+            body["vpc_id"] = self.vpc_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1141,15 +1141,15 @@ class GcpVpcEndpointInfo:
         """Serializes the GcpVpcEndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoint_region is not None:
-            body["{endpoint_region}"] = self.endpoint_region
+            body["endpoint_region"] = self.endpoint_region
         if self.project_id is not None:
-            body["{project_id}"] = self.project_id
+            body["project_id"] = self.project_id
         if self.psc_connection_id is not None:
-            body["{psc_connection_id}"] = self.psc_connection_id
+            body["psc_connection_id"] = self.psc_connection_id
         if self.psc_endpoint_name is not None:
-            body["{psc_endpoint_name}"] = self.psc_endpoint_name
+            body["psc_endpoint_name"] = self.psc_endpoint_name
         if self.service_attachment_id is not None:
-            body["{service_attachment_id}"] = self.service_attachment_id
+            body["service_attachment_id"] = self.service_attachment_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1202,9 +1202,9 @@ class GkeConfig:
         """Serializes the GkeConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.connectivity_type is not None:
-            body["{connectivity_type}"] = self.connectivity_type.value
+            body["connectivity_type"] = self.connectivity_type.value
         if self.master_ip_range is not None:
-            body["{master_ip_range}"] = self.master_ip_range
+            body["master_ip_range"] = self.master_ip_range
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1296,31 +1296,31 @@ class Network:
         """Serializes the Network into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.error_messages:
-            body["{error_messages}"] = [v.as_dict() for v in self.error_messages]
+            body["error_messages"] = [v.as_dict() for v in self.error_messages]
         if self.gcp_network_info:
-            body["{gcp_network_info}"] = self.gcp_network_info.as_dict()
+            body["gcp_network_info"] = self.gcp_network_info.as_dict()
         if self.network_id is not None:
-            body["{network_id}"] = self.network_id
+            body["network_id"] = self.network_id
         if self.network_name is not None:
-            body["{network_name}"] = self.network_name
+            body["network_name"] = self.network_name
         if self.security_group_ids:
-            body["{security_group_ids}"] = [v for v in self.security_group_ids]
+            body["security_group_ids"] = [v for v in self.security_group_ids]
         if self.subnet_ids:
-            body["{subnet_ids}"] = [v for v in self.subnet_ids]
+            body["subnet_ids"] = [v for v in self.subnet_ids]
         if self.vpc_endpoints:
-            body["{vpc_endpoints}"] = self.vpc_endpoints.as_dict()
+            body["vpc_endpoints"] = self.vpc_endpoints.as_dict()
         if self.vpc_id is not None:
-            body["{vpc_id}"] = self.vpc_id
+            body["vpc_id"] = self.vpc_id
         if self.vpc_status is not None:
-            body["{vpc_status}"] = self.vpc_status.value
+            body["vpc_status"] = self.vpc_status.value
         if self.warning_messages:
-            body["{warning_messages}"] = [v.as_dict() for v in self.warning_messages]
+            body["warning_messages"] = [v.as_dict() for v in self.warning_messages]
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1387,9 +1387,9 @@ class NetworkHealth:
         """Serializes the NetworkHealth into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error_message is not None:
-            body["{error_message}"] = self.error_message
+            body["error_message"] = self.error_message
         if self.error_type is not None:
-            body["{error_type}"] = self.error_type.value
+            body["error_type"] = self.error_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1425,9 +1425,9 @@ class NetworkVpcEndpoints:
         """Serializes the NetworkVpcEndpoints into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dataplane_relay:
-            body["{dataplane_relay}"] = [v for v in self.dataplane_relay]
+            body["dataplane_relay"] = [v for v in self.dataplane_relay]
         if self.rest_api:
-            body["{rest_api}"] = [v for v in self.rest_api]
+            body["rest_api"] = [v for v in self.rest_api]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1457,9 +1457,9 @@ class NetworkWarning:
         """Serializes the NetworkWarning into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.warning_message is not None:
-            body["{warning_message}"] = self.warning_message
+            body["warning_message"] = self.warning_message
         if self.warning_type is not None:
-            body["{warning_type}"] = self.warning_type.value
+            body["warning_type"] = self.warning_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1537,19 +1537,19 @@ class PrivateAccessSettings:
         """Serializes the PrivateAccessSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.allowed_vpc_endpoint_ids:
-            body["{allowed_vpc_endpoint_ids}"] = [v for v in self.allowed_vpc_endpoint_ids]
+            body["allowed_vpc_endpoint_ids"] = [v for v in self.allowed_vpc_endpoint_ids]
         if self.private_access_level is not None:
-            body["{private_access_level}"] = self.private_access_level.value
+            body["private_access_level"] = self.private_access_level.value
         if self.private_access_settings_id is not None:
-            body["{private_access_settings_id}"] = self.private_access_settings_id
+            body["private_access_settings_id"] = self.private_access_settings_id
         if self.private_access_settings_name is not None:
-            body["{private_access_settings_name}"] = self.private_access_settings_name
+            body["private_access_settings_name"] = self.private_access_settings_name
         if self.public_access_enabled is not None:
-            body["{public_access_enabled}"] = self.public_access_enabled
+            body["public_access_enabled"] = self.public_access_enabled
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1614,7 +1614,7 @@ class RootBucketInfo:
         """Serializes the RootBucketInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bucket_name is not None:
-            body["{bucket_name}"] = self.bucket_name
+            body["bucket_name"] = self.bucket_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1651,15 +1651,15 @@ class StorageConfiguration:
         """Serializes the StorageConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.root_bucket_info:
-            body["{root_bucket_info}"] = self.root_bucket_info.as_dict()
+            body["root_bucket_info"] = self.root_bucket_info.as_dict()
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.storage_configuration_name is not None:
-            body["{storage_configuration_name}"] = self.storage_configuration_name
+            body["storage_configuration_name"] = self.storage_configuration_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1702,9 +1702,9 @@ class StsRole:
         """Serializes the StsRole into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.external_id is not None:
-            body["{external_id}"] = self.external_id
+            body["external_id"] = self.external_id
         if self.role_arn is not None:
-            body["{role_arn}"] = self.role_arn
+            body["role_arn"] = self.role_arn
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1785,25 +1785,25 @@ class UpdateWorkspaceRequest:
         """Serializes the UpdateWorkspaceRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_region is not None:
-            body["{aws_region}"] = self.aws_region
+            body["aws_region"] = self.aws_region
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.managed_services_customer_managed_key_id is not None:
-            body["{managed_services_customer_managed_key_id}"] = self.managed_services_customer_managed_key_id
+            body["managed_services_customer_managed_key_id"] = self.managed_services_customer_managed_key_id
         if self.network_connectivity_config_id is not None:
-            body["{network_connectivity_config_id}"] = self.network_connectivity_config_id
+            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.network_id is not None:
-            body["{network_id}"] = self.network_id
+            body["network_id"] = self.network_id
         if self.private_access_settings_id is not None:
-            body["{private_access_settings_id}"] = self.private_access_settings_id
+            body["private_access_settings_id"] = self.private_access_settings_id
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.storage_customer_managed_key_id is not None:
-            body["{storage_customer_managed_key_id}"] = self.storage_customer_managed_key_id
+            body["storage_customer_managed_key_id"] = self.storage_customer_managed_key_id
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1890,17 +1890,17 @@ class UpsertPrivateAccessSettingsRequest:
         """Serializes the UpsertPrivateAccessSettingsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allowed_vpc_endpoint_ids:
-            body["{allowed_vpc_endpoint_ids}"] = [v for v in self.allowed_vpc_endpoint_ids]
+            body["allowed_vpc_endpoint_ids"] = [v for v in self.allowed_vpc_endpoint_ids]
         if self.private_access_level is not None:
-            body["{private_access_level}"] = self.private_access_level.value
+            body["private_access_level"] = self.private_access_level.value
         if self.private_access_settings_id is not None:
-            body["{private_access_settings_id}"] = self.private_access_settings_id
+            body["private_access_settings_id"] = self.private_access_settings_id
         if self.private_access_settings_name is not None:
-            body["{private_access_settings_name}"] = self.private_access_settings_name
+            body["private_access_settings_name"] = self.private_access_settings_name
         if self.public_access_enabled is not None:
-            body["{public_access_enabled}"] = self.public_access_enabled
+            body["public_access_enabled"] = self.public_access_enabled
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1981,25 +1981,25 @@ class VpcEndpoint:
         """Serializes the VpcEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.aws_account_id is not None:
-            body["{aws_account_id}"] = self.aws_account_id
+            body["aws_account_id"] = self.aws_account_id
         if self.aws_endpoint_service_id is not None:
-            body["{aws_endpoint_service_id}"] = self.aws_endpoint_service_id
+            body["aws_endpoint_service_id"] = self.aws_endpoint_service_id
         if self.aws_vpc_endpoint_id is not None:
-            body["{aws_vpc_endpoint_id}"] = self.aws_vpc_endpoint_id
+            body["aws_vpc_endpoint_id"] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info:
-            body["{gcp_vpc_endpoint_info}"] = self.gcp_vpc_endpoint_info.as_dict()
+            body["gcp_vpc_endpoint_info"] = self.gcp_vpc_endpoint_info.as_dict()
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         if self.use_case is not None:
-            body["{use_case}"] = self.use_case.value
+            body["use_case"] = self.use_case.value
         if self.vpc_endpoint_id is not None:
-            body["{vpc_endpoint_id}"] = self.vpc_endpoint_id
+            body["vpc_endpoint_id"] = self.vpc_endpoint_id
         if self.vpc_endpoint_name is not None:
-            body["{vpc_endpoint_name}"] = self.vpc_endpoint_name
+            body["vpc_endpoint_name"] = self.vpc_endpoint_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2173,53 +2173,53 @@ class Workspace:
         """Serializes the Workspace into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None:
-            body["{account_id}"] = self.account_id
+            body["account_id"] = self.account_id
         if self.aws_region is not None:
-            body["{aws_region}"] = self.aws_region
+            body["aws_region"] = self.aws_region
         if self.azure_workspace_info:
-            body["{azure_workspace_info}"] = self.azure_workspace_info.as_dict()
+            body["azure_workspace_info"] = self.azure_workspace_info.as_dict()
         if self.cloud is not None:
-            body["{cloud}"] = self.cloud
+            body["cloud"] = self.cloud
         if self.cloud_resource_container:
-            body["{cloud_resource_container}"] = self.cloud_resource_container.as_dict()
+            body["cloud_resource_container"] = self.cloud_resource_container.as_dict()
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.credentials_id is not None:
-            body["{credentials_id}"] = self.credentials_id
+            body["credentials_id"] = self.credentials_id
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.deployment_name is not None:
-            body["{deployment_name}"] = self.deployment_name
+            body["deployment_name"] = self.deployment_name
         if self.external_customer_info:
-            body["{external_customer_info}"] = self.external_customer_info.as_dict()
+            body["external_customer_info"] = self.external_customer_info.as_dict()
         if self.gcp_managed_network_config:
-            body["{gcp_managed_network_config}"] = self.gcp_managed_network_config.as_dict()
+            body["gcp_managed_network_config"] = self.gcp_managed_network_config.as_dict()
         if self.gke_config:
-            body["{gke_config}"] = self.gke_config.as_dict()
+            body["gke_config"] = self.gke_config.as_dict()
         if self.is_no_public_ip_enabled is not None:
-            body["{is_no_public_ip_enabled}"] = self.is_no_public_ip_enabled
+            body["is_no_public_ip_enabled"] = self.is_no_public_ip_enabled
         if self.location is not None:
-            body["{location}"] = self.location
+            body["location"] = self.location
         if self.managed_services_customer_managed_key_id is not None:
-            body["{managed_services_customer_managed_key_id}"] = self.managed_services_customer_managed_key_id
+            body["managed_services_customer_managed_key_id"] = self.managed_services_customer_managed_key_id
         if self.network_id is not None:
-            body["{network_id}"] = self.network_id
+            body["network_id"] = self.network_id
         if self.pricing_tier is not None:
-            body["{pricing_tier}"] = self.pricing_tier.value
+            body["pricing_tier"] = self.pricing_tier.value
         if self.private_access_settings_id is not None:
-            body["{private_access_settings_id}"] = self.private_access_settings_id
+            body["private_access_settings_id"] = self.private_access_settings_id
         if self.storage_configuration_id is not None:
-            body["{storage_configuration_id}"] = self.storage_configuration_id
+            body["storage_configuration_id"] = self.storage_configuration_id
         if self.storage_customer_managed_key_id is not None:
-            body["{storage_customer_managed_key_id}"] = self.storage_customer_managed_key_id
+            body["storage_customer_managed_key_id"] = self.storage_customer_managed_key_id
         if self.workspace_id is not None:
-            body["{workspace_id}"] = self.workspace_id
+            body["workspace_id"] = self.workspace_id
         if self.workspace_name is not None:
-            body["{workspace_name}"] = self.workspace_name
+            body["workspace_name"] = self.workspace_name
         if self.workspace_status is not None:
-            body["{workspace_status}"] = self.workspace_status.value
+            body["workspace_status"] = self.workspace_status.value
         if self.workspace_status_message is not None:
-            body["{workspace_status_message}"] = self.workspace_status_message
+            body["workspace_status_message"] = self.workspace_status_message
         return body
 
     def as_shallow_dict(self) -> dict:

@@ -24,7 +24,7 @@ class ColumnInfo:
         """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -52,9 +52,9 @@ class CreateEndpoint:
         """Serializes the CreateEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoint_type is not None:
-            body["{endpoint_type}"] = self.endpoint_type.value
+            body["endpoint_type"] = self.endpoint_type.value
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -101,17 +101,17 @@ class CreateVectorIndexRequest:
         """Serializes the CreateVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.delta_sync_index_spec:
-            body["{delta_sync_index_spec}"] = self.delta_sync_index_spec.as_dict()
+            body["delta_sync_index_spec"] = self.delta_sync_index_spec.as_dict()
         if self.direct_access_index_spec:
-            body["{direct_access_index_spec}"] = self.direct_access_index_spec.as_dict()
+            body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type.value
+            body["index_type"] = self.index_type.value
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -152,7 +152,7 @@ class CreateVectorIndexResponse:
         """Serializes the CreateVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.vector_index:
-            body["{vector_index}"] = self.vector_index.as_dict()
+            body["vector_index"] = self.vector_index.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -182,9 +182,9 @@ class DeleteDataResult:
         """Serializes the DeleteDataResult into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.failed_primary_keys:
-            body["{failed_primary_keys}"] = [v for v in self.failed_primary_keys]
+            body["failed_primary_keys"] = [v for v in self.failed_primary_keys]
         if self.success_row_count is not None:
-            body["{success_row_count}"] = self.success_row_count
+            body["success_row_count"] = self.success_row_count
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -227,9 +227,9 @@ class DeleteDataVectorIndexRequest:
         """Serializes the DeleteDataVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.primary_keys:
-            body["{primary_keys}"] = [v for v in self.primary_keys]
+            body["primary_keys"] = [v for v in self.primary_keys]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -261,9 +261,9 @@ class DeleteDataVectorIndexResponse:
         """Serializes the DeleteDataVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.result:
-            body["{result}"] = self.result.as_dict()
+            body["result"] = self.result.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -350,17 +350,17 @@ class DeltaSyncVectorIndexSpecRequest:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.columns_to_sync:
-            body["{columns_to_sync}"] = [v for v in self.columns_to_sync]
+            body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = [v.as_dict() for v in self.embedding_source_columns]
+            body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = [v.as_dict() for v in self.embedding_vector_columns]
+            body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
         if self.embedding_writeback_table is not None:
-            body["{embedding_writeback_table}"] = self.embedding_writeback_table
+            body["embedding_writeback_table"] = self.embedding_writeback_table
         if self.pipeline_type is not None:
-            body["{pipeline_type}"] = self.pipeline_type.value
+            body["pipeline_type"] = self.pipeline_type.value
         if self.source_table is not None:
-            body["{source_table}"] = self.source_table
+            body["source_table"] = self.source_table
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -423,17 +423,17 @@ class DeltaSyncVectorIndexSpecResponse:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = [v.as_dict() for v in self.embedding_source_columns]
+            body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = [v.as_dict() for v in self.embedding_vector_columns]
+            body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
         if self.embedding_writeback_table is not None:
-            body["{embedding_writeback_table}"] = self.embedding_writeback_table
+            body["embedding_writeback_table"] = self.embedding_writeback_table
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.pipeline_type is not None:
-            body["{pipeline_type}"] = self.pipeline_type.value
+            body["pipeline_type"] = self.pipeline_type.value
         if self.source_table is not None:
-            body["{source_table}"] = self.source_table
+            body["source_table"] = self.source_table
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -485,11 +485,11 @@ class DirectAccessVectorIndexSpec:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = [v.as_dict() for v in self.embedding_source_columns]
+            body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = [v.as_dict() for v in self.embedding_vector_columns]
+            body["embedding_vector_columns"] = [v.as_dict() for v in self.embedding_vector_columns]
         if self.schema_json is not None:
-            body["{schema_json}"] = self.schema_json
+            body["schema_json"] = self.schema_json
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -525,9 +525,9 @@ class EmbeddingSourceColumn:
         """Serializes the EmbeddingSourceColumn into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.embedding_model_endpoint_name is not None:
-            body["{embedding_model_endpoint_name}"] = self.embedding_model_endpoint_name
+            body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -559,9 +559,9 @@ class EmbeddingVectorColumn:
         """Serializes the EmbeddingVectorColumn into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.embedding_dimension is not None:
-            body["{embedding_dimension}"] = self.embedding_dimension
+            body["embedding_dimension"] = self.embedding_dimension
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -612,23 +612,23 @@ class EndpointInfo:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None:
-            body["{creation_timestamp}"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.endpoint_status:
-            body["{endpoint_status}"] = self.endpoint_status.as_dict()
+            body["endpoint_status"] = self.endpoint_status.as_dict()
         if self.endpoint_type is not None:
-            body["{endpoint_type}"] = self.endpoint_type.value
+            body["endpoint_type"] = self.endpoint_type.value
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp is not None:
-            body["{last_updated_timestamp}"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.last_updated_user is not None:
-            body["{last_updated_user}"] = self.last_updated_user
+            body["last_updated_user"] = self.last_updated_user
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.num_indexes is not None:
-            body["{num_indexes}"] = self.num_indexes
+            body["num_indexes"] = self.num_indexes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -684,9 +684,9 @@ class EndpointStatus:
         """Serializes the EndpointStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.state is not None:
-            body["{state}"] = self.state.value
+            body["state"] = self.state.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -731,9 +731,9 @@ class ListEndpointResponse:
         """Serializes the ListEndpointResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoints:
-            body["{endpoints}"] = [v.as_dict() for v in self.endpoints]
+            body["endpoints"] = [v.as_dict() for v in self.endpoints]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -761,7 +761,7 @@ class ListValue:
         """Serializes the ListValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.values:
-            body["{values}"] = [v.as_dict() for v in self.values]
+            body["values"] = [v.as_dict() for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -789,9 +789,9 @@ class ListVectorIndexesResponse:
         """Serializes the ListVectorIndexesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.vector_indexes:
-            body["{vector_indexes}"] = [v.as_dict() for v in self.vector_indexes]
+            body["vector_indexes"] = [v.as_dict() for v in self.vector_indexes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -826,9 +826,9 @@ class MapStringValueEntry:
         """Serializes the MapStringValueEntry into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None:
-            body["{key}"] = self.key
+            body["key"] = self.key
         if self.value:
-            body["{value}"] = self.value.as_dict()
+            body["value"] = self.value.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -872,15 +872,15 @@ class MiniVectorIndex:
         """Serializes the MiniVectorIndex into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type.value
+            body["index_type"] = self.index_type.value
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -940,11 +940,11 @@ class QueryVectorIndexNextPageRequest:
         """Serializes the QueryVectorIndexNextPageRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.page_token is not None:
-            body["{page_token}"] = self.page_token
+            body["page_token"] = self.page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1006,23 +1006,23 @@ class QueryVectorIndexRequest:
         """Serializes the QueryVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.columns:
-            body["{columns}"] = [v for v in self.columns]
+            body["columns"] = [v for v in self.columns]
         if self.columns_to_rerank:
-            body["{columns_to_rerank}"] = [v for v in self.columns_to_rerank]
+            body["columns_to_rerank"] = [v for v in self.columns_to_rerank]
         if self.filters_json is not None:
-            body["{filters_json}"] = self.filters_json
+            body["filters_json"] = self.filters_json
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.num_results is not None:
-            body["{num_results}"] = self.num_results
+            body["num_results"] = self.num_results
         if self.query_text is not None:
-            body["{query_text}"] = self.query_text
+            body["query_text"] = self.query_text
         if self.query_type is not None:
-            body["{query_type}"] = self.query_type
+            body["query_type"] = self.query_type
         if self.query_vector:
-            body["{query_vector}"] = [v for v in self.query_vector]
+            body["query_vector"] = [v for v in self.query_vector]
         if self.score_threshold is not None:
-            body["{score_threshold}"] = self.score_threshold
+            body["score_threshold"] = self.score_threshold
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1081,11 +1081,11 @@ class QueryVectorIndexResponse:
         """Serializes the QueryVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.manifest:
-            body["{manifest}"] = self.manifest.as_dict()
+            body["manifest"] = self.manifest.as_dict()
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.result:
-            body["{result}"] = self.result.as_dict()
+            body["result"] = self.result.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1123,9 +1123,9 @@ class ResultData:
         """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_array:
-            body["{data_array}"] = [v for v in self.data_array]
+            body["data_array"] = [v for v in self.data_array]
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1157,9 +1157,9 @@ class ResultManifest:
         """Serializes the ResultManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.column_count is not None:
-            body["{column_count}"] = self.column_count
+            body["column_count"] = self.column_count
         if self.columns:
-            body["{columns}"] = [v.as_dict() for v in self.columns]
+            body["columns"] = [v.as_dict() for v in self.columns]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1194,11 +1194,11 @@ class ScanVectorIndexRequest:
         """Serializes the ScanVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.last_primary_key is not None:
-            body["{last_primary_key}"] = self.last_primary_key
+            body["last_primary_key"] = self.last_primary_key
         if self.num_results is not None:
-            body["{num_results}"] = self.num_results
+            body["num_results"] = self.num_results
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1236,9 +1236,9 @@ class ScanVectorIndexResponse:
         """Serializes the ScanVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data:
-            body["{data}"] = [v.as_dict() for v in self.data]
+            body["data"] = [v.as_dict() for v in self.data]
         if self.last_primary_key is not None:
-            body["{last_primary_key}"] = self.last_primary_key
+            body["last_primary_key"] = self.last_primary_key
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1265,7 +1265,7 @@ class Struct:
         """Serializes the Struct into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.fields:
-            body["{fields}"] = [v.as_dict() for v in self.fields]
+            body["fields"] = [v.as_dict() for v in self.fields]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1313,9 +1313,9 @@ class UpsertDataResult:
         """Serializes the UpsertDataResult into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.failed_primary_keys:
-            body["{failed_primary_keys}"] = [v for v in self.failed_primary_keys]
+            body["failed_primary_keys"] = [v for v in self.failed_primary_keys]
         if self.success_row_count is not None:
-            body["{success_row_count}"] = self.success_row_count
+            body["success_row_count"] = self.success_row_count
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1358,9 +1358,9 @@ class UpsertDataVectorIndexRequest:
         """Serializes the UpsertDataVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.inputs_json is not None:
-            body["{inputs_json}"] = self.inputs_json
+            body["inputs_json"] = self.inputs_json
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1392,9 +1392,9 @@ class UpsertDataVectorIndexResponse:
         """Serializes the UpsertDataVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.result:
-            body["{result}"] = self.result.as_dict()
+            body["result"] = self.result.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1430,17 +1430,17 @@ class Value:
         """Serializes the Value into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bool_value is not None:
-            body["{bool_value}"] = self.bool_value
+            body["bool_value"] = self.bool_value
         if self.list_value:
-            body["{list_value}"] = self.list_value.as_dict()
+            body["list_value"] = self.list_value.as_dict()
         if self.null_value is not None:
-            body["{null_value}"] = self.null_value
+            body["null_value"] = self.null_value
         if self.number_value is not None:
-            body["{number_value}"] = self.number_value
+            body["number_value"] = self.number_value
         if self.string_value is not None:
-            body["{string_value}"] = self.string_value
+            body["string_value"] = self.string_value
         if self.struct_value:
-            body["{struct_value}"] = self.struct_value.as_dict()
+            body["struct_value"] = self.struct_value.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1505,21 +1505,21 @@ class VectorIndex:
         """Serializes the VectorIndex into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.delta_sync_index_spec:
-            body["{delta_sync_index_spec}"] = self.delta_sync_index_spec.as_dict()
+            body["delta_sync_index_spec"] = self.delta_sync_index_spec.as_dict()
         if self.direct_access_index_spec:
-            body["{direct_access_index_spec}"] = self.direct_access_index_spec.as_dict()
+            body["direct_access_index_spec"] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type.value
+            body["index_type"] = self.index_type.value
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         if self.status:
-            body["{status}"] = self.status.as_dict()
+            body["status"] = self.status.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1576,13 +1576,13 @@ class VectorIndexStatus:
         """Serializes the VectorIndexStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.index_url is not None:
-            body["{index_url}"] = self.index_url
+            body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
-            body["{indexed_row_count}"] = self.indexed_row_count
+            body["indexed_row_count"] = self.indexed_row_count
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.ready is not None:
-            body["{ready}"] = self.ready
+            body["ready"] = self.ready
         return body
 
     def as_shallow_dict(self) -> dict:

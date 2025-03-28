@@ -39,17 +39,17 @@ class CreateCustomAppIntegration:
         """Serializes the CreateCustomAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.confidential is not None:
-            body["{confidential}"] = self.confidential
+            body["confidential"] = self.confidential
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = [v for v in self.redirect_urls]
+            body["redirect_urls"] = [v for v in self.redirect_urls]
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = [v for v in self.user_authorized_scopes]
+            body["user_authorized_scopes"] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -98,11 +98,11 @@ class CreateCustomAppIntegrationOutput:
         """Serializes the CreateCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.client_secret is not None:
-            body["{client_secret}"] = self.client_secret
+            body["client_secret"] = self.client_secret
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -138,9 +138,9 @@ class CreatePublishedAppIntegration:
         """Serializes the CreatePublishedAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -170,7 +170,7 @@ class CreatePublishedAppIntegrationOutput:
         """Serializes the CreatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -199,9 +199,9 @@ class CreateServicePrincipalSecretRequest:
         """Serializes the CreateServicePrincipalSecretRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.lifetime is not None:
-            body["{lifetime}"] = self.lifetime
+            body["lifetime"] = self.lifetime
         if self.service_principal_id is not None:
-            body["{service_principal_id}"] = self.service_principal_id
+            body["service_principal_id"] = self.service_principal_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -246,19 +246,19 @@ class CreateServicePrincipalSecretResponse:
         """Serializes the CreateServicePrincipalSecretResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.expire_time is not None:
-            body["{expire_time}"] = self.expire_time
+            body["expire_time"] = self.expire_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.secret is not None:
-            body["{secret}"] = self.secret
+            body["secret"] = self.secret
         if self.secret_hash is not None:
-            body["{secret_hash}"] = self.secret_hash
+            body["secret_hash"] = self.secret_hash
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -378,17 +378,17 @@ class FederationPolicy:
         """Serializes the FederationPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.oidc_policy:
-            body["{oidc_policy}"] = self.oidc_policy.as_dict()
+            body["oidc_policy"] = self.oidc_policy.as_dict()
         if self.uid is not None:
-            body["{uid}"] = self.uid
+            body["uid"] = self.uid
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -457,27 +457,27 @@ class GetCustomAppIntegrationOutput:
         """Serializes the GetCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.confidential is not None:
-            body["{confidential}"] = self.confidential
+            body["confidential"] = self.confidential
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.creator_username is not None:
-            body["{creator_username}"] = self.creator_username
+            body["creator_username"] = self.creator_username
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = [v for v in self.redirect_urls]
+            body["redirect_urls"] = [v for v in self.redirect_urls]
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = [v for v in self.user_authorized_scopes]
+            body["user_authorized_scopes"] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -536,9 +536,9 @@ class GetCustomAppIntegrationsOutput:
         """Serializes the GetCustomAppIntegrationsOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps:
-            body["{apps}"] = [v.as_dict() for v in self.apps]
+            body["apps"] = [v.as_dict() for v in self.apps]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -581,17 +581,17 @@ class GetPublishedAppIntegrationOutput:
         """Serializes the GetPublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -635,9 +635,9 @@ class GetPublishedAppIntegrationsOutput:
         """Serializes the GetPublishedAppIntegrationsOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps:
-            body["{apps}"] = [v.as_dict() for v in self.apps]
+            body["apps"] = [v.as_dict() for v in self.apps]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -671,9 +671,9 @@ class GetPublishedAppsOutput:
         """Serializes the GetPublishedAppsOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps:
-            body["{apps}"] = [v.as_dict() for v in self.apps]
+            body["apps"] = [v.as_dict() for v in self.apps]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -703,9 +703,9 @@ class ListFederationPoliciesResponse:
         """Serializes the ListFederationPoliciesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.policies:
-            body["{policies}"] = [v.as_dict() for v in self.policies]
+            body["policies"] = [v.as_dict() for v in self.policies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -737,9 +737,9 @@ class ListServicePrincipalSecretsResponse:
         """Serializes the ListServicePrincipalSecretsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.secrets:
-            body["{secrets}"] = [v.as_dict() for v in self.secrets]
+            body["secrets"] = [v.as_dict() for v in self.secrets]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -797,17 +797,17 @@ class OidcFederationPolicy:
         """Serializes the OidcFederationPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.audiences:
-            body["{audiences}"] = [v for v in self.audiences]
+            body["audiences"] = [v for v in self.audiences]
         if self.issuer is not None:
-            body["{issuer}"] = self.issuer
+            body["issuer"] = self.issuer
         if self.jwks_json is not None:
-            body["{jwks_json}"] = self.jwks_json
+            body["jwks_json"] = self.jwks_json
         if self.jwks_uri is not None:
-            body["{jwks_uri}"] = self.jwks_uri
+            body["jwks_uri"] = self.jwks_uri
         if self.subject is not None:
-            body["{subject}"] = self.subject
+            body["subject"] = self.subject
         if self.subject_claim is not None:
-            body["{subject_claim}"] = self.subject_claim
+            body["subject_claim"] = self.subject_claim
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -868,19 +868,19 @@ class PublishedAppOutput:
         """Serializes the PublishedAppOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_id is not None:
-            body["{app_id}"] = self.app_id
+            body["app_id"] = self.app_id
         if self.client_id is not None:
-            body["{client_id}"] = self.client_id
+            body["client_id"] = self.client_id
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.is_confidential_client is not None:
-            body["{is_confidential_client}"] = self.is_confidential_client
+            body["is_confidential_client"] = self.is_confidential_client
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.redirect_urls:
-            body["{redirect_urls}"] = [v for v in self.redirect_urls]
+            body["redirect_urls"] = [v for v in self.redirect_urls]
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -940,17 +940,17 @@ class SecretInfo:
         """Serializes the SecretInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.expire_time is not None:
-            body["{expire_time}"] = self.expire_time
+            body["expire_time"] = self.expire_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.secret_hash is not None:
-            body["{secret_hash}"] = self.secret_hash
+            body["secret_hash"] = self.secret_hash
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -995,9 +995,9 @@ class TokenAccessPolicy:
         """Serializes the TokenAccessPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_token_ttl_in_minutes is not None:
-            body["{access_token_ttl_in_minutes}"] = self.access_token_ttl_in_minutes
+            body["access_token_ttl_in_minutes"] = self.access_token_ttl_in_minutes
         if self.refresh_token_ttl_in_minutes is not None:
-            body["{refresh_token_ttl_in_minutes}"] = self.refresh_token_ttl_in_minutes
+            body["refresh_token_ttl_in_minutes"] = self.refresh_token_ttl_in_minutes
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1040,15 +1040,15 @@ class UpdateCustomAppIntegration:
         """Serializes the UpdateCustomAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.redirect_urls:
-            body["{redirect_urls}"] = [v for v in self.redirect_urls]
+            body["redirect_urls"] = [v for v in self.redirect_urls]
         if self.scopes:
-            body["{scopes}"] = [v for v in self.scopes]
+            body["scopes"] = [v for v in self.scopes]
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         if self.user_authorized_scopes:
-            body["{user_authorized_scopes}"] = [v for v in self.user_authorized_scopes]
+            body["user_authorized_scopes"] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1107,9 +1107,9 @@ class UpdatePublishedAppIntegration:
         """Serializes the UpdatePublishedAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.integration_id is not None:
-            body["{integration_id}"] = self.integration_id
+            body["integration_id"] = self.integration_id
         if self.token_access_policy:
-            body["{token_access_policy}"] = self.token_access_policy.as_dict()
+            body["token_access_policy"] = self.token_access_policy.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:

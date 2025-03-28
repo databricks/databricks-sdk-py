@@ -25,9 +25,9 @@ class AddExchangeForListingRequest:
         """Serializes the AddExchangeForListingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -53,7 +53,7 @@ class AddExchangeForListingResponse:
         """Serializes the AddExchangeForListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange_for_listing:
-            body["{exchange_for_listing}"] = self.exchange_for_listing.as_dict()
+            body["exchange_for_listing"] = self.exchange_for_listing.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -88,7 +88,7 @@ class BatchGetListingsResponse:
         """Serializes the BatchGetListingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listings:
-            body["{listings}"] = [v.as_dict() for v in self.listings]
+            body["listings"] = [v.as_dict() for v in self.listings]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -112,7 +112,7 @@ class BatchGetProvidersResponse:
         """Serializes the BatchGetProvidersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.providers:
-            body["{providers}"] = [v.as_dict() for v in self.providers]
+            body["providers"] = [v.as_dict() for v in self.providers]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -162,7 +162,7 @@ class ConsumerTerms:
         """Serializes the ConsumerTerms into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -194,13 +194,13 @@ class ContactInfo:
         """Serializes the ContactInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.company is not None:
-            body["{company}"] = self.company
+            body["company"] = self.company
         if self.email is not None:
-            body["{email}"] = self.email
+            body["email"] = self.email
         if self.first_name is not None:
-            body["{first_name}"] = self.first_name
+            body["first_name"] = self.first_name
         if self.last_name is not None:
-            body["{last_name}"] = self.last_name
+            body["last_name"] = self.last_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -241,7 +241,7 @@ class CreateExchangeFilterRequest:
         """Serializes the CreateExchangeFilterRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -265,7 +265,7 @@ class CreateExchangeFilterResponse:
         """Serializes the CreateExchangeFilterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filter_id is not None:
-            body["{filter_id}"] = self.filter_id
+            body["filter_id"] = self.filter_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -289,7 +289,7 @@ class CreateExchangeRequest:
         """Serializes the CreateExchangeRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange.as_dict()
+            body["exchange"] = self.exchange.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -313,7 +313,7 @@ class CreateExchangeResponse:
         """Serializes the CreateExchangeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -343,13 +343,13 @@ class CreateFileRequest:
         """Serializes the CreateFileRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.file_parent:
-            body["{file_parent}"] = self.file_parent.as_dict()
+            body["file_parent"] = self.file_parent.as_dict()
         if self.marketplace_file_type is not None:
-            body["{marketplace_file_type}"] = self.marketplace_file_type.value
+            body["marketplace_file_type"] = self.marketplace_file_type.value
         if self.mime_type is not None:
-            body["{mime_type}"] = self.mime_type
+            body["mime_type"] = self.mime_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -387,9 +387,9 @@ class CreateFileResponse:
         """Serializes the CreateFileResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_info:
-            body["{file_info}"] = self.file_info.as_dict()
+            body["file_info"] = self.file_info.as_dict()
         if self.upload_url is not None:
-            body["{upload_url}"] = self.upload_url
+            body["upload_url"] = self.upload_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -426,17 +426,17 @@ class CreateInstallationRequest:
         """Serializes the CreateInstallationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.accepted_consumer_terms:
-            body["{accepted_consumer_terms}"] = self.accepted_consumer_terms.as_dict()
+            body["accepted_consumer_terms"] = self.accepted_consumer_terms.as_dict()
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type.value
+            body["recipient_type"] = self.recipient_type.value
         if self.repo_detail:
-            body["{repo_detail}"] = self.repo_detail.as_dict()
+            body["repo_detail"] = self.repo_detail.as_dict()
         if self.share_name is not None:
-            body["{share_name}"] = self.share_name
+            body["share_name"] = self.share_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -477,7 +477,7 @@ class CreateListingRequest:
         """Serializes the CreateListingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing.as_dict()
+            body["listing"] = self.listing.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -501,7 +501,7 @@ class CreateListingResponse:
         """Serializes the CreateListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -543,23 +543,23 @@ class CreatePersonalizationRequest:
         """Serializes the CreatePersonalizationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.accepted_consumer_terms:
-            body["{accepted_consumer_terms}"] = self.accepted_consumer_terms.as_dict()
+            body["accepted_consumer_terms"] = self.accepted_consumer_terms.as_dict()
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.company is not None:
-            body["{company}"] = self.company
+            body["company"] = self.company
         if self.first_name is not None:
-            body["{first_name}"] = self.first_name
+            body["first_name"] = self.first_name
         if self.intended_use is not None:
-            body["{intended_use}"] = self.intended_use
+            body["intended_use"] = self.intended_use
         if self.is_from_lighthouse is not None:
-            body["{is_from_lighthouse}"] = self.is_from_lighthouse
+            body["is_from_lighthouse"] = self.is_from_lighthouse
         if self.last_name is not None:
-            body["{last_name}"] = self.last_name
+            body["last_name"] = self.last_name
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type.value
+            body["recipient_type"] = self.recipient_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -609,7 +609,7 @@ class CreatePersonalizationRequestResponse:
         """Serializes the CreatePersonalizationRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -633,7 +633,7 @@ class CreateProviderRequest:
         """Serializes the CreateProviderRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider.as_dict()
+            body["provider"] = self.provider.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -657,7 +657,7 @@ class CreateProviderResponse:
         """Serializes the CreateProviderResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -696,9 +696,9 @@ class DataRefreshInfo:
         """Serializes the DataRefreshInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.interval is not None:
-            body["{interval}"] = self.interval
+            body["interval"] = self.interval
         if self.unit is not None:
-            body["{unit}"] = self.unit.value
+            body["unit"] = self.unit.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -854,23 +854,23 @@ class Exchange:
         """Serializes the Exchange into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.filters:
-            body["{filters}"] = [v.as_dict() for v in self.filters]
+            body["filters"] = [v.as_dict() for v in self.filters]
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.linked_listings:
-            body["{linked_listings}"] = [v.as_dict() for v in self.linked_listings]
+            body["linked_listings"] = [v.as_dict() for v in self.linked_listings]
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -936,23 +936,23 @@ class ExchangeFilter:
         """Serializes the ExchangeFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.filter_type is not None:
-            body["{filter_type}"] = self.filter_type.value
+            body["filter_type"] = self.filter_type.value
         if self.filter_value is not None:
-            body["{filter_value}"] = self.filter_value
+            body["filter_value"] = self.filter_value
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1019,19 +1019,19 @@ class ExchangeListing:
         """Serializes the ExchangeListing into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.exchange_id is not None:
-            body["{exchange_id}"] = self.exchange_id
+            body["exchange_id"] = self.exchange_id
         if self.exchange_name is not None:
-            body["{exchange_name}"] = self.exchange_name
+            body["exchange_name"] = self.exchange_name
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1095,25 +1095,25 @@ class FileInfo:
         """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.download_link is not None:
-            body["{download_link}"] = self.download_link
+            body["download_link"] = self.download_link
         if self.file_parent:
-            body["{file_parent}"] = self.file_parent.as_dict()
+            body["file_parent"] = self.file_parent.as_dict()
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.marketplace_file_type is not None:
-            body["{marketplace_file_type}"] = self.marketplace_file_type.value
+            body["marketplace_file_type"] = self.marketplace_file_type.value
         if self.mime_type is not None:
-            body["{mime_type}"] = self.mime_type
+            body["mime_type"] = self.mime_type
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.status_message is not None:
-            body["{status_message}"] = self.status_message
+            body["status_message"] = self.status_message
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1169,9 +1169,9 @@ class FileParent:
         """Serializes the FileParent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_parent_type is not None:
-            body["{file_parent_type}"] = self.file_parent_type.value
+            body["file_parent_type"] = self.file_parent_type.value
         if self.parent_id is not None:
-            body["{parent_id}"] = self.parent_id
+            body["parent_id"] = self.parent_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1220,7 +1220,7 @@ class GetExchangeResponse:
         """Serializes the GetExchangeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange.as_dict()
+            body["exchange"] = self.exchange.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1244,7 +1244,7 @@ class GetFileResponse:
         """Serializes the GetFileResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_info:
-            body["{file_info}"] = self.file_info.as_dict()
+            body["file_info"] = self.file_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1269,7 +1269,7 @@ class GetLatestVersionProviderAnalyticsDashboardResponse:
         """Serializes the GetLatestVersionProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1295,9 +1295,9 @@ class GetListingContentMetadataResponse:
         """Serializes the GetListingContentMetadataResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.shared_data_objects:
-            body["{shared_data_objects}"] = [v.as_dict() for v in self.shared_data_objects]
+            body["shared_data_objects"] = [v.as_dict() for v in self.shared_data_objects]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1326,7 +1326,7 @@ class GetListingResponse:
         """Serializes the GetListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing.as_dict()
+            body["listing"] = self.listing.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1352,9 +1352,9 @@ class GetListingsResponse:
         """Serializes the GetListingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listings:
-            body["{listings}"] = [v.as_dict() for v in self.listings]
+            body["listings"] = [v.as_dict() for v in self.listings]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1380,7 +1380,7 @@ class GetPersonalizationRequestResponse:
         """Serializes the GetPersonalizationRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.personalization_requests:
-            body["{personalization_requests}"] = [v.as_dict() for v in self.personalization_requests]
+            body["personalization_requests"] = [v.as_dict() for v in self.personalization_requests]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1404,7 +1404,7 @@ class GetProviderResponse:
         """Serializes the GetProviderResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider.as_dict()
+            body["provider"] = self.provider.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1428,7 +1428,7 @@ class Installation:
         """Serializes the Installation into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation.as_dict()
+            body["installation"] = self.installation.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1476,31 +1476,31 @@ class InstallationDetail:
         """Serializes the InstallationDetail into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_name is not None:
-            body["{catalog_name}"] = self.catalog_name
+            body["catalog_name"] = self.catalog_name
         if self.error_message is not None:
-            body["{error_message}"] = self.error_message
+            body["error_message"] = self.error_message
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.installed_on is not None:
-            body["{installed_on}"] = self.installed_on
+            body["installed_on"] = self.installed_on
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type.value
+            body["recipient_type"] = self.recipient_type.value
         if self.repo_name is not None:
-            body["{repo_name}"] = self.repo_name
+            body["repo_name"] = self.repo_name
         if self.repo_path is not None:
-            body["{repo_path}"] = self.repo_path
+            body["repo_path"] = self.repo_path
         if self.share_name is not None:
-            body["{share_name}"] = self.share_name
+            body["share_name"] = self.share_name
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.token_detail:
-            body["{token_detail}"] = self.token_detail.as_dict()
+            body["token_detail"] = self.token_detail.as_dict()
         if self.tokens:
-            body["{tokens}"] = [v.as_dict() for v in self.tokens]
+            body["tokens"] = [v.as_dict() for v in self.tokens]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1570,9 +1570,9 @@ class ListAllInstallationsResponse:
         """Serializes the ListAllInstallationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.installations:
-            body["{installations}"] = [v.as_dict() for v in self.installations]
+            body["installations"] = [v.as_dict() for v in self.installations]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1603,9 +1603,9 @@ class ListAllPersonalizationRequestsResponse:
         """Serializes the ListAllPersonalizationRequestsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.personalization_requests:
-            body["{personalization_requests}"] = [v.as_dict() for v in self.personalization_requests]
+            body["personalization_requests"] = [v.as_dict() for v in self.personalization_requests]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1636,9 +1636,9 @@ class ListExchangeFiltersResponse:
         """Serializes the ListExchangeFiltersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filters:
-            body["{filters}"] = [v.as_dict() for v in self.filters]
+            body["filters"] = [v.as_dict() for v in self.filters]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1668,9 +1668,9 @@ class ListExchangesForListingResponse:
         """Serializes the ListExchangesForListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange_listing:
-            body["{exchange_listing}"] = [v.as_dict() for v in self.exchange_listing]
+            body["exchange_listing"] = [v.as_dict() for v in self.exchange_listing]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1701,9 +1701,9 @@ class ListExchangesResponse:
         """Serializes the ListExchangesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchanges:
-            body["{exchanges}"] = [v.as_dict() for v in self.exchanges]
+            body["exchanges"] = [v.as_dict() for v in self.exchanges]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1733,9 +1733,9 @@ class ListFilesResponse:
         """Serializes the ListFilesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_infos:
-            body["{file_infos}"] = [v.as_dict() for v in self.file_infos]
+            body["file_infos"] = [v.as_dict() for v in self.file_infos]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1765,9 +1765,9 @@ class ListFulfillmentsResponse:
         """Serializes the ListFulfillmentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.fulfillments:
-            body["{fulfillments}"] = [v.as_dict() for v in self.fulfillments]
+            body["fulfillments"] = [v.as_dict() for v in self.fulfillments]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1798,9 +1798,9 @@ class ListInstallationsResponse:
         """Serializes the ListInstallationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.installations:
-            body["{installations}"] = [v.as_dict() for v in self.installations]
+            body["installations"] = [v.as_dict() for v in self.installations]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1831,9 +1831,9 @@ class ListListingsForExchangeResponse:
         """Serializes the ListListingsForExchangeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange_listings:
-            body["{exchange_listings}"] = [v.as_dict() for v in self.exchange_listings]
+            body["exchange_listings"] = [v.as_dict() for v in self.exchange_listings]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1864,9 +1864,9 @@ class ListListingsResponse:
         """Serializes the ListListingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listings:
-            body["{listings}"] = [v.as_dict() for v in self.listings]
+            body["listings"] = [v.as_dict() for v in self.listings]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1897,11 +1897,11 @@ class ListProviderAnalyticsDashboardResponse:
         """Serializes the ListProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1931,9 +1931,9 @@ class ListProvidersResponse:
         """Serializes the ListProvidersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.providers:
-            body["{providers}"] = [v.as_dict() for v in self.providers]
+            body["providers"] = [v.as_dict() for v in self.providers]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1965,11 +1965,11 @@ class Listing:
         """Serializes the Listing into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.detail:
-            body["{detail}"] = self.detail.as_dict()
+            body["detail"] = self.detail.as_dict()
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.summary:
-            body["{summary}"] = self.summary.as_dict()
+            body["summary"] = self.summary.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2056,43 +2056,43 @@ class ListingDetail:
         """Serializes the ListingDetail into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.assets:
-            body["{assets}"] = [v.value for v in self.assets]
+            body["assets"] = [v.value for v in self.assets]
         if self.collection_date_end is not None:
-            body["{collection_date_end}"] = self.collection_date_end
+            body["collection_date_end"] = self.collection_date_end
         if self.collection_date_start is not None:
-            body["{collection_date_start}"] = self.collection_date_start
+            body["collection_date_start"] = self.collection_date_start
         if self.collection_granularity:
-            body["{collection_granularity}"] = self.collection_granularity.as_dict()
+            body["collection_granularity"] = self.collection_granularity.as_dict()
         if self.cost is not None:
-            body["{cost}"] = self.cost.value
+            body["cost"] = self.cost.value
         if self.data_source is not None:
-            body["{data_source}"] = self.data_source
+            body["data_source"] = self.data_source
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.documentation_link is not None:
-            body["{documentation_link}"] = self.documentation_link
+            body["documentation_link"] = self.documentation_link
         if self.embedded_notebook_file_infos:
-            body["{embedded_notebook_file_infos}"] = [v.as_dict() for v in self.embedded_notebook_file_infos]
+            body["embedded_notebook_file_infos"] = [v.as_dict() for v in self.embedded_notebook_file_infos]
         if self.file_ids:
-            body["{file_ids}"] = [v for v in self.file_ids]
+            body["file_ids"] = [v for v in self.file_ids]
         if self.geographical_coverage is not None:
-            body["{geographical_coverage}"] = self.geographical_coverage
+            body["geographical_coverage"] = self.geographical_coverage
         if self.license is not None:
-            body["{license}"] = self.license
+            body["license"] = self.license
         if self.pricing_model is not None:
-            body["{pricing_model}"] = self.pricing_model
+            body["pricing_model"] = self.pricing_model
         if self.privacy_policy_link is not None:
-            body["{privacy_policy_link}"] = self.privacy_policy_link
+            body["privacy_policy_link"] = self.privacy_policy_link
         if self.size is not None:
-            body["{size}"] = self.size
+            body["size"] = self.size
         if self.support_link is not None:
-            body["{support_link}"] = self.support_link
+            body["support_link"] = self.support_link
         if self.tags:
-            body["{tags}"] = [v.as_dict() for v in self.tags]
+            body["tags"] = [v.as_dict() for v in self.tags]
         if self.terms_of_service is not None:
-            body["{terms_of_service}"] = self.terms_of_service
+            body["terms_of_service"] = self.terms_of_service
         if self.update_frequency:
-            body["{update_frequency}"] = self.update_frequency.as_dict()
+            body["update_frequency"] = self.update_frequency.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2180,15 +2180,15 @@ class ListingFulfillment:
         """Serializes the ListingFulfillment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.fulfillment_type is not None:
-            body["{fulfillment_type}"] = self.fulfillment_type.value
+            body["fulfillment_type"] = self.fulfillment_type.value
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type.value
+            body["recipient_type"] = self.recipient_type.value
         if self.repo_info:
-            body["{repo_info}"] = self.repo_info.as_dict()
+            body["repo_info"] = self.repo_info.as_dict()
         if self.share_info:
-            body["{share_info}"] = self.share_info.as_dict()
+            body["share_info"] = self.share_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2226,7 +2226,7 @@ class ListingSetting:
         """Serializes the ListingSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.visibility is not None:
-            body["{visibility}"] = self.visibility.value
+            body["visibility"] = self.visibility.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2304,43 +2304,43 @@ class ListingSummary:
         """Serializes the ListingSummary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.categories:
-            body["{categories}"] = [v.value for v in self.categories]
+            body["categories"] = [v.value for v in self.categories]
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.created_by_id is not None:
-            body["{created_by_id}"] = self.created_by_id
+            body["created_by_id"] = self.created_by_id
         if self.exchange_ids:
-            body["{exchange_ids}"] = [v for v in self.exchange_ids]
+            body["exchange_ids"] = [v for v in self.exchange_ids]
         if self.git_repo:
-            body["{git_repo}"] = self.git_repo.as_dict()
+            body["git_repo"] = self.git_repo.as_dict()
         if self.listing_type is not None:
-            body["{listing_type}"] = self.listing_type.value
+            body["listingType"] = self.listing_type.value
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.provider_id is not None:
-            body["{provider_id}"] = self.provider_id
+            body["provider_id"] = self.provider_id
         if self.provider_region:
-            body["{provider_region}"] = self.provider_region.as_dict()
+            body["provider_region"] = self.provider_region.as_dict()
         if self.published_at is not None:
-            body["{published_at}"] = self.published_at
+            body["published_at"] = self.published_at
         if self.published_by is not None:
-            body["{published_by}"] = self.published_by
+            body["published_by"] = self.published_by
         if self.setting:
-            body["{setting}"] = self.setting.as_dict()
+            body["setting"] = self.setting.as_dict()
         if self.share:
-            body["{share}"] = self.share.as_dict()
+            body["share"] = self.share.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.subtitle is not None:
-            body["{subtitle}"] = self.subtitle
+            body["subtitle"] = self.subtitle
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         if self.updated_by_id is not None:
-            body["{updated_by_id}"] = self.updated_by_id
+            body["updated_by_id"] = self.updated_by_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2424,9 +2424,9 @@ class ListingTag:
         """Serializes the ListingTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.tag_name is not None:
-            body["{tag_name}"] = self.tag_name.value
+            body["tag_name"] = self.tag_name.value
         if self.tag_values:
-            body["{tag_values}"] = [v for v in self.tag_values]
+            body["tag_values"] = [v for v in self.tag_values]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2502,37 +2502,37 @@ class PersonalizationRequest:
         """Serializes the PersonalizationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None:
-            body["{comment}"] = self.comment
+            body["comment"] = self.comment
         if self.consumer_region:
-            body["{consumer_region}"] = self.consumer_region.as_dict()
+            body["consumer_region"] = self.consumer_region.as_dict()
         if self.contact_info:
-            body["{contact_info}"] = self.contact_info.as_dict()
+            body["contact_info"] = self.contact_info.as_dict()
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.intended_use is not None:
-            body["{intended_use}"] = self.intended_use
+            body["intended_use"] = self.intended_use
         if self.is_from_lighthouse is not None:
-            body["{is_from_lighthouse}"] = self.is_from_lighthouse
+            body["is_from_lighthouse"] = self.is_from_lighthouse
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.listing_name is not None:
-            body["{listing_name}"] = self.listing_name
+            body["listing_name"] = self.listing_name
         if self.metastore_id is not None:
-            body["{metastore_id}"] = self.metastore_id
+            body["metastore_id"] = self.metastore_id
         if self.provider_id is not None:
-            body["{provider_id}"] = self.provider_id
+            body["provider_id"] = self.provider_id
         if self.recipient_type is not None:
-            body["{recipient_type}"] = self.recipient_type.value
+            body["recipient_type"] = self.recipient_type.value
         if self.share:
-            body["{share}"] = self.share.as_dict()
+            body["share"] = self.share.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         if self.status_message is not None:
-            body["{status_message}"] = self.status_message
+            body["status_message"] = self.status_message
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2611,7 +2611,7 @@ class ProviderAnalyticsDashboard:
         """Serializes the ProviderAnalyticsDashboard into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2663,33 +2663,33 @@ class ProviderInfo:
         """Serializes the ProviderInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.business_contact_email is not None:
-            body["{business_contact_email}"] = self.business_contact_email
+            body["business_contact_email"] = self.business_contact_email
         if self.company_website_link is not None:
-            body["{company_website_link}"] = self.company_website_link
+            body["company_website_link"] = self.company_website_link
         if self.dark_mode_icon_file_id is not None:
-            body["{dark_mode_icon_file_id}"] = self.dark_mode_icon_file_id
+            body["dark_mode_icon_file_id"] = self.dark_mode_icon_file_id
         if self.dark_mode_icon_file_path is not None:
-            body["{dark_mode_icon_file_path}"] = self.dark_mode_icon_file_path
+            body["dark_mode_icon_file_path"] = self.dark_mode_icon_file_path
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.icon_file_id is not None:
-            body["{icon_file_id}"] = self.icon_file_id
+            body["icon_file_id"] = self.icon_file_id
         if self.icon_file_path is not None:
-            body["{icon_file_path}"] = self.icon_file_path
+            body["icon_file_path"] = self.icon_file_path
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.is_featured is not None:
-            body["{is_featured}"] = self.is_featured
+            body["is_featured"] = self.is_featured
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.privacy_policy_link is not None:
-            body["{privacy_policy_link}"] = self.privacy_policy_link
+            body["privacy_policy_link"] = self.privacy_policy_link
         if self.published_by is not None:
-            body["{published_by}"] = self.published_by
+            body["published_by"] = self.published_by
         if self.support_contact_email is not None:
-            body["{support_contact_email}"] = self.support_contact_email
+            body["support_contact_email"] = self.support_contact_email
         if self.term_of_service_link is not None:
-            body["{term_of_service_link}"] = self.term_of_service_link
+            body["term_of_service_link"] = self.term_of_service_link
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2756,9 +2756,9 @@ class RegionInfo:
         """Serializes the RegionInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cloud is not None:
-            body["{cloud}"] = self.cloud
+            body["cloud"] = self.cloud
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2803,7 +2803,7 @@ class RepoInfo:
         """Serializes the RepoInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_repo_url is not None:
-            body["{git_repo_url}"] = self.git_repo_url
+            body["git_repo_url"] = self.git_repo_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2832,9 +2832,9 @@ class RepoInstallation:
         """Serializes the RepoInstallation into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.repo_name is not None:
-            body["{repo_name}"] = self.repo_name
+            body["repo_name"] = self.repo_name
         if self.repo_path is not None:
-            body["{repo_path}"] = self.repo_path
+            body["repo_path"] = self.repo_path
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2862,9 +2862,9 @@ class SearchListingsResponse:
         """Serializes the SearchListingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listings:
-            body["{listings}"] = [v.as_dict() for v in self.listings]
+            body["listings"] = [v.as_dict() for v in self.listings]
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2892,9 +2892,9 @@ class ShareInfo:
         """Serializes the ShareInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.type is not None:
-            body["{type}"] = self.type.value
+            body["type"] = self.type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2924,9 +2924,9 @@ class SharedDataObject:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_object_type is not None:
-            body["{data_object_type}"] = self.data_object_type
+            body["data_object_type"] = self.data_object_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2960,13 +2960,13 @@ class TokenDetail:
         """Serializes the TokenDetail into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bearer_token is not None:
-            body["{bearer_token}"] = self.bearer_token
+            body["bearerToken"] = self.bearer_token
         if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.expiration_time is not None:
-            body["{expiration_time}"] = self.expiration_time
+            body["expirationTime"] = self.expiration_time
         if self.share_credentials_version is not None:
-            body["{share_credentials_version}"] = self.share_credentials_version
+            body["shareCredentialsVersion"] = self.share_credentials_version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3021,19 +3021,19 @@ class TokenInfo:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activation_url is not None:
-            body["{activation_url}"] = self.activation_url
+            body["activation_url"] = self.activation_url
         if self.created_at is not None:
-            body["{created_at}"] = self.created_at
+            body["created_at"] = self.created_at
         if self.created_by is not None:
-            body["{created_by}"] = self.created_by
+            body["created_by"] = self.created_by
         if self.expiration_time is not None:
-            body["{expiration_time}"] = self.expiration_time
+            body["expiration_time"] = self.expiration_time
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.updated_at is not None:
-            body["{updated_at}"] = self.updated_at
+            body["updated_at"] = self.updated_at
         if self.updated_by is not None:
-            body["{updated_by}"] = self.updated_by
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3079,9 +3079,9 @@ class UpdateExchangeFilterRequest:
         """Serializes the UpdateExchangeFilterRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3107,7 +3107,7 @@ class UpdateExchangeFilterResponse:
         """Serializes the UpdateExchangeFilterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filter:
-            body["{filter}"] = self.filter.as_dict()
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3133,9 +3133,9 @@ class UpdateExchangeRequest:
         """Serializes the UpdateExchangeRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange.as_dict()
+            body["exchange"] = self.exchange.as_dict()
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3161,7 +3161,7 @@ class UpdateExchangeResponse:
         """Serializes the UpdateExchangeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exchange:
-            body["{exchange}"] = self.exchange.as_dict()
+            body["exchange"] = self.exchange.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3191,13 +3191,13 @@ class UpdateInstallationRequest:
         """Serializes the UpdateInstallationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation.as_dict()
+            body["installation"] = self.installation.as_dict()
         if self.installation_id is not None:
-            body["{installation_id}"] = self.installation_id
+            body["installation_id"] = self.installation_id
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.rotate_token is not None:
-            body["{rotate_token}"] = self.rotate_token
+            body["rotate_token"] = self.rotate_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3232,7 +3232,7 @@ class UpdateInstallationResponse:
         """Serializes the UpdateInstallationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.installation:
-            body["{installation}"] = self.installation.as_dict()
+            body["installation"] = self.installation.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3258,9 +3258,9 @@ class UpdateListingRequest:
         """Serializes the UpdateListingRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.listing:
-            body["{listing}"] = self.listing.as_dict()
+            body["listing"] = self.listing.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3286,7 +3286,7 @@ class UpdateListingResponse:
         """Serializes the UpdateListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listing:
-            body["{listing}"] = self.listing.as_dict()
+            body["listing"] = self.listing.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3318,15 +3318,15 @@ class UpdatePersonalizationRequestRequest:
         """Serializes the UpdatePersonalizationRequestRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.listing_id is not None:
-            body["{listing_id}"] = self.listing_id
+            body["listing_id"] = self.listing_id
         if self.reason is not None:
-            body["{reason}"] = self.reason
+            body["reason"] = self.reason
         if self.request_id is not None:
-            body["{request_id}"] = self.request_id
+            body["request_id"] = self.request_id
         if self.share:
-            body["{share}"] = self.share.as_dict()
+            body["share"] = self.share.as_dict()
         if self.status is not None:
-            body["{status}"] = self.status.value
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3364,7 +3364,7 @@ class UpdatePersonalizationRequestResponse:
         """Serializes the UpdatePersonalizationRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.request:
-            body["{request}"] = self.request.as_dict()
+            body["request"] = self.request.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3393,9 +3393,9 @@ class UpdateProviderAnalyticsDashboardRequest:
         """Serializes the UpdateProviderAnalyticsDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3427,11 +3427,11 @@ class UpdateProviderAnalyticsDashboardResponse:
         """Serializes the UpdateProviderAnalyticsDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.version is not None:
-            body["{version}"] = self.version
+            body["version"] = self.version
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3461,9 +3461,9 @@ class UpdateProviderRequest:
         """Serializes the UpdateProviderRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.provider:
-            body["{provider}"] = self.provider.as_dict()
+            body["provider"] = self.provider.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3489,7 +3489,7 @@ class UpdateProviderResponse:
         """Serializes the UpdateProviderResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.provider:
-            body["{provider}"] = self.provider.as_dict()
+            body["provider"] = self.provider.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
