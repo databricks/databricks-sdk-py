@@ -31,13 +31,13 @@ class ColumnInfo:
         """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
-        return cls(name=d.get("{name}", None))
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -61,15 +61,15 @@ class CreateEndpoint:
         """Serializes the CreateEndpoint into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.endpoint_type is not None:
-            body["{endpoint_type}"] = self.endpoint_type
+            body["endpoint_type"] = self.endpoint_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateEndpoint:
         """Deserializes the CreateEndpoint from a dictionary."""
-        return cls(endpoint_type=_enum(d, "{endpoint_type}", EndpointType), name=d.get("{name}", None))
+        return cls(endpoint_type=_enum(d, "endpoint_type", EndpointType), name=d.get("name", None))
 
 
 @dataclass
@@ -118,29 +118,29 @@ class CreateVectorIndexRequest:
         """Serializes the CreateVectorIndexRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.delta_sync_index_spec:
-            body["{delta_sync_index_spec}"] = self.delta_sync_index_spec
+            body["delta_sync_index_spec"] = self.delta_sync_index_spec
         if self.direct_access_index_spec:
-            body["{direct_access_index_spec}"] = self.direct_access_index_spec
+            body["direct_access_index_spec"] = self.direct_access_index_spec
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type
+            body["index_type"] = self.index_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexRequest:
         """Deserializes the CreateVectorIndexRequest from a dictionary."""
         return cls(
-            delta_sync_index_spec=_from_dict(d, "{delta_sync_index_spec}", DeltaSyncVectorIndexSpecRequest),
-            direct_access_index_spec=_from_dict(d, "{direct_access_index_spec}", DirectAccessVectorIndexSpec),
-            endpoint_name=d.get("{endpoint_name}", None),
-            index_type=_enum(d, "{index_type}", VectorIndexType),
-            name=d.get("{name}", None),
-            primary_key=d.get("{primary_key}", None),
+            delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecRequest),
+            direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
+            endpoint_name=d.get("endpoint_name", None),
+            index_type=_enum(d, "index_type", VectorIndexType),
+            name=d.get("name", None),
+            primary_key=d.get("primary_key", None),
         )
 
 
@@ -159,13 +159,13 @@ class CreateVectorIndexResponse:
         """Serializes the CreateVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.vector_index:
-            body["{vector_index}"] = self.vector_index
+            body["vector_index"] = self.vector_index
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexResponse:
         """Deserializes the CreateVectorIndexResponse from a dictionary."""
-        return cls(vector_index=_from_dict(d, "{vector_index}", VectorIndex))
+        return cls(vector_index=_from_dict(d, "vector_index", VectorIndex))
 
 
 @dataclass
@@ -191,17 +191,16 @@ class DeleteDataResult:
         """Serializes the DeleteDataResult into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.failed_primary_keys:
-            body["{failed_primary_keys}"] = self.failed_primary_keys
+            body["failed_primary_keys"] = self.failed_primary_keys
         if self.success_row_count is not None:
-            body["{success_row_count}"] = self.success_row_count
+            body["success_row_count"] = self.success_row_count
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteDataResult:
         """Deserializes the DeleteDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("{failed_primary_keys}", None),
-            success_row_count=d.get("{success_row_count}", None),
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
         )
 
 
@@ -236,15 +235,15 @@ class DeleteDataVectorIndexRequest:
         """Serializes the DeleteDataVectorIndexRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.primary_keys:
-            body["{primary_keys}"] = self.primary_keys
+            body["primary_keys"] = self.primary_keys
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexRequest:
         """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
-        return cls(index_name=d.get("{index_name}", None), primary_keys=d.get("{primary_keys}", None))
+        return cls(index_name=d.get("index_name", None), primary_keys=d.get("primary_keys", None))
 
 
 @dataclass
@@ -270,15 +269,15 @@ class DeleteDataVectorIndexResponse:
         """Serializes the DeleteDataVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.result:
-            body["{result}"] = self.result
+            body["result"] = self.result
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexResponse:
         """Deserializes the DeleteDataVectorIndexResponse from a dictionary."""
-        return cls(result=_from_dict(d, "{result}", DeleteDataResult), status=_enum(d, "{status}", DeleteDataStatus))
+        return cls(result=_from_dict(d, "result", DeleteDataResult), status=_enum(d, "status", DeleteDataStatus))
 
 
 @dataclass
@@ -367,29 +366,29 @@ class DeltaSyncVectorIndexSpecRequest:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.columns_to_sync:
-            body["{columns_to_sync}"] = self.columns_to_sync
+            body["columns_to_sync"] = self.columns_to_sync
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = self.embedding_source_columns
+            body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = self.embedding_vector_columns
+            body["embedding_vector_columns"] = self.embedding_vector_columns
         if self.embedding_writeback_table is not None:
-            body["{embedding_writeback_table}"] = self.embedding_writeback_table
+            body["embedding_writeback_table"] = self.embedding_writeback_table
         if self.pipeline_type is not None:
-            body["{pipeline_type}"] = self.pipeline_type
+            body["pipeline_type"] = self.pipeline_type
         if self.source_table is not None:
-            body["{source_table}"] = self.source_table
+            body["source_table"] = self.source_table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
-            columns_to_sync=d.get("{columns_to_sync}", None),
-            embedding_source_columns=_repeated_dict(d, "{embedding_source_columns}", EmbeddingSourceColumn),
-            embedding_vector_columns=_repeated_dict(d, "{embedding_vector_columns}", EmbeddingVectorColumn),
-            embedding_writeback_table=d.get("{embedding_writeback_table}", None),
-            pipeline_type=_enum(d, "{pipeline_type}", PipelineType),
-            source_table=d.get("{source_table}", None),
+            columns_to_sync=d.get("columns_to_sync", None),
+            embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
+            embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            embedding_writeback_table=d.get("embedding_writeback_table", None),
+            pipeline_type=_enum(d, "pipeline_type", PipelineType),
+            source_table=d.get("source_table", None),
         )
 
 
@@ -440,29 +439,29 @@ class DeltaSyncVectorIndexSpecResponse:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = self.embedding_source_columns
+            body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = self.embedding_vector_columns
+            body["embedding_vector_columns"] = self.embedding_vector_columns
         if self.embedding_writeback_table is not None:
-            body["{embedding_writeback_table}"] = self.embedding_writeback_table
+            body["embedding_writeback_table"] = self.embedding_writeback_table
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.pipeline_type is not None:
-            body["{pipeline_type}"] = self.pipeline_type
+            body["pipeline_type"] = self.pipeline_type
         if self.source_table is not None:
-            body["{source_table}"] = self.source_table
+            body["source_table"] = self.source_table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
-            embedding_source_columns=_repeated_dict(d, "{embedding_source_columns}", EmbeddingSourceColumn),
-            embedding_vector_columns=_repeated_dict(d, "{embedding_vector_columns}", EmbeddingVectorColumn),
-            embedding_writeback_table=d.get("{embedding_writeback_table}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            pipeline_type=_enum(d, "{pipeline_type}", PipelineType),
-            source_table=d.get("{source_table}", None),
+            embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
+            embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            embedding_writeback_table=d.get("embedding_writeback_table", None),
+            pipeline_id=d.get("pipeline_id", None),
+            pipeline_type=_enum(d, "pipeline_type", PipelineType),
+            source_table=d.get("source_table", None),
         )
 
 
@@ -496,20 +495,20 @@ class DirectAccessVectorIndexSpec:
         """Serializes the DirectAccessVectorIndexSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.embedding_source_columns:
-            body["{embedding_source_columns}"] = self.embedding_source_columns
+            body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
-            body["{embedding_vector_columns}"] = self.embedding_vector_columns
+            body["embedding_vector_columns"] = self.embedding_vector_columns
         if self.schema_json is not None:
-            body["{schema_json}"] = self.schema_json
+            body["schema_json"] = self.schema_json
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DirectAccessVectorIndexSpec:
         """Deserializes the DirectAccessVectorIndexSpec from a dictionary."""
         return cls(
-            embedding_source_columns=_repeated_dict(d, "{embedding_source_columns}", EmbeddingSourceColumn),
-            embedding_vector_columns=_repeated_dict(d, "{embedding_vector_columns}", EmbeddingVectorColumn),
-            schema_json=d.get("{schema_json}", None),
+            embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
+            embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
+            schema_json=d.get("schema_json", None),
         )
 
 
@@ -534,17 +533,15 @@ class EmbeddingSourceColumn:
         """Serializes the EmbeddingSourceColumn into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.embedding_model_endpoint_name is not None:
-            body["{embedding_model_endpoint_name}"] = self.embedding_model_endpoint_name
+            body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(
-            embedding_model_endpoint_name=d.get("{embedding_model_endpoint_name}", None), name=d.get("{name}", None)
-        )
+        return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
 
 
 @dataclass
@@ -568,15 +565,15 @@ class EmbeddingVectorColumn:
         """Serializes the EmbeddingVectorColumn into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.embedding_dimension is not None:
-            body["{embedding_dimension}"] = self.embedding_dimension
+            body["embedding_dimension"] = self.embedding_dimension
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EmbeddingVectorColumn:
         """Deserializes the EmbeddingVectorColumn from a dictionary."""
-        return cls(embedding_dimension=d.get("{embedding_dimension}", None), name=d.get("{name}", None))
+        return cls(embedding_dimension=d.get("embedding_dimension", None), name=d.get("name", None))
 
 
 @dataclass
@@ -635,38 +632,38 @@ class EndpointInfo:
         """Serializes the EndpointInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.creation_timestamp is not None:
-            body["{creation_timestamp}"] = self.creation_timestamp
+            body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.endpoint_status:
-            body["{endpoint_status}"] = self.endpoint_status
+            body["endpoint_status"] = self.endpoint_status
         if self.endpoint_type is not None:
-            body["{endpoint_type}"] = self.endpoint_type
+            body["endpoint_type"] = self.endpoint_type
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp is not None:
-            body["{last_updated_timestamp}"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.last_updated_user is not None:
-            body["{last_updated_user}"] = self.last_updated_user
+            body["last_updated_user"] = self.last_updated_user
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.num_indexes is not None:
-            body["{num_indexes}"] = self.num_indexes
+            body["num_indexes"] = self.num_indexes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(
-            creation_timestamp=d.get("{creation_timestamp}", None),
-            creator=d.get("{creator}", None),
-            endpoint_status=_from_dict(d, "{endpoint_status}", EndpointStatus),
-            endpoint_type=_enum(d, "{endpoint_type}", EndpointType),
-            id=d.get("{id}", None),
-            last_updated_timestamp=d.get("{last_updated_timestamp}", None),
-            last_updated_user=d.get("{last_updated_user}", None),
-            name=d.get("{name}", None),
-            num_indexes=d.get("{num_indexes}", None),
+            creation_timestamp=d.get("creation_timestamp", None),
+            creator=d.get("creator", None),
+            endpoint_status=_from_dict(d, "endpoint_status", EndpointStatus),
+            endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            id=d.get("id", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            last_updated_user=d.get("last_updated_user", None),
+            name=d.get("name", None),
+            num_indexes=d.get("num_indexes", None),
         )
 
 
@@ -693,15 +690,15 @@ class EndpointStatus:
         """Serializes the EndpointStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointStatus:
         """Deserializes the EndpointStatus from a dictionary."""
-        return cls(message=d.get("{message}", None), state=_enum(d, "{state}", EndpointStatusState))
+        return cls(message=d.get("message", None), state=_enum(d, "state", EndpointStatusState))
 
 
 class EndpointStatusState(Enum):
@@ -740,16 +737,16 @@ class ListEndpointResponse:
         """Serializes the ListEndpointResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.endpoints:
-            body["{endpoints}"] = self.endpoints
+            body["endpoints"] = self.endpoints
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListEndpointResponse:
         """Deserializes the ListEndpointResponse from a dictionary."""
         return cls(
-            endpoints=_repeated_dict(d, "{endpoints}", EndpointInfo), next_page_token=d.get("{next_page_token}", None)
+            endpoints=_repeated_dict(d, "endpoints", EndpointInfo), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -768,13 +765,13 @@ class ListValue:
         """Serializes the ListValue into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.values:
-            body["{values}"] = self.values
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListValue:
         """Deserializes the ListValue from a dictionary."""
-        return cls(values=_repeated_dict(d, "{values}", Value))
+        return cls(values=_repeated_dict(d, "values", Value))
 
 
 @dataclass
@@ -798,17 +795,17 @@ class ListVectorIndexesResponse:
         """Serializes the ListVectorIndexesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.vector_indexes:
-            body["{vector_indexes}"] = self.vector_indexes
+            body["vector_indexes"] = self.vector_indexes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListVectorIndexesResponse:
         """Deserializes the ListVectorIndexesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            vector_indexes=_repeated_dict(d, "{vector_indexes}", MiniVectorIndex),
+            next_page_token=d.get("next_page_token", None),
+            vector_indexes=_repeated_dict(d, "vector_indexes", MiniVectorIndex),
         )
 
 
@@ -835,15 +832,15 @@ class MapStringValueEntry:
         """Serializes the MapStringValueEntry into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None:
-            body["{key}"] = self.key
+            body["key"] = self.key
         if self.value:
-            body["{value}"] = self.value
+            body["value"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MapStringValueEntry:
         """Deserializes the MapStringValueEntry from a dictionary."""
-        return cls(key=d.get("{key}", None), value=_from_dict(d, "{value}", Value))
+        return cls(key=d.get("key", None), value=_from_dict(d, "value", Value))
 
 
 @dataclass
@@ -887,26 +884,26 @@ class MiniVectorIndex:
         """Serializes the MiniVectorIndex into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type
+            body["index_type"] = self.index_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MiniVectorIndex:
         """Deserializes the MiniVectorIndex from a dictionary."""
         return cls(
-            creator=d.get("{creator}", None),
-            endpoint_name=d.get("{endpoint_name}", None),
-            index_type=_enum(d, "{index_type}", VectorIndexType),
-            name=d.get("{name}", None),
-            primary_key=d.get("{primary_key}", None),
+            creator=d.get("creator", None),
+            endpoint_name=d.get("endpoint_name", None),
+            index_type=_enum(d, "index_type", VectorIndexType),
+            name=d.get("name", None),
+            primary_key=d.get("primary_key", None),
         )
 
 
@@ -951,20 +948,20 @@ class QueryVectorIndexNextPageRequest:
         """Serializes the QueryVectorIndexNextPageRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.page_token is not None:
-            body["{page_token}"] = self.page_token
+            body["page_token"] = self.page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexNextPageRequest:
         """Deserializes the QueryVectorIndexNextPageRequest from a dictionary."""
         return cls(
-            endpoint_name=d.get("{endpoint_name}", None),
-            index_name=d.get("{index_name}", None),
-            page_token=d.get("{page_token}", None),
+            endpoint_name=d.get("endpoint_name", None),
+            index_name=d.get("index_name", None),
+            page_token=d.get("page_token", None),
         )
 
 
@@ -1029,38 +1026,38 @@ class QueryVectorIndexRequest:
         """Serializes the QueryVectorIndexRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         if self.columns_to_rerank:
-            body["{columns_to_rerank}"] = self.columns_to_rerank
+            body["columns_to_rerank"] = self.columns_to_rerank
         if self.filters_json is not None:
-            body["{filters_json}"] = self.filters_json
+            body["filters_json"] = self.filters_json
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.num_results is not None:
-            body["{num_results}"] = self.num_results
+            body["num_results"] = self.num_results
         if self.query_text is not None:
-            body["{query_text}"] = self.query_text
+            body["query_text"] = self.query_text
         if self.query_type is not None:
-            body["{query_type}"] = self.query_type
+            body["query_type"] = self.query_type
         if self.query_vector:
-            body["{query_vector}"] = self.query_vector
+            body["query_vector"] = self.query_vector
         if self.score_threshold is not None:
-            body["{score_threshold}"] = self.score_threshold
+            body["score_threshold"] = self.score_threshold
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexRequest:
         """Deserializes the QueryVectorIndexRequest from a dictionary."""
         return cls(
-            columns=d.get("{columns}", None),
-            columns_to_rerank=d.get("{columns_to_rerank}", None),
-            filters_json=d.get("{filters_json}", None),
-            index_name=d.get("{index_name}", None),
-            num_results=d.get("{num_results}", None),
-            query_text=d.get("{query_text}", None),
-            query_type=d.get("{query_type}", None),
-            query_vector=d.get("{query_vector}", None),
-            score_threshold=d.get("{score_threshold}", None),
+            columns=d.get("columns", None),
+            columns_to_rerank=d.get("columns_to_rerank", None),
+            filters_json=d.get("filters_json", None),
+            index_name=d.get("index_name", None),
+            num_results=d.get("num_results", None),
+            query_text=d.get("query_text", None),
+            query_type=d.get("query_type", None),
+            query_vector=d.get("query_vector", None),
+            score_threshold=d.get("score_threshold", None),
         )
 
 
@@ -1092,20 +1089,20 @@ class QueryVectorIndexResponse:
         """Serializes the QueryVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.manifest:
-            body["{manifest}"] = self.manifest
+            body["manifest"] = self.manifest
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.result:
-            body["{result}"] = self.result
+            body["result"] = self.result
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(
-            manifest=_from_dict(d, "{manifest}", ResultManifest),
-            next_page_token=d.get("{next_page_token}", None),
-            result=_from_dict(d, "{result}", ResultData),
+            manifest=_from_dict(d, "manifest", ResultManifest),
+            next_page_token=d.get("next_page_token", None),
+            result=_from_dict(d, "result", ResultData),
         )
 
 
@@ -1132,15 +1129,15 @@ class ResultData:
         """Serializes the ResultData into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_array:
-            body["{data_array}"] = self.data_array
+            body["data_array"] = self.data_array
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
-        return cls(data_array=d.get("{data_array}", None), row_count=d.get("{row_count}", None))
+        return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
 
 
 @dataclass
@@ -1166,15 +1163,15 @@ class ResultManifest:
         """Serializes the ResultManifest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.column_count is not None:
-            body["{column_count}"] = self.column_count
+            body["column_count"] = self.column_count
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
-        return cls(column_count=d.get("{column_count}", None), columns=_repeated_dict(d, "{columns}", ColumnInfo))
+        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -1205,20 +1202,20 @@ class ScanVectorIndexRequest:
         """Serializes the ScanVectorIndexRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.last_primary_key is not None:
-            body["{last_primary_key}"] = self.last_primary_key
+            body["last_primary_key"] = self.last_primary_key
         if self.num_results is not None:
-            body["{num_results}"] = self.num_results
+            body["num_results"] = self.num_results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ScanVectorIndexRequest:
         """Deserializes the ScanVectorIndexRequest from a dictionary."""
         return cls(
-            index_name=d.get("{index_name}", None),
-            last_primary_key=d.get("{last_primary_key}", None),
-            num_results=d.get("{num_results}", None),
+            index_name=d.get("index_name", None),
+            last_primary_key=d.get("last_primary_key", None),
+            num_results=d.get("num_results", None),
         )
 
 
@@ -1245,15 +1242,15 @@ class ScanVectorIndexResponse:
         """Serializes the ScanVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data:
-            body["{data}"] = self.data
+            body["data"] = self.data
         if self.last_primary_key is not None:
-            body["{last_primary_key}"] = self.last_primary_key
+            body["last_primary_key"] = self.last_primary_key
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ScanVectorIndexResponse:
         """Deserializes the ScanVectorIndexResponse from a dictionary."""
-        return cls(data=_repeated_dict(d, "{data}", Struct), last_primary_key=d.get("{last_primary_key}", None))
+        return cls(data=_repeated_dict(d, "data", Struct), last_primary_key=d.get("last_primary_key", None))
 
 
 @dataclass
@@ -1272,13 +1269,13 @@ class Struct:
         """Serializes the Struct into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.fields:
-            body["{fields}"] = self.fields
+            body["fields"] = self.fields
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Struct:
         """Deserializes the Struct from a dictionary."""
-        return cls(fields=_repeated_dict(d, "{fields}", MapStringValueEntry))
+        return cls(fields=_repeated_dict(d, "fields", MapStringValueEntry))
 
 
 @dataclass
@@ -1322,17 +1319,16 @@ class UpsertDataResult:
         """Serializes the UpsertDataResult into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.failed_primary_keys:
-            body["{failed_primary_keys}"] = self.failed_primary_keys
+            body["failed_primary_keys"] = self.failed_primary_keys
         if self.success_row_count is not None:
-            body["{success_row_count}"] = self.success_row_count
+            body["success_row_count"] = self.success_row_count
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpsertDataResult:
         """Deserializes the UpsertDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("{failed_primary_keys}", None),
-            success_row_count=d.get("{success_row_count}", None),
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
         )
 
 
@@ -1367,15 +1363,15 @@ class UpsertDataVectorIndexRequest:
         """Serializes the UpsertDataVectorIndexRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.index_name is not None:
-            body["{index_name}"] = self.index_name
+            body["index_name"] = self.index_name
         if self.inputs_json is not None:
-            body["{inputs_json}"] = self.inputs_json
+            body["inputs_json"] = self.inputs_json
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexRequest:
         """Deserializes the UpsertDataVectorIndexRequest from a dictionary."""
-        return cls(index_name=d.get("{index_name}", None), inputs_json=d.get("{inputs_json}", None))
+        return cls(index_name=d.get("index_name", None), inputs_json=d.get("inputs_json", None))
 
 
 @dataclass
@@ -1401,15 +1397,15 @@ class UpsertDataVectorIndexResponse:
         """Serializes the UpsertDataVectorIndexResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.result:
-            body["{result}"] = self.result
+            body["result"] = self.result
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexResponse:
         """Deserializes the UpsertDataVectorIndexResponse from a dictionary."""
-        return cls(result=_from_dict(d, "{result}", UpsertDataResult), status=_enum(d, "{status}", UpsertDataStatus))
+        return cls(result=_from_dict(d, "result", UpsertDataResult), status=_enum(d, "status", UpsertDataStatus))
 
 
 @dataclass
@@ -1447,29 +1443,29 @@ class Value:
         """Serializes the Value into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bool_value is not None:
-            body["{bool_value}"] = self.bool_value
+            body["bool_value"] = self.bool_value
         if self.list_value:
-            body["{list_value}"] = self.list_value
+            body["list_value"] = self.list_value
         if self.null_value is not None:
-            body["{null_value}"] = self.null_value
+            body["null_value"] = self.null_value
         if self.number_value is not None:
-            body["{number_value}"] = self.number_value
+            body["number_value"] = self.number_value
         if self.string_value is not None:
-            body["{string_value}"] = self.string_value
+            body["string_value"] = self.string_value
         if self.struct_value:
-            body["{struct_value}"] = self.struct_value
+            body["struct_value"] = self.struct_value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Value:
         """Deserializes the Value from a dictionary."""
         return cls(
-            bool_value=d.get("{bool_value}", None),
-            list_value=_from_dict(d, "{list_value}", ListValue),
-            null_value=d.get("{null_value}", None),
-            number_value=d.get("{number_value}", None),
-            string_value=d.get("{string_value}", None),
-            struct_value=_from_dict(d, "{struct_value}", Struct),
+            bool_value=d.get("bool_value", None),
+            list_value=_from_dict(d, "list_value", ListValue),
+            null_value=d.get("null_value", None),
+            number_value=d.get("number_value", None),
+            string_value=d.get("string_value", None),
+            struct_value=_from_dict(d, "struct_value", Struct),
         )
 
 
@@ -1526,35 +1522,35 @@ class VectorIndex:
         """Serializes the VectorIndex into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.creator is not None:
-            body["{creator}"] = self.creator
+            body["creator"] = self.creator
         if self.delta_sync_index_spec:
-            body["{delta_sync_index_spec}"] = self.delta_sync_index_spec
+            body["delta_sync_index_spec"] = self.delta_sync_index_spec
         if self.direct_access_index_spec:
-            body["{direct_access_index_spec}"] = self.direct_access_index_spec
+            body["direct_access_index_spec"] = self.direct_access_index_spec
         if self.endpoint_name is not None:
-            body["{endpoint_name}"] = self.endpoint_name
+            body["endpoint_name"] = self.endpoint_name
         if self.index_type is not None:
-            body["{index_type}"] = self.index_type
+            body["index_type"] = self.index_type
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.primary_key is not None:
-            body["{primary_key}"] = self.primary_key
+            body["primary_key"] = self.primary_key
         if self.status:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> VectorIndex:
         """Deserializes the VectorIndex from a dictionary."""
         return cls(
-            creator=d.get("{creator}", None),
-            delta_sync_index_spec=_from_dict(d, "{delta_sync_index_spec}", DeltaSyncVectorIndexSpecResponse),
-            direct_access_index_spec=_from_dict(d, "{direct_access_index_spec}", DirectAccessVectorIndexSpec),
-            endpoint_name=d.get("{endpoint_name}", None),
-            index_type=_enum(d, "{index_type}", VectorIndexType),
-            name=d.get("{name}", None),
-            primary_key=d.get("{primary_key}", None),
-            status=_from_dict(d, "{status}", VectorIndexStatus),
+            creator=d.get("creator", None),
+            delta_sync_index_spec=_from_dict(d, "delta_sync_index_spec", DeltaSyncVectorIndexSpecResponse),
+            direct_access_index_spec=_from_dict(d, "direct_access_index_spec", DirectAccessVectorIndexSpec),
+            endpoint_name=d.get("endpoint_name", None),
+            index_type=_enum(d, "index_type", VectorIndexType),
+            name=d.get("name", None),
+            primary_key=d.get("primary_key", None),
+            status=_from_dict(d, "status", VectorIndexStatus),
         )
 
 
@@ -1589,23 +1585,23 @@ class VectorIndexStatus:
         """Serializes the VectorIndexStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.index_url is not None:
-            body["{index_url}"] = self.index_url
+            body["index_url"] = self.index_url
         if self.indexed_row_count is not None:
-            body["{indexed_row_count}"] = self.indexed_row_count
+            body["indexed_row_count"] = self.indexed_row_count
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.ready is not None:
-            body["{ready}"] = self.ready
+            body["ready"] = self.ready
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(
-            index_url=d.get("{index_url}", None),
-            indexed_row_count=d.get("{indexed_row_count}", None),
-            message=d.get("{message}", None),
-            ready=d.get("{ready}", None),
+            index_url=d.get("index_url", None),
+            indexed_row_count=d.get("indexed_row_count", None),
+            message=d.get("message", None),
+            ready=d.get("ready", None),
         )
 
 
@@ -1643,9 +1639,9 @@ class VectorSearchEndpointsAPI:
         """
         body = {}
         if endpoint_type is not None:
-            body["{endpoint_type}"] = endpoint_type.value
+            body["endpoint_type"] = endpoint_type.value
         if name is not None:
-            body["{name}"] = name
+            body["name"] = name
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1655,7 +1651,7 @@ class VectorSearchEndpointsAPI:
         return Wait(
             self.WaitGetEndpointVectorSearchEndpointOnline,
             response=EndpointInfo.from_dict(op_response),
-            endpoint_name=op_response["{name}"],
+            endpoint_name=op_response["name"],
         )
 
     def create_endpoint_and_wait(
@@ -1703,19 +1699,19 @@ class VectorSearchEndpointsAPI:
 
         query = {}
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/vector-search/endpoints", query=query, headers=headers)
-            if "{endpoints}" in json:
-                for v in json["{endpoints}"]:
+            if "endpoints" in json:
+                for v in json["endpoints"]:
                     yield EndpointInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
 
 class VectorSearchIndexesAPI:
@@ -1766,17 +1762,17 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if delta_sync_index_spec is not None:
-            body["{delta_sync_index_spec}"] = delta_sync_index_spec.as_dict()
+            body["delta_sync_index_spec"] = delta_sync_index_spec.as_dict()
         if direct_access_index_spec is not None:
-            body["{direct_access_index_spec}"] = direct_access_index_spec.as_dict()
+            body["direct_access_index_spec"] = direct_access_index_spec.as_dict()
         if endpoint_name is not None:
-            body["{endpoint_name}"] = endpoint_name
+            body["endpoint_name"] = endpoint_name
         if index_type is not None:
-            body["{index_type}"] = index_type.value
+            body["index_type"] = index_type.value
         if name is not None:
-            body["{name}"] = name
+            body["name"] = name
         if primary_key is not None:
-            body["{primary_key}"] = primary_key
+            body["primary_key"] = primary_key
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1799,7 +1795,7 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if primary_keys is not None:
-            body["{primary_keys}"] = [v for v in primary_keys]
+            body["primary_keys"] = [v for v in primary_keys]
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1858,21 +1854,21 @@ class VectorSearchIndexesAPI:
 
         query = {}
         if endpoint_name is not None:
-            query["{endpoint_name}"] = endpoint_name
+            query["endpoint_name"] = endpoint_name
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/vector-search/indexes", query=query, headers=headers)
-            if "{vector_indexes}" in json:
-                for v in json["{vector_indexes}"]:
+            if "vector_indexes" in json:
+                for v in json["vector_indexes"]:
                     yield MiniVectorIndex.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def query_index(
         self,
@@ -1919,21 +1915,21 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if columns is not None:
-            body["{columns}"] = [v for v in columns]
+            body["columns"] = [v for v in columns]
         if columns_to_rerank is not None:
-            body["{columns_to_rerank}"] = [v for v in columns_to_rerank]
+            body["columns_to_rerank"] = [v for v in columns_to_rerank]
         if filters_json is not None:
-            body["{filters_json}"] = filters_json
+            body["filters_json"] = filters_json
         if num_results is not None:
-            body["{num_results}"] = num_results
+            body["num_results"] = num_results
         if query_text is not None:
-            body["{query_text}"] = query_text
+            body["query_text"] = query_text
         if query_type is not None:
-            body["{query_type}"] = query_type
+            body["query_type"] = query_type
         if query_vector is not None:
-            body["{query_vector}"] = [v for v in query_vector]
+            body["query_vector"] = [v for v in query_vector]
         if score_threshold is not None:
-            body["{score_threshold}"] = score_threshold
+            body["score_threshold"] = score_threshold
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1961,9 +1957,9 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if endpoint_name is not None:
-            body["{endpoint_name}"] = endpoint_name
+            body["endpoint_name"] = endpoint_name
         if page_token is not None:
-            body["{page_token}"] = page_token
+            body["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -1993,9 +1989,9 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if last_primary_key is not None:
-            body["{last_primary_key}"] = last_primary_key
+            body["last_primary_key"] = last_primary_key
         if num_results is not None:
-            body["{num_results}"] = num_results
+            body["num_results"] = num_results
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -2033,7 +2029,7 @@ class VectorSearchIndexesAPI:
         """
         body = {}
         if inputs_json is not None:
-            body["{inputs_json}"] = inputs_json
+            body["inputs_json"] = inputs_json
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",

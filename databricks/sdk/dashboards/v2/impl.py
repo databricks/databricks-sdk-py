@@ -50,23 +50,23 @@ class BaseChunkInfo:
         """Serializes the BaseChunkInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["{byte_count}"] = self.byte_count
+            body["byte_count"] = self.byte_count
         if self.chunk_index is not None:
-            body["{chunk_index}"] = self.chunk_index
+            body["chunk_index"] = self.chunk_index
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         if self.row_offset is not None:
-            body["{row_offset}"] = self.row_offset
+            body["row_offset"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BaseChunkInfo:
         """Deserializes the BaseChunkInfo from a dictionary."""
         return cls(
-            byte_count=d.get("{byte_count}", None),
-            chunk_index=d.get("{chunk_index}", None),
-            row_count=d.get("{row_count}", None),
-            row_offset=d.get("{row_offset}", None),
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
         )
 
 
@@ -85,13 +85,13 @@ class CancelQueryExecutionResponse:
         """Serializes the CancelQueryExecutionResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.status:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponse:
         """Deserializes the CancelQueryExecutionResponse from a dictionary."""
-        return cls(status=_repeated_dict(d, "{status}", CancelQueryExecutionResponseStatus))
+        return cls(status=_repeated_dict(d, "status", CancelQueryExecutionResponseStatus))
 
 
 @dataclass
@@ -123,20 +123,20 @@ class CancelQueryExecutionResponseStatus:
         """Serializes the CancelQueryExecutionResponseStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_token is not None:
-            body["{data_token}"] = self.data_token
+            body["data_token"] = self.data_token
         if self.pending:
-            body["{pending}"] = self.pending
+            body["pending"] = self.pending
         if self.success:
-            body["{success}"] = self.success
+            body["success"] = self.success
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponseStatus:
         """Deserializes the CancelQueryExecutionResponseStatus from a dictionary."""
         return cls(
-            data_token=d.get("{data_token}", None),
-            pending=_from_dict(d, "{pending}", Empty),
-            success=_from_dict(d, "{success}", Empty),
+            data_token=d.get("data_token", None),
+            pending=_from_dict(d, "pending", Empty),
+            success=_from_dict(d, "success", Empty),
         )
 
 
@@ -188,32 +188,32 @@ class ColumnInfo:
         """Serializes the ColumnInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.position is not None:
-            body["{position}"] = self.position
+            body["position"] = self.position
         if self.type_interval_type is not None:
-            body["{type_interval_type}"] = self.type_interval_type
+            body["type_interval_type"] = self.type_interval_type
         if self.type_name is not None:
-            body["{type_name}"] = self.type_name
+            body["type_name"] = self.type_name
         if self.type_precision is not None:
-            body["{type_precision}"] = self.type_precision
+            body["type_precision"] = self.type_precision
         if self.type_scale is not None:
-            body["{type_scale}"] = self.type_scale
+            body["type_scale"] = self.type_scale
         if self.type_text is not None:
-            body["{type_text}"] = self.type_text
+            body["type_text"] = self.type_text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(
-            name=d.get("{name}", None),
-            position=d.get("{position}", None),
-            type_interval_type=d.get("{type_interval_type}", None),
-            type_name=_enum(d, "{type_name}", ColumnInfoTypeName),
-            type_precision=d.get("{type_precision}", None),
-            type_scale=d.get("{type_scale}", None),
-            type_text=d.get("{type_text}", None),
+            name=d.get("name", None),
+            position=d.get("position", None),
+            type_interval_type=d.get("type_interval_type", None),
+            type_name=_enum(d, "type_name", ColumnInfoTypeName),
+            type_precision=d.get("type_precision", None),
+            type_scale=d.get("type_scale", None),
+            type_text=d.get("type_text", None),
         )
 
 
@@ -269,17 +269,15 @@ class CronSchedule:
         """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.quartz_cron_expression is not None:
-            body["{quartz_cron_expression}"] = self.quartz_cron_expression
+            body["quartz_cron_expression"] = self.quartz_cron_expression
         if self.timezone_id is not None:
-            body["{timezone_id}"] = self.timezone_id
+            body["timezone_id"] = self.timezone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(
-            quartz_cron_expression=d.get("{quartz_cron_expression}", None), timezone_id=d.get("{timezone_id}", None)
-        )
+        return cls(quartz_cron_expression=d.get("quartz_cron_expression", None), timezone_id=d.get("timezone_id", None))
 
 
 @dataclass
@@ -352,41 +350,41 @@ class Dashboard:
         """Serializes the Dashboard into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.lifecycle_state is not None:
-            body["{lifecycle_state}"] = self.lifecycle_state
+            body["lifecycle_state"] = self.lifecycle_state
         if self.parent_path is not None:
-            body["{parent_path}"] = self.parent_path
+            body["parent_path"] = self.parent_path
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         if self.serialized_dashboard is not None:
-            body["{serialized_dashboard}"] = self.serialized_dashboard
+            body["serialized_dashboard"] = self.serialized_dashboard
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Dashboard:
         """Deserializes the Dashboard from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            dashboard_id=d.get("{dashboard_id}", None),
-            display_name=d.get("{display_name}", None),
-            etag=d.get("{etag}", None),
-            lifecycle_state=_enum(d, "{lifecycle_state}", LifecycleState),
-            parent_path=d.get("{parent_path}", None),
-            path=d.get("{path}", None),
-            serialized_dashboard=d.get("{serialized_dashboard}", None),
-            update_time=d.get("{update_time}", None),
-            warehouse_id=d.get("{warehouse_id}", None),
+            create_time=d.get("create_time", None),
+            dashboard_id=d.get("dashboard_id", None),
+            display_name=d.get("display_name", None),
+            etag=d.get("etag", None),
+            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
+            parent_path=d.get("parent_path", None),
+            path=d.get("path", None),
+            serialized_dashboard=d.get("serialized_dashboard", None),
+            update_time=d.get("update_time", None),
+            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -484,20 +482,20 @@ class ExecutePublishedDashboardQueryRequest:
         """Serializes the ExecutePublishedDashboardQueryRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_name is not None:
-            body["{dashboard_name}"] = self.dashboard_name
+            body["dashboard_name"] = self.dashboard_name
         if self.dashboard_revision_id is not None:
-            body["{dashboard_revision_id}"] = self.dashboard_revision_id
+            body["dashboard_revision_id"] = self.dashboard_revision_id
         if self.override_warehouse_id is not None:
-            body["{override_warehouse_id}"] = self.override_warehouse_id
+            body["override_warehouse_id"] = self.override_warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExecutePublishedDashboardQueryRequest:
         """Deserializes the ExecutePublishedDashboardQueryRequest from a dictionary."""
         return cls(
-            dashboard_name=d.get("{dashboard_name}", None),
-            dashboard_revision_id=d.get("{dashboard_revision_id}", None),
-            override_warehouse_id=d.get("{override_warehouse_id}", None),
+            dashboard_name=d.get("dashboard_name", None),
+            dashboard_revision_id=d.get("dashboard_revision_id", None),
+            override_warehouse_id=d.get("override_warehouse_id", None),
         )
 
 
@@ -583,38 +581,38 @@ class ExternalLink:
         """Serializes the ExternalLink into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["{byte_count}"] = self.byte_count
+            body["byte_count"] = self.byte_count
         if self.chunk_index is not None:
-            body["{chunk_index}"] = self.chunk_index
+            body["chunk_index"] = self.chunk_index
         if self.expiration is not None:
-            body["{expiration}"] = self.expiration
+            body["expiration"] = self.expiration
         if self.external_link is not None:
-            body["{external_link}"] = self.external_link
+            body["external_link"] = self.external_link
         if self.http_headers:
-            body["{http_headers}"] = self.http_headers
+            body["http_headers"] = self.http_headers
         if self.next_chunk_index is not None:
-            body["{next_chunk_index}"] = self.next_chunk_index
+            body["next_chunk_index"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         if self.row_offset is not None:
-            body["{row_offset}"] = self.row_offset
+            body["row_offset"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLink:
         """Deserializes the ExternalLink from a dictionary."""
         return cls(
-            byte_count=d.get("{byte_count}", None),
-            chunk_index=d.get("{chunk_index}", None),
-            expiration=d.get("{expiration}", None),
-            external_link=d.get("{external_link}", None),
-            http_headers=d.get("{http_headers}", None),
-            next_chunk_index=d.get("{next_chunk_index}", None),
-            next_chunk_internal_link=d.get("{next_chunk_internal_link}", None),
-            row_count=d.get("{row_count}", None),
-            row_offset=d.get("{row_offset}", None),
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            expiration=d.get("expiration", None),
+            external_link=d.get("external_link", None),
+            http_headers=d.get("http_headers", None),
+            next_chunk_index=d.get("next_chunk_index", None),
+            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
         )
 
 
@@ -653,20 +651,20 @@ class GenieAttachment:
         """Serializes the GenieAttachment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.attachment_id is not None:
-            body["{attachment_id}"] = self.attachment_id
+            body["attachment_id"] = self.attachment_id
         if self.query:
-            body["{query}"] = self.query
+            body["query"] = self.query
         if self.text:
-            body["{text}"] = self.text
+            body["text"] = self.text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieAttachment:
         """Deserializes the GenieAttachment from a dictionary."""
         return cls(
-            attachment_id=d.get("{attachment_id}", None),
-            query=_from_dict(d, "{query}", GenieQueryAttachment),
-            text=_from_dict(d, "{text}", TextAttachment),
+            attachment_id=d.get("attachment_id", None),
+            query=_from_dict(d, "query", GenieQueryAttachment),
+            text=_from_dict(d, "text", TextAttachment),
         )
 
 
@@ -716,32 +714,32 @@ class GenieConversation:
         """Serializes the GenieConversation into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.conversation_id is not None:
-            body["{conversation_id}"] = self.conversation_id
+            body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
-            body["{created_timestamp}"] = self.created_timestamp
+            body["created_timestamp"] = self.created_timestamp
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp is not None:
-            body["{last_updated_timestamp}"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.space_id is not None:
-            body["{space_id}"] = self.space_id
+            body["space_id"] = self.space_id
         if self.title is not None:
-            body["{title}"] = self.title
+            body["title"] = self.title
         if self.user_id is not None:
-            body["{user_id}"] = self.user_id
+            body["user_id"] = self.user_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
         return cls(
-            conversation_id=d.get("{conversation_id}", None),
-            created_timestamp=d.get("{created_timestamp}", None),
-            id=d.get("{id}", None),
-            last_updated_timestamp=d.get("{last_updated_timestamp}", None),
-            space_id=d.get("{space_id}", None),
-            title=d.get("{title}", None),
-            user_id=d.get("{user_id}", None),
+            conversation_id=d.get("conversation_id", None),
+            created_timestamp=d.get("created_timestamp", None),
+            id=d.get("id", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            space_id=d.get("space_id", None),
+            title=d.get("title", None),
+            user_id=d.get("user_id", None),
         )
 
 
@@ -771,20 +769,20 @@ class GenieCreateConversationMessageRequest:
         """Serializes the GenieCreateConversationMessageRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None:
-            body["{content}"] = self.content
+            body["content"] = self.content
         if self.conversation_id is not None:
-            body["{conversation_id}"] = self.conversation_id
+            body["conversation_id"] = self.conversation_id
         if self.space_id is not None:
-            body["{space_id}"] = self.space_id
+            body["space_id"] = self.space_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieCreateConversationMessageRequest:
         """Deserializes the GenieCreateConversationMessageRequest from a dictionary."""
         return cls(
-            content=d.get("{content}", None),
-            conversation_id=d.get("{conversation_id}", None),
-            space_id=d.get("{space_id}", None),
+            content=d.get("content", None),
+            conversation_id=d.get("conversation_id", None),
+            space_id=d.get("space_id", None),
         )
 
 
@@ -814,20 +812,20 @@ class GenieGenerateDownloadFullQueryResultResponse:
         """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error is not None:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.transient_statement_id is not None:
-            body["{transient_statement_id}"] = self.transient_statement_id
+            body["transient_statement_id"] = self.transient_statement_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
         """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
         return cls(
-            error=d.get("{error}", None),
-            status=_enum(d, "{status}", MessageStatus),
-            transient_statement_id=d.get("{transient_statement_id}", None),
+            error=d.get("error", None),
+            status=_enum(d, "status", MessageStatus),
+            transient_statement_id=d.get("transient_statement_id", None),
         )
 
 
@@ -853,17 +851,17 @@ class GenieGetDownloadFullQueryResultResponse:
         """Serializes the GenieGetDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.statement_response:
-            body["{statement_response}"] = self.statement_response
+            body["statement_response"] = self.statement_response
         if self.transient_statement_id is not None:
-            body["{transient_statement_id}"] = self.transient_statement_id
+            body["transient_statement_id"] = self.transient_statement_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
         """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
         return cls(
-            statement_response=_from_dict(d, "{statement_response}", StatementResponse),
-            transient_statement_id=d.get("{transient_statement_id}", None),
+            statement_response=_from_dict(d, "statement_response", StatementResponse),
+            transient_statement_id=d.get("transient_statement_id", None),
         )
 
 
@@ -884,13 +882,13 @@ class GenieGetMessageQueryResultResponse:
         """Serializes the GenieGetMessageQueryResultResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.statement_response:
-            body["{statement_response}"] = self.statement_response
+            body["statement_response"] = self.statement_response
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetMessageQueryResultResponse:
         """Deserializes the GenieGetMessageQueryResultResponse from a dictionary."""
-        return cls(statement_response=_from_dict(d, "{statement_response}", StatementResponse))
+        return cls(statement_response=_from_dict(d, "statement_response", StatementResponse))
 
 
 @dataclass
@@ -978,47 +976,47 @@ class GenieMessage:
         """Serializes the GenieMessage into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.attachments:
-            body["{attachments}"] = self.attachments
+            body["attachments"] = self.attachments
         if self.content is not None:
-            body["{content}"] = self.content
+            body["content"] = self.content
         if self.conversation_id is not None:
-            body["{conversation_id}"] = self.conversation_id
+            body["conversation_id"] = self.conversation_id
         if self.created_timestamp is not None:
-            body["{created_timestamp}"] = self.created_timestamp
+            body["created_timestamp"] = self.created_timestamp
         if self.error:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp is not None:
-            body["{last_updated_timestamp}"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.message_id is not None:
-            body["{message_id}"] = self.message_id
+            body["message_id"] = self.message_id
         if self.query_result:
-            body["{query_result}"] = self.query_result
+            body["query_result"] = self.query_result
         if self.space_id is not None:
-            body["{space_id}"] = self.space_id
+            body["space_id"] = self.space_id
         if self.status is not None:
-            body["{status}"] = self.status
+            body["status"] = self.status
         if self.user_id is not None:
-            body["{user_id}"] = self.user_id
+            body["user_id"] = self.user_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieMessage:
         """Deserializes the GenieMessage from a dictionary."""
         return cls(
-            attachments=_repeated_dict(d, "{attachments}", GenieAttachment),
-            content=d.get("{content}", None),
-            conversation_id=d.get("{conversation_id}", None),
-            created_timestamp=d.get("{created_timestamp}", None),
-            error=_from_dict(d, "{error}", MessageError),
-            id=d.get("{id}", None),
-            last_updated_timestamp=d.get("{last_updated_timestamp}", None),
-            message_id=d.get("{message_id}", None),
-            query_result=_from_dict(d, "{query_result}", Result),
-            space_id=d.get("{space_id}", None),
-            status=_enum(d, "{status}", MessageStatus),
-            user_id=d.get("{user_id}", None),
+            attachments=_repeated_dict(d, "attachments", GenieAttachment),
+            content=d.get("content", None),
+            conversation_id=d.get("conversation_id", None),
+            created_timestamp=d.get("created_timestamp", None),
+            error=_from_dict(d, "error", MessageError),
+            id=d.get("id", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            message_id=d.get("message_id", None),
+            query_result=_from_dict(d, "query_result", Result),
+            space_id=d.get("space_id", None),
+            status=_enum(d, "status", MessageStatus),
+            user_id=d.get("user_id", None),
         )
 
 
@@ -1068,32 +1066,32 @@ class GenieQueryAttachment:
         """Serializes the GenieQueryAttachment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.last_updated_timestamp is not None:
-            body["{last_updated_timestamp}"] = self.last_updated_timestamp
+            body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.query is not None:
-            body["{query}"] = self.query
+            body["query"] = self.query
         if self.query_result_metadata:
-            body["{query_result_metadata}"] = self.query_result_metadata
+            body["query_result_metadata"] = self.query_result_metadata
         if self.statement_id is not None:
-            body["{statement_id}"] = self.statement_id
+            body["statement_id"] = self.statement_id
         if self.title is not None:
-            body["{title}"] = self.title
+            body["title"] = self.title
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieQueryAttachment:
         """Deserializes the GenieQueryAttachment from a dictionary."""
         return cls(
-            description=d.get("{description}", None),
-            id=d.get("{id}", None),
-            last_updated_timestamp=d.get("{last_updated_timestamp}", None),
-            query=d.get("{query}", None),
-            query_result_metadata=_from_dict(d, "{query_result_metadata}", GenieResultMetadata),
-            statement_id=d.get("{statement_id}", None),
-            title=d.get("{title}", None),
+            description=d.get("description", None),
+            id=d.get("id", None),
+            last_updated_timestamp=d.get("last_updated_timestamp", None),
+            query=d.get("query", None),
+            query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
+            statement_id=d.get("statement_id", None),
+            title=d.get("title", None),
         )
 
 
@@ -1118,15 +1116,15 @@ class GenieResultMetadata:
         """Serializes the GenieResultMetadata into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_truncated is not None:
-            body["{is_truncated}"] = self.is_truncated
+            body["is_truncated"] = self.is_truncated
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieResultMetadata:
         """Deserializes the GenieResultMetadata from a dictionary."""
-        return cls(is_truncated=d.get("{is_truncated}", None), row_count=d.get("{row_count}", None))
+        return cls(is_truncated=d.get("is_truncated", None), row_count=d.get("row_count", None))
 
 
 @dataclass
@@ -1155,19 +1153,17 @@ class GenieSpace:
         """Serializes the GenieSpace into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.space_id is not None:
-            body["{space_id}"] = self.space_id
+            body["space_id"] = self.space_id
         if self.title is not None:
-            body["{title}"] = self.title
+            body["title"] = self.title
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
-        return cls(
-            description=d.get("{description}", None), space_id=d.get("{space_id}", None), title=d.get("{title}", None)
-        )
+        return cls(description=d.get("description", None), space_id=d.get("space_id", None), title=d.get("title", None))
 
 
 @dataclass
@@ -1191,15 +1187,15 @@ class GenieStartConversationMessageRequest:
         """Serializes the GenieStartConversationMessageRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None:
-            body["{content}"] = self.content
+            body["content"] = self.content
         if self.space_id is not None:
-            body["{space_id}"] = self.space_id
+            body["space_id"] = self.space_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieStartConversationMessageRequest:
         """Deserializes the GenieStartConversationMessageRequest from a dictionary."""
-        return cls(content=d.get("{content}", None), space_id=d.get("{space_id}", None))
+        return cls(content=d.get("content", None), space_id=d.get("space_id", None))
 
 
 @dataclass
@@ -1231,23 +1227,23 @@ class GenieStartConversationResponse:
         """Serializes the GenieStartConversationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.conversation:
-            body["{conversation}"] = self.conversation
+            body["conversation"] = self.conversation
         if self.conversation_id is not None:
-            body["{conversation_id}"] = self.conversation_id
+            body["conversation_id"] = self.conversation_id
         if self.message:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.message_id is not None:
-            body["{message_id}"] = self.message_id
+            body["message_id"] = self.message_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieStartConversationResponse:
         """Deserializes the GenieStartConversationResponse from a dictionary."""
         return cls(
-            conversation=_from_dict(d, "{conversation}", GenieConversation),
-            conversation_id=d.get("{conversation_id}", None),
-            message=_from_dict(d, "{message}", GenieMessage),
-            message_id=d.get("{message_id}", None),
+            conversation=_from_dict(d, "conversation", GenieConversation),
+            conversation_id=d.get("conversation_id", None),
+            message=_from_dict(d, "message", GenieMessage),
+            message_id=d.get("message_id", None),
         )
 
 
@@ -1296,16 +1292,16 @@ class ListDashboardsResponse:
         """Serializes the ListDashboardsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboards:
-            body["{dashboards}"] = self.dashboards
+            body["dashboards"] = self.dashboards
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListDashboardsResponse:
         """Deserializes the ListDashboardsResponse from a dictionary."""
         return cls(
-            dashboards=_repeated_dict(d, "{dashboards}", Dashboard), next_page_token=d.get("{next_page_token}", None)
+            dashboards=_repeated_dict(d, "dashboards", Dashboard), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -1330,17 +1326,15 @@ class ListSchedulesResponse:
         """Serializes the ListSchedulesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.schedules:
-            body["{schedules}"] = self.schedules
+            body["schedules"] = self.schedules
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListSchedulesResponse:
         """Deserializes the ListSchedulesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("{next_page_token}", None), schedules=_repeated_dict(d, "{schedules}", Schedule)
-        )
+        return cls(next_page_token=d.get("next_page_token", None), schedules=_repeated_dict(d, "schedules", Schedule))
 
 
 @dataclass
@@ -1364,17 +1358,17 @@ class ListSubscriptionsResponse:
         """Serializes the ListSubscriptionsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.subscriptions:
-            body["{subscriptions}"] = self.subscriptions
+            body["subscriptions"] = self.subscriptions
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListSubscriptionsResponse:
         """Deserializes the ListSubscriptionsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            subscriptions=_repeated_dict(d, "{subscriptions}", Subscription),
+            next_page_token=d.get("next_page_token", None),
+            subscriptions=_repeated_dict(d, "subscriptions", Subscription),
         )
 
 
@@ -1397,15 +1391,15 @@ class MessageError:
         """Serializes the MessageError into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error is not None:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.type is not None:
-            body["{type}"] = self.type
+            body["type"] = self.type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MessageError:
         """Deserializes the MessageError from a dictionary."""
-        return cls(error=d.get("{error}", None), type=_enum(d, "{type}", MessageErrorType))
+        return cls(error=d.get("error", None), type=_enum(d, "type", MessageErrorType))
 
 
 class MessageErrorType(Enum):
@@ -1518,23 +1512,23 @@ class MigrateDashboardRequest:
         """Serializes the MigrateDashboardRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.parent_path is not None:
-            body["{parent_path}"] = self.parent_path
+            body["parent_path"] = self.parent_path
         if self.source_dashboard_id is not None:
-            body["{source_dashboard_id}"] = self.source_dashboard_id
+            body["source_dashboard_id"] = self.source_dashboard_id
         if self.update_parameter_syntax is not None:
-            body["{update_parameter_syntax}"] = self.update_parameter_syntax
+            body["update_parameter_syntax"] = self.update_parameter_syntax
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MigrateDashboardRequest:
         """Deserializes the MigrateDashboardRequest from a dictionary."""
         return cls(
-            display_name=d.get("{display_name}", None),
-            parent_path=d.get("{parent_path}", None),
-            source_dashboard_id=d.get("{source_dashboard_id}", None),
-            update_parameter_syntax=d.get("{update_parameter_syntax}", None),
+            display_name=d.get("display_name", None),
+            parent_path=d.get("parent_path", None),
+            source_dashboard_id=d.get("source_dashboard_id", None),
+            update_parameter_syntax=d.get("update_parameter_syntax", None),
         )
 
 
@@ -1555,13 +1549,13 @@ class PendingStatus:
         """Serializes the PendingStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_token is not None:
-            body["{data_token}"] = self.data_token
+            body["data_token"] = self.data_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PendingStatus:
         """Deserializes the PendingStatus from a dictionary."""
-        return cls(data_token=d.get("{data_token}", None))
+        return cls(data_token=d.get("data_token", None))
 
 
 @dataclass
@@ -1579,13 +1573,13 @@ class PollQueryStatusResponse:
         """Serializes the PollQueryStatusResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data:
-            body["{data}"] = self.data
+            body["data"] = self.data
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponse:
         """Deserializes the PollQueryStatusResponse from a dictionary."""
-        return cls(data=_repeated_dict(d, "{data}", PollQueryStatusResponseData))
+        return cls(data=_repeated_dict(d, "data", PollQueryStatusResponseData))
 
 
 @dataclass
@@ -1603,13 +1597,13 @@ class PollQueryStatusResponseData:
         """Serializes the PollQueryStatusResponseData into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.status:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponseData:
         """Deserializes the PollQueryStatusResponseData from a dictionary."""
-        return cls(status=_from_dict(d, "{status}", QueryResponseStatus))
+        return cls(status=_from_dict(d, "status", QueryResponseStatus))
 
 
 @dataclass
@@ -1639,20 +1633,20 @@ class PublishRequest:
         """Serializes the PublishRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.embed_credentials is not None:
-            body["{embed_credentials}"] = self.embed_credentials
+            body["embed_credentials"] = self.embed_credentials
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PublishRequest:
         """Deserializes the PublishRequest from a dictionary."""
         return cls(
-            dashboard_id=d.get("{dashboard_id}", None),
-            embed_credentials=d.get("{embed_credentials}", None),
-            warehouse_id=d.get("{warehouse_id}", None),
+            dashboard_id=d.get("dashboard_id", None),
+            embed_credentials=d.get("embed_credentials", None),
+            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -1687,23 +1681,23 @@ class PublishedDashboard:
         """Serializes the PublishedDashboard into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.embed_credentials is not None:
-            body["{embed_credentials}"] = self.embed_credentials
+            body["embed_credentials"] = self.embed_credentials
         if self.revision_create_time is not None:
-            body["{revision_create_time}"] = self.revision_create_time
+            body["revision_create_time"] = self.revision_create_time
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PublishedDashboard:
         """Deserializes the PublishedDashboard from a dictionary."""
         return cls(
-            display_name=d.get("{display_name}", None),
-            embed_credentials=d.get("{embed_credentials}", None),
-            revision_create_time=d.get("{revision_create_time}", None),
-            warehouse_id=d.get("{warehouse_id}", None),
+            display_name=d.get("display_name", None),
+            embed_credentials=d.get("embed_credentials", None),
+            revision_create_time=d.get("revision_create_time", None),
+            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -1745,26 +1739,26 @@ class QueryResponseStatus:
         """Serializes the QueryResponseStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.canceled:
-            body["{canceled}"] = self.canceled
+            body["canceled"] = self.canceled
         if self.closed:
-            body["{closed}"] = self.closed
+            body["closed"] = self.closed
         if self.pending:
-            body["{pending}"] = self.pending
+            body["pending"] = self.pending
         if self.statement_id is not None:
-            body["{statement_id}"] = self.statement_id
+            body["statement_id"] = self.statement_id
         if self.success:
-            body["{success}"] = self.success
+            body["success"] = self.success
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> QueryResponseStatus:
         """Deserializes the QueryResponseStatus from a dictionary."""
         return cls(
-            canceled=_from_dict(d, "{canceled}", Empty),
-            closed=_from_dict(d, "{closed}", Empty),
-            pending=_from_dict(d, "{pending}", PendingStatus),
-            statement_id=d.get("{statement_id}", None),
-            success=_from_dict(d, "{success}", SuccessStatus),
+            canceled=_from_dict(d, "canceled", Empty),
+            closed=_from_dict(d, "closed", Empty),
+            pending=_from_dict(d, "pending", PendingStatus),
+            statement_id=d.get("statement_id", None),
+            success=_from_dict(d, "success", SuccessStatus),
         )
 
 
@@ -1795,20 +1789,20 @@ class Result:
         """Serializes the Result into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_truncated is not None:
-            body["{is_truncated}"] = self.is_truncated
+            body["is_truncated"] = self.is_truncated
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         if self.statement_id is not None:
-            body["{statement_id}"] = self.statement_id
+            body["statement_id"] = self.statement_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Result:
         """Deserializes the Result from a dictionary."""
         return cls(
-            is_truncated=d.get("{is_truncated}", None),
-            row_count=d.get("{row_count}", None),
-            statement_id=d.get("{statement_id}", None),
+            is_truncated=d.get("is_truncated", None),
+            row_count=d.get("row_count", None),
+            statement_id=d.get("statement_id", None),
         )
 
 
@@ -1868,35 +1862,35 @@ class ResultData:
         """Serializes the ResultData into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.byte_count is not None:
-            body["{byte_count}"] = self.byte_count
+            body["byte_count"] = self.byte_count
         if self.chunk_index is not None:
-            body["{chunk_index}"] = self.chunk_index
+            body["chunk_index"] = self.chunk_index
         if self.data_array:
-            body["{data_array}"] = self.data_array
+            body["data_array"] = self.data_array
         if self.external_links:
-            body["{external_links}"] = self.external_links
+            body["external_links"] = self.external_links
         if self.next_chunk_index is not None:
-            body["{next_chunk_index}"] = self.next_chunk_index
+            body["next_chunk_index"] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
-            body["{next_chunk_internal_link}"] = self.next_chunk_internal_link
+            body["next_chunk_internal_link"] = self.next_chunk_internal_link
         if self.row_count is not None:
-            body["{row_count}"] = self.row_count
+            body["row_count"] = self.row_count
         if self.row_offset is not None:
-            body["{row_offset}"] = self.row_offset
+            body["row_offset"] = self.row_offset
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(
-            byte_count=d.get("{byte_count}", None),
-            chunk_index=d.get("{chunk_index}", None),
-            data_array=d.get("{data_array}", None),
-            external_links=_repeated_dict(d, "{external_links}", ExternalLink),
-            next_chunk_index=d.get("{next_chunk_index}", None),
-            next_chunk_internal_link=d.get("{next_chunk_internal_link}", None),
-            row_count=d.get("{row_count}", None),
-            row_offset=d.get("{row_offset}", None),
+            byte_count=d.get("byte_count", None),
+            chunk_index=d.get("chunk_index", None),
+            data_array=d.get("data_array", None),
+            external_links=_repeated_dict(d, "external_links", ExternalLink),
+            next_chunk_index=d.get("next_chunk_index", None),
+            next_chunk_internal_link=d.get("next_chunk_internal_link", None),
+            row_count=d.get("row_count", None),
+            row_offset=d.get("row_offset", None),
         )
 
 
@@ -1948,32 +1942,32 @@ class ResultManifest:
         """Serializes the ResultManifest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.chunks:
-            body["{chunks}"] = self.chunks
+            body["chunks"] = self.chunks
         if self.format is not None:
-            body["{format}"] = self.format
+            body["format"] = self.format
         if self.schema:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.total_byte_count is not None:
-            body["{total_byte_count}"] = self.total_byte_count
+            body["total_byte_count"] = self.total_byte_count
         if self.total_chunk_count is not None:
-            body["{total_chunk_count}"] = self.total_chunk_count
+            body["total_chunk_count"] = self.total_chunk_count
         if self.total_row_count is not None:
-            body["{total_row_count}"] = self.total_row_count
+            body["total_row_count"] = self.total_row_count
         if self.truncated is not None:
-            body["{truncated}"] = self.truncated
+            body["truncated"] = self.truncated
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
         return cls(
-            chunks=_repeated_dict(d, "{chunks}", BaseChunkInfo),
-            format=_enum(d, "{format}", Format),
-            schema=_from_dict(d, "{schema}", ResultSchema),
-            total_byte_count=d.get("{total_byte_count}", None),
-            total_chunk_count=d.get("{total_chunk_count}", None),
-            total_row_count=d.get("{total_row_count}", None),
-            truncated=d.get("{truncated}", None),
+            chunks=_repeated_dict(d, "chunks", BaseChunkInfo),
+            format=_enum(d, "format", Format),
+            schema=_from_dict(d, "schema", ResultSchema),
+            total_byte_count=d.get("total_byte_count", None),
+            total_chunk_count=d.get("total_chunk_count", None),
+            total_row_count=d.get("total_row_count", None),
+            truncated=d.get("truncated", None),
         )
 
 
@@ -1998,15 +1992,15 @@ class ResultSchema:
         """Serializes the ResultSchema into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.column_count is not None:
-            body["{column_count}"] = self.column_count
+            body["column_count"] = self.column_count
         if self.columns:
-            body["{columns}"] = self.columns
+            body["columns"] = self.columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultSchema:
         """Deserializes the ResultSchema from a dictionary."""
-        return cls(column_count=d.get("{column_count}", None), columns=_repeated_dict(d, "{columns}", ColumnInfo))
+        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -2067,38 +2061,38 @@ class Schedule:
         """Serializes the Schedule into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.cron_schedule:
-            body["{cron_schedule}"] = self.cron_schedule
+            body["cron_schedule"] = self.cron_schedule
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.pause_status is not None:
-            body["{pause_status}"] = self.pause_status
+            body["pause_status"] = self.pause_status
         if self.schedule_id is not None:
-            body["{schedule_id}"] = self.schedule_id
+            body["schedule_id"] = self.schedule_id
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         if self.warehouse_id is not None:
-            body["{warehouse_id}"] = self.warehouse_id
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Schedule:
         """Deserializes the Schedule from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            cron_schedule=_from_dict(d, "{cron_schedule}", CronSchedule),
-            dashboard_id=d.get("{dashboard_id}", None),
-            display_name=d.get("{display_name}", None),
-            etag=d.get("{etag}", None),
-            pause_status=_enum(d, "{pause_status}", SchedulePauseStatus),
-            schedule_id=d.get("{schedule_id}", None),
-            update_time=d.get("{update_time}", None),
-            warehouse_id=d.get("{warehouse_id}", None),
+            create_time=d.get("create_time", None),
+            cron_schedule=_from_dict(d, "cron_schedule", CronSchedule),
+            dashboard_id=d.get("dashboard_id", None),
+            display_name=d.get("display_name", None),
+            etag=d.get("etag", None),
+            pause_status=_enum(d, "pause_status", SchedulePauseStatus),
+            schedule_id=d.get("schedule_id", None),
+            update_time=d.get("update_time", None),
+            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -2128,15 +2122,15 @@ class ServiceError:
         """Serializes the ServiceError into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error_code is not None:
-            body["{error_code}"] = self.error_code
+            body["error_code"] = self.error_code
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ServiceError:
         """Deserializes the ServiceError from a dictionary."""
-        return cls(error_code=_enum(d, "{error_code}", ServiceErrorCode), message=d.get("{message}", None))
+        return cls(error_code=_enum(d, "error_code", ServiceErrorCode), message=d.get("message", None))
 
 
 class ServiceErrorCode(Enum):
@@ -2188,23 +2182,23 @@ class StatementResponse:
         """Serializes the StatementResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.manifest:
-            body["{manifest}"] = self.manifest
+            body["manifest"] = self.manifest
         if self.result:
-            body["{result}"] = self.result
+            body["result"] = self.result
         if self.statement_id is not None:
-            body["{statement_id}"] = self.statement_id
+            body["statement_id"] = self.statement_id
         if self.status:
-            body["{status}"] = self.status
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementResponse:
         """Deserializes the StatementResponse from a dictionary."""
         return cls(
-            manifest=_from_dict(d, "{manifest}", ResultManifest),
-            result=_from_dict(d, "{result}", ResultData),
-            statement_id=d.get("{statement_id}", None),
-            status=_from_dict(d, "{status}", StatementStatus),
+            manifest=_from_dict(d, "manifest", ResultManifest),
+            result=_from_dict(d, "result", ResultData),
+            statement_id=d.get("statement_id", None),
+            status=_from_dict(d, "status", StatementStatus),
         )
 
 
@@ -2249,15 +2243,15 @@ class StatementStatus:
         """Serializes the StatementStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StatementStatus:
         """Deserializes the StatementStatus from a dictionary."""
-        return cls(error=_from_dict(d, "{error}", ServiceError), state=_enum(d, "{state}", StatementState))
+        return cls(error=_from_dict(d, "error", ServiceError), state=_enum(d, "state", StatementState))
 
 
 @dataclass
@@ -2283,17 +2277,17 @@ class Subscriber:
         """Serializes the Subscriber into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_subscriber:
-            body["{destination_subscriber}"] = self.destination_subscriber
+            body["destination_subscriber"] = self.destination_subscriber
         if self.user_subscriber:
-            body["{user_subscriber}"] = self.user_subscriber
+            body["user_subscriber"] = self.user_subscriber
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Subscriber:
         """Deserializes the Subscriber from a dictionary."""
         return cls(
-            destination_subscriber=_from_dict(d, "{destination_subscriber}", SubscriptionSubscriberDestination),
-            user_subscriber=_from_dict(d, "{user_subscriber}", SubscriptionSubscriberUser),
+            destination_subscriber=_from_dict(d, "destination_subscriber", SubscriptionSubscriberDestination),
+            user_subscriber=_from_dict(d, "user_subscriber", SubscriptionSubscriberUser),
         )
 
 
@@ -2350,35 +2344,35 @@ class Subscription:
         """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.create_time is not None:
-            body["{create_time}"] = self.create_time
+            body["create_time"] = self.create_time
         if self.created_by_user_id is not None:
-            body["{created_by_user_id}"] = self.created_by_user_id
+            body["created_by_user_id"] = self.created_by_user_id
         if self.dashboard_id is not None:
-            body["{dashboard_id}"] = self.dashboard_id
+            body["dashboard_id"] = self.dashboard_id
         if self.etag is not None:
-            body["{etag}"] = self.etag
+            body["etag"] = self.etag
         if self.schedule_id is not None:
-            body["{schedule_id}"] = self.schedule_id
+            body["schedule_id"] = self.schedule_id
         if self.subscriber:
-            body["{subscriber}"] = self.subscriber
+            body["subscriber"] = self.subscriber
         if self.subscription_id is not None:
-            body["{subscription_id}"] = self.subscription_id
+            body["subscription_id"] = self.subscription_id
         if self.update_time is not None:
-            body["{update_time}"] = self.update_time
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
         return cls(
-            create_time=d.get("{create_time}", None),
-            created_by_user_id=d.get("{created_by_user_id}", None),
-            dashboard_id=d.get("{dashboard_id}", None),
-            etag=d.get("{etag}", None),
-            schedule_id=d.get("{schedule_id}", None),
-            subscriber=_from_dict(d, "{subscriber}", Subscriber),
-            subscription_id=d.get("{subscription_id}", None),
-            update_time=d.get("{update_time}", None),
+            create_time=d.get("create_time", None),
+            created_by_user_id=d.get("created_by_user_id", None),
+            dashboard_id=d.get("dashboard_id", None),
+            etag=d.get("etag", None),
+            schedule_id=d.get("schedule_id", None),
+            subscriber=_from_dict(d, "subscriber", Subscriber),
+            subscription_id=d.get("subscription_id", None),
+            update_time=d.get("update_time", None),
         )
 
 
@@ -2398,13 +2392,13 @@ class SubscriptionSubscriberDestination:
         """Serializes the SubscriptionSubscriberDestination into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_id is not None:
-            body["{destination_id}"] = self.destination_id
+            body["destination_id"] = self.destination_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberDestination:
         """Deserializes the SubscriptionSubscriberDestination from a dictionary."""
-        return cls(destination_id=d.get("{destination_id}", None))
+        return cls(destination_id=d.get("destination_id", None))
 
 
 @dataclass
@@ -2423,13 +2417,13 @@ class SubscriptionSubscriberUser:
         """Serializes the SubscriptionSubscriberUser into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.user_id is not None:
-            body["{user_id}"] = self.user_id
+            body["user_id"] = self.user_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
-        return cls(user_id=d.get("{user_id}", None))
+        return cls(user_id=d.get("user_id", None))
 
 
 @dataclass
@@ -2454,15 +2448,15 @@ class SuccessStatus:
         """Serializes the SuccessStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.data_token is not None:
-            body["{data_token}"] = self.data_token
+            body["data_token"] = self.data_token
         if self.truncated is not None:
-            body["{truncated}"] = self.truncated
+            body["truncated"] = self.truncated
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SuccessStatus:
         """Deserializes the SuccessStatus from a dictionary."""
-        return cls(data_token=d.get("{data_token}", None), truncated=d.get("{truncated}", None))
+        return cls(data_token=d.get("data_token", None), truncated=d.get("truncated", None))
 
 
 @dataclass
@@ -2485,15 +2479,15 @@ class TextAttachment:
         """Serializes the TextAttachment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None:
-            body["{content}"] = self.content
+            body["content"] = self.content
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
-        return cls(content=d.get("{content}", None), id=d.get("{id}", None))
+        return cls(content=d.get("content", None), id=d.get("id", None))
 
 
 @dataclass
@@ -2560,7 +2554,7 @@ class GenieAPI:
         """
         body = {}
         if content is not None:
-            body["{content}"] = content
+            body["content"] = content
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -2576,7 +2570,7 @@ class GenieAPI:
             self.WaitGetMessageGenieCompleted,
             response=GenieMessage.from_dict(op_response),
             conversation_id=conversation_id,
-            message_id=op_response["{id}"],
+            message_id=op_response["id"],
             space_id=space_id,
         )
 
@@ -2712,7 +2706,7 @@ class GenieAPI:
 
         query = {}
         if transient_statement_id is not None:
-            query["{transient_statement_id}"] = transient_statement_id
+            query["transient_statement_id"] = transient_statement_id
         headers = {
             "0": "{Accept application/json}",
         }
@@ -2876,7 +2870,7 @@ class GenieAPI:
         """
         body = {}
         if content is not None:
-            body["{content}"] = content
+            body["content"] = content
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -2888,8 +2882,8 @@ class GenieAPI:
         return Wait(
             self.WaitGetMessageGenieCompleted,
             response=GenieStartConversationResponse.from_dict(op_response),
-            conversation_id=op_response["{conversation_id}"],
-            message_id=op_response["{message_id}"],
+            conversation_id=op_response["conversation_id"],
+            message_id=op_response["message_id"],
             space_id=space_id,
         )
 
@@ -2983,7 +2977,7 @@ class LakeviewAPI:
 
         query = {}
         if etag is not None:
-            query["{etag}"] = etag
+            query["etag"] = etag
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3015,7 +3009,7 @@ class LakeviewAPI:
 
         query = {}
         if etag is not None:
-            query["{etag}"] = etag
+            query["etag"] = etag
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3133,25 +3127,25 @@ class LakeviewAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         if show_trashed is not None:
-            query["{show_trashed}"] = show_trashed
+            query["show_trashed"] = show_trashed
         if view is not None:
-            query["{view}"] = view.value
+            query["view"] = view.value
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/lakeview/dashboards", query=query, headers=headers)
-            if "{dashboards}" in json:
-                for v in json["{dashboards}"]:
+            if "dashboards" in json:
+                for v in json["dashboards"]:
                     yield Dashboard.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_schedules(
         self, dashboard_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3171,9 +3165,9 @@ class LakeviewAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3182,12 +3176,12 @@ class LakeviewAPI:
             json = self._api.do(
                 "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", query=query, headers=headers
             )
-            if "{schedules}" in json:
-                for v in json["{schedules}"]:
+            if "schedules" in json:
+                for v in json["schedules"]:
                     yield Schedule.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_subscriptions(
         self, dashboard_id: str, schedule_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -3209,9 +3203,9 @@ class LakeviewAPI:
 
         query = {}
         if page_size is not None:
-            query["{page_size}"] = page_size
+            query["page_size"] = page_size
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3223,12 +3217,12 @@ class LakeviewAPI:
                 query=query,
                 headers=headers,
             )
-            if "{subscriptions}" in json:
-                for v in json["{subscriptions}"]:
+            if "subscriptions" in json:
+                for v in json["subscriptions"]:
                     yield Subscription.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def migrate(
         self,
@@ -3256,13 +3250,13 @@ class LakeviewAPI:
         """
         body = {}
         if display_name is not None:
-            body["{display_name}"] = display_name
+            body["display_name"] = display_name
         if parent_path is not None:
-            body["{parent_path}"] = parent_path
+            body["parent_path"] = parent_path
         if source_dashboard_id is not None:
-            body["{source_dashboard_id}"] = source_dashboard_id
+            body["source_dashboard_id"] = source_dashboard_id
         if update_parameter_syntax is not None:
-            body["{update_parameter_syntax}"] = update_parameter_syntax
+            body["update_parameter_syntax"] = update_parameter_syntax
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -3290,9 +3284,9 @@ class LakeviewAPI:
         """
         body = {}
         if embed_credentials is not None:
-            body["{embed_credentials}"] = embed_credentials
+            body["embed_credentials"] = embed_credentials
         if warehouse_id is not None:
-            body["{warehouse_id}"] = warehouse_id
+            body["warehouse_id"] = warehouse_id
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -3423,11 +3417,11 @@ class QueryExecutionAPI:
 
         query = {}
         if dashboard_name is not None:
-            query["{dashboard_name}"] = dashboard_name
+            query["dashboard_name"] = dashboard_name
         if dashboard_revision_id is not None:
-            query["{dashboard_revision_id}"] = dashboard_revision_id
+            query["dashboard_revision_id"] = dashboard_revision_id
         if tokens is not None:
-            query["{tokens}"] = [v for v in tokens]
+            query["tokens"] = [v for v in tokens]
         headers = {
             "0": "{Accept application/json}",
         }
@@ -3452,11 +3446,11 @@ class QueryExecutionAPI:
         """
         body = {}
         if dashboard_name is not None:
-            body["{dashboard_name}"] = dashboard_name
+            body["dashboard_name"] = dashboard_name
         if dashboard_revision_id is not None:
-            body["{dashboard_revision_id}"] = dashboard_revision_id
+            body["dashboard_revision_id"] = dashboard_revision_id
         if override_warehouse_id is not None:
-            body["{override_warehouse_id}"] = override_warehouse_id
+            body["override_warehouse_id"] = override_warehouse_id
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -3479,11 +3473,11 @@ class QueryExecutionAPI:
 
         query = {}
         if dashboard_name is not None:
-            query["{dashboard_name}"] = dashboard_name
+            query["dashboard_name"] = dashboard_name
         if dashboard_revision_id is not None:
-            query["{dashboard_revision_id}"] = dashboard_revision_id
+            query["dashboard_revision_id"] = dashboard_revision_id
         if tokens is not None:
-            query["{tokens}"] = [v for v in tokens]
+            query["tokens"] = [v for v in tokens]
         headers = {
             "0": "{Accept application/json}",
         }

@@ -35,13 +35,13 @@ class Adlsgen2Info:
         """Serializes the Adlsgen2Info into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Adlsgen2Info:
         """Deserializes the Adlsgen2Info from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -153,41 +153,41 @@ class AwsAttributes:
         """Serializes the AwsAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability
+            body["availability"] = self.availability
         if self.ebs_volume_count is not None:
-            body["{ebs_volume_count}"] = self.ebs_volume_count
+            body["ebs_volume_count"] = self.ebs_volume_count
         if self.ebs_volume_iops is not None:
-            body["{ebs_volume_iops}"] = self.ebs_volume_iops
+            body["ebs_volume_iops"] = self.ebs_volume_iops
         if self.ebs_volume_size is not None:
-            body["{ebs_volume_size}"] = self.ebs_volume_size
+            body["ebs_volume_size"] = self.ebs_volume_size
         if self.ebs_volume_throughput is not None:
-            body["{ebs_volume_throughput}"] = self.ebs_volume_throughput
+            body["ebs_volume_throughput"] = self.ebs_volume_throughput
         if self.ebs_volume_type is not None:
-            body["{ebs_volume_type}"] = self.ebs_volume_type
+            body["ebs_volume_type"] = self.ebs_volume_type
         if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.instance_profile_arn is not None:
-            body["{instance_profile_arn}"] = self.instance_profile_arn
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
-            body["{spot_bid_price_percent}"] = self.spot_bid_price_percent
+            body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AwsAttributes:
         """Deserializes the AwsAttributes from a dictionary."""
         return cls(
-            availability=_enum(d, "{availability}", AwsAvailability),
-            ebs_volume_count=d.get("{ebs_volume_count}", None),
-            ebs_volume_iops=d.get("{ebs_volume_iops}", None),
-            ebs_volume_size=d.get("{ebs_volume_size}", None),
-            ebs_volume_throughput=d.get("{ebs_volume_throughput}", None),
-            ebs_volume_type=_enum(d, "{ebs_volume_type}", EbsVolumeType),
-            first_on_demand=d.get("{first_on_demand}", None),
-            instance_profile_arn=d.get("{instance_profile_arn}", None),
-            spot_bid_price_percent=d.get("{spot_bid_price_percent}", None),
-            zone_id=d.get("{zone_id}", None),
+            availability=_enum(d, "availability", AwsAvailability),
+            ebs_volume_count=d.get("ebs_volume_count", None),
+            ebs_volume_iops=d.get("ebs_volume_iops", None),
+            ebs_volume_size=d.get("ebs_volume_size", None),
+            ebs_volume_throughput=d.get("ebs_volume_throughput", None),
+            ebs_volume_type=_enum(d, "ebs_volume_type", EbsVolumeType),
+            first_on_demand=d.get("first_on_demand", None),
+            instance_profile_arn=d.get("instance_profile_arn", None),
+            spot_bid_price_percent=d.get("spot_bid_price_percent", None),
+            zone_id=d.get("zone_id", None),
         )
 
 
@@ -244,23 +244,23 @@ class AzureAttributes:
         """Serializes the AzureAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability
+            body["availability"] = self.availability
         if self.first_on_demand is not None:
-            body["{first_on_demand}"] = self.first_on_demand
+            body["first_on_demand"] = self.first_on_demand
         if self.log_analytics_info:
-            body["{log_analytics_info}"] = self.log_analytics_info
+            body["log_analytics_info"] = self.log_analytics_info
         if self.spot_bid_max_price is not None:
-            body["{spot_bid_max_price}"] = self.spot_bid_max_price
+            body["spot_bid_max_price"] = self.spot_bid_max_price
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AzureAttributes:
         """Deserializes the AzureAttributes from a dictionary."""
         return cls(
-            availability=_enum(d, "{availability}", AzureAvailability),
-            first_on_demand=d.get("{first_on_demand}", None),
-            log_analytics_info=_from_dict(d, "{log_analytics_info}", LogAnalyticsInfo),
-            spot_bid_max_price=d.get("{spot_bid_max_price}", None),
+            availability=_enum(d, "availability", AzureAvailability),
+            first_on_demand=d.get("first_on_demand", None),
+            log_analytics_info=_from_dict(d, "log_analytics_info", LogAnalyticsInfo),
+            spot_bid_max_price=d.get("spot_bid_max_price", None),
         )
 
 
@@ -306,20 +306,20 @@ class ClusterLogConf:
         """Serializes the ClusterLogConf into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dbfs:
-            body["{dbfs}"] = self.dbfs
+            body["dbfs"] = self.dbfs
         if self.s3:
-            body["{s3}"] = self.s3
+            body["s3"] = self.s3
         if self.volumes:
-            body["{volumes}"] = self.volumes
+            body["volumes"] = self.volumes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ClusterLogConf:
         """Deserializes the ClusterLogConf from a dictionary."""
         return cls(
-            dbfs=_from_dict(d, "{dbfs}", DbfsStorageInfo),
-            s3=_from_dict(d, "{s3}", S3StorageInfo),
-            volumes=_from_dict(d, "{volumes}", VolumesStorageInfo),
+            dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
+            s3=_from_dict(d, "s3", S3StorageInfo),
+            volumes=_from_dict(d, "volumes", VolumesStorageInfo),
         )
 
 
@@ -479,92 +479,92 @@ class CreatePipeline:
         """Serializes the CreatePipeline into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.allow_duplicate_names is not None:
-            body["{allow_duplicate_names}"] = self.allow_duplicate_names
+            body["allow_duplicate_names"] = self.allow_duplicate_names
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.catalog is not None:
-            body["{catalog}"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel is not None:
-            body["{channel}"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            body["{clusters}"] = self.clusters
+            body["clusters"] = self.clusters
         if self.configuration:
-            body["{configuration}"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous is not None:
-            body["{continuous}"] = self.continuous
+            body["continuous"] = self.continuous
         if self.deployment:
-            body["{deployment}"] = self.deployment
+            body["deployment"] = self.deployment
         if self.development is not None:
-            body["{development}"] = self.development
+            body["development"] = self.development
         if self.dry_run is not None:
-            body["{dry_run}"] = self.dry_run
+            body["dry_run"] = self.dry_run
         if self.edition is not None:
-            body["{edition}"] = self.edition
+            body["edition"] = self.edition
         if self.event_log:
-            body["{event_log}"] = self.event_log
+            body["event_log"] = self.event_log
         if self.filters:
-            body["{filters}"] = self.filters
+            body["filters"] = self.filters
         if self.gateway_definition:
-            body["{gateway_definition}"] = self.gateway_definition
+            body["gateway_definition"] = self.gateway_definition
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.ingestion_definition:
-            body["{ingestion_definition}"] = self.ingestion_definition
+            body["ingestion_definition"] = self.ingestion_definition
         if self.libraries:
-            body["{libraries}"] = self.libraries
+            body["libraries"] = self.libraries
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notifications:
-            body["{notifications}"] = self.notifications
+            body["notifications"] = self.notifications
         if self.photon is not None:
-            body["{photon}"] = self.photon
+            body["photon"] = self.photon
         if self.restart_window:
-            body["{restart_window}"] = self.restart_window
+            body["restart_window"] = self.restart_window
         if self.run_as:
-            body["{run_as}"] = self.run_as
+            body["run_as"] = self.run_as
         if self.schema is not None:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.serverless is not None:
-            body["{serverless}"] = self.serverless
+            body["serverless"] = self.serverless
         if self.storage is not None:
-            body["{storage}"] = self.storage
+            body["storage"] = self.storage
         if self.target is not None:
-            body["{target}"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            body["{trigger}"] = self.trigger
+            body["trigger"] = self.trigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePipeline:
         """Deserializes the CreatePipeline from a dictionary."""
         return cls(
-            allow_duplicate_names=d.get("{allow_duplicate_names}", None),
-            budget_policy_id=d.get("{budget_policy_id}", None),
-            catalog=d.get("{catalog}", None),
-            channel=d.get("{channel}", None),
-            clusters=_repeated_dict(d, "{clusters}", PipelineCluster),
-            configuration=d.get("{configuration}", None),
-            continuous=d.get("{continuous}", None),
-            deployment=_from_dict(d, "{deployment}", PipelineDeployment),
-            development=d.get("{development}", None),
-            dry_run=d.get("{dry_run}", None),
-            edition=d.get("{edition}", None),
-            event_log=_from_dict(d, "{event_log}", EventLogSpec),
-            filters=_from_dict(d, "{filters}", Filters),
-            gateway_definition=_from_dict(d, "{gateway_definition}", IngestionGatewayPipelineDefinition),
-            id=d.get("{id}", None),
-            ingestion_definition=_from_dict(d, "{ingestion_definition}", IngestionPipelineDefinition),
-            libraries=_repeated_dict(d, "{libraries}", PipelineLibrary),
-            name=d.get("{name}", None),
-            notifications=_repeated_dict(d, "{notifications}", Notifications),
-            photon=d.get("{photon}", None),
-            restart_window=_from_dict(d, "{restart_window}", RestartWindow),
-            run_as=_from_dict(d, "{run_as}", RunAs),
-            schema=d.get("{schema}", None),
-            serverless=d.get("{serverless}", None),
-            storage=d.get("{storage}", None),
-            target=d.get("{target}", None),
-            trigger=_from_dict(d, "{trigger}", PipelineTrigger),
+            allow_duplicate_names=d.get("allow_duplicate_names", None),
+            budget_policy_id=d.get("budget_policy_id", None),
+            catalog=d.get("catalog", None),
+            channel=d.get("channel", None),
+            clusters=_repeated_dict(d, "clusters", PipelineCluster),
+            configuration=d.get("configuration", None),
+            continuous=d.get("continuous", None),
+            deployment=_from_dict(d, "deployment", PipelineDeployment),
+            development=d.get("development", None),
+            dry_run=d.get("dry_run", None),
+            edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
+            filters=_from_dict(d, "filters", Filters),
+            gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
+            id=d.get("id", None),
+            ingestion_definition=_from_dict(d, "ingestion_definition", IngestionPipelineDefinition),
+            libraries=_repeated_dict(d, "libraries", PipelineLibrary),
+            name=d.get("name", None),
+            notifications=_repeated_dict(d, "notifications", Notifications),
+            photon=d.get("photon", None),
+            restart_window=_from_dict(d, "restart_window", RestartWindow),
+            run_as=_from_dict(d, "run_as", RunAs),
+            schema=d.get("schema", None),
+            serverless=d.get("serverless", None),
+            storage=d.get("storage", None),
+            target=d.get("target", None),
+            trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
 
 
@@ -589,17 +589,16 @@ class CreatePipelineResponse:
         """Serializes the CreatePipelineResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.effective_settings:
-            body["{effective_settings}"] = self.effective_settings
+            body["effective_settings"] = self.effective_settings
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreatePipelineResponse:
         """Deserializes the CreatePipelineResponse from a dictionary."""
         return cls(
-            effective_settings=_from_dict(d, "{effective_settings}", PipelineSpec),
-            pipeline_id=d.get("{pipeline_id}", None),
+            effective_settings=_from_dict(d, "effective_settings", PipelineSpec), pipeline_id=d.get("pipeline_id", None)
         )
 
 
@@ -622,15 +621,15 @@ class CronTrigger:
         """Serializes the CronTrigger into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.quartz_cron_schedule is not None:
-            body["{quartz_cron_schedule}"] = self.quartz_cron_schedule
+            body["quartz_cron_schedule"] = self.quartz_cron_schedule
         if self.timezone_id is not None:
-            body["{timezone_id}"] = self.timezone_id
+            body["timezone_id"] = self.timezone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CronTrigger:
         """Deserializes the CronTrigger from a dictionary."""
-        return cls(quartz_cron_schedule=d.get("{quartz_cron_schedule}", None), timezone_id=d.get("{timezone_id}", None))
+        return cls(quartz_cron_schedule=d.get("quartz_cron_schedule", None), timezone_id=d.get("timezone_id", None))
 
 
 @dataclass
@@ -654,15 +653,15 @@ class DataPlaneId:
         """Serializes the DataPlaneId into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.instance is not None:
-            body["{instance}"] = self.instance
+            body["instance"] = self.instance
         if self.seq_no is not None:
-            body["{seq_no}"] = self.seq_no
+            body["seq_no"] = self.seq_no
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
-        return cls(instance=d.get("{instance}", None), seq_no=d.get("{seq_no}", None))
+        return cls(instance=d.get("instance", None), seq_no=d.get("seq_no", None))
 
 
 class DayOfWeek(Enum):
@@ -696,13 +695,13 @@ class DbfsStorageInfo:
         """Serializes the DbfsStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DbfsStorageInfo:
         """Deserializes the DbfsStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -901,95 +900,95 @@ class EditPipeline:
         """Serializes the EditPipeline into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.allow_duplicate_names is not None:
-            body["{allow_duplicate_names}"] = self.allow_duplicate_names
+            body["allow_duplicate_names"] = self.allow_duplicate_names
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.catalog is not None:
-            body["{catalog}"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel is not None:
-            body["{channel}"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            body["{clusters}"] = self.clusters
+            body["clusters"] = self.clusters
         if self.configuration:
-            body["{configuration}"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous is not None:
-            body["{continuous}"] = self.continuous
+            body["continuous"] = self.continuous
         if self.deployment:
-            body["{deployment}"] = self.deployment
+            body["deployment"] = self.deployment
         if self.development is not None:
-            body["{development}"] = self.development
+            body["development"] = self.development
         if self.edition is not None:
-            body["{edition}"] = self.edition
+            body["edition"] = self.edition
         if self.event_log:
-            body["{event_log}"] = self.event_log
+            body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
-            body["{expected_last_modified}"] = self.expected_last_modified
+            body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
-            body["{filters}"] = self.filters
+            body["filters"] = self.filters
         if self.gateway_definition:
-            body["{gateway_definition}"] = self.gateway_definition
+            body["gateway_definition"] = self.gateway_definition
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.ingestion_definition:
-            body["{ingestion_definition}"] = self.ingestion_definition
+            body["ingestion_definition"] = self.ingestion_definition
         if self.libraries:
-            body["{libraries}"] = self.libraries
+            body["libraries"] = self.libraries
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notifications:
-            body["{notifications}"] = self.notifications
+            body["notifications"] = self.notifications
         if self.photon is not None:
-            body["{photon}"] = self.photon
+            body["photon"] = self.photon
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.restart_window:
-            body["{restart_window}"] = self.restart_window
+            body["restart_window"] = self.restart_window
         if self.run_as:
-            body["{run_as}"] = self.run_as
+            body["run_as"] = self.run_as
         if self.schema is not None:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.serverless is not None:
-            body["{serverless}"] = self.serverless
+            body["serverless"] = self.serverless
         if self.storage is not None:
-            body["{storage}"] = self.storage
+            body["storage"] = self.storage
         if self.target is not None:
-            body["{target}"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            body["{trigger}"] = self.trigger
+            body["trigger"] = self.trigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EditPipeline:
         """Deserializes the EditPipeline from a dictionary."""
         return cls(
-            allow_duplicate_names=d.get("{allow_duplicate_names}", None),
-            budget_policy_id=d.get("{budget_policy_id}", None),
-            catalog=d.get("{catalog}", None),
-            channel=d.get("{channel}", None),
-            clusters=_repeated_dict(d, "{clusters}", PipelineCluster),
-            configuration=d.get("{configuration}", None),
-            continuous=d.get("{continuous}", None),
-            deployment=_from_dict(d, "{deployment}", PipelineDeployment),
-            development=d.get("{development}", None),
-            edition=d.get("{edition}", None),
-            event_log=_from_dict(d, "{event_log}", EventLogSpec),
-            expected_last_modified=d.get("{expected_last_modified}", None),
-            filters=_from_dict(d, "{filters}", Filters),
-            gateway_definition=_from_dict(d, "{gateway_definition}", IngestionGatewayPipelineDefinition),
-            id=d.get("{id}", None),
-            ingestion_definition=_from_dict(d, "{ingestion_definition}", IngestionPipelineDefinition),
-            libraries=_repeated_dict(d, "{libraries}", PipelineLibrary),
-            name=d.get("{name}", None),
-            notifications=_repeated_dict(d, "{notifications}", Notifications),
-            photon=d.get("{photon}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            restart_window=_from_dict(d, "{restart_window}", RestartWindow),
-            run_as=_from_dict(d, "{run_as}", RunAs),
-            schema=d.get("{schema}", None),
-            serverless=d.get("{serverless}", None),
-            storage=d.get("{storage}", None),
-            target=d.get("{target}", None),
-            trigger=_from_dict(d, "{trigger}", PipelineTrigger),
+            allow_duplicate_names=d.get("allow_duplicate_names", None),
+            budget_policy_id=d.get("budget_policy_id", None),
+            catalog=d.get("catalog", None),
+            channel=d.get("channel", None),
+            clusters=_repeated_dict(d, "clusters", PipelineCluster),
+            configuration=d.get("configuration", None),
+            continuous=d.get("continuous", None),
+            deployment=_from_dict(d, "deployment", PipelineDeployment),
+            development=d.get("development", None),
+            edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
+            expected_last_modified=d.get("expected_last_modified", None),
+            filters=_from_dict(d, "filters", Filters),
+            gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
+            id=d.get("id", None),
+            ingestion_definition=_from_dict(d, "ingestion_definition", IngestionPipelineDefinition),
+            libraries=_repeated_dict(d, "libraries", PipelineLibrary),
+            name=d.get("name", None),
+            notifications=_repeated_dict(d, "notifications", Notifications),
+            photon=d.get("photon", None),
+            pipeline_id=d.get("pipeline_id", None),
+            restart_window=_from_dict(d, "restart_window", RestartWindow),
+            run_as=_from_dict(d, "run_as", RunAs),
+            schema=d.get("schema", None),
+            serverless=d.get("serverless", None),
+            storage=d.get("storage", None),
+            target=d.get("target", None),
+            trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
 
 
@@ -1032,15 +1031,15 @@ class ErrorDetail:
         """Serializes the ErrorDetail into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exceptions:
-            body["{exceptions}"] = self.exceptions
+            body["exceptions"] = self.exceptions
         if self.fatal is not None:
-            body["{fatal}"] = self.fatal
+            body["fatal"] = self.fatal
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ErrorDetail:
         """Deserializes the ErrorDetail from a dictionary."""
-        return cls(exceptions=_repeated_dict(d, "{exceptions}", SerializedException), fatal=d.get("{fatal}", None))
+        return cls(exceptions=_repeated_dict(d, "exceptions", SerializedException), fatal=d.get("fatal", None))
 
 
 class EventLevel(Enum):
@@ -1080,17 +1079,17 @@ class EventLogSpec:
         """Serializes the EventLogSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog is not None:
-            body["{catalog}"] = self.catalog
+            body["catalog"] = self.catalog
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.schema is not None:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EventLogSpec:
         """Deserializes the EventLogSpec from a dictionary."""
-        return cls(catalog=d.get("{catalog}", None), name=d.get("{name}", None), schema=d.get("{schema}", None))
+        return cls(catalog=d.get("catalog", None), name=d.get("name", None), schema=d.get("schema", None))
 
 
 @dataclass
@@ -1109,13 +1108,13 @@ class FileLibrary:
         """Serializes the FileLibrary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FileLibrary:
         """Deserializes the FileLibrary from a dictionary."""
-        return cls(path=d.get("{path}", None))
+        return cls(path=d.get("path", None))
 
 
 @dataclass
@@ -1139,15 +1138,15 @@ class Filters:
         """Serializes the Filters into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.exclude:
-            body["{exclude}"] = self.exclude
+            body["exclude"] = self.exclude
         if self.include:
-            body["{include}"] = self.include
+            body["include"] = self.include
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Filters:
         """Deserializes the Filters from a dictionary."""
-        return cls(exclude=d.get("{exclude}", None), include=d.get("{include}", None))
+        return cls(exclude=d.get("exclude", None), include=d.get("include", None))
 
 
 @dataclass
@@ -1206,29 +1205,29 @@ class GcpAttributes:
         """Serializes the GcpAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.availability is not None:
-            body["{availability}"] = self.availability
+            body["availability"] = self.availability
         if self.boot_disk_size is not None:
-            body["{boot_disk_size}"] = self.boot_disk_size
+            body["boot_disk_size"] = self.boot_disk_size
         if self.google_service_account is not None:
-            body["{google_service_account}"] = self.google_service_account
+            body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
-            body["{local_ssd_count}"] = self.local_ssd_count
+            body["local_ssd_count"] = self.local_ssd_count
         if self.use_preemptible_executors is not None:
-            body["{use_preemptible_executors}"] = self.use_preemptible_executors
+            body["use_preemptible_executors"] = self.use_preemptible_executors
         if self.zone_id is not None:
-            body["{zone_id}"] = self.zone_id
+            body["zone_id"] = self.zone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GcpAttributes:
         """Deserializes the GcpAttributes from a dictionary."""
         return cls(
-            availability=_enum(d, "{availability}", GcpAvailability),
-            boot_disk_size=d.get("{boot_disk_size}", None),
-            google_service_account=d.get("{google_service_account}", None),
-            local_ssd_count=d.get("{local_ssd_count}", None),
-            use_preemptible_executors=d.get("{use_preemptible_executors}", None),
-            zone_id=d.get("{zone_id}", None),
+            availability=_enum(d, "availability", GcpAvailability),
+            boot_disk_size=d.get("boot_disk_size", None),
+            google_service_account=d.get("google_service_account", None),
+            local_ssd_count=d.get("local_ssd_count", None),
+            use_preemptible_executors=d.get("use_preemptible_executors", None),
+            zone_id=d.get("zone_id", None),
         )
 
 
@@ -1259,13 +1258,13 @@ class GcsStorageInfo:
         """Serializes the GcsStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GcsStorageInfo:
         """Deserializes the GcsStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -1284,13 +1283,13 @@ class GetPipelinePermissionLevelsResponse:
         """Serializes the GetPipelinePermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.permission_levels:
-            body["{permission_levels}"] = self.permission_levels
+            body["permission_levels"] = self.permission_levels
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPipelinePermissionLevelsResponse:
         """Deserializes the GetPipelinePermissionLevelsResponse from a dictionary."""
-        return cls(permission_levels=_repeated_dict(d, "{permission_levels}", PipelinePermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, "permission_levels", PipelinePermissionsDescription))
 
 
 @dataclass
@@ -1364,47 +1363,47 @@ class GetPipelineResponse:
         """Serializes the GetPipelineResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cause is not None:
-            body["{cause}"] = self.cause
+            body["cause"] = self.cause
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
-            body["{effective_budget_policy_id}"] = self.effective_budget_policy_id
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.health is not None:
-            body["{health}"] = self.health
+            body["health"] = self.health
         if self.last_modified is not None:
-            body["{last_modified}"] = self.last_modified
+            body["last_modified"] = self.last_modified
         if self.latest_updates:
-            body["{latest_updates}"] = self.latest_updates
+            body["latest_updates"] = self.latest_updates
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.run_as_user_name is not None:
-            body["{run_as_user_name}"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.spec:
-            body["{spec}"] = self.spec
+            body["spec"] = self.spec
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetPipelineResponse:
         """Deserializes the GetPipelineResponse from a dictionary."""
         return cls(
-            cause=d.get("{cause}", None),
-            cluster_id=d.get("{cluster_id}", None),
-            creator_user_name=d.get("{creator_user_name}", None),
-            effective_budget_policy_id=d.get("{effective_budget_policy_id}", None),
-            health=_enum(d, "{health}", GetPipelineResponseHealth),
-            last_modified=d.get("{last_modified}", None),
-            latest_updates=_repeated_dict(d, "{latest_updates}", UpdateStateInfo),
-            name=d.get("{name}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            run_as_user_name=d.get("{run_as_user_name}", None),
-            spec=_from_dict(d, "{spec}", PipelineSpec),
-            state=_enum(d, "{state}", PipelineState),
+            cause=d.get("cause", None),
+            cluster_id=d.get("cluster_id", None),
+            creator_user_name=d.get("creator_user_name", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            health=_enum(d, "health", GetPipelineResponseHealth),
+            last_modified=d.get("last_modified", None),
+            latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
+            name=d.get("name", None),
+            pipeline_id=d.get("pipeline_id", None),
+            run_as_user_name=d.get("run_as_user_name", None),
+            spec=_from_dict(d, "spec", PipelineSpec),
+            state=_enum(d, "state", PipelineState),
         )
 
 
@@ -1431,13 +1430,13 @@ class GetUpdateResponse:
         """Serializes the GetUpdateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.update:
-            body["{update}"] = self.update
+            body["update"] = self.update
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GetUpdateResponse:
         """Deserializes the GetUpdateResponse from a dictionary."""
-        return cls(update=_from_dict(d, "{update}", UpdateInfo))
+        return cls(update=_from_dict(d, "update", UpdateInfo))
 
 
 @dataclass
@@ -1466,20 +1465,20 @@ class IngestionConfig:
         """Serializes the IngestionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.report:
-            body["{report}"] = self.report
+            body["report"] = self.report
         if self.schema:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.table:
-            body["{table}"] = self.table
+            body["table"] = self.table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> IngestionConfig:
         """Deserializes the IngestionConfig from a dictionary."""
         return cls(
-            report=_from_dict(d, "{report}", ReportSpec),
-            schema=_from_dict(d, "{schema}", SchemaSpec),
-            table=_from_dict(d, "{table}", TableSpec),
+            report=_from_dict(d, "report", ReportSpec),
+            schema=_from_dict(d, "schema", SchemaSpec),
+            table=_from_dict(d, "table", TableSpec),
         )
 
 
@@ -1523,26 +1522,26 @@ class IngestionGatewayPipelineDefinition:
         """Serializes the IngestionGatewayPipelineDefinition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.connection_id is not None:
-            body["{connection_id}"] = self.connection_id
+            body["connection_id"] = self.connection_id
         if self.connection_name is not None:
-            body["{connection_name}"] = self.connection_name
+            body["connection_name"] = self.connection_name
         if self.gateway_storage_catalog is not None:
-            body["{gateway_storage_catalog}"] = self.gateway_storage_catalog
+            body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
-            body["{gateway_storage_name}"] = self.gateway_storage_name
+            body["gateway_storage_name"] = self.gateway_storage_name
         if self.gateway_storage_schema is not None:
-            body["{gateway_storage_schema}"] = self.gateway_storage_schema
+            body["gateway_storage_schema"] = self.gateway_storage_schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> IngestionGatewayPipelineDefinition:
         """Deserializes the IngestionGatewayPipelineDefinition from a dictionary."""
         return cls(
-            connection_id=d.get("{connection_id}", None),
-            connection_name=d.get("{connection_name}", None),
-            gateway_storage_catalog=d.get("{gateway_storage_catalog}", None),
-            gateway_storage_name=d.get("{gateway_storage_name}", None),
-            gateway_storage_schema=d.get("{gateway_storage_schema}", None),
+            connection_id=d.get("connection_id", None),
+            connection_name=d.get("connection_name", None),
+            gateway_storage_catalog=d.get("gateway_storage_catalog", None),
+            gateway_storage_name=d.get("gateway_storage_name", None),
+            gateway_storage_schema=d.get("gateway_storage_schema", None),
         )
 
 
@@ -1580,23 +1579,23 @@ class IngestionPipelineDefinition:
         """Serializes the IngestionPipelineDefinition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.connection_name is not None:
-            body["{connection_name}"] = self.connection_name
+            body["connection_name"] = self.connection_name
         if self.ingestion_gateway_id is not None:
-            body["{ingestion_gateway_id}"] = self.ingestion_gateway_id
+            body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
-            body["{objects}"] = self.objects
+            body["objects"] = self.objects
         if self.table_configuration:
-            body["{table_configuration}"] = self.table_configuration
+            body["table_configuration"] = self.table_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
-            connection_name=d.get("{connection_name}", None),
-            ingestion_gateway_id=d.get("{ingestion_gateway_id}", None),
-            objects=_repeated_dict(d, "{objects}", IngestionConfig),
-            table_configuration=_from_dict(d, "{table_configuration}", TableSpecificConfig),
+            connection_name=d.get("connection_name", None),
+            ingestion_gateway_id=d.get("ingestion_gateway_id", None),
+            objects=_repeated_dict(d, "objects", IngestionConfig),
+            table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
 
 
@@ -1655,32 +1654,32 @@ class InitScriptInfo:
         """Serializes the InitScriptInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.abfss:
-            body["{abfss}"] = self.abfss
+            body["abfss"] = self.abfss
         if self.dbfs:
-            body["{dbfs}"] = self.dbfs
+            body["dbfs"] = self.dbfs
         if self.file:
-            body["{file}"] = self.file
+            body["file"] = self.file
         if self.gcs:
-            body["{gcs}"] = self.gcs
+            body["gcs"] = self.gcs
         if self.s3:
-            body["{s3}"] = self.s3
+            body["s3"] = self.s3
         if self.volumes:
-            body["{volumes}"] = self.volumes
+            body["volumes"] = self.volumes
         if self.workspace:
-            body["{workspace}"] = self.workspace
+            body["workspace"] = self.workspace
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> InitScriptInfo:
         """Deserializes the InitScriptInfo from a dictionary."""
         return cls(
-            abfss=_from_dict(d, "{abfss}", Adlsgen2Info),
-            dbfs=_from_dict(d, "{dbfs}", DbfsStorageInfo),
-            file=_from_dict(d, "{file}", LocalFileInfo),
-            gcs=_from_dict(d, "{gcs}", GcsStorageInfo),
-            s3=_from_dict(d, "{s3}", S3StorageInfo),
-            volumes=_from_dict(d, "{volumes}", VolumesStorageInfo),
-            workspace=_from_dict(d, "{workspace}", WorkspaceStorageInfo),
+            abfss=_from_dict(d, "abfss", Adlsgen2Info),
+            dbfs=_from_dict(d, "dbfs", DbfsStorageInfo),
+            file=_from_dict(d, "file", LocalFileInfo),
+            gcs=_from_dict(d, "gcs", GcsStorageInfo),
+            s3=_from_dict(d, "s3", S3StorageInfo),
+            volumes=_from_dict(d, "volumes", VolumesStorageInfo),
+            workspace=_from_dict(d, "workspace", WorkspaceStorageInfo),
         )
 
 
@@ -1710,20 +1709,20 @@ class ListPipelineEventsResponse:
         """Serializes the ListPipelineEventsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.events:
-            body["{events}"] = self.events
+            body["events"] = self.events
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListPipelineEventsResponse:
         """Deserializes the ListPipelineEventsResponse from a dictionary."""
         return cls(
-            events=_repeated_dict(d, "{events}", PipelineEvent),
-            next_page_token=d.get("{next_page_token}", None),
-            prev_page_token=d.get("{prev_page_token}", None),
+            events=_repeated_dict(d, "events", PipelineEvent),
+            next_page_token=d.get("next_page_token", None),
+            prev_page_token=d.get("prev_page_token", None),
         )
 
 
@@ -1748,17 +1747,16 @@ class ListPipelinesResponse:
         """Serializes the ListPipelinesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.statuses:
-            body["{statuses}"] = self.statuses
+            body["statuses"] = self.statuses
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListPipelinesResponse:
         """Deserializes the ListPipelinesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            statuses=_repeated_dict(d, "{statuses}", PipelineStateInfo),
+            next_page_token=d.get("next_page_token", None), statuses=_repeated_dict(d, "statuses", PipelineStateInfo)
         )
 
 
@@ -1788,20 +1786,20 @@ class ListUpdatesResponse:
         """Serializes the ListUpdatesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.next_page_token is not None:
-            body["{next_page_token}"] = self.next_page_token
+            body["next_page_token"] = self.next_page_token
         if self.prev_page_token is not None:
-            body["{prev_page_token}"] = self.prev_page_token
+            body["prev_page_token"] = self.prev_page_token
         if self.updates:
-            body["{updates}"] = self.updates
+            body["updates"] = self.updates
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListUpdatesResponse:
         """Deserializes the ListUpdatesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("{next_page_token}", None),
-            prev_page_token=d.get("{prev_page_token}", None),
-            updates=_repeated_dict(d, "{updates}", UpdateInfo),
+            next_page_token=d.get("next_page_token", None),
+            prev_page_token=d.get("prev_page_token", None),
+            updates=_repeated_dict(d, "updates", UpdateInfo),
         )
 
 
@@ -1821,13 +1819,13 @@ class LocalFileInfo:
         """Serializes the LocalFileInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LocalFileInfo:
         """Deserializes the LocalFileInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -1849,17 +1847,17 @@ class LogAnalyticsInfo:
         """Serializes the LogAnalyticsInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_analytics_primary_key is not None:
-            body["{log_analytics_primary_key}"] = self.log_analytics_primary_key
+            body["log_analytics_primary_key"] = self.log_analytics_primary_key
         if self.log_analytics_workspace_id is not None:
-            body["{log_analytics_workspace_id}"] = self.log_analytics_workspace_id
+            body["log_analytics_workspace_id"] = self.log_analytics_workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LogAnalyticsInfo:
         """Deserializes the LogAnalyticsInfo from a dictionary."""
         return cls(
-            log_analytics_primary_key=d.get("{log_analytics_primary_key}", None),
-            log_analytics_workspace_id=d.get("{log_analytics_workspace_id}", None),
+            log_analytics_primary_key=d.get("log_analytics_primary_key", None),
+            log_analytics_workspace_id=d.get("log_analytics_workspace_id", None),
         )
 
 
@@ -1919,18 +1917,18 @@ class MavenLibrary:
         """Serializes the MavenLibrary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.coordinates is not None:
-            body["{coordinates}"] = self.coordinates
+            body["coordinates"] = self.coordinates
         if self.exclusions:
-            body["{exclusions}"] = self.exclusions
+            body["exclusions"] = self.exclusions
         if self.repo is not None:
-            body["{repo}"] = self.repo
+            body["repo"] = self.repo
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MavenLibrary:
         """Deserializes the MavenLibrary from a dictionary."""
         return cls(
-            coordinates=d.get("{coordinates}", None), exclusions=d.get("{exclusions}", None), repo=d.get("{repo}", None)
+            coordinates=d.get("coordinates", None), exclusions=d.get("exclusions", None), repo=d.get("repo", None)
         )
 
 
@@ -1950,13 +1948,13 @@ class NotebookLibrary:
         """Serializes the NotebookLibrary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.path is not None:
-            body["{path}"] = self.path
+            body["path"] = self.path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NotebookLibrary:
         """Deserializes the NotebookLibrary from a dictionary."""
-        return cls(path=d.get("{path}", None))
+        return cls(path=d.get("path", None))
 
 
 @dataclass
@@ -1985,15 +1983,15 @@ class Notifications:
         """Serializes the Notifications into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alerts:
-            body["{alerts}"] = self.alerts
+            body["alerts"] = self.alerts
         if self.email_recipients:
-            body["{email_recipients}"] = self.email_recipients
+            body["email_recipients"] = self.email_recipients
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
-        return cls(alerts=d.get("{alerts}", None), email_recipients=d.get("{email_recipients}", None))
+        return cls(alerts=d.get("alerts", None), email_recipients=d.get("email_recipients", None))
 
 
 @dataclass
@@ -2093,62 +2091,62 @@ class Origin:
         """Serializes the Origin into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.batch_id is not None:
-            body["{batch_id}"] = self.batch_id
+            body["batch_id"] = self.batch_id
         if self.cloud is not None:
-            body["{cloud}"] = self.cloud
+            body["cloud"] = self.cloud
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.dataset_name is not None:
-            body["{dataset_name}"] = self.dataset_name
+            body["dataset_name"] = self.dataset_name
         if self.flow_id is not None:
-            body["{flow_id}"] = self.flow_id
+            body["flow_id"] = self.flow_id
         if self.flow_name is not None:
-            body["{flow_name}"] = self.flow_name
+            body["flow_name"] = self.flow_name
         if self.host is not None:
-            body["{host}"] = self.host
+            body["host"] = self.host
         if self.maintenance_id is not None:
-            body["{maintenance_id}"] = self.maintenance_id
+            body["maintenance_id"] = self.maintenance_id
         if self.materialization_name is not None:
-            body["{materialization_name}"] = self.materialization_name
+            body["materialization_name"] = self.materialization_name
         if self.org_id is not None:
-            body["{org_id}"] = self.org_id
+            body["org_id"] = self.org_id
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.pipeline_name is not None:
-            body["{pipeline_name}"] = self.pipeline_name
+            body["pipeline_name"] = self.pipeline_name
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         if self.request_id is not None:
-            body["{request_id}"] = self.request_id
+            body["request_id"] = self.request_id
         if self.table_id is not None:
-            body["{table_id}"] = self.table_id
+            body["table_id"] = self.table_id
         if self.uc_resource_id is not None:
-            body["{uc_resource_id}"] = self.uc_resource_id
+            body["uc_resource_id"] = self.uc_resource_id
         if self.update_id is not None:
-            body["{update_id}"] = self.update_id
+            body["update_id"] = self.update_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Origin:
         """Deserializes the Origin from a dictionary."""
         return cls(
-            batch_id=d.get("{batch_id}", None),
-            cloud=d.get("{cloud}", None),
-            cluster_id=d.get("{cluster_id}", None),
-            dataset_name=d.get("{dataset_name}", None),
-            flow_id=d.get("{flow_id}", None),
-            flow_name=d.get("{flow_name}", None),
-            host=d.get("{host}", None),
-            maintenance_id=d.get("{maintenance_id}", None),
-            materialization_name=d.get("{materialization_name}", None),
-            org_id=d.get("{org_id}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            pipeline_name=d.get("{pipeline_name}", None),
-            region=d.get("{region}", None),
-            request_id=d.get("{request_id}", None),
-            table_id=d.get("{table_id}", None),
-            uc_resource_id=d.get("{uc_resource_id}", None),
-            update_id=d.get("{update_id}", None),
+            batch_id=d.get("batch_id", None),
+            cloud=d.get("cloud", None),
+            cluster_id=d.get("cluster_id", None),
+            dataset_name=d.get("dataset_name", None),
+            flow_id=d.get("flow_id", None),
+            flow_name=d.get("flow_name", None),
+            host=d.get("host", None),
+            maintenance_id=d.get("maintenance_id", None),
+            materialization_name=d.get("materialization_name", None),
+            org_id=d.get("org_id", None),
+            pipeline_id=d.get("pipeline_id", None),
+            pipeline_name=d.get("pipeline_name", None),
+            region=d.get("region", None),
+            request_id=d.get("request_id", None),
+            table_id=d.get("table_id", None),
+            uc_resource_id=d.get("uc_resource_id", None),
+            update_id=d.get("update_id", None),
         )
 
 
@@ -2183,23 +2181,23 @@ class PipelineAccessControlRequest:
         """Serializes the PipelineAccessControlRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level
+            body["permission_level"] = self.permission_level
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlRequest:
         """Deserializes the PipelineAccessControlRequest from a dictionary."""
         return cls(
-            group_name=d.get("{group_name}", None),
-            permission_level=_enum(d, "{permission_level}", PipelinePermissionLevel),
-            service_principal_name=d.get("{service_principal_name}", None),
-            user_name=d.get("{user_name}", None),
+            group_name=d.get("group_name", None),
+            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
         )
 
 
@@ -2239,26 +2237,26 @@ class PipelineAccessControlResponse:
         """Serializes the PipelineAccessControlResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.all_permissions:
-            body["{all_permissions}"] = self.all_permissions
+            body["all_permissions"] = self.all_permissions
         if self.display_name is not None:
-            body["{display_name}"] = self.display_name
+            body["display_name"] = self.display_name
         if self.group_name is not None:
-            body["{group_name}"] = self.group_name
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlResponse:
         """Deserializes the PipelineAccessControlResponse from a dictionary."""
         return cls(
-            all_permissions=_repeated_dict(d, "{all_permissions}", PipelinePermission),
-            display_name=d.get("{display_name}", None),
-            group_name=d.get("{group_name}", None),
-            service_principal_name=d.get("{service_principal_name}", None),
-            user_name=d.get("{user_name}", None),
+            all_permissions=_repeated_dict(d, "all_permissions", PipelinePermission),
+            display_name=d.get("display_name", None),
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
         )
 
 
@@ -2411,68 +2409,68 @@ class PipelineCluster:
         """Serializes the PipelineCluster into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.apply_policy_default_values is not None:
-            body["{apply_policy_default_values}"] = self.apply_policy_default_values
+            body["apply_policy_default_values"] = self.apply_policy_default_values
         if self.autoscale:
-            body["{autoscale}"] = self.autoscale
+            body["autoscale"] = self.autoscale
         if self.aws_attributes:
-            body["{aws_attributes}"] = self.aws_attributes
+            body["aws_attributes"] = self.aws_attributes
         if self.azure_attributes:
-            body["{azure_attributes}"] = self.azure_attributes
+            body["azure_attributes"] = self.azure_attributes
         if self.cluster_log_conf:
-            body["{cluster_log_conf}"] = self.cluster_log_conf
+            body["cluster_log_conf"] = self.cluster_log_conf
         if self.custom_tags:
-            body["{custom_tags}"] = self.custom_tags
+            body["custom_tags"] = self.custom_tags
         if self.driver_instance_pool_id is not None:
-            body["{driver_instance_pool_id}"] = self.driver_instance_pool_id
+            body["driver_instance_pool_id"] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None:
-            body["{driver_node_type_id}"] = self.driver_node_type_id
+            body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_local_disk_encryption is not None:
-            body["{enable_local_disk_encryption}"] = self.enable_local_disk_encryption
+            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
         if self.gcp_attributes:
-            body["{gcp_attributes}"] = self.gcp_attributes
+            body["gcp_attributes"] = self.gcp_attributes
         if self.init_scripts:
-            body["{init_scripts}"] = self.init_scripts
+            body["init_scripts"] = self.init_scripts
         if self.instance_pool_id is not None:
-            body["{instance_pool_id}"] = self.instance_pool_id
+            body["instance_pool_id"] = self.instance_pool_id
         if self.label is not None:
-            body["{label}"] = self.label
+            body["label"] = self.label
         if self.node_type_id is not None:
-            body["{node_type_id}"] = self.node_type_id
+            body["node_type_id"] = self.node_type_id
         if self.num_workers is not None:
-            body["{num_workers}"] = self.num_workers
+            body["num_workers"] = self.num_workers
         if self.policy_id is not None:
-            body["{policy_id}"] = self.policy_id
+            body["policy_id"] = self.policy_id
         if self.spark_conf:
-            body["{spark_conf}"] = self.spark_conf
+            body["spark_conf"] = self.spark_conf
         if self.spark_env_vars:
-            body["{spark_env_vars}"] = self.spark_env_vars
+            body["spark_env_vars"] = self.spark_env_vars
         if self.ssh_public_keys:
-            body["{ssh_public_keys}"] = self.ssh_public_keys
+            body["ssh_public_keys"] = self.ssh_public_keys
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineCluster:
         """Deserializes the PipelineCluster from a dictionary."""
         return cls(
-            apply_policy_default_values=d.get("{apply_policy_default_values}", None),
-            autoscale=_from_dict(d, "{autoscale}", PipelineClusterAutoscale),
-            aws_attributes=_from_dict(d, "{aws_attributes}", AwsAttributes),
-            azure_attributes=_from_dict(d, "{azure_attributes}", AzureAttributes),
-            cluster_log_conf=_from_dict(d, "{cluster_log_conf}", ClusterLogConf),
-            custom_tags=d.get("{custom_tags}", None),
-            driver_instance_pool_id=d.get("{driver_instance_pool_id}", None),
-            driver_node_type_id=d.get("{driver_node_type_id}", None),
-            enable_local_disk_encryption=d.get("{enable_local_disk_encryption}", None),
-            gcp_attributes=_from_dict(d, "{gcp_attributes}", GcpAttributes),
-            init_scripts=_repeated_dict(d, "{init_scripts}", InitScriptInfo),
-            instance_pool_id=d.get("{instance_pool_id}", None),
-            label=d.get("{label}", None),
-            node_type_id=d.get("{node_type_id}", None),
-            num_workers=d.get("{num_workers}", None),
-            policy_id=d.get("{policy_id}", None),
-            spark_conf=d.get("{spark_conf}", None),
-            spark_env_vars=d.get("{spark_env_vars}", None),
-            ssh_public_keys=d.get("{ssh_public_keys}", None),
+            apply_policy_default_values=d.get("apply_policy_default_values", None),
+            autoscale=_from_dict(d, "autoscale", PipelineClusterAutoscale),
+            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
+            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
+            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
+            custom_tags=d.get("custom_tags", None),
+            driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_id=d.get("driver_node_type_id", None),
+            enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
+            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
+            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
+            instance_pool_id=d.get("instance_pool_id", None),
+            label=d.get("label", None),
+            node_type_id=d.get("node_type_id", None),
+            num_workers=d.get("num_workers", None),
+            policy_id=d.get("policy_id", None),
+            spark_conf=d.get("spark_conf", None),
+            spark_env_vars=d.get("spark_env_vars", None),
+            ssh_public_keys=d.get("ssh_public_keys", None),
         )
 
 
@@ -2507,20 +2505,20 @@ class PipelineClusterAutoscale:
         """Serializes the PipelineClusterAutoscale into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.max_workers is not None:
-            body["{max_workers}"] = self.max_workers
+            body["max_workers"] = self.max_workers
         if self.min_workers is not None:
-            body["{min_workers}"] = self.min_workers
+            body["min_workers"] = self.min_workers
         if self.mode is not None:
-            body["{mode}"] = self.mode
+            body["mode"] = self.mode
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineClusterAutoscale:
         """Deserializes the PipelineClusterAutoscale from a dictionary."""
         return cls(
-            max_workers=d.get("{max_workers}", None),
-            min_workers=d.get("{min_workers}", None),
-            mode=_enum(d, "{mode}", PipelineClusterAutoscaleMode),
+            max_workers=d.get("max_workers", None),
+            min_workers=d.get("min_workers", None),
+            mode=_enum(d, "mode", PipelineClusterAutoscaleMode),
         )
 
 
@@ -2555,15 +2553,15 @@ class PipelineDeployment:
         """Serializes the PipelineDeployment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.kind is not None:
-            body["{kind}"] = self.kind
+            body["kind"] = self.kind
         if self.metadata_file_path is not None:
-            body["{metadata_file_path}"] = self.metadata_file_path
+            body["metadata_file_path"] = self.metadata_file_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineDeployment:
         """Deserializes the PipelineDeployment from a dictionary."""
-        return cls(kind=_enum(d, "{kind}", DeploymentKind), metadata_file_path=d.get("{metadata_file_path}", None))
+        return cls(kind=_enum(d, "kind", DeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
 
 
 @dataclass
@@ -2622,38 +2620,38 @@ class PipelineEvent:
         """Serializes the PipelineEvent into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.error:
-            body["{error}"] = self.error
+            body["error"] = self.error
         if self.event_type is not None:
-            body["{event_type}"] = self.event_type
+            body["event_type"] = self.event_type
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.level is not None:
-            body["{level}"] = self.level
+            body["level"] = self.level
         if self.maturity_level is not None:
-            body["{maturity_level}"] = self.maturity_level
+            body["maturity_level"] = self.maturity_level
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.origin:
-            body["{origin}"] = self.origin
+            body["origin"] = self.origin
         if self.sequence:
-            body["{sequence}"] = self.sequence
+            body["sequence"] = self.sequence
         if self.timestamp is not None:
-            body["{timestamp}"] = self.timestamp
+            body["timestamp"] = self.timestamp
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineEvent:
         """Deserializes the PipelineEvent from a dictionary."""
         return cls(
-            error=_from_dict(d, "{error}", ErrorDetail),
-            event_type=d.get("{event_type}", None),
-            id=d.get("{id}", None),
-            level=_enum(d, "{level}", EventLevel),
-            maturity_level=_enum(d, "{maturity_level}", MaturityLevel),
-            message=d.get("{message}", None),
-            origin=_from_dict(d, "{origin}", Origin),
-            sequence=_from_dict(d, "{sequence}", Sequencing),
-            timestamp=d.get("{timestamp}", None),
+            error=_from_dict(d, "error", ErrorDetail),
+            event_type=d.get("event_type", None),
+            id=d.get("id", None),
+            level=_enum(d, "level", EventLevel),
+            maturity_level=_enum(d, "maturity_level", MaturityLevel),
+            message=d.get("message", None),
+            origin=_from_dict(d, "origin", Origin),
+            sequence=_from_dict(d, "sequence", Sequencing),
+            timestamp=d.get("timestamp", None),
         )
 
 
@@ -2693,26 +2691,26 @@ class PipelineLibrary:
         """Serializes the PipelineLibrary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.file:
-            body["{file}"] = self.file
+            body["file"] = self.file
         if self.jar is not None:
-            body["{jar}"] = self.jar
+            body["jar"] = self.jar
         if self.maven:
-            body["{maven}"] = self.maven
+            body["maven"] = self.maven
         if self.notebook:
-            body["{notebook}"] = self.notebook
+            body["notebook"] = self.notebook
         if self.whl is not None:
-            body["{whl}"] = self.whl
+            body["whl"] = self.whl
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineLibrary:
         """Deserializes the PipelineLibrary from a dictionary."""
         return cls(
-            file=_from_dict(d, "{file}", FileLibrary),
-            jar=d.get("{jar}", None),
-            maven=_from_dict(d, "{maven}", MavenLibrary),
-            notebook=_from_dict(d, "{notebook}", NotebookLibrary),
-            whl=d.get("{whl}", None),
+            file=_from_dict(d, "file", FileLibrary),
+            jar=d.get("jar", None),
+            maven=_from_dict(d, "maven", MavenLibrary),
+            notebook=_from_dict(d, "notebook", NotebookLibrary),
+            whl=d.get("whl", None),
         )
 
 
@@ -2740,20 +2738,20 @@ class PipelinePermission:
         """Serializes the PipelinePermission into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.inherited is not None:
-            body["{inherited}"] = self.inherited
+            body["inherited"] = self.inherited
         if self.inherited_from_object:
-            body["{inherited_from_object}"] = self.inherited_from_object
+            body["inherited_from_object"] = self.inherited_from_object
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level
+            body["permission_level"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinePermission:
         """Deserializes the PipelinePermission from a dictionary."""
         return cls(
-            inherited=d.get("{inherited}", None),
-            inherited_from_object=d.get("{inherited_from_object}", None),
-            permission_level=_enum(d, "{permission_level}", PipelinePermissionLevel),
+            inherited=d.get("inherited", None),
+            inherited_from_object=d.get("inherited_from_object", None),
+            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
         )
 
 
@@ -2789,20 +2787,20 @@ class PipelinePermissions:
         """Serializes the PipelinePermissions into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = self.access_control_list
+            body["access_control_list"] = self.access_control_list
         if self.object_id is not None:
-            body["{object_id}"] = self.object_id
+            body["object_id"] = self.object_id
         if self.object_type is not None:
-            body["{object_type}"] = self.object_type
+            body["object_type"] = self.object_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissions:
         """Deserializes the PipelinePermissions from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "{access_control_list}", PipelineAccessControlResponse),
-            object_id=d.get("{object_id}", None),
-            object_type=d.get("{object_type}", None),
+            access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlResponse),
+            object_id=d.get("object_id", None),
+            object_type=d.get("object_type", None),
         )
 
 
@@ -2826,17 +2824,17 @@ class PipelinePermissionsDescription:
         """Serializes the PipelinePermissionsDescription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.description is not None:
-            body["{description}"] = self.description
+            body["description"] = self.description
         if self.permission_level is not None:
-            body["{permission_level}"] = self.permission_level
+            body["permission_level"] = self.permission_level
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsDescription:
         """Deserializes the PipelinePermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("{description}", None),
-            permission_level=_enum(d, "{permission_level}", PipelinePermissionLevel),
+            description=d.get("description", None),
+            permission_level=_enum(d, "permission_level", PipelinePermissionLevel),
         )
 
 
@@ -2860,17 +2858,17 @@ class PipelinePermissionsRequest:
         """Serializes the PipelinePermissionsRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_control_list:
-            body["{access_control_list}"] = self.access_control_list
+            body["access_control_list"] = self.access_control_list
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsRequest:
         """Deserializes the PipelinePermissionsRequest from a dictionary."""
         return cls(
-            access_control_list=_repeated_dict(d, "{access_control_list}", PipelineAccessControlRequest),
-            pipeline_id=d.get("{pipeline_id}", None),
+            access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlRequest),
+            pipeline_id=d.get("pipeline_id", None),
         )
 
 
@@ -3011,83 +3009,83 @@ class PipelineSpec:
         """Serializes the PipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.budget_policy_id is not None:
-            body["{budget_policy_id}"] = self.budget_policy_id
+            body["budget_policy_id"] = self.budget_policy_id
         if self.catalog is not None:
-            body["{catalog}"] = self.catalog
+            body["catalog"] = self.catalog
         if self.channel is not None:
-            body["{channel}"] = self.channel
+            body["channel"] = self.channel
         if self.clusters:
-            body["{clusters}"] = self.clusters
+            body["clusters"] = self.clusters
         if self.configuration:
-            body["{configuration}"] = self.configuration
+            body["configuration"] = self.configuration
         if self.continuous is not None:
-            body["{continuous}"] = self.continuous
+            body["continuous"] = self.continuous
         if self.deployment:
-            body["{deployment}"] = self.deployment
+            body["deployment"] = self.deployment
         if self.development is not None:
-            body["{development}"] = self.development
+            body["development"] = self.development
         if self.edition is not None:
-            body["{edition}"] = self.edition
+            body["edition"] = self.edition
         if self.event_log:
-            body["{event_log}"] = self.event_log
+            body["event_log"] = self.event_log
         if self.filters:
-            body["{filters}"] = self.filters
+            body["filters"] = self.filters
         if self.gateway_definition:
-            body["{gateway_definition}"] = self.gateway_definition
+            body["gateway_definition"] = self.gateway_definition
         if self.id is not None:
-            body["{id}"] = self.id
+            body["id"] = self.id
         if self.ingestion_definition:
-            body["{ingestion_definition}"] = self.ingestion_definition
+            body["ingestion_definition"] = self.ingestion_definition
         if self.libraries:
-            body["{libraries}"] = self.libraries
+            body["libraries"] = self.libraries
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.notifications:
-            body["{notifications}"] = self.notifications
+            body["notifications"] = self.notifications
         if self.photon is not None:
-            body["{photon}"] = self.photon
+            body["photon"] = self.photon
         if self.restart_window:
-            body["{restart_window}"] = self.restart_window
+            body["restart_window"] = self.restart_window
         if self.schema is not None:
-            body["{schema}"] = self.schema
+            body["schema"] = self.schema
         if self.serverless is not None:
-            body["{serverless}"] = self.serverless
+            body["serverless"] = self.serverless
         if self.storage is not None:
-            body["{storage}"] = self.storage
+            body["storage"] = self.storage
         if self.target is not None:
-            body["{target}"] = self.target
+            body["target"] = self.target
         if self.trigger:
-            body["{trigger}"] = self.trigger
+            body["trigger"] = self.trigger
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineSpec:
         """Deserializes the PipelineSpec from a dictionary."""
         return cls(
-            budget_policy_id=d.get("{budget_policy_id}", None),
-            catalog=d.get("{catalog}", None),
-            channel=d.get("{channel}", None),
-            clusters=_repeated_dict(d, "{clusters}", PipelineCluster),
-            configuration=d.get("{configuration}", None),
-            continuous=d.get("{continuous}", None),
-            deployment=_from_dict(d, "{deployment}", PipelineDeployment),
-            development=d.get("{development}", None),
-            edition=d.get("{edition}", None),
-            event_log=_from_dict(d, "{event_log}", EventLogSpec),
-            filters=_from_dict(d, "{filters}", Filters),
-            gateway_definition=_from_dict(d, "{gateway_definition}", IngestionGatewayPipelineDefinition),
-            id=d.get("{id}", None),
-            ingestion_definition=_from_dict(d, "{ingestion_definition}", IngestionPipelineDefinition),
-            libraries=_repeated_dict(d, "{libraries}", PipelineLibrary),
-            name=d.get("{name}", None),
-            notifications=_repeated_dict(d, "{notifications}", Notifications),
-            photon=d.get("{photon}", None),
-            restart_window=_from_dict(d, "{restart_window}", RestartWindow),
-            schema=d.get("{schema}", None),
-            serverless=d.get("{serverless}", None),
-            storage=d.get("{storage}", None),
-            target=d.get("{target}", None),
-            trigger=_from_dict(d, "{trigger}", PipelineTrigger),
+            budget_policy_id=d.get("budget_policy_id", None),
+            catalog=d.get("catalog", None),
+            channel=d.get("channel", None),
+            clusters=_repeated_dict(d, "clusters", PipelineCluster),
+            configuration=d.get("configuration", None),
+            continuous=d.get("continuous", None),
+            deployment=_from_dict(d, "deployment", PipelineDeployment),
+            development=d.get("development", None),
+            edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
+            filters=_from_dict(d, "filters", Filters),
+            gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
+            id=d.get("id", None),
+            ingestion_definition=_from_dict(d, "ingestion_definition", IngestionPipelineDefinition),
+            libraries=_repeated_dict(d, "libraries", PipelineLibrary),
+            name=d.get("name", None),
+            notifications=_repeated_dict(d, "notifications", Notifications),
+            photon=d.get("photon", None),
+            restart_window=_from_dict(d, "restart_window", RestartWindow),
+            schema=d.get("schema", None),
+            serverless=d.get("serverless", None),
+            storage=d.get("storage", None),
+            target=d.get("target", None),
+            trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
 
 
@@ -3157,35 +3155,35 @@ class PipelineStateInfo:
         """Serializes the PipelineStateInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.creator_user_name is not None:
-            body["{creator_user_name}"] = self.creator_user_name
+            body["creator_user_name"] = self.creator_user_name
         if self.health is not None:
-            body["{health}"] = self.health
+            body["health"] = self.health
         if self.latest_updates:
-            body["{latest_updates}"] = self.latest_updates
+            body["latest_updates"] = self.latest_updates
         if self.name is not None:
-            body["{name}"] = self.name
+            body["name"] = self.name
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.run_as_user_name is not None:
-            body["{run_as_user_name}"] = self.run_as_user_name
+            body["run_as_user_name"] = self.run_as_user_name
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineStateInfo:
         """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(
-            cluster_id=d.get("{cluster_id}", None),
-            creator_user_name=d.get("{creator_user_name}", None),
-            health=_enum(d, "{health}", PipelineStateInfoHealth),
-            latest_updates=_repeated_dict(d, "{latest_updates}", UpdateStateInfo),
-            name=d.get("{name}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            run_as_user_name=d.get("{run_as_user_name}", None),
-            state=_enum(d, "{state}", PipelineState),
+            cluster_id=d.get("cluster_id", None),
+            creator_user_name=d.get("creator_user_name", None),
+            health=_enum(d, "health", PipelineStateInfoHealth),
+            latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
+            name=d.get("name", None),
+            pipeline_id=d.get("pipeline_id", None),
+            run_as_user_name=d.get("run_as_user_name", None),
+            state=_enum(d, "state", PipelineState),
         )
 
 
@@ -3215,15 +3213,15 @@ class PipelineTrigger:
         """Serializes the PipelineTrigger into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cron:
-            body["{cron}"] = self.cron
+            body["cron"] = self.cron
         if self.manual:
-            body["{manual}"] = self.manual
+            body["manual"] = self.manual
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
-        return cls(cron=_from_dict(d, "{cron}", CronTrigger), manual=_from_dict(d, "{manual}", ManualTrigger))
+        return cls(cron=_from_dict(d, "cron", CronTrigger), manual=_from_dict(d, "manual", ManualTrigger))
 
 
 @dataclass
@@ -3263,26 +3261,26 @@ class ReportSpec:
         """Serializes the ReportSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_catalog is not None:
-            body["{destination_catalog}"] = self.destination_catalog
+            body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
-            body["{destination_schema}"] = self.destination_schema
+            body["destination_schema"] = self.destination_schema
         if self.destination_table is not None:
-            body["{destination_table}"] = self.destination_table
+            body["destination_table"] = self.destination_table
         if self.source_url is not None:
-            body["{source_url}"] = self.source_url
+            body["source_url"] = self.source_url
         if self.table_configuration:
-            body["{table_configuration}"] = self.table_configuration
+            body["table_configuration"] = self.table_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ReportSpec:
         """Deserializes the ReportSpec from a dictionary."""
         return cls(
-            destination_catalog=d.get("{destination_catalog}", None),
-            destination_schema=d.get("{destination_schema}", None),
-            destination_table=d.get("{destination_table}", None),
-            source_url=d.get("{source_url}", None),
-            table_configuration=_from_dict(d, "{table_configuration}", TableSpecificConfig),
+            destination_catalog=d.get("destination_catalog", None),
+            destination_schema=d.get("destination_schema", None),
+            destination_table=d.get("destination_table", None),
+            source_url=d.get("source_url", None),
+            table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
 
 
@@ -3316,20 +3314,20 @@ class RestartWindow:
         """Serializes the RestartWindow into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.days_of_week:
-            body["{days_of_week}"] = self.days_of_week
+            body["days_of_week"] = self.days_of_week
         if self.start_hour is not None:
-            body["{start_hour}"] = self.start_hour
+            body["start_hour"] = self.start_hour
         if self.time_zone_id is not None:
-            body["{time_zone_id}"] = self.time_zone_id
+            body["time_zone_id"] = self.time_zone_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RestartWindow:
         """Deserializes the RestartWindow from a dictionary."""
         return cls(
-            days_of_week=_repeated_enum(d, "{days_of_week}", DayOfWeek),
-            start_hour=d.get("{start_hour}", None),
-            time_zone_id=d.get("{time_zone_id}", None),
+            days_of_week=_repeated_enum(d, "days_of_week", DayOfWeek),
+            start_hour=d.get("start_hour", None),
+            time_zone_id=d.get("time_zone_id", None),
         )
 
 
@@ -3362,15 +3360,15 @@ class RunAs:
         """Serializes the RunAs into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.service_principal_name is not None:
-            body["{service_principal_name}"] = self.service_principal_name
+            body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
-            body["{user_name}"] = self.user_name
+            body["user_name"] = self.user_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
-        return cls(service_principal_name=d.get("{service_principal_name}", None), user_name=d.get("{user_name}", None))
+        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -3433,32 +3431,32 @@ class S3StorageInfo:
         """Serializes the S3StorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.canned_acl is not None:
-            body["{canned_acl}"] = self.canned_acl
+            body["canned_acl"] = self.canned_acl
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         if self.enable_encryption is not None:
-            body["{enable_encryption}"] = self.enable_encryption
+            body["enable_encryption"] = self.enable_encryption
         if self.encryption_type is not None:
-            body["{encryption_type}"] = self.encryption_type
+            body["encryption_type"] = self.encryption_type
         if self.endpoint is not None:
-            body["{endpoint}"] = self.endpoint
+            body["endpoint"] = self.endpoint
         if self.kms_key is not None:
-            body["{kms_key}"] = self.kms_key
+            body["kms_key"] = self.kms_key
         if self.region is not None:
-            body["{region}"] = self.region
+            body["region"] = self.region
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> S3StorageInfo:
         """Deserializes the S3StorageInfo from a dictionary."""
         return cls(
-            canned_acl=d.get("{canned_acl}", None),
-            destination=d.get("{destination}", None),
-            enable_encryption=d.get("{enable_encryption}", None),
-            encryption_type=d.get("{encryption_type}", None),
-            endpoint=d.get("{endpoint}", None),
-            kms_key=d.get("{kms_key}", None),
-            region=d.get("{region}", None),
+            canned_acl=d.get("canned_acl", None),
+            destination=d.get("destination", None),
+            enable_encryption=d.get("enable_encryption", None),
+            encryption_type=d.get("encryption_type", None),
+            endpoint=d.get("endpoint", None),
+            kms_key=d.get("kms_key", None),
+            region=d.get("region", None),
         )
 
 
@@ -3502,26 +3500,26 @@ class SchemaSpec:
         """Serializes the SchemaSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_catalog is not None:
-            body["{destination_catalog}"] = self.destination_catalog
+            body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
-            body["{destination_schema}"] = self.destination_schema
+            body["destination_schema"] = self.destination_schema
         if self.source_catalog is not None:
-            body["{source_catalog}"] = self.source_catalog
+            body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
-            body["{source_schema}"] = self.source_schema
+            body["source_schema"] = self.source_schema
         if self.table_configuration:
-            body["{table_configuration}"] = self.table_configuration
+            body["table_configuration"] = self.table_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SchemaSpec:
         """Deserializes the SchemaSpec from a dictionary."""
         return cls(
-            destination_catalog=d.get("{destination_catalog}", None),
-            destination_schema=d.get("{destination_schema}", None),
-            source_catalog=d.get("{source_catalog}", None),
-            source_schema=d.get("{source_schema}", None),
-            table_configuration=_from_dict(d, "{table_configuration}", TableSpecificConfig),
+            destination_catalog=d.get("destination_catalog", None),
+            destination_schema=d.get("destination_schema", None),
+            source_catalog=d.get("source_catalog", None),
+            source_schema=d.get("source_schema", None),
+            table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
 
 
@@ -3546,17 +3544,17 @@ class Sequencing:
         """Serializes the Sequencing into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.control_plane_seq_no is not None:
-            body["{control_plane_seq_no}"] = self.control_plane_seq_no
+            body["control_plane_seq_no"] = self.control_plane_seq_no
         if self.data_plane_id:
-            body["{data_plane_id}"] = self.data_plane_id
+            body["data_plane_id"] = self.data_plane_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Sequencing:
         """Deserializes the Sequencing from a dictionary."""
         return cls(
-            control_plane_seq_no=d.get("{control_plane_seq_no}", None),
-            data_plane_id=_from_dict(d, "{data_plane_id}", DataPlaneId),
+            control_plane_seq_no=d.get("control_plane_seq_no", None),
+            data_plane_id=_from_dict(d, "data_plane_id", DataPlaneId),
         )
 
 
@@ -3586,20 +3584,20 @@ class SerializedException:
         """Serializes the SerializedException into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.class_name is not None:
-            body["{class_name}"] = self.class_name
+            body["class_name"] = self.class_name
         if self.message is not None:
-            body["{message}"] = self.message
+            body["message"] = self.message
         if self.stack:
-            body["{stack}"] = self.stack
+            body["stack"] = self.stack
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SerializedException:
         """Deserializes the SerializedException from a dictionary."""
         return cls(
-            class_name=d.get("{class_name}", None),
-            message=d.get("{message}", None),
-            stack=_repeated_dict(d, "{stack}", StackFrame),
+            class_name=d.get("class_name", None),
+            message=d.get("message", None),
+            stack=_repeated_dict(d, "stack", StackFrame),
         )
 
 
@@ -3634,23 +3632,23 @@ class StackFrame:
         """Serializes the StackFrame into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.declaring_class is not None:
-            body["{declaring_class}"] = self.declaring_class
+            body["declaring_class"] = self.declaring_class
         if self.file_name is not None:
-            body["{file_name}"] = self.file_name
+            body["file_name"] = self.file_name
         if self.line_number is not None:
-            body["{line_number}"] = self.line_number
+            body["line_number"] = self.line_number
         if self.method_name is not None:
-            body["{method_name}"] = self.method_name
+            body["method_name"] = self.method_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StackFrame:
         """Deserializes the StackFrame from a dictionary."""
         return cls(
-            declaring_class=d.get("{declaring_class}", None),
-            file_name=d.get("{file_name}", None),
-            line_number=d.get("{line_number}", None),
-            method_name=d.get("{method_name}", None),
+            declaring_class=d.get("declaring_class", None),
+            file_name=d.get("file_name", None),
+            line_number=d.get("line_number", None),
+            method_name=d.get("method_name", None),
         )
 
 
@@ -3698,29 +3696,29 @@ class StartUpdate:
         """Serializes the StartUpdate into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cause is not None:
-            body["{cause}"] = self.cause
+            body["cause"] = self.cause
         if self.full_refresh is not None:
-            body["{full_refresh}"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
-            body["{full_refresh_selection}"] = self.full_refresh_selection
+            body["full_refresh_selection"] = self.full_refresh_selection
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
-            body["{refresh_selection}"] = self.refresh_selection
+            body["refresh_selection"] = self.refresh_selection
         if self.validate_only is not None:
-            body["{validate_only}"] = self.validate_only
+            body["validate_only"] = self.validate_only
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StartUpdate:
         """Deserializes the StartUpdate from a dictionary."""
         return cls(
-            cause=_enum(d, "{cause}", StartUpdateCause),
-            full_refresh=d.get("{full_refresh}", None),
-            full_refresh_selection=d.get("{full_refresh_selection}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            refresh_selection=d.get("{refresh_selection}", None),
-            validate_only=d.get("{validate_only}", None),
+            cause=_enum(d, "cause", StartUpdateCause),
+            full_refresh=d.get("full_refresh", None),
+            full_refresh_selection=d.get("full_refresh_selection", None),
+            pipeline_id=d.get("pipeline_id", None),
+            refresh_selection=d.get("refresh_selection", None),
+            validate_only=d.get("validate_only", None),
         )
 
 
@@ -3749,13 +3747,13 @@ class StartUpdateResponse:
         """Serializes the StartUpdateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.update_id is not None:
-            body["{update_id}"] = self.update_id
+            body["update_id"] = self.update_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> StartUpdateResponse:
         """Deserializes the StartUpdateResponse from a dictionary."""
-        return cls(update_id=d.get("{update_id}", None))
+        return cls(update_id=d.get("update_id", None))
 
 
 @dataclass
@@ -3824,32 +3822,32 @@ class TableSpec:
         """Serializes the TableSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_catalog is not None:
-            body["{destination_catalog}"] = self.destination_catalog
+            body["destination_catalog"] = self.destination_catalog
         if self.destination_schema is not None:
-            body["{destination_schema}"] = self.destination_schema
+            body["destination_schema"] = self.destination_schema
         if self.destination_table is not None:
-            body["{destination_table}"] = self.destination_table
+            body["destination_table"] = self.destination_table
         if self.source_catalog is not None:
-            body["{source_catalog}"] = self.source_catalog
+            body["source_catalog"] = self.source_catalog
         if self.source_schema is not None:
-            body["{source_schema}"] = self.source_schema
+            body["source_schema"] = self.source_schema
         if self.source_table is not None:
-            body["{source_table}"] = self.source_table
+            body["source_table"] = self.source_table
         if self.table_configuration:
-            body["{table_configuration}"] = self.table_configuration
+            body["table_configuration"] = self.table_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableSpec:
         """Deserializes the TableSpec from a dictionary."""
         return cls(
-            destination_catalog=d.get("{destination_catalog}", None),
-            destination_schema=d.get("{destination_schema}", None),
-            destination_table=d.get("{destination_table}", None),
-            source_catalog=d.get("{source_catalog}", None),
-            source_schema=d.get("{source_schema}", None),
-            source_table=d.get("{source_table}", None),
-            table_configuration=_from_dict(d, "{table_configuration}", TableSpecificConfig),
+            destination_catalog=d.get("destination_catalog", None),
+            destination_schema=d.get("destination_schema", None),
+            destination_table=d.get("destination_table", None),
+            source_catalog=d.get("source_catalog", None),
+            source_schema=d.get("source_schema", None),
+            source_table=d.get("source_table", None),
+            table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
 
 
@@ -3886,23 +3884,23 @@ class TableSpecificConfig:
         """Serializes the TableSpecificConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.primary_keys:
-            body["{primary_keys}"] = self.primary_keys
+            body["primary_keys"] = self.primary_keys
         if self.salesforce_include_formula_fields is not None:
-            body["{salesforce_include_formula_fields}"] = self.salesforce_include_formula_fields
+            body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
-            body["{scd_type}"] = self.scd_type
+            body["scd_type"] = self.scd_type
         if self.sequence_by:
-            body["{sequence_by}"] = self.sequence_by
+            body["sequence_by"] = self.sequence_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
-            primary_keys=d.get("{primary_keys}", None),
-            salesforce_include_formula_fields=d.get("{salesforce_include_formula_fields}", None),
-            scd_type=_enum(d, "{scd_type}", TableSpecificConfigScdType),
-            sequence_by=d.get("{sequence_by}", None),
+            primary_keys=d.get("primary_keys", None),
+            salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
+            scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
+            sequence_by=d.get("sequence_by", None),
         )
 
 
@@ -3985,44 +3983,44 @@ class UpdateInfo:
         """Serializes the UpdateInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cause is not None:
-            body["{cause}"] = self.cause
+            body["cause"] = self.cause
         if self.cluster_id is not None:
-            body["{cluster_id}"] = self.cluster_id
+            body["cluster_id"] = self.cluster_id
         if self.config:
-            body["{config}"] = self.config
+            body["config"] = self.config
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.full_refresh is not None:
-            body["{full_refresh}"] = self.full_refresh
+            body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
-            body["{full_refresh_selection}"] = self.full_refresh_selection
+            body["full_refresh_selection"] = self.full_refresh_selection
         if self.pipeline_id is not None:
-            body["{pipeline_id}"] = self.pipeline_id
+            body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
-            body["{refresh_selection}"] = self.refresh_selection
+            body["refresh_selection"] = self.refresh_selection
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         if self.update_id is not None:
-            body["{update_id}"] = self.update_id
+            body["update_id"] = self.update_id
         if self.validate_only is not None:
-            body["{validate_only}"] = self.validate_only
+            body["validate_only"] = self.validate_only
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateInfo:
         """Deserializes the UpdateInfo from a dictionary."""
         return cls(
-            cause=_enum(d, "{cause}", UpdateInfoCause),
-            cluster_id=d.get("{cluster_id}", None),
-            config=_from_dict(d, "{config}", PipelineSpec),
-            creation_time=d.get("{creation_time}", None),
-            full_refresh=d.get("{full_refresh}", None),
-            full_refresh_selection=d.get("{full_refresh_selection}", None),
-            pipeline_id=d.get("{pipeline_id}", None),
-            refresh_selection=d.get("{refresh_selection}", None),
-            state=_enum(d, "{state}", UpdateInfoState),
-            update_id=d.get("{update_id}", None),
-            validate_only=d.get("{validate_only}", None),
+            cause=_enum(d, "cause", UpdateInfoCause),
+            cluster_id=d.get("cluster_id", None),
+            config=_from_dict(d, "config", PipelineSpec),
+            creation_time=d.get("creation_time", None),
+            full_refresh=d.get("full_refresh", None),
+            full_refresh_selection=d.get("full_refresh_selection", None),
+            pipeline_id=d.get("pipeline_id", None),
+            refresh_selection=d.get("refresh_selection", None),
+            state=_enum(d, "state", UpdateInfoState),
+            update_id=d.get("update_id", None),
+            validate_only=d.get("validate_only", None),
         )
 
 
@@ -4076,20 +4074,20 @@ class UpdateStateInfo:
         """Serializes the UpdateStateInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.creation_time is not None:
-            body["{creation_time}"] = self.creation_time
+            body["creation_time"] = self.creation_time
         if self.state is not None:
-            body["{state}"] = self.state
+            body["state"] = self.state
         if self.update_id is not None:
-            body["{update_id}"] = self.update_id
+            body["update_id"] = self.update_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateStateInfo:
         """Deserializes the UpdateStateInfo from a dictionary."""
         return cls(
-            creation_time=d.get("{creation_time}", None),
-            state=_enum(d, "{state}", UpdateStateInfoState),
-            update_id=d.get("{update_id}", None),
+            creation_time=d.get("creation_time", None),
+            state=_enum(d, "state", UpdateStateInfoState),
+            update_id=d.get("update_id", None),
         )
 
 
@@ -4127,13 +4125,13 @@ class VolumesStorageInfo:
         """Serializes the VolumesStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> VolumesStorageInfo:
         """Deserializes the VolumesStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 @dataclass
@@ -4154,13 +4152,13 @@ class WorkspaceStorageInfo:
         """Serializes the WorkspaceStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None:
-            body["{destination}"] = self.destination
+            body["destination"] = self.destination
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> WorkspaceStorageInfo:
         """Deserializes the WorkspaceStorageInfo from a dictionary."""
-        return cls(destination=d.get("{destination}", None))
+        return cls(destination=d.get("destination", None))
 
 
 class PipelinesAPI:
@@ -4281,59 +4279,59 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None:
-            body["{allow_duplicate_names}"] = allow_duplicate_names
+            body["allow_duplicate_names"] = allow_duplicate_names
         if budget_policy_id is not None:
-            body["{budget_policy_id}"] = budget_policy_id
+            body["budget_policy_id"] = budget_policy_id
         if catalog is not None:
-            body["{catalog}"] = catalog
+            body["catalog"] = catalog
         if channel is not None:
-            body["{channel}"] = channel
+            body["channel"] = channel
         if clusters is not None:
-            body["{clusters}"] = [v.as_dict() for v in clusters]
+            body["clusters"] = [v.as_dict() for v in clusters]
         if configuration is not None:
-            body["{configuration}"] = configuration
+            body["configuration"] = configuration
         if continuous is not None:
-            body["{continuous}"] = continuous
+            body["continuous"] = continuous
         if deployment is not None:
-            body["{deployment}"] = deployment.as_dict()
+            body["deployment"] = deployment.as_dict()
         if development is not None:
-            body["{development}"] = development
+            body["development"] = development
         if dry_run is not None:
-            body["{dry_run}"] = dry_run
+            body["dry_run"] = dry_run
         if edition is not None:
-            body["{edition}"] = edition
+            body["edition"] = edition
         if event_log is not None:
-            body["{event_log}"] = event_log.as_dict()
+            body["event_log"] = event_log.as_dict()
         if filters is not None:
-            body["{filters}"] = filters.as_dict()
+            body["filters"] = filters.as_dict()
         if gateway_definition is not None:
-            body["{gateway_definition}"] = gateway_definition.as_dict()
+            body["gateway_definition"] = gateway_definition.as_dict()
         if id is not None:
-            body["{id}"] = id
+            body["id"] = id
         if ingestion_definition is not None:
-            body["{ingestion_definition}"] = ingestion_definition.as_dict()
+            body["ingestion_definition"] = ingestion_definition.as_dict()
         if libraries is not None:
-            body["{libraries}"] = [v.as_dict() for v in libraries]
+            body["libraries"] = [v.as_dict() for v in libraries]
         if name is not None:
-            body["{name}"] = name
+            body["name"] = name
         if notifications is not None:
-            body["{notifications}"] = [v.as_dict() for v in notifications]
+            body["notifications"] = [v.as_dict() for v in notifications]
         if photon is not None:
-            body["{photon}"] = photon
+            body["photon"] = photon
         if restart_window is not None:
-            body["{restart_window}"] = restart_window.as_dict()
+            body["restart_window"] = restart_window.as_dict()
         if run_as is not None:
-            body["{run_as}"] = run_as.as_dict()
+            body["run_as"] = run_as.as_dict()
         if schema is not None:
-            body["{schema}"] = schema
+            body["schema"] = schema
         if serverless is not None:
-            body["{serverless}"] = serverless
+            body["serverless"] = serverless
         if storage is not None:
-            body["{storage}"] = storage
+            body["storage"] = storage
         if target is not None:
-            body["{target}"] = target
+            body["target"] = target
         if trigger is not None:
-            body["{trigger}"] = trigger.as_dict()
+            body["trigger"] = trigger.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4467,25 +4465,25 @@ class PipelinesAPI:
 
         query = {}
         if filter is not None:
-            query["{filter}"] = filter
+            query["filter"] = filter
         if max_results is not None:
-            query["{max_results}"] = max_results
+            query["max_results"] = max_results
         if order_by is not None:
-            query["{order_by}"] = [v for v in order_by]
+            query["order_by"] = [v for v in order_by]
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/events", query=query, headers=headers)
-            if "{events}" in json:
-                for v in json["{events}"]:
+            if "events" in json:
+                for v in json["events"]:
                     yield PipelineEvent.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_pipelines(
         self,
@@ -4523,25 +4521,25 @@ class PipelinesAPI:
 
         query = {}
         if filter is not None:
-            query["{filter}"] = filter
+            query["filter"] = filter
         if max_results is not None:
-            query["{max_results}"] = max_results
+            query["max_results"] = max_results
         if order_by is not None:
-            query["{order_by}"] = [v for v in order_by]
+            query["order_by"] = [v for v in order_by]
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         headers = {
             "0": "{Accept application/json}",
         }
 
         while True:
             json = self._api.do("GET", "/api/2.0/pipelines", query=query, headers=headers)
-            if "{statuses}" in json:
-                for v in json["{statuses}"]:
+            if "statuses" in json:
+                for v in json["statuses"]:
                     yield PipelineStateInfo.from_dict(v)
-            if "{next_page_token}" not in json or not json["{next_page_token}"]:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query["{page_token}"] = json["{next_page_token}"]
+            query["page_token"] = json["next_page_token"]
 
     def list_updates(
         self,
@@ -4569,11 +4567,11 @@ class PipelinesAPI:
 
         query = {}
         if max_results is not None:
-            query["{max_results}"] = max_results
+            query["max_results"] = max_results
         if page_token is not None:
-            query["{page_token}"] = page_token
+            query["page_token"] = page_token
         if until_update_id is not None:
-            query["{until_update_id}"] = until_update_id
+            query["until_update_id"] = until_update_id
         headers = {
             "0": "{Accept application/json}",
         }
@@ -4597,7 +4595,7 @@ class PipelinesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4641,15 +4639,15 @@ class PipelinesAPI:
         """
         body = {}
         if cause is not None:
-            body["{cause}"] = cause.value
+            body["cause"] = cause.value
         if full_refresh is not None:
-            body["{full_refresh}"] = full_refresh
+            body["full_refresh"] = full_refresh
         if full_refresh_selection is not None:
-            body["{full_refresh_selection}"] = [v for v in full_refresh_selection]
+            body["full_refresh_selection"] = [v for v in full_refresh_selection]
         if refresh_selection is not None:
-            body["{refresh_selection}"] = [v for v in refresh_selection]
+            body["refresh_selection"] = [v for v in refresh_selection]
         if validate_only is not None:
-            body["{validate_only}"] = validate_only
+            body["validate_only"] = validate_only
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4790,59 +4788,59 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None:
-            body["{allow_duplicate_names}"] = allow_duplicate_names
+            body["allow_duplicate_names"] = allow_duplicate_names
         if budget_policy_id is not None:
-            body["{budget_policy_id}"] = budget_policy_id
+            body["budget_policy_id"] = budget_policy_id
         if catalog is not None:
-            body["{catalog}"] = catalog
+            body["catalog"] = catalog
         if channel is not None:
-            body["{channel}"] = channel
+            body["channel"] = channel
         if clusters is not None:
-            body["{clusters}"] = [v.as_dict() for v in clusters]
+            body["clusters"] = [v.as_dict() for v in clusters]
         if configuration is not None:
-            body["{configuration}"] = configuration
+            body["configuration"] = configuration
         if continuous is not None:
-            body["{continuous}"] = continuous
+            body["continuous"] = continuous
         if deployment is not None:
-            body["{deployment}"] = deployment.as_dict()
+            body["deployment"] = deployment.as_dict()
         if development is not None:
-            body["{development}"] = development
+            body["development"] = development
         if edition is not None:
-            body["{edition}"] = edition
+            body["edition"] = edition
         if event_log is not None:
-            body["{event_log}"] = event_log.as_dict()
+            body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
-            body["{expected_last_modified}"] = expected_last_modified
+            body["expected_last_modified"] = expected_last_modified
         if filters is not None:
-            body["{filters}"] = filters.as_dict()
+            body["filters"] = filters.as_dict()
         if gateway_definition is not None:
-            body["{gateway_definition}"] = gateway_definition.as_dict()
+            body["gateway_definition"] = gateway_definition.as_dict()
         if id is not None:
-            body["{id}"] = id
+            body["id"] = id
         if ingestion_definition is not None:
-            body["{ingestion_definition}"] = ingestion_definition.as_dict()
+            body["ingestion_definition"] = ingestion_definition.as_dict()
         if libraries is not None:
-            body["{libraries}"] = [v.as_dict() for v in libraries]
+            body["libraries"] = [v.as_dict() for v in libraries]
         if name is not None:
-            body["{name}"] = name
+            body["name"] = name
         if notifications is not None:
-            body["{notifications}"] = [v.as_dict() for v in notifications]
+            body["notifications"] = [v.as_dict() for v in notifications]
         if photon is not None:
-            body["{photon}"] = photon
+            body["photon"] = photon
         if restart_window is not None:
-            body["{restart_window}"] = restart_window.as_dict()
+            body["restart_window"] = restart_window.as_dict()
         if run_as is not None:
-            body["{run_as}"] = run_as.as_dict()
+            body["run_as"] = run_as.as_dict()
         if schema is not None:
-            body["{schema}"] = schema
+            body["schema"] = schema
         if serverless is not None:
-            body["{serverless}"] = serverless
+            body["serverless"] = serverless
         if storage is not None:
-            body["{storage}"] = storage
+            body["storage"] = storage
         if target is not None:
-            body["{target}"] = target
+            body["target"] = target
         if trigger is not None:
-            body["{trigger}"] = trigger.as_dict()
+            body["trigger"] = trigger.as_dict()
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
@@ -4865,7 +4863,7 @@ class PipelinesAPI:
         """
         body = {}
         if access_control_list is not None:
-            body["{access_control_list}"] = [v.as_dict() for v in access_control_list]
+            body["access_control_list"] = [v.as_dict() for v in access_control_list]
         headers = {
             "0": "{Accept application/json}",
             "1": "{Content-Type application/json}",
