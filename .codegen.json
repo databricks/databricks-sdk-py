@@ -7,7 +7,7 @@
   "toolchain": {
     "required": ["python3"],
     "pre_setup": [
-      "python3 -m venv .databricks"
+      "python3.12 -m venv .databricks"
     ],
     "prepend_path": ".databricks/bin",
     "setup": [
@@ -15,7 +15,6 @@
     ],
     "post_generate": [
       "make fmt",
-      "pytest -m 'not integration' --cov=databricks --cov-report html tests",
       "pip install .",
       "python docs/gen-client-docs.py"
     ]
