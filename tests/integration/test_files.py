@@ -41,7 +41,9 @@ def test_dbfs_io(w, random):
 @pytest.fixture
 def junk(w, random):
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
+
     def inner(path: str, size=256) -> bytes:
         to_write = random(size).encode()
         with dc.open(path, write=True) as f:
@@ -55,7 +57,9 @@ def junk(w, random):
 @pytest.fixture
 def ls(w):
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
+
     def inner(root: str, recursive=False) -> List[str]:
         return [f.path.removeprefix(root) for f in dc.list(root, recursive=recursive)]
 
@@ -72,6 +76,7 @@ def test_recursive_listing(w, random, junk, ls):
     assert ["/01", "/a/02", "/a/b/03"] == ls(root, recursive=True)
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
     dc.delete(root, recursive=True)
 
@@ -84,8 +89,9 @@ def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
     new_root = f"/tmp/{random()}"
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
-    
+
     dc.copy(root, new_root)
 
     assert ["/01"] == ls(new_root, recursive=True)
@@ -99,6 +105,7 @@ def test_cp_dbfs_folder_to_folder_recursive(w, random, junk, ls):
     new_root = f"/tmp/{random()}"
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
 
     dc.copy(root, new_root, recursive=True, overwrite=True)
@@ -114,8 +121,9 @@ def test_cp_dbfs_folder_to_existing_folder_recursive(w, random, junk, ls):
     new_root = f"/tmp/{random()}"
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
-    
+
     dc.mkdirs(new_root)
     dc.copy(root, new_root, recursive=True, overwrite=True)
 
@@ -129,8 +137,9 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
     copy_destination = f"{root}/{random()}"
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
-    
+
     dc.copy(f"{root}/01", copy_destination)
 
     with dc.open(copy_destination, read=True) as f:
@@ -140,10 +149,11 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
 def test_cp_dbfs_file_to_existing_folder(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
-    
+
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
- 
+
     dc.mkdirs(f"{root}/02")
     dc.copy(f"{root}/01", f"{root}/02")
 
@@ -155,8 +165,9 @@ def test_cp_dbfs_file_to_existing_location(w, random, junk):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
     junk(f"{root}/02")
-    
+
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
 
     with pytest.raises(DatabricksError) as ei:
@@ -170,8 +181,9 @@ def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
     junk(f"{root}/02")
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
-    
+
     dc.copy(f"{root}/01", f"{root}/02", overwrite=True)
 
     with dc.open(f"{root}/02", read=True) as f:
@@ -183,6 +195,7 @@ def test_move_within_dbfs(w, random, junk):
     payload = junk(f"{root}/01")
 
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
 
     dc.move_(f"{root}/01", f"{root}/02")
@@ -197,8 +210,9 @@ def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
     payload_01 = junk(f"{root}/01")
     payload_02 = junk(f"{root}/a/02")
     payload_03 = junk(f"{root}/a/b/03")
-    
+
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
 
     dc.move_(root, f"file:{tmp_path}", recursive=True)
@@ -217,8 +231,9 @@ def test_dbfs_upload_download(w, random, junk, tmp_path):
 
     f = io.BytesIO(b"some text data")
     from databricks.sdk.files.v2.client import DbfsClient
+
     dc = DbfsClient(config=w)
-    
+
     dc.upload(f"{root}/01", f)
 
     with dc.download(f"{root}/01") as f:
@@ -242,11 +257,10 @@ class ResourceWithCleanup:
         res = w.schemas.create(catalog_name=catalog, name=schema)
         return ResourceWithCleanup(lambda: w.schemas.delete(res.full_name))
 
-    
     @staticmethod
     def create_volume(w, catalog, schema, volume):
-        from databricks.sdk.catalog.v2.client import VolumesClient
         from databricks.sdk.catalog.v2.catalog import VolumeType
+        from databricks.sdk.catalog.v2.client import VolumesClient
 
         vc = VolumesClient(config=w)
         res = vc.create(

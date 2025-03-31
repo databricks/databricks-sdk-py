@@ -287,6 +287,7 @@ def test_access_control_list(config, requests_mock):
 
     from databricks.sdk.jobs.v2.client import JobsClient
     from databricks.sdk.jobs.v2.jobs import JobAccessControlRequest
+
     jc = JobsClient(config=config)
     res = jc.create(access_control_list=[JobAccessControlRequest(group_name="group")])
 
@@ -302,7 +303,7 @@ def test_shares(config, requests_mock):
     )
     from databricks.sdk.sharing.v2.client import SharesClient
     from databricks.sdk.sharing.v2.sharing import PermissionsChange
-    
+
     sc = SharesClient(config=config)
     res = sc.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
 
@@ -318,7 +319,7 @@ def test_deletes(config, requests_mock):
         text="null",
     )
     from databricks.sdk.sql.v2.client import AlertsClient
-    
+
     ac = AlertsClient(config=config)
     res = ac.delete(id="alertId")
 

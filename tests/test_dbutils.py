@@ -118,6 +118,7 @@ def test_fs_rm(dbutils, mocker):
 def test_fs_mount_without_cluster_fails(dbutils):
     dbutils.fs.mount("s3://foo", "bar")
 
+
 # TODO: Re-enable this test after adding waiters to the SDK
 # @pytest.fixture
 # def dbutils_proxy(mocker):

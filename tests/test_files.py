@@ -18,13 +18,13 @@ import requests
 import requests_mock
 from requests import RequestException
 
-from databricks.sdk.files.v2.client import FilesClient 
 from databricks.sdk.databricks.core import Config
 from databricks.sdk.databricks.errors.platform import (AlreadyExists,
                                                        BadRequest,
                                                        InternalError,
                                                        PermissionDenied,
                                                        TooManyRequests)
+from databricks.sdk.files.v2.client import FilesClient
 
 logger = logging.getLogger(__name__)
 

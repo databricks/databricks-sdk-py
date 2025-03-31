@@ -1,14 +1,13 @@
-import datetime
 import logging
-from databricks.sdk.jobs.v2.client import JobsClient
-from databricks.sdk.iam.v2.client import CurrentUserClient
-from databricks.sdk.files.v2.client import DbfsClient
+
 from databricks.sdk.compute.v2.client import ClustersClient
+from databricks.sdk.jobs.v2.client import JobsClient
+
 
 def test_jobs(w):
     found = 0
     jc = JobsClient(config=w)
-    
+
     for job in jc.list():
         logging.info(f"Looking at {job.settings.name}")
         found += 1
@@ -23,7 +22,7 @@ def test_jobs(w):
 #     cuc = CurrentUserClient(config=w)
 #     jc = JobsClient(config=w)
 #     dc = DbfsClient(config=w)
-    
+
 #     py_on_dbfs = f"/home/{cuc.me().user_name}/sample.py"
 #     with dc.open(py_on_dbfs, write=True, overwrite=True) as f:
 #         f.write(b'import time; time.sleep(10); print("Hello, World!")')
@@ -95,7 +94,7 @@ def test_create_job(w):
 
     jc = JobsClient(config=w)
     cc = ClustersClient(config=w)
-    
+
     cluster = jobs.JobCluster(
         job_cluster_key="cluster1",
         new_cluster=jobs.JobsClusterSpec(

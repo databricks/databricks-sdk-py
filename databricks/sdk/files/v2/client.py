@@ -6,7 +6,6 @@ from typing import Optional
 import databricks.sdk.databricks.core as client
 from databricks.sdk.databricks.credentials_provider import CredentialsStrategy
 
-from .files import FilesAPI
 from .mixin import DbfsExt, FilesExt
 
 _LOG = logging.getLogger(__name__)

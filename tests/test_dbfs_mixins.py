@@ -2,7 +2,7 @@ import pytest
 
 from databricks.sdk.databricks.errors import NotFound
 from databricks.sdk.files.v2.mixin import (DbfsExt, _DbfsPath, _LocalPath,
-                                         _VolumesPath)
+                                           _VolumesPath)
 
 
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):

@@ -1,6 +1,7 @@
 from databricks.sdk.catalog.v2 import catalog
 from databricks.sdk.jobs.v2 import jobs
 
+
 # https://github.com/databricks/databricks-sdk-py/issues/135
 def test_issue_135():
 

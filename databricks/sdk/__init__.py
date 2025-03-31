@@ -9,8 +9,8 @@ import databricks.sdk.service as service
 from databricks.sdk.databricks import azure
 from databricks.sdk.databricks.credentials_provider import CredentialsStrategy
 from databricks.sdk.databricks.data_plane import DataPlaneTokenSource
-from databricks.sdk.files.v2.mixin import DbfsExt, FilesExt
 from databricks.sdk.files.v2.files import FilesAPI
+from databricks.sdk.files.v2.mixin import DbfsExt, FilesExt
 
 _LOG = logging.getLogger(__name__)
 

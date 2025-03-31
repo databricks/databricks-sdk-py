@@ -2,8 +2,7 @@ import pytest
 
 from databricks.sdk.databricks import errors
 from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.iam.v2.client import GroupsClient
-from databricks.sdk.iam.v2.client import UsersClient
+from databricks.sdk.iam.v2.client import GroupsClient, UsersClient
 
 
 def test_filtering_groups(w, random):
@@ -25,7 +24,7 @@ def test_scim_error_unmarshall(w, random):
 
 def test_scim_get_user_as_dict(w):
     uc = UsersClient(config=w)
-    
+
     first_user = next(uc.list())
     user = uc.get(first_user.id)
     # should not throw

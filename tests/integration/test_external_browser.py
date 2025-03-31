@@ -12,6 +12,7 @@ def env(env_or_skip):
 
 def test_pkce_app(env):
     from databricks.sdk.compute.v2.client import ClustersClient
+
     cc = ClustersClient(
         host=env("DATABRICKS_HOST"),
         client_id=env("TEST_PKCE_APP_CLIENT_ID"),
@@ -24,6 +25,7 @@ def test_pkce_app(env):
 
 def test_public_app(env):
     from databricks.sdk.compute.v2.client import ClustersClient
+
     cc = ClustersClient(
         host=env("DATABRICKS_HOST"),
         client_id=env("TEST_PUBLIC_APP_CLIENT_ID"),
@@ -36,6 +38,7 @@ def test_public_app(env):
 
 def test_private_app(env):
     from databricks.sdk.compute.v2.client import ClustersClient
+
     cc = ClustersClient(
         host=env("DATABRICKS_HOST"),
         client_id=env("TEST_PRIVATE_APP_CLIENT_ID"),

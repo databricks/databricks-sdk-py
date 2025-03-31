@@ -1,11 +1,10 @@
-import logging
-from datetime import timedelta
 
 import pytest
 
-from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.compute.v2.client import ClustersClient
 from databricks.sdk.compute.v2 import compute
+from databricks.sdk.compute.v2.client import ClustersClient
+from databricks.sdk.databricks.core import DatabricksError
+
 # from databricks.sdk.service.compute import EventType
 
 
@@ -40,7 +39,7 @@ def test_ensure_cluster_is_running(w, env_or_skip):
 # def test_create_cluster(w, env_or_skip, random):
 #     from databricks.sdk.compute.v2.client import ClustersClient
 #     cc = ClustersClient(config=w)
-    
+
 #     info = cc.create(
 #         cluster_name=f"databricks-sdk-py-{random(8)}",
 #         spark_version=cc.select_spark_version(long_term_support=True),
@@ -53,6 +52,7 @@ def test_ensure_cluster_is_running(w, env_or_skip):
 
 def test_error_unmarshall(w, random):
     from databricks.sdk.compute.v2.client import ClustersClient
+
     cc = ClustersClient(config=w)
     with pytest.raises(DatabricksError) as exc_info:
         cc.get("123__non_existing__")

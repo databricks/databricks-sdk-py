@@ -4,8 +4,8 @@ from io import BytesIO
 import pytest
 
 from databricks.sdk.databricks.core import Config
-from databricks.sdk.serving.v2.serving import ExternalFunctionRequestHttpMethod
 from databricks.sdk.serving.v2.client import ServingEndpointsClient
+from databricks.sdk.serving.v2.serving import ExternalFunctionRequestHttpMethod
 
 
 def test_open_ai_client(monkeypatch):

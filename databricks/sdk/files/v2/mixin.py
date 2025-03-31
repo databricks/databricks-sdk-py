@@ -721,7 +721,7 @@ class FilesExt(files.FilesAPI):
         if not self._config.enable_experimental_files_api_client:
             # Use the new Files API client for downloads
             return super().download(file_path)
-        
+
         initial_response: DownloadResponse = self._open_download_stream(
             file_path=file_path,
             start_byte_offset=0,
