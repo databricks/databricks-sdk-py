@@ -249,7 +249,7 @@ class ResourceWithCleanup:
             name=volume,
             volume_type=VolumeType.MANAGED,
         )
-        return ResourceWithCleanup(lambda: w.volumes.delete(res.full_name))
+        return ResourceWithCleanup(lambda: vc.delete(res.full_name))
 
 
 def test_files_api_upload_download(ucws, files_api, random):
