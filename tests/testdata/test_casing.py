@@ -1,6 +1,6 @@
 import pytest
 
-from databricks.sdk.databricks.casing import Casing
+from databricks.sdk.casing import Casing
 
 
 @pytest.mark.parametrize(

@@ -7,7 +7,7 @@ from databricks.sdk.version import __version__
 
 @pytest.fixture(scope="function")
 def user_agent():
-    from databricks.sdk.databricks import useragent
+    from databricks.sdk import useragent
 
     orig_product_name = useragent._product_name
     orig_product_version = useragent._product_version
@@ -52,7 +52,7 @@ def clear_cicd():
     os.environ.clear()
 
     # Clear cached CICD provider.
-    from databricks.sdk.databricks import useragent
+    from databricks.sdk import useragent
 
     useragent._cicd_provider = None
 
@@ -63,7 +63,7 @@ def clear_cicd():
 
 
 def test_user_agent_cicd_no_provider(clear_cicd):
-    from databricks.sdk.databricks import useragent
+    from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
 
@@ -73,7 +73,7 @@ def test_user_agent_cicd_no_provider(clear_cicd):
 def test_user_agent_cicd_one_provider(clear_cicd):
     os.environ["GITHUB_ACTIONS"] = "true"
 
-    from databricks.sdk.databricks import useragent
+    from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
 
@@ -84,7 +84,7 @@ def test_user_agent_cicd_two_provider(clear_cicd):
     os.environ["GITHUB_ACTIONS"] = "true"
     os.environ["GITLAB_CI"] = "true"
 
-    from databricks.sdk.databricks import useragent
+    from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
 

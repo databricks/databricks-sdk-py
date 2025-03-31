@@ -3,7 +3,7 @@ from io import BytesIO
 
 import pytest
 
-from databricks.sdk.databricks.core import Config
+from databricks.sdk.core import Config
 from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod
 
 

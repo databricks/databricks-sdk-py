@@ -7,10 +7,10 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
 
-from ..mixins import compute as compute_ext
-from ..mixins import files as dbfs_ext
-from ..service import compute, workspace
 from .core import ApiClient, Config, DatabricksError
+from .mixins import compute as compute_ext
+from .mixins import files as dbfs_ext
+from .service import compute, workspace
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -229,7 +229,7 @@ class RemoteDbUtils:
     @property
     def widgets(self):
         if self._widgets is None:
-            from .._widgets import widget_impl
+            from ._widgets import widget_impl
 
             self._widgets = widget_impl()
 

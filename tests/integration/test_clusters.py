@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import pytest
 
-from databricks.sdk.databricks.core import DatabricksError
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.compute import EventType
 
 

@@ -1,5 +1,5 @@
-from databricks.sdk.databricks.core import Config
-from databricks.sdk.databricks.environments import ALL_ENVS, Cloud
+from databricks.sdk.core import Config
+from databricks.sdk.environments import ALL_ENVS, Cloud
 
 
 def test_environment_aws():

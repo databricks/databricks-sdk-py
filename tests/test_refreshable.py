@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from time import sleep
 from typing import Callable
 
-from databricks.sdk.databricks.oauth import Refreshable, Token
+from databricks.sdk.oauth import Refreshable, Token
 
 
 class _MockRefreshable(Refreshable):

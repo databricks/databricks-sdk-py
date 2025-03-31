@@ -9,7 +9,7 @@ on:
   pull_request_target:
     types: [opened, reopened, synchronize]
     branches:
-      - dev/sdk-mod
+      - main
 
 jobs:
   comment-on-pr:

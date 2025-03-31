@@ -4,12 +4,12 @@ import os
 
 import pytest
 
-from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.databricks.errors import NotFound
+from databricks.sdk.core import DatabricksError
+from databricks.sdk.errors import NotFound
 
 
 def test_rest_dbfs_ls(w, env_or_skip):
-    from databricks.sdk.databricks.runtime import dbutils
+    from databricks.sdk.runtime import dbutils
 
     x = dbutils.fs.ls("/")
 
@@ -192,7 +192,7 @@ def test_secrets(w, random):
         bytes_value=base64.b64encode(random_value.encode()).decode(),
     )
 
-    from databricks.sdk.databricks.runtime import dbutils
+    from databricks.sdk.runtime import dbutils
 
     all_scopes = dbutils.secrets.listScopes()
     assert random_scope in [scope.getName() for scope in all_scopes]

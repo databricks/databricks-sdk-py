@@ -24,14 +24,13 @@ import requests
 import requests.adapters
 from requests import RequestException
 
-from ..databricks._base_client import (_BaseClient, _RawResponse,
-                                       _StreamingResponse)
-from ..databricks._property import _cached_property
-from ..databricks.config import Config
-from ..databricks.errors import AlreadyExists, NotFound
-from ..databricks.errors.customizer import _RetryAfterCustomizer
-from ..databricks.errors.mapper import _error_mapper
-from ..databricks.retries import retried
+from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
+from .._property import _cached_property
+from ..config import Config
+from ..errors import AlreadyExists, NotFound
+from ..errors.customizer import _RetryAfterCustomizer
+from ..errors.mapper import _error_mapper
+from ..retries import retried
 from ..service import files
 from ..service._internal import _escape_multi_segment_path_parameter
 from ..service.files import DownloadResponse

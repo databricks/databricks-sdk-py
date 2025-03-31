@@ -1,4 +1,4 @@
-from databricks.sdk.databricks.clock import Clock
+from databricks.sdk.clock import Clock
 
 
 class FakeClock(Clock):

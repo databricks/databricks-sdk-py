@@ -1,6 +1,6 @@
 import pytest as pytest
 
-from databricks.sdk.databricks.dbutils import FileInfo as DBUtilsFileInfo
+from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
 from databricks.sdk.service.files import FileInfo, ReadResponse
 
 from .conftest import raises
@@ -8,7 +8,7 @@ from .conftest import raises
 
 @pytest.fixture
 def dbutils(config):
-    from databricks.sdk.databricks.dbutils import RemoteDbUtils
+    from databricks.sdk.dbutils import RemoteDbUtils
 
     return RemoteDbUtils(config)
 
@@ -121,8 +121,8 @@ def test_fs_mount_without_cluster_fails(dbutils):
 
 @pytest.fixture
 def dbutils_proxy(mocker):
-    from databricks.sdk.databricks.core import Config
-    from databricks.sdk.databricks.dbutils import RemoteDbUtils
+    from databricks.sdk.core import Config
+    from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
     from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
                                                 CommandStatusResponse, Created,
@@ -251,7 +251,7 @@ def test_any_proxy(dbutils_proxy):
 
 
 def test_secrets_get_and_redacting_logs(dbutils, mocker):
-    inner = mocker.patch("databricks.sdk.databricks.core.ApiClient.do", return_value={"value": "aGVsbG8="})
+    inner = mocker.patch("databricks.sdk.core.ApiClient.do", return_value={"value": "aGVsbG8="})
 
     value = dbutils.secrets.get("foo", "bar")
 

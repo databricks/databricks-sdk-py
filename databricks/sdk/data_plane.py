@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from typing import Callable, Optional
 from urllib import parse
 
-from databricks.sdk.databricks import oauth
-from databricks.sdk.databricks.oauth import Token
+from databricks.sdk import oauth
+from databricks.sdk.oauth import Token
 
 URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
 JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"

@@ -180,7 +180,7 @@ except ImportError:
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
-    from databricks.sdk.databricks.dbutils import RemoteDbUtils
+    from databricks.sdk.dbutils import RemoteDbUtils
 
     from . import dbutils_stub
 

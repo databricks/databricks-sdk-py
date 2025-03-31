@@ -7,10 +7,10 @@ from unittest.mock import Mock
 import pytest
 from requests import PreparedRequest, Response, Timeout
 
-from databricks.sdk.databricks import errors, useragent
-from databricks.sdk.databricks._base_client import (_BaseClient, _RawResponse,
-                                                    _StreamingResponse)
-from databricks.sdk.databricks.core import DatabricksError
+from databricks.sdk import errors, useragent
+from databricks.sdk._base_client import (_BaseClient, _RawResponse,
+                                         _StreamingResponse)
+from databricks.sdk.core import DatabricksError
 
 from .clock import FakeClock
 from .fixture_server import http_fixture_server

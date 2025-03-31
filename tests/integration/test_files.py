@@ -7,7 +7,7 @@ from typing import Callable, List, Tuple, Union
 
 import pytest
 
-from databricks.sdk.databricks.core import DatabricksError
+from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.catalog import VolumeType
 
 

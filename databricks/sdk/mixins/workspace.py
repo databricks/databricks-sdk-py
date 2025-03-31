@@ -1,6 +1,6 @@
 from typing import Any, BinaryIO, Iterator, Optional, Union
 
-from ..databricks.core import DatabricksError
+from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
                                  ObjectInfo, ObjectType, WorkspaceAPI)
 

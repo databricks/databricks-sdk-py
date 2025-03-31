@@ -1,6 +1,6 @@
 import pytest
 
-from databricks.sdk.databricks.errors import NotFound
+from databricks.sdk.errors import NotFound
 from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
                                          _VolumesPath)
 
