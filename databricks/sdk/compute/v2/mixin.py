@@ -7,7 +7,8 @@ from typing import Optional
 
 from databricks.sdk.databricks.core import DatabricksError
 from databricks.sdk.databricks.errors import OperationFailed
-from databricks.sdk.service import compute
+
+from . import compute
 
 _LOG = logging.getLogger("databricks.sdk")
 

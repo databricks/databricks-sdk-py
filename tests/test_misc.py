@@ -1,13 +1,11 @@
-from databricks.sdk.service import catalog
-
+from databricks.sdk.catalog.v2 import catalog
+from databricks.sdk.jobs.v2 import jobs
 
 # https://github.com/databricks/databricks-sdk-py/issues/135
 def test_issue_135():
-    from databricks.sdk.service.compute import Library, PythonPyPiLibrary
-    from databricks.sdk.service.jobs import Task
 
-    jts = Task(
-        libraries=[Library(pypi=PythonPyPiLibrary(package="databricks-sdk"))],
+    jts = jobs.Task(
+        libraries=[jobs.Library(pypi=jobs.PythonPyPiLibrary(package="databricks-sdk"))],
         task_key="abc",
     )
 
@@ -19,12 +17,9 @@ def test_issue_135():
 
 # https://github.com/databricks/databricks-sdk-py/issues/103
 def test_issue_103():
-    from databricks.sdk.service.compute import ClusterSpec
-    from databricks.sdk.service.jobs import JobCluster
-
-    jc = JobCluster(
+    jc = jobs.JobCluster(
         job_cluster_key="no_worker",
-        new_cluster=ClusterSpec(
+        new_cluster=jobs.JobsClusterSpec(
             spark_version="11.3.x-scala2.12",
             custom_tags={"ResourceClass": "SingleNode"},
             num_workers=0,

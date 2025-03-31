@@ -1,6 +1,7 @@
 from typing import Dict
 
-from ..service.provisioning import Workspace
+from databricks.sdk.provisioning.v2.provisioning import Workspace
+
 from .oauth import TokenSource
 
 

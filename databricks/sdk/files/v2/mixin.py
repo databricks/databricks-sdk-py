@@ -24,17 +24,17 @@ import requests
 import requests.adapters
 from requests import RequestException
 
-from ..databricks._base_client import (_BaseClient, _RawResponse,
-                                       _StreamingResponse)
-from ..databricks._property import _cached_property
-from ..databricks.config import Config
-from ..databricks.errors import AlreadyExists, NotFound
-from ..databricks.errors.customizer import _RetryAfterCustomizer
-from ..databricks.errors.mapper import _error_mapper
-from ..databricks.retries import retried
-from ..service import files
-from ..service._internal import _escape_multi_segment_path_parameter
-from ..service.files import DownloadResponse
+from ...databricks._base_client import (_BaseClient, _RawResponse,
+                                        _StreamingResponse)
+from ...databricks._property import _cached_property
+from ...databricks.config import Config
+from ...databricks.errors import AlreadyExists, NotFound
+from ...databricks.errors.customizer import _RetryAfterCustomizer
+from ...databricks.errors.mapper import _error_mapper
+from ...databricks.retries import retried
+from ...service._internal import _escape_multi_segment_path_parameter
+from . import files
+from .files import DownloadResponse
 
 if TYPE_CHECKING:
     from _typeshed import Self
@@ -718,6 +718,10 @@ class FilesExt(files.FilesAPI):
         :returns: :class:`DownloadResponse`
         """
 
+        if not self._config.enable_experimental_files_api_client:
+            # Use the new Files API client for downloads
+            return super().download(file_path)
+        
         initial_response: DownloadResponse = self._open_download_stream(
             file_path=file_path,
             start_byte_offset=0,
@@ -742,6 +746,10 @@ class FilesExt(files.FilesAPI):
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten. When not specified, assumed True.
         """
+
+        if not self._config.enable_experimental_files_api_client:
+            # Use the new Files API client for downloads
+            return super().upload(file_path, contents, overwrite=overwrite)
 
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.multipart_upload_min_stream_size)

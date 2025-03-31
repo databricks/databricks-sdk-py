@@ -7,8 +7,10 @@ import sys
 
 import pytest
 
-from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
-from databricks.sdk.service.catalog import VolumeType
+from databricks.sdk import FilesExt
+from databricks.sdk.catalog.v2.catalog import VolumeType
+from databricks.sdk.databricks.config import Config
+from databricks.sdk.files.v2.files import FilesAPI
 
 
 def pytest_addoption(parser):
@@ -59,45 +61,45 @@ def random():
 
 
 @pytest.fixture(scope="session")
-def a(env_or_skip) -> AccountClient:
+def a(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if not account_client.config.is_account_client:
+    cfg = Config()
+    if not cfg.is_account_client:
         pytest.skip("not Databricks Account client")
-    return account_client
+    return cfg
 
 
 @pytest.fixture(scope="session")
-def ucacct(env_or_skip) -> AccountClient:
+def ucacct(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if not account_client.config.is_account_client:
+    cfg = Config()
+    if not cfg.is_account_client:
         pytest.skip("not Databricks Account client")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
-    return account_client
+    return cfg
 
 
 @pytest.fixture(scope="session")
-def w(env_or_skip) -> WorkspaceClient:
+def w(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("workspace")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
         pytest.skip("Skipping workspace test on account level")
-    return WorkspaceClient()
+    return Config()
 
 
 @pytest.fixture(scope="session")
-def ucws(env_or_skip) -> WorkspaceClient:
+def ucws(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("ucws")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
         pytest.skip("Skipping workspace test on account level")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
-    return WorkspaceClient()
+    return Config()
 
 
 @pytest.fixture(scope="session")
@@ -162,6 +164,7 @@ def _is_in_debug() -> bool:
     return os.path.basename(sys.argv[0]) in [
         "_jb_pytest_runner.py",
         "testlauncher.py",
+        "run_pytest_script.py",
     ]
 
 

@@ -1,7 +1,7 @@
 from typing import Iterator, Optional
 
-from databricks.sdk.service import jobs
-from databricks.sdk.service.jobs import BaseJob, BaseRun, Job, RunType
+from . import jobs
+from .jobs import BaseJob, BaseRun, Job, RunType
 
 
 class JobsExt(jobs.JobsAPI):
