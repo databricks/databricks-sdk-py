@@ -5,8 +5,8 @@ import platform
 import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from databricks.sdk.core import Config
-from databricks.sdk.credentials_provider import credentials_strategy
+from databricks.sdk.databricks.core import Config
+from databricks.sdk.databricks.credentials_provider import credentials_strategy
 
 from .integration.conftest import restorable_env  # type: ignore
 

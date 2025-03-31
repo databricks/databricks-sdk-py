@@ -1,4 +1,4 @@
-from databricks.sdk.data_plane import DataPlaneTokenSource
+from databricks.sdk.databricks.data_plane import DataPlaneTokenSource
 
 
 def test_data_plane_token_source(ucws, env_or_skip):
