@@ -8,7 +8,7 @@ from typing import Callable, List, Tuple, Union
 import pytest
 
 from databricks.sdk.databricks.core import DatabricksError
-
+from databricks.sdk.files.v2.client import DbfsClient
 
 def test_local_io(random):
     if platform.system() == "Windows":
@@ -28,11 +28,12 @@ def test_local_io(random):
 def test_dbfs_io(w, random):
     dummy_file = f"/tmp/{random()}"
     to_write = random(1024 * 1024 * 1.5).encode()
-    with w.dbfs.open(dummy_file, write=True) as f:
+    dc = DbfsClient(config=w)
+    with dc.open(dummy_file, write=True) as f:
         written = f.write(to_write)
         assert len(to_write) == written
 
-    f = w.dbfs.open(dummy_file, read=True)
+    f = dc.open(dummy_file, read=True)
     from_dbfs = f.read()
     assert from_dbfs == to_write
     f.close()
@@ -40,8 +41,6 @@ def test_dbfs_io(w, random):
 
 @pytest.fixture
 def junk(w, random):
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     def inner(path: str, size=256) -> bytes:
@@ -56,8 +55,6 @@ def junk(w, random):
 
 @pytest.fixture
 def ls(w):
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     def inner(root: str, recursive=False) -> List[str]:
@@ -88,8 +85,6 @@ def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
 
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     dc.copy(root, new_root)
@@ -103,8 +98,6 @@ def test_cp_dbfs_folder_to_folder_recursive(w, random, junk, ls):
     junk(f"{root}/a/02")
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
-
-    from databricks.sdk.files.v2.client import DbfsClient
 
     dc = DbfsClient(config=w)
 
@@ -120,8 +113,6 @@ def test_cp_dbfs_folder_to_existing_folder_recursive(w, random, junk, ls):
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
 
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     dc.mkdirs(new_root)
@@ -136,8 +127,6 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
     payload = junk(f"{root}/01")
     copy_destination = f"{root}/{random()}"
 
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     dc.copy(f"{root}/01", copy_destination)
@@ -149,8 +138,6 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
 def test_cp_dbfs_file_to_existing_folder(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
-
-    from databricks.sdk.files.v2.client import DbfsClient
 
     dc = DbfsClient(config=w)
 
@@ -166,8 +153,6 @@ def test_cp_dbfs_file_to_existing_location(w, random, junk):
     junk(f"{root}/01")
     junk(f"{root}/02")
 
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     with pytest.raises(DatabricksError) as ei:
@@ -180,8 +165,6 @@ def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
     payload = junk(f"{root}/01")
     junk(f"{root}/02")
 
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     dc.copy(f"{root}/01", f"{root}/02", overwrite=True)
@@ -193,8 +176,6 @@ def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
 def test_move_within_dbfs(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
-
-    from databricks.sdk.files.v2.client import DbfsClient
 
     dc = DbfsClient(config=w)
 
@@ -210,8 +191,6 @@ def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
     payload_01 = junk(f"{root}/01")
     payload_02 = junk(f"{root}/a/02")
     payload_03 = junk(f"{root}/a/b/03")
-
-    from databricks.sdk.files.v2.client import DbfsClient
 
     dc = DbfsClient(config=w)
 
@@ -230,8 +209,6 @@ def test_dbfs_upload_download(w, random, junk, tmp_path):
     root = pathlib.Path(f"/tmp/{random()}")
 
     f = io.BytesIO(b"some text data")
-    from databricks.sdk.files.v2.client import DbfsClient
-
     dc = DbfsClient(config=w)
 
     dc.upload(f"{root}/01", f)

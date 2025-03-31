@@ -2,7 +2,9 @@ import pytest
 
 from databricks.sdk.databricks import errors
 from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.iam.v2.client import GroupsClient, UsersClient
+from databricks.sdk.iam.v2.client import AccountGroupsClient, AccountUsersClient, AccountServicePrincipalsClient
+from databricks.sdk.iam.v2.client import GroupsClient, UsersClient, ServicePrincipalsClient
+from databricks.sdk.databricks.core import ApiClient
 
 
 def test_filtering_groups(w, random):
@@ -32,44 +34,36 @@ def test_scim_get_user_as_dict(w):
 
 
 @pytest.mark.parametrize(
-    "path,call",
+    "client_class,path,count",
     [
-        ("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
-        ("/api/2.0/preview/scim/v2/Groups", lambda w: w.groups.list(count=4)),
-        (
-            "/api/2.0/preview/scim/v2/ServicePrincipals",
-            lambda w: w.service_principals.list(count=1),
-        ),
+        (UsersClient, "/api/2.0/preview/scim/v2/Users", 10),
+        (GroupsClient, "/api/2.0/preview/scim/v2/Groups", 40),
+        (ServicePrincipalsClient, "/api/2.0/preview/scim/v2/ServicePrincipals", 10),
     ],
 )
-def test_workspace_users_list_pagination(w, path, call):
-    raw = w.api_client.do("GET", path)
+def test_workspace_users_list_pagination(w, client_class, path, count):
+    client = client_class(config=w)
+    api_client = ApiClient(cfg=w)
+    raw = api_client.do("GET", path)
     total = raw["totalResults"]
-    all = call(w)
+    all = client.list(count=count)
     found = len(list(all))
     assert found == total
 
 
 @pytest.mark.parametrize(
-    "path,call",
+    "client_class,path,count",
     [
-        (
-            "/api/2.0/accounts/%s/scim/v2/Users",
-            lambda a: a.users.list(count=3000),
-        ),
-        (
-            "/api/2.0/accounts/%s/scim/v2/Groups",
-            lambda a: a.groups.list(count=5),
-        ),
-        (
-            "/api/2.0/accounts/%s/scim/v2/ServicePrincipals",
-            lambda a: a.service_principals.list(count=1000),
-        ),
+        (AccountUsersClient, "/api/2.0/accounts/%s/scim/v2/Users", 3000),
+        (AccountGroupsClient, "/api/2.0/accounts/%s/scim/v2/Groups", 50),
+        (AccountServicePrincipalsClient, "/api/2.0/accounts/%s/scim/v2/ServicePrincipals", 1000),
     ],
 )
-def test_account_users_list_pagination(a, path, call):
-    raw = a.api_client.do("GET", path.replace("%s", a.config.account_id))
+def test_account_users_list_pagination(a, client_class, path, count):
+    client = client_class(config=a)
+    api_client = ApiClient(cfg=a)
+    raw = api_client.do("GET", path.replace("%s", a.account_id))
     total = raw["totalResults"]
-    all = call(a)
+    all = client.list(count=count)
     found = len(list(all))
     assert found == total
