@@ -1,10 +1,11 @@
 import pytest
 
 from databricks.sdk.databricks import errors
-from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.iam.v2.client import AccountGroupsClient, AccountUsersClient, AccountServicePrincipalsClient
-from databricks.sdk.iam.v2.client import GroupsClient, UsersClient, ServicePrincipalsClient
-from databricks.sdk.databricks.core import ApiClient
+from databricks.sdk.databricks.core import ApiClient, DatabricksError
+from databricks.sdk.iam.v2.client import (AccountGroupsClient,
+                                          AccountServicePrincipalsClient,
+                                          AccountUsersClient, GroupsClient,
+                                          ServicePrincipalsClient, UsersClient)
 
 
 def test_filtering_groups(w, random):

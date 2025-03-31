@@ -1,4 +1,3 @@
-
 # TODO: Re-enable this after adding data plane services to the SDK
 # def test_data_plane_token_source(ucws, env_or_skip):
 #     endpoint = env_or_skip("SERVING_ENDPOINT_NAME")

@@ -115,36 +115,58 @@ def env_or_skip():
 
 @pytest.fixture(scope="session")
 def schema(ucws, random):
-    schema = ucws.schemas.create("dbfs-" + random(), "main")
+    from databricks.sdk.catalog.v2.client import SchemasClient
+
+    sc = SchemasClient(config=ucws)
+    schema = sc.create("dbfs-" + random(), "main")
     yield schema
-    ucws.schemas.delete(schema.full_name)
+    sc.delete(schema.full_name)
 
 
 @pytest.fixture(scope="session")
 def volume(ucws, schema):
-    volume = ucws.volumes.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
+    from databricks.sdk.catalog.v2.client import VolumesClient
+
+    vc = VolumesClient(config=ucws)
+    volume = vc.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
     yield "/Volumes/" + volume.full_name.replace(".", "/")
-    ucws.volumes.delete(volume.full_name)
+    vc.delete(volume.full_name)
 
 
 @pytest.fixture(scope="session", params=[False, True])
 def files_api(request, ucws) -> FilesAPI:
+
     if request.param:
         # ensure new Files API client is used for files of any size
-        ucws.config.multipart_upload_min_stream_size = 0
+        ucws.multipart_upload_min_stream_size = 0
         # enable new Files API client
-        return FilesExt(ucws.api_client, ucws.config)
+        from databricks.sdk.databricks.core import ApiClient
+
+        client = ApiClient(cfg=ucws)
+
+        return FilesExt(client, ucws)
     else:
         # use the default client
-        return ucws.files
+        from databricks.sdk.databricks.core import ApiClient
+        from databricks.sdk.files.v2.files import FilesAPI
+
+        client = ApiClient(cfg=ucws)
+
+        api = FilesAPI(api_client=client)
+        return api
 
 
 @pytest.fixture()
 def workspace_dir(w, random):
-    directory = f"/Users/{w.current_user.me().user_name}/dir-{random(12)}"
-    w.workspace.mkdirs(directory)
+    from databricks.sdk.iam.v2.client import CurrentUserClient
+    from databricks.sdk.workspace.v2.client import WorkspaceClient
+
+    cuc = CurrentUserClient(config=w)
+    wc = WorkspaceClient(config=w)
+    directory = f"/Users/{cuc.me().user_name}/dir-{random(12)}"
+    wc.mkdirs(directory)
     yield directory
-    w.workspace.delete(directory, recursive=True)
+    wc.delete(directory, recursive=True)
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:

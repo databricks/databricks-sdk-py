@@ -1,8 +1,9 @@
 import io
 
-from databricks.sdk.workspace.v2.workspace import ImportFormat, Language
-from databricks.sdk.workspace.v2.client import WorkspaceClient
 from databricks.sdk.iam.v2.client import CurrentUserClient
+from databricks.sdk.workspace.v2.client import WorkspaceClient
+from databricks.sdk.workspace.v2.workspace import ImportFormat, Language
+
 
 def test_workspace_recursive_list(w, workspace_dir, random):
     wc = WorkspaceClient(config=w)
@@ -25,9 +26,9 @@ def test_workspace_recursive_list(w, workspace_dir, random):
 def test_workspace_upload_download_notebooks(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     notebook = f"/Users/{cuc.me().user_name}/notebook-{random(12)}.py"
-    
+
     wc.upload(notebook, io.BytesIO(b"print(1)"))
     with wc.download(notebook) as f:
         content = f.read()
@@ -39,7 +40,7 @@ def test_workspace_upload_download_notebooks(w, random):
 def test_workspace_unzip_notebooks(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     notebook = f"/Users/{cuc.me().user_name}/notebook-{random(12)}.py"
 
     # Big notebooks can be gzipped during transfer by the API (out of our control)
@@ -58,7 +59,7 @@ def test_workspace_unzip_notebooks(w, random):
 def test_workspace_download_connection_closed(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     notebook = f"/Users/{cuc.me().user_name}/notebook-{random(12)}.py"
 
     wc.upload(notebook, io.BytesIO(b"print(1)"))
@@ -74,7 +75,7 @@ def test_workspace_download_connection_closed(w, random):
 def test_workspace_upload_download_files(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     py_file = f"/Users/{cuc.me().user_name}/file-{random(12)}.py"
 
     wc.upload(py_file, io.BytesIO(b"print(1)"), format=ImportFormat.AUTO)
@@ -88,7 +89,7 @@ def test_workspace_upload_download_files(w, random):
 def test_workspace_upload_download_txt_files(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     txt_file = f"/Users/{cuc.me().user_name}/txt-{random(12)}.txt"
 
     wc.upload(txt_file, io.BytesIO(b"print(1)"), format=ImportFormat.AUTO)
@@ -102,7 +103,7 @@ def test_workspace_upload_download_txt_files(w, random):
 def test_workspace_upload_download_notebooks_no_extension(w, random):
     wc = WorkspaceClient(config=w)
     cuc = CurrentUserClient(config=w)
-    
+
     nb = f"/Users/{cuc.me().user_name}/notebook-{random(12)}"
 
     wc.upload(

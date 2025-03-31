@@ -5,8 +5,8 @@ import os
 import pytest
 
 from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.databricks.errors import NotFound
 from databricks.sdk.databricks.dbutils import RemoteDbUtils
+from databricks.sdk.databricks.errors import NotFound
 
 
 def test_rest_dbfs_ls(w, env_or_skip):
@@ -16,9 +16,10 @@ def test_rest_dbfs_ls(w, env_or_skip):
 
     assert len(x) > 1
 
+
 # TODO: Re-enable this test after adding waiters to the SDK
 # def test_proxy_dbfs_mounts(w, env_or_skip):
-    
+
 #     w.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
 
 #     dbu = RemoteDbUtils(config=w)
@@ -29,11 +30,12 @@ def test_rest_dbfs_ls(w, env_or_skip):
 
 @pytest.fixture(params=["dbfs", "volumes"])
 def fs_and_base_path(request, ucws, volume):
+    dbu = RemoteDbUtils(config=ucws)
     if request.param == "dbfs":
-        fs = ucws.dbutils.fs
+        fs = dbu.fs
         base_path = "/tmp"
     else:
-        fs = ucws.dbutils.fs
+        fs = dbu.fs
         base_path = volume
     return fs, base_path
 
@@ -189,7 +191,7 @@ def test_secrets(w, random):
     logger.info(f"Before loading secret: {random_value}")
 
     from databricks.sdk.workspace.v2.client import SecretsClient
-    
+
     sc = SecretsClient(config=w)
     sc.create_scope(random_scope)
     sc.put_secret(random_scope, key_for_string, string_value=random_value)

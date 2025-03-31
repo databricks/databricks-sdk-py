@@ -7,8 +7,10 @@ from typing import Callable, List, Tuple, Union
 
 import pytest
 
+from databricks.sdk.catalog.v2.client import SchemasClient
 from databricks.sdk.databricks.core import DatabricksError
 from databricks.sdk.files.v2.client import DbfsClient
+
 
 def test_local_io(random):
     if platform.system() == "Windows":
@@ -231,8 +233,9 @@ class ResourceWithCleanup:
 
     @staticmethod
     def create_schema(w, catalog, schema):
-        res = w.schemas.create(catalog_name=catalog, name=schema)
-        return ResourceWithCleanup(lambda: w.schemas.delete(res.full_name))
+        sc = SchemasClient(config=w)
+        res = sc.create(catalog_name=catalog, name=schema)
+        return ResourceWithCleanup(lambda: sc.delete(res.full_name))
 
     @staticmethod
     def create_volume(w, catalog, schema, volume):

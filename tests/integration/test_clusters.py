@@ -1,4 +1,3 @@
-
 import pytest
 
 from databricks.sdk.compute.v2 import compute
@@ -27,6 +26,7 @@ def test_cluster_events(w, env_or_skip):
     for e in cc.events(cluster_id, event_types=[compute.EventType.STARTING, compute.EventType.TERMINATING]):
         count += 1
     assert count > 0
+
 
 # TODO: Re-enable this test after adding waiters to the SDK
 # def test_ensure_cluster_is_running(w, env_or_skip):

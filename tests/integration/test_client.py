@@ -6,9 +6,10 @@ def test_get_workspace_client(ucacct, env_or_skip):
     assert w.current_user.me().active
 
 
-def test_get_workspace_id(ucws, env_or_skip):
-    ws_id = int(env_or_skip("THIS_WORKSPACE_ID"))
-    assert ucws.get_workspace_id() == ws_id
+# TODO: need to decide if we want get_workspace_id on every client
+# def test_get_workspace_id(ucws, env_or_skip):
+#     ws_id = int(env_or_skip("THIS_WORKSPACE_ID"))
+#     assert ucws.get_workspace_id() == ws_id
 
 
 def test_creating_ws_client_from_ac_client_does_not_override_config(ucacct, env_or_skip):
