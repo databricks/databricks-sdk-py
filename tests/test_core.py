@@ -19,7 +19,6 @@ from databricks.sdk.databricks.environments import (ENVIRONMENTS,
                                                     DatabricksEnvironment)
 from databricks.sdk.databricks.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
-from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.service.jobs import JobAccessControlRequest
 from databricks.sdk.version import __version__
 
