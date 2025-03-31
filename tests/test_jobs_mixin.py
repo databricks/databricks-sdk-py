@@ -2,7 +2,7 @@ import json
 import re
 from typing import Optional, Pattern
 
-from databricks.sdk import WorkspaceClient
+from databricks.sdk.jobs.v2.client import JobsClient
 
 
 def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> Pattern[str]:
@@ -40,9 +40,9 @@ def test_get_run_with_no_pagination(config, requests_mock):
         "tasks": [{"run_id": 0}, {"run_id": 1}],
     }
     requests_mock.get(make_getrun_path_pattern(1337, "initialToken"), text=json.dumps(run1))
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    run = w.jobs.get_run(1337, page_token="initialToken")
+    run = jc.get_run(1337, page_token="initialToken")
 
     assert run.as_dict() == {
         "tasks": [{"run_id": 0}, {"run_id": 1}],
@@ -50,9 +50,9 @@ def test_get_run_with_no_pagination(config, requests_mock):
 
 
 def test_get_run_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
+    from databricks.sdk.jobs.v2 import jobs
 
-    cluster_spec = compute.ClusterSpec(
+    cluster_spec = jobs.JobsClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
         num_workers=0,
@@ -90,9 +90,9 @@ def test_get_run_pagination_with_tasks(config, requests_mock):
         make_getrun_path_pattern(1337, "tokenToThirdPage"),
         text=json.dumps(run3),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    run = w.jobs.get_run(1337, page_token="initialToken")
+    run = jc.get_run(1337, page_token="initialToken")
 
     assert run.as_dict() == {
         "tasks": [
@@ -139,9 +139,9 @@ def test_get_run_pagination_with_iterations(config, requests_mock):
         make_getrun_path_pattern(1337, "tokenToThirdPage"),
         text=json.dumps(run3),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    run = w.jobs.get_run(1337, page_token="initialToken")
+    run = jc.get_run(1337, page_token="initialToken")
 
     assert run.as_dict() == {
         "tasks": [{"run_id": 1337}],
@@ -162,9 +162,9 @@ def test_get_job_with_no_pagination(config, requests_mock):
         }
     }
     requests_mock.get(make_getjob_path_pattern(1337, "initialToken"), text=json.dumps(job1))
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    job = w.jobs.get(1337, page_token="initialToken")
+    job = jc.get(1337, page_token="initialToken")
 
     assert job.as_dict() == {
         "settings": {
@@ -174,9 +174,9 @@ def test_get_job_with_no_pagination(config, requests_mock):
 
 
 def test_get_job_pagination_with_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
+    from databricks.sdk.jobs.v2 import jobs
 
-    cluster_spec = compute.ClusterSpec(
+    cluster_spec = jobs.JobsClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
         num_workers=0,
@@ -223,9 +223,9 @@ def test_get_job_pagination_with_tasks(config, requests_mock):
         make_getjob_path_pattern(1337, "tokenToThirdPage"),
         text=json.dumps(job3),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    job = w.jobs.get(1337, page_token="initialToken")
+    job = jc.get(1337, page_token="initialToken")
 
     assert job.as_dict() == {
         "settings": {
@@ -305,10 +305,10 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
         make_listjobs_path_pattern("tokenToSecondPage"),
         text=json.dumps(listjobs_page2),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
     # Converts the iterator to a list in order to compare the results
-    jobs_list = list(w.jobs.list(expand_tasks=False, page_token="initialToken"))
+    jobs_list = list(jc.list(expand_tasks=False, page_token="initialToken"))
     jobs_dict = [job.as_dict() for job in jobs_list]
 
     assert jobs_dict == [
@@ -349,9 +349,9 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
 
 
 def test_list_jobs_with_many_tasks(config, requests_mock):
-    from databricks.sdk.service import compute, jobs
+    from databricks.sdk.jobs.v2 import jobs
 
-    cluster_spec = compute.ClusterSpec(
+    cluster_spec = jobs.JobsClusterSpec(
         spark_version="11.3.x-scala2.12",
         custom_tags={"ResourceClass": "SingleNode"},
         num_workers=0,
@@ -512,10 +512,10 @@ def test_list_jobs_with_many_tasks(config, requests_mock):
         make_getjob_path_pattern(400, "tokenToSecondPage_400"),
         text=json.dumps(getjob_400_page2),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
     # Converts the iterator to a list in order to compare the results
-    jobs_list = list(w.jobs.list(expand_tasks=True, page_token="initialToken"))
+    jobs_list = list(jc.list(expand_tasks=True, page_token="initialToken"))
     jobs_dict = [job.as_dict() for job in jobs_list]
 
     assert jobs_dict == [
@@ -627,9 +627,9 @@ def test_list_runs_without_task_expansion(config, requests_mock):
         make_listruns_path_pattern("tokenToSecondPage"),
         text=json.dumps(listruns_page2),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    runs_list = list(w.jobs.list_runs(expand_tasks=False, page_token="initialToken"))
+    runs_list = list(jc.list_runs(expand_tasks=False, page_token="initialToken"))
     runs_dict = [run.as_dict() for run in runs_list]
 
     assert runs_dict == [
@@ -732,9 +732,9 @@ def test_list_runs(config, requests_mock):
         make_getrun_path_pattern(400, "tokenToSecondPage_400"),
         text=json.dumps(getrun_400_page2),
     )
-    w = WorkspaceClient(config=config)
+    jc = JobsClient(config=config)
 
-    runs_list = list(w.jobs.list_runs(expand_tasks=True, page_token="initialToken"))
+    runs_list = list(jc.list_runs(expand_tasks=True, page_token="initialToken"))
     runs_dict = [run.as_dict() for run in runs_list]
 
     assert runs_dict == [

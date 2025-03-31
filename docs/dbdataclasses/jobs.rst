@@ -4,6 +4,49 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
+.. autoclass:: Adlsgen2Info
+   :members:
+   :undoc-members:
+
+.. autoclass:: AutoScale
+   :members:
+   :undoc-members:
+
+.. autoclass:: AwsAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: AwsAvailability
+
+   Availability type used for all subsequent nodes past the `first_on_demand` ones.
+   Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+
+   .. py:attribute:: ON_DEMAND
+      :value: "ON_DEMAND"
+
+   .. py:attribute:: SPOT
+      :value: "SPOT"
+
+   .. py:attribute:: SPOT_WITH_FALLBACK
+      :value: "SPOT_WITH_FALLBACK"
+
+.. autoclass:: AzureAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: AzureAvailability
+
+   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+
+   .. py:attribute:: ON_DEMAND_AZURE
+      :value: "ON_DEMAND_AZURE"
+
+   .. py:attribute:: SPOT_AZURE
+      :value: "SPOT_AZURE"
+
+   .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
+      :value: "SPOT_WITH_FALLBACK_AZURE"
+
 .. autoclass:: BaseJob
    :members:
    :undoc-members:
@@ -117,7 +160,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ClientsTypes
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterInstance
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterLogConf
    :members:
    :undoc-members:
 
@@ -180,6 +231,48 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DataSecurityMode
+
+   Data security mode decides what data governance model to use when accessing data from a cluster.
+   The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access mode depending on your compute configuration. * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
+   The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in `single_user_name`. Most programming languages, cluster features and data governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited.
+   The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for future Databricks Runtime versions:
+   * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC nor passthrough enabled.
+
+   .. py:attribute:: DATA_SECURITY_MODE_AUTO
+      :value: "DATA_SECURITY_MODE_AUTO"
+
+   .. py:attribute:: DATA_SECURITY_MODE_DEDICATED
+      :value: "DATA_SECURITY_MODE_DEDICATED"
+
+   .. py:attribute:: DATA_SECURITY_MODE_STANDARD
+      :value: "DATA_SECURITY_MODE_STANDARD"
+
+   .. py:attribute:: LEGACY_PASSTHROUGH
+      :value: "LEGACY_PASSTHROUGH"
+
+   .. py:attribute:: LEGACY_SINGLE_USER
+      :value: "LEGACY_SINGLE_USER"
+
+   .. py:attribute:: LEGACY_SINGLE_USER_STANDARD
+      :value: "LEGACY_SINGLE_USER_STANDARD"
+
+   .. py:attribute:: LEGACY_TABLE_ACL
+      :value: "LEGACY_TABLE_ACL"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: SINGLE_USER
+      :value: "SINGLE_USER"
+
+   .. py:attribute:: USER_ISOLATION
+      :value: "USER_ISOLATION"
+
+.. autoclass:: DbfsStorageInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: DbtOutput
    :members:
    :undoc-members:
@@ -204,6 +297,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DockerBasicAuth
+   :members:
+   :undoc-members:
+
+.. autoclass:: DockerImage
+   :members:
+   :undoc-members:
+
+.. py:class:: EbsVolumeType
+
+   All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for details.
+
+   .. py:attribute:: GENERAL_PURPOSE_SSD
+      :value: "GENERAL_PURPOSE_SSD"
+
+   .. py:attribute:: THROUGHPUT_OPTIMIZED_HDD
+      :value: "THROUGHPUT_OPTIMIZED_HDD"
+
 .. autoclass:: EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
    :members:
    :undoc-members:
@@ -213,6 +324,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EnforcePolicyComplianceResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Environment
    :members:
    :undoc-members:
 
@@ -247,6 +362,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SINGLE_TASK
       :value: "SINGLE_TASK"
+
+.. autoclass:: GcpAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: GcpAvailability
+
+   This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
+
+   .. py:attribute:: ON_DEMAND_GCP
+      :value: "ON_DEMAND_GCP"
+
+   .. py:attribute:: PREEMPTIBLE_GCP
+      :value: "PREEMPTIBLE_GCP"
+
+   .. py:attribute:: PREEMPTIBLE_WITH_FALLBACK_GCP
+      :value: "PREEMPTIBLE_WITH_FALLBACK_GCP"
+
+.. autoclass:: GcsStorageInfo
+   :members:
+   :undoc-members:
 
 .. autoclass:: GenAiComputeTask
    :members:
@@ -291,6 +427,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GitSource
+   :members:
+   :undoc-members:
+
+.. autoclass:: InitScriptInfo
    :members:
    :undoc-members:
 
@@ -411,6 +551,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NOT_SYNCED
       :value: "NOT_SYNCED"
 
+.. autoclass:: JobsClusterSpec
+   :members:
+   :undoc-members:
+
 .. py:class:: JobsHealthMetric
 
    Specifies the health metric that is being evaluated for a particular health rule.
@@ -446,6 +590,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: Kind
+
+   The kind of compute described by this compute specification.
+   Depending on `kind`, different validations and default values will be applied.
+   Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) * [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) * [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
+   By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
+   [simple form]: https://docs.databricks.com/compute/simple-form.html
+
+   .. py:attribute:: CLASSIC_PREVIEW
+      :value: "CLASSIC_PREVIEW"
+
+.. autoclass:: Library
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListJobComplianceForPolicyResponse
    :members:
    :undoc-members:
@@ -455,6 +614,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListRunsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: LocalFileInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogAnalyticsInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: MavenLibrary
    :members:
    :undoc-members:
 
@@ -514,6 +685,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PythonPyPiLibrary
+   :members:
+   :undoc-members:
+
 .. autoclass:: PythonWheelTask
    :members:
    :undoc-members:
@@ -536,6 +711,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "MAX_CONCURRENT_RUNS_REACHED"
 
 .. autoclass:: QueueSettings
+   :members:
+   :undoc-members:
+
+.. autoclass:: RCranLibrary
    :members:
    :undoc-members:
 
@@ -775,6 +954,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WORKFLOW_RUN
       :value: "WORKFLOW_RUN"
+
+.. py:class:: RuntimeEngine
+
+   .. py:attribute:: NULL
+      :value: "NULL"
+
+   .. py:attribute:: PHOTON
+      :value: "PHOTON"
+
+   .. py:attribute:: STANDARD
+      :value: "STANDARD"
+
+.. autoclass:: S3StorageInfo
+   :members:
+   :undoc-members:
 
 .. py:class:: Source
 
@@ -1075,10 +1269,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARDS
       :value: "DASHBOARDS"
 
+.. autoclass:: VolumesStorageInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: Webhook
    :members:
    :undoc-members:
 
 .. autoclass:: WebhookNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkloadType
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkspaceStorageInfo
    :members:
    :undoc-members:

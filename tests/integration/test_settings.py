@@ -1,7 +1,11 @@
+from databricks.sdk.settings.v2.client import WorkspaceConfClient
+
+
 def test_workspace_conf(w):
-    w.workspace_conf.set_status({"enableResultsDownloading": "false"})
-    conf = w.workspace_conf.get_status(keys="enableResultsDownloading")
+    wcc = WorkspaceConfClient(config=w)
+    wcc.set_status({"enableResultsDownloading": "false"})
+    conf = wcc.get_status(keys="enableResultsDownloading")
     assert conf["enableResultsDownloading"] == "false"
-    w.workspace_conf.set_status({"enableResultsDownloading": "true"})
-    conf = w.workspace_conf.get_status(keys="enableResultsDownloading")
+    wcc.set_status({"enableResultsDownloading": "true"})
+    conf = wcc.get_status(keys="enableResultsDownloading")
     assert conf["enableResultsDownloading"] == "true"

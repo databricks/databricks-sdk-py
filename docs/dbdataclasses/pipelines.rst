@@ -4,6 +4,49 @@ Delta Live Tables
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
+.. autoclass:: Adlsgen2Info
+   :members:
+   :undoc-members:
+
+.. autoclass:: AwsAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: AwsAvailability
+
+   Availability type used for all subsequent nodes past the `first_on_demand` ones.
+   Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+
+   .. py:attribute:: ON_DEMAND
+      :value: "ON_DEMAND"
+
+   .. py:attribute:: SPOT
+      :value: "SPOT"
+
+   .. py:attribute:: SPOT_WITH_FALLBACK
+      :value: "SPOT_WITH_FALLBACK"
+
+.. autoclass:: AzureAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: AzureAvailability
+
+   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+
+   .. py:attribute:: ON_DEMAND_AZURE
+      :value: "ON_DEMAND_AZURE"
+
+   .. py:attribute:: SPOT_AZURE
+      :value: "SPOT_AZURE"
+
+   .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
+      :value: "SPOT_WITH_FALLBACK_AZURE"
+
+.. autoclass:: ClusterLogConf
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreatePipeline
    :members:
    :undoc-members:
@@ -45,6 +88,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WEDNESDAY
       :value: "WEDNESDAY"
 
+.. autoclass:: DbfsStorageInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeletePipelineResponse
    :members:
    :undoc-members:
@@ -55,6 +102,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
+
+.. py:class:: EbsVolumeType
+
+   All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for details.
+
+   .. py:attribute:: GENERAL_PURPOSE_SSD
+      :value: "GENERAL_PURPOSE_SSD"
+
+   .. py:attribute:: THROUGHPUT_OPTIMIZED_HDD
+      :value: "THROUGHPUT_OPTIMIZED_HDD"
 
 .. autoclass:: EditPipeline
    :members:
@@ -84,11 +141,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WARN
       :value: "WARN"
 
+.. autoclass:: EventLogSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: FileLibrary
    :members:
    :undoc-members:
 
 .. autoclass:: Filters
+   :members:
+   :undoc-members:
+
+.. autoclass:: GcpAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: GcpAvailability
+
+   This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
+
+   .. py:attribute:: ON_DEMAND_GCP
+      :value: "ON_DEMAND_GCP"
+
+   .. py:attribute:: PREEMPTIBLE_GCP
+      :value: "PREEMPTIBLE_GCP"
+
+   .. py:attribute:: PREEMPTIBLE_WITH_FALLBACK_GCP
+      :value: "PREEMPTIBLE_WITH_FALLBACK_GCP"
+
+.. autoclass:: GcsStorageInfo
    :members:
    :undoc-members:
 
@@ -126,6 +208,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: InitScriptInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -135,6 +221,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUpdatesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: LocalFileInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogAnalyticsInfo
    :members:
    :undoc-members:
 
@@ -154,6 +248,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STABLE
       :value: "STABLE"
+
+.. autoclass:: MavenLibrary
+   :members:
+   :undoc-members:
 
 .. autoclass:: NotebookLibrary
    :members:
@@ -299,6 +397,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunAs
+   :members:
+   :undoc-members:
+
+.. autoclass:: S3StorageInfo
    :members:
    :undoc-members:
 
@@ -469,3 +571,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING_FOR_RESOURCES
       :value: "WAITING_FOR_RESOURCES"
+
+.. autoclass:: VolumesStorageInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkspaceStorageInfo
+   :members:
+   :undoc-members:

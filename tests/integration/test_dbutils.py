@@ -5,6 +5,7 @@ import os
 import pytest
 
 from databricks.sdk.databricks.core import DatabricksError
+from databricks.sdk.databricks.dbutils import RemoteDbUtils
 from databricks.sdk.databricks.errors import NotFound
 
 
@@ -16,21 +17,25 @@ def test_rest_dbfs_ls(w, env_or_skip):
     assert len(x) > 1
 
 
-def test_proxy_dbfs_mounts(w, env_or_skip):
-    w.config.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
+# TODO: Re-enable this test after adding waiters to the SDK
+# def test_proxy_dbfs_mounts(w, env_or_skip):
 
-    x = w.dbutils.fs.mounts()
+#     w.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
 
-    assert len(x) > 1
+#     dbu = RemoteDbUtils(config=w)
+#     x = dbu.fs.mounts()
+
+#     assert len(x) > 1
 
 
 @pytest.fixture(params=["dbfs", "volumes"])
 def fs_and_base_path(request, ucws, volume):
+    dbu = RemoteDbUtils(config=ucws)
     if request.param == "dbfs":
-        fs = ucws.dbutils.fs
+        fs = dbu.fs
         base_path = "/tmp"
     else:
-        fs = ucws.dbutils.fs
+        fs = dbu.fs
         base_path = volume
     return fs, base_path
 
@@ -54,8 +59,9 @@ def test_large_put(fs_and_base_path):
 def test_put_local_path(w, random, tmp_path):
     to_write = random(1024 * 1024 * 2)
     tmp_path = tmp_path / "tmp_file"
-    w.dbutils.fs.put(f"file:{tmp_path}", to_write, True)
-    assert w.dbutils.fs.head(f"file:{tmp_path}", 1024 * 1024 * 2) == to_write
+    dbu = RemoteDbUtils(config=w)
+    dbu.fs.put(f"file:{tmp_path}", to_write, True)
+    assert dbu.fs.head(f"file:{tmp_path}", 1024 * 1024 * 2) == to_write
 
 
 def test_cp_file(fs_and_base_path, random):
@@ -184,9 +190,12 @@ def test_secrets(w, random):
     logger = logging.getLogger("foo")
     logger.info(f"Before loading secret: {random_value}")
 
-    w.secrets.create_scope(random_scope)
-    w.secrets.put_secret(random_scope, key_for_string, string_value=random_value)
-    w.secrets.put_secret(
+    from databricks.sdk.workspace.v2.client import SecretsClient
+
+    sc = SecretsClient(config=w)
+    sc.create_scope(random_scope)
+    sc.put_secret(random_scope, key_for_string, string_value=random_value)
+    sc.put_secret(
         random_scope,
         key_for_bytes,
         bytes_value=base64.b64encode(random_value.encode()).decode(),

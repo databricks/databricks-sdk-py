@@ -1,6 +1,6 @@
 import pytest
 
-from databricks.sdk.mixins.compute import SemVer
+from databricks.sdk.compute.v2.mixin import SemVer
 
 
 @pytest.mark.parametrize(

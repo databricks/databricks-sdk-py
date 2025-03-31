@@ -66,6 +66,57 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
+    .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
+
+        Generate full query result download.
+
+        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
+        This call initiates a new SQL execution to generate the query result. The result is stored in an
+        external link can be retrieved using the [Get Download Full Query
+        Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks strongly recommends that
+        you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        
+
+    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, transient_statement_id: str) -> GenieGetDownloadFullQueryResultResponse
+
+        Get download full query result status.
+
+        Poll download progress and retrieve the SQL query result external link(s) upon completion. Warning:
+        Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS`
+        disposition. When you use the `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated,
+        which can be used to download the results directly from Amazon S3. As a short-lived access credential
+        is embedded in this presigned URL, you should protect the URL. Because presigned URLs are already
+        generated with embedded temporary access credentials, you must not set an Authorization header in the
+        download requests. See [Execute Statement](:method:statementexecution/executestatement) for more
+        details.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param transient_statement_id: str
+          Transient Statement ID. This ID is provided by the [Start Download
+          endpoint](:method:genie/startdownloadfullqueryresult)
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
+        
+
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
         Get conversation message.

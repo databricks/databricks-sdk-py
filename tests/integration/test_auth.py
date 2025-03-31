@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from databricks.sdk.service.compute import SparkVersion
-from databricks.sdk.service.jobs import ViewType
+from databricks.sdk.compute.v2 import compute
+from databricks.sdk.jobs.v2 import jobs
 
 
 @pytest.fixture
@@ -101,7 +101,7 @@ def fresh_wheel_file(tmp_path) -> Path:
 #         ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
 
 
-def _get_lts_versions(w) -> typing.List[SparkVersion]:
+def _get_lts_versions(w) -> typing.List[compute.SparkVersion]:
     v = w.clusters.spark_versions()
     lts_runtimes = [
         x
@@ -186,7 +186,7 @@ def _task_outputs(w, run):
         output = ""
         run_output = w.jobs.export_run(task_run.run_id)
         for view in run_output.views:
-            if view.type != ViewType.NOTEBOOK:
+            if view.type != jobs.ViewType.NOTEBOOK:
                 continue
             for b64 in notebook_model_re.findall(view.content):
                 url_encoded: bytes = base64.b64decode(b64)

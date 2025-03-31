@@ -1,5 +1,5 @@
 {
-  "mode": "py_v0",
+  "mode": "py_mod",
   "api_changelog": true,  
   "version": {
     "databricks/sdk/version.py": "__version__ = \"$VERSION\""

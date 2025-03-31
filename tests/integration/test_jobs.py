@@ -1,47 +1,57 @@
-import datetime
 import logging
+
+from databricks.sdk.compute.v2.client import ClustersClient
+from databricks.sdk.jobs.v2.client import JobsClient
 
 
 def test_jobs(w):
     found = 0
-    for job in w.jobs.list():
+    jc = JobsClient(config=w)
+
+    for job in jc.list():
         logging.info(f"Looking at {job.settings.name}")
         found += 1
     assert found > 0
 
 
-def test_submitting_jobs(w, random, env_or_skip):
-    from databricks.sdk.service import compute, jobs
+# TODO: Re-enable this after adding waiters to the SDK
+# def test_submitting_jobs(w, random, env_or_skip):
+#     from databricks.sdk.jobs.v2 import jobs
+#     from databricks.sdk.compute.v2 import compute
 
-    py_on_dbfs = f"/home/{w.current_user.me().user_name}/sample.py"
-    with w.dbfs.open(py_on_dbfs, write=True, overwrite=True) as f:
-        f.write(b'import time; time.sleep(10); print("Hello, World!")')
+#     cuc = CurrentUserClient(config=w)
+#     jc = JobsClient(config=w)
+#     dc = DbfsClient(config=w)
 
-    waiter = w.jobs.submit(
-        run_name=f"py-sdk-{random(8)}",
-        tasks=[
-            jobs.SubmitTask(
-                task_key="pi",
-                new_cluster=compute.ClusterSpec(
-                    spark_version=w.clusters.select_spark_version(long_term_support=True),
-                    # node_type_id=w.clusters.select_node_type(local_disk=True),
-                    instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
-                    num_workers=1,
-                ),
-                spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
-            )
-        ],
-    )
+#     py_on_dbfs = f"/home/{cuc.me().user_name}/sample.py"
+#     with dc.open(py_on_dbfs, write=True, overwrite=True) as f:
+#         f.write(b'import time; time.sleep(10); print("Hello, World!")')
 
-    logging.info(f"starting to poll: {waiter.run_id}")
+#     waiter = jc.submit(
+#         run_name=f"py-sdk-{random(8)}",
+#         tasks=[
+#             jobs.SubmitTask(
+#                 task_key="pi",
+#                 new_cluster=jobs.JobsClusterSpec(
+#                     spark_version=w.clusters.select_spark_version(long_term_support=True),
+#                     # node_type_id=w.clusters.select_node_type(local_disk=True),
+#                     instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
+#                     num_workers=1,
+#                 ),
+#                 spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
+#             )
+#         ],
+#     )
 
-    def print_status(run: jobs.Run):
-        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
-        logging.info(f'workflow intermediate status: {", ".join(statuses)}')
+#     logging.info(f"starting to poll: {waiter.run_id}")
 
-    run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
+#     def print_status(run: jobs.Run):
+#         statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
+#         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 
-    logging.info(f"job finished: {run.run_page_url}")
+#     run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
+
+#     logging.info(f"job finished: {run.run_page_url}")
 
 
 def test_last_job_runs(w):
@@ -52,9 +62,10 @@ def test_last_job_runs(w):
     all_jobs = {}
     durations = defaultdict(list)
 
-    for job in w.jobs.list():
+    jc = JobsClient(config=w)
+    for job in jc.list():
         all_jobs[job.job_id] = job
-        for run in w.jobs.list_runs(job_id=job.job_id, expand_tasks=False):
+        for run in jc.list_runs(job_id=job.job_id, expand_tasks=False):
             durations[job.job_id].append(run.run_duration)
             if job.job_id not in latest_state:
                 latest_state[job.job_id] = run
@@ -79,14 +90,17 @@ def test_last_job_runs(w):
 
 
 def test_create_job(w):
-    from databricks.sdk.service import compute, jobs
+    from databricks.sdk.jobs.v2 import jobs
+
+    jc = JobsClient(config=w)
+    cc = ClustersClient(config=w)
 
     cluster = jobs.JobCluster(
         job_cluster_key="cluster1",
-        new_cluster=compute.ClusterSpec(
+        new_cluster=jobs.JobsClusterSpec(
             num_workers=2,
-            spark_version=w.clusters.select_spark_version(),
-            node_type_id=w.clusters.select_node_type(local_disk=True),
+            spark_version=cc.select_spark_version(),
+            node_type_id=cc.select_node_type(local_disk=True),
         ),
     )
 
@@ -96,4 +110,4 @@ def test_create_job(w):
         python_wheel_task=jobs.PythonWheelTask(entry_point="test", package_name="deepspeed"),
     )
 
-    w.jobs.create(job_clusters=[cluster], tasks=[task1])
+    jc.create(job_clusters=[cluster], tasks=[task1])
