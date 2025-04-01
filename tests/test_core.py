@@ -19,7 +19,7 @@ from databricks.sdk.databricks.environments import (ENVIRONMENTS,
                                                     DatabricksEnvironment)
 from databricks.sdk.databricks.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
-from databricks.sdk.service.iam import AccessControlRequest
+from databricks.sdk.service.jobs import JobAccessControlRequest
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -287,9 +287,8 @@ def test_access_control_list(config, requests_mock):
         "http://localhost/api/2.2/jobs/create",
         request_headers={"User-Agent": config.user_agent},
     )
-
     w = WorkspaceClient(config=config)
-    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
+    res = w.jobs.create(access_control_list=[JobAccessControlRequest(group_name="group")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
