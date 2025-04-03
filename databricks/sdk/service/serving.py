@@ -4623,6 +4623,7 @@ class ServingEndpointsAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        response_format: Optional[dict] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
@@ -4898,6 +4899,7 @@ class ServingEndpointsDataPlaneAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        response_format: Optional[dict] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
