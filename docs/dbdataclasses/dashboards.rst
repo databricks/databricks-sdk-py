@@ -57,6 +57,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieGetMessageQueryResultResponse
    :members:
    :undoc-members:

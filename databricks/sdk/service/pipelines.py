@@ -58,6 +58,9 @@ class CreatePipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
 
@@ -136,6 +139,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -193,6 +198,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -240,6 +247,7 @@ class CreatePipeline:
             development=d.get("development", None),
             dry_run=d.get("dry_run", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -427,6 +435,9 @@ class EditPipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     expected_last_modified: Optional[int] = None
     """If present, the last-modified time of the pipeline settings before the edit. If the settings
     were modified after that time, then the request will fail with a conflict."""
@@ -510,6 +521,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -569,6 +582,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
             body["expected_last_modified"] = self.expected_last_modified
         if self.filters:
@@ -619,6 +634,7 @@ class EditPipeline:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             expected_last_modified=d.get("expected_last_modified", None),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -696,6 +712,47 @@ class EventLevel(Enum):
     INFO = "INFO"
     METRICS = "METRICS"
     WARN = "WARN"
+
+
+@dataclass
+class EventLogSpec:
+    """Configurable event log parameters."""
+
+    catalog: Optional[str] = None
+    """The UC catalog the event log is published under."""
+
+    name: Optional[str] = None
+    """The name the event log is published to in UC."""
+
+    schema: Optional[str] = None
+    """The UC schema the event log is published under."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EventLogSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EventLogSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EventLogSpec:
+        """Deserializes the EventLogSpec from a dictionary."""
+        return cls(catalog=d.get("catalog", None), name=d.get("name", None), schema=d.get("schema", None))
 
 
 @dataclass
@@ -2205,6 +2262,9 @@ class PipelineSpec:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    event_log: Optional[EventLogSpec] = None
+    """Event log configuration for this pipeline"""
+
     filters: Optional[Filters] = None
     """Filters on which Pipeline packages to include in the deployed graph."""
 
@@ -2271,6 +2331,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log.as_dict()
         if self.filters:
             body["filters"] = self.filters.as_dict()
         if self.gateway_definition:
@@ -2322,6 +2384,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.event_log:
+            body["event_log"] = self.event_log
         if self.filters:
             body["filters"] = self.filters
         if self.gateway_definition:
@@ -2365,6 +2429,7 @@ class PipelineSpec:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
             id=d.get("id", None),
@@ -3403,6 +3468,7 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         dry_run: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
         id: Optional[str] = None,
@@ -3447,6 +3513,8 @@ class PipelinesAPI:
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
@@ -3510,6 +3578,8 @@ class PipelinesAPI:
             body["dry_run"] = dry_run
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if filters is not None:
             body["filters"] = filters.as_dict()
         if gateway_definition is not None:
@@ -3903,6 +3973,7 @@ class PipelinesAPI:
         deployment: Optional[PipelineDeployment] = None,
         development: Optional[bool] = None,
         edition: Optional[str] = None,
+        event_log: Optional[EventLogSpec] = None,
         expected_last_modified: Optional[int] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
@@ -3948,6 +4019,8 @@ class PipelinesAPI:
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
           If present, the last-modified time of the pipeline settings before the edit. If the settings were
           modified after that time, then the request will fail with a conflict.
@@ -4012,6 +4085,8 @@ class PipelinesAPI:
             body["development"] = development
         if edition is not None:
             body["edition"] = edition
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
             body["expected_last_modified"] = expected_last_modified
         if filters is not None:

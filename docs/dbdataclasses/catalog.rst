@@ -130,6 +130,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DELTASHARING_CATALOG
       :value: "DELTASHARING_CATALOG"
 
+   .. py:attribute:: FOREIGN_CATALOG
+      :value: "FOREIGN_CATALOG"
+
    .. py:attribute:: MANAGED_CATALOG
       :value: "MANAGED_CATALOG"
 
@@ -1022,6 +1025,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: APPLY_TAG
       :value: "APPLY_TAG"
+
+   .. py:attribute:: BROWSE
+      :value: "BROWSE"
 
    .. py:attribute:: CREATE
       :value: "CREATE"

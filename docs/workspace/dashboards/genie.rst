@@ -66,6 +66,25 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
+    .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
+
+        Generate full query result download.
+
+        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
+        This call initiates a new SQL execution to generate the query result.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        
+
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
         Get conversation message.

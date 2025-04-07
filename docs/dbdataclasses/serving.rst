@@ -406,6 +406,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadType
 
+   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
+
    .. py:attribute:: CPU
       :value: "CPU"
 
@@ -511,6 +513,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ServingModelWorkloadType
+
+   Please keep this in sync with with workload types in InferenceEndpointEntities.scala
 
    .. py:attribute:: CPU
       :value: "CPU"
