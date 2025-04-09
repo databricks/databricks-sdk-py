@@ -15,6 +15,87 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class AuthorizationDetails:
+    grant_rules: Optional[List[AuthorizationDetailsGrantRule]] = None
+    """Represents downscoped permission rules with specific access rights. This field is specific to
+    `workspace_rule_set` constraint."""
+
+    resource_legacy_acl_path: Optional[str] = None
+    """The acl path of the tree store resource resource."""
+
+    resource_name: Optional[str] = None
+    """The resource name to which the authorization rule applies. This field is specific to
+    `workspace_rule_set` constraint. Format: `workspaces/{workspace_id}/dashboards/{dashboard_id}`"""
+
+    type: Optional[str] = None
+    """The type of authorization downscoping policy. Ex: `workspace_rule_set` defines access rules for
+    a specific workspace resource"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthorizationDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.grant_rules:
+            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
+        if self.resource_legacy_acl_path is not None:
+            body["resource_legacy_acl_path"] = self.resource_legacy_acl_path
+        if self.resource_name is not None:
+            body["resource_name"] = self.resource_name
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthorizationDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.grant_rules:
+            body["grant_rules"] = self.grant_rules
+        if self.resource_legacy_acl_path is not None:
+            body["resource_legacy_acl_path"] = self.resource_legacy_acl_path
+        if self.resource_name is not None:
+            body["resource_name"] = self.resource_name
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthorizationDetails:
+        """Deserializes the AuthorizationDetails from a dictionary."""
+        return cls(
+            grant_rules=_repeated_dict(d, "grant_rules", AuthorizationDetailsGrantRule),
+            resource_legacy_acl_path=d.get("resource_legacy_acl_path", None),
+            resource_name=d.get("resource_name", None),
+            type=d.get("type", None),
+        )
+
+
+@dataclass
+class AuthorizationDetailsGrantRule:
+    permission_set: Optional[str] = None
+    """Permission sets for dashboard are defined in
+    iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets Ex:
+    `permissionSets/dashboard.runner`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthorizationDetailsGrantRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthorizationDetailsGrantRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthorizationDetailsGrantRule:
+        """Deserializes the AuthorizationDetailsGrantRule from a dictionary."""
+        return cls(permission_set=d.get("permission_set", None))
+
+
+@dataclass
 class BaseChunkInfo:
     """Describes metadata for a particular chunk, within a result set; this structure is used both
     within a manifest, and when fetching individual chunk data or links."""
@@ -1262,6 +1343,52 @@ class GetPublishedDashboardEmbeddedResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
         """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class GetPublishedDashboardTokenInfoResponse:
+    authorization_details: Optional[List[AuthorizationDetails]] = None
+    """Authorization constraints for accessing the published dashboard. Currently includes
+    `workspace_rule_set` and could be enriched with `unity_catalog_privileges` before oAuth token
+    generation."""
+
+    custom_claim: Optional[str] = None
+    """Custom claim generated from external_value and external_viewer_id. Format:
+    `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`"""
+
+    scope: Optional[str] = None
+    """Scope defining access permissions."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardTokenInfoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authorization_details:
+            body["authorization_details"] = [v.as_dict() for v in self.authorization_details]
+        if self.custom_claim is not None:
+            body["custom_claim"] = self.custom_claim
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardTokenInfoResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authorization_details:
+            body["authorization_details"] = self.authorization_details
+        if self.custom_claim is not None:
+            body["custom_claim"] = self.custom_claim
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardTokenInfoResponse:
+        """Deserializes the GetPublishedDashboardTokenInfoResponse from a dictionary."""
+        return cls(
+            authorization_details=_repeated_dict(d, "authorization_details", AuthorizationDetails),
+            custom_claim=d.get("custom_claim", None),
+            scope=d.get("scope", None),
+        )
 
 
 class LifecycleState(Enum):
@@ -3369,6 +3496,42 @@ class LakeviewEmbeddedAPI:
         }
 
         self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
+
+    def get_published_dashboard_token_info(
+        self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
+    ) -> GetPublishedDashboardTokenInfoResponse:
+        """Read an information of a published dashboard to mint an OAuth token.
+
+        Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
+        `authorization_details` can be enriched to apply additional restriction.
+
+        Example: Adding the following `authorization_details` object to downscope the viewer permission to
+        specific table ``` { type: "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
+        object_full_path: "main.default.testdata" } ```
+
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+        :param external_value: str (optional)
+          Provided external value to be included in the custom claim.
+        :param external_viewer_id: str (optional)
+          Provided external viewer id to be included in the custom claim.
+
+        :returns: :class:`GetPublishedDashboardTokenInfoResponse`
+        """
+
+        query = {}
+        if external_value is not None:
+            query["external_value"] = external_value
+        if external_viewer_id is not None:
+            query["external_viewer_id"] = external_viewer_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers
+        )
+        return GetPublishedDashboardTokenInfoResponse.from_dict(res)
 
 
 class QueryExecutionAPI:

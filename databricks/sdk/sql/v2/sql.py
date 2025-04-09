@@ -5190,6 +5190,11 @@ class QueryInfo:
     channel_used: Optional[ChannelInfo] = None
     """SQL Warehouse channel information at the time of query execution"""
 
+    client_application: Optional[str] = None
+    """Client application that ran the statement. For example: Databricks SQL Editor, Tableau, and
+    Power BI. This field is derived from information provided by client applications. While values
+    are expected to remain static over time, this cannot be guaranteed."""
+
     duration: Optional[int] = None
     """Total execution time of the statement ( excluding result fetch time )."""
 
@@ -5267,6 +5272,8 @@ class QueryInfo:
         body = {}
         if self.channel_used:
             body["channel_used"] = self.channel_used.as_dict()
+        if self.client_application is not None:
+            body["client_application"] = self.client_application
         if self.duration is not None:
             body["duration"] = self.duration
         if self.endpoint_id is not None:
@@ -5318,6 +5325,8 @@ class QueryInfo:
         body = {}
         if self.channel_used:
             body["channel_used"] = self.channel_used
+        if self.client_application is not None:
+            body["client_application"] = self.client_application
         if self.duration is not None:
             body["duration"] = self.duration
         if self.endpoint_id is not None:
@@ -5369,6 +5378,7 @@ class QueryInfo:
         """Deserializes the QueryInfo from a dictionary."""
         return cls(
             channel_used=_from_dict(d, "channel_used", ChannelInfo),
+            client_application=d.get("client_application", None),
             duration=d.get("duration", None),
             endpoint_id=d.get("endpoint_id", None),
             error_message=d.get("error_message", None),

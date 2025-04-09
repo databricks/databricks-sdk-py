@@ -1086,6 +1086,8 @@ class ColumnTypeName(Enum):
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
     FLOAT = "FLOAT"
+    GEOGRAPHY = "GEOGRAPHY"
+    GEOMETRY = "GEOMETRY"
     INT = "INT"
     INTERVAL = "INTERVAL"
     LONG = "LONG"

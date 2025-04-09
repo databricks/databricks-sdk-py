@@ -267,6 +267,109 @@ class ApproveTransitionRequestResponse:
         return cls(activity=_from_dict(d, "activity", Activity))
 
 
+@dataclass
+class ArtifactCredentialInfo:
+    headers: Optional[List[ArtifactCredentialInfoHttpHeader]] = None
+    """A collection of HTTP headers that should be specified when uploading to or downloading from the
+    specified `signed_uri`."""
+
+    path: Optional[str] = None
+    """The path, relative to the Run's artifact root location, of the artifact that can be accessed
+    with the credential."""
+
+    run_id: Optional[str] = None
+    """The ID of the MLflow Run containing the artifact that can be accessed with the credential."""
+
+    signed_uri: Optional[str] = None
+    """The signed URI credential that provides access to the artifact."""
+
+    type: Optional[ArtifactCredentialType] = None
+    """The type of the signed credential URI (e.g., an AWS presigned URL or an Azure Shared Access
+    Signature URI)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.headers:
+            body["headers"] = [v.as_dict() for v in self.headers]
+        if self.path is not None:
+            body["path"] = self.path
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.signed_uri is not None:
+            body["signed_uri"] = self.signed_uri
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.headers:
+            body["headers"] = self.headers
+        if self.path is not None:
+            body["path"] = self.path
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.signed_uri is not None:
+            body["signed_uri"] = self.signed_uri
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfo:
+        """Deserializes the ArtifactCredentialInfo from a dictionary."""
+        return cls(
+            headers=_repeated_dict(d, "headers", ArtifactCredentialInfoHttpHeader),
+            path=d.get("path", None),
+            run_id=d.get("run_id", None),
+            signed_uri=d.get("signed_uri", None),
+            type=_enum(d, "type", ArtifactCredentialType),
+        )
+
+
+@dataclass
+class ArtifactCredentialInfoHttpHeader:
+    name: Optional[str] = None
+    """The HTTP header name."""
+
+    value: Optional[str] = None
+    """The HTTP header value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfoHttpHeader into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfoHttpHeader into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfoHttpHeader:
+        """Deserializes the ArtifactCredentialInfoHttpHeader from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+class ArtifactCredentialType(Enum):
+    """The type of a given artifact access credential"""
+
+    AWS_PRESIGNED_URL = "AWS_PRESIGNED_URL"
+    AZURE_ADLS_GEN2_SAS_URI = "AZURE_ADLS_GEN2_SAS_URI"
+    AZURE_SAS_URI = "AZURE_SAS_URI"
+    GCP_SIGNED_URL = "GCP_SIGNED_URL"
+
+
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
     `EDIT_COMMENT`: Edit the comment
@@ -513,6 +616,13 @@ class CreateForecastingExperimentRequest:
     holiday_regions: Optional[List[str]] = None
     """The region code(s) to automatically add holiday features. Currently supports only one region."""
 
+    include_features: Optional[List[str]] = None
+    """Specifies the list of feature columns to include in model training. These columns must exist in
+    the training data and be of type string, numerical, or boolean. If not specified, no additional
+    features will be included. Note: Certain columns are automatically handled: - Automatically
+    excluded: split_column, target_column, custom_weights_column. - Automatically included:
+    time_column."""
+
     max_runtime: Optional[int] = None
     """The maximum duration for the experiment in minutes. The experiment stops automatically if it
     exceeds this limit."""
@@ -553,6 +663,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
             body["holiday_regions"] = [v for v in self.holiday_regions]
+        if self.include_features:
+            body["include_features"] = [v for v in self.include_features]
         if self.max_runtime is not None:
             body["max_runtime"] = self.max_runtime
         if self.prediction_data_path is not None:
@@ -588,6 +700,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
             body["holiday_regions"] = self.holiday_regions
+        if self.include_features:
+            body["include_features"] = self.include_features
         if self.max_runtime is not None:
             body["max_runtime"] = self.max_runtime
         if self.prediction_data_path is not None:
@@ -619,6 +733,7 @@ class CreateForecastingExperimentRequest:
             forecast_granularity=d.get("forecast_granularity", None),
             forecast_horizon=d.get("forecast_horizon", None),
             holiday_regions=d.get("holiday_regions", None),
+            include_features=d.get("include_features", None),
             max_runtime=d.get("max_runtime", None),
             prediction_data_path=d.get("prediction_data_path", None),
             primary_metric=d.get("primary_metric", None),
@@ -2030,6 +2145,56 @@ class ForecastingExperimentState(Enum):
 
 
 @dataclass
+class GetCredentialsForTraceDataDownloadResponse:
+    credential_info: Optional[ArtifactCredentialInfo] = None
+    """The artifact download credentials for the specified trace data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataDownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataDownloadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataDownloadResponse:
+        """Deserializes the GetCredentialsForTraceDataDownloadResponse from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
+
+
+@dataclass
+class GetCredentialsForTraceDataUploadResponse:
+    credential_info: Optional[ArtifactCredentialInfo] = None
+    """The artifact upload credentials for the specified trace data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataUploadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataUploadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataUploadResponse:
+        """Deserializes the GetCredentialsForTraceDataUploadResponse from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
+
+
+@dataclass
 class GetExperimentByNameResponse:
     experiment: Optional[Experiment] = None
     """Experiment details."""
@@ -2990,38 +3155,6 @@ class LogModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> LogModelResponse:
         """Deserializes the LogModelResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class LogOutputsRequest:
-    run_id: str
-    """The ID of the Run from which to log outputs."""
-
-    models: Optional[List[ModelOutput]] = None
-    """The model outputs from the Run."""
-
-    def as_dict(self) -> dict:
-        """Serializes the LogOutputsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.models:
-            body["models"] = [v.as_dict() for v in self.models]
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LogOutputsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.models:
-            body["models"] = self.models
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LogOutputsRequest:
-        """Deserializes the LogOutputsRequest from a dictionary."""
-        return cls(models=_repeated_dict(d, "models", ModelOutput), run_id=d.get("run_id", None))
 
 
 @dataclass
@@ -6238,6 +6371,38 @@ class ExperimentsAPI:
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
 
+    def get_credentials_for_trace_data_download(self, request_id: str) -> GetCredentialsForTraceDataDownloadResponse:
+        """Get credentials to download trace data.
+
+        :param request_id: str
+          The ID of the trace to fetch artifact download credentials for.
+
+        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-download", headers=headers)
+        return GetCredentialsForTraceDataDownloadResponse.from_dict(res)
+
+    def get_credentials_for_trace_data_upload(self, request_id: str) -> GetCredentialsForTraceDataUploadResponse:
+        """Get credentials to upload trace data.
+
+        :param request_id: str
+          The ID of the trace to fetch artifact upload credentials for.
+
+        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-upload", headers=headers)
+        return GetCredentialsForTraceDataUploadResponse.from_dict(res)
+
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
 
@@ -7119,6 +7284,7 @@ class ForecastingAPI:
         custom_weights_column: Optional[str] = None,
         experiment_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
+        include_features: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
         prediction_data_path: Optional[str] = None,
         primary_metric: Optional[str] = None,
@@ -7152,6 +7318,11 @@ class ForecastingAPI:
           The path in the workspace to store the created experiment.
         :param holiday_regions: List[str] (optional)
           The region code(s) to automatically add holiday features. Currently supports only one region.
+        :param include_features: List[str] (optional)
+          Specifies the list of feature columns to include in model training. These columns must exist in the
+          training data and be of type string, numerical, or boolean. If not specified, no additional features
+          will be included. Note: Certain columns are automatically handled: - Automatically excluded:
+          split_column, target_column, custom_weights_column. - Automatically included: time_column.
         :param max_runtime: int (optional)
           The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds
           this limit.
@@ -7187,6 +7358,8 @@ class ForecastingAPI:
             body["forecast_horizon"] = forecast_horizon
         if holiday_regions is not None:
             body["holiday_regions"] = [v for v in holiday_regions]
+        if include_features is not None:
+            body["include_features"] = [v for v in include_features]
         if max_runtime is not None:
             body["max_runtime"] = max_runtime
         if prediction_data_path is not None:

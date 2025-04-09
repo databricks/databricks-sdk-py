@@ -42,6 +42,12 @@ class Adlsgen2Info:
         return cls(destination=d.get("destination", None))
 
 
+class AuthenticationMethod(Enum):
+
+    OAUTH = "OAUTH"
+    PAT = "PAT"
+
+
 @dataclass
 class AutoScale:
     max_workers: Optional[int] = None
@@ -409,9 +415,9 @@ class BaseRun:
     """Description of the run"""
 
     effective_performance_target: Optional[PerformanceTarget] = None
-    """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from the client-set performance_target depending on if
-    the job was eligible to be cost-optimized."""
+    """The actual performance target used by the serverless run during execution. This can differ from
+    the client-set performance target on the request depending on whether the performance mode is
+    supported by the job type."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -1159,8 +1165,6 @@ class ClusterSpec:
 
 @dataclass
 class ComputeConfig:
-    """Next field: 4"""
-
     num_gpus: int
     """Number of GPUs."""
 
@@ -1382,8 +1386,8 @@ class CreateJob:
     """Job-level parameter definitions"""
 
     performance_target: Optional[PerformanceTarget] = None
-    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-    should be."""
+    """The performance mode on a serverless job. The performance target determines the level of compute
+    performance or cost-efficiency for the run."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -1635,6 +1639,107 @@ class CronSchedule:
             quartz_cron_expression=d.get("quartz_cron_expression", None),
             timezone_id=d.get("timezone_id", None),
         )
+
+
+@dataclass
+class DashboardPageSnapshot:
+    page_display_name: Optional[str] = None
+
+    widget_error_details: Optional[List[WidgetErrorDetail]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardPageSnapshot into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_display_name is not None:
+            body["page_display_name"] = self.page_display_name
+        if self.widget_error_details:
+            body["widget_error_details"] = [v.as_dict() for v in self.widget_error_details]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardPageSnapshot into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_display_name is not None:
+            body["page_display_name"] = self.page_display_name
+        if self.widget_error_details:
+            body["widget_error_details"] = self.widget_error_details
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardPageSnapshot:
+        """Deserializes the DashboardPageSnapshot from a dictionary."""
+        return cls(
+            page_display_name=d.get("page_display_name", None),
+            widget_error_details=_repeated_dict(d, "widget_error_details", WidgetErrorDetail),
+        )
+
+
+@dataclass
+class DashboardTask:
+    """Configures the Lakeview Dashboard job task type."""
+
+    dashboard_id: Optional[str] = None
+
+    subscription: Optional[Subscription] = None
+
+    warehouse_id: Optional[str] = None
+    """The warehouse id to execute the dashboard with for the schedule"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.subscription:
+            body["subscription"] = self.subscription.as_dict()
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.subscription:
+            body["subscription"] = self.subscription
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardTask:
+        """Deserializes the DashboardTask from a dictionary."""
+        return cls(
+            dashboard_id=d.get("dashboard_id", None),
+            subscription=_from_dict(d, "subscription", Subscription),
+            warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+@dataclass
+class DashboardTaskOutput:
+    page_snapshots: Optional[List[DashboardPageSnapshot]] = None
+    """Should only be populated for manual PDF download jobs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.page_snapshots:
+            body["page_snapshots"] = [v.as_dict() for v in self.page_snapshots]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DashboardTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.page_snapshots:
+            body["page_snapshots"] = self.page_snapshots
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DashboardTaskOutput:
+        """Deserializes the DashboardTaskOutput from a dictionary."""
+        return cls(page_snapshots=_repeated_dict(d, "page_snapshots", DashboardPageSnapshot))
 
 
 class DataSecurityMode(Enum):
@@ -2130,6 +2235,10 @@ class Environment:
     Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
     /Workspace/test/requirements.txt"]"""
 
+    jar_dependencies: Optional[List[str]] = None
+    """List of jar dependencies, should be string representing volume paths. For example:
+    `/Volumes/path/to/test.jar`."""
+
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2137,6 +2246,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.jar_dependencies:
+            body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2146,12 +2257,18 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.jar_dependencies:
+            body["jar_dependencies"] = self.jar_dependencies
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
-        return cls(client=d.get("client", None), dependencies=d.get("dependencies", None))
+        return cls(
+            client=d.get("client", None),
+            dependencies=d.get("dependencies", None),
+            jar_dependencies=d.get("jar_dependencies", None),
+        )
 
 
 @dataclass
@@ -2544,8 +2661,6 @@ class GcsStorageInfo:
 
 @dataclass
 class GenAiComputeTask:
-    """Next field: 9"""
-
     dl_runtime_image: str
     """Runtime image"""
 
@@ -2553,7 +2668,6 @@ class GenAiComputeTask:
     """Command launcher to run the actual script, e.g. bash, python etc."""
 
     compute: Optional[ComputeConfig] = None
-    """Next field: 4"""
 
     mlflow_experiment_name: Optional[str] = None
     """Optional string containing the name of the MLflow experiment to log the run to. If name is not
@@ -3747,8 +3861,8 @@ class JobSettings:
     """Job-level parameter definitions"""
 
     performance_target: Optional[PerformanceTarget] = None
-    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-    should be."""
+    """The performance mode on a serverless job. The performance target determines the level of compute
+    performance or cost-efficiency for the run."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -4976,9 +5090,9 @@ class PerformanceTarget(Enum):
     on serverless compute should be. The performance mode on the job or pipeline should map to a
     performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
 
-    BALANCED = "BALANCED"
     COST_OPTIMIZED = "COST_OPTIMIZED"
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
+    STANDARD = "STANDARD"
 
 
 @dataclass
@@ -5075,6 +5189,175 @@ class PipelineTask:
     def from_dict(cls, d: Dict[str, Any]) -> PipelineTask:
         """Deserializes the PipelineTask from a dictionary."""
         return cls(full_refresh=d.get("full_refresh", None), pipeline_id=d.get("pipeline_id", None))
+
+
+@dataclass
+class PowerBiModel:
+    authentication_method: Optional[AuthenticationMethod] = None
+    """How the published Power BI model authenticates to Databricks"""
+
+    model_name: Optional[str] = None
+    """The name of the Power BI model"""
+
+    overwrite_existing: Optional[bool] = None
+    """Whether to overwrite existing Power BI models"""
+
+    storage_mode: Optional[StorageMode] = None
+    """The default storage mode of the Power BI model"""
+
+    workspace_name: Optional[str] = None
+    """The name of the Power BI workspace of the model"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PowerBiModel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authentication_method is not None:
+            body["authentication_method"] = self.authentication_method.value
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.overwrite_existing is not None:
+            body["overwrite_existing"] = self.overwrite_existing
+        if self.storage_mode is not None:
+            body["storage_mode"] = self.storage_mode.value
+        if self.workspace_name is not None:
+            body["workspace_name"] = self.workspace_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PowerBiModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authentication_method is not None:
+            body["authentication_method"] = self.authentication_method
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.overwrite_existing is not None:
+            body["overwrite_existing"] = self.overwrite_existing
+        if self.storage_mode is not None:
+            body["storage_mode"] = self.storage_mode
+        if self.workspace_name is not None:
+            body["workspace_name"] = self.workspace_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PowerBiModel:
+        """Deserializes the PowerBiModel from a dictionary."""
+        return cls(
+            authentication_method=_enum(d, "authentication_method", AuthenticationMethod),
+            model_name=d.get("model_name", None),
+            overwrite_existing=d.get("overwrite_existing", None),
+            storage_mode=_enum(d, "storage_mode", StorageMode),
+            workspace_name=d.get("workspace_name", None),
+        )
+
+
+@dataclass
+class PowerBiTable:
+    catalog: Optional[str] = None
+    """The catalog name in Databricks"""
+
+    name: Optional[str] = None
+    """The table name in Databricks"""
+
+    schema: Optional[str] = None
+    """The schema name in Databricks"""
+
+    storage_mode: Optional[StorageMode] = None
+    """The Power BI storage mode of the table"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PowerBiTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.storage_mode is not None:
+            body["storage_mode"] = self.storage_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PowerBiTable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None:
+            body["catalog"] = self.catalog
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema is not None:
+            body["schema"] = self.schema
+        if self.storage_mode is not None:
+            body["storage_mode"] = self.storage_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PowerBiTable:
+        """Deserializes the PowerBiTable from a dictionary."""
+        return cls(
+            catalog=d.get("catalog", None),
+            name=d.get("name", None),
+            schema=d.get("schema", None),
+            storage_mode=_enum(d, "storage_mode", StorageMode),
+        )
+
+
+@dataclass
+class PowerBiTask:
+    connection_resource_name: Optional[str] = None
+    """The resource name of the UC connection to authenticate from Databricks to Power BI"""
+
+    power_bi_model: Optional[PowerBiModel] = None
+    """The semantic model to update"""
+
+    refresh_after_update: Optional[bool] = None
+    """Whether the model should be refreshed after the update"""
+
+    tables: Optional[List[PowerBiTable]] = None
+    """The tables to be exported to Power BI"""
+
+    warehouse_id: Optional[str] = None
+    """The SQL warehouse ID to use as the Power BI data source"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PowerBiTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.power_bi_model:
+            body["power_bi_model"] = self.power_bi_model.as_dict()
+        if self.refresh_after_update is not None:
+            body["refresh_after_update"] = self.refresh_after_update
+        if self.tables:
+            body["tables"] = [v.as_dict() for v in self.tables]
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PowerBiTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.power_bi_model:
+            body["power_bi_model"] = self.power_bi_model
+        if self.refresh_after_update is not None:
+            body["refresh_after_update"] = self.refresh_after_update
+        if self.tables:
+            body["tables"] = self.tables
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PowerBiTask:
+        """Deserializes the PowerBiTask from a dictionary."""
+        return cls(
+            connection_resource_name=d.get("connection_resource_name", None),
+            power_bi_model=_from_dict(d, "power_bi_model", PowerBiModel),
+            refresh_after_update=d.get("refresh_after_update", None),
+            tables=_repeated_dict(d, "tables", PowerBiTable),
+            warehouse_id=d.get("warehouse_id", None),
+        )
 
 
 @dataclass
@@ -5924,9 +6207,9 @@ class Run:
     """Description of the run"""
 
     effective_performance_target: Optional[PerformanceTarget] = None
-    """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from the client-set performance_target depending on if
-    the job was eligible to be cost-optimized."""
+    """The actual performance target used by the serverless run during execution. This can differ from
+    the client-set performance target on the request depending on whether the performance mode is
+    supported by the job type."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -6648,9 +6931,9 @@ class RunNow:
     job will be run."""
 
     performance_target: Optional[PerformanceTarget] = None
-    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-    compute should be. For RunNow, this performance target will override the target defined on the
-    job-level."""
+    """The performance mode on a serverless job. The performance target determines the level of compute
+    performance or cost-efficiency for the run. This field overrides the performance target defined
+    on the job-level."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -6825,6 +7108,9 @@ class RunOutput:
     clean_rooms_notebook_output: Optional[CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput] = None
     """The output of a clean rooms notebook task, if available"""
 
+    dashboard_output: Optional[DashboardTaskOutput] = None
+    """The output of a dashboard task, if available"""
+
     dbt_output: Optional[DbtOutput] = None
     """The output of a dbt task, if available."""
 
@@ -6871,6 +7157,8 @@ class RunOutput:
         body = {}
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output.as_dict()
+        if self.dashboard_output:
+            body["dashboard_output"] = self.dashboard_output.as_dict()
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output.as_dict()
         if self.error is not None:
@@ -6898,6 +7186,8 @@ class RunOutput:
         body = {}
         if self.clean_rooms_notebook_output:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output
+        if self.dashboard_output:
+            body["dashboard_output"] = self.dashboard_output
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output
         if self.error is not None:
@@ -6927,6 +7217,7 @@ class RunOutput:
             clean_rooms_notebook_output=_from_dict(
                 d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
             ),
+            dashboard_output=_from_dict(d, "dashboard_output", DashboardTaskOutput),
             dbt_output=_from_dict(d, "dbt_output", DbtOutput),
             error=d.get("error", None),
             error_trace=d.get("error_trace", None),
@@ -7242,6 +7533,9 @@ class RunTask:
     `condition_task` field is present. The condition task does not require a cluster to execute and
     does not support retries or notifications."""
 
+    dashboard_task: Optional[DashboardTask] = None
+    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -7255,13 +7549,12 @@ class RunTask:
     """An optional description for this task."""
 
     disabled: Optional[bool] = None
-    """Denotes whether or not the task was disabled by the user. Disabled tasks do not execute and are
-    immediately skipped as soon as they are unblocked."""
+    """Deprecated, field was never used in production."""
 
     effective_performance_target: Optional[PerformanceTarget] = None
-    """effective_performance_target is the actual performance target used by the run during execution.
-    effective_performance_target can differ from the client-set performance_target depending on if
-    the job was eligible to be cost-optimized."""
+    """The actual performance target used by the serverless run during execution. This can differ from
+    the client-set performance target on the request depending on whether the performance mode is
+    supported by the job type."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -7292,7 +7585,6 @@ class RunTask:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-    """Next field: 9"""
 
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
@@ -7323,6 +7615,9 @@ class RunTask:
     pipeline_task: Optional[PipelineTask] = None
     """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
     configured to use triggered more are supported."""
+
+    power_bi_task: Optional[PowerBiTask] = None
+    """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
@@ -7415,6 +7710,8 @@ class RunTask:
             body["cluster_instance"] = self.cluster_instance.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -7453,6 +7750,8 @@ class RunTask:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task.as_dict()
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.queue_duration is not None:
@@ -7506,6 +7805,8 @@ class RunTask:
             body["cluster_instance"] = self.cluster_instance
         if self.condition_task:
             body["condition_task"] = self.condition_task
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -7544,6 +7845,8 @@ class RunTask:
             body["notification_settings"] = self.notification_settings
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.queue_duration is not None:
@@ -7593,6 +7896,7 @@ class RunTask:
             cleanup_duration=d.get("cleanup_duration", None),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
+            dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -7612,6 +7916,7 @@ class RunTask:
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
+            power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             queue_duration=d.get("queue_duration", None),
             resolved_values=_from_dict(d, "resolved_values", ResolvedValues),
@@ -8506,6 +8811,13 @@ class SqlTaskSubscription:
         return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
 
 
+class StorageMode(Enum):
+
+    DIRECT_QUERY = "DIRECT_QUERY"
+    DUAL = "DUAL"
+    IMPORT = "IMPORT"
+
+
 @dataclass
 class SubmitRun:
     access_control_list: Optional[List[JobAccessControlRequest]] = None
@@ -8701,6 +9013,9 @@ class SubmitTask:
     `condition_task` field is present. The condition task does not require a cluster to execute and
     does not support retries or notifications."""
 
+    dashboard_task: Optional[DashboardTask] = None
+    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -8731,7 +9046,6 @@ class SubmitTask:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-    """Next field: 9"""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -8753,6 +9067,9 @@ class SubmitTask:
     pipeline_task: Optional[PipelineTask] = None
     """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
     configured to use triggered more are supported."""
+
+    power_bi_task: Optional[PowerBiTask] = None
+    """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
@@ -8807,6 +9124,8 @@ class SubmitTask:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -8835,6 +9154,8 @@ class SubmitTask:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task.as_dict()
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.run_if is not None:
@@ -8864,6 +9185,8 @@ class SubmitTask:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
         if self.condition_task:
             body["condition_task"] = self.condition_task
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -8892,6 +9215,8 @@ class SubmitTask:
             body["notification_settings"] = self.notification_settings
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.run_if is not None:
@@ -8920,6 +9245,7 @@ class SubmitTask:
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
+            dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -8934,6 +9260,7 @@ class SubmitTask:
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
+            power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             run_if=_enum(d, "run_if", RunIf),
             run_job_task=_from_dict(d, "run_job_task", RunJobTask),
@@ -8945,6 +9272,78 @@ class SubmitTask:
             timeout_seconds=d.get("timeout_seconds", None),
             webhook_notifications=_from_dict(d, "webhook_notifications", WebhookNotifications),
         )
+
+
+@dataclass
+class Subscription:
+    custom_subject: Optional[str] = None
+    """Optional: Allows users to specify a custom subject line on the email sent to subscribers."""
+
+    paused: Optional[bool] = None
+    """When true, the subscription will not send emails."""
+
+    subscribers: Optional[List[SubscriptionSubscriber]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Subscription into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_subject is not None:
+            body["custom_subject"] = self.custom_subject
+        if self.paused is not None:
+            body["paused"] = self.paused
+        if self.subscribers:
+            body["subscribers"] = [v.as_dict() for v in self.subscribers]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_subject is not None:
+            body["custom_subject"] = self.custom_subject
+        if self.paused is not None:
+            body["paused"] = self.paused
+        if self.subscribers:
+            body["subscribers"] = self.subscribers
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Subscription:
+        """Deserializes the Subscription from a dictionary."""
+        return cls(
+            custom_subject=d.get("custom_subject", None),
+            paused=d.get("paused", None),
+            subscribers=_repeated_dict(d, "subscribers", SubscriptionSubscriber),
+        )
+
+
+@dataclass
+class SubscriptionSubscriber:
+    destination_id: Optional[str] = None
+
+    user_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriber into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriber into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionSubscriber:
+        """Deserializes the SubscriptionSubscriber from a dictionary."""
+        return cls(destination_id=d.get("destination_id", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -9019,6 +9418,9 @@ class Task:
     `condition_task` field is present. The condition task does not require a cluster to execute and
     does not support retries or notifications."""
 
+    dashboard_task: Optional[DashboardTask] = None
+    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -9053,7 +9455,6 @@ class Task:
     present."""
 
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
-    """Next field: 9"""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -9089,6 +9490,9 @@ class Task:
     pipeline_task: Optional[PipelineTask] = None
     """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
     configured to use triggered more are supported."""
+
+    power_bi_task: Optional[PowerBiTask] = None
+    """The task triggers a Power BI semantic model update when the `power_bi_task` field is present."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
@@ -9150,6 +9554,8 @@ class Task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -9186,6 +9592,8 @@ class Task:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task.as_dict()
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
         if self.retry_on_timeout is not None:
@@ -9217,6 +9625,8 @@ class Task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
         if self.condition_task:
             body["condition_task"] = self.condition_task
+        if self.dashboard_task:
+            body["dashboard_task"] = self.dashboard_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -9253,6 +9663,8 @@ class Task:
             body["notification_settings"] = self.notification_settings
         if self.pipeline_task:
             body["pipeline_task"] = self.pipeline_task
+        if self.power_bi_task:
+            body["power_bi_task"] = self.power_bi_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
         if self.retry_on_timeout is not None:
@@ -9283,6 +9695,7 @@ class Task:
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
+            dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -9301,6 +9714,7 @@ class Task:
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
+            power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             retry_on_timeout=d.get("retry_on_timeout", None),
             run_if=_enum(d, "run_if", RunIf),
@@ -9994,6 +10408,30 @@ class WebhookNotifications:
 
 
 @dataclass
+class WidgetErrorDetail:
+    message: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the WidgetErrorDetail into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WidgetErrorDetail into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WidgetErrorDetail:
+        """Deserializes the WidgetErrorDetail from a dictionary."""
+        return cls(message=d.get("message", None))
+
+
+@dataclass
 class WorkloadType:
     """Cluster Attributes showing for clusters workload types."""
 
@@ -10208,8 +10646,8 @@ class JobsAPI:
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
         :param performance_target: :class:`PerformanceTarget` (optional)
-          PerformanceTarget defines how performant or cost efficient the execution of run on serverless should
-          be.
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10890,9 +11328,9 @@ class JobsAPI:
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
         :param performance_target: :class:`PerformanceTarget` (optional)
-          PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-          compute should be. For RunNow, this performance target will override the target defined on the
-          job-level.
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run. This field overrides the performance target defined on
+          the job-level.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)

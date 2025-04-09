@@ -841,8 +841,9 @@ class CreateServingEndpoint:
     workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
 
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
-    throughput endpoints are currently supported."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned
+    throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only
+    support inference tables."""
 
     budget_policy_id: Optional[str] = None
     """The budget policy to be applied to the serving endpoint."""
@@ -3523,8 +3524,9 @@ class ServerLogsResponse:
 @dataclass
 class ServingEndpoint:
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
-    throughput endpoints are currently supported."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned
+    throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only
+    support inference tables."""
 
     budget_policy_id: Optional[str] = None
     """The budget policy associated with the endpoint."""
@@ -3741,8 +3743,9 @@ class ServingEndpointAccessControlResponse:
 @dataclass
 class ServingEndpointDetailed:
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
-    throughput endpoints are currently supported."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned
+    throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only
+    support inference tables."""
 
     budget_policy_id: Optional[str] = None
     """The budget policy associated with the endpoint."""
@@ -4199,8 +4202,9 @@ class ServingEndpointsAPI:
           The name of the serving endpoint. This field is required and must be unique across a Databricks
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
-          The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
-          throughput endpoints are currently supported.
+          The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput,
+          and pay-per-token endpoints are fully supported; agent endpoints currently only support inference
+          tables.
         :param budget_policy_id: str (optional)
           The budget policy to be applied to the serving endpoint.
         :param config: :class:`EndpointCoreConfigInput` (optional)
@@ -4464,8 +4468,7 @@ class ServingEndpointsAPI:
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update rate limits of a serving endpoint.
 
-        Used to update the rate limits of a serving endpoint. NOTE: Only foundation model endpoints are
-        currently supported. For external models, use AI Gateway to manage rate limits.
+        Deprecated: Please use AI Gateway to manage rate limits instead.
 
         :param name: str
           The name of the serving endpoint whose rate limits are being updated. This field is required.
@@ -4497,8 +4500,8 @@ class ServingEndpointsAPI:
     ) -> PutAiGatewayResponse:
         """Update AI Gateway of a serving endpoint.
 
-        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model and provisioned
-        throughput endpoints are currently supported.
+        Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
+        pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
 
         :param name: str
           The name of the serving endpoint whose AI Gateway is being updated. This field is required.

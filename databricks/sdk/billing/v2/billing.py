@@ -361,6 +361,10 @@ class BudgetConfigurationFilterWorkspaceIdClause:
 class BudgetPolicy:
     """Contains the BudgetPolicy details."""
 
+    binding_workspace_ids: Optional[List[int]] = None
+    """List of workspaces that this budget policy will be exclusively bound to. An empty binding
+    implies that this budget policy is open to any workspace in the account."""
+
     custom_tags: Optional[List[CustomPolicyTag]] = None
     """A list of tags defined by the customer. At most 20 entries are allowed per policy."""
 
@@ -375,6 +379,8 @@ class BudgetPolicy:
     def as_dict(self) -> dict:
         """Serializes the BudgetPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.binding_workspace_ids:
+            body["binding_workspace_ids"] = [v for v in self.binding_workspace_ids]
         if self.custom_tags:
             body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.policy_id is not None:
@@ -386,6 +392,8 @@ class BudgetPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.binding_workspace_ids:
+            body["binding_workspace_ids"] = self.binding_workspace_ids
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
         if self.policy_id is not None:
@@ -398,6 +406,7 @@ class BudgetPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
         return cls(
+            binding_workspace_ids=d.get("binding_workspace_ids", None),
             custom_tags=_repeated_dict(d, "custom_tags", CustomPolicyTag),
             policy_id=d.get("policy_id", None),
             policy_name=d.get("policy_name", None),
