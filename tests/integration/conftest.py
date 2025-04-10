@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from databricks.sdk import FilesExt
+from databricks.sdk.files.v2.mixin import FilesExt
 from databricks.sdk.catalog.v2.catalog import VolumeType
 from databricks.sdk.databricks.config import Config
 from databricks.sdk.files.v2.files import FilesAPI
