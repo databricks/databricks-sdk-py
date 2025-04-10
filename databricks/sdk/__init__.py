@@ -9,8 +9,6 @@ import databricks.sdk.service as service
 from databricks.sdk.databricks import azure
 from databricks.sdk.databricks.credentials_provider import CredentialsStrategy
 from databricks.sdk.databricks.data_plane import DataPlaneTokenSource
-from databricks.sdk.files.v2.files import FilesAPI
-from databricks.sdk.files.v2.mixin import DbfsExt, FilesExt
 
 _LOG = logging.getLogger(__name__)
 
@@ -30,11 +28,3 @@ def _make_dbutils(config: client.Config):
     from databricks.sdk.databricks.runtime import dbutils as runtime_dbutils
 
     return runtime_dbutils
-
-
-def _make_files_client(apiClient: client.ApiClient, config: client.Config):
-    if config.enable_experimental_files_api_client:
-        _LOG.info("Experimental Files API client is enabled")
-        return FilesExt(apiClient, config)
-    else:
-        return FilesAPI(apiClient)
