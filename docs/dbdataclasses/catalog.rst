@@ -130,6 +130,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DELTASHARING_CATALOG
       :value: "DELTASHARING_CATALOG"
 
+   .. py:attribute:: FOREIGN_CATALOG
+      :value: "FOREIGN_CATALOG"
+
    .. py:attribute:: MANAGED_CATALOG
       :value: "MANAGED_CATALOG"
 
@@ -1023,6 +1026,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: APPLY_TAG
       :value: "APPLY_TAG"
 
+   .. py:attribute:: BROWSE
+      :value: "BROWSE"
+
    .. py:attribute:: CREATE
       :value: "CREATE"
 
@@ -1365,10 +1371,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
-.. autoclass:: TagKeyValue
-   :members:
-   :undoc-members:
-
 .. autoclass:: TemporaryCredentials
    :members:
    :undoc-members:
@@ -1547,6 +1549,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: VolumeType
+
+   The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more]
+   [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"

@@ -7,9 +7,10 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
 
-from ..mixins import compute as compute_ext
-from ..mixins import files as dbfs_ext
-from ..service import compute, workspace
+from ..compute.v2 import compute
+from ..compute.v2.mixin import ClustersExt as compute_ext
+from ..files.v2.mixin import DbfsExt as dbfs_ext
+from ..workspace.v2 import workspace
 from .core import ApiClient, Config, DatabricksError
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -38,7 +39,7 @@ class _FsUtil:
 
     def __init__(
         self,
-        dbfs_ext: dbfs_ext.DbfsExt,
+        dbfs_ext: dbfs_ext,
         proxy_factory: Callable[[str], "_ProxyUtil"],
     ):
         self._dbfs = dbfs_ext
@@ -212,12 +213,12 @@ class RemoteDbUtils:
     def __init__(self, config: "Config" = None):
         self._config = Config() if not config else config
         self._client = ApiClient(self._config)
-        self._clusters = compute_ext.ClustersExt(self._client)
+        self._clusters = compute_ext(self._client)
         self._commands = compute.CommandExecutionAPI(self._client)
         self._lock = threading.Lock()
         self._ctx = None
 
-        self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
+        self.fs = _FsUtil(dbfs_ext(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
         self.jobs = _JobsUtil()
         self._widgets = None

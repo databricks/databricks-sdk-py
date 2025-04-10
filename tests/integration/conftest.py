@@ -7,8 +7,10 @@ import sys
 
 import pytest
 
-from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
-from databricks.sdk.service.catalog import VolumeType
+from databricks.sdk.catalog.v2.catalog import VolumeType
+from databricks.sdk.databricks.config import Config
+from databricks.sdk.files.v2.files import FilesAPI
+from databricks.sdk.files.v2.mixin import FilesExt
 
 
 def pytest_addoption(parser):
@@ -59,45 +61,45 @@ def random():
 
 
 @pytest.fixture(scope="session")
-def a(env_or_skip) -> AccountClient:
+def a(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if not account_client.config.is_account_client:
+    cfg = Config()
+    if not cfg.is_account_client:
         pytest.skip("not Databricks Account client")
-    return account_client
+    return cfg
 
 
 @pytest.fixture(scope="session")
-def ucacct(env_or_skip) -> AccountClient:
+def ucacct(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
-    account_client = AccountClient()
-    if not account_client.config.is_account_client:
+    cfg = Config()
+    if not cfg.is_account_client:
         pytest.skip("not Databricks Account client")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
-    return account_client
+    return cfg
 
 
 @pytest.fixture(scope="session")
-def w(env_or_skip) -> WorkspaceClient:
+def w(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("workspace")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
         pytest.skip("Skipping workspace test on account level")
-    return WorkspaceClient()
+    return Config()
 
 
 @pytest.fixture(scope="session")
-def ucws(env_or_skip) -> WorkspaceClient:
+def ucws(env_or_skip) -> Config:
     _load_debug_env_if_runs_from_ide("ucws")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
         pytest.skip("Skipping workspace test on account level")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
-    return WorkspaceClient()
+    return Config()
 
 
 @pytest.fixture(scope="session")
@@ -113,36 +115,58 @@ def env_or_skip():
 
 @pytest.fixture(scope="session")
 def schema(ucws, random):
-    schema = ucws.schemas.create("dbfs-" + random(), "main")
+    from databricks.sdk.catalog.v2.client import SchemasClient
+
+    sc = SchemasClient(config=ucws)
+    schema = sc.create("dbfs-" + random(), "main")
     yield schema
-    ucws.schemas.delete(schema.full_name)
+    sc.delete(schema.full_name)
 
 
 @pytest.fixture(scope="session")
 def volume(ucws, schema):
-    volume = ucws.volumes.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
+    from databricks.sdk.catalog.v2.client import VolumesClient
+
+    vc = VolumesClient(config=ucws)
+    volume = vc.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
     yield "/Volumes/" + volume.full_name.replace(".", "/")
-    ucws.volumes.delete(volume.full_name)
+    vc.delete(volume.full_name)
 
 
 @pytest.fixture(scope="session", params=[False, True])
 def files_api(request, ucws) -> FilesAPI:
+
     if request.param:
         # ensure new Files API client is used for files of any size
-        ucws.config.multipart_upload_min_stream_size = 0
+        ucws.multipart_upload_min_stream_size = 0
         # enable new Files API client
-        return FilesExt(ucws.api_client, ucws.config)
+        from databricks.sdk.databricks.core import ApiClient
+
+        client = ApiClient(cfg=ucws)
+
+        return FilesExt(client, ucws)
     else:
         # use the default client
-        return ucws.files
+        from databricks.sdk.databricks.core import ApiClient
+        from databricks.sdk.files.v2.files import FilesAPI
+
+        client = ApiClient(cfg=ucws)
+
+        api = FilesAPI(api_client=client)
+        return api
 
 
 @pytest.fixture()
 def workspace_dir(w, random):
-    directory = f"/Users/{w.current_user.me().user_name}/dir-{random(12)}"
-    w.workspace.mkdirs(directory)
+    from databricks.sdk.iam.v2.client import CurrentUserClient
+    from databricks.sdk.workspace.v2.client import WorkspaceClient
+
+    cuc = CurrentUserClient(config=w)
+    wc = WorkspaceClient(config=w)
+    directory = f"/Users/{cuc.me().user_name}/dir-{random(12)}"
+    wc.mkdirs(directory)
     yield directory
-    w.workspace.delete(directory, recursive=True)
+    wc.delete(directory, recursive=True)
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:
@@ -162,6 +186,7 @@ def _is_in_debug() -> bool:
     return os.path.basename(sys.argv[0]) in [
         "_jb_pytest_runner.py",
         "testlauncher.py",
+        "run_pytest_script.py",
     ]
 
 

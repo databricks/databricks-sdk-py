@@ -7,8 +7,9 @@ from typing import Callable, List, Tuple, Union
 
 import pytest
 
+from databricks.sdk.catalog.v2.client import SchemasClient
 from databricks.sdk.databricks.core import DatabricksError
-from databricks.sdk.service.catalog import VolumeType
+from databricks.sdk.files.v2.client import DbfsClient
 
 
 def test_local_io(random):
@@ -29,11 +30,12 @@ def test_local_io(random):
 def test_dbfs_io(w, random):
     dummy_file = f"/tmp/{random()}"
     to_write = random(1024 * 1024 * 1.5).encode()
-    with w.dbfs.open(dummy_file, write=True) as f:
+    dc = DbfsClient(config=w)
+    with dc.open(dummy_file, write=True) as f:
         written = f.write(to_write)
         assert len(to_write) == written
 
-    f = w.dbfs.open(dummy_file, read=True)
+    f = dc.open(dummy_file, read=True)
     from_dbfs = f.read()
     assert from_dbfs == to_write
     f.close()
@@ -41,10 +43,11 @@ def test_dbfs_io(w, random):
 
 @pytest.fixture
 def junk(w, random):
+    dc = DbfsClient(config=w)
 
     def inner(path: str, size=256) -> bytes:
         to_write = random(size).encode()
-        with w.dbfs.open(path, write=True) as f:
+        with dc.open(path, write=True) as f:
             written = f.write(to_write)
             assert len(to_write) == written
             return to_write
@@ -54,9 +57,10 @@ def junk(w, random):
 
 @pytest.fixture
 def ls(w):
+    dc = DbfsClient(config=w)
 
     def inner(root: str, recursive=False) -> List[str]:
-        return [f.path.removeprefix(root) for f in w.dbfs.list(root, recursive=recursive)]
+        return [f.path.removeprefix(root) for f in dc.list(root, recursive=recursive)]
 
     return inner
 
@@ -70,7 +74,10 @@ def test_recursive_listing(w, random, junk, ls):
     assert ["/01", "/a"] == ls(root)
     assert ["/01", "/a/02", "/a/b/03"] == ls(root, recursive=True)
 
-    w.dbfs.delete(root, recursive=True)
+    from databricks.sdk.files.v2.client import DbfsClient
+
+    dc = DbfsClient(config=w)
+    dc.delete(root, recursive=True)
 
 
 def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
@@ -80,7 +87,9 @@ def test_cp_dbfs_folder_to_folder_non_recursive(w, random, junk, ls):
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
 
-    w.dbfs.copy(root, new_root)
+    dc = DbfsClient(config=w)
+
+    dc.copy(root, new_root)
 
     assert ["/01"] == ls(new_root, recursive=True)
 
@@ -92,7 +101,9 @@ def test_cp_dbfs_folder_to_folder_recursive(w, random, junk, ls):
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
 
-    w.dbfs.copy(root, new_root, recursive=True, overwrite=True)
+    dc = DbfsClient(config=w)
+
+    dc.copy(root, new_root, recursive=True, overwrite=True)
 
     assert ["/01", "/a/02", "/a/b/03"] == ls(new_root, recursive=True)
 
@@ -104,8 +115,10 @@ def test_cp_dbfs_folder_to_existing_folder_recursive(w, random, junk, ls):
     junk(f"{root}/a/b/03")
     new_root = f"/tmp/{random()}"
 
-    w.dbfs.mkdirs(new_root)
-    w.dbfs.copy(root, new_root, recursive=True, overwrite=True)
+    dc = DbfsClient(config=w)
+
+    dc.mkdirs(new_root)
+    dc.copy(root, new_root, recursive=True, overwrite=True)
 
     base = root.split("/")[-1]
     assert [f"/{base}/01", f"/{base}/a/02", f"/{base}/a/b/03"] == ls(new_root, recursive=True)
@@ -116,19 +129,24 @@ def test_cp_dbfs_file_to_non_existing_location(w, random, junk):
     payload = junk(f"{root}/01")
     copy_destination = f"{root}/{random()}"
 
-    w.dbfs.copy(f"{root}/01", copy_destination)
+    dc = DbfsClient(config=w)
 
-    with w.dbfs.open(copy_destination, read=True) as f:
+    dc.copy(f"{root}/01", copy_destination)
+
+    with dc.open(copy_destination, read=True) as f:
         assert f.read() == payload
 
 
 def test_cp_dbfs_file_to_existing_folder(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
-    w.dbfs.mkdirs(f"{root}/02")
-    w.dbfs.copy(f"{root}/01", f"{root}/02")
 
-    with w.dbfs.open(f"{root}/02/01", read=True) as f:
+    dc = DbfsClient(config=w)
+
+    dc.mkdirs(f"{root}/02")
+    dc.copy(f"{root}/01", f"{root}/02")
+
+    with dc.open(f"{root}/02/01", read=True) as f:
         assert f.read() == payload
 
 
@@ -136,8 +154,11 @@ def test_cp_dbfs_file_to_existing_location(w, random, junk):
     root = f"/tmp/{random()}"
     junk(f"{root}/01")
     junk(f"{root}/02")
+
+    dc = DbfsClient(config=w)
+
     with pytest.raises(DatabricksError) as ei:
-        w.dbfs.copy(f"{root}/01", f"{root}/02")
+        dc.copy(f"{root}/01", f"{root}/02")
     assert "A file or directory already exists" in str(ei.value)
 
 
@@ -146,9 +167,11 @@ def test_cp_dbfs_file_to_existing_location_with_overwrite(w, random, junk):
     payload = junk(f"{root}/01")
     junk(f"{root}/02")
 
-    w.dbfs.copy(f"{root}/01", f"{root}/02", overwrite=True)
+    dc = DbfsClient(config=w)
 
-    with w.dbfs.open(f"{root}/02", read=True) as f:
+    dc.copy(f"{root}/01", f"{root}/02", overwrite=True)
+
+    with dc.open(f"{root}/02", read=True) as f:
         assert f.read() == payload
 
 
@@ -156,10 +179,12 @@ def test_move_within_dbfs(w, random, junk):
     root = f"/tmp/{random()}"
     payload = junk(f"{root}/01")
 
-    w.dbfs.move_(f"{root}/01", f"{root}/02")
+    dc = DbfsClient(config=w)
 
-    assert w.dbfs.exists(f"{root}/01") is False
-    with w.dbfs.open(f"{root}/02", read=True) as f:
+    dc.move_(f"{root}/01", f"{root}/02")
+
+    assert dc.exists(f"{root}/01") is False
+    with dc.open(f"{root}/02", read=True) as f:
         assert f.read() == payload
 
 
@@ -169,9 +194,11 @@ def test_move_from_dbfs_to_local(w, random, junk, tmp_path):
     payload_02 = junk(f"{root}/a/02")
     payload_03 = junk(f"{root}/a/b/03")
 
-    w.dbfs.move_(root, f"file:{tmp_path}", recursive=True)
+    dc = DbfsClient(config=w)
 
-    assert w.dbfs.exists(root) is False
+    dc.move_(root, f"file:{tmp_path}", recursive=True)
+
+    assert dc.exists(root) is False
     with (tmp_path / root.name / "01").open("rb") as f:
         assert f.read() == payload_01
     with (tmp_path / root.name / "a/02").open("rb") as f:
@@ -184,9 +211,11 @@ def test_dbfs_upload_download(w, random, junk, tmp_path):
     root = pathlib.Path(f"/tmp/{random()}")
 
     f = io.BytesIO(b"some text data")
-    w.dbfs.upload(f"{root}/01", f)
+    dc = DbfsClient(config=w)
 
-    with w.dbfs.download(f"{root}/01") as f:
+    dc.upload(f"{root}/01", f)
+
+    with dc.download(f"{root}/01") as f:
         assert f.read() == b"some text data"
 
 
@@ -204,18 +233,23 @@ class ResourceWithCleanup:
 
     @staticmethod
     def create_schema(w, catalog, schema):
-        res = w.schemas.create(catalog_name=catalog, name=schema)
-        return ResourceWithCleanup(lambda: w.schemas.delete(res.full_name))
+        sc = SchemasClient(config=w)
+        res = sc.create(catalog_name=catalog, name=schema)
+        return ResourceWithCleanup(lambda: sc.delete(res.full_name))
 
     @staticmethod
     def create_volume(w, catalog, schema, volume):
-        res = w.volumes.create(
+        from databricks.sdk.catalog.v2.catalog import VolumeType
+        from databricks.sdk.catalog.v2.client import VolumesClient
+
+        vc = VolumesClient(config=w)
+        res = vc.create(
             catalog_name=catalog,
             schema_name=schema,
             name=volume,
             volume_type=VolumeType.MANAGED,
         )
-        return ResourceWithCleanup(lambda: w.volumes.delete(res.full_name))
+        return ResourceWithCleanup(lambda: vc.delete(res.full_name))
 
 
 def test_files_api_upload_download(ucws, files_api, random):

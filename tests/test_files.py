@@ -18,13 +18,13 @@ import requests
 import requests_mock
 from requests import RequestException
 
-from databricks.sdk import WorkspaceClient
 from databricks.sdk.databricks.core import Config
 from databricks.sdk.databricks.errors.platform import (AlreadyExists,
                                                        BadRequest,
                                                        InternalError,
                                                        PermissionDenied,
                                                        TooManyRequests)
+from databricks.sdk.files.v2.client import FilesClient
 
 logger = logging.getLogger(__name__)
 
@@ -68,12 +68,12 @@ class DownloadTestCase:
         config.files_api_client_download_max_total_recovers = self.max_recovers_total
         config.files_api_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing
 
-        w = WorkspaceClient(config=config)
+        fc = FilesClient(config=config)
 
         session = MockSession(self)
-        w.files._api._api_client._session = session
+        fc._api._api_client._session = session
 
-        response = w.files.download("/test").contents
+        response = fc.download("/test").contents
         if self.expected_success:
             actual_content = response.read()
             assert len(actual_content) == len(session.content)
@@ -862,12 +862,12 @@ class MultipartUploadTestCase:
         upload_state = MultipartUploadServerState()
 
         try:
-            w = WorkspaceClient(config=config)
+            fc = FilesClient(config=config)
             with requests_mock.Mocker() as session_mock:
                 self.setup_session_mock(session_mock, upload_state)
 
                 def upload():
-                    w.files.upload("/test.txt", io.BytesIO(file_content), overwrite=True)
+                    fc.upload("/test.txt", io.BytesIO(file_content), overwrite=True)
 
                 if self.expected_exception_type is not None:
                     with pytest.raises(self.expected_exception_type):
@@ -1321,11 +1321,11 @@ class SingleShotUploadTestCase:
 
             session_mock.add_matcher(matcher=custom_matcher)
 
-            w = WorkspaceClient(config=config)
-            w.files._api._api_client._session = session
+            fc = FilesClient(config=config)
+            fc._api._api_client._session = session
 
             def upload():
-                w.files.upload("/test.txt", io.BytesIO(file_content), overwrite=True)
+                fc.upload("/test.txt", io.BytesIO(file_content), overwrite=True)
 
             if self.expected_single_shot:
                 upload()
@@ -1633,10 +1633,10 @@ class ResumableUploadTestCase:
         try:
             with requests_mock.Mocker() as session_mock:
                 self.setup_session_mock(session_mock, upload_state)
-                w = WorkspaceClient(config=config)
+                fc = FilesClient(config=config)
 
                 def upload():
-                    w.files.upload("/test.txt", io.BytesIO(file_content), overwrite=self.overwrite)
+                    fc.upload("/test.txt", io.BytesIO(file_content), overwrite=self.overwrite)
 
                 if self.expected_exception_type is not None:
                     with pytest.raises(self.expected_exception_type):

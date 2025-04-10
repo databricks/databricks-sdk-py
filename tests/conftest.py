@@ -23,9 +23,7 @@ def config():
 
 @pytest.fixture
 def w(config):
-    from databricks.sdk import WorkspaceClient
-
-    return WorkspaceClient(config=config)
+    return config
 
 
 __tests__ = os.path.dirname(__file__)

@@ -1,16 +1,16 @@
 import pytest
 
 from databricks.sdk.databricks.errors import NotFound
-from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
-                                         _VolumesPath)
+from databricks.sdk.files.v2.mixin import (DbfsExt, _DbfsPath, _LocalPath,
+                                           _VolumesPath)
 
 
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.service.files import FileInfo, ReadResponse
+    from databricks.sdk.files.v2.client import DbfsClient
+    from databricks.sdk.files.v2.files import FileInfo, ReadResponse
 
     get_status = mocker.patch(
-        "databricks.sdk.service.files.DbfsAPI.get_status",
+        "databricks.sdk.files.v2.files.DbfsAPI.get_status",
         return_value=FileInfo(path="a", is_dir=False, file_size=4),
     )
 
@@ -21,11 +21,11 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
             return ReadResponse(bytes_read=4, data="aGVsbG8=")
         return ReadResponse(bytes_read=0)
 
-    mocker.patch("databricks.sdk.service.files.DbfsAPI.read", wraps=fake_read)
-    delete = mocker.patch("databricks.sdk.service.files.DbfsAPI.delete")
+    mocker.patch("databricks.sdk.files.v2.files.DbfsAPI.read", wraps=fake_read)
+    delete = mocker.patch("databricks.sdk.files.v2.files.DbfsAPI.delete")
 
-    w = WorkspaceClient(config=config)
-    w.dbfs.move_("a", f"file:{tmp_path}", recursive=True)
+    jc = DbfsClient(config=config)
+    jc.move_("a", f"file:{tmp_path}", recursive=True)
 
     get_status.assert_called_with("a")
     delete.assert_called_with("a", recursive=True)
@@ -35,26 +35,26 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
 
 
 def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.service.files import CreateResponse
+    from databricks.sdk.files.v2.client import DbfsClient
+    from databricks.sdk.files.v2.files import CreateResponse
 
     with (tmp_path / "a").open("wb") as f:
         f.write(b"hello")
 
     mocker.patch(
-        "databricks.sdk.service.files.DbfsAPI.create",
+        "databricks.sdk.files.v2.files.DbfsAPI.create",
         return_value=CreateResponse(123),
     )
 
     get_status = mocker.patch(
-        "databricks.sdk.service.files.DbfsAPI.get_status",
+        "databricks.sdk.files.v2.files.DbfsAPI.get_status",
         side_effect=NotFound(),
     )
-    add_block = mocker.patch("databricks.sdk.service.files.DbfsAPI.add_block")
-    close = mocker.patch("databricks.sdk.service.files.DbfsAPI.close")
+    add_block = mocker.patch("databricks.sdk.files.v2.files.DbfsAPI.add_block")
+    close = mocker.patch("databricks.sdk.files.v2.files.DbfsAPI.close")
 
-    w = WorkspaceClient(config=config)
-    w.dbfs.move_(f"file:{tmp_path}", "a", recursive=True)
+    dc = DbfsClient(config=config)
+    dc.move_(f"file:{tmp_path}", "a", recursive=True)
 
     get_status.assert_called_with("a")
     close.assert_called_with(123)
@@ -86,33 +86,33 @@ def test_fs_path_invalid(config):
 
 
 def test_dbfs_local_path_mkdir(config, tmp_path):
-    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.files.v2.client import DbfsClient
 
-    w = WorkspaceClient(config=config)
-    w.dbfs._path(f"file:{tmp_path}/test_dir").mkdir()
-    assert w.dbfs.exists(f"file:{tmp_path}/test_dir")
+    dc = DbfsClient(config=config)
+    dc._path(f"file:{tmp_path}/test_dir").mkdir()
+    assert dc.exists(f"file:{tmp_path}/test_dir")
 
 
 def test_dbfs_exists(config, mocker):
-    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.files.v2.client import DbfsClient
 
     get_status = mocker.patch(
-        "databricks.sdk.service.files.DbfsAPI.get_status",
+        "databricks.sdk.files.v2.files.DbfsAPI.get_status",
         side_effect=NotFound(),
     )
 
-    client = WorkspaceClient(config=config)
-    client.dbfs.exists("/abc/def/ghi")
+    client = DbfsClient(config=config)
+    client.exists("/abc/def/ghi")
 
     get_status.assert_called_with("/abc/def/ghi")
 
 
 def test_volume_exists(config, mocker):
-    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.files.v2.client import DbfsClient
 
-    get_metadata = mocker.patch("databricks.sdk.service.files.FilesAPI.get_metadata")
+    get_metadata = mocker.patch("databricks.sdk.files.v2.files.FilesAPI.get_metadata")
 
-    client = WorkspaceClient(config=config)
-    client.dbfs.exists("/Volumes/abc/def/ghi")
+    client = DbfsClient(config=config)
+    client.exists("/Volumes/abc/def/ghi")
 
     get_metadata.assert_called_with("/Volumes/abc/def/ghi")

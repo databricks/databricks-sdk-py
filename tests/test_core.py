@@ -8,7 +8,6 @@ from http.server import BaseHTTPRequestHandler
 
 import pytest
 
-from databricks.sdk import WorkspaceClient
 from databricks.sdk.databricks import errors, useragent
 from databricks.sdk.databricks.core import ApiClient, Config, DatabricksError
 from databricks.sdk.databricks.credentials_provider import (
@@ -18,8 +17,6 @@ from databricks.sdk.databricks.environments import (ENVIRONMENTS,
                                                     AzureEnvironment, Cloud,
                                                     DatabricksEnvironment)
 from databricks.sdk.databricks.oauth import Token
-from databricks.sdk.service.catalog import PermissionsChange
-from databricks.sdk.service.jobs import JobAccessControlRequest
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
@@ -287,8 +284,12 @@ def test_access_control_list(config, requests_mock):
         "http://localhost/api/2.2/jobs/create",
         request_headers={"User-Agent": config.user_agent},
     )
-    w = WorkspaceClient(config=config)
-    res = w.jobs.create(access_control_list=[JobAccessControlRequest(group_name="group")])
+
+    from databricks.sdk.jobs.v2.client import JobsClient
+    from databricks.sdk.jobs.v2.jobs import JobAccessControlRequest
+
+    jc = JobsClient(config=config)
+    res = jc.create(access_control_list=[JobAccessControlRequest(group_name="group")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -300,9 +301,11 @@ def test_shares(config, requests_mock):
         "http://localhost/api/2.1/unity-catalog/shares/jobId/permissions",
         request_headers={"User-Agent": config.user_agent},
     )
+    from databricks.sdk.sharing.v2.client import SharesClient
+    from databricks.sdk.sharing.v2.sharing import PermissionsChange
 
-    w = WorkspaceClient(config=config)
-    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
+    sc = SharesClient(config=config)
+    res = sc.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -315,9 +318,10 @@ def test_deletes(config, requests_mock):
         request_headers={"User-Agent": config.user_agent},
         text="null",
     )
+    from databricks.sdk.sql.v2.client import AlertsClient
 
-    w = WorkspaceClient(config=config)
-    res = w.alerts.delete(id="alertId")
+    ac = AlertsClient(config=config)
+    res = ac.delete(id="alertId")
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
