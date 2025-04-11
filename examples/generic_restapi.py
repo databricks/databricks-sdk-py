@@ -1,21 +1,20 @@
 from databricks.sdk import WorkspaceClient
-import logging
-logging.basicConfig(level=logging.DEBUG)
 
-w = WorkspaceClient()
+if __name__ == "__main__":
 
+    w = WorkspaceClient()
 
-# Make a GET request to list users
-response = w.api_client.do(
-    method="GET",
-    path="/api/2.0/account/scim/v2/Users",
-    headers={
-        "Accept": "application/json"
-    }
-)
+    # Make a GET request to list cluster policies
+    response = w.api_client.do(
+        method="GET",
+        path="/api/2.0/policies/clusters/list",
+        headers={
+            "Accept": "application/json"
+        }
+    )
 
-# Print the response
-print(response)
+    # Print the response
+    print(response)
 
 
 
