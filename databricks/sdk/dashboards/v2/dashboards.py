@@ -2773,7 +2773,7 @@ class GenieAPI:
         )
         return GenieCreateMessageWaiter(
             service=self,
-            response=GenieMessage.from_dict(op_response),
+            raw_response=GenieMessage.from_dict(op_response),
             conversation_id=conversation_id,
             message_id=op_response["id"],
             space_id=space_id,
@@ -3076,7 +3076,7 @@ class GenieAPI:
         )
         return GenieStartConversationWaiter(
             service=self,
-            response=GenieStartConversationResponse.from_dict(op_response),
+            raw_response=GenieStartConversationResponse.from_dict(op_response),
             conversation_id=op_response["conversation_id"],
             message_id=op_response["message_id"],
             space_id=space_id,

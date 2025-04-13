@@ -3418,7 +3418,7 @@ class WorkspacesAPI:
             "POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers
         )
         return WorkspacesCreateWaiter(
-            service=self, response=Workspace.from_dict(op_response), workspace_id=op_response["workspace_id"]
+            service=self, raw_response=Workspace.from_dict(op_response), workspace_id=op_response["workspace_id"]
         )
 
     def delete(self, workspace_id: int):
@@ -3664,5 +3664,5 @@ class WorkspacesAPI:
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", body=body, headers=headers
         )
         return WorkspacesUpdateWaiter(
-            service=self, response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
+            service=self, raw_response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
         )

@@ -4716,7 +4716,7 @@ class PipelinesAPI:
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
         return PipelinesStopWaiter(
-            service=self, response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
+            service=self, raw_response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
         )
 
     def update(

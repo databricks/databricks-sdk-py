@@ -7433,7 +7433,7 @@ class ForecastingAPI:
         op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
         return ForecastingCreateExperimentWaiter(
             service=self,
-            response=CreateForecastingExperimentResponse.from_dict(op_response),
+            raw_response=CreateForecastingExperimentResponse.from_dict(op_response),
             experiment_id=op_response["experiment_id"],
         )
 

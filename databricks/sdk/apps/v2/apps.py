@@ -1267,7 +1267,7 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
-        return AppsCreateWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
+        return AppsCreateWaiter(service=self, raw_response=App.from_dict(op_response), name=op_response["name"])
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -1309,7 +1309,7 @@ class AppsAPI:
         op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
         return AppsDeployWaiter(
             service=self,
-            response=AppDeployment.from_dict(op_response),
+            raw_response=AppDeployment.from_dict(op_response),
             app_name=app_name,
             deployment_id=op_response["deployment_id"],
         )
@@ -1498,7 +1498,7 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
-        return AppsStartWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
+        return AppsStartWaiter(service=self, raw_response=App.from_dict(op_response), name=op_response["name"])
 
     def stop(self, name: str) -> AppsStopWaiter:
         """Stop an app.
@@ -1519,7 +1519,7 @@ class AppsAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
-        return AppsStopWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
+        return AppsStopWaiter(service=self, raw_response=App.from_dict(op_response), name=op_response["name"])
 
     def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.

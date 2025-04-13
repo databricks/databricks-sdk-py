@@ -4331,7 +4331,7 @@ class ServingEndpointsAPI:
 
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
         return ServingEndpointsCreateWaiter(
-            service=self, response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
+            service=self, raw_response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
         )
 
     def delete(self, name: str):
@@ -4819,7 +4819,7 @@ class ServingEndpointsAPI:
 
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
         return ServingEndpointsUpdateConfigWaiter(
-            service=self, response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
+            service=self, raw_response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
         )
 
     def update_permissions(

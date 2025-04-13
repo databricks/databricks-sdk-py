@@ -10029,7 +10029,7 @@ class WarehousesAPI:
 
         op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
         return WarehousesCreateWaiter(
-            service=self, response=CreateWarehouseResponse.from_dict(op_response), id=op_response["id"]
+            service=self, raw_response=CreateWarehouseResponse.from_dict(op_response), id=op_response["id"]
         )
 
     def delete(self, id: str):
@@ -10165,7 +10165,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
-        return WarehousesEditWaiter(service=self, response=EditWarehouseResponse.from_dict(op_response), id=id)
+        return WarehousesEditWaiter(service=self, raw_response=EditWarehouseResponse.from_dict(op_response), id=id)
 
     def get(self, id: str) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -10371,7 +10371,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return WarehousesStartWaiter(service=self, response=StartWarehouseResponse.from_dict(op_response), id=id)
+        return WarehousesStartWaiter(service=self, raw_response=StartWarehouseResponse.from_dict(op_response), id=id)
 
     def stop(self, id: str) -> WarehousesStopWaiter:
         """Stop a warehouse.
@@ -10391,7 +10391,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return WarehousesStopWaiter(service=self, response=StopWarehouseResponse.from_dict(op_response), id=id)
+        return WarehousesStopWaiter(service=self, raw_response=StopWarehouseResponse.from_dict(op_response), id=id)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None

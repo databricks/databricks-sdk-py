@@ -10602,7 +10602,9 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
         return ClustersCreateWaiter(
-            service=self, response=CreateClusterResponse.from_dict(op_response), cluster_id=op_response["cluster_id"]
+            service=self,
+            raw_response=CreateClusterResponse.from_dict(op_response),
+            cluster_id=op_response["cluster_id"],
         )
 
     def delete(self, cluster_id: str) -> ClustersDeleteWaiter:
@@ -10629,7 +10631,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
         return ClustersDeleteWaiter(
-            service=self, response=DeleteClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=DeleteClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def edit(
@@ -10917,7 +10919,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
         return ClustersEditWaiter(
-            service=self, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def events(
@@ -11207,7 +11209,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
         return ClustersResizeWaiter(
-            service=self, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> ClustersRestartWaiter:
@@ -11236,7 +11238,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
         return ClustersRestartWaiter(
-            service=self, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def set_permissions(
@@ -11305,7 +11307,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
         return ClustersStartWaiter(
-            service=self, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def unpin(self, cluster_id: str):
@@ -11379,7 +11381,7 @@ class ClustersAPI:
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
         return ClustersUpdateWaiter(
-            service=self, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
+            service=self, raw_response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
         )
 
     def update_permissions(
@@ -11594,7 +11596,7 @@ class CommandExecutionAPI:
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
         return CommandExecutionCancelWaiter(
             service=self,
-            response=CancelResponse.from_dict(op_response),
+            raw_response=CancelResponse.from_dict(op_response),
             cluster_id=cluster_id,
             command_id=command_id,
             context_id=context_id,
@@ -11680,7 +11682,10 @@ class CommandExecutionAPI:
 
         op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
         return CommandExecutionCreateWaiter(
-            service=self, response=Created.from_dict(op_response), cluster_id=cluster_id, context_id=op_response["id"]
+            service=self,
+            raw_response=Created.from_dict(op_response),
+            cluster_id=cluster_id,
+            context_id=op_response["id"],
         )
 
     def destroy(self, cluster_id: str, context_id: str):
@@ -11748,7 +11753,7 @@ class CommandExecutionAPI:
         op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
         return CommandExecutionExecuteWaiter(
             service=self,
-            response=Created.from_dict(op_response),
+            raw_response=Created.from_dict(op_response),
             cluster_id=cluster_id,
             command_id=op_response["id"],
             context_id=context_id,

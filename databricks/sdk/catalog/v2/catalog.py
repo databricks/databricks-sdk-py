@@ -12351,7 +12351,7 @@ class OnlineTablesAPI:
 
         op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
         return OnlineTablesCreateWaiter(
-            service=self, response=OnlineTable.from_dict(op_response), name=op_response["name"]
+            service=self, raw_response=OnlineTable.from_dict(op_response), name=op_response["name"]
         )
 
     def delete(self, name: str):

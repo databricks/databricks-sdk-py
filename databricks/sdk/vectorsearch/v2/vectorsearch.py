@@ -1693,7 +1693,7 @@ class VectorSearchEndpointsAPI:
 
         op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
         return VectorSearchEndpointsCreateEndpointWaiter(
-            service=self, response=EndpointInfo.from_dict(op_response), endpoint_name=op_response["name"]
+            service=self, raw_response=EndpointInfo.from_dict(op_response), endpoint_name=op_response["name"]
         )
 
     def delete_endpoint(self, endpoint_name: str):

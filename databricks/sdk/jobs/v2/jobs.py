@@ -10756,7 +10756,7 @@ class JobsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
-        return JobsCancelRunWaiter(service=self, response=CancelRunResponse.from_dict(op_response), run_id=run_id)
+        return JobsCancelRunWaiter(service=self, raw_response=CancelRunResponse.from_dict(op_response), run_id=run_id)
 
     def create(
         self,
@@ -11438,7 +11438,7 @@ class JobsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
-        return JobsRepairRunWaiter(service=self, response=RepairRunResponse.from_dict(op_response), run_id=run_id)
+        return JobsRepairRunWaiter(service=self, raw_response=RepairRunResponse.from_dict(op_response), run_id=run_id)
 
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
@@ -11626,7 +11626,7 @@ class JobsAPI:
 
         op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
         return JobsRunNowWaiter(
-            service=self, response=RunNowResponse.from_dict(op_response), run_id=op_response["run_id"]
+            service=self, raw_response=RunNowResponse.from_dict(op_response), run_id=op_response["run_id"]
         )
 
     def set_permissions(
@@ -11767,7 +11767,7 @@ class JobsAPI:
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
         return JobsSubmitWaiter(
-            service=self, response=SubmitRunResponse.from_dict(op_response), run_id=op_response["run_id"]
+            service=self, raw_response=SubmitRunResponse.from_dict(op_response), run_id=op_response["run_id"]
         )
 
     def update(
