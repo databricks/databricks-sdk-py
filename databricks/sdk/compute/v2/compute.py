@@ -7581,6 +7581,9 @@ class LogSyncStatus:
         return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
 
 
+MapAny = Dict[str, Any]
+
+
 @dataclass
 class MavenLibrary:
     coordinates: str

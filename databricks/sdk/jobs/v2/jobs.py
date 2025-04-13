@@ -417,7 +417,11 @@ class BaseRun:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -1362,8 +1366,7 @@ class CreateJob:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings. If more than 100 job clusters are available, you can paginate through them using
-    :method:jobs/get."""
+    task settings."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -1387,7 +1390,11 @@ class CreateJob:
 
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
-    performance or cost-efficiency for the run."""
+    performance or cost-efficiency for the run.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -1408,9 +1415,11 @@ class CreateJob:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
-    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
-    object root to determine if more results are available."""
+    """A list of task specifications to be executed by this job. It supports up to 1000 elements in
+    write endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update,
+    :method:jobs/submit). Read endpoints return only 100 tasks. If more than 100 tasks are
+    available, you can paginate through them using :method:jobs/get. Use the `next_page_token` field
+    at the object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -3837,8 +3846,7 @@ class JobSettings:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings. If more than 100 job clusters are available, you can paginate through them using
-    :method:jobs/get."""
+    task settings."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -3862,7 +3870,11 @@ class JobSettings:
 
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
-    performance or cost-efficiency for the run."""
+    performance or cost-efficiency for the run.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -3883,9 +3895,11 @@ class JobSettings:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
-    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
-    object root to determine if more results are available."""
+    """A list of task specifications to be executed by this job. It supports up to 1000 elements in
+    write endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update,
+    :method:jobs/submit). Read endpoints return only 100 tasks. If more than 100 tasks are
+    available, you can paginate through them using :method:jobs/get. Use the `next_page_token` field
+    at the object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -5090,7 +5104,6 @@ class PerformanceTarget(Enum):
     on serverless compute should be. The performance mode on the job or pipeline should map to a
     performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
 
-    COST_OPTIMIZED = "COST_OPTIMIZED"
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
     STANDARD = "STANDARD"
 
@@ -6209,7 +6222,11 @@ class Run:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -6933,7 +6950,11 @@ class RunNow:
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
     performance or cost-efficiency for the run. This field overrides the performance target defined
-    on the job-level."""
+    on the job level.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -7554,7 +7575,11 @@ class RunTask:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -9054,7 +9079,7 @@ class SubmitTask:
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[JobsClusterSpec] = None
+    new_cluster: Optional[ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -9256,7 +9281,7 @@ class SubmitTask:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", Library),
-            new_cluster=_from_dict(d, "new_cluster", JobsClusterSpec),
+            new_cluster=_from_dict(d, "new_cluster", ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
@@ -10628,7 +10653,6 @@ class JobsAPI:
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
-          If more than 100 job clusters are available, you can paginate through them using :method:jobs/get.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
           able to execute multiple runs of the same job concurrently. This is useful for example if you
@@ -10648,6 +10672,10 @@ class JobsAPI:
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10663,9 +10691,11 @@ class JobsAPI:
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
         :param tasks: List[:class:`Task`] (optional)
-          A list of task specifications to be executed by this job. If more than 100 tasks are available, you
-          can paginate through them using :method:jobs/get. Use the `next_page_token` field at the object root
-          to determine if more results are available.
+          A list of task specifications to be executed by this job. It supports up to 1000 elements in write
+          endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
+          endpoints return only 100 tasks. If more than 100 tasks are available, you can paginate through them
+          using :method:jobs/get. Use the `next_page_token` field at the object root to determine if more
+          results are available.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
@@ -10958,8 +10988,8 @@ class JobsAPI:
         Retrieves a list of jobs.
 
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
-          100 elements will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
+          Whether to include task and cluster details in the response. Note that only the first 100 elements
+          will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
         :param limit: int (optional)
           The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
           default value is 20.
@@ -11025,8 +11055,8 @@ class JobsAPI:
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
-          100 elements will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
+          Whether to include task and cluster details in the response. Note that only the first 100 elements
+          will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
         :param job_id: int (optional)
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
@@ -11330,7 +11360,11 @@ class JobsAPI:
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run. This field overrides the performance target defined on
-          the job-level.
+          the job level.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
