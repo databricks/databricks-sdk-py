@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -417,7 +421,11 @@ class BaseRun:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -1362,8 +1370,7 @@ class CreateJob:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings. If more than 100 job clusters are available, you can paginate through them using
-    :method:jobs/get."""
+    task settings."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -1387,7 +1394,11 @@ class CreateJob:
 
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
-    performance or cost-efficiency for the run."""
+    performance or cost-efficiency for the run.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -1408,9 +1419,11 @@ class CreateJob:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
-    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
-    object root to determine if more results are available."""
+    """A list of task specifications to be executed by this job. It supports up to 1000 elements in
+    write endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update,
+    :method:jobs/submit). Read endpoints return only 100 tasks. If more than 100 tasks are
+    available, you can paginate through them using :method:jobs/get. Use the `next_page_token` field
+    at the object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -3837,8 +3850,7 @@ class JobSettings:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings. If more than 100 job clusters are available, you can paginate through them using
-    :method:jobs/get."""
+    task settings."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -3862,7 +3874,11 @@ class JobSettings:
 
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
-    performance or cost-efficiency for the run."""
+    performance or cost-efficiency for the run.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
@@ -3883,9 +3899,11 @@ class JobSettings:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
-    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
-    object root to determine if more results are available."""
+    """A list of task specifications to be executed by this job. It supports up to 1000 elements in
+    write endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update,
+    :method:jobs/submit). Read endpoints return only 100 tasks. If more than 100 tasks are
+    available, you can paginate through them using :method:jobs/get. Use the `next_page_token` field
+    at the object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -5090,7 +5108,6 @@ class PerformanceTarget(Enum):
     on serverless compute should be. The performance mode on the job or pipeline should map to a
     performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
 
-    COST_OPTIMIZED = "COST_OPTIMIZED"
     PERFORMANCE_OPTIMIZED = "PERFORMANCE_OPTIMIZED"
     STANDARD = "STANDARD"
 
@@ -6209,7 +6226,11 @@ class Run:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -6933,7 +6954,11 @@ class RunNow:
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. The performance target determines the level of compute
     performance or cost-efficiency for the run. This field overrides the performance target defined
-    on the job-level."""
+    on the job level.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -7554,7 +7579,11 @@ class RunTask:
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
-    supported by the job type."""
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -9054,7 +9083,7 @@ class SubmitTask:
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[JobsClusterSpec] = None
+    new_cluster: Optional[ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -9256,7 +9285,7 @@ class SubmitTask:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", Library),
-            new_cluster=_from_dict(d, "new_cluster", JobsClusterSpec),
+            new_cluster=_from_dict(d, "new_cluster", ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
@@ -10485,6 +10514,182 @@ class WorkspaceStorageInfo:
         return cls(destination=d.get("destination", None))
 
 
+class JobsCancelRunWaiter:
+    raw_response: CancelRunResponse
+    """raw_response is the raw response of the CancelRun call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: CancelRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsRepairRunWaiter:
+    raw_response: RepairRunResponse
+    """raw_response is the raw response of the RepairRun call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: RepairRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsRunNowWaiter:
+    raw_response: RunNowResponse
+    """raw_response is the raw response of the RunNow call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: RunNowResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsSubmitWaiter:
+    raw_response: SubmitRunResponse
+    """raw_response is the raw response of the Submit call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: SubmitRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
 
@@ -10530,7 +10735,7 @@ class JobsAPI:
 
         self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
-    def cancel_run(self, run_id: int):
+    def cancel_run(self, run_id: int) -> JobsCancelRunWaiter:
         """Cancel a run.
 
         Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
@@ -10550,7 +10755,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
+        return JobsCancelRunWaiter(service=self, raw_response=CancelRunResponse.from_dict(op_response), run_id=run_id)
 
     def create(
         self,
@@ -10628,7 +10834,6 @@ class JobsAPI:
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
-          If more than 100 job clusters are available, you can paginate through them using :method:jobs/get.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
           able to execute multiple runs of the same job concurrently. This is useful for example if you
@@ -10648,6 +10853,10 @@ class JobsAPI:
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -10663,9 +10872,11 @@ class JobsAPI:
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
         :param tasks: List[:class:`Task`] (optional)
-          A list of task specifications to be executed by this job. If more than 100 tasks are available, you
-          can paginate through them using :method:jobs/get. Use the `next_page_token` field at the object root
-          to determine if more results are available.
+          A list of task specifications to be executed by this job. It supports up to 1000 elements in write
+          endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
+          endpoints return only 100 tasks. If more than 100 tasks are available, you can paginate through them
+          using :method:jobs/get. Use the `next_page_token` field at the object root to determine if more
+          results are available.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
@@ -10958,8 +11169,8 @@ class JobsAPI:
         Retrieves a list of jobs.
 
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
-          100 elements will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
+          Whether to include task and cluster details in the response. Note that only the first 100 elements
+          will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
         :param limit: int (optional)
           The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
           default value is 20.
@@ -11025,8 +11236,8 @@ class JobsAPI:
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
-          100 elements will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
+          Whether to include task and cluster details in the response. Note that only the first 100 elements
+          will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
         :param job_id: int (optional)
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
@@ -11101,7 +11312,7 @@ class JobsAPI:
         rerun_tasks: Optional[List[str]] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> RepairRunResponse:
+    ) -> JobsRepairRunWaiter:
         """Repair a job run.
 
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
@@ -11226,8 +11437,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
-        return RepairRunResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
+        return JobsRepairRunWaiter(service=self, raw_response=RepairRunResponse.from_dict(op_response), run_id=run_id)
 
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
@@ -11273,7 +11484,7 @@ class JobsAPI:
         queue: Optional[QueueSettings] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> RunNowResponse:
+    ) -> JobsRunNowWaiter:
         """Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run.
@@ -11330,7 +11541,11 @@ class JobsAPI:
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run. This field overrides the performance target defined on
-          the job-level.
+          the job level.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11409,8 +11624,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
-        return RunNowResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
+        return JobsRunNowWaiter(
+            service=self, raw_response=RunNowResponse.from_dict(op_response), run_id=op_response["run_id"]
+        )
 
     def set_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
@@ -11454,7 +11671,7 @@ class JobsAPI:
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
-    ) -> SubmitRunResponse:
+    ) -> JobsSubmitWaiter:
         """Create and trigger a one-time run.
 
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -11548,8 +11765,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
-        return SubmitRunResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
+        return JobsSubmitWaiter(
+            service=self, raw_response=SubmitRunResponse.from_dict(op_response), run_id=op_response["run_id"]
+        )
 
     def update(
         self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None

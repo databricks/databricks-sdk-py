@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -7267,6 +7270,48 @@ class ExperimentsAPI:
         return UpdateRunResponse.from_dict(res)
 
 
+class ForecastingCreateExperimentWaiter:
+    raw_response: CreateForecastingExperimentResponse
+    """raw_response is the raw response of the CreateExperiment call."""
+    _service: ForecastingAPI
+    _experiment_id: str
+
+    def __init__(self, raw_response: CreateForecastingExperimentResponse, service: ForecastingAPI, experiment_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._experiment_id = experiment_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ForecastingExperiment:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ForecastingExperimentState.SUCCEEDED,)
+        failure_states = (
+            ForecastingExperimentState.FAILED,
+            ForecastingExperimentState.CANCELLED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_experiment(experiment_id=self._experiment_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach SUCCEEDED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"experiment_id={self._experiment_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class ForecastingAPI:
     """The Forecasting API allows you to create and get serverless forecasting experiments"""
 
@@ -7292,7 +7337,7 @@ class ForecastingAPI:
         split_column: Optional[str] = None,
         timeseries_identifier_columns: Optional[List[str]] = None,
         training_frameworks: Optional[List[str]] = None,
-    ) -> CreateForecastingExperimentResponse:
+    ) -> ForecastingCreateExperimentWaiter:
         """Create a forecasting experiment.
 
         Creates a serverless forecasting experiment. Returns the experiment ID.
@@ -7385,8 +7430,12 @@ class ForecastingAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
-        return CreateForecastingExperimentResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
+        return ForecastingCreateExperimentWaiter(
+            service=self,
+            raw_response=CreateForecastingExperimentResponse.from_dict(op_response),
+            experiment_id=op_response["experiment_id"],
+        )
 
     def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
         """Get a forecasting experiment.
