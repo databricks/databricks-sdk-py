@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -3151,6 +3154,90 @@ class VpcEndpointsAPI:
         return [VpcEndpoint.from_dict(v) for v in res]
 
 
+class WorkspacesCreateWaiter:
+    raw_response: Workspace
+    """raw_response is the raw response of the Create call."""
+    _service: WorkspacesAPI
+    _workspace_id: int
+
+    def __init__(self, raw_response: Workspace, service: WorkspacesAPI, workspace_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._workspace_id = workspace_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Workspace:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (WorkspaceStatus.RUNNING,)
+        failure_states = (
+            WorkspaceStatus.BANNED,
+            WorkspaceStatus.FAILED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(workspace_id=self._workspace_id)
+            status = poll.workspace_status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"workspace_id={self._workspace_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class WorkspacesUpdateWaiter:
+    raw_response: UpdateResponse
+    """raw_response is the raw response of the Update call."""
+    _service: WorkspacesAPI
+    _workspace_id: int
+
+    def __init__(self, raw_response: UpdateResponse, service: WorkspacesAPI, workspace_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._workspace_id = workspace_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Workspace:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (WorkspaceStatus.RUNNING,)
+        failure_states = (
+            WorkspaceStatus.BANNED,
+            WorkspaceStatus.FAILED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(workspace_id=self._workspace_id)
+            status = poll.workspace_status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"workspace_id={self._workspace_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class WorkspacesAPI:
     """These APIs manage workspaces for this account. A Databricks workspace is an environment for accessing all
     of your Databricks assets. The workspace organizes objects (notebooks, libraries, and experiments) into
@@ -3182,7 +3269,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
-    ) -> Workspace:
+    ) -> WorkspacesCreateWaiter:
         """Create a new workspace.
 
         Creates a new workspace.
@@ -3327,8 +3414,12 @@ class WorkspacesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers)
-        return Workspace.from_dict(res)
+        op_response = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/workspaces", body=body, headers=headers
+        )
+        return WorkspacesCreateWaiter(
+            service=self, response=Workspace.from_dict(op_response), workspace_id=op_response["workspace_id"]
+        )
 
     def delete(self, workspace_id: int):
         """Delete a workspace.
@@ -3414,7 +3505,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
-    ):
+    ) -> WorkspacesUpdateWaiter:
         """Update workspace configuration.
 
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
@@ -3569,6 +3660,9 @@ class WorkspacesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
+        op_response = self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", body=body, headers=headers
+        )
+        return WorkspacesUpdateWaiter(
+            service=self, response=UpdateResponse.from_dict(op_response), workspace_id=workspace_id
         )

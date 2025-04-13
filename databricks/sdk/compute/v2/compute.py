@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -9970,6 +9973,297 @@ class ClusterPoliciesAPI:
         return ClusterPolicyPermissions.from_dict(res)
 
 
+class ClustersCreateWaiter:
+    raw_response: CreateClusterResponse
+    """raw_response is the raw response of the Create call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: CreateClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersDeleteWaiter:
+    raw_response: DeleteClusterResponse
+    """raw_response is the raw response of the Delete call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: DeleteClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.TERMINATED,)
+        failure_states = (State.ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersEditWaiter:
+    raw_response: EditClusterResponse
+    """raw_response is the raw response of the Edit call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: EditClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersResizeWaiter:
+    raw_response: ResizeClusterResponse
+    """raw_response is the raw response of the Resize call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: ResizeClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersRestartWaiter:
+    raw_response: RestartClusterResponse
+    """raw_response is the raw response of the Restart call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: RestartClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersStartWaiter:
+    raw_response: StartClusterResponse
+    """raw_response is the raw response of the Start call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: StartClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ClustersUpdateWaiter:
+    raw_response: UpdateClusterResponse
+    """raw_response is the raw response of the Update call."""
+    _service: ClustersAPI
+    _cluster_id: str
+
+    def __init__(self, raw_response: UpdateClusterResponse, service: ClustersAPI, cluster_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ClusterDetails:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.ERROR,
+            State.TERMINATED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(cluster_id=self._cluster_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class ClustersAPI:
     """The Clusters API allows you to create, start, edit, list, terminate, and delete clusters.
 
@@ -10054,7 +10348,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
-    ) -> CreateClusterResponse:
+    ) -> ClustersCreateWaiter:
         """Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -10306,10 +10600,12 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
-        return CreateClusterResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.1/clusters/create", body=body, headers=headers)
+        return ClustersCreateWaiter(
+            service=self, response=CreateClusterResponse.from_dict(op_response), cluster_id=op_response["cluster_id"]
+        )
 
-    def delete(self, cluster_id: str):
+    def delete(self, cluster_id: str) -> ClustersDeleteWaiter:
         """Terminate cluster.
 
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
@@ -10331,7 +10627,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
+        return ClustersDeleteWaiter(
+            service=self, response=DeleteClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
     def edit(
         self,
@@ -10367,7 +10666,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
-    ):
+    ) -> ClustersEditWaiter:
         """Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -10616,7 +10915,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
+        return ClustersEditWaiter(
+            service=self, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
     def events(
         self,
@@ -10864,7 +11166,9 @@ class ClustersAPI:
 
         self._api.do("POST", "/api/2.1/clusters/pin", body=body, headers=headers)
 
-    def resize(self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None):
+    def resize(
+        self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None
+    ) -> ClustersResizeWaiter:
         """Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
@@ -10901,9 +11205,12 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
+        return ClustersResizeWaiter(
+            service=self, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
-    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None):
+    def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> ClustersRestartWaiter:
         """Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
@@ -10927,7 +11234,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
+        return ClustersRestartWaiter(
+            service=self, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
     def set_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
@@ -10969,7 +11279,7 @@ class ClustersAPI:
         res = self._api.do("GET", "/api/2.1/clusters/spark-versions", headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
 
-    def start(self, cluster_id: str):
+    def start(self, cluster_id: str) -> ClustersStartWaiter:
         """Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
@@ -10993,7 +11303,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
+        return ClustersStartWaiter(
+            service=self, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
     def unpin(self, cluster_id: str):
         """Unpin cluster.
@@ -11016,7 +11329,9 @@ class ClustersAPI:
 
         self._api.do("POST", "/api/2.1/clusters/unpin", body=body, headers=headers)
 
-    def update(self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None):
+    def update(
+        self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None
+    ) -> ClustersUpdateWaiter:
         """Update cluster configuration (partial).
 
         Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
@@ -11062,7 +11377,10 @@ class ClustersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
+        return ClustersUpdateWaiter(
+            service=self, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
+        )
 
     def update_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
@@ -11089,6 +11407,154 @@ class ClustersAPI:
         return ClusterPermissions.from_dict(res)
 
 
+class CommandExecutionCancelWaiter:
+    raw_response: CancelResponse
+    """raw_response is the raw response of the Cancel call."""
+    _service: CommandExecutionAPI
+    _cluster_id: str
+    _command_id: str
+    _context_id: str
+
+    def __init__(
+        self,
+        raw_response: CancelResponse,
+        service: CommandExecutionAPI,
+        cluster_id: str,
+        command_id: str,
+        context_id: str,
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+        self._command_id = command_id
+        self._context_id = context_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> CommandStatusResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (CommandStatus.CANCELLED,)
+        failure_states = (CommandStatus.ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.command_status(
+                cluster_id=self._cluster_id, command_id=self._command_id, context_id=self._context_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if poll.results:
+                status_message = poll.results.cause
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach Cancelled, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}, command_id={self._command_id}, context_id={self._context_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class CommandExecutionCreateWaiter:
+    raw_response: Created
+    """raw_response is the raw response of the Create call."""
+    _service: CommandExecutionAPI
+    _cluster_id: str
+    _context_id: str
+
+    def __init__(self, raw_response: Created, service: CommandExecutionAPI, cluster_id: str, context_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+        self._context_id = context_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ContextStatusResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ContextStatus.RUNNING,)
+        failure_states = (ContextStatus.ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.context_status(cluster_id=self._cluster_id, context_id=self._context_id)
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach Running, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}, context_id={self._context_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class CommandExecutionExecuteWaiter:
+    raw_response: Created
+    """raw_response is the raw response of the Execute call."""
+    _service: CommandExecutionAPI
+    _cluster_id: str
+    _command_id: str
+    _context_id: str
+
+    def __init__(
+        self, raw_response: Created, service: CommandExecutionAPI, cluster_id: str, command_id: str, context_id: str
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._cluster_id = cluster_id
+        self._command_id = command_id
+        self._context_id = context_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> CommandStatusResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            CommandStatus.FINISHED,
+            CommandStatus.ERROR,
+        )
+        failure_states = (
+            CommandStatus.CANCELLED,
+            CommandStatus.CANCELLING,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.command_status(
+                cluster_id=self._cluster_id, command_id=self._command_id, context_id=self._context_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach Finished or Error, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={self._cluster_id}, command_id={self._command_id}, context_id={self._context_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class CommandExecutionAPI:
     """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
     only supports (classic) all-purpose clusters. Serverless compute is not supported."""
@@ -11098,7 +11564,7 @@ class CommandExecutionAPI:
 
     def cancel(
         self, *, cluster_id: Optional[str] = None, command_id: Optional[str] = None, context_id: Optional[str] = None
-    ):
+    ) -> CommandExecutionCancelWaiter:
         """Cancel a command.
 
         Cancels a currently running command within an execution context.
@@ -11125,7 +11591,14 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
+        return CommandExecutionCancelWaiter(
+            service=self,
+            response=CancelResponse.from_dict(op_response),
+            cluster_id=cluster_id,
+            command_id=command_id,
+            context_id=context_id,
+        )
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
         """Get command info.
@@ -11178,7 +11651,9 @@ class CommandExecutionAPI:
         res = self._api.do("GET", "/api/1.2/contexts/status", query=query, headers=headers)
         return ContextStatusResponse.from_dict(res)
 
-    def create(self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None) -> Created:
+    def create(
+        self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None
+    ) -> CommandExecutionCreateWaiter:
         """Create an execution context.
 
         Creates an execution context for running cluster commands.
@@ -11203,8 +11678,10 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
-        return Created.from_dict(res)
+        op_response = self._api.do("POST", "/api/1.2/contexts/create", body=body, headers=headers)
+        return CommandExecutionCreateWaiter(
+            service=self, response=Created.from_dict(op_response), cluster_id=cluster_id, context_id=op_response["id"]
+        )
 
     def destroy(self, cluster_id: str, context_id: str):
         """Delete an execution context.
@@ -11235,7 +11712,7 @@ class CommandExecutionAPI:
         command: Optional[str] = None,
         context_id: Optional[str] = None,
         language: Optional[Language] = None,
-    ) -> Created:
+    ) -> CommandExecutionExecuteWaiter:
         """Run a command.
 
         Runs a cluster command in the given execution context, using the provided language.
@@ -11268,8 +11745,14 @@ class CommandExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
-        return Created.from_dict(res)
+        op_response = self._api.do("POST", "/api/1.2/commands/execute", body=body, headers=headers)
+        return CommandExecutionExecuteWaiter(
+            service=self,
+            response=Created.from_dict(op_response),
+            cluster_id=cluster_id,
+            command_id=op_response["id"],
+            context_id=context_id,
+        )
 
 
 class GlobalInitScriptsAPI:

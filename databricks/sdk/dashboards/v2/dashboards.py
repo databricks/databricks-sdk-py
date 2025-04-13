@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -2624,6 +2628,109 @@ class UnpublishDashboardResponse:
         return cls()
 
 
+class GenieCreateMessageWaiter:
+    raw_response: GenieMessage
+    """raw_response is the raw response of the CreateMessage call."""
+    _service: GenieAPI
+    _conversation_id: str
+    _message_id: str
+    _space_id: str
+
+    def __init__(
+        self, raw_response: GenieMessage, service: GenieAPI, conversation_id: str, message_id: str, space_id: str
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._conversation_id = conversation_id
+        self._message_id = message_id
+        self._space_id = space_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GenieMessage:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (MessageStatus.COMPLETED,)
+        failure_states = (MessageStatus.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_message(
+                conversation_id=self._conversation_id, message_id=self._message_id, space_id=self._space_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach COMPLETED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = (
+                f"conversation_id={self._conversation_id}, message_id={self._message_id}, space_id={self._space_id}"
+            )
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class GenieStartConversationWaiter:
+    raw_response: GenieStartConversationResponse
+    """raw_response is the raw response of the StartConversation call."""
+    _service: GenieAPI
+    _conversation_id: str
+    _message_id: str
+    _space_id: str
+
+    def __init__(
+        self,
+        raw_response: GenieStartConversationResponse,
+        service: GenieAPI,
+        conversation_id: str,
+        message_id: str,
+        space_id: str,
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._conversation_id = conversation_id
+        self._message_id = message_id
+        self._space_id = space_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GenieMessage:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (MessageStatus.COMPLETED,)
+        failure_states = (MessageStatus.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_message(
+                conversation_id=self._conversation_id, message_id=self._message_id, space_id=self._space_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach COMPLETED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = (
+                f"conversation_id={self._conversation_id}, message_id={self._message_id}, space_id={self._space_id}"
+            )
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class GenieAPI:
     """Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up spaces that
     business users can use to ask questions using natural language. Genie uses data registered to Unity
@@ -2633,7 +2740,7 @@ class GenieAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_message(self, space_id: str, conversation_id: str, content: str) -> GenieMessage:
+    def create_message(self, space_id: str, conversation_id: str, content: str) -> GenieCreateMessageWaiter:
         """Create conversation message.
 
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
@@ -2658,13 +2765,19 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
+        op_response = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages",
             body=body,
             headers=headers,
         )
-        return GenieMessage.from_dict(res)
+        return GenieCreateMessageWaiter(
+            service=self,
+            response=GenieMessage.from_dict(op_response),
+            conversation_id=conversation_id,
+            message_id=op_response["id"],
+            space_id=space_id,
+        )
 
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
@@ -2936,7 +3049,7 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
-    def start_conversation(self, space_id: str, content: str) -> GenieStartConversationResponse:
+    def start_conversation(self, space_id: str, content: str) -> GenieStartConversationWaiter:
         """Start conversation.
 
         Start a new conversation.
@@ -2958,8 +3071,16 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers)
-        return GenieStartConversationResponse.from_dict(res)
+        op_response = self._api.do(
+            "POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers
+        )
+        return GenieStartConversationWaiter(
+            service=self,
+            response=GenieStartConversationResponse.from_dict(op_response),
+            conversation_id=op_response["conversation_id"],
+            message_id=op_response["message_id"],
+            space_id=space_id,
+        )
 
 
 class LakeviewAPI:

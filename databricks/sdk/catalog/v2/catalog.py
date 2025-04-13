@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -12283,13 +12286,52 @@ class ModelVersionsAPI:
         return ModelVersionInfo.from_dict(res)
 
 
+class OnlineTablesCreateWaiter:
+    raw_response: OnlineTable
+    """raw_response is the raw response of the Create call."""
+    _service: OnlineTablesAPI
+    _name: str
+
+    def __init__(self, raw_response: OnlineTable, service: OnlineTablesAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> OnlineTable:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ProvisioningInfoState.ACTIVE,)
+        failure_states = (ProvisioningInfoState.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.unity_catalog_provisioning_state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach ACTIVE, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class OnlineTablesAPI:
     """Online tables provide lower latency and higher QPS access to data from Delta tables."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, table: Optional[OnlineTable] = None) -> OnlineTable:
+    def create(self, *, table: Optional[OnlineTable] = None) -> OnlineTablesCreateWaiter:
         """Create an Online Table.
 
         Create a new Online Table.
@@ -12307,8 +12349,10 @@ class OnlineTablesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
-        return OnlineTable.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
+        return OnlineTablesCreateWaiter(
+            service=self, response=OnlineTable.from_dict(op_response), name=op_response["name"]
+        )
 
     def delete(self, name: str):
         """Delete an Online Table.

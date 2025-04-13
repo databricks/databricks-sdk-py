@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -10510,6 +10514,182 @@ class WorkspaceStorageInfo:
         return cls(destination=d.get("destination", None))
 
 
+class JobsCancelRunWaiter:
+    raw_response: CancelRunResponse
+    """raw_response is the raw response of the CancelRun call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: CancelRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsRepairRunWaiter:
+    raw_response: RepairRunResponse
+    """raw_response is the raw response of the RepairRun call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: RepairRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsRunNowWaiter:
+    raw_response: RunNowResponse
+    """raw_response is the raw response of the RunNow call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: RunNowResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class JobsSubmitWaiter:
+    raw_response: SubmitRunResponse
+    """raw_response is the raw response of the Submit call."""
+    _service: JobsAPI
+    _run_id: int
+
+    def __init__(self, raw_response: SubmitRunResponse, service: JobsAPI, run_id: int):
+        self._service = service
+        self.raw_response = raw_response
+        self._run_id = run_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> Run:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (
+            RunLifeCycleState.TERMINATED,
+            RunLifeCycleState.SKIPPED,
+        )
+        failure_states = (RunLifeCycleState.INTERNAL_ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_run(run_id=self._run_id)
+            status = poll.state.life_cycle_state
+            status_message = f"current status: {status}"
+            if poll.state:
+                status_message = poll.state.state_message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach TERMINATED or SKIPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"run_id={self._run_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
 
@@ -10555,7 +10735,7 @@ class JobsAPI:
 
         self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
-    def cancel_run(self, run_id: int):
+    def cancel_run(self, run_id: int) -> JobsCancelRunWaiter:
         """Cancel a run.
 
         Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
@@ -10575,7 +10755,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
+        return JobsCancelRunWaiter(service=self, response=CancelRunResponse.from_dict(op_response), run_id=run_id)
 
     def create(
         self,
@@ -11131,7 +11312,7 @@ class JobsAPI:
         rerun_tasks: Optional[List[str]] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> RepairRunResponse:
+    ) -> JobsRepairRunWaiter:
         """Repair a job run.
 
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
@@ -11256,8 +11437,8 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
-        return RepairRunResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
+        return JobsRepairRunWaiter(service=self, response=RepairRunResponse.from_dict(op_response), run_id=run_id)
 
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
@@ -11303,7 +11484,7 @@ class JobsAPI:
         queue: Optional[QueueSettings] = None,
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
-    ) -> RunNowResponse:
+    ) -> JobsRunNowWaiter:
         """Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run.
@@ -11443,8 +11624,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
-        return RunNowResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
+        return JobsRunNowWaiter(
+            service=self, response=RunNowResponse.from_dict(op_response), run_id=op_response["run_id"]
+        )
 
     def set_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
@@ -11488,7 +11671,7 @@ class JobsAPI:
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
-    ) -> SubmitRunResponse:
+    ) -> JobsSubmitWaiter:
         """Create and trigger a one-time run.
 
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -11582,8 +11765,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
-        return SubmitRunResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
+        return JobsSubmitWaiter(
+            service=self, response=SubmitRunResponse.from_dict(op_response), run_id=op_response["run_id"]
+        )
 
     def update(
         self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None

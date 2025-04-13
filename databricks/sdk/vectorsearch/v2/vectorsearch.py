@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1616,13 +1620,54 @@ class VectorIndexType(Enum):
     DIRECT_ACCESS = "DIRECT_ACCESS"
 
 
+class VectorSearchEndpointsCreateEndpointWaiter:
+    raw_response: EndpointInfo
+    """raw_response is the raw response of the CreateEndpoint call."""
+    _service: VectorSearchEndpointsAPI
+    _endpoint_name: str
+
+    def __init__(self, raw_response: EndpointInfo, service: VectorSearchEndpointsAPI, endpoint_name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._endpoint_name = endpoint_name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> EndpointInfo:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (EndpointStatusState.ONLINE,)
+        failure_states = (EndpointStatusState.OFFLINE,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_endpoint(endpoint_name=self._endpoint_name)
+            status = poll.endpoint_status.state
+            status_message = f"current status: {status}"
+            if poll.endpoint_status:
+                status_message = poll.endpoint_status.message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach ONLINE, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"endpoint_name={self._endpoint_name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class VectorSearchEndpointsAPI:
     """**Endpoint**: Represents the compute resources to host vector search indexes."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_endpoint(self, name: str, endpoint_type: EndpointType) -> EndpointInfo:
+    def create_endpoint(self, name: str, endpoint_type: EndpointType) -> VectorSearchEndpointsCreateEndpointWaiter:
         """Create an endpoint.
 
         Create a new endpoint.
@@ -1646,8 +1691,10 @@ class VectorSearchEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
-        return EndpointInfo.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
+        return VectorSearchEndpointsCreateEndpointWaiter(
+            service=self, response=EndpointInfo.from_dict(op_response), endpoint_name=op_response["name"]
+        )
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete an endpoint.

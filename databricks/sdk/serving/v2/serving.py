@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -4148,6 +4152,90 @@ class V1ResponseChoiceElement:
         )
 
 
+class ServingEndpointsCreateWaiter:
+    raw_response: ServingEndpointDetailed
+    """raw_response is the raw response of the Create call."""
+    _service: ServingEndpointsAPI
+    _name: str
+
+    def __init__(self, raw_response: ServingEndpointDetailed, service: ServingEndpointsAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ServingEndpointDetailed:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (EndpointStateConfigUpdate.NOT_UPDATING,)
+        failure_states = (
+            EndpointStateConfigUpdate.UPDATE_FAILED,
+            EndpointStateConfigUpdate.UPDATE_CANCELED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.state.config_update
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach NOT_UPDATING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class ServingEndpointsUpdateConfigWaiter:
+    raw_response: ServingEndpointDetailed
+    """raw_response is the raw response of the UpdateConfig call."""
+    _service: ServingEndpointsAPI
+    _name: str
+
+    def __init__(self, raw_response: ServingEndpointDetailed, service: ServingEndpointsAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> ServingEndpointDetailed:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (EndpointStateConfigUpdate.NOT_UPDATING,)
+        failure_states = (
+            EndpointStateConfigUpdate.UPDATE_FAILED,
+            EndpointStateConfigUpdate.UPDATE_CANCELED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.state.config_update
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach NOT_UPDATING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class ServingEndpointsAPI:
     """The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 
@@ -4195,7 +4283,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
-    ) -> ServingEndpointDetailed:
+    ) -> ServingEndpointsCreateWaiter:
         """Create a new serving endpoint.
 
         :param name: str
@@ -4241,8 +4329,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
-        return ServingEndpointDetailed.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
+        return ServingEndpointsCreateWaiter(
+            service=self, response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
+        )
 
     def delete(self, name: str):
         """Delete a serving endpoint.
@@ -4687,7 +4777,7 @@ class ServingEndpointsAPI:
         served_entities: Optional[List[ServedEntityInput]] = None,
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
-    ) -> ServingEndpointDetailed:
+    ) -> ServingEndpointsUpdateConfigWaiter:
         """Update config of a serving endpoint.
 
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
@@ -4727,8 +4817,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
-        return ServingEndpointDetailed.from_dict(res)
+        op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
+        return ServingEndpointsUpdateConfigWaiter(
+            service=self, response=ServingEndpointDetailed.from_dict(op_response), name=op_response["name"]
+        )
 
     def update_permissions(
         self,

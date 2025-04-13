@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1061,6 +1065,178 @@ class StopAppRequest:
     """The name of the app."""
 
 
+class AppsCreateWaiter:
+    raw_response: App
+    """raw_response is the raw response of the Create call."""
+    _service: AppsAPI
+    _name: str
+
+    def __init__(self, raw_response: App, service: AppsAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> App:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ComputeState.ACTIVE,)
+        failure_states = (
+            ComputeState.ERROR,
+            ComputeState.STOPPED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.compute_status.state
+            status_message = f"current status: {status}"
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach ACTIVE, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class AppsDeployWaiter:
+    raw_response: AppDeployment
+    """raw_response is the raw response of the Deploy call."""
+    _service: AppsAPI
+    _app_name: str
+    _deployment_id: str
+
+    def __init__(self, raw_response: AppDeployment, service: AppsAPI, app_name: str, deployment_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._app_name = app_name
+        self._deployment_id = deployment_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> AppDeployment:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (AppDeploymentState.SUCCEEDED,)
+        failure_states = (AppDeploymentState.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_deployment(app_name=self._app_name, deployment_id=self._deployment_id)
+            status = poll.status.state
+            status_message = f"current status: {status}"
+            if poll.status:
+                status_message = poll.status.message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach SUCCEEDED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"app_name={self._app_name}, deployment_id={self._deployment_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class AppsStartWaiter:
+    raw_response: App
+    """raw_response is the raw response of the Start call."""
+    _service: AppsAPI
+    _name: str
+
+    def __init__(self, raw_response: App, service: AppsAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> App:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ComputeState.ACTIVE,)
+        failure_states = (
+            ComputeState.ERROR,
+            ComputeState.STOPPED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.compute_status.state
+            status_message = f"current status: {status}"
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach ACTIVE, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class AppsStopWaiter:
+    raw_response: App
+    """raw_response is the raw response of the Stop call."""
+    _service: AppsAPI
+    _name: str
+
+    def __init__(self, raw_response: App, service: AppsAPI, name: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._name = name
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> App:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (ComputeState.STOPPED,)
+        failure_states = (ComputeState.ERROR,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(name=self._name)
+            status = poll.compute_status.state
+            status_message = f"current status: {status}"
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach STOPPED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"name={self._name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class AppsAPI:
     """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on."""
@@ -1068,7 +1244,7 @@ class AppsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> App:
+    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> AppsCreateWaiter:
         """Create an app.
 
         Creates a new app.
@@ -1090,8 +1266,8 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
-        return App.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
+        return AppsCreateWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -1111,7 +1287,7 @@ class AppsAPI:
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
-    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> AppDeployment:
+    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> AppsDeployWaiter:
         """Create an app deployment.
 
         Creates an app deployment for the app with the supplied name.
@@ -1130,8 +1306,13 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
-        return AppDeployment.from_dict(res)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
+        return AppsDeployWaiter(
+            service=self,
+            response=AppDeployment.from_dict(op_response),
+            app_name=app_name,
+            deployment_id=op_response["deployment_id"],
+        )
 
     def get(self, name: str) -> App:
         """Get an app.
@@ -1298,7 +1479,7 @@ class AppsAPI:
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
-    def start(self, name: str) -> App:
+    def start(self, name: str) -> AppsStartWaiter:
         """Start an app.
 
         Start the last active deployment of the app in the workspace.
@@ -1316,10 +1497,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
-        return App.from_dict(res)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
+        return AppsStartWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
 
-    def stop(self, name: str) -> App:
+    def stop(self, name: str) -> AppsStopWaiter:
         """Stop an app.
 
         Stops the active deployment of the app in the workspace.
@@ -1337,8 +1518,8 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
-        return App.from_dict(res)
+        op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
+        return AppsStopWaiter(service=self, response=App.from_dict(op_response), name=op_response["name"])
 
     def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.
