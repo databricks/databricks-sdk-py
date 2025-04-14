@@ -4,6 +4,14 @@ Jobs
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.jobs`` module.
 
 .. py:currentmodule:: databricks.sdk.service.jobs
+.. py:class:: AuthenticationMethod
+
+   .. py:attribute:: OAUTH
+      :value: "OAUTH"
+
+   .. py:attribute:: PAT
+      :value: "PAT"
+
 .. autoclass:: BaseJob
    :members:
    :undoc-members:
@@ -177,6 +185,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CronSchedule
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardPageSnapshot
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: DashboardTaskOutput
    :members:
    :undoc-members:
 
@@ -482,14 +502,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run on serverless compute should be. The performance mode on the job or pipeline should map to a performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget).
 
-   .. py:attribute:: BALANCED
-      :value: "BALANCED"
-
-   .. py:attribute:: COST_OPTIMIZED
-      :value: "COST_OPTIMIZED"
-
    .. py:attribute:: PERFORMANCE_OPTIMIZED
       :value: "PERFORMANCE_OPTIMIZED"
+
+   .. py:attribute:: STANDARD
+      :value: "STANDARD"
 
 .. autoclass:: PeriodicTriggerConfiguration
    :members:
@@ -511,6 +528,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PipelineTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: PowerBiModel
+   :members:
+   :undoc-members:
+
+.. autoclass:: PowerBiTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: PowerBiTask
    :members:
    :undoc-members:
 
@@ -882,6 +911,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: StorageMode
+
+   .. py:attribute:: DIRECT_QUERY
+      :value: "DIRECT_QUERY"
+
+   .. py:attribute:: DUAL
+      :value: "DUAL"
+
+   .. py:attribute:: IMPORT
+      :value: "IMPORT"
+
 .. autoclass:: SubmitRun
    :members:
    :undoc-members:
@@ -891,6 +931,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SubmitTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: Subscription
+   :members:
+   :undoc-members:
+
+.. autoclass:: SubscriptionSubscriber
    :members:
    :undoc-members:
 
@@ -1080,5 +1128,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: WebhookNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: WidgetErrorDetail
    :members:
    :undoc-members:

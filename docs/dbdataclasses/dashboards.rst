@@ -4,6 +4,14 @@ Dashboards
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.dashboards`` module.
 
 .. py:currentmodule:: databricks.sdk.service.dashboards
+.. autoclass:: AuthorizationDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: AuthorizationDetailsGrantRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: CancelQueryExecutionResponse
    :members:
    :undoc-members:
@@ -61,6 +69,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieGetDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieGetMessageQueryResultResponse
    :members:
    :undoc-members:
@@ -90,6 +102,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetPublishedDashboardEmbeddedResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPublishedDashboardTokenInfoResponse
    :members:
    :undoc-members:
 

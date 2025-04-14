@@ -1271,6 +1271,8 @@ class ColumnTypeName(Enum):
     DECIMAL = "DECIMAL"
     DOUBLE = "DOUBLE"
     FLOAT = "FLOAT"
+    GEOGRAPHY = "GEOGRAPHY"
+    GEOMETRY = "GEOMETRY"
     INT = "INT"
     INTERVAL = "INTERVAL"
     LONG = "LONG"
@@ -2592,6 +2594,11 @@ class CreateVolumeRequestContent:
     """The name of the volume"""
 
     volume_type: VolumeType
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     comment: Optional[str] = None
     """The comment attached to the volume"""
@@ -9835,6 +9842,11 @@ class VolumeInfo:
     """The unique identifier of the volume"""
 
     volume_type: Optional[VolumeType] = None
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -9939,6 +9951,11 @@ class VolumeInfo:
 
 
 class VolumeType(Enum):
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
@@ -14270,6 +14287,11 @@ class VolumesAPI:
         :param name: str
           The name of the volume
         :param volume_type: :class:`VolumeType`
+          The type of the volume. An external volume is located in the specified external location. A managed
+          volume is located in the default location which is specified by the parent schema, or the parent
+          catalog, or the Metastore. [Learn more]
+
+          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)

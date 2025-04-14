@@ -4788,6 +4788,10 @@ class Environment:
     Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
     /Workspace/test/requirements.txt"]"""
 
+    jar_dependencies: Optional[List[str]] = None
+    """List of jar dependencies, should be string representing volume paths. For example:
+    `/Volumes/path/to/test.jar`."""
+
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4795,6 +4799,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.jar_dependencies:
+            body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4804,12 +4810,18 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.jar_dependencies:
+            body["jar_dependencies"] = self.jar_dependencies
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
-        return cls(client=d.get("client", None), dependencies=d.get("dependencies", None))
+        return cls(
+            client=d.get("client", None),
+            dependencies=d.get("dependencies", None),
+            jar_dependencies=d.get("jar_dependencies", None),
+        )
 
 
 @dataclass
@@ -7667,6 +7679,9 @@ class LogSyncStatus:
         return cls(last_attempted=d.get("last_attempted", None), last_exception=d.get("last_exception", None))
 
 
+MapAny = Dict[str, Any]
+
+
 @dataclass
 class MavenLibrary:
     coordinates: str
@@ -8937,6 +8952,7 @@ class TerminationReasonCode(Enum):
     ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
     ALLOCATION_TIMEOUT = "ALLOCATION_TIMEOUT"
     ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY = "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY"
+    ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS = "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS"
     ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS"
     ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS = "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS"
     ALLOCATION_TIMEOUT_NO_READY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS"
@@ -8989,7 +9005,10 @@ class TerminationReasonCode(Enum):
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
     DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
+    DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
+    DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
+    DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
