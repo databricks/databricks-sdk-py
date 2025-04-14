@@ -383,6 +383,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnableExportNotebook
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnableNotebookTableClipboard
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnableResultsDownloading
+   :members:
+   :undoc-members:
+
 .. autoclass:: EnhancedSecurityMonitoring
    :members:
    :undoc-members:
@@ -715,6 +727,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateDisableLegacyFeaturesRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateEnableExportNotebookRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateEnableNotebookTableClipboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateEnableResultsDownloadingRequest
    :members:
    :undoc-members:
 

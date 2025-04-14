@@ -1133,6 +1133,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY
       :value: "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY"
 
+   .. py:attribute:: ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS
+      :value: "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS"
+
    .. py:attribute:: ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS
       :value: "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS"
 
@@ -1289,8 +1292,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DISASTER_RECOVERY_REPLICATION
       :value: "DISASTER_RECOVERY_REPLICATION"
 
+   .. py:attribute:: DOCKER_CONTAINER_CREATION_EXCEPTION
+      :value: "DOCKER_CONTAINER_CREATION_EXCEPTION"
+
    .. py:attribute:: DOCKER_IMAGE_PULL_FAILURE
       :value: "DOCKER_IMAGE_PULL_FAILURE"
+
+   .. py:attribute:: DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION
+      :value: "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
+
+   .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
+      :value: "DOCKER_INVALID_OS_EXCEPTION"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
