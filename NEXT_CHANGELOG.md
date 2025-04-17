@@ -7,6 +7,8 @@
   To disable asynchronous token refresh, set the environment variable `DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH=true` or configure it within your configuration object.
   The previous `enable_experimental_async_token_refresh` option has been removed as asynchronous refresh is now the default behavior.
 
+-  Update the datatype of job_id parameter in the jobs API's update_permissions to be consistent with the other parts of the same API
+
 ### Bug Fixes
 
 ### Documentation
