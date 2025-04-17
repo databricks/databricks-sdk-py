@@ -4626,6 +4626,7 @@ class ServingEndpointsAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        response_format: Optional[dict] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
@@ -4702,6 +4703,8 @@ class ServingEndpointsAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if response_format is not None:
+            body["response_format"] = response_format
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4899,6 +4902,7 @@ class ServingEndpointsDataPlaneAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        response_format: Optional[dict] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
@@ -4975,6 +4979,8 @@ class ServingEndpointsDataPlaneAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if response_format is not None:
+            body["response_format"] = response_format
         data_plane_info = self._data_plane_info_query(
             name=name,
         )
