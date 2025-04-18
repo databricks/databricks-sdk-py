@@ -61,6 +61,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ArtifactCredentialInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ArtifactCredentialInfoHttpHeader
+   :members:
+   :undoc-members:
+
+.. py:class:: ArtifactCredentialType
+
+   The type of a given artifact access credential
+
+   .. py:attribute:: AWS_PRESIGNED_URL
+      :value: "AWS_PRESIGNED_URL"
+
+   .. py:attribute:: AZURE_ADLS_GEN2_SAS_URI
+      :value: "AZURE_ADLS_GEN2_SAS_URI"
+
+   .. py:attribute:: AZURE_SAS_URI
+      :value: "AZURE_SAS_URI"
+
+   .. py:attribute:: GCP_SIGNED_URL
+      :value: "GCP_SIGNED_URL"
+
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on a comment. Valid values are: * `EDIT_COMMENT`: Edit the comment
@@ -292,6 +316,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
 
+.. autoclass:: GetCredentialsForTraceDataDownloadResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetCredentialsForTraceDataUploadResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetExperimentByNameResponse
    :members:
    :undoc-members:
@@ -425,6 +457,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelDatabricks
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelInput
    :members:
    :undoc-members:
 

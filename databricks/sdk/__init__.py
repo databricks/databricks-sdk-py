@@ -86,9 +86,11 @@ from databricks.sdk.service.settings import (
     AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
     ComplianceSecurityProfileAPI, CredentialsManagerAPI,
     CspEnablementAccountAPI, DefaultNamespaceAPI, DisableLegacyAccessAPI,
-    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableIpAccessListsAPI,
-    EnhancedSecurityMonitoringAPI, EsmEnablementAccountAPI, IpAccessListsAPI,
-    NetworkConnectivityAPI, NotificationDestinationsAPI, PersonalComputeAPI,
+    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableExportNotebookAPI,
+    EnableIpAccessListsAPI, EnableNotebookTableClipboardAPI,
+    EnableResultsDownloadingAPI, EnhancedSecurityMonitoringAPI,
+    EsmEnablementAccountAPI, IpAccessListsAPI, NetworkConnectivityAPI,
+    NotificationDestinationsAPI, PersonalComputeAPI,
     RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI,
     WorkspaceConfAPI)
 from databricks.sdk.service.sharing import (ProvidersAPI,
@@ -287,7 +289,7 @@ class WorkspaceClient:
         self._service_principals = service.iam.ServicePrincipalsAPI(self._api_client)
         self._serving_endpoints = serving_endpoints
         serving_endpoints_data_plane_token_source = DataPlaneTokenSource(
-            self._config.host, self._config.oauth_token, not self._config.enable_experimental_async_token_refresh
+            self._config.host, self._config.oauth_token, self._config.disable_async_token_refresh
         )
         self._serving_endpoints_data_plane = service.serving.ServingEndpointsDataPlaneAPI(
             self._api_client, serving_endpoints, serving_endpoints_data_plane_token_source
@@ -756,7 +758,7 @@ class WorkspaceClient:
 
     @property
     def tables(self) -> service.catalog.TablesAPI:
-        """A table resides in the third layer of Unity Catalog’s three-level namespace."""
+        """A table resides in the third layer of Unity Catalog's three-level namespace."""
         return self._tables
 
     @property

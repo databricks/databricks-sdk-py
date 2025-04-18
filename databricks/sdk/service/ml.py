@@ -271,6 +271,109 @@ class ApproveTransitionRequestResponse:
         return cls(activity=_from_dict(d, "activity", Activity))
 
 
+@dataclass
+class ArtifactCredentialInfo:
+    headers: Optional[List[ArtifactCredentialInfoHttpHeader]] = None
+    """A collection of HTTP headers that should be specified when uploading to or downloading from the
+    specified `signed_uri`."""
+
+    path: Optional[str] = None
+    """The path, relative to the Run's artifact root location, of the artifact that can be accessed
+    with the credential."""
+
+    run_id: Optional[str] = None
+    """The ID of the MLflow Run containing the artifact that can be accessed with the credential."""
+
+    signed_uri: Optional[str] = None
+    """The signed URI credential that provides access to the artifact."""
+
+    type: Optional[ArtifactCredentialType] = None
+    """The type of the signed credential URI (e.g., an AWS presigned URL or an Azure Shared Access
+    Signature URI)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.headers:
+            body["headers"] = [v.as_dict() for v in self.headers]
+        if self.path is not None:
+            body["path"] = self.path
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.signed_uri is not None:
+            body["signed_uri"] = self.signed_uri
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.headers:
+            body["headers"] = self.headers
+        if self.path is not None:
+            body["path"] = self.path
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        if self.signed_uri is not None:
+            body["signed_uri"] = self.signed_uri
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfo:
+        """Deserializes the ArtifactCredentialInfo from a dictionary."""
+        return cls(
+            headers=_repeated_dict(d, "headers", ArtifactCredentialInfoHttpHeader),
+            path=d.get("path", None),
+            run_id=d.get("run_id", None),
+            signed_uri=d.get("signed_uri", None),
+            type=_enum(d, "type", ArtifactCredentialType),
+        )
+
+
+@dataclass
+class ArtifactCredentialInfoHttpHeader:
+    name: Optional[str] = None
+    """The HTTP header name."""
+
+    value: Optional[str] = None
+    """The HTTP header value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfoHttpHeader into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ArtifactCredentialInfoHttpHeader into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfoHttpHeader:
+        """Deserializes the ArtifactCredentialInfoHttpHeader from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+class ArtifactCredentialType(Enum):
+    """The type of a given artifact access credential"""
+
+    AWS_PRESIGNED_URL = "AWS_PRESIGNED_URL"
+    AZURE_ADLS_GEN2_SAS_URI = "AZURE_ADLS_GEN2_SAS_URI"
+    AZURE_SAS_URI = "AZURE_SAS_URI"
+    GCP_SIGNED_URL = "GCP_SIGNED_URL"
+
+
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
     `EDIT_COMMENT`: Edit the comment
@@ -489,63 +592,67 @@ class CreateExperimentResponse:
 @dataclass
 class CreateForecastingExperimentRequest:
     train_data_path: str
-    """The three-level (fully qualified) name of a unity catalog table. This table serves as the
-    training data for the forecasting model."""
+    """The fully qualified name of a Unity Catalog table, formatted as
+    catalog_name.schema_name.table_name, used as training data for the forecasting model."""
 
     target_column: str
-    """Name of the column in the input training table that serves as the prediction target. The values
-    in this column will be used as the ground truth for model training."""
+    """The column in the input training table used as the prediction target for model training. The
+    values in this column are used as the ground truth for model training."""
 
     time_column: str
-    """Name of the column in the input training table that represents the timestamp of each row."""
+    """The column in the input training table that represents each row's timestamp."""
 
     forecast_granularity: str
-    """The granularity of the forecast. This defines the time interval between consecutive rows in the
-    time series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15
-    minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'."""
+    """The time interval between consecutive rows in the time series data. Possible values include: '1
+    second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily',
+    'Weekly', 'Monthly', 'Quarterly', 'Yearly'."""
 
     forecast_horizon: int
-    """The number of time steps into the future for which predictions should be made. This value
-    represents a multiple of forecast_granularity determining how far ahead the model will forecast."""
+    """The number of time steps into the future to make predictions, calculated as a multiple of
+    forecast_granularity. This value represents how far ahead the model should forecast."""
 
     custom_weights_column: Optional[str] = None
-    """Name of the column in the input training table used to customize the weight for each time series
-    to calculate weighted metrics."""
+    """The column in the training table used to customize weights for each time series."""
 
     experiment_path: Optional[str] = None
-    """The path to the created experiment. This is the path where the experiment will be stored in the
-    workspace."""
+    """The path in the workspace to store the created experiment."""
 
     holiday_regions: Optional[List[str]] = None
-    """Region code(s) to consider when automatically adding holiday features. When empty, no holiday
-    features are added. Only supports 1 holiday region for now."""
+    """The region code(s) to automatically add holiday features. Currently supports only one region."""
+
+    include_features: Optional[List[str]] = None
+    """Specifies the list of feature columns to include in model training. These columns must exist in
+    the training data and be of type string, numerical, or boolean. If not specified, no additional
+    features will be included. Note: Certain columns are automatically handled: - Automatically
+    excluded: split_column, target_column, custom_weights_column. - Automatically included:
+    time_column."""
 
     max_runtime: Optional[int] = None
-    """The maximum duration in minutes for which the experiment is allowed to run. If the experiment
-    exceeds this time limit it will be stopped automatically."""
+    """The maximum duration for the experiment in minutes. The experiment stops automatically if it
+    exceeds this limit."""
 
     prediction_data_path: Optional[str] = None
-    """The three-level (fully qualified) path to a unity catalog table. This table path serves to store
-    the predictions."""
+    """The fully qualified path of a Unity Catalog table, formatted as
+    catalog_name.schema_name.table_name, used to store predictions."""
 
     primary_metric: Optional[str] = None
     """The evaluation metric used to optimize the forecasting model."""
 
     register_to: Optional[str] = None
-    """The three-level (fully qualified) path to a unity catalog model. This model path serves to store
-    the best model."""
+    """The fully qualified path of a Unity Catalog model, formatted as
+    catalog_name.schema_name.model_name, used to store the best model."""
 
     split_column: Optional[str] = None
-    """Name of the column in the input training table used for custom data splits. The values in this
-    column must be "train", "validate", or "test" to indicate which split each row belongs to."""
+    """// The column in the training table used for custom data splits. Values must be 'train',
+    'validate', or 'test'."""
 
     timeseries_identifier_columns: Optional[List[str]] = None
-    """Name of the column in the input training table used to group the dataset to predict individual
-    time series"""
+    """The column in the training table used to group the dataset for predicting individual time
+    series."""
 
     training_frameworks: Optional[List[str]] = None
-    """The list of frameworks to include for model tuning. Possible values: 'Prophet', 'ARIMA',
-    'DeepAR'. An empty list will include all supported frameworks."""
+    """List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA',
+    'DeepAR'. An empty list includes all supported frameworks."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateForecastingExperimentRequest into a dictionary suitable for use as a JSON request body."""
@@ -560,6 +667,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
             body["holiday_regions"] = [v for v in self.holiday_regions]
+        if self.include_features:
+            body["include_features"] = [v for v in self.include_features]
         if self.max_runtime is not None:
             body["max_runtime"] = self.max_runtime
         if self.prediction_data_path is not None:
@@ -595,6 +704,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_horizon"] = self.forecast_horizon
         if self.holiday_regions:
             body["holiday_regions"] = self.holiday_regions
+        if self.include_features:
+            body["include_features"] = self.include_features
         if self.max_runtime is not None:
             body["max_runtime"] = self.max_runtime
         if self.prediction_data_path is not None:
@@ -626,6 +737,7 @@ class CreateForecastingExperimentRequest:
             forecast_granularity=d.get("forecast_granularity", None),
             forecast_horizon=d.get("forecast_horizon", None),
             holiday_regions=d.get("holiday_regions", None),
+            include_features=d.get("include_features", None),
             max_runtime=d.get("max_runtime", None),
             prediction_data_path=d.get("prediction_data_path", None),
             primary_metric=d.get("primary_metric", None),
@@ -1946,13 +2058,13 @@ class FileInfo:
     """Metadata of a single artifact file or directory."""
 
     file_size: Optional[int] = None
-    """Size in bytes. Unset for directories."""
+    """The size in bytes of the file. Unset for directories."""
 
     is_dir: Optional[bool] = None
     """Whether the path is a directory."""
 
     path: Optional[str] = None
-    """Path relative to the root artifact directory run."""
+    """The path relative to the root artifact directory run."""
 
     def as_dict(self) -> dict:
         """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
@@ -2034,6 +2146,56 @@ class ForecastingExperimentState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class GetCredentialsForTraceDataDownloadResponse:
+    credential_info: Optional[ArtifactCredentialInfo] = None
+    """The artifact download credentials for the specified trace data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataDownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataDownloadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataDownloadResponse:
+        """Deserializes the GetCredentialsForTraceDataDownloadResponse from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
+
+
+@dataclass
+class GetCredentialsForTraceDataUploadResponse:
+    credential_info: Optional[ArtifactCredentialInfo] = None
+    """The artifact upload credentials for the specified trace data."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataUploadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCredentialsForTraceDataUploadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataUploadResponse:
+        """Deserializes the GetCredentialsForTraceDataUploadResponse from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
 
 
 @dataclass
@@ -2536,13 +2698,13 @@ class JobSpecWithoutSecret:
 @dataclass
 class ListArtifactsResponse:
     files: Optional[List[FileInfo]] = None
-    """File location and metadata for artifacts."""
+    """The file location and metadata for artifacts."""
 
     next_page_token: Optional[str] = None
-    """Token that can be used to retrieve the next page of artifact results"""
+    """The token that can be used to retrieve the next page of artifact results."""
 
     root_uri: Optional[str] = None
-    """Root artifact directory for the run."""
+    """The root artifact directory for the run."""
 
     def as_dict(self) -> dict:
         """Serializes the ListArtifactsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2784,11 +2946,16 @@ class LogInputs:
     datasets: Optional[List[DatasetInput]] = None
     """Dataset inputs"""
 
+    models: Optional[List[ModelInput]] = None
+    """Model inputs"""
+
     def as_dict(self) -> dict:
         """Serializes the LogInputs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.datasets:
             body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
         if self.run_id is not None:
             body["run_id"] = self.run_id
         return body
@@ -2798,6 +2965,8 @@ class LogInputs:
         body = {}
         if self.datasets:
             body["datasets"] = self.datasets
+        if self.models:
+            body["models"] = self.models
         if self.run_id is not None:
             body["run_id"] = self.run_id
         return body
@@ -2805,7 +2974,11 @@ class LogInputs:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
-        return cls(datasets=_repeated_dict(d, "datasets", DatasetInput), run_id=d.get("run_id", None))
+        return cls(
+            datasets=_repeated_dict(d, "datasets", DatasetInput),
+            models=_repeated_dict(d, "models", ModelInput),
+            run_id=d.get("run_id", None),
+        )
 
 
 @dataclass
@@ -2837,6 +3010,17 @@ class LogMetric:
     timestamp: int
     """Unix timestamp in milliseconds at the time metric was logged."""
 
+    dataset_digest: Optional[str] = None
+    """Dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that
+    uniquely identifies it within datasets of the same name."""
+
+    dataset_name: Optional[str] = None
+    """The name of the dataset associated with the metric. E.g. “my.uc.table@2”
+    “nyc-taxi-dataset”, “fantastic-elk-3”"""
+
+    model_id: Optional[str] = None
+    """ID of the logged model associated with the metric, if applicable"""
+
     run_id: Optional[str] = None
     """ID of the run under which to log the metric. Must be provided."""
 
@@ -2850,8 +3034,14 @@ class LogMetric:
     def as_dict(self) -> dict:
         """Serializes the LogMetric into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
         if self.key is not None:
             body["key"] = self.key
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
         if self.run_id is not None:
             body["run_id"] = self.run_id
         if self.run_uuid is not None:
@@ -2867,8 +3057,14 @@ class LogMetric:
     def as_shallow_dict(self) -> dict:
         """Serializes the LogMetric into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
         if self.key is not None:
             body["key"] = self.key
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
         if self.run_id is not None:
             body["run_id"] = self.run_id
         if self.run_uuid is not None:
@@ -2885,7 +3081,10 @@ class LogMetric:
     def from_dict(cls, d: Dict[str, Any]) -> LogMetric:
         """Deserializes the LogMetric from a dictionary."""
         return cls(
+            dataset_digest=d.get("dataset_digest", None),
+            dataset_name=d.get("dataset_name", None),
             key=d.get("key", None),
+            model_id=d.get("model_id", None),
             run_id=d.get("run_id", None),
             run_uuid=d.get("run_uuid", None),
             step=d.get("step", None),
@@ -3036,23 +3235,46 @@ class LogParamResponse:
 class Metric:
     """Metric associated with a run, represented as a key-value pair."""
 
+    dataset_digest: Optional[str] = None
+    """The dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset
+    that uniquely identifies it within datasets of the same name."""
+
+    dataset_name: Optional[str] = None
+    """The name of the dataset associated with the metric. E.g. “my.uc.table@2”
+    “nyc-taxi-dataset”, “fantastic-elk-3”"""
+
     key: Optional[str] = None
-    """Key identifying this metric."""
+    """The key identifying the metric."""
+
+    model_id: Optional[str] = None
+    """The ID of the logged model or registered model version associated with the metric, if
+    applicable."""
+
+    run_id: Optional[str] = None
+    """The ID of the run containing the metric."""
 
     step: Optional[int] = None
-    """Step at which to log the metric."""
+    """The step at which the metric was logged."""
 
     timestamp: Optional[int] = None
-    """The timestamp at which this metric was recorded."""
+    """The timestamp at which the metric was recorded."""
 
     value: Optional[float] = None
-    """Value associated with this metric."""
+    """The value of the metric."""
 
     def as_dict(self) -> dict:
         """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
         if self.key is not None:
             body["key"] = self.key
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
         if self.step is not None:
             body["step"] = self.step
         if self.timestamp is not None:
@@ -3064,8 +3286,16 @@ class Metric:
     def as_shallow_dict(self) -> dict:
         """Serializes the Metric into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
         if self.key is not None:
             body["key"] = self.key
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
         if self.step is not None:
             body["step"] = self.step
         if self.timestamp is not None:
@@ -3078,7 +3308,11 @@ class Metric:
     def from_dict(cls, d: Dict[str, Any]) -> Metric:
         """Deserializes the Metric from a dictionary."""
         return cls(
+            dataset_digest=d.get("dataset_digest", None),
+            dataset_name=d.get("dataset_name", None),
             key=d.get("key", None),
+            model_id=d.get("model_id", None),
+            run_id=d.get("run_id", None),
             step=d.get("step", None),
             timestamp=d.get("timestamp", None),
             value=d.get("value", None),
@@ -3251,6 +3485,33 @@ class ModelDatabricks:
             tags=_repeated_dict(d, "tags", ModelTag),
             user_id=d.get("user_id", None),
         )
+
+
+@dataclass
+class ModelInput:
+    """Represents a LoggedModel or Registered Model Version input to a Run."""
+
+    model_id: str
+    """The unique identifier of the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelInput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelInput:
+        """Deserializes the ModelInput from a dictionary."""
+        return cls(model_id=d.get("model_id", None))
 
 
 @dataclass
@@ -4571,11 +4832,19 @@ class RunInputs:
     dataset_inputs: Optional[List[DatasetInput]] = None
     """Run metrics."""
 
+    model_inputs: Optional[List[ModelInput]] = None
+    """**NOTE**: Experimental: This API field may change or be removed in a future release without
+    warning.
+    
+    Model inputs to the Run."""
+
     def as_dict(self) -> dict:
         """Serializes the RunInputs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dataset_inputs:
             body["dataset_inputs"] = [v.as_dict() for v in self.dataset_inputs]
+        if self.model_inputs:
+            body["model_inputs"] = [v.as_dict() for v in self.model_inputs]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4583,12 +4852,17 @@ class RunInputs:
         body = {}
         if self.dataset_inputs:
             body["dataset_inputs"] = self.dataset_inputs
+        if self.model_inputs:
+            body["model_inputs"] = self.model_inputs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RunInputs:
         """Deserializes the RunInputs from a dictionary."""
-        return cls(dataset_inputs=_repeated_dict(d, "dataset_inputs", DatasetInput))
+        return cls(
+            dataset_inputs=_repeated_dict(d, "dataset_inputs", DatasetInput),
+            model_inputs=_repeated_dict(d, "model_inputs", ModelInput),
+        )
 
 
 @dataclass
@@ -6101,6 +6375,38 @@ class ExperimentsAPI:
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
 
+    def get_credentials_for_trace_data_download(self, request_id: str) -> GetCredentialsForTraceDataDownloadResponse:
+        """Get credentials to download trace data.
+
+        :param request_id: str
+          The ID of the trace to fetch artifact download credentials for.
+
+        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-download", headers=headers)
+        return GetCredentialsForTraceDataDownloadResponse.from_dict(res)
+
+    def get_credentials_for_trace_data_upload(self, request_id: str) -> GetCredentialsForTraceDataUploadResponse:
+        """Get credentials to upload trace data.
+
+        :param request_id: str
+          The ID of the trace to fetch artifact upload credentials for.
+
+        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-upload", headers=headers)
+        return GetCredentialsForTraceDataUploadResponse.from_dict(res)
+
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
 
@@ -6257,10 +6563,11 @@ class ExperimentsAPI:
         API](/api/workspace/files/listdirectorycontents).
 
         :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
-          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
+          The token indicating the page of artifact results to fetch. `page_token` is not supported when
+          listing artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes.
+          Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which
+          supports pagination. See [List directory contents | Files
+          API](/api/workspace/files/listdirectorycontents).
         :param path: str (optional)
           Filter artifacts matching this path (a relative path from the root artifact directory).
         :param run_id: str (optional)
@@ -6418,7 +6725,9 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
-    def log_inputs(self, run_id: str, *, datasets: Optional[List[DatasetInput]] = None):
+    def log_inputs(
+        self, run_id: str, *, datasets: Optional[List[DatasetInput]] = None, models: Optional[List[ModelInput]] = None
+    ):
         """Log inputs to a run.
 
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -6429,12 +6738,16 @@ class ExperimentsAPI:
           ID of the run to log under
         :param datasets: List[:class:`DatasetInput`] (optional)
           Dataset inputs
+        :param models: List[:class:`ModelInput`] (optional)
+          Model inputs
 
 
         """
         body = {}
         if datasets is not None:
             body["datasets"] = [v.as_dict() for v in datasets]
+        if models is not None:
+            body["models"] = [v.as_dict() for v in models]
         if run_id is not None:
             body["run_id"] = run_id
         headers = {
@@ -6450,6 +6763,9 @@ class ExperimentsAPI:
         value: float,
         timestamp: int,
         *,
+        dataset_digest: Optional[str] = None,
+        dataset_name: Optional[str] = None,
+        model_id: Optional[str] = None,
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
         step: Optional[int] = None,
@@ -6466,6 +6782,14 @@ class ExperimentsAPI:
           Double value of the metric being logged.
         :param timestamp: int
           Unix timestamp in milliseconds at the time metric was logged.
+        :param dataset_digest: str (optional)
+          Dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that
+          uniquely identifies it within datasets of the same name.
+        :param dataset_name: str (optional)
+          The name of the dataset associated with the metric. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
+          “fantastic-elk-3”
+        :param model_id: str (optional)
+          ID of the logged model associated with the metric, if applicable
         :param run_id: str (optional)
           ID of the run under which to log the metric. Must be provided.
         :param run_uuid: str (optional)
@@ -6477,8 +6801,14 @@ class ExperimentsAPI:
 
         """
         body = {}
+        if dataset_digest is not None:
+            body["dataset_digest"] = dataset_digest
+        if dataset_name is not None:
+            body["dataset_name"] = dataset_name
         if key is not None:
             body["key"] = key
+        if model_id is not None:
+            body["model_id"] = model_id
         if run_id is not None:
             body["run_id"] = run_id
         if run_uuid is not None:
@@ -6993,6 +7323,7 @@ class ForecastingAPI:
         custom_weights_column: Optional[str] = None,
         experiment_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
+        include_features: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
         prediction_data_path: Optional[str] = None,
         primary_metric: Optional[str] = None,
@@ -7006,49 +7337,50 @@ class ForecastingAPI:
         Creates a serverless forecasting experiment. Returns the experiment ID.
 
         :param train_data_path: str
-          The three-level (fully qualified) name of a unity catalog table. This table serves as the training
-          data for the forecasting model.
+          The fully qualified name of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          used as training data for the forecasting model.
         :param target_column: str
-          Name of the column in the input training table that serves as the prediction target. The values in
-          this column will be used as the ground truth for model training.
+          The column in the input training table used as the prediction target for model training. The values
+          in this column are used as the ground truth for model training.
         :param time_column: str
-          Name of the column in the input training table that represents the timestamp of each row.
+          The column in the input training table that represents each row's timestamp.
         :param forecast_granularity: str
-          The granularity of the forecast. This defines the time interval between consecutive rows in the time
-          series data. Possible values: '1 second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30
-          minutes', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
+          The time interval between consecutive rows in the time series data. Possible values include: '1
+          second', '1 minute', '5 minutes', '10 minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily',
+          'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
         :param forecast_horizon: int
-          The number of time steps into the future for which predictions should be made. This value represents
-          a multiple of forecast_granularity determining how far ahead the model will forecast.
+          The number of time steps into the future to make predictions, calculated as a multiple of
+          forecast_granularity. This value represents how far ahead the model should forecast.
         :param custom_weights_column: str (optional)
-          Name of the column in the input training table used to customize the weight for each time series to
-          calculate weighted metrics.
+          The column in the training table used to customize weights for each time series.
         :param experiment_path: str (optional)
-          The path to the created experiment. This is the path where the experiment will be stored in the
-          workspace.
+          The path in the workspace to store the created experiment.
         :param holiday_regions: List[str] (optional)
-          Region code(s) to consider when automatically adding holiday features. When empty, no holiday
-          features are added. Only supports 1 holiday region for now.
+          The region code(s) to automatically add holiday features. Currently supports only one region.
+        :param include_features: List[str] (optional)
+          Specifies the list of feature columns to include in model training. These columns must exist in the
+          training data and be of type string, numerical, or boolean. If not specified, no additional features
+          will be included. Note: Certain columns are automatically handled: - Automatically excluded:
+          split_column, target_column, custom_weights_column. - Automatically included: time_column.
         :param max_runtime: int (optional)
-          The maximum duration in minutes for which the experiment is allowed to run. If the experiment
-          exceeds this time limit it will be stopped automatically.
+          The maximum duration for the experiment in minutes. The experiment stops automatically if it exceeds
+          this limit.
         :param prediction_data_path: str (optional)
-          The three-level (fully qualified) path to a unity catalog table. This table path serves to store the
-          predictions.
+          The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          used to store predictions.
         :param primary_metric: str (optional)
           The evaluation metric used to optimize the forecasting model.
         :param register_to: str (optional)
-          The three-level (fully qualified) path to a unity catalog model. This model path serves to store the
-          best model.
+          The fully qualified path of a Unity Catalog model, formatted as catalog_name.schema_name.model_name,
+          used to store the best model.
         :param split_column: str (optional)
-          Name of the column in the input training table used for custom data splits. The values in this
-          column must be "train", "validate", or "test" to indicate which split each row belongs to.
+          // The column in the training table used for custom data splits. Values must be 'train', 'validate',
+          or 'test'.
         :param timeseries_identifier_columns: List[str] (optional)
-          Name of the column in the input training table used to group the dataset to predict individual time
-          series
+          The column in the training table used to group the dataset for predicting individual time series.
         :param training_frameworks: List[str] (optional)
-          The list of frameworks to include for model tuning. Possible values: 'Prophet', 'ARIMA', 'DeepAR'.
-          An empty list will include all supported frameworks.
+          List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA', 'DeepAR'. An
+          empty list includes all supported frameworks.
 
         :returns:
           Long-running operation waiter for :class:`ForecastingExperiment`.
@@ -7065,6 +7397,8 @@ class ForecastingAPI:
             body["forecast_horizon"] = forecast_horizon
         if holiday_regions is not None:
             body["holiday_regions"] = [v for v in holiday_regions]
+        if include_features is not None:
+            body["include_features"] = [v for v in include_features]
         if max_runtime is not None:
             body["max_runtime"] = max_runtime
         if prediction_data_path is not None:
@@ -7108,6 +7442,7 @@ class ForecastingAPI:
         custom_weights_column: Optional[str] = None,
         experiment_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
+        include_features: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
         prediction_data_path: Optional[str] = None,
         primary_metric: Optional[str] = None,
@@ -7123,6 +7458,7 @@ class ForecastingAPI:
             forecast_granularity=forecast_granularity,
             forecast_horizon=forecast_horizon,
             holiday_regions=holiday_regions,
+            include_features=include_features,
             max_runtime=max_runtime,
             prediction_data_path=prediction_data_path,
             primary_metric=primary_metric,

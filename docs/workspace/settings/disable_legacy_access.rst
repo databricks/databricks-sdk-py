@@ -6,10 +6,9 @@
 
     'Disabling legacy access' has the following impacts:
 
-    1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
-    Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
-    Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
-    Unity Catalog access on all path based access.
+    1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
+    Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
+    the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyAccessResponse
 
