@@ -180,6 +180,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FLOAT
       :value: "FLOAT"
 
+   .. py:attribute:: GEOGRAPHY
+      :value: "GEOGRAPHY"
+
+   .. py:attribute:: GEOMETRY
+      :value: "GEOMETRY"
+
    .. py:attribute:: INT
       :value: "INT"
 
@@ -1553,6 +1559,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: VolumeType
+
+   The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more]
+   [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"

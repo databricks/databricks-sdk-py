@@ -51,16 +51,32 @@
 
         'Disabling legacy access' has the following impacts:
     
-        1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
-        Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
-        Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
-        Unity Catalog access on all path based access.
+        1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
+        Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
+        the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS.
 
     .. py:property:: disable_legacy_dbfs
         :type: DisableLegacyDbfsAPI
 
         When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
         mounts). When the setting is off, all DBFS functionality is enabled
+
+    .. py:property:: enable_export_notebook
+        :type: EnableExportNotebookAPI
+
+        Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+        enabled.
+
+    .. py:property:: enable_notebook_table_clipboard
+        :type: EnableNotebookTableClipboardAPI
+
+        Controls whether users can copy tabular data to the clipboard via the UI. By default, this setting is
+        enabled.
+
+    .. py:property:: enable_results_downloading
+        :type: EnableResultsDownloadingAPI
+
+        Controls whether users can download notebook results. By default, this setting is enabled.
 
     .. py:property:: enhanced_security_monitoring
         :type: EnhancedSecurityMonitoringAPI

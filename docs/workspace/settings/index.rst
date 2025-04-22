@@ -18,6 +18,9 @@ Manage security settings for Accounts and Workspaces
    default_namespace
    disable_legacy_access
    disable_legacy_dbfs
+   enable_export_notebook
+   enable_notebook_table_clipboard
+   enable_results_downloading
    enhanced_security_monitoring
    restrict_workspace_admins
    token_management

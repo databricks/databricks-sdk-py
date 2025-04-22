@@ -214,7 +214,6 @@
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
-          If more than 100 job clusters are available, you can paginate through them using :method:jobs/get.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
           able to execute multiple runs of the same job concurrently. This is useful for example if you
@@ -232,8 +231,12 @@
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
         :param performance_target: :class:`PerformanceTarget` (optional)
-          PerformanceTarget defines how performant or cost efficient the execution of run on serverless should
-          be.
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -249,9 +252,11 @@
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
         :param tasks: List[:class:`Task`] (optional)
-          A list of task specifications to be executed by this job. If more than 100 tasks are available, you
-          can paginate through them using :method:jobs/get. Use the `next_page_token` field at the object root
-          to determine if more results are available.
+          A list of task specifications to be executed by this job. It supports up to 1000 elements in write
+          endpoints (:method:jobs/create, :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
+          endpoints return only 100 tasks. If more than 100 tasks are available, you can paginate through them
+          using :method:jobs/get. Use the `next_page_token` field at the object root to determine if more
+          results are available.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
@@ -362,21 +367,23 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            run = w.jobs.submit(
-                run_name=f"sdk-{time.time_ns()}",
+            created_job = w.jobs.create(
+                name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.SubmitTask(
+                    jobs.Task(
+                        description="test",
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key=f"sdk-{time.time_ns()}",
+                        task_key="test",
+                        timeout_seconds=0,
                     )
                 ],
-            ).result()
+            )
             
-            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete_run(run_id=run.run_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Get a single job.
 
@@ -958,9 +965,13 @@
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
         :param performance_target: :class:`PerformanceTarget` (optional)
-          PerformanceTarget defines how performant or cost efficient the execution of run on serverless
-          compute should be. For RunNow, this performance target will override the target defined on the
-          job-level.
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run. This field overrides the performance target defined on
+          the job level.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)

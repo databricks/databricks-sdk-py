@@ -152,9 +152,9 @@
             
             w = WorkspaceClient()
             
-            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            obj = w.workspace.get_status(path=notebook_path)
+            get_status_response = w.workspace.get_status(path=notebook)
 
         Get status.
 
@@ -185,11 +185,16 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
-                format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.SQL,
-                overwrite=True,
                 path=notebook_path,
+                overwrite=True,
+                format=workspace.ImportFormat.SOURCE,
+                language=workspace.Language.PYTHON,
+                content=base64.b64encode(
+                    (
+                        """print(1)
+            """
+                    ).encode()
+                ).decode(),
             )
 
         Import a workspace object.
