@@ -864,10 +864,11 @@ class CleanRoomTaskRunState:
 
     life_cycle_state: Optional[CleanRoomTaskRunLifeCycleState] = None
     """A value indicating the run's current lifecycle state. This field is always available in the
-    response."""
+    response. Note: Additional states might be introduced in future releases."""
 
     result_state: Optional[CleanRoomTaskRunResultState] = None
-    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+    """A value indicating the run's result. This field is only available for terminal lifecycle states.
+    Note: Additional states might be introduced in future releases."""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomTaskRunState into a dictionary suitable for use as a JSON request body."""
@@ -1692,11 +1693,14 @@ class DashboardTask:
     """Configures the Lakeview Dashboard job task type."""
 
     dashboard_id: Optional[str] = None
+    """The identifier of the dashboard to refresh."""
 
     subscription: Optional[Subscription] = None
+    """Optional: subscription configuration for sending the dashboard snapshot."""
 
     warehouse_id: Optional[str] = None
-    """The warehouse id to execute the dashboard with for the schedule"""
+    """Optional: The warehouse id to execute the dashboard with for the schedule. If not specified, the
+    default warehouse of the dashboard will be used."""
 
     def as_dict(self) -> dict:
         """Serializes the DashboardTask into a dictionary suitable for use as a JSON request body."""
@@ -5572,6 +5576,15 @@ class RCranLibrary:
 
 @dataclass
 class RepairHistoryItem:
+    effective_performance_target: Optional[PerformanceTarget] = None
+    """The actual performance target used by the serverless run during execution. This can differ from
+    the client-set performance target on the request depending on whether the performance mode is
+    supported by the job type.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
+
     end_time: Optional[int] = None
     """The end time of the (repaired) run."""
 
@@ -5596,6 +5609,8 @@ class RepairHistoryItem:
     def as_dict(self) -> dict:
         """Serializes the RepairHistoryItem into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_performance_target is not None:
+            body["effective_performance_target"] = self.effective_performance_target.value
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.id is not None:
@@ -5615,6 +5630,8 @@ class RepairHistoryItem:
     def as_shallow_dict(self) -> dict:
         """Serializes the RepairHistoryItem into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_performance_target is not None:
+            body["effective_performance_target"] = self.effective_performance_target
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.id is not None:
@@ -5635,6 +5652,7 @@ class RepairHistoryItem:
     def from_dict(cls, d: Dict[str, Any]) -> RepairHistoryItem:
         """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(
+            effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             end_time=d.get("end_time", None),
             id=d.get("id", None),
             start_time=d.get("start_time", None),
@@ -5695,6 +5713,15 @@ class RepairRun:
     
     [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+
+    performance_target: Optional[PerformanceTarget] = None
+    """The performance mode on a serverless job. The performance target determines the level of compute
+    performance or cost-efficiency for the run. This field overrides the performance target defined
+    on the job level.
+    
+    * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+    `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
+    optimized cluster performance."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -5762,6 +5789,8 @@ class RepairRun:
             body["latest_repair_id"] = self.latest_repair_id
         if self.notebook_params:
             body["notebook_params"] = self.notebook_params
+        if self.performance_target is not None:
+            body["performance_target"] = self.performance_target.value
         if self.pipeline_params:
             body["pipeline_params"] = self.pipeline_params.as_dict()
         if self.python_named_params:
@@ -5795,6 +5824,8 @@ class RepairRun:
             body["latest_repair_id"] = self.latest_repair_id
         if self.notebook_params:
             body["notebook_params"] = self.notebook_params
+        if self.performance_target is not None:
+            body["performance_target"] = self.performance_target
         if self.pipeline_params:
             body["pipeline_params"] = self.pipeline_params
         if self.python_named_params:
@@ -5824,6 +5855,7 @@ class RepairRun:
             job_parameters=d.get("job_parameters", None),
             latest_repair_id=d.get("latest_repair_id", None),
             notebook_params=d.get("notebook_params", None),
+            performance_target=_enum(d, "performance_target", PerformanceTarget),
             pipeline_params=_from_dict(d, "pipeline_params", PipelineParams),
             python_named_params=d.get("python_named_params", None),
             python_params=d.get("python_params", None),
@@ -7418,13 +7450,14 @@ class RunState:
 
     life_cycle_state: Optional[RunLifeCycleState] = None
     """A value indicating the run's current lifecycle state. This field is always available in the
-    response."""
+    response. Note: Additional states might be introduced in future releases."""
 
     queue_reason: Optional[str] = None
     """The reason indicating why the run was queued."""
 
     result_state: Optional[RunResultState] = None
-    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+    """A value indicating the run's result. This field is only available for terminal lifecycle states.
+    Note: Additional states might be introduced in future releases."""
 
     state_message: Optional[str] = None
     """A descriptive message for the current state. This field is unstructured, and its exact format is
@@ -7559,7 +7592,7 @@ class RunTask:
     does not support retries or notifications."""
 
     dashboard_task: Optional[DashboardTask] = None
-    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+    """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -9043,7 +9076,7 @@ class SubmitTask:
     does not support retries or notifications."""
 
     dashboard_task: Optional[DashboardTask] = None
-    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+    """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -9312,6 +9345,7 @@ class Subscription:
     """When true, the subscription will not send emails."""
 
     subscribers: Optional[List[SubscriptionSubscriber]] = None
+    """The list of subscribers to send the snapshot of the dashboard to."""
 
     def as_dict(self) -> dict:
         """Serializes the Subscription into a dictionary suitable for use as a JSON request body."""
@@ -9348,8 +9382,12 @@ class Subscription:
 @dataclass
 class SubscriptionSubscriber:
     destination_id: Optional[str] = None
+    """A snapshot of the dashboard will be sent to the destination when the `destination_id` field is
+    present."""
 
     user_name: Optional[str] = None
+    """A snapshot of the dashboard will be sent to the user's email when the `user_name` field is
+    present."""
 
     def as_dict(self) -> dict:
         """Serializes the SubscriptionSubscriber into a dictionary suitable for use as a JSON request body."""
@@ -9448,7 +9486,7 @@ class Task:
     does not support retries or notifications."""
 
     dashboard_task: Optional[DashboardTask] = None
-    """The task runs a DashboardTask when the `dashboard_task` field is present."""
+    """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -9953,7 +9991,7 @@ class TerminationCodeCode(Enum):
     invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
-    limit.
+    limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -9962,6 +10000,7 @@ class TerminationCodeCode(Enum):
     CLOUD_FAILURE = "CLOUD_FAILURE"
     CLUSTER_ERROR = "CLUSTER_ERROR"
     CLUSTER_REQUEST_LIMIT_EXCEEDED = "CLUSTER_REQUEST_LIMIT_EXCEEDED"
+    DISABLED = "DISABLED"
     DRIVER_ERROR = "DRIVER_ERROR"
     FEATURE_DISABLED = "FEATURE_DISABLED"
     INTERNAL_ERROR = "INTERNAL_ERROR"
@@ -10017,7 +10056,7 @@ class TerminationDetails:
     invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
-    limit.
+    limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
     
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -11304,6 +11343,7 @@ class JobsAPI:
         job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
         notebook_params: Optional[Dict[str, str]] = None,
+        performance_target: Optional[PerformanceTarget] = None,
         pipeline_params: Optional[PipelineParams] = None,
         python_named_params: Optional[Dict[str, str]] = None,
         python_params: Optional[List[str]] = None,
@@ -11354,6 +11394,14 @@ class JobsAPI:
 
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run. This field overrides the performance target defined on
+          the job level.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -11414,6 +11462,8 @@ class JobsAPI:
             body["latest_repair_id"] = latest_repair_id
         if notebook_params is not None:
             body["notebook_params"] = notebook_params
+        if performance_target is not None:
+            body["performance_target"] = performance_target.value
         if pipeline_params is not None:
             body["pipeline_params"] = pipeline_params.as_dict()
         if python_named_params is not None:

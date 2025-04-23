@@ -871,7 +871,7 @@ class DisableLegacyFeaturesClient(DisableLegacyFeaturesAPI):
 
 class EnableExportNotebookClient(EnableExportNotebookAPI):
     """
-    Controls whether users can export notebooks and files from the Workspace. By default, this
+    Controls whether users can export notebooks and files from the Workspace UI. By default, this
     setting is enabled.
     """
 

@@ -4458,6 +4458,10 @@ class EditInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     def as_dict(self) -> dict:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4473,6 +4477,8 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4492,6 +4498,8 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4506,6 +4514,7 @@ class EditInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
         )
 
@@ -5343,6 +5352,10 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -5393,6 +5406,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5434,6 +5449,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5464,6 +5481,7 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -6298,6 +6316,10 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -6348,6 +6370,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6389,6 +6413,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6419,6 +6445,7 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -7879,6 +7906,28 @@ class NodeType:
             support_ebs_volumes=d.get("support_ebs_volumes", None),
             support_port_forwarding=d.get("support_port_forwarding", None),
         )
+
+
+@dataclass
+class NodeTypeFlexibility:
+    """For Fleet-V2 using classic clusters, this object contains the information about the alternate
+    node type ids to use when attempting to launch a cluster. It can be used with both the driver
+    and worker node types."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
+        """Deserializes the NodeTypeFlexibility from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -12068,6 +12117,7 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
     ):
         """Edit an existing instance pool.
 
@@ -12100,6 +12150,9 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+          when attempting to launch a cluster if the node type id is not available.
 
 
         """
@@ -12116,6 +12169,8 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         headers = {

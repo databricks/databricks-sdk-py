@@ -635,6 +635,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"
 
@@ -6160,16 +6161,16 @@ class DisableLegacyFeaturesAPI:
 
 
 class EnableExportNotebookAPI:
-    """Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+    """Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
     enabled."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def get_enable_export_notebook(self) -> EnableExportNotebook:
-        """Get the Enable Export Notebook setting.
+        """Get the Notebook and File exporting setting.
 
-        Gets the Enable Export Notebook setting.
+        Gets the Notebook and File exporting setting.
 
         :returns: :class:`EnableExportNotebook`
         """
@@ -6184,10 +6185,10 @@ class EnableExportNotebookAPI:
     def patch_enable_export_notebook(
         self, allow_missing: bool, setting: EnableExportNotebook, field_mask: str
     ) -> EnableExportNotebook:
-        """Update the Enable Export Notebook setting.
+        """Update the Notebook and File exporting setting.
 
-        Updates the Enable Export Notebook setting. The model follows eventual consistency, which means the
-        get after the update operation might receive stale values for some time.
+        Updates the Notebook and File exporting setting. The model follows eventual consistency, which means
+        the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -6340,9 +6341,9 @@ class EnableNotebookTableClipboardAPI:
         self._api = api_client
 
     def get_enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboard:
-        """Get the Enable Notebook Table Clipboard setting.
+        """Get the Results Table Clipboard features setting.
 
-        Gets the Enable Notebook Table Clipboard setting.
+        Gets the Results Table Clipboard features setting.
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
@@ -6359,9 +6360,9 @@ class EnableNotebookTableClipboardAPI:
     def patch_enable_notebook_table_clipboard(
         self, allow_missing: bool, setting: EnableNotebookTableClipboard, field_mask: str
     ) -> EnableNotebookTableClipboard:
-        """Update the Enable Notebook Table Clipboard setting.
+        """Update the Results Table Clipboard features setting.
 
-        Updates the Enable Notebook Table Clipboard setting. The model follows eventual consistency, which
+        Updates the Results Table Clipboard features setting. The model follows eventual consistency, which
         means the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
@@ -6405,9 +6406,9 @@ class EnableResultsDownloadingAPI:
         self._api = api_client
 
     def get_enable_results_downloading(self) -> EnableResultsDownloading:
-        """Get the Enable Results Downloading setting.
+        """Get the Notebook results download setting.
 
-        Gets the Enable Results Downloading setting.
+        Gets the Notebook results download setting.
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -6422,10 +6423,10 @@ class EnableResultsDownloadingAPI:
     def patch_enable_results_downloading(
         self, allow_missing: bool, setting: EnableResultsDownloading, field_mask: str
     ) -> EnableResultsDownloading:
-        """Update the Enable Results Downloading setting.
+        """Update the Notebook results download setting.
 
-        Updates the Enable Results Downloading setting. The model follows eventual consistency, which means
-        the get after the update operation might receive stale values for some time.
+        Updates the Notebook results download setting. The model follows eventual consistency, which means the
+        get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.

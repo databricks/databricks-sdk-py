@@ -837,10 +837,11 @@ class CleanRoomTaskRunState:
 
     life_cycle_state: Optional[CleanRoomTaskRunLifeCycleState] = None
     """A value indicating the run's current lifecycle state. This field is always available in the
-    response."""
+    response. Note: Additional states might be introduced in future releases."""
 
     result_state: Optional[CleanRoomTaskRunResultState] = None
-    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+    """A value indicating the run's result. This field is only available for terminal lifecycle states.
+    Note: Additional states might be introduced in future releases."""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomTaskRunState into a dictionary suitable for use as a JSON request body."""
@@ -1153,6 +1154,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"
 
