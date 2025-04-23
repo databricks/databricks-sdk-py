@@ -22,6 +22,87 @@ from databricks.sdk.service import sql
 
 
 @dataclass
+class AuthorizationDetails:
+    grant_rules: Optional[List[AuthorizationDetailsGrantRule]] = None
+    """Represents downscoped permission rules with specific access rights. This field is specific to
+    `workspace_rule_set` constraint."""
+
+    resource_legacy_acl_path: Optional[str] = None
+    """The acl path of the tree store resource resource."""
+
+    resource_name: Optional[str] = None
+    """The resource name to which the authorization rule applies. This field is specific to
+    `workspace_rule_set` constraint. Format: `workspaces/{workspace_id}/dashboards/{dashboard_id}`"""
+
+    type: Optional[str] = None
+    """The type of authorization downscoping policy. Ex: `workspace_rule_set` defines access rules for
+    a specific workspace resource"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthorizationDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.grant_rules:
+            body["grant_rules"] = [v.as_dict() for v in self.grant_rules]
+        if self.resource_legacy_acl_path is not None:
+            body["resource_legacy_acl_path"] = self.resource_legacy_acl_path
+        if self.resource_name is not None:
+            body["resource_name"] = self.resource_name
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthorizationDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.grant_rules:
+            body["grant_rules"] = self.grant_rules
+        if self.resource_legacy_acl_path is not None:
+            body["resource_legacy_acl_path"] = self.resource_legacy_acl_path
+        if self.resource_name is not None:
+            body["resource_name"] = self.resource_name
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthorizationDetails:
+        """Deserializes the AuthorizationDetails from a dictionary."""
+        return cls(
+            grant_rules=_repeated_dict(d, "grant_rules", AuthorizationDetailsGrantRule),
+            resource_legacy_acl_path=d.get("resource_legacy_acl_path", None),
+            resource_name=d.get("resource_name", None),
+            type=d.get("type", None),
+        )
+
+
+@dataclass
+class AuthorizationDetailsGrantRule:
+    permission_set: Optional[str] = None
+    """Permission sets for dashboard are defined in
+    iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets Ex:
+    `permissionSets/dashboard.runner`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthorizationDetailsGrantRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthorizationDetailsGrantRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthorizationDetailsGrantRule:
+        """Deserializes the AuthorizationDetailsGrantRule from a dictionary."""
+        return cls(permission_set=d.get("permission_set", None))
+
+
+@dataclass
 class CancelQueryExecutionResponse:
     status: Optional[List[CancelQueryExecutionResponseStatus]] = None
 
@@ -531,45 +612,53 @@ class GenieCreateConversationMessageRequest:
 
 @dataclass
 class GenieGenerateDownloadFullQueryResultResponse:
-    error: Optional[str] = None
-    """Error message if Genie failed to download the result"""
-
-    status: Optional[MessageStatus] = None
-    """Download result status"""
-
-    transient_statement_id: Optional[str] = None
-    """Transient Statement ID. Use this ID to track the download request in subsequent polling calls"""
+    download_id: Optional[str] = None
+    """Download ID. Use this ID to track the download request in subsequent polling calls"""
 
     def as_dict(self) -> dict:
         """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.error is not None:
-            body["error"] = self.error
-        if self.status is not None:
-            body["status"] = self.status.value
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.error is not None:
-            body["error"] = self.error
-        if self.status is not None:
-            body["status"] = self.status
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
         """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
-        return cls(
-            error=d.get("error", None),
-            status=_enum(d, "status", MessageStatus),
-            transient_statement_id=d.get("transient_statement_id", None),
-        )
+        return cls(download_id=d.get("download_id", None))
+
+
+@dataclass
+class GenieGetDownloadFullQueryResultResponse:
+    statement_response: Optional[sql.StatementResponse] = None
+    """SQL Statement Execution response. See [Get status, manifest, and result first
+    chunk](:method:statementexecution/getstatement) for more details."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
+        """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
+        return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
 
 
 @dataclass
@@ -970,6 +1059,52 @@ class GetPublishedDashboardEmbeddedResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
         """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class GetPublishedDashboardTokenInfoResponse:
+    authorization_details: Optional[List[AuthorizationDetails]] = None
+    """Authorization constraints for accessing the published dashboard. Currently includes
+    `workspace_rule_set` and could be enriched with `unity_catalog_privileges` before oAuth token
+    generation."""
+
+    custom_claim: Optional[str] = None
+    """Custom claim generated from external_value and external_viewer_id. Format:
+    `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`"""
+
+    scope: Optional[str] = None
+    """Scope defining access permissions."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardTokenInfoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authorization_details:
+            body["authorization_details"] = [v.as_dict() for v in self.authorization_details]
+        if self.custom_claim is not None:
+            body["custom_claim"] = self.custom_claim
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardTokenInfoResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authorization_details:
+            body["authorization_details"] = self.authorization_details
+        if self.custom_claim is not None:
+            body["custom_claim"] = self.custom_claim
+        if self.scope is not None:
+            body["scope"] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardTokenInfoResponse:
+        """Deserializes the GetPublishedDashboardTokenInfoResponse from a dictionary."""
+        return cls(
+            authorization_details=_repeated_dict(d, "authorization_details", AuthorizationDetails),
+            custom_claim=d.get("custom_claim", None),
+            scope=d.get("scope", None),
+        )
 
 
 class LifecycleState(Enum):
@@ -2037,8 +2172,12 @@ class GenieAPI:
     ) -> GenieGenerateDownloadFullQueryResultResponse:
         """Generate full query result download.
 
-        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
-        This call initiates a new SQL execution to generate the query result.
+        Initiate full SQL query result download and obtain a `download_id` to track the download progress.
+        This call initiates a new SQL execution to generate the query result. The result is stored in an
+        external link can be retrieved using the [Get Download Full Query
+        Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks strongly recommends that
+        you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
 
         :param space_id: str
           Space ID
@@ -2058,10 +2197,51 @@ class GenieAPI:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/generate-download",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads",
             headers=headers,
         )
         return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
+
+    def get_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str
+    ) -> GenieGetDownloadFullQueryResultResponse:
+        """Get download full query result.
+
+        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        successfully receiving a `download_id`, use this API to Poll download progress and retrieve the SQL
+        query result external link(s) upon completion. Warning: Databricks strongly recommends that you
+        protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. When you use the
+        `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated, which can be used to download
+        the results directly from Amazon S3. As a short-lived access credential is embedded in this presigned
+        URL, you should protect the URL. Because presigned URLs are already generated with embedded temporary
+        access credentials, you must not set an Authorization header in the download requests. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param download_id: str
+          Download ID. This ID is provided by the [Generate Download
+          endpoint](:method:genie/generateDownloadFullQueryResult)
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}",
+            headers=headers,
+        )
+        return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
         """Get conversation message.
@@ -2738,6 +2918,42 @@ class LakeviewEmbeddedAPI:
         }
 
         self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
+
+    def get_published_dashboard_token_info(
+        self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
+    ) -> GetPublishedDashboardTokenInfoResponse:
+        """Read an information of a published dashboard to mint an OAuth token.
+
+        Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
+        `authorization_details` can be enriched to apply additional restriction.
+
+        Example: Adding the following `authorization_details` object to downscope the viewer permission to
+        specific table ``` { type: "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
+        object_full_path: "main.default.testdata" } ```
+
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+        :param external_value: str (optional)
+          Provided external value to be included in the custom claim.
+        :param external_viewer_id: str (optional)
+          Provided external viewer id to be included in the custom claim.
+
+        :returns: :class:`GetPublishedDashboardTokenInfoResponse`
+        """
+
+        query = {}
+        if external_value is not None:
+            query["external_value"] = external_value
+        if external_viewer_id is not None:
+            query["external_viewer_id"] = external_viewer_id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers
+        )
+        return GetPublishedDashboardTokenInfoResponse.from_dict(res)
 
 
 class QueryExecutionAPI:

@@ -536,6 +536,3 @@
         
 
     .. py:method:: wait_get_pipeline_idle(pipeline_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GetPipelineResponse], None]]) -> GetPipelineResponse
-
-
-    .. py:method:: wait_get_pipeline_running(pipeline_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GetPipelineResponse], None]]) -> GetPipelineResponse

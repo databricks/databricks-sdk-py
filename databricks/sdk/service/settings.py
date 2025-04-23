@@ -2005,6 +2005,108 @@ class Empty:
 
 
 @dataclass
+class EnableExportNotebook:
+    boolean_val: Optional[BooleanMessage] = None
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnableExportNotebook into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnableExportNotebook into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnableExportNotebook:
+        """Deserializes the EnableExportNotebook from a dictionary."""
+        return cls(boolean_val=_from_dict(d, "boolean_val", BooleanMessage), setting_name=d.get("setting_name", None))
+
+
+@dataclass
+class EnableNotebookTableClipboard:
+    boolean_val: Optional[BooleanMessage] = None
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnableNotebookTableClipboard into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnableNotebookTableClipboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnableNotebookTableClipboard:
+        """Deserializes the EnableNotebookTableClipboard from a dictionary."""
+        return cls(boolean_val=_from_dict(d, "boolean_val", BooleanMessage), setting_name=d.get("setting_name", None))
+
+
+@dataclass
+class EnableResultsDownloading:
+    boolean_val: Optional[BooleanMessage] = None
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnableResultsDownloading into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnableResultsDownloading into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnableResultsDownloading:
+        """Deserializes the EnableResultsDownloading from a dictionary."""
+        return cls(boolean_val=_from_dict(d, "boolean_val", BooleanMessage), setting_name=d.get("setting_name", None))
+
+
+@dataclass
 class EnhancedSecurityMonitoring:
     """SHIELD feature: ESM"""
 
@@ -4681,6 +4783,162 @@ class UpdateDisableLegacyFeaturesRequest:
 
 
 @dataclass
+class UpdateEnableExportNotebookRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: EnableExportNotebook
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEnableExportNotebookRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEnableExportNotebookRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableExportNotebookRequest:
+        """Deserializes the UpdateEnableExportNotebookRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", EnableExportNotebook),
+        )
+
+
+@dataclass
+class UpdateEnableNotebookTableClipboardRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: EnableNotebookTableClipboard
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEnableNotebookTableClipboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEnableNotebookTableClipboardRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableNotebookTableClipboardRequest:
+        """Deserializes the UpdateEnableNotebookTableClipboardRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", EnableNotebookTableClipboard),
+        )
+
+
+@dataclass
+class UpdateEnableResultsDownloadingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: EnableResultsDownloading
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEnableResultsDownloadingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEnableResultsDownloadingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableResultsDownloadingRequest:
+        """Deserializes the UpdateEnableResultsDownloadingRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", EnableResultsDownloading),
+        )
+
+
+@dataclass
 class UpdateEnhancedSecurityMonitoringSettingRequest:
     """Details required to update a setting."""
 
@@ -5919,10 +6177,9 @@ class DefaultNamespaceAPI:
 class DisableLegacyAccessAPI:
     """'Disabling legacy access' has the following impacts:
 
-    1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
-    Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
-    Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
-    Unity Catalog access on all path based access."""
+    1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
+    Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
+    the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6232,6 +6489,70 @@ class DisableLegacyFeaturesAPI:
         return DisableLegacyFeatures.from_dict(res)
 
 
+class EnableExportNotebookAPI:
+    """Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+    enabled."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_enable_export_notebook(self) -> EnableExportNotebook:
+        """Get the Enable Export Notebook setting.
+
+        Gets the Enable Export Notebook setting.
+
+        :returns: :class:`EnableExportNotebook`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/settings/types/enable-export-notebook/names/default", headers=headers)
+        return EnableExportNotebook.from_dict(res)
+
+    def patch_enable_export_notebook(
+        self, allow_missing: bool, setting: EnableExportNotebook, field_mask: str
+    ) -> EnableExportNotebook:
+        """Update the Enable Export Notebook setting.
+
+        Updates the Enable Export Notebook setting. The model follows eventual consistency, which means the
+        get after the update operation might receive stale values for some time.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EnableExportNotebook`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`EnableExportNotebook`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/settings/types/enable-export-notebook/names/default", body=body, headers=headers
+        )
+        return EnableExportNotebook.from_dict(res)
+
+
 class EnableIpAccessListsAPI:
     """Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
     disable restricted access based on IP addresses."""
@@ -6339,6 +6660,135 @@ class EnableIpAccessListsAPI:
             headers=headers,
         )
         return AccountIpAccessEnable.from_dict(res)
+
+
+class EnableNotebookTableClipboardAPI:
+    """Controls whether users can copy tabular data to the clipboard via the UI. By default, this setting is
+    enabled."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboard:
+        """Get the Enable Notebook Table Clipboard setting.
+
+        Gets the Enable Notebook Table Clipboard setting.
+
+        :returns: :class:`EnableNotebookTableClipboard`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", headers=headers
+        )
+        return EnableNotebookTableClipboard.from_dict(res)
+
+    def patch_enable_notebook_table_clipboard(
+        self, allow_missing: bool, setting: EnableNotebookTableClipboard, field_mask: str
+    ) -> EnableNotebookTableClipboard:
+        """Update the Enable Notebook Table Clipboard setting.
+
+        Updates the Enable Notebook Table Clipboard setting. The model follows eventual consistency, which
+        means the get after the update operation might receive stale values for some time.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EnableNotebookTableClipboard`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`EnableNotebookTableClipboard`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", body=body, headers=headers
+        )
+        return EnableNotebookTableClipboard.from_dict(res)
+
+
+class EnableResultsDownloadingAPI:
+    """Controls whether users can download notebook results. By default, this setting is enabled."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_enable_results_downloading(self) -> EnableResultsDownloading:
+        """Get the Enable Results Downloading setting.
+
+        Gets the Enable Results Downloading setting.
+
+        :returns: :class:`EnableResultsDownloading`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/settings/types/enable-results-downloading/names/default", headers=headers)
+        return EnableResultsDownloading.from_dict(res)
+
+    def patch_enable_results_downloading(
+        self, allow_missing: bool, setting: EnableResultsDownloading, field_mask: str
+    ) -> EnableResultsDownloading:
+        """Update the Enable Results Downloading setting.
+
+        Updates the Enable Results Downloading setting. The model follows eventual consistency, which means
+        the get after the update operation might receive stale values for some time.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EnableResultsDownloading`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`EnableResultsDownloading`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/settings/types/enable-results-downloading/names/default", body=body, headers=headers
+        )
+        return EnableResultsDownloading.from_dict(res)
 
 
 class EnhancedSecurityMonitoringAPI:
@@ -7351,6 +7801,9 @@ class SettingsAPI:
         self._default_namespace = DefaultNamespaceAPI(self._api)
         self._disable_legacy_access = DisableLegacyAccessAPI(self._api)
         self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
+        self._enable_export_notebook = EnableExportNotebookAPI(self._api)
+        self._enable_notebook_table_clipboard = EnableNotebookTableClipboardAPI(self._api)
+        self._enable_results_downloading = EnableResultsDownloadingAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
@@ -7388,6 +7841,21 @@ class SettingsAPI:
     def disable_legacy_dbfs(self) -> DisableLegacyDbfsAPI:
         """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts)."""
         return self._disable_legacy_dbfs
+
+    @property
+    def enable_export_notebook(self) -> EnableExportNotebookAPI:
+        """Controls whether users can export notebooks and files from the Workspace."""
+        return self._enable_export_notebook
+
+    @property
+    def enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboardAPI:
+        """Controls whether users can copy tabular data to the clipboard via the UI."""
+        return self._enable_notebook_table_clipboard
+
+    @property
+    def enable_results_downloading(self) -> EnableResultsDownloadingAPI:
+        """Controls whether users can download notebook results."""
+        return self._enable_results_downloading
 
     @property
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:
