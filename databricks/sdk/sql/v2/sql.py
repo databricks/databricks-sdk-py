@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -9735,6 +9738,175 @@ class StatementExecutionAPI:
         return ResultData.from_dict(res)
 
 
+class WarehousesCreateWaiter:
+    raw_response: CreateWarehouseResponse
+    """raw_response is the raw response of the Create call."""
+    _service: WarehousesAPI
+    _id: str
+
+    def __init__(self, raw_response: CreateWarehouseResponse, service: WarehousesAPI, id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._id = id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GetWarehouseResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.STOPPED,
+            State.DELETED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(id=self._id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"id={self._id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class WarehousesEditWaiter:
+    raw_response: EditWarehouseResponse
+    """raw_response is the raw response of the Edit call."""
+    _service: WarehousesAPI
+    _id: str
+
+    def __init__(self, raw_response: EditWarehouseResponse, service: WarehousesAPI, id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._id = id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GetWarehouseResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.STOPPED,
+            State.DELETED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(id=self._id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"id={self._id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class WarehousesStartWaiter:
+    raw_response: StartWarehouseResponse
+    """raw_response is the raw response of the Start call."""
+    _service: WarehousesAPI
+    _id: str
+
+    def __init__(self, raw_response: StartWarehouseResponse, service: WarehousesAPI, id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._id = id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GetWarehouseResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.RUNNING,)
+        failure_states = (
+            State.STOPPED,
+            State.DELETED,
+        )
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(id=self._id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach RUNNING, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"id={self._id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class WarehousesStopWaiter:
+    raw_response: StopWarehouseResponse
+    """raw_response is the raw response of the Stop call."""
+    _service: WarehousesAPI
+    _id: str
+
+    def __init__(self, raw_response: StopWarehouseResponse, service: WarehousesAPI, id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._id = id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GetWarehouseResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (State.STOPPED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(id=self._id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if poll.health:
+                status_message = poll.health.summary
+            if status in target_states:
+                return poll
+            prefix = f"id={self._id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class WarehousesAPI:
     """A SQL warehouse is a compute resource that lets you run SQL commands on data objects within Databricks
     SQL. Compute resources are infrastructure resources that provide processing capabilities in the cloud."""
@@ -9758,7 +9930,7 @@ class WarehousesAPI:
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
-    ) -> CreateWarehouseResponse:
+    ) -> WarehousesCreateWaiter:
         """Create a warehouse.
 
         Creates a new SQL warehouse.
@@ -9855,8 +10027,10 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
-        return CreateWarehouseResponse.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
+        return WarehousesCreateWaiter(
+            service=self, raw_response=CreateWarehouseResponse.from_dict(op_response), id=op_response["id"]
+        )
 
     def delete(self, id: str):
         """Delete a warehouse.
@@ -9892,7 +10066,7 @@ class WarehousesAPI:
         spot_instance_policy: Optional[SpotInstancePolicy] = None,
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
-    ):
+    ) -> WarehousesEditWaiter:
         """Update a warehouse.
 
         Updates the configuration for a SQL warehouse.
@@ -9990,7 +10164,8 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
+        return WarehousesEditWaiter(service=self, raw_response=EditWarehouseResponse.from_dict(op_response), id=id)
 
     def get(self, id: str) -> GetWarehouseResponse:
         """Get warehouse info.
@@ -10178,7 +10353,7 @@ class WarehousesAPI:
 
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
 
-    def start(self, id: str):
+    def start(self, id: str) -> WarehousesStartWaiter:
         """Start a warehouse.
 
         Starts a SQL warehouse.
@@ -10195,9 +10370,10 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
+        return WarehousesStartWaiter(service=self, raw_response=StartWarehouseResponse.from_dict(op_response), id=id)
 
-    def stop(self, id: str):
+    def stop(self, id: str) -> WarehousesStopWaiter:
         """Stop a warehouse.
 
         Stops a SQL warehouse.
@@ -10214,7 +10390,8 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
+        return WarehousesStopWaiter(service=self, raw_response=StopWarehouseResponse.from_dict(op_response), id=id)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None

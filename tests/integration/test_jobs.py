@@ -1,7 +1,11 @@
+import datetime
 import logging
 
 from databricks.sdk.compute.v2.client import ClustersClient
+from databricks.sdk.files.v2.client import DbfsClient
+from databricks.sdk.iam.v2.client import CurrentUserClient
 from databricks.sdk.jobs.v2.client import JobsClient
+from databricks.sdk.service._internal import WaitUntilDoneOptions
 
 
 def test_jobs(w):
@@ -14,44 +18,41 @@ def test_jobs(w):
     assert found > 0
 
 
-# TODO: Re-enable this after adding waiters to the SDK
-# def test_submitting_jobs(w, random, env_or_skip):
-#     from databricks.sdk.jobs.v2 import jobs
-#     from databricks.sdk.compute.v2 import compute
+def test_submitting_jobs(w, random, env_or_skip):
+    from databricks.sdk.jobs.v2 import jobs
 
-#     cuc = CurrentUserClient(config=w)
-#     jc = JobsClient(config=w)
-#     dc = DbfsClient(config=w)
+    cuc = CurrentUserClient(config=w)
+    jc = JobsClient(config=w)
+    dc = DbfsClient(config=w)
+    cc = ClustersClient(config=w)
 
-#     py_on_dbfs = f"/home/{cuc.me().user_name}/sample.py"
-#     with dc.open(py_on_dbfs, write=True, overwrite=True) as f:
-#         f.write(b'import time; time.sleep(10); print("Hello, World!")')
+    py_on_dbfs = f"/home/{cuc.me().user_name}/sample.py"
+    with dc.open(py_on_dbfs, write=True, overwrite=True) as f:
+        f.write(b'import time; time.sleep(10); print("Hello, World!")')
 
-#     waiter = jc.submit(
-#         run_name=f"py-sdk-{random(8)}",
-#         tasks=[
-#             jobs.SubmitTask(
-#                 task_key="pi",
-#                 new_cluster=jobs.JobsClusterSpec(
-#                     spark_version=w.clusters.select_spark_version(long_term_support=True),
-#                     # node_type_id=w.clusters.select_node_type(local_disk=True),
-#                     instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
-#                     num_workers=1,
-#                 ),
-#                 spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
-#             )
-#         ],
-#     )
+    waiter = jc.submit(
+        run_name=f"py-sdk-{random(8)}",
+        tasks=[
+            jobs.SubmitTask(
+                task_key="pi",
+                new_cluster=jobs.JobsClusterSpec(
+                    spark_version=cc.select_spark_version(long_term_support=True),
+                    # node_type_id=cc.select_node_type(local_disk=True),
+                    instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
+                    num_workers=1,
+                ),
+                spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
+            )
+        ],
+    )
 
-#     logging.info(f"starting to poll: {waiter.run_id}")
+    logging.info(f"starting to poll: {waiter.raw_response.run_id}")
 
-#     def print_status(run: jobs.Run):
-#         statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
-#         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
+    options = WaitUntilDoneOptions()
+    options.timeout = datetime.timedelta(minutes=15)
+    run = waiter.WaitUntilDone(opts=options)
 
-#     run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
-
-#     logging.info(f"job finished: {run.run_page_url}")
+    logging.info(f"job finished: {run.run_page_url}")
 
 
 def test_last_job_runs(w):

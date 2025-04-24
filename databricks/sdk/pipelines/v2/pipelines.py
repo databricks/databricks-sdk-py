@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import (_enum, _from_dict, _repeated_dict,
-                                  _repeated_enum)
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -4160,6 +4163,45 @@ class WorkspaceStorageInfo:
         return cls(destination=d.get("destination", None))
 
 
+class PipelinesStopWaiter:
+    raw_response: StopPipelineResponse
+    """raw_response is the raw response of the Stop call."""
+    _service: PipelinesAPI
+    _pipeline_id: str
+
+    def __init__(self, raw_response: StopPipelineResponse, service: PipelinesAPI, pipeline_id: str):
+        self._service = service
+        self.raw_response = raw_response
+        self._pipeline_id = pipeline_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GetPipelineResponse:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (PipelineState.IDLE,)
+        failure_states = (PipelineState.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get(pipeline_id=self._pipeline_id)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach IDLE, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"pipeline_id={self._pipeline_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class PipelinesAPI:
     """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
 
@@ -4655,7 +4697,7 @@ class PipelinesAPI:
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
 
-    def stop(self, pipeline_id: str):
+    def stop(self, pipeline_id: str) -> PipelinesStopWaiter:
         """Stop a pipeline.
 
         Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
@@ -4672,7 +4714,10 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
+        op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
+        return PipelinesStopWaiter(
+            service=self, raw_response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
+        )
 
     def update(
         self,

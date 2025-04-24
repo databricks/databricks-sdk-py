@@ -49,6 +49,10 @@ def _escape_multi_segment_path_parameter(param: str) -> str:
 ReturnType = TypeVar("ReturnType")
 
 
+class WaitUntilDoneOptions:
+    timeout: datetime.timedelta = datetime.timedelta(minutes=20)
+
+
 class Wait(Generic[ReturnType]):
 
     def __init__(self, waiter: Callable, response: Any = None, **kwargs) -> None:

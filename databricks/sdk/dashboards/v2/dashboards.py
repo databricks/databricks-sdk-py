@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ...service._internal import _enum, _from_dict, _repeated_dict
+from ...databricks.errors import OperationFailed
+from ...service._internal import (WaitUntilDoneOptions, _enum, _from_dict,
+                                  _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -868,45 +872,27 @@ class GenieCreateConversationMessageRequest:
 
 @dataclass
 class GenieGenerateDownloadFullQueryResultResponse:
-    error: Optional[str] = None
-    """Error message if Genie failed to download the result"""
-
-    status: Optional[MessageStatus] = None
-    """Download result status"""
-
-    transient_statement_id: Optional[str] = None
-    """Transient Statement ID. Use this ID to track the download request in subsequent polling calls"""
+    download_id: Optional[str] = None
+    """Download ID. Use this ID to track the download request in subsequent polling calls"""
 
     def as_dict(self) -> dict:
         """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.error is not None:
-            body["error"] = self.error
-        if self.status is not None:
-            body["status"] = self.status.value
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.error is not None:
-            body["error"] = self.error
-        if self.status is not None:
-            body["status"] = self.status
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
         """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
-        return cls(
-            error=d.get("error", None),
-            status=_enum(d, "status", MessageStatus),
-            transient_statement_id=d.get("transient_statement_id", None),
-        )
+        return cls(download_id=d.get("download_id", None))
 
 
 @dataclass
@@ -915,16 +901,11 @@ class GenieGetDownloadFullQueryResultResponse:
     """SQL Statement Execution response. See [Get status, manifest, and result first
     chunk](:method:statementexecution/getstatement) for more details."""
 
-    transient_statement_id: Optional[str] = None
-    """Transient Statement ID"""
-
     def as_dict(self) -> dict:
         """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.statement_response:
             body["statement_response"] = self.statement_response.as_dict()
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -932,17 +913,12 @@ class GenieGetDownloadFullQueryResultResponse:
         body = {}
         if self.statement_response:
             body["statement_response"] = self.statement_response
-        if self.transient_statement_id is not None:
-            body["transient_statement_id"] = self.transient_statement_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
         """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
-        return cls(
-            statement_response=_from_dict(d, "statement_response", StatementResponse),
-            transient_statement_id=d.get("transient_statement_id", None),
-        )
+        return cls(statement_response=_from_dict(d, "statement_response", StatementResponse))
 
 
 @dataclass
@@ -1210,7 +1186,7 @@ class GenieResultMetadata:
 @dataclass
 class GenieSpace:
     space_id: str
-    """Space ID"""
+    """Genie space ID"""
 
     title: str
     """Title of the Genie Space"""
@@ -2652,6 +2628,109 @@ class UnpublishDashboardResponse:
         return cls()
 
 
+class GenieCreateMessageWaiter:
+    raw_response: GenieMessage
+    """raw_response is the raw response of the CreateMessage call."""
+    _service: GenieAPI
+    _conversation_id: str
+    _message_id: str
+    _space_id: str
+
+    def __init__(
+        self, raw_response: GenieMessage, service: GenieAPI, conversation_id: str, message_id: str, space_id: str
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._conversation_id = conversation_id
+        self._message_id = message_id
+        self._space_id = space_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GenieMessage:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (MessageStatus.COMPLETED,)
+        failure_states = (MessageStatus.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_message(
+                conversation_id=self._conversation_id, message_id=self._message_id, space_id=self._space_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach COMPLETED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = (
+                f"conversation_id={self._conversation_id}, message_id={self._message_id}, space_id={self._space_id}"
+            )
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
+class GenieStartConversationWaiter:
+    raw_response: GenieStartConversationResponse
+    """raw_response is the raw response of the StartConversation call."""
+    _service: GenieAPI
+    _conversation_id: str
+    _message_id: str
+    _space_id: str
+
+    def __init__(
+        self,
+        raw_response: GenieStartConversationResponse,
+        service: GenieAPI,
+        conversation_id: str,
+        message_id: str,
+        space_id: str,
+    ):
+        self._service = service
+        self.raw_response = raw_response
+        self._conversation_id = conversation_id
+        self._message_id = message_id
+        self._space_id = space_id
+
+    def WaitUntilDone(self, opts: Optional[WaitUntilDoneOptions] = None) -> GenieMessage:
+        if opts is None:
+            opts = WaitUntilDoneOptions()
+        deadline = time.time() + opts.timeout.total_seconds()
+        target_states = (MessageStatus.COMPLETED,)
+        failure_states = (MessageStatus.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self._service.get_message(
+                conversation_id=self._conversation_id, message_id=self._message_id, space_id=self._space_id
+            )
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if status in failure_states:
+                msg = f"failed to reach COMPLETED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = (
+                f"conversation_id={self._conversation_id}, message_id={self._message_id}, space_id={self._space_id}"
+            )
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {opts.timeout}: {status_message}")
+
+
 class GenieAPI:
     """Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up spaces that
     business users can use to ask questions using natural language. Genie uses data registered to Unity
@@ -2661,7 +2740,7 @@ class GenieAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_message(self, space_id: str, conversation_id: str, content: str) -> GenieMessage:
+    def create_message(self, space_id: str, conversation_id: str, content: str) -> GenieCreateMessageWaiter:
         """Create conversation message.
 
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
@@ -2686,13 +2765,19 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
+        op_response = self._api.do(
             "POST",
             f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages",
             body=body,
             headers=headers,
         )
-        return GenieMessage.from_dict(res)
+        return GenieCreateMessageWaiter(
+            service=self,
+            raw_response=GenieMessage.from_dict(op_response),
+            conversation_id=conversation_id,
+            message_id=op_response["id"],
+            space_id=space_id,
+        )
 
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
@@ -2758,15 +2843,14 @@ class GenieAPI:
     ) -> GenieGenerateDownloadFullQueryResultResponse:
         """Generate full query result download.
 
-        Initiate full SQL query result download and obtain a transient ID for tracking the download progress.
-        This call initiates a new SQL execution to generate the query result. The result is stored in an
-        external link can be retrieved using the [Get Download Full Query
-        Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks strongly recommends that
-        you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. See [Execute
-        Statement](:method:statementexecution/executestatement) for more details.
+        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        the download. The query result is stored in an external link and can be retrieved using the [Get
+        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
         :param space_id: str
-          Space ID
+          Genie space ID
         :param conversation_id: str
           Conversation ID
         :param message_id: str
@@ -2783,51 +2867,46 @@ class GenieAPI:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/generate-download",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads",
             headers=headers,
         )
         return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
 
     def get_download_full_query_result(
-        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, transient_statement_id: str
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str
     ) -> GenieGetDownloadFullQueryResultResponse:
-        """Get download full query result status.
+        """Get download full query result.
 
-        Poll download progress and retrieve the SQL query result external link(s) upon completion. Warning:
-        Databricks strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS`
-        disposition. When you use the `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated,
-        which can be used to download the results directly from Amazon S3. As a short-lived access credential
-        is embedded in this presigned URL, you should protect the URL. Because presigned URLs are already
-        generated with embedded temporary access credentials, you must not set an Authorization header in the
-        download requests. See [Execute Statement](:method:statementexecution/executestatement) for more
-        details.
+        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        successfully receiving a `download_id`, use this API to poll the download progress. When the download
+        is complete, the API returns one or more external links to the query result files. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
+        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
 
         :param space_id: str
-          Space ID
+          Genie space ID
         :param conversation_id: str
           Conversation ID
         :param message_id: str
           Message ID
         :param attachment_id: str
           Attachment ID
-        :param transient_statement_id: str
-          Transient Statement ID. This ID is provided by the [Start Download
-          endpoint](:method:genie/startdownloadfullqueryresult)
+        :param download_id: str
+          Download ID. This ID is provided by the [Generate Download
+          endpoint](:method:genie/generateDownloadFullQueryResult)
 
         :returns: :class:`GenieGetDownloadFullQueryResultResponse`
         """
 
-        query = {}
-        if transient_statement_id is not None:
-            query["transient_statement_id"] = transient_statement_id
         headers = {
             "Accept": "application/json",
         }
 
         res = self._api.do(
             "GET",
-            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/get-download",
-            query=query,
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}",
             headers=headers,
         )
         return GenieGetDownloadFullQueryResultResponse.from_dict(res)
@@ -2967,7 +3046,7 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
-    def start_conversation(self, space_id: str, content: str) -> GenieStartConversationResponse:
+    def start_conversation(self, space_id: str, content: str) -> GenieStartConversationWaiter:
         """Start conversation.
 
         Start a new conversation.
@@ -2989,8 +3068,16 @@ class GenieAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers)
-        return GenieStartConversationResponse.from_dict(res)
+        op_response = self._api.do(
+            "POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers
+        )
+        return GenieStartConversationWaiter(
+            service=self,
+            raw_response=GenieStartConversationResponse.from_dict(op_response),
+            conversation_id=op_response["conversation_id"],
+            message_id=op_response["message_id"],
+            space_id=space_id,
+        )
 
 
 class LakeviewAPI:
