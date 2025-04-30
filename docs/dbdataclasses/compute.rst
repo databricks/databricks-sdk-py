@@ -968,6 +968,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: NodeTypeFlexibility
+   :members:
+   :undoc-members:
+
 .. autoclass:: PendingInstanceError
    :members:
    :undoc-members:
@@ -1292,6 +1296,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DISASTER_RECOVERY_REPLICATION
       :value: "DISASTER_RECOVERY_REPLICATION"
 
+   .. py:attribute:: DNS_RESOLUTION_ERROR
+      :value: "DNS_RESOLUTION_ERROR"
+
    .. py:attribute:: DOCKER_CONTAINER_CREATION_EXCEPTION
       :value: "DOCKER_CONTAINER_CREATION_EXCEPTION"
 
@@ -1345,6 +1352,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GCP_API_RATE_QUOTA_EXCEEDED
       :value: "GCP_API_RATE_QUOTA_EXCEEDED"
+
+   .. py:attribute:: GCP_DENIED_BY_ORG_POLICY
+      :value: "GCP_DENIED_BY_ORG_POLICY"
 
    .. py:attribute:: GCP_FORBIDDEN
       :value: "GCP_FORBIDDEN"

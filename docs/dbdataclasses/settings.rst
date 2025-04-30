@@ -151,6 +151,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"
 
+   .. py:attribute:: K_FSI
+      :value: "K_FSI"
+
    .. py:attribute:: NONE
       :value: "NONE"
 
@@ -169,7 +172,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateNetworkConnectivityConfigRequest
+.. autoclass:: CreateNetworkConnectivityConfiguration
    :members:
    :undoc-members:
 
@@ -185,25 +188,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreatePrivateEndpointRuleRequest
+.. autoclass:: CreatePrivateEndpointRule
    :members:
    :undoc-members:
-
-.. py:class:: CreatePrivateEndpointRuleRequestGroupId
-
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-
-   .. py:attribute:: BLOB
-      :value: "BLOB"
-
-   .. py:attribute:: DFS
-      :value: "DFS"
-
-   .. py:attribute:: MYSQL_SERVER
-      :value: "MYSQL_SERVER"
-
-   .. py:attribute:: SQL_SERVER
-      :value: "SQL_SERVER"
 
 .. autoclass:: CreateTokenRequest
    :members:
@@ -375,6 +362,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GOOGLE_CLOUD_STORAGE
       :value: "GOOGLE_CLOUD_STORAGE"
 
+.. py:class:: EgressResourceType
+
+   The target resources that are supported by Network Connectivity Config. Note: some egress types can support general types that are not defined in EgressResourceType. E.g.: Azure private endpoint supports private link enabled Azure services.
+
+   .. py:attribute:: AZURE_BLOB_STORAGE
+      :value: "AZURE_BLOB_STORAGE"
+
 .. autoclass:: EmailConfig
    :members:
    :undoc-members:
@@ -504,14 +498,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
 
-   The current status of this private endpoint. The private endpoint rules are effective only if the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your resources in the Azure portal before they take effect.
-   The possible values are: - INIT: (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up.
-
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 
    .. py:attribute:: ESTABLISHED
       :value: "ESTABLISHED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
 
    .. py:attribute:: INIT
       :value: "INIT"
@@ -521,22 +515,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: REJECTED
       :value: "REJECTED"
-
-.. py:class:: NccAzurePrivateEndpointRuleGroupId
-
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-
-   .. py:attribute:: BLOB
-      :value: "BLOB"
-
-   .. py:attribute:: DFS
-      :value: "DFS"
-
-   .. py:attribute:: MYSQL_SERVER
-      :value: "MYSQL_SERVER"
-
-   .. py:attribute:: SQL_SERVER
-      :value: "SQL_SERVER"
 
 .. autoclass:: NccAzureServiceEndpointRule
    :members:
@@ -759,6 +737,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdatePersonalComputeSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdatePrivateEndpointRule
    :members:
    :undoc-members:
 

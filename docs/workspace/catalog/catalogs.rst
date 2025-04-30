@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created_catalog.name, force=True)
+            w.catalogs.delete(name=created.name, force=True)
 
         Create a catalog.
 
@@ -153,13 +153,12 @@
             import time
             
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
             created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            _ = w.catalogs.update(name=created.name, isolation_mode=catalog.CatalogIsolationMode.ISOLATED)
+            _ = w.catalogs.update(name=created.name, comment="updated")
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)

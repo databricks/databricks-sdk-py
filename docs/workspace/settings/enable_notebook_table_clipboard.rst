@@ -1,5 +1,5 @@
-``w.settings.enable_notebook_table_clipboard``: Enable Notebook Table Clipboard
-===============================================================================
+``w.settings.enable_notebook_table_clipboard``: Results Table Clipboard features
+================================================================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: EnableNotebookTableClipboardAPI
@@ -9,18 +9,18 @@
 
     .. py:method:: get_enable_notebook_table_clipboard() -> EnableNotebookTableClipboard
 
-        Get the Enable Notebook Table Clipboard setting.
+        Get the Results Table Clipboard features setting.
 
-        Gets the Enable Notebook Table Clipboard setting.
+        Gets the Results Table Clipboard features setting.
 
         :returns: :class:`EnableNotebookTableClipboard`
         
 
     .. py:method:: patch_enable_notebook_table_clipboard(allow_missing: bool, setting: EnableNotebookTableClipboard, field_mask: str) -> EnableNotebookTableClipboard
 
-        Update the Enable Notebook Table Clipboard setting.
+        Update the Results Table Clipboard features setting.
 
-        Updates the Enable Notebook Table Clipboard setting. The model follows eventual consistency, which
+        Updates the Results Table Clipboard features setting. The model follows eventual consistency, which
         means the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool

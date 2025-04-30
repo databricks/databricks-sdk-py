@@ -20,7 +20,7 @@
         :returns: :class:`ArtifactAllowlistInfo`
         
 
-    .. py:method:: update(artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo
+    .. py:method:: update(artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher] [, created_at: Optional[int], created_by: Optional[str], metastore_id: Optional[str]]) -> ArtifactAllowlistInfo
 
         Set an artifact allowlist.
 
@@ -32,6 +32,12 @@
           The artifact type of the allowlist.
         :param artifact_matchers: List[:class:`ArtifactMatcher`]
           A list of allowed artifact match patterns.
+        :param created_at: int (optional)
+          Time at which this artifact allowlist was set, in epoch milliseconds.
+        :param created_by: str (optional)
+          Username of the user who set the artifact allowlist.
+        :param metastore_id: str (optional)
+          Unique identifier of parent metastore.
 
         :returns: :class:`ArtifactAllowlistInfo`
         

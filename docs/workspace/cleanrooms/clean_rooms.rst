@@ -8,7 +8,7 @@
     environment where multiple parties can work together on sensitive enterprise data without direct access to
     each other’s data.
 
-    .. py:method:: create( [, clean_room: Optional[CleanRoom]]) -> CleanRoom
+    .. py:method:: create(clean_room: CleanRoom) -> CleanRoom
 
         Create a clean room.
 
@@ -20,12 +20,12 @@
 
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
 
-        :param clean_room: :class:`CleanRoom` (optional)
+        :param clean_room: :class:`CleanRoom`
 
         :returns: :class:`CleanRoom`
         
 
-    .. py:method:: create_output_catalog(clean_room_name: str [, output_catalog: Optional[CleanRoomOutputCatalog]]) -> CreateCleanRoomOutputCatalogResponse
+    .. py:method:: create_output_catalog(clean_room_name: str, output_catalog: CleanRoomOutputCatalog) -> CreateCleanRoomOutputCatalogResponse
 
         Create an output catalog.
 
@@ -33,7 +33,7 @@
 
         :param clean_room_name: str
           Name of the clean room.
-        :param output_catalog: :class:`CleanRoomOutputCatalog` (optional)
+        :param output_catalog: :class:`CleanRoomOutputCatalog`
 
         :returns: :class:`CreateCleanRoomOutputCatalogResponse`
         

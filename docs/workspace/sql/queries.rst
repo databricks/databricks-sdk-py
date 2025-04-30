@@ -8,7 +8,7 @@
     includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    .. py:method:: create( [, query: Optional[CreateQueryRequestQuery]]) -> Query
+    .. py:method:: create( [, auto_resolve_display_name: Optional[bool], query: Optional[CreateQueryRequestQuery]]) -> Query
 
 
         Usage:
@@ -29,7 +29,7 @@
                     display_name=f"sdk-{time.time_ns()}",
                     warehouse_id=srcs[0].warehouse_id,
                     description="test query from Go SDK",
-                    query_text="SHOW TABLES",
+                    query_text="SELECT 1",
                 )
             )
             
@@ -40,6 +40,9 @@
 
         Creates a query.
 
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
+          query's display name conflicts with an existing query's display name.
         :param query: :class:`CreateQueryRequestQuery` (optional)
 
         :returns: :class:`Query`

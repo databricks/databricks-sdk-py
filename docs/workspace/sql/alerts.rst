@@ -9,7 +9,7 @@
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    .. py:method:: create( [, alert: Optional[CreateAlertRequestAlert]]) -> Alert
+    .. py:method:: create( [, alert: Optional[CreateAlertRequestAlert], auto_resolve_display_name: Optional[bool]]) -> Alert
 
 
         Usage:
@@ -55,6 +55,9 @@
         Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
 
         :returns: :class:`Alert`
         
