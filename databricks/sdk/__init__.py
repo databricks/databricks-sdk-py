@@ -170,6 +170,7 @@ class WorkspaceClient:
         product_version="0.0.0",
         credentials_strategy: Optional[CredentialsStrategy] = None,
         credentials_provider: Optional[CredentialsStrategy] = None,
+        token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
     ):
         if not config:
@@ -198,6 +199,7 @@ class WorkspaceClient:
                 debug_headers=debug_headers,
                 product=product,
                 product_version=product_version,
+                token_audience=token_audience,
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
