@@ -4499,6 +4499,10 @@ class EditInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     def as_dict(self) -> dict:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4514,6 +4518,8 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4533,6 +4539,8 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4547,6 +4555,7 @@ class EditInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
         )
 
@@ -4772,8 +4781,11 @@ class EnforceClusterComplianceResponse:
 
 @dataclass
 class Environment:
-    """The environment entity used to preserve serverless environment side panel and jobs' environment
-    for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
+    """The environment entity used to preserve serverless environment side panel, jobs' environment for
+    non-notebook task, and DLT's environment for classic and serverless pipelines. (Note: DLT uses a
+    copied version of the Environment proto below, at
+    //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In this minimal
+    environment spec, only pip dependencies are supported."""
 
     client: str
     """Client version used by the environment The client is the user-facing environment of the runtime.
@@ -5261,15 +5273,29 @@ class GetEvents:
     """An optional set of event types to filter on. If empty, all event types are returned."""
 
     limit: Optional[int] = None
-    """The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
     value is 500."""
 
     offset: Optional[int] = None
-    """The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the
     results are requested in descending order, the end_time field is required."""
 
     order: Optional[GetEventsOrder] = None
     """The order to list events in; either "ASC" or "DESC". Defaults to "DESC"."""
+
+    page_size: Optional[int] = None
+    """The maximum number of events to include in a page of events. The server may further constrain
+    the maximum number of results returned in a single page. If the page_size is empty or 0, the
+    server will decide the number of results to be returned. The field has to be in the range
+    [0,500]. If the value is outside the range, the server enforces 0 or 500."""
+
+    page_token: Optional[str] = None
+    """Use next_page_token or prev_page_token returned from the previous request to list the next or
+    previous page of events respectively. If page_token is empty, the first page is returned."""
 
     start_time: Optional[int] = None
     """The start time in epoch milliseconds. If empty, returns events starting from the beginning of
@@ -5290,6 +5316,10 @@ class GetEvents:
             body["offset"] = self.offset
         if self.order is not None:
             body["order"] = self.order.value
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -5309,6 +5339,10 @@ class GetEvents:
             body["offset"] = self.offset
         if self.order is not None:
             body["order"] = self.order
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -5323,6 +5357,8 @@ class GetEvents:
             limit=d.get("limit", None),
             offset=d.get("offset", None),
             order=_enum(d, "order", GetEventsOrder),
+            page_size=d.get("page_size", None),
+            page_token=d.get("page_token", None),
             start_time=d.get("start_time", None),
         )
 
@@ -5338,11 +5374,24 @@ class GetEventsResponse:
     events: Optional[List[ClusterEvent]] = None
 
     next_page: Optional[GetEvents] = None
-    """The parameters required to retrieve the next page of events. Omitted if there are no more events
+    """Deprecated: use next_page_token or prev_page_token instead.
+    
+    The parameters required to retrieve the next page of events. Omitted if there are no more events
     to read."""
 
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
+
     total_count: Optional[int] = None
-    """The total number of events filtered by the start_time, end_time, and event_types."""
+    """Deprecated: Returns 0 when request uses page_token. Will start returning zero when request uses
+    offset/limit soon.
+    
+    The total number of events filtered by the start_time, end_time, and event_types."""
 
     def as_dict(self) -> dict:
         """Serializes the GetEventsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5351,6 +5400,10 @@ class GetEventsResponse:
             body["events"] = [v.as_dict() for v in self.events]
         if self.next_page:
             body["next_page"] = self.next_page.as_dict()
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         if self.total_count is not None:
             body["total_count"] = self.total_count
         return body
@@ -5362,6 +5415,10 @@ class GetEventsResponse:
             body["events"] = self.events
         if self.next_page:
             body["next_page"] = self.next_page
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         if self.total_count is not None:
             body["total_count"] = self.total_count
         return body
@@ -5372,6 +5429,8 @@ class GetEventsResponse:
         return cls(
             events=_repeated_dict(d, "events", ClusterEvent),
             next_page=_from_dict(d, "next_page", GetEvents),
+            next_page_token=d.get("next_page_token", None),
+            prev_page_token=d.get("prev_page_token", None),
             total_count=d.get("total_count", None),
         )
 
@@ -5438,6 +5497,10 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -5488,6 +5551,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5529,6 +5594,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5559,6 +5626,7 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -6393,6 +6461,10 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+    when attempting to launch a cluster if the node type id is not available."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -6443,6 +6515,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6484,6 +6558,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6514,6 +6590,7 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -7977,6 +8054,28 @@ class NodeType:
 
 
 @dataclass
+class NodeTypeFlexibility:
+    """For Fleet-V2 using classic clusters, this object contains the information about the alternate
+    node type ids to use when attempting to launch a cluster. It can be used with both the driver
+    and worker node types."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
+        """Deserializes the NodeTypeFlexibility from a dictionary."""
+        return cls()
+
+
+@dataclass
 class PendingInstanceError:
     """Error message of a failed pending instances"""
 
@@ -9005,6 +9104,7 @@ class TerminationReasonCode(Enum):
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
     DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
+    DNS_RESOLUTION_ERROR = "DNS_RESOLUTION_ERROR"
     DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
@@ -9023,6 +9123,7 @@ class TerminationReasonCode(Enum):
     EXECUTION_COMPONENT_UNHEALTHY = "EXECUTION_COMPONENT_UNHEALTHY"
     EXECUTOR_POD_UNSCHEDULED = "EXECUTOR_POD_UNSCHEDULED"
     GCP_API_RATE_QUOTA_EXCEEDED = "GCP_API_RATE_QUOTA_EXCEEDED"
+    GCP_DENIED_BY_ORG_POLICY = "GCP_DENIED_BY_ORG_POLICY"
     GCP_FORBIDDEN = "GCP_FORBIDDEN"
     GCP_IAM_TIMEOUT = "GCP_IAM_TIMEOUT"
     GCP_INACCESSIBLE_KMS_KEY_FAILURE = "GCP_INACCESSIBLE_KMS_KEY_FAILURE"
@@ -10947,6 +11048,8 @@ class ClustersAPI:
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         order: Optional[GetEventsOrder] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
         start_time: Optional[int] = None,
     ) -> Iterator[ClusterEvent]:
         """List cluster activity events.
@@ -10961,13 +11064,25 @@ class ClustersAPI:
         :param event_types: List[:class:`EventType`] (optional)
           An optional set of event types to filter on. If empty, all event types are returned.
         :param limit: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
           value is 500.
         :param offset: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results
           are requested in descending order, the end_time field is required.
         :param order: :class:`GetEventsOrder` (optional)
           The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+        :param page_size: int (optional)
+          The maximum number of events to include in a page of events. The server may further constrain the
+          maximum number of results returned in a single page. If the page_size is empty or 0, the server will
+          decide the number of results to be returned. The field has to be in the range [0,500]. If the value
+          is outside the range, the server enforces 0 or 500.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of events respectively. If page_token is empty, the first page is returned.
         :param start_time: int (optional)
           The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
 
@@ -10986,6 +11101,10 @@ class ClustersAPI:
             body["offset"] = offset
         if order is not None:
             body["order"] = order.value
+        if page_size is not None:
+            body["page_size"] = page_size
+        if page_token is not None:
+            body["page_token"] = page_token
         if start_time is not None:
             body["start_time"] = start_time
         headers = {
@@ -12101,6 +12220,7 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
     ):
         """Edit an existing instance pool.
 
@@ -12133,6 +12253,9 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
+          when attempting to launch a cluster if the node type id is not available.
 
 
         """
@@ -12149,6 +12272,8 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         headers = {

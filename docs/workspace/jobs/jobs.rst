@@ -231,8 +231,8 @@
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
         :param performance_target: :class:`PerformanceTarget` (optional)
-          The performance mode on a serverless job. The performance target determines the level of compute
-          performance or cost-efficiency for the run.
+          The performance mode on a serverless job. This field determines the level of compute performance or
+          cost-efficiency for the run.
 
           * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
           Prioritizes fast startup and execution times through rapid scaling and optimized cluster
@@ -367,23 +367,21 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            created_job = w.jobs.create(
-                name=f"sdk-{time.time_ns()}",
+            run = w.jobs.submit(
+                run_name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.Task(
-                        description="test",
+                    jobs.SubmitTask(
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key="test",
-                        timeout_seconds=0,
+                        task_key=f"sdk-{time.time_ns()}",
                     )
                 ],
-            )
+            ).result()
             
-            by_id = w.jobs.get(job_id=created_job.job_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete(job_id=created_job.job_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job.
 
@@ -670,7 +668,7 @@
         :returns: Iterator over :class:`BaseRun`
         
 
-    .. py:method:: repair_run(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
+    .. py:method:: repair_run(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
 
         Usage:
@@ -757,6 +755,14 @@
 
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          The performance mode on a serverless job. The performance target determines the level of compute
+          performance or cost-efficiency for the run. This field overrides the performance target defined on
+          the job level.
+
+          * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
+          Prioritizes fast startup and execution times through rapid scaling and optimized cluster
+          performance.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -807,7 +813,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: repair_run_and_wait(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: repair_run_and_wait(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: reset(job_id: int, new_settings: JobSettings)

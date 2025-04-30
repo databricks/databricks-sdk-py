@@ -7,13 +7,13 @@
     Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on.
 
-    .. py:method:: create( [, app: Optional[App], no_compute: Optional[bool]]) -> Wait[App]
+    .. py:method:: create(app: App [, no_compute: Optional[bool]]) -> Wait[App]
 
         Create an app.
 
         Creates a new app.
 
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
         :param no_compute: bool (optional)
           If true, the app will not be started after creation.
 
@@ -22,7 +22,7 @@
           See :method:wait_get_app_active for more details.
         
 
-    .. py:method:: create_and_wait( [, app: Optional[App], no_compute: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> App
+    .. py:method:: create_and_wait(app: App [, no_compute: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
     .. py:method:: delete(name: str) -> App
@@ -37,7 +37,7 @@
         :returns: :class:`App`
         
 
-    .. py:method:: deploy(app_name: str [, app_deployment: Optional[AppDeployment]]) -> Wait[AppDeployment]
+    .. py:method:: deploy(app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]
 
         Create an app deployment.
 
@@ -45,14 +45,14 @@
 
         :param app_name: str
           The name of the app.
-        :param app_deployment: :class:`AppDeployment` (optional)
+        :param app_deployment: :class:`AppDeployment`
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         
 
-    .. py:method:: deploy_and_wait(app_name: str [, app_deployment: Optional[AppDeployment], timeout: datetime.timedelta = 0:20:00]) -> AppDeployment
+    .. py:method:: deploy_and_wait(app_name: str, app_deployment: AppDeployment, timeout: datetime.timedelta = 0:20:00) -> AppDeployment
 
 
     .. py:method:: get(name: str) -> App
@@ -183,7 +183,7 @@
     .. py:method:: stop_and_wait(name: str, timeout: datetime.timedelta = 0:20:00) -> App
 
 
-    .. py:method:: update(name: str [, app: Optional[App]]) -> App
+    .. py:method:: update(name: str, app: App) -> App
 
         Update an app.
 
@@ -192,7 +192,7 @@
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
           must be unique within the workspace.
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
 
         :returns: :class:`App`
         

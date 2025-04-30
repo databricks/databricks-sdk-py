@@ -7,12 +7,12 @@
     **Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: * **Delta Sync Index**: An index that automatically syncs with
+    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
     a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. * **Direct Vector Access Index**: An index that supports direct read and write of
+    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
     vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
-    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> CreateVectorIndexResponse
+    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> VectorIndex
 
         Create an index.
 
@@ -25,18 +25,16 @@
         :param primary_key: str
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
-          There are 2 types of Vector Search indexes:
-
-          - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-          incrementally updating the index as the underlying data in the Delta Table changes. -
-          `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our
-          REST and SDK APIs. With this model, the user manages index updates.
+          There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
+          source Delta Table, automatically and incrementally updating the index as the underlying data in the
+          Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and
+          metadata through our REST and SDK APIs. With this model, the user manages index updates.
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
 
-        :returns: :class:`CreateVectorIndexResponse`
+        :returns: :class:`VectorIndex`
         
 
     .. py:method:: delete_data_vector_index(index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
@@ -106,9 +104,11 @@
         :param filters_json: str (optional)
           JSON string representing query filters.
 
-          Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater
-          than 5. - `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id
-          greater than equal to 5. - `{"id": 5}`: Filter for id equal to 5.
+          Example filters:
+
+          - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
+          <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
+          5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
         :param query_text: str (optional)

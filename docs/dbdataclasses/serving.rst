@@ -393,17 +393,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: ServedModelInputWorkloadSize
-
-   .. py:attribute:: LARGE
-      :value: "LARGE"
-
-   .. py:attribute:: MEDIUM
-      :value: "MEDIUM"
-
-   .. py:attribute:: SMALL
-      :value: "SMALL"
-
 .. py:class:: ServedModelInputWorkloadType
 
    Please keep this in sync with with workload types in InferenceEndpointEntities.scala

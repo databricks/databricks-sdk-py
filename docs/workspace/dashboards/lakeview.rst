@@ -7,29 +7,29 @@
     These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete).
 
-    .. py:method:: create( [, dashboard: Optional[Dashboard]]) -> Dashboard
+    .. py:method:: create(dashboard: Dashboard) -> Dashboard
 
         Create dashboard.
 
         Create a draft dashboard.
 
-        :param dashboard: :class:`Dashboard` (optional)
+        :param dashboard: :class:`Dashboard`
 
         :returns: :class:`Dashboard`
         
 
-    .. py:method:: create_schedule(dashboard_id: str [, schedule: Optional[Schedule]]) -> Schedule
+    .. py:method:: create_schedule(dashboard_id: str, schedule: Schedule) -> Schedule
 
         Create dashboard schedule.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
-        :param schedule: :class:`Schedule` (optional)
+        :param schedule: :class:`Schedule`
 
         :returns: :class:`Schedule`
         
 
-    .. py:method:: create_subscription(dashboard_id: str, schedule_id: str [, subscription: Optional[Subscription]]) -> Subscription
+    .. py:method:: create_subscription(dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription
 
         Create schedule subscription.
 
@@ -37,7 +37,7 @@
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
-        :param subscription: :class:`Subscription` (optional)
+        :param subscription: :class:`Subscription`
 
         :returns: :class:`Subscription`
         
@@ -234,7 +234,7 @@
 
         
 
-    .. py:method:: update(dashboard_id: str [, dashboard: Optional[Dashboard]]) -> Dashboard
+    .. py:method:: update(dashboard_id: str, dashboard: Dashboard) -> Dashboard
 
         Update dashboard.
 
@@ -242,12 +242,12 @@
 
         :param dashboard_id: str
           UUID identifying the dashboard.
-        :param dashboard: :class:`Dashboard` (optional)
+        :param dashboard: :class:`Dashboard`
 
         :returns: :class:`Dashboard`
         
 
-    .. py:method:: update_schedule(dashboard_id: str, schedule_id: str [, schedule: Optional[Schedule]]) -> Schedule
+    .. py:method:: update_schedule(dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule
 
         Update dashboard schedule.
 
@@ -255,7 +255,7 @@
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        :param schedule: :class:`Schedule` (optional)
+        :param schedule: :class:`Schedule`
 
         :returns: :class:`Schedule`
         

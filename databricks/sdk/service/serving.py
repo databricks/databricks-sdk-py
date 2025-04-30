@@ -2874,7 +2874,8 @@ class ServedEntityInput:
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
     concurrency that the compute autoscales between. A single unit of provisioned concurrency can
     process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
-    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
+    Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
 
@@ -3014,7 +3015,8 @@ class ServedEntityOutput:
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
     concurrency that the compute autoscales between. A single unit of provisioned concurrency can
     process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
-    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
+    Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
 
@@ -3204,11 +3206,12 @@ class ServedModelInput:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
-    workload_size: Optional[ServedModelInputWorkloadSize] = None
+    workload_size: Optional[str] = None
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
     concurrency that the compute autoscales between. A single unit of provisioned concurrency can
     process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
-    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
+    Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
 
@@ -3240,7 +3243,7 @@ class ServedModelInput:
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.workload_size is not None:
-            body["workload_size"] = self.workload_size.value
+            body["workload_size"] = self.workload_size
         if self.workload_type is not None:
             body["workload_type"] = self.workload_type.value
         return body
@@ -3282,16 +3285,9 @@ class ServedModelInput:
             model_version=d.get("model_version", None),
             name=d.get("name", None),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
-            workload_size=_enum(d, "workload_size", ServedModelInputWorkloadSize),
+            workload_size=d.get("workload_size", None),
             workload_type=_enum(d, "workload_type", ServedModelInputWorkloadType),
         )
-
-
-class ServedModelInputWorkloadSize(Enum):
-
-    LARGE = "Large"
-    MEDIUM = "Medium"
-    SMALL = "Small"
 
 
 class ServedModelInputWorkloadType(Enum):
@@ -3338,7 +3334,8 @@ class ServedModelOutput:
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
     concurrency that the compute autoscales between. A single unit of provisioned concurrency can
     process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
-    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
+    Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
 

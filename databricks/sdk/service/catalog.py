@@ -6675,6 +6675,7 @@ class Privilege(Enum):
     BROWSE = "BROWSE"
     CREATE = "CREATE"
     CREATE_CATALOG = "CREATE_CATALOG"
+    CREATE_CLEAN_ROOM = "CREATE_CLEAN_ROOM"
     CREATE_CONNECTION = "CREATE_CONNECTION"
     CREATE_EXTERNAL_LOCATION = "CREATE_EXTERNAL_LOCATION"
     CREATE_EXTERNAL_TABLE = "CREATE_EXTERNAL_TABLE"
@@ -6695,9 +6696,11 @@ class Privilege(Enum):
     CREATE_VIEW = "CREATE_VIEW"
     CREATE_VOLUME = "CREATE_VOLUME"
     EXECUTE = "EXECUTE"
+    EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
     MANAGE = "MANAGE"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
     MODIFY = "MODIFY"
+    MODIFY_CLEAN_ROOM = "MODIFY_CLEAN_ROOM"
     READ_FILES = "READ_FILES"
     READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
     READ_VOLUME = "READ_VOLUME"
@@ -7360,6 +7363,15 @@ class SetArtifactAllowlist:
     artifact_type: Optional[ArtifactType] = None
     """The artifact type of the allowlist."""
 
+    created_at: Optional[int] = None
+    """Time at which this artifact allowlist was set, in epoch milliseconds."""
+
+    created_by: Optional[str] = None
+    """Username of the user who set the artifact allowlist."""
+
+    metastore_id: Optional[str] = None
+    """Unique identifier of parent metastore."""
+
     def as_dict(self) -> dict:
         """Serializes the SetArtifactAllowlist into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -7367,6 +7379,12 @@ class SetArtifactAllowlist:
             body["artifact_matchers"] = [v.as_dict() for v in self.artifact_matchers]
         if self.artifact_type is not None:
             body["artifact_type"] = self.artifact_type.value
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7376,6 +7394,12 @@ class SetArtifactAllowlist:
             body["artifact_matchers"] = self.artifact_matchers
         if self.artifact_type is not None:
             body["artifact_type"] = self.artifact_type
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
         return body
 
     @classmethod
@@ -7384,6 +7408,9 @@ class SetArtifactAllowlist:
         return cls(
             artifact_matchers=_repeated_dict(d, "artifact_matchers", ArtifactMatcher),
             artifact_type=_enum(d, "artifact_type", ArtifactType),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            metastore_id=d.get("metastore_id", None),
         )
 
 
@@ -10467,7 +10494,15 @@ class ArtifactAllowlistsAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
-    def update(self, artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo:
+    def update(
+        self,
+        artifact_type: ArtifactType,
+        artifact_matchers: List[ArtifactMatcher],
+        *,
+        created_at: Optional[int] = None,
+        created_by: Optional[str] = None,
+        metastore_id: Optional[str] = None,
+    ) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
 
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
@@ -10478,12 +10513,24 @@ class ArtifactAllowlistsAPI:
           The artifact type of the allowlist.
         :param artifact_matchers: List[:class:`ArtifactMatcher`]
           A list of allowed artifact match patterns.
+        :param created_at: int (optional)
+          Time at which this artifact allowlist was set, in epoch milliseconds.
+        :param created_by: str (optional)
+          Username of the user who set the artifact allowlist.
+        :param metastore_id: str (optional)
+          Unique identifier of parent metastore.
 
         :returns: :class:`ArtifactAllowlistInfo`
         """
         body = {}
         if artifact_matchers is not None:
             body["artifact_matchers"] = [v.as_dict() for v in artifact_matchers]
+        if created_at is not None:
+            body["created_at"] = created_at
+        if created_by is not None:
+            body["created_by"] = created_by
+        if metastore_id is not None:
+            body["metastore_id"] = metastore_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12354,12 +12401,12 @@ class OnlineTablesAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def create(self, *, table: Optional[OnlineTable] = None) -> Wait[OnlineTable]:
+    def create(self, table: OnlineTable) -> Wait[OnlineTable]:
         """Create an Online Table.
 
         Create a new Online Table.
 
-        :param table: :class:`OnlineTable` (optional)
+        :param table: :class:`OnlineTable`
           Online Table information.
 
         :returns:
@@ -12377,7 +12424,7 @@ class OnlineTablesAPI:
             self.wait_get_online_table_active, response=OnlineTable.from_dict(op_response), name=op_response["name"]
         )
 
-    def create_and_wait(self, *, table: Optional[OnlineTable] = None, timeout=timedelta(minutes=20)) -> OnlineTable:
+    def create_and_wait(self, table: OnlineTable, timeout=timedelta(minutes=20)) -> OnlineTable:
         return self.create(table=table).result(timeout=timeout)
 
     def delete(self, name: str):

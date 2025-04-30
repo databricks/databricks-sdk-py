@@ -332,7 +332,7 @@ class CleanRoomAssetForeignTableLocalDetails:
 @dataclass
 class CleanRoomAssetNotebook:
     etag: Optional[str] = None
-    """Server generated checksum that represents the notebook version."""
+    """Server generated etag that represents the notebook version."""
 
     notebook_content: Optional[str] = None
     """Base 64 representation of the notebook contents. This is the same format as returned by
@@ -1097,7 +1097,7 @@ class CleanRoomAssetsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, clean_room_name: str, *, asset: Optional[CleanRoomAsset] = None) -> CleanRoomAsset:
+    def create(self, clean_room_name: str, asset: CleanRoomAsset) -> CleanRoomAsset:
         """Create an asset.
 
         Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
@@ -1107,7 +1107,7 @@ class CleanRoomAssetsAPI:
 
         :param clean_room_name: str
           Name of the clean room.
-        :param asset: :class:`CleanRoomAsset` (optional)
+        :param asset: :class:`CleanRoomAsset`
           Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`
@@ -1200,12 +1200,7 @@ class CleanRoomAssetsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        clean_room_name: str,
-        asset_type: CleanRoomAssetAssetType,
-        name: str,
-        *,
-        asset: Optional[CleanRoomAsset] = None,
+        self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, asset: CleanRoomAsset
     ) -> CleanRoomAsset:
         """Update an asset.
 
@@ -1224,7 +1219,7 @@ class CleanRoomAssetsAPI:
           *shared_catalog*.*shared_schema*.*asset_name*
 
           For notebooks, the name is the notebook file name.
-        :param asset: :class:`CleanRoomAsset` (optional)
+        :param asset: :class:`CleanRoomAsset`
           Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`
@@ -1303,7 +1298,7 @@ class CleanRoomsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, clean_room: Optional[CleanRoom] = None) -> CleanRoom:
+    def create(self, clean_room: CleanRoom) -> CleanRoom:
         """Create a clean room.
 
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
@@ -1314,7 +1309,7 @@ class CleanRoomsAPI:
 
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
 
-        :param clean_room: :class:`CleanRoom` (optional)
+        :param clean_room: :class:`CleanRoom`
 
         :returns: :class:`CleanRoom`
         """
@@ -1328,7 +1323,7 @@ class CleanRoomsAPI:
         return CleanRoom.from_dict(res)
 
     def create_output_catalog(
-        self, clean_room_name: str, *, output_catalog: Optional[CleanRoomOutputCatalog] = None
+        self, clean_room_name: str, output_catalog: CleanRoomOutputCatalog
     ) -> CreateCleanRoomOutputCatalogResponse:
         """Create an output catalog.
 
@@ -1336,7 +1331,7 @@ class CleanRoomsAPI:
 
         :param clean_room_name: str
           Name of the clean room.
-        :param output_catalog: :class:`CleanRoomOutputCatalog` (optional)
+        :param output_catalog: :class:`CleanRoomOutputCatalog`
 
         :returns: :class:`CreateCleanRoomOutputCatalogResponse`
         """

@@ -47,14 +47,19 @@ class ColumnInfo:
 @dataclass
 class CreateEndpoint:
     name: str
-    """Name of endpoint"""
+    """Name of the vector search endpoint"""
 
     endpoint_type: EndpointType
-    """Type of endpoint."""
+    """Type of endpoint"""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy id to be applied"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
         if self.name is not None:
@@ -64,6 +69,8 @@ class CreateEndpoint:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateEndpoint into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
         if self.name is not None:
@@ -73,7 +80,11 @@ class CreateEndpoint:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateEndpoint:
         """Deserializes the CreateEndpoint from a dictionary."""
-        return cls(endpoint_type=_enum(d, "endpoint_type", EndpointType), name=d.get("name", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            name=d.get("name", None),
+        )
 
 
 @dataclass
@@ -88,12 +99,11 @@ class CreateVectorIndexRequest:
     """Primary key of the index"""
 
     index_type: VectorIndexType
-    """There are 2 types of Vector Search indexes:
-    
-    - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-    incrementally updating the index as the underlying data in the Delta Table changes. -
-    `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
-    our REST and SDK APIs. With this model, the user manages index updates."""
+    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
+    with a source Delta Table, automatically and incrementally updating the index as the underlying
+    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
+    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    updates."""
 
     delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None
     """Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`."""
@@ -149,33 +159,39 @@ class CreateVectorIndexRequest:
 
 
 @dataclass
-class CreateVectorIndexResponse:
-    vector_index: Optional[VectorIndex] = None
+class CustomTag:
+    key: str
+    """Key field for a vector search endpoint tag."""
+
+    value: Optional[str] = None
+    """[Optional] Value field for a vector search endpoint tag."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CustomTag into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.vector_index:
-            body["vector_index"] = self.vector_index.as_dict()
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CreateVectorIndexResponse into a shallow dictionary of its immediate attributes."""
+        """Serializes the CustomTag into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.vector_index:
-            body["vector_index"] = self.vector_index
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexResponse:
-        """Deserializes the CreateVectorIndexResponse from a dictionary."""
-        return cls(vector_index=_from_dict(d, "vector_index", VectorIndex))
+    def from_dict(cls, d: Dict[str, Any]) -> CustomTag:
+        """Deserializes the CustomTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
 class DeleteDataResult:
-    """Result of the upsert or delete operation."""
-
     failed_primary_keys: Optional[List[str]] = None
     """List of primary keys for rows that failed to process."""
 
@@ -209,7 +225,6 @@ class DeleteDataResult:
 
 
 class DeleteDataStatus(Enum):
-    """Status of the delete operation."""
 
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
@@ -217,43 +232,7 @@ class DeleteDataStatus(Enum):
 
 
 @dataclass
-class DeleteDataVectorIndexRequest:
-    """Request payload for deleting data from a vector index."""
-
-    primary_keys: List[str]
-    """List of primary keys for the data to be deleted."""
-
-    index_name: Optional[str] = None
-    """Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDataVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.index_name is not None:
-            body["index_name"] = self.index_name
-        if self.primary_keys:
-            body["primary_keys"] = [v for v in self.primary_keys]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDataVectorIndexRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.index_name is not None:
-            body["index_name"] = self.index_name
-        if self.primary_keys:
-            body["primary_keys"] = self.primary_keys
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexRequest:
-        """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
-        return cls(index_name=d.get("index_name", None), primary_keys=d.get("primary_keys", None))
-
-
-@dataclass
 class DeleteDataVectorIndexResponse:
-    """Response to a delete data vector index request."""
-
     result: Optional[DeleteDataResult] = None
     """Result of the upsert or delete operation."""
 
@@ -331,20 +310,17 @@ class DeltaSyncVectorIndexSpecRequest:
     """The columns that contain the embedding source."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
-    """The columns that contain the embedding vectors. The format should be array[double]."""
+    """The columns that contain the embedding vectors."""
 
     embedding_writeback_table: Optional[str] = None
-    """[Optional] Automatically sync the vector index contents and computed embeddings to the specified
-    Delta table. The only supported table name is the index name with the suffix `_writeback_table`."""
+    """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode.
-    
-    - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
-    after successfully refreshing the source table in the pipeline once, ensuring the table is
-    updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
-    uses continuous execution, the pipeline processes new data as it arrives in the source table to
-    keep vector index fresh."""
+    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+    system stops processing after successfully refreshing the source table in the pipeline once,
+    ensuring the table is updated based on the data available when the update started. -
+    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
+    arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -411,13 +387,11 @@ class DeltaSyncVectorIndexSpecResponse:
     """The ID of the pipeline that is used to sync the index."""
 
     pipeline_type: Optional[PipelineType] = None
-    """Pipeline execution mode.
-    
-    - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
-    after successfully refreshing the source table in the pipeline once, ensuring the table is
-    updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
-    uses continuous execution, the pipeline processes new data as it arrives in the source table to
-    keep vector index fresh."""
+    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+    system stops processing after successfully refreshing the source table in the pipeline once,
+    ensuring the table is updated based on the data available when the update started. -
+    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
+    arrives in the source table to keep vector index fresh."""
 
     source_table: Optional[str] = None
     """The name of the source table."""
@@ -472,17 +446,15 @@ class DeltaSyncVectorIndexSpecResponse:
 @dataclass
 class DirectAccessVectorIndexSpec:
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
-    """Contains the optional model endpoint to use during query time."""
+    """The columns that contain the embedding source. The format should be array[double]."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
+    """The columns that contain the embedding vectors. The format should be array[double]."""
 
     schema_json: Optional[str] = None
-    """The schema of the index in JSON format.
-    
-    Supported types are `integer`, `long`, `float`, `double`, `boolean`, `string`, `date`,
-    `timestamp`.
-    
-    Supported types for vector column: `array<float>`, `array<double>`,`."""
+    """The schema of the index in JSON format. Supported types are `integer`, `long`, `float`,
+    `double`, `boolean`, `string`, `date`, `timestamp`. Supported types for vector column:
+    `array<float>`, `array<double>`,`."""
 
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
@@ -588,11 +560,17 @@ class EndpointInfo:
     creator: Optional[str] = None
     """Creator of the endpoint"""
 
+    custom_tags: Optional[List[CustomTag]] = None
+    """The custom tags assigned to the endpoint"""
+
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the endpoint"""
+
     endpoint_status: Optional[EndpointStatus] = None
     """Current status of the endpoint"""
 
     endpoint_type: Optional[EndpointType] = None
-    """Type of endpoint."""
+    """Type of endpoint"""
 
     id: Optional[str] = None
     """Unique identifier of the endpoint"""
@@ -604,7 +582,7 @@ class EndpointInfo:
     """User who last updated the endpoint"""
 
     name: Optional[str] = None
-    """Name of endpoint"""
+    """Name of the vector search endpoint"""
 
     num_indexes: Optional[int] = None
     """Number of indexes on the endpoint"""
@@ -616,6 +594,10 @@ class EndpointInfo:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.endpoint_status:
             body["endpoint_status"] = self.endpoint_status.as_dict()
         if self.endpoint_type is not None:
@@ -639,6 +621,10 @@ class EndpointInfo:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.endpoint_status:
             body["endpoint_status"] = self.endpoint_status
         if self.endpoint_type is not None:
@@ -661,6 +647,8 @@ class EndpointInfo:
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
+            custom_tags=_repeated_dict(d, "custom_tags", CustomTag),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             endpoint_status=_from_dict(d, "endpoint_status", EndpointStatus),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
             id=d.get("id", None),
@@ -756,7 +744,14 @@ class ListEndpointResponse:
 
 @dataclass
 class ListValue:
+    """copied from proto3 / Google Well Known Types, source:
+    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+    `ListValue` is a wrapper around a repeated field of values.
+
+    The JSON representation for `ListValue` is JSON array."""
+
     values: Optional[List[Value]] = None
+    """Repeated field of dynamically typed values."""
 
     def as_dict(self) -> dict:
         """Serializes the ListValue into a dictionary suitable for use as a JSON request body."""
@@ -856,12 +851,11 @@ class MiniVectorIndex:
     """Name of the endpoint associated with the index"""
 
     index_type: Optional[VectorIndexType] = None
-    """There are 2 types of Vector Search indexes:
-    
-    - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-    incrementally updating the index as the underlying data in the Delta Table changes. -
-    `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
-    our REST and SDK APIs. With this model, the user manages index updates."""
+    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
+    with a source Delta Table, automatically and incrementally updating the index as the underlying
+    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
+    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    updates."""
 
     name: Optional[str] = None
     """Name of the index"""
@@ -911,14 +905,69 @@ class MiniVectorIndex:
         )
 
 
-class PipelineType(Enum):
-    """Pipeline execution mode.
+@dataclass
+class PatchEndpointBudgetPolicyRequest:
+    budget_policy_id: str
+    """The budget policy id to be applied"""
 
-    - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
-    after successfully refreshing the source table in the pipeline once, ensuring the table is
-    updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
-    uses continuous execution, the pipeline processes new data as it arrives in the source table to
-    keep vector index fresh."""
+    endpoint_name: Optional[str] = None
+    """Name of the vector search endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchEndpointBudgetPolicyRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.endpoint_name is not None:
+            body["endpoint_name"] = self.endpoint_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchEndpointBudgetPolicyRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.endpoint_name is not None:
+            body["endpoint_name"] = self.endpoint_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointBudgetPolicyRequest:
+        """Deserializes the PatchEndpointBudgetPolicyRequest from a dictionary."""
+        return cls(budget_policy_id=d.get("budget_policy_id", None), endpoint_name=d.get("endpoint_name", None))
+
+
+@dataclass
+class PatchEndpointBudgetPolicyResponse:
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy applied to the vector search endpoint."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchEndpointBudgetPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchEndpointBudgetPolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointBudgetPolicyResponse:
+        """Deserializes the PatchEndpointBudgetPolicyResponse from a dictionary."""
+        return cls(effective_budget_policy_id=d.get("effective_budget_policy_id", None))
+
+
+class PipelineType(Enum):
+    """Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
+    system stops processing after successfully refreshing the source table in the pipeline once,
+    ensuring the table is updated based on the data available when the update started. -
+    `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it
+    arrives in the source table to keep vector index fresh."""
 
     CONTINUOUS = "CONTINUOUS"
     TRIGGERED = "TRIGGERED"
@@ -980,9 +1029,11 @@ class QueryVectorIndexRequest:
     filters_json: Optional[str] = None
     """JSON string representing query filters.
     
-    Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id
-    greater than 5. - `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter
-    for id greater than equal to 5. - `{"id": 5}`: Filter for id equal to 5."""
+    Example filters:
+    
+    - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. -
+    `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than
+    equal to 5. - `{"id": 5}`: Filter for id equal to 5."""
 
     index_name: Optional[str] = None
     """Name of the vector index to query."""
@@ -1114,7 +1165,7 @@ class QueryVectorIndexResponse:
 class ResultData:
     """Data returned in the query result."""
 
-    data_array: Optional[List[List[str]]] = None
+    data_array: Optional[List[ListValue]] = None
     """Data rows returned in the query."""
 
     row_count: Optional[int] = None
@@ -1124,7 +1175,7 @@ class ResultData:
         """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_array:
-            body["data_array"] = [v for v in self.data_array]
+            body["data_array"] = [v.as_dict() for v in self.data_array]
         if self.row_count is not None:
             body["row_count"] = self.row_count
         return body
@@ -1141,7 +1192,7 @@ class ResultData:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
-        return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
+        return cls(data_array=_repeated_dict(d, "data_array", ListValue), row_count=d.get("row_count", None))
 
 
 @dataclass
@@ -1180,8 +1231,6 @@ class ResultManifest:
 
 @dataclass
 class ScanVectorIndexRequest:
-    """Request payload for scanning data from a vector index."""
-
     index_name: Optional[str] = None
     """Name of the vector index to scan."""
 
@@ -1259,6 +1308,15 @@ class ScanVectorIndexResponse:
 
 @dataclass
 class Struct:
+    """copied from proto3 / Google Well Known Types, source:
+    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
+    values. In some languages, `Struct` might be supported by a native representation. For example,
+    in scripting languages like JS a struct is represented as an object. The details of that
+    representation are described together with the proto support for the language.
+
+    The JSON representation for `Struct` is JSON object."""
+
     fields: Optional[List[MapStringValueEntry]] = None
     """Data entry, corresponding to a row in a vector index."""
 
@@ -1301,9 +1359,71 @@ class SyncIndexResponse:
 
 
 @dataclass
-class UpsertDataResult:
-    """Result of the upsert or delete operation."""
+class UpdateEndpointCustomTagsRequest:
+    custom_tags: List[CustomTag]
+    """The new custom tags for the vector search endpoint"""
 
+    endpoint_name: Optional[str] = None
+    """Name of the vector search endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEndpointCustomTagsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.endpoint_name is not None:
+            body["endpoint_name"] = self.endpoint_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEndpointCustomTagsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.endpoint_name is not None:
+            body["endpoint_name"] = self.endpoint_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEndpointCustomTagsRequest:
+        """Deserializes the UpdateEndpointCustomTagsRequest from a dictionary."""
+        return cls(custom_tags=_repeated_dict(d, "custom_tags", CustomTag), endpoint_name=d.get("endpoint_name", None))
+
+
+@dataclass
+class UpdateEndpointCustomTagsResponse:
+    custom_tags: Optional[List[CustomTag]] = None
+    """All the custom tags that are applied to the vector search endpoint."""
+
+    name: Optional[str] = None
+    """The name of the vector search endpoint whose custom tags were updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEndpointCustomTagsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEndpointCustomTagsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEndpointCustomTagsResponse:
+        """Deserializes the UpdateEndpointCustomTagsResponse from a dictionary."""
+        return cls(custom_tags=_repeated_dict(d, "custom_tags", CustomTag), name=d.get("name", None))
+
+
+@dataclass
+class UpsertDataResult:
     failed_primary_keys: Optional[List[str]] = None
     """List of primary keys for rows that failed to process."""
 
@@ -1337,7 +1457,6 @@ class UpsertDataResult:
 
 
 class UpsertDataStatus(Enum):
-    """Status of the upsert operation."""
 
     FAILURE = "FAILURE"
     PARTIAL_SUCCESS = "PARTIAL_SUCCESS"
@@ -1346,8 +1465,6 @@ class UpsertDataStatus(Enum):
 
 @dataclass
 class UpsertDataVectorIndexRequest:
-    """Request payload for upserting data into a vector index."""
-
     inputs_json: str
     """JSON string representing the data to be upserted."""
 
@@ -1380,8 +1497,6 @@ class UpsertDataVectorIndexRequest:
 
 @dataclass
 class UpsertDataVectorIndexResponse:
-    """Response to an upsert data vector index request."""
-
     result: Optional[UpsertDataResult] = None
     """Result of the upsert or delete operation."""
 
@@ -1417,14 +1532,25 @@ class Value:
     bool_value: Optional[bool] = None
 
     list_value: Optional[ListValue] = None
-
-    null_value: Optional[str] = None
+    """copied from proto3 / Google Well Known Types, source:
+    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+    `ListValue` is a wrapper around a repeated field of values.
+    
+    The JSON representation for `ListValue` is JSON array."""
 
     number_value: Optional[float] = None
 
     string_value: Optional[str] = None
 
     struct_value: Optional[Struct] = None
+    """copied from proto3 / Google Well Known Types, source:
+    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
+    values. In some languages, `Struct` might be supported by a native representation. For example,
+    in scripting languages like JS a struct is represented as an object. The details of that
+    representation are described together with the proto support for the language.
+    
+    The JSON representation for `Struct` is JSON object."""
 
     def as_dict(self) -> dict:
         """Serializes the Value into a dictionary suitable for use as a JSON request body."""
@@ -1433,8 +1559,6 @@ class Value:
             body["bool_value"] = self.bool_value
         if self.list_value:
             body["list_value"] = self.list_value.as_dict()
-        if self.null_value is not None:
-            body["null_value"] = self.null_value
         if self.number_value is not None:
             body["number_value"] = self.number_value
         if self.string_value is not None:
@@ -1450,8 +1574,6 @@ class Value:
             body["bool_value"] = self.bool_value
         if self.list_value:
             body["list_value"] = self.list_value
-        if self.null_value is not None:
-            body["null_value"] = self.null_value
         if self.number_value is not None:
             body["number_value"] = self.number_value
         if self.string_value is not None:
@@ -1466,7 +1588,6 @@ class Value:
         return cls(
             bool_value=d.get("bool_value", None),
             list_value=_from_dict(d, "list_value", ListValue),
-            null_value=d.get("null_value", None),
             number_value=d.get("number_value", None),
             string_value=d.get("string_value", None),
             struct_value=_from_dict(d, "struct_value", Struct),
@@ -1486,12 +1607,11 @@ class VectorIndex:
     """Name of the endpoint associated with the index"""
 
     index_type: Optional[VectorIndexType] = None
-    """There are 2 types of Vector Search indexes:
-    
-    - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-    incrementally updating the index as the underlying data in the Delta Table changes. -
-    `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
-    our REST and SDK APIs. With this model, the user manages index updates."""
+    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
+    with a source Delta Table, automatically and incrementally updating the index as the underlying
+    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
+    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    updates."""
 
     name: Optional[str] = None
     """Name of the index"""
@@ -1610,12 +1730,11 @@ class VectorIndexStatus:
 
 
 class VectorIndexType(Enum):
-    """There are 2 types of Vector Search indexes:
-
-    - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-    incrementally updating the index as the underlying data in the Delta Table changes. -
-    `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
-    our REST and SDK APIs. With this model, the user manages index updates."""
+    """There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs
+    with a source Delta Table, automatically and incrementally updating the index as the underlying
+    data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write
+    of vectors and metadata through our REST and SDK APIs. With this model, the user manages index
+    updates."""
 
     DELTA_SYNC = "DELTA_SYNC"
     DIRECT_ACCESS = "DIRECT_ACCESS"
@@ -1661,21 +1780,27 @@ class VectorSearchEndpointsAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def create_endpoint(self, name: str, endpoint_type: EndpointType) -> Wait[EndpointInfo]:
+    def create_endpoint(
+        self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
+    ) -> Wait[EndpointInfo]:
         """Create an endpoint.
 
         Create a new endpoint.
 
         :param name: str
-          Name of endpoint
+          Name of the vector search endpoint
         :param endpoint_type: :class:`EndpointType`
-          Type of endpoint.
+          Type of endpoint
+        :param budget_policy_id: str (optional)
+          The budget policy id to be applied
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
         """
         body = {}
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
         if endpoint_type is not None:
             body["endpoint_type"] = endpoint_type.value
         if name is not None:
@@ -1693,25 +1818,38 @@ class VectorSearchEndpointsAPI:
         )
 
     def create_endpoint_and_wait(
-        self, name: str, endpoint_type: EndpointType, timeout=timedelta(minutes=20)
+        self,
+        name: str,
+        endpoint_type: EndpointType,
+        *,
+        budget_policy_id: Optional[str] = None,
+        timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
-        return self.create_endpoint(endpoint_type=endpoint_type, name=name).result(timeout=timeout)
+        return self.create_endpoint(budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name).result(
+            timeout=timeout
+        )
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete an endpoint.
 
+        Delete a vector search endpoint.
+
         :param endpoint_name: str
-          Name of the endpoint
+          Name of the vector search endpoint
 
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do("DELETE", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
         """Get an endpoint.
+
+        Get details for a single vector search endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -1728,6 +1866,8 @@ class VectorSearchEndpointsAPI:
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
         """List all endpoints.
+
+        List all vector search endpoints in the workspace.
 
         :param page_token: str (optional)
           Token for pagination
@@ -1751,14 +1891,66 @@ class VectorSearchEndpointsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def update_endpoint_budget_policy(
+        self, endpoint_name: str, budget_policy_id: str
+    ) -> PatchEndpointBudgetPolicyResponse:
+        """Update the budget policy of an endpoint.
+
+        Update the budget policy of an endpoint
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param budget_policy_id: str
+          The budget policy id to be applied
+
+        :returns: :class:`PatchEndpointBudgetPolicyResponse`
+        """
+        body = {}
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy", body=body, headers=headers
+        )
+        return PatchEndpointBudgetPolicyResponse.from_dict(res)
+
+    def update_endpoint_custom_tags(
+        self, endpoint_name: str, custom_tags: List[CustomTag]
+    ) -> UpdateEndpointCustomTagsResponse:
+        """Update the custom tags of an endpoint.
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param custom_tags: List[:class:`CustomTag`]
+          The new custom tags for the vector search endpoint
+
+        :returns: :class:`UpdateEndpointCustomTagsResponse`
+        """
+        body = {}
+        if custom_tags is not None:
+            body["custom_tags"] = [v.as_dict() for v in custom_tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/tags", body=body, headers=headers
+        )
+        return UpdateEndpointCustomTagsResponse.from_dict(res)
+
 
 class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
 
-    There are 2 types of Vector Search indexes: * **Delta Sync Index**: An index that automatically syncs with
+    There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index that automatically syncs with
     a source Delta Table, automatically and incrementally updating the index as the underlying data in the
-    Delta Table changes. * **Direct Vector Access Index**: An index that supports direct read and write of
+    Delta Table changes. - **Direct Vector Access Index**: An index that supports direct read and write of
     vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
@@ -1773,7 +1965,7 @@ class VectorSearchIndexesAPI:
         *,
         delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
         direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
-    ) -> CreateVectorIndexResponse:
+    ) -> VectorIndex:
         """Create an index.
 
         Create a new index.
@@ -1785,18 +1977,16 @@ class VectorSearchIndexesAPI:
         :param primary_key: str
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
-          There are 2 types of Vector Search indexes:
-
-          - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-          incrementally updating the index as the underlying data in the Delta Table changes. -
-          `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our
-          REST and SDK APIs. With this model, the user manages index updates.
+          There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs with a
+          source Delta Table, automatically and incrementally updating the index as the underlying data in the
+          Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and
+          metadata through our REST and SDK APIs. With this model, the user manages index updates.
         :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
 
-        :returns: :class:`CreateVectorIndexResponse`
+        :returns: :class:`VectorIndex`
         """
         body = {}
         if delta_sync_index_spec is not None:
@@ -1817,7 +2007,7 @@ class VectorSearchIndexesAPI:
         }
 
         res = self._api.do("POST", "/api/2.0/vector-search/indexes", body=body, headers=headers)
-        return CreateVectorIndexResponse.from_dict(res)
+        return VectorIndex.from_dict(res)
 
     def delete_data_vector_index(self, index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
         """Delete data from index.
@@ -1831,16 +2021,16 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`DeleteDataVectorIndexResponse`
         """
-        body = {}
+
+        query = {}
         if primary_keys is not None:
-            body["primary_keys"] = [v for v in primary_keys]
+            query["primary_keys"] = [v for v in primary_keys]
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/json",
         }
 
         res = self._api.do(
-            "POST", f"/api/2.0/vector-search/indexes/{index_name}/delete-data", body=body, headers=headers
+            "DELETE", f"/api/2.0/vector-search/indexes/{index_name}/delete-data", query=query, headers=headers
         )
         return DeleteDataVectorIndexResponse.from_dict(res)
 
@@ -1855,7 +2045,9 @@ class VectorSearchIndexesAPI:
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do("DELETE", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
 
@@ -1934,9 +2126,11 @@ class VectorSearchIndexesAPI:
         :param filters_json: str (optional)
           JSON string representing query filters.
 
-          Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater
-          than 5. - `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id
-          greater than equal to 5. - `{"id": 5}`: Filter for id equal to 5.
+          Example filters:
+
+          - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
+          <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
+          5. - `{"id": 5}`: Filter for id equal to 5.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
         :param query_text: str (optional)
@@ -2049,7 +2243,9 @@ class VectorSearchIndexesAPI:
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 

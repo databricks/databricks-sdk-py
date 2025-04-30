@@ -61,6 +61,18 @@ class AccessControl:
         )
 
 
+class Aggregation(Enum):
+
+    AVG = "AVG"
+    COUNT = "COUNT"
+    COUNT_DISTINCT = "COUNT_DISTINCT"
+    MAX = "MAX"
+    MEDIAN = "MEDIAN"
+    MIN = "MIN"
+    STDDEV = "STDDEV"
+    SUM = "SUM"
+
+
 @dataclass
 class Alert:
     condition: Optional[AlertCondition] = None
@@ -304,6 +316,17 @@ class AlertConditionThreshold:
     def from_dict(cls, d: Dict[str, Any]) -> AlertConditionThreshold:
         """Deserializes the AlertConditionThreshold from a dictionary."""
         return cls(value=_from_dict(d, "value", AlertOperandValue))
+
+
+class AlertEvaluationState(Enum):
+    """UNSPECIFIED - default unspecify value for proto enum, do not use it in the code UNKNOWN - alert
+    not yet evaluated TRIGGERED - alert is triggered OK - alert is not triggered ERROR - alert
+    evaluation failed"""
+
+    ERROR = "ERROR"
+    OK = "OK"
+    TRIGGERED = "TRIGGERED"
+    UNKNOWN = "UNKNOWN"
 
 
 @dataclass
@@ -607,6 +630,394 @@ class AlertState(Enum):
     OK = "OK"
     TRIGGERED = "TRIGGERED"
     UNKNOWN = "UNKNOWN"
+
+
+@dataclass
+class AlertV2:
+    create_time: Optional[str] = None
+    """The timestamp indicating when the alert was created."""
+
+    custom_description: Optional[str] = None
+    """Custom description for the alert. support mustache template."""
+
+    custom_summary: Optional[str] = None
+    """Custom summary for the alert. support mustache template."""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
+
+    evaluation: Optional[AlertV2Evaluation] = None
+
+    id: Optional[str] = None
+    """UUID identifying the alert."""
+
+    lifecycle_state: Optional[LifecycleState] = None
+    """Indicates whether the query is trashed."""
+
+    owner_user_name: Optional[str] = None
+    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
+
+    parent_path: Optional[str] = None
+    """The workspace path of the folder containing the alert. Can only be set on create, and cannot be
+    updated."""
+
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
+
+    run_as_user_name: Optional[str] = None
+    """The run as username. This field is set to "Unavailable" if the user has been deleted."""
+
+    schedule: Optional[CronSchedule] = None
+
+    update_time: Optional[str] = None
+    """The timestamp indicating when the alert was updated."""
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the alert."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2 into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_description is not None:
+            body["custom_description"] = self.custom_description
+        if self.custom_summary is not None:
+            body["custom_summary"] = self.custom_summary
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.evaluation:
+            body["evaluation"] = self.evaluation.as_dict()
+        if self.id is not None:
+            body["id"] = self.id
+        if self.lifecycle_state is not None:
+            body["lifecycle_state"] = self.lifecycle_state.value
+        if self.owner_user_name is not None:
+            body["owner_user_name"] = self.owner_user_name
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.run_as_user_name is not None:
+            body["run_as_user_name"] = self.run_as_user_name
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2 into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_description is not None:
+            body["custom_description"] = self.custom_description
+        if self.custom_summary is not None:
+            body["custom_summary"] = self.custom_summary
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.evaluation:
+            body["evaluation"] = self.evaluation
+        if self.id is not None:
+            body["id"] = self.id
+        if self.lifecycle_state is not None:
+            body["lifecycle_state"] = self.lifecycle_state
+        if self.owner_user_name is not None:
+            body["owner_user_name"] = self.owner_user_name
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.run_as_user_name is not None:
+            body["run_as_user_name"] = self.run_as_user_name
+        if self.schedule:
+            body["schedule"] = self.schedule
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2:
+        """Deserializes the AlertV2 from a dictionary."""
+        return cls(
+            create_time=d.get("create_time", None),
+            custom_description=d.get("custom_description", None),
+            custom_summary=d.get("custom_summary", None),
+            display_name=d.get("display_name", None),
+            evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
+            id=d.get("id", None),
+            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
+            owner_user_name=d.get("owner_user_name", None),
+            parent_path=d.get("parent_path", None),
+            query_text=d.get("query_text", None),
+            run_as_user_name=d.get("run_as_user_name", None),
+            schedule=_from_dict(d, "schedule", CronSchedule),
+            update_time=d.get("update_time", None),
+            warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+@dataclass
+class AlertV2Evaluation:
+    comparison_operator: Optional[ComparisonOperator] = None
+    """Operator used for comparison in alert evaluation."""
+
+    empty_result_state: Optional[AlertEvaluationState] = None
+    """Alert state if result is empty."""
+
+    last_evaluated_at: Optional[str] = None
+    """Timestamp of the last evaluation."""
+
+    notification: Optional[AlertV2Notification] = None
+    """User or Notification Destination to notify when alert is triggered."""
+
+    source: Optional[AlertV2OperandColumn] = None
+    """Source column from result to use to evaluate alert"""
+
+    state: Optional[AlertEvaluationState] = None
+    """Latest state of alert evaluation."""
+
+    threshold: Optional[AlertV2Operand] = None
+    """Threshold to user for alert evaluation, can be a column or a value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2Evaluation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comparison_operator is not None:
+            body["comparison_operator"] = self.comparison_operator.value
+        if self.empty_result_state is not None:
+            body["empty_result_state"] = self.empty_result_state.value
+        if self.last_evaluated_at is not None:
+            body["last_evaluated_at"] = self.last_evaluated_at
+        if self.notification:
+            body["notification"] = self.notification.as_dict()
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.threshold:
+            body["threshold"] = self.threshold.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2Evaluation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comparison_operator is not None:
+            body["comparison_operator"] = self.comparison_operator
+        if self.empty_result_state is not None:
+            body["empty_result_state"] = self.empty_result_state
+        if self.last_evaluated_at is not None:
+            body["last_evaluated_at"] = self.last_evaluated_at
+        if self.notification:
+            body["notification"] = self.notification
+        if self.source:
+            body["source"] = self.source
+        if self.state is not None:
+            body["state"] = self.state
+        if self.threshold:
+            body["threshold"] = self.threshold
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2Evaluation:
+        """Deserializes the AlertV2Evaluation from a dictionary."""
+        return cls(
+            comparison_operator=_enum(d, "comparison_operator", ComparisonOperator),
+            empty_result_state=_enum(d, "empty_result_state", AlertEvaluationState),
+            last_evaluated_at=d.get("last_evaluated_at", None),
+            notification=_from_dict(d, "notification", AlertV2Notification),
+            source=_from_dict(d, "source", AlertV2OperandColumn),
+            state=_enum(d, "state", AlertEvaluationState),
+            threshold=_from_dict(d, "threshold", AlertV2Operand),
+        )
+
+
+@dataclass
+class AlertV2Notification:
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
+    retrigger_seconds: Optional[int] = None
+    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
+    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+
+    subscriptions: Optional[List[AlertV2Subscription]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2Notification into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.notify_on_ok is not None:
+            body["notify_on_ok"] = self.notify_on_ok
+        if self.retrigger_seconds is not None:
+            body["retrigger_seconds"] = self.retrigger_seconds
+        if self.subscriptions:
+            body["subscriptions"] = [v.as_dict() for v in self.subscriptions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2Notification into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.notify_on_ok is not None:
+            body["notify_on_ok"] = self.notify_on_ok
+        if self.retrigger_seconds is not None:
+            body["retrigger_seconds"] = self.retrigger_seconds
+        if self.subscriptions:
+            body["subscriptions"] = self.subscriptions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2Notification:
+        """Deserializes the AlertV2Notification from a dictionary."""
+        return cls(
+            notify_on_ok=d.get("notify_on_ok", None),
+            retrigger_seconds=d.get("retrigger_seconds", None),
+            subscriptions=_repeated_dict(d, "subscriptions", AlertV2Subscription),
+        )
+
+
+@dataclass
+class AlertV2Operand:
+    column: Optional[AlertV2OperandColumn] = None
+
+    value: Optional[AlertV2OperandValue] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2Operand into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column:
+            body["column"] = self.column.as_dict()
+        if self.value:
+            body["value"] = self.value.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2Operand into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column:
+            body["column"] = self.column
+        if self.value:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2Operand:
+        """Deserializes the AlertV2Operand from a dictionary."""
+        return cls(
+            column=_from_dict(d, "column", AlertV2OperandColumn), value=_from_dict(d, "value", AlertV2OperandValue)
+        )
+
+
+@dataclass
+class AlertV2OperandColumn:
+    aggregation: Optional[Aggregation] = None
+
+    display: Optional[str] = None
+
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2OperandColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aggregation is not None:
+            body["aggregation"] = self.aggregation.value
+        if self.display is not None:
+            body["display"] = self.display
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2OperandColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aggregation is not None:
+            body["aggregation"] = self.aggregation
+        if self.display is not None:
+            body["display"] = self.display
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2OperandColumn:
+        """Deserializes the AlertV2OperandColumn from a dictionary."""
+        return cls(
+            aggregation=_enum(d, "aggregation", Aggregation), display=d.get("display", None), name=d.get("name", None)
+        )
+
+
+@dataclass
+class AlertV2OperandValue:
+    bool_value: Optional[bool] = None
+
+    double_value: Optional[float] = None
+
+    string_value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2OperandValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bool_value is not None:
+            body["bool_value"] = self.bool_value
+        if self.double_value is not None:
+            body["double_value"] = self.double_value
+        if self.string_value is not None:
+            body["string_value"] = self.string_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2OperandValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bool_value is not None:
+            body["bool_value"] = self.bool_value
+        if self.double_value is not None:
+            body["double_value"] = self.double_value
+        if self.string_value is not None:
+            body["string_value"] = self.string_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2OperandValue:
+        """Deserializes the AlertV2OperandValue from a dictionary."""
+        return cls(
+            bool_value=d.get("bool_value", None),
+            double_value=d.get("double_value", None),
+            string_value=d.get("string_value", None),
+        )
+
+
+@dataclass
+class AlertV2Subscription:
+    destination_id: Optional[str] = None
+
+    user_email: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2Subscription into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_email is not None:
+            body["user_email"] = self.user_email
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2Subscription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.user_email is not None:
+            body["user_email"] = self.user_email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2Subscription:
+        """Deserializes the AlertV2Subscription from a dictionary."""
+        return cls(destination_id=d.get("destination_id", None), user_email=d.get("user_email", None))
 
 
 @dataclass
@@ -948,6 +1359,18 @@ class ColumnInfoTypeName(Enum):
     USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
 
 
+class ComparisonOperator(Enum):
+
+    EQUAL = "EQUAL"
+    GREATER_THAN = "GREATER_THAN"
+    GREATER_THAN_OR_EQUAL = "GREATER_THAN_OR_EQUAL"
+    IS_NOT_NULL = "IS_NOT_NULL"
+    IS_NULL = "IS_NULL"
+    LESS_THAN = "LESS_THAN"
+    LESS_THAN_OR_EQUAL = "LESS_THAN_OR_EQUAL"
+    NOT_EQUAL = "NOT_EQUAL"
+
+
 @dataclass
 class CreateAlert:
     name: str
@@ -1012,11 +1435,17 @@ class CreateAlert:
 class CreateAlertRequest:
     alert: Optional[CreateAlertRequestAlert] = None
 
+    auto_resolve_display_name: Optional[bool] = None
+    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+    alert's display name conflicts with an existing alert's display name."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateAlertRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert:
             body["alert"] = self.alert.as_dict()
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1024,12 +1453,17 @@ class CreateAlertRequest:
         body = {}
         if self.alert:
             body["alert"] = self.alert
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAlertRequest:
         """Deserializes the CreateAlertRequest from a dictionary."""
-        return cls(alert=_from_dict(d, "alert", CreateAlertRequestAlert))
+        return cls(
+            alert=_from_dict(d, "alert", CreateAlertRequestAlert),
+            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
+        )
 
 
 @dataclass
@@ -1122,12 +1556,42 @@ class CreateAlertRequestAlert:
 
 
 @dataclass
+class CreateAlertV2Request:
+    alert: Optional[AlertV2] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAlertV2Request into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert:
+            body["alert"] = self.alert.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAlertV2Request into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert:
+            body["alert"] = self.alert
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAlertV2Request:
+        """Deserializes the CreateAlertV2Request from a dictionary."""
+        return cls(alert=_from_dict(d, "alert", AlertV2))
+
+
+@dataclass
 class CreateQueryRequest:
+    auto_resolve_display_name: Optional[bool] = None
+    """If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
+    query's display name conflicts with an existing query's display name."""
+
     query: Optional[CreateQueryRequestQuery] = None
 
     def as_dict(self) -> dict:
         """Serializes the CreateQueryRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.query:
             body["query"] = self.query.as_dict()
         return body
@@ -1135,6 +1599,8 @@ class CreateQueryRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateQueryRequest into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.query:
             body["query"] = self.query
         return body
@@ -1142,7 +1608,10 @@ class CreateQueryRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateQueryRequest:
         """Deserializes the CreateQueryRequest from a dictionary."""
-        return cls(query=_from_dict(d, "query", CreateQueryRequestQuery))
+        return cls(
+            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
+            query=_from_dict(d, "query", CreateQueryRequestQuery),
+        )
 
 
 @dataclass
@@ -1587,6 +2056,54 @@ class CreateWidget:
             text=d.get("text", None),
             visualization_id=d.get("visualization_id", None),
             width=d.get("width", None),
+        )
+
+
+@dataclass
+class CronSchedule:
+    pause_status: Optional[SchedulePauseStatus] = None
+    """Indicate whether this schedule is paused or not."""
+
+    quartz_cron_schedule: Optional[str] = None
+    """A cron expression using quartz syntax that specifies the schedule for this pipeline. Should use
+    the quartz format described here:
+    http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html"""
+
+    timezone_id: Optional[str] = None
+    """A Java timezone id. The schedule will be resolved using this timezone. This will be combined
+    with the quartz_cron_schedule to determine the schedule. See
+    https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+    for details."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status.value
+        if self.quartz_cron_schedule is not None:
+            body["quartz_cron_schedule"] = self.quartz_cron_schedule
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pause_status is not None:
+            body["pause_status"] = self.pause_status
+        if self.quartz_cron_schedule is not None:
+            body["quartz_cron_schedule"] = self.quartz_cron_schedule
+        if self.timezone_id is not None:
+            body["timezone_id"] = self.timezone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
+        """Deserializes the CronSchedule from a dictionary."""
+        return cls(
+            pause_status=_enum(d, "pause_status", SchedulePauseStatus),
+            quartz_cron_schedule=d.get("quartz_cron_schedule", None),
+            timezone_id=d.get("timezone_id", None),
         )
 
 
@@ -2614,7 +3131,7 @@ class EndpointInfo:
     Supported values: - Must be unique within an org. - Must be less than 100 characters."""
 
     num_active_sessions: Optional[int] = None
-    """current number of active sessions for the warehouse"""
+    """Deprecated. current number of active sessions for the warehouse"""
 
     num_clusters: Optional[int] = None
     """current number of clusters running for the service"""
@@ -3419,7 +3936,7 @@ class GetWarehouseResponse:
     Supported values: - Must be unique within an org. - Must be less than 100 characters."""
 
     num_active_sessions: Optional[int] = None
-    """current number of active sessions for the warehouse"""
+    """Deprecated. current number of active sessions for the warehouse"""
 
     num_clusters: Optional[int] = None
     """current number of clusters running for the service"""
@@ -4267,6 +4784,160 @@ class ListAlertsResponseAlert:
             state=_enum(d, "state", AlertState),
             trigger_time=d.get("trigger_time", None),
             update_time=d.get("update_time", None),
+        )
+
+
+@dataclass
+class ListAlertsV2Response:
+    next_page_token: Optional[str] = None
+
+    results: Optional[List[ListAlertsV2ResponseAlert]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAlertsV2Response into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.results:
+            body["results"] = [v.as_dict() for v in self.results]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAlertsV2Response into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.results:
+            body["results"] = self.results
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2Response:
+        """Deserializes the ListAlertsV2Response from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            results=_repeated_dict(d, "results", ListAlertsV2ResponseAlert),
+        )
+
+
+@dataclass
+class ListAlertsV2ResponseAlert:
+    create_time: Optional[str] = None
+    """The timestamp indicating when the alert was created."""
+
+    custom_description: Optional[str] = None
+    """Custom description for the alert. support mustache template."""
+
+    custom_summary: Optional[str] = None
+    """Custom summary for the alert. support mustache template."""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
+
+    evaluation: Optional[AlertV2Evaluation] = None
+
+    id: Optional[str] = None
+    """UUID identifying the alert."""
+
+    lifecycle_state: Optional[LifecycleState] = None
+    """Indicates whether the query is trashed."""
+
+    owner_user_name: Optional[str] = None
+    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
+
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
+
+    run_as_user_name: Optional[str] = None
+    """The run as username. This field is set to "Unavailable" if the user has been deleted."""
+
+    schedule: Optional[CronSchedule] = None
+
+    update_time: Optional[str] = None
+    """The timestamp indicating when the alert was updated."""
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the alert."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAlertsV2ResponseAlert into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_description is not None:
+            body["custom_description"] = self.custom_description
+        if self.custom_summary is not None:
+            body["custom_summary"] = self.custom_summary
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.evaluation:
+            body["evaluation"] = self.evaluation.as_dict()
+        if self.id is not None:
+            body["id"] = self.id
+        if self.lifecycle_state is not None:
+            body["lifecycle_state"] = self.lifecycle_state.value
+        if self.owner_user_name is not None:
+            body["owner_user_name"] = self.owner_user_name
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.run_as_user_name is not None:
+            body["run_as_user_name"] = self.run_as_user_name
+        if self.schedule:
+            body["schedule"] = self.schedule.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAlertsV2ResponseAlert into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_description is not None:
+            body["custom_description"] = self.custom_description
+        if self.custom_summary is not None:
+            body["custom_summary"] = self.custom_summary
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.evaluation:
+            body["evaluation"] = self.evaluation
+        if self.id is not None:
+            body["id"] = self.id
+        if self.lifecycle_state is not None:
+            body["lifecycle_state"] = self.lifecycle_state
+        if self.owner_user_name is not None:
+            body["owner_user_name"] = self.owner_user_name
+        if self.query_text is not None:
+            body["query_text"] = self.query_text
+        if self.run_as_user_name is not None:
+            body["run_as_user_name"] = self.run_as_user_name
+        if self.schedule:
+            body["schedule"] = self.schedule
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2ResponseAlert:
+        """Deserializes the ListAlertsV2ResponseAlert from a dictionary."""
+        return cls(
+            create_time=d.get("create_time", None),
+            custom_description=d.get("custom_description", None),
+            custom_summary=d.get("custom_summary", None),
+            display_name=d.get("display_name", None),
+            evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
+            id=d.get("id", None),
+            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
+            owner_user_name=d.get("owner_user_name", None),
+            query_text=d.get("query_text", None),
+            run_as_user_name=d.get("run_as_user_name", None),
+            schedule=_from_dict(d, "schedule", CronSchedule),
+            update_time=d.get("update_time", None),
+            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -6185,6 +6856,12 @@ class RunAsRole(Enum):
     VIEWER = "viewer"
 
 
+class SchedulePauseStatus(Enum):
+
+    PAUSED = "PAUSED"
+    UNPAUSED = "UNPAUSED"
+
+
 @dataclass
 class ServiceError:
     error_code: Optional[ServiceErrorCode] = None
@@ -6991,6 +7668,52 @@ class UpdateAlertRequestAlert:
             query_id=d.get("query_id", None),
             seconds_to_retrigger=d.get("seconds_to_retrigger", None),
         )
+
+
+@dataclass
+class UpdateAlertV2Request:
+    update_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    alert: Optional[AlertV2] = None
+
+    id: Optional[str] = None
+    """UUID identifying the alert."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAlertV2Request into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert:
+            body["alert"] = self.alert.as_dict()
+        if self.id is not None:
+            body["id"] = self.id
+        if self.update_mask is not None:
+            body["update_mask"] = self.update_mask
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAlertV2Request into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert:
+            body["alert"] = self.alert
+        if self.id is not None:
+            body["id"] = self.id
+        if self.update_mask is not None:
+            body["update_mask"] = self.update_mask
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAlertV2Request:
+        """Deserializes the UpdateAlertV2Request from a dictionary."""
+        return cls(alert=_from_dict(d, "alert", AlertV2), id=d.get("id", None), update_mask=d.get("update_mask", None))
 
 
 @dataclass
@@ -7902,18 +8625,25 @@ class AlertsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, alert: Optional[CreateAlertRequestAlert] = None) -> Alert:
+    def create(
+        self, *, alert: Optional[CreateAlertRequestAlert] = None, auto_resolve_display_name: Optional[bool] = None
+    ) -> Alert:
         """Create an alert.
 
         Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
 
         :returns: :class:`Alert`
         """
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
+        if auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = auto_resolve_display_name
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8191,6 +8921,133 @@ class AlertsLegacyAPI:
         }
 
         self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
+
+
+class AlertsV2API:
+    """TODO: Add description"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_alert(self, *, alert: Optional[AlertV2] = None) -> AlertV2:
+        """Create an alert.
+
+        Create Alert
+
+        :param alert: :class:`AlertV2` (optional)
+
+        :returns: :class:`AlertV2`
+        """
+        body = {}
+        if alert is not None:
+            body["alert"] = alert.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/alerts", body=body, headers=headers)
+        return AlertV2.from_dict(res)
+
+    def get_alert(self, id: str) -> AlertV2:
+        """Get an alert.
+
+        Gets an alert.
+
+        :param id: str
+
+        :returns: :class:`AlertV2`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/alerts/{id}", headers=headers)
+        return AlertV2.from_dict(res)
+
+    def list_alerts(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ListAlertsV2ResponseAlert]:
+        """List alerts.
+
+        Gets a list of alerts accessible to the user, ordered by creation time.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`ListAlertsV2ResponseAlert`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/alerts", query=query, headers=headers)
+            if "results" in json:
+                for v in json["results"]:
+                    yield ListAlertsV2ResponseAlert.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def trash_alert(self, id: str):
+        """Delete an alert.
+
+        Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
+        trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
+        30 days.
+
+        :param id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
+
+    def update_alert(self, id: str, update_mask: str, *, alert: Optional[AlertV2] = None) -> AlertV2:
+        """Update an alert.
+
+        Update alert
+
+        :param id: str
+          UUID identifying the alert.
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        :param alert: :class:`AlertV2` (optional)
+
+        :returns: :class:`AlertV2`
+        """
+        body = {}
+        if alert is not None:
+            body["alert"] = alert.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/alerts/{id}", body=body, headers=headers)
+        return AlertV2.from_dict(res)
 
 
 class DashboardWidgetsAPI:
@@ -8678,16 +9535,23 @@ class QueriesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, query: Optional[CreateQueryRequestQuery] = None) -> Query:
+    def create(
+        self, *, auto_resolve_display_name: Optional[bool] = None, query: Optional[CreateQueryRequestQuery] = None
+    ) -> Query:
         """Create a query.
 
         Creates a query.
 
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
+          query's display name conflicts with an existing query's display name.
         :param query: :class:`CreateQueryRequestQuery` (optional)
 
         :returns: :class:`Query`
         """
         body = {}
+        if auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = auto_resolve_display_name
         if query is not None:
             body["query"] = query.as_dict()
         headers = {

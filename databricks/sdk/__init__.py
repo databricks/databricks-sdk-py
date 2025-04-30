@@ -97,10 +97,10 @@ from databricks.sdk.service.sharing import (ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
-                                        DashboardsAPI, DashboardWidgetsAPI,
-                                        DataSourcesAPI, DbsqlPermissionsAPI,
-                                        QueriesAPI, QueriesLegacyAPI,
-                                        QueryHistoryAPI,
+                                        AlertsV2API, DashboardsAPI,
+                                        DashboardWidgetsAPI, DataSourcesAPI,
+                                        DbsqlPermissionsAPI, QueriesAPI,
+                                        QueriesLegacyAPI, QueryHistoryAPI,
                                         QueryVisualizationsAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
@@ -170,7 +170,6 @@ class WorkspaceClient:
         product_version="0.0.0",
         credentials_strategy: Optional[CredentialsStrategy] = None,
         credentials_provider: Optional[CredentialsStrategy] = None,
-        token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
     ):
         if not config:
@@ -199,7 +198,6 @@ class WorkspaceClient:
                 debug_headers=debug_headers,
                 product=product,
                 product_version=product_version,
-                token_audience=token_audience,
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
@@ -209,6 +207,7 @@ class WorkspaceClient:
         self._account_access_control_proxy = service.iam.AccountAccessControlProxyAPI(self._api_client)
         self._alerts = service.sql.AlertsAPI(self._api_client)
         self._alerts_legacy = service.sql.AlertsLegacyAPI(self._api_client)
+        self._alerts_v2 = service.sql.AlertsV2API(self._api_client)
         self._apps = service.apps.AppsAPI(self._api_client)
         self._artifact_allowlists = service.catalog.ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = service.catalog.CatalogsAPI(self._api_client)
@@ -347,6 +346,11 @@ class WorkspaceClient:
     def alerts_legacy(self) -> service.sql.AlertsLegacyAPI:
         """The alerts API can be used to perform CRUD operations on alerts."""
         return self._alerts_legacy
+
+    @property
+    def alerts_v2(self) -> service.sql.AlertsV2API:
+        """TODO: Add description."""
+        return self._alerts_v2
 
     @property
     def apps(self) -> service.apps.AppsAPI:
@@ -760,7 +764,7 @@ class WorkspaceClient:
 
     @property
     def tables(self) -> service.catalog.TablesAPI:
-        """A table resides in the third layer of Unity Catalog's three-level namespace."""
+        """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
 
     @property
@@ -864,7 +868,6 @@ class AccountClient:
         product_version="0.0.0",
         credentials_strategy: Optional[CredentialsStrategy] = None,
         credentials_provider: Optional[CredentialsStrategy] = None,
-        token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
     ):
         if not config:
@@ -893,7 +896,6 @@ class AccountClient:
                 debug_headers=debug_headers,
                 product=product,
                 product_version=product_version,
-                token_audience=token_audience,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)

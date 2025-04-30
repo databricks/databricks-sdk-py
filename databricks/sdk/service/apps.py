@@ -1173,12 +1173,12 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
+    def create(self, app: App, *, no_compute: Optional[bool] = None) -> Wait[App]:
         """Create an app.
 
         Creates a new app.
 
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
         :param no_compute: bool (optional)
           If true, the app will not be started after creation.
 
@@ -1198,9 +1198,7 @@ class AppsAPI:
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
-    def create_and_wait(
-        self, *, app: Optional[App] = None, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)
-    ) -> App:
+    def create_and_wait(self, app: App, *, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)) -> App:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
@@ -1221,14 +1219,14 @@ class AppsAPI:
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
-    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> Wait[AppDeployment]:
+    def deploy(self, app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]:
         """Create an app deployment.
 
         Creates an app deployment for the app with the supplied name.
 
         :param app_name: str
           The name of the app.
-        :param app_deployment: :class:`AppDeployment` (optional)
+        :param app_deployment: :class:`AppDeployment`
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
@@ -1249,7 +1247,7 @@ class AppsAPI:
         )
 
     def deploy_and_wait(
-        self, app_name: str, *, app_deployment: Optional[AppDeployment] = None, timeout=timedelta(minutes=20)
+        self, app_name: str, app_deployment: AppDeployment, timeout=timedelta(minutes=20)
     ) -> AppDeployment:
         return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
@@ -1466,7 +1464,7 @@ class AppsAPI:
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
-    def update(self, name: str, *, app: Optional[App] = None) -> App:
+    def update(self, name: str, app: App) -> App:
         """Update an app.
 
         Updates the app with the supplied name.
@@ -1474,7 +1472,7 @@ class AppsAPI:
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
           must be unique within the workspace.
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
 
         :returns: :class:`App`
         """

@@ -1191,10 +1191,10 @@ class AccountFederationPolicyAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, policy: Optional[FederationPolicy] = None, policy_id: Optional[str] = None) -> FederationPolicy:
+    def create(self, policy: FederationPolicy, *, policy_id: Optional[str] = None) -> FederationPolicy:
         """Create account federation policy.
 
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param policy_id: str (optional)
           The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
           characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
@@ -1284,13 +1284,13 @@ class AccountFederationPolicyAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, policy_id: str, *, policy: Optional[FederationPolicy] = None, update_mask: Optional[str] = None
+        self, policy_id: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
     ) -> FederationPolicy:
         """Update account federation policy.
 
         :param policy_id: str
           The identifier for the federation policy.
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param update_mask: str (optional)
           The field mask specifies which fields of the policy to update. To specify multiple fields in the
           field mask, use comma as the separator (no space). The special value '*' indicates that all fields
@@ -1758,13 +1758,13 @@ class ServicePrincipalFederationPolicyAPI:
         self._api = api_client
 
     def create(
-        self, service_principal_id: int, *, policy: Optional[FederationPolicy] = None, policy_id: Optional[str] = None
+        self, service_principal_id: int, policy: FederationPolicy, *, policy_id: Optional[str] = None
     ) -> FederationPolicy:
         """Create service principal federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param policy_id: str (optional)
           The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
           characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
@@ -1869,12 +1869,7 @@ class ServicePrincipalFederationPolicyAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        service_principal_id: int,
-        policy_id: str,
-        *,
-        policy: Optional[FederationPolicy] = None,
-        update_mask: Optional[str] = None,
+        self, service_principal_id: int, policy_id: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
     ) -> FederationPolicy:
         """Update service principal federation policy.
 
@@ -1882,7 +1877,7 @@ class ServicePrincipalFederationPolicyAPI:
           The service principal id for the federation policy.
         :param policy_id: str
           The identifier for the federation policy.
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param update_mask: str (optional)
           The field mask specifies which fields of the policy to update. To specify multiple fields in the
           field mask, use comma as the separator (no space). The special value '*' indicates that all fields
