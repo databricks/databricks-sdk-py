@@ -2464,9 +2464,9 @@ class GitCredentialsAPI:
 
     def update(
         self,
-        credential_id: int,
         git_provider: str,
         *,
+        credential_id: Optional[int] = None,
         git_username: Optional[str] = None,
         personal_access_token: Optional[str] = None,
     ):
@@ -2474,12 +2474,12 @@ class GitCredentialsAPI:
 
         Updates the specified Git credential.
 
-        :param credential_id: int
-          The ID for the corresponding credential to access.
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
           `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
           `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        :param credential_id: int (optional)
+          The ID for the corresponding credential to access.
         :param git_username: str (optional)
           The username or email provided with your Git provider account, depending on which provider you are
           using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
@@ -2670,16 +2670,16 @@ class ReposAPI:
             query["next_page_token"] = json["next_page_token"]
 
     def set_permissions(
-        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None, repo_id: Optional[str] = None
     ) -> RepoPermissions:
         """Set repo permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param repo_id: str
-          The repo for which to get or manage permissions.
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        :param repo_id: str (optional)
+          The repo for which to get or manage permissions.
 
         :returns: :class:`RepoPermissions`
         """
@@ -2696,9 +2696,9 @@ class ReposAPI:
 
     def update(
         self,
-        repo_id: int,
         *,
         branch: Optional[str] = None,
+        repo_id: Optional[int] = None,
         sparse_checkout: Optional[SparseCheckoutUpdate] = None,
         tag: Optional[str] = None,
     ):
@@ -2707,10 +2707,10 @@ class ReposAPI:
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
         branch.
 
-        :param repo_id: int
-          ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
           Branch that the local version of the repo is checked out to.
+        :param repo_id: int (optional)
+          ID of the Git folder (repo) object in the workspace.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
           If specified, update the sparse checkout settings. The update will fail if sparse checkout is not
           enabled for the repo.
@@ -2736,15 +2736,15 @@ class ReposAPI:
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
 
     def update_permissions(
-        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None, repo_id: Optional[str] = None
     ) -> RepoPermissions:
         """Update repo permissions.
 
         Updates the permissions on a repo. Repos can inherit permissions from their root object.
 
-        :param repo_id: str
-          The repo for which to get or manage permissions.
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
+        :param repo_id: str (optional)
+          The repo for which to get or manage permissions.
 
         :returns: :class:`RepoPermissions`
         """
@@ -3393,10 +3393,10 @@ class WorkspaceAPI:
 
     def set_permissions(
         self,
-        workspace_object_type: str,
-        workspace_object_id: str,
         *,
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
+        workspace_object_id: Optional[str] = None,
+        workspace_object_type: Optional[str] = None,
     ) -> WorkspaceObjectPermissions:
         """Set workspace object permissions.
 
@@ -3404,11 +3404,11 @@ class WorkspaceAPI:
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
 
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        :param workspace_object_id: str (optional)
+          The workspace object for which to get or manage permissions.
+        :param workspace_object_type: str (optional)
+          The workspace object type for which to get or manage permissions.
 
         :returns: :class:`WorkspaceObjectPermissions`
         """
@@ -3427,21 +3427,21 @@ class WorkspaceAPI:
 
     def update_permissions(
         self,
-        workspace_object_type: str,
-        workspace_object_id: str,
         *,
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
+        workspace_object_id: Optional[str] = None,
+        workspace_object_type: Optional[str] = None,
     ) -> WorkspaceObjectPermissions:
         """Update workspace object permissions.
 
         Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
 
-        :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
-        :param workspace_object_id: str
-          The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
+        :param workspace_object_id: str (optional)
+          The workspace object for which to get or manage permissions.
+        :param workspace_object_type: str (optional)
+          The workspace object type for which to get or manage permissions.
 
         :returns: :class:`WorkspaceObjectPermissions`
         """

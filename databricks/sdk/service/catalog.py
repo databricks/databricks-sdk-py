@@ -10070,17 +10070,21 @@ class AccountMetastoreAssignmentsAPI:
         self._api = api_client
 
     def create(
-        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
+        self,
+        *,
+        metastore_assignment: Optional[CreateMetastoreAssignment] = None,
+        metastore_id: Optional[str] = None,
+        workspace_id: Optional[int] = None,
     ):
         """Assigns a workspace to a metastore.
 
         Creates an assignment to a metastore for a workspace
 
-        :param workspace_id: int
-          Workspace ID.
-        :param metastore_id: str
-          Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
+        :param metastore_id: str (optional)
+          Unity Catalog metastore ID
+        :param workspace_id: int (optional)
+          Workspace ID.
 
 
         """
@@ -10166,18 +10170,22 @@ class AccountMetastoreAssignmentsAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
+        self,
+        *,
+        metastore_assignment: Optional[UpdateMetastoreAssignment] = None,
+        metastore_id: Optional[str] = None,
+        workspace_id: Optional[int] = None,
     ):
         """Updates a metastore assignment to a workspaces.
 
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
         updated.
 
-        :param workspace_id: int
-          Workspace ID.
-        :param metastore_id: str
-          Unity Catalog metastore ID
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
+        :param metastore_id: str (optional)
+          Unity Catalog metastore ID
+        :param workspace_id: int (optional)
+          Workspace ID.
 
 
         """
@@ -10287,12 +10295,14 @@ class AccountMetastoresAPI:
         parsed = ListMetastoresResponse.from_dict(json).metastores
         return parsed if parsed is not None else []
 
-    def update(self, metastore_id: str, *, metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
+    def update(
+        self, *, metastore_id: Optional[str] = None, metastore_info: Optional[UpdateMetastore] = None
+    ) -> AccountsMetastoreInfo:
         """Update a metastore.
 
         Updates an existing Unity Catalog metastore.
 
-        :param metastore_id: str
+        :param metastore_id: str (optional)
           Unity Catalog metastore ID
         :param metastore_info: :class:`UpdateMetastore` (optional)
 
@@ -10319,7 +10329,7 @@ class AccountStorageCredentialsAPI:
         self._api = api_client
 
     def create(
-        self, metastore_id: str, *, credential_info: Optional[CreateStorageCredential] = None
+        self, *, credential_info: Optional[CreateStorageCredential] = None, metastore_id: Optional[str] = None
     ) -> AccountsStorageCredentialInfo:
         """Create a storage credential.
 
@@ -10331,9 +10341,9 @@ class AccountStorageCredentialsAPI:
         The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
         metastore.
 
-        :param metastore_id: str
-          Unity Catalog metastore ID
         :param credential_info: :class:`CreateStorageCredential` (optional)
+        :param metastore_id: str (optional)
+          Unity Catalog metastore ID
 
         :returns: :class:`AccountsStorageCredentialInfo`
         """
@@ -10433,21 +10443,21 @@ class AccountStorageCredentialsAPI:
 
     def update(
         self,
-        metastore_id: str,
-        storage_credential_name: str,
         *,
         credential_info: Optional[UpdateStorageCredential] = None,
+        metastore_id: Optional[str] = None,
+        storage_credential_name: Optional[str] = None,
     ) -> AccountsStorageCredentialInfo:
         """Updates a storage credential.
 
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
         If the caller is a metastore admin, only the __owner__ credential can be changed.
 
-        :param metastore_id: str
-          Unity Catalog metastore ID
-        :param storage_credential_name: str
-          Name of the storage credential.
         :param credential_info: :class:`UpdateStorageCredential` (optional)
+        :param metastore_id: str (optional)
+          Unity Catalog metastore ID
+        :param storage_credential_name: str (optional)
+          Name of the storage credential.
 
         :returns: :class:`AccountsStorageCredentialInfo`
         """
@@ -10496,9 +10506,9 @@ class ArtifactAllowlistsAPI:
 
     def update(
         self,
-        artifact_type: ArtifactType,
         artifact_matchers: List[ArtifactMatcher],
         *,
+        artifact_type: Optional[ArtifactType] = None,
         created_at: Optional[int] = None,
         created_by: Optional[str] = None,
         metastore_id: Optional[str] = None,
@@ -10509,10 +10519,10 @@ class ArtifactAllowlistsAPI:
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
 
-        :param artifact_type: :class:`ArtifactType`
-          The artifact type of the allowlist.
         :param artifact_matchers: List[:class:`ArtifactMatcher`]
           A list of allowed artifact match patterns.
+        :param artifact_type: :class:`ArtifactType` (optional)
+          The artifact type of the allowlist.
         :param created_at: int (optional)
           Time at which this artifact allowlist was set, in epoch milliseconds.
         :param created_by: str (optional)
@@ -10719,11 +10729,11 @@ class CatalogsAPI:
 
     def update(
         self,
-        name: str,
         *,
         comment: Optional[str] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         options: Optional[Dict[str, str]] = None,
         owner: Optional[str] = None,
@@ -10734,14 +10744,14 @@ class CatalogsAPI:
         Updates the catalog that matches the supplied name. The caller must be either the owner of the
         catalog, or a metastore admin (when changing the owner field of the catalog).
 
-        :param name: str
-          The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param name: str (optional)
+          The name of the catalog.
         :param new_name: str (optional)
           New name for the catalog.
         :param options: Dict[str,str] (optional)
@@ -10915,16 +10925,21 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        options: Dict[str, str],
+        *,
+        name: Optional[str] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> ConnectionInfo:
         """Update a connection.
 
         Updates the connection that matches the supplied name.
 
-        :param name: str
-          Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param name: str (optional)
+          Name of the connection.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -11160,7 +11175,6 @@ class CredentialsAPI:
 
     def update_credential(
         self,
-        name_arg: str,
         *,
         aws_iam_role: Optional[AwsIamRole] = None,
         azure_managed_identity: Optional[AzureManagedIdentity] = None,
@@ -11169,6 +11183,7 @@ class CredentialsAPI:
         databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None,
         force: Optional[bool] = None,
         isolation_mode: Optional[IsolationMode] = None,
+        name_arg: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         read_only: Optional[bool] = None,
@@ -11181,8 +11196,6 @@ class CredentialsAPI:
         The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
         If the caller is a metastore admin, only the __owner__ field can be changed.
 
-        :param name_arg: str
-          Name of the credential.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
           The AWS IAM role configuration
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
@@ -11198,6 +11211,8 @@ class CredentialsAPI:
           external locations and external tables (when purpose is **STORAGE**).
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param name_arg: str (optional)
+          Name of the credential.
         :param new_name: str (optional)
           New name of credential.
         :param owner: str (optional)
@@ -11499,7 +11514,6 @@ class ExternalLocationsAPI:
 
     def update(
         self,
-        name: str,
         *,
         access_point: Optional[str] = None,
         comment: Optional[str] = None,
@@ -11508,6 +11522,7 @@ class ExternalLocationsAPI:
         fallback: Optional[bool] = None,
         force: Optional[bool] = None,
         isolation_mode: Optional[IsolationMode] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         read_only: Optional[bool] = None,
@@ -11520,8 +11535,6 @@ class ExternalLocationsAPI:
         or be a metastore admin. In the second case, the admin can only update the name of the external
         location.
 
-        :param name: str
-          Name of the external location.
         :param access_point: str (optional)
           The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
@@ -11537,6 +11550,8 @@ class ExternalLocationsAPI:
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
+        :param name: str (optional)
+          Name of the external location.
         :param new_name: str (optional)
           New name for the external location.
         :param owner: str (optional)
@@ -11737,7 +11752,7 @@ class FunctionsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
+    def update(self, *, name: Optional[str] = None, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
 
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
@@ -11747,7 +11762,7 @@ class FunctionsAPI:
         the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
         **USE_SCHEMA** privilege on the function's parent schema.
 
-        :param name: str
+        :param name: str (optional)
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param owner: str (optional)
@@ -11845,18 +11860,22 @@ class GrantsAPI:
         return EffectivePermissionsList.from_dict(res)
 
     def update(
-        self, securable_type: SecurableType, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self,
+        *,
+        changes: Optional[List[PermissionsChange]] = None,
+        full_name: Optional[str] = None,
+        securable_type: Optional[SecurableType] = None,
     ) -> PermissionsList:
         """Update permissions.
 
         Updates the permissions for a securable.
 
-        :param securable_type: :class:`SecurableType`
-          Type of securable.
-        :param full_name: str
-          Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
+        :param full_name: str (optional)
+          Full name of securable.
+        :param securable_type: :class:`SecurableType` (optional)
+          Type of securable.
 
         :returns: :class:`PermissionsList`
         """
@@ -11893,20 +11912,20 @@ class MetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
+    def assign(self, metastore_id: str, default_catalog_name: str, *, workspace_id: Optional[int] = None):
         """Create an assignment.
 
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
 
-        :param workspace_id: int
-          A workspace ID.
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore. This field is depracted. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
+        :param workspace_id: int (optional)
+          A workspace ID.
 
 
         """
@@ -12071,11 +12090,11 @@ class MetastoresAPI:
 
     def update(
         self,
-        id: str,
         *,
         delta_sharing_organization_name: Optional[str] = None,
         delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
         delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None,
+        id: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         privilege_model_version: Optional[str] = None,
@@ -12086,8 +12105,6 @@ class MetastoresAPI:
         Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
-        :param id: str
-          Unique ID of the metastore.
         :param delta_sharing_organization_name: str (optional)
           The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta
           Sharing as the official name.
@@ -12095,6 +12112,8 @@ class MetastoresAPI:
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
           The scope of Delta Sharing enabled for the metastore.
+        :param id: str (optional)
+          Unique ID of the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)
@@ -12132,7 +12151,11 @@ class MetastoresAPI:
         return MetastoreInfo.from_dict(res)
 
     def update_assignment(
-        self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
+        self,
+        *,
+        default_catalog_name: Optional[str] = None,
+        metastore_id: Optional[str] = None,
+        workspace_id: Optional[int] = None,
     ):
         """Update an assignment.
 
@@ -12141,13 +12164,13 @@ class MetastoresAPI:
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
         Workspace admin.
 
-        :param workspace_id: int
-          A workspace ID.
         :param default_catalog_name: str (optional)
           The name of the default catalog in the metastore. This field is depracted. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
+        :param workspace_id: int (optional)
+          A workspace ID.
 
 
         """
@@ -12332,7 +12355,9 @@ class ModelVersionsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
+    def update(
+        self, *, comment: Optional[str] = None, full_name: Optional[str] = None, version: Optional[int] = None
+    ) -> ModelVersionInfo:
         """Update a Model Version.
 
         Updates the specified model version.
@@ -12343,12 +12368,12 @@ class ModelVersionsAPI:
 
         Currently only the comment of the model version can be updated.
 
-        :param full_name: str
-          The three-level (fully qualified) name of the model version
-        :param version: int
-          The integer version number of the model version
         :param comment: str (optional)
           The comment attached to the model version
+        :param full_name: str (optional)
+          The three-level (fully qualified) name of the model version
+        :param version: int (optional)
+          The integer version number of the model version
 
         :returns: :class:`ModelVersionInfo`
         """
@@ -12504,7 +12529,6 @@ class QualityMonitorsAPI:
 
     def create(
         self,
-        table_name: str,
         assets_dir: str,
         output_schema_name: str,
         *,
@@ -12517,6 +12541,7 @@ class QualityMonitorsAPI:
         skip_builtin_dashboard: Optional[bool] = None,
         slicing_exprs: Optional[List[str]] = None,
         snapshot: Optional[MonitorSnapshot] = None,
+        table_name: Optional[str] = None,
         time_series: Optional[MonitorTimeSeries] = None,
         warehouse_id: Optional[str] = None,
     ) -> MonitorInfo:
@@ -12532,8 +12557,6 @@ class QualityMonitorsAPI:
 
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
-        :param table_name: str
-          Full name of the table.
         :param assets_dir: str
           The directory to store monitoring assets (e.g. dashboard, metric tables).
         :param output_schema_name: str
@@ -12560,6 +12583,8 @@ class QualityMonitorsAPI:
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
+        :param table_name: str (optional)
+          Full name of the table.
         :param time_series: :class:`MonitorTimeSeries` (optional)
           Configuration for monitoring time series tables.
         :param warehouse_id: str (optional)
@@ -12710,7 +12735,7 @@ class QualityMonitorsAPI:
         return MonitorRefreshListResponse.from_dict(res)
 
     def regenerate_dashboard(
-        self, table_name: str, *, warehouse_id: Optional[str] = None
+        self, *, table_name: Optional[str] = None, warehouse_id: Optional[str] = None
     ) -> RegenerateDashboardResponse:
         """Regenerate a monitoring dashboard.
 
@@ -12724,7 +12749,7 @@ class QualityMonitorsAPI:
         The call must be made from the workspace where the monitor was created. The dashboard will be
         regenerated in the assets directory that was specified when the monitor was created.
 
-        :param table_name: str
+        :param table_name: str (optional)
           Full name of the table.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
@@ -12773,7 +12798,6 @@ class QualityMonitorsAPI:
 
     def update(
         self,
-        table_name: str,
         output_schema_name: str,
         *,
         baseline_table_name: Optional[str] = None,
@@ -12785,6 +12809,7 @@ class QualityMonitorsAPI:
         schedule: Optional[MonitorCronSchedule] = None,
         slicing_exprs: Optional[List[str]] = None,
         snapshot: Optional[MonitorSnapshot] = None,
+        table_name: Optional[str] = None,
         time_series: Optional[MonitorTimeSeries] = None,
     ) -> MonitorInfo:
         """Update a table monitor.
@@ -12801,8 +12826,6 @@ class QualityMonitorsAPI:
 
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
-        :param table_name: str
-          Full name of the table.
         :param output_schema_name: str
           Schema where output metric tables are created.
         :param baseline_table_name: str (optional)
@@ -12828,6 +12851,8 @@ class QualityMonitorsAPI:
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
+        :param table_name: str (optional)
+          Full name of the table.
         :param time_series: :class:`MonitorTimeSeries` (optional)
           Configuration for monitoring time series tables.
 
@@ -13129,9 +13154,9 @@ class RegisteredModelsAPI:
 
     def update(
         self,
-        full_name: str,
         *,
         comment: Optional[str] = None,
+        full_name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
     ) -> RegisteredModelInfo:
@@ -13145,10 +13170,10 @@ class RegisteredModelsAPI:
 
         Currently only the name, the owner or the comment of the registered model can be updated.
 
-        :param full_name: str
-          The three-level (fully qualified) name of the registered model
         :param comment: str (optional)
           The comment attached to the registered model
+        :param full_name: str (optional)
+          The three-level (fully qualified) name of the registered model
         :param new_name: str (optional)
           New name for the registered model.
         :param owner: str (optional)
@@ -13409,10 +13434,10 @@ class SchemasAPI:
 
     def update(
         self,
-        full_name: str,
         *,
         comment: Optional[str] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
+        full_name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
@@ -13424,12 +13449,12 @@ class SchemasAPI:
         __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
 
-        :param full_name: str
-          Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
+        :param full_name: str (optional)
+          Full name of the schema.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)
@@ -13625,7 +13650,6 @@ class StorageCredentialsAPI:
 
     def update(
         self,
-        name: str,
         *,
         aws_iam_role: Optional[AwsIamRoleRequest] = None,
         azure_managed_identity: Optional[AzureManagedIdentityResponse] = None,
@@ -13635,6 +13659,7 @@ class StorageCredentialsAPI:
         databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None,
         force: Optional[bool] = None,
         isolation_mode: Optional[IsolationMode] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         read_only: Optional[bool] = None,
@@ -13644,8 +13669,6 @@ class StorageCredentialsAPI:
 
         Updates a storage credential on the metastore.
 
-        :param name: str
-          Name of the storage credential.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityResponse` (optional)
@@ -13661,6 +13684,8 @@ class StorageCredentialsAPI:
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param isolation_mode: :class:`IsolationMode` (optional)
+        :param name: str (optional)
+          Name of the storage credential.
         :param new_name: str (optional)
           New name for the storage credential.
         :param owner: str (optional)
@@ -14486,7 +14511,12 @@ class VolumesAPI:
         return VolumeInfo.from_dict(res)
 
     def update(
-        self, name: str, *, comment: Optional[str] = None, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        *,
+        comment: Optional[str] = None,
+        name: Optional[str] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> VolumeInfo:
         """Update a Volume.
 
@@ -14498,10 +14528,10 @@ class VolumesAPI:
 
         Currently only the name, the owner or the comment of the volume could be updated.
 
-        :param name: str
-          The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
+        :param name: str (optional)
+          The three-level (fully qualified) name of the volume
         :param new_name: str (optional)
           New name for the volume.
         :param owner: str (optional)
@@ -14616,9 +14646,9 @@ class WorkspaceBindingsAPI:
 
     def update(
         self,
-        name: str,
         *,
         assign_workspaces: Optional[List[int]] = None,
+        name: Optional[str] = None,
         unassign_workspaces: Optional[List[int]] = None,
     ) -> CurrentWorkspaceBindings:
         """Update catalog workspace bindings.
@@ -14626,10 +14656,10 @@ class WorkspaceBindingsAPI:
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
-        :param name: str
-          The name of the catalog.
         :param assign_workspaces: List[int] (optional)
           A list of workspace IDs.
+        :param name: str (optional)
+          The name of the catalog.
         :param unassign_workspaces: List[int] (optional)
           A list of workspace IDs.
 
@@ -14652,25 +14682,25 @@ class WorkspaceBindingsAPI:
 
     def update_bindings(
         self,
-        securable_type: UpdateBindingsSecurableType,
-        securable_name: str,
         *,
         add: Optional[List[WorkspaceBinding]] = None,
         remove: Optional[List[WorkspaceBinding]] = None,
+        securable_name: Optional[str] = None,
+        securable_type: Optional[UpdateBindingsSecurableType] = None,
     ) -> WorkspaceBindingsResponse:
         """Update securable workspace bindings.
 
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
-        :param securable_type: :class:`UpdateBindingsSecurableType`
-          The type of the securable to bind to a workspace.
-        :param securable_name: str
-          The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
           List of workspace bindings
         :param remove: List[:class:`WorkspaceBinding`] (optional)
           List of workspace bindings
+        :param securable_name: str (optional)
+          The name of the securable.
+        :param securable_type: :class:`UpdateBindingsSecurableType` (optional)
+          The type of the securable to bind to a workspace.
 
         :returns: :class:`WorkspaceBindingsResponse`
         """

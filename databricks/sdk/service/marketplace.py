@@ -3589,10 +3589,10 @@ class ConsumerInstallationsAPI:
 
     def create(
         self,
-        listing_id: str,
         *,
         accepted_consumer_terms: Optional[ConsumerTerms] = None,
         catalog_name: Optional[str] = None,
+        listing_id: Optional[str] = None,
         recipient_type: Optional[DeltaSharingRecipientType] = None,
         repo_detail: Optional[RepoInstallation] = None,
         share_name: Optional[str] = None,
@@ -3601,9 +3601,9 @@ class ConsumerInstallationsAPI:
 
         Install payload associated with a Databricks Marketplace listing.
 
-        :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
         :param catalog_name: str (optional)
+        :param listing_id: str (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         :param repo_detail: :class:`RepoInstallation` (optional)
           for git repo installations
@@ -3723,10 +3723,10 @@ class ConsumerInstallationsAPI:
 
     def update(
         self,
-        listing_id: str,
-        installation_id: str,
         installation: InstallationDetail,
         *,
+        installation_id: Optional[str] = None,
+        listing_id: Optional[str] = None,
         rotate_token: Optional[bool] = None,
     ) -> UpdateInstallationResponse:
         """Update an installation.
@@ -3736,9 +3736,9 @@ class ConsumerInstallationsAPI:
         the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
         rotateToken flag is true and the tokenInfo field is empty
 
-        :param listing_id: str
-        :param installation_id: str
         :param installation: :class:`InstallationDetail`
+        :param installation_id: str (optional)
+        :param listing_id: str (optional)
         :param rotate_token: bool (optional)
 
         :returns: :class:`UpdateInstallationResponse`
@@ -3947,7 +3947,6 @@ class ConsumerPersonalizationRequestsAPI:
 
     def create(
         self,
-        listing_id: str,
         intended_use: str,
         accepted_consumer_terms: ConsumerTerms,
         *,
@@ -3956,13 +3955,13 @@ class ConsumerPersonalizationRequestsAPI:
         first_name: Optional[str] = None,
         is_from_lighthouse: Optional[bool] = None,
         last_name: Optional[str] = None,
+        listing_id: Optional[str] = None,
         recipient_type: Optional[DeltaSharingRecipientType] = None,
     ) -> CreatePersonalizationRequestResponse:
         """Create a personalization request.
 
         Create a personalization request for a listing.
 
-        :param listing_id: str
         :param intended_use: str
         :param accepted_consumer_terms: :class:`ConsumerTerms`
         :param comment: str (optional)
@@ -3970,6 +3969,7 @@ class ConsumerPersonalizationRequestsAPI:
         :param first_name: str (optional)
         :param is_from_lighthouse: bool (optional)
         :param last_name: str (optional)
+        :param listing_id: str (optional)
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
 
         :returns: :class:`CreatePersonalizationRequestResponse`
@@ -4212,13 +4212,13 @@ class ProviderExchangeFiltersAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, filter: ExchangeFilter) -> UpdateExchangeFilterResponse:
+    def update(self, filter: ExchangeFilter, *, id: Optional[str] = None) -> UpdateExchangeFilterResponse:
         """Update exchange filter.
 
         Update an exchange filter.
 
-        :param id: str
         :param filter: :class:`ExchangeFilter`
+        :param id: str (optional)
 
         :returns: :class:`UpdateExchangeFilterResponse`
         """
@@ -4433,13 +4433,13 @@ class ProviderExchangesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, exchange: Exchange) -> UpdateExchangeResponse:
+    def update(self, exchange: Exchange, *, id: Optional[str] = None) -> UpdateExchangeResponse:
         """Update exchange.
 
         Update an exchange
 
-        :param id: str
         :param exchange: :class:`Exchange`
+        :param id: str (optional)
 
         :returns: :class:`UpdateExchangeResponse`
         """
@@ -4654,13 +4654,13 @@ class ProviderListingsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, listing: Listing) -> UpdateListingResponse:
+    def update(self, listing: Listing, *, id: Optional[str] = None) -> UpdateListingResponse:
         """Update listing.
 
         Update a listing
 
-        :param id: str
         :param listing: :class:`Listing`
+        :param id: str (optional)
 
         :returns: :class:`UpdateListingResponse`
         """
@@ -4719,21 +4719,21 @@ class ProviderPersonalizationRequestsAPI:
 
     def update(
         self,
-        listing_id: str,
-        request_id: str,
         status: PersonalizationRequestStatus,
         *,
+        listing_id: Optional[str] = None,
         reason: Optional[str] = None,
+        request_id: Optional[str] = None,
         share: Optional[ShareInfo] = None,
     ) -> UpdatePersonalizationRequestResponse:
         """Update personalization request status.
 
         Update personalization request. This method only permits updating the status of the request.
 
-        :param listing_id: str
-        :param request_id: str
         :param status: :class:`PersonalizationRequestStatus`
+        :param listing_id: str (optional)
         :param reason: str (optional)
+        :param request_id: str (optional)
         :param share: :class:`ShareInfo` (optional)
 
         :returns: :class:`UpdatePersonalizationRequestResponse`
@@ -4811,12 +4811,14 @@ class ProviderProviderAnalyticsDashboardsAPI:
         res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard/latest", headers=headers)
         return GetLatestVersionProviderAnalyticsDashboardResponse.from_dict(res)
 
-    def update(self, id: str, *, version: Optional[int] = None) -> UpdateProviderAnalyticsDashboardResponse:
+    def update(
+        self, *, id: Optional[str] = None, version: Optional[int] = None
+    ) -> UpdateProviderAnalyticsDashboardResponse:
         """Update provider analytics dashboard.
 
         Update provider analytics dashboard.
 
-        :param id: str
+        :param id: str (optional)
           id is immutable property and can't be updated.
         :param version: int (optional)
           this is the version of the dashboard template we want to update our user to current expectation is
@@ -4924,13 +4926,13 @@ class ProviderProvidersAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, provider: ProviderInfo) -> UpdateProviderResponse:
+    def update(self, provider: ProviderInfo, *, id: Optional[str] = None) -> UpdateProviderResponse:
         """Update provider.
 
         Update provider profile
 
-        :param id: str
         :param provider: :class:`ProviderInfo`
+        :param id: str (optional)
 
         :returns: :class:`UpdateProviderResponse`
         """

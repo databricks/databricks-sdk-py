@@ -2945,7 +2945,7 @@ class ProvidersAPI:
         return ListProviderShareAssetsResponse.from_dict(res)
 
     def list_shares(
-        self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self, *, max_results: Optional[int] = None, name: Optional[str] = None, page_token: Optional[str] = None
     ) -> Iterator[ProviderShare]:
         """List shares by Provider.
 
@@ -2953,8 +2953,6 @@ class ProvidersAPI:
 
         * the caller is a metastore admin, or * the caller is the owner.
 
-        :param name: str
-          Name of the provider in which to list shares.
         :param max_results: int (optional)
           Maximum number of shares to return. - when set to 0, the page length is set to a server configured
           value (recommended); - when set to a value greater than 0, the page length is the minimum of this
@@ -2963,6 +2961,8 @@ class ProvidersAPI:
           returned shares might be less than the specified max_results size, even zero. The only definitive
           indication that no further shares can be fetched is when the next_page_token is unset from the
           response.
+        :param name: str (optional)
+          Name of the provider in which to list shares.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
 
@@ -2991,9 +2991,9 @@ class ProvidersAPI:
 
     def update(
         self,
-        name: str,
         *,
         comment: Optional[str] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         recipient_profile_str: Optional[str] = None,
@@ -3004,10 +3004,10 @@ class ProvidersAPI:
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
         admin and the owner of the provider.
 
-        :param name: str
-          Name of the provider.
         :param comment: str (optional)
           Description about the provider.
+        :param name: str (optional)
+          Name of the provider.
         :param new_name: str (optional)
           New name for the provider.
         :param owner: str (optional)
@@ -3265,18 +3265,18 @@ class RecipientsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
+    def rotate_token(self, existing_token_expire_in_seconds: int, *, name: Optional[str] = None) -> RecipientInfo:
         """Rotate a token.
 
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
 
-        :param name: str
-          The name of the Recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
           the existing token immediately, negative number will return an error.
+        :param name: str (optional)
+          The name of the Recipient.
 
         :returns: :class:`RecipientInfo`
         """
@@ -3331,11 +3331,11 @@ class RecipientsAPI:
 
     def update(
         self,
-        name: str,
         *,
         comment: Optional[str] = None,
         expiration_time: Optional[int] = None,
         ip_access_list: Optional[IpAccessList] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -3346,14 +3346,14 @@ class RecipientsAPI:
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
         owner of the recipient.
 
-        :param name: str
-          Name of the recipient.
         :param comment: str (optional)
           Description about the recipient.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
+        :param name: str (optional)
+          Name of the recipient.
         :param new_name: str (optional)
           New name for the recipient. .
         :param owner: str (optional)
@@ -3543,9 +3543,9 @@ class SharesAPI:
 
     def update(
         self,
-        name: str,
         *,
         comment: Optional[str] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         storage_root: Optional[str] = None,
@@ -3569,10 +3569,10 @@ class SharesAPI:
 
         Table removals through **update** do not require additional privileges.
 
-        :param name: str
-          The name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param name: str (optional)
+          The name of the share.
         :param new_name: str (optional)
           New name for the share.
         :param owner: str (optional)
@@ -3604,7 +3604,7 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def update_permissions(
-        self, name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self, *, changes: Optional[List[PermissionsChange]] = None, name: Optional[str] = None
     ) -> UpdateSharePermissionsResponse:
         """Update permissions.
 
@@ -3614,10 +3614,10 @@ class SharesAPI:
         For new recipient grants, the user must also be the recipient owner or metastore admin. recipient
         revocations do not require additional privileges.
 
-        :param name: str
-          The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
+        :param name: str (optional)
+          The name of the share.
 
         :returns: :class:`UpdateSharePermissionsResponse`
         """

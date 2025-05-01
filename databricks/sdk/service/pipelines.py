@@ -3826,16 +3826,19 @@ class PipelinesAPI:
         return ListUpdatesResponse.from_dict(res)
 
     def set_permissions(
-        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[PipelineAccessControlRequest]] = None,
+        pipeline_id: Optional[str] = None,
     ) -> PipelinePermissions:
         """Set pipeline permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        :param pipeline_id: str (optional)
+          The pipeline for which to get or manage permissions.
 
         :returns: :class:`PipelinePermissions`
         """
@@ -3852,11 +3855,11 @@ class PipelinesAPI:
 
     def start_update(
         self,
-        pipeline_id: str,
         *,
         cause: Optional[StartUpdateCause] = None,
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
+        pipeline_id: Optional[str] = None,
         refresh_selection: Optional[List[str]] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
@@ -3865,7 +3868,6 @@ class PipelinesAPI:
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
-        :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
@@ -3873,6 +3875,7 @@ class PipelinesAPI:
           A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param pipeline_id: str (optional)
         :param refresh_selection: List[str] (optional)
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
@@ -3929,7 +3932,6 @@ class PipelinesAPI:
 
     def update(
         self,
-        pipeline_id: str,
         *,
         allow_duplicate_names: Optional[bool] = None,
         budget_policy_id: Optional[str] = None,
@@ -3951,6 +3953,7 @@ class PipelinesAPI:
         name: Optional[str] = None,
         notifications: Optional[List[Notifications]] = None,
         photon: Optional[bool] = None,
+        pipeline_id: Optional[str] = None,
         restart_window: Optional[RestartWindow] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
@@ -3963,8 +3966,6 @@ class PipelinesAPI:
 
         Updates a pipeline with the supplied configuration.
 
-        :param pipeline_id: str
-          Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
         :param budget_policy_id: str (optional)
@@ -4009,6 +4010,8 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param pipeline_id: str (optional)
+          Unique identifier for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
         :param run_as: :class:`RunAs` (optional)
@@ -4095,15 +4098,18 @@ class PipelinesAPI:
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
 
     def update_permissions(
-        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[PipelineAccessControlRequest]] = None,
+        pipeline_id: Optional[str] = None,
     ) -> PipelinePermissions:
         """Update pipeline permissions.
 
         Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
 
-        :param pipeline_id: str
-          The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
+        :param pipeline_id: str (optional)
+          The pipeline for which to get or manage permissions.
 
         :returns: :class:`PipelinePermissions`
         """

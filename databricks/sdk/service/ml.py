@@ -7119,16 +7119,19 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
     def set_permissions(
-        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ExperimentAccessControlRequest]] = None,
+        experiment_id: Optional[str] = None,
     ) -> ExperimentPermissions:
         """Set experiment permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        :param experiment_id: str (optional)
+          The experiment for which to get or manage permissions.
 
         :returns: :class:`ExperimentPermissions`
         """
@@ -7201,15 +7204,18 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
 
     def update_permissions(
-        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ExperimentAccessControlRequest]] = None,
+        experiment_id: Optional[str] = None,
     ) -> ExperimentPermissions:
         """Update experiment permissions.
 
         Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
 
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
+        :param experiment_id: str (optional)
+          The experiment for which to get or manage permissions.
 
         :returns: :class:`ExperimentPermissions`
         """
@@ -8459,18 +8465,18 @@ class ModelRegistryAPI:
 
     def set_permissions(
         self,
-        registered_model_id: str,
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
+        registered_model_id: Optional[str] = None,
     ) -> RegisteredModelPermissions:
         """Set registered model permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        :param registered_model_id: str (optional)
+          The registered model for which to get or manage permissions.
 
         :returns: :class:`RegisteredModelPermissions`
         """
@@ -8648,18 +8654,18 @@ class ModelRegistryAPI:
 
     def update_permissions(
         self,
-        registered_model_id: str,
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
+        registered_model_id: Optional[str] = None,
     ) -> RegisteredModelPermissions:
         """Update registered model permissions.
 
         Updates the permissions on a registered model. Registered models can inherit permissions from their
         root object.
 
-        :param registered_model_id: str
-          The registered model for which to get or manage permissions.
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
+        :param registered_model_id: str (optional)
+          The registered model for which to get or manage permissions.
 
         :returns: :class:`RegisteredModelPermissions`
         """

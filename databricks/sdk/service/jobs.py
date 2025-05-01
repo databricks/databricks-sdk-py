@@ -10052,16 +10052,16 @@ class JobsAPI:
         ).result(timeout=timeout)
 
     def set_permissions(
-        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[JobAccessControlRequest]] = None, job_id: Optional[str] = None
     ) -> JobPermissions:
         """Set job permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param job_id: str
-          The job for which to get or manage permissions.
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        :param job_id: str (optional)
+          The job for which to get or manage permissions.
 
         :returns: :class:`JobPermissions`
         """
@@ -10271,15 +10271,15 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/update", body=body, headers=headers)
 
     def update_permissions(
-        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[JobAccessControlRequest]] = None, job_id: Optional[str] = None
     ) -> JobPermissions:
         """Update job permissions.
 
         Updates the permissions on a job. Jobs can inherit permissions from their root object.
 
-        :param job_id: str
-          The job for which to get or manage permissions.
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        :param job_id: str (optional)
+          The job for which to get or manage permissions.
 
         :returns: :class:`JobPermissions`
         """

@@ -1414,7 +1414,7 @@ class CleanRoomsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, name: str, *, clean_room: Optional[CleanRoom] = None) -> CleanRoom:
+    def update(self, *, clean_room: Optional[CleanRoom] = None, name: Optional[str] = None) -> CleanRoom:
         """Update a clean room.
 
         Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
@@ -1422,9 +1422,9 @@ class CleanRoomsAPI:
 
         When the caller is a metastore admin, only the __owner__ field can be updated.
 
-        :param name: str
-          Name of the clean room.
         :param clean_room: :class:`CleanRoom` (optional)
+        :param name: str (optional)
+          Name of the clean room.
 
         :returns: :class:`CleanRoom`
         """

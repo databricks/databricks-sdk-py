@@ -1892,16 +1892,16 @@ class VectorSearchEndpointsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_endpoint_budget_policy(
-        self, endpoint_name: str, budget_policy_id: str
+        self, budget_policy_id: str, *, endpoint_name: Optional[str] = None
     ) -> PatchEndpointBudgetPolicyResponse:
         """Update the budget policy of an endpoint.
 
         Update the budget policy of an endpoint
 
-        :param endpoint_name: str
-          Name of the vector search endpoint
         :param budget_policy_id: str
           The budget policy id to be applied
+        :param endpoint_name: str (optional)
+          Name of the vector search endpoint
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         """
@@ -1919,14 +1919,14 @@ class VectorSearchEndpointsAPI:
         return PatchEndpointBudgetPolicyResponse.from_dict(res)
 
     def update_endpoint_custom_tags(
-        self, endpoint_name: str, custom_tags: List[CustomTag]
+        self, custom_tags: List[CustomTag], *, endpoint_name: Optional[str] = None
     ) -> UpdateEndpointCustomTagsResponse:
         """Update the custom tags of an endpoint.
 
-        :param endpoint_name: str
-          Name of the vector search endpoint
         :param custom_tags: List[:class:`CustomTag`]
           The new custom tags for the vector search endpoint
+        :param endpoint_name: str (optional)
+          Name of the vector search endpoint
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
         """
@@ -2102,11 +2102,11 @@ class VectorSearchIndexesAPI:
 
     def query_index(
         self,
-        index_name: str,
         columns: List[str],
         *,
         columns_to_rerank: Optional[List[str]] = None,
         filters_json: Optional[str] = None,
+        index_name: Optional[str] = None,
         num_results: Optional[int] = None,
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
@@ -2117,8 +2117,6 @@ class VectorSearchIndexesAPI:
 
         Query the specified vector index.
 
-        :param index_name: str
-          Name of the vector index to query.
         :param columns: List[str]
           List of column names to include in the response.
         :param columns_to_rerank: List[str] (optional)
@@ -2131,6 +2129,8 @@ class VectorSearchIndexesAPI:
           - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
           <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
           5. - `{"id": 5}`: Filter for id equal to 5.
+        :param index_name: str (optional)
+          Name of the vector index to query.
         :param num_results: int (optional)
           Number of results to return. Defaults to 10.
         :param query_text: str (optional)
@@ -2171,17 +2171,17 @@ class VectorSearchIndexesAPI:
         return QueryVectorIndexResponse.from_dict(res)
 
     def query_next_page(
-        self, index_name: str, *, endpoint_name: Optional[str] = None, page_token: Optional[str] = None
+        self, *, endpoint_name: Optional[str] = None, index_name: Optional[str] = None, page_token: Optional[str] = None
     ) -> QueryVectorIndexResponse:
         """Query next page.
 
         Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
         to fetch next page of results.
 
-        :param index_name: str
-          Name of the vector index to query.
         :param endpoint_name: str (optional)
           Name of the endpoint.
+        :param index_name: str (optional)
+          Name of the vector index to query.
         :param page_token: str (optional)
           Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
 
@@ -2203,14 +2203,18 @@ class VectorSearchIndexesAPI:
         return QueryVectorIndexResponse.from_dict(res)
 
     def scan_index(
-        self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
+        self,
+        *,
+        index_name: Optional[str] = None,
+        last_primary_key: Optional[str] = None,
+        num_results: Optional[int] = None,
     ) -> ScanVectorIndexResponse:
         """Scan an index.
 
         Scan the specified vector index and return the first `num_results` entries after the exclusive
         `primary_key`.
 
-        :param index_name: str
+        :param index_name: str (optional)
           Name of the vector index to scan.
         :param last_primary_key: str (optional)
           Primary key of the last entry returned in the previous scan.
@@ -2249,15 +2253,17 @@ class VectorSearchIndexesAPI:
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 
-    def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
+    def upsert_data_vector_index(
+        self, inputs_json: str, *, index_name: Optional[str] = None
+    ) -> UpsertDataVectorIndexResponse:
         """Upsert data into an index.
 
         Handles the upserting of data into a specified vector index.
 
-        :param index_name: str
-          Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
           JSON string representing the data to be upserted.
+        :param index_name: str (optional)
+          Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
 
         :returns: :class:`UpsertDataVectorIndexResponse`
         """

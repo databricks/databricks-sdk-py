@@ -2062,18 +2062,20 @@ class GenieAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
+    def create_message(
+        self, content: str, *, conversation_id: Optional[str] = None, space_id: Optional[str] = None
+    ) -> Wait[GenieMessage]:
         """Create conversation message.
 
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
         previously created messages in the conversation to respond.
 
-        :param space_id: str
-          The ID associated with the Genie space where the conversation is started.
-        :param conversation_id: str
-          The ID associated with the conversation.
         :param content: str
           User message content.
+        :param conversation_id: str (optional)
+          The ID associated with the conversation.
+        :param space_id: str (optional)
+          The ID associated with the Genie space where the conversation is started.
 
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
@@ -2102,7 +2104,12 @@ class GenieAPI:
         )
 
     def create_message_and_wait(
-        self, space_id: str, conversation_id: str, content: str, timeout=timedelta(minutes=20)
+        self,
+        content: str,
+        *,
+        conversation_id: Optional[str] = None,
+        space_id: Optional[str] = None,
+        timeout=timedelta(minutes=20),
     ) -> GenieMessage:
         return self.create_message(content=content, conversation_id=conversation_id, space_id=space_id).result(
             timeout=timeout
@@ -2375,15 +2382,15 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
-    def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
+    def start_conversation(self, content: str, *, space_id: Optional[str] = None) -> Wait[GenieMessage]:
         """Start conversation.
 
         Start a new conversation.
 
-        :param space_id: str
-          The ID associated with the Genie space where you want to start a conversation.
         :param content: str
           The text of the message that starts the conversation.
+        :param space_id: str (optional)
+          The ID associated with the Genie space where you want to start a conversation.
 
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
@@ -2408,7 +2415,9 @@ class GenieAPI:
             space_id=space_id,
         )
 
-    def start_conversation_and_wait(self, space_id: str, content: str, timeout=timedelta(minutes=20)) -> GenieMessage:
+    def start_conversation_and_wait(
+        self, content: str, *, space_id: Optional[str] = None, timeout=timedelta(minutes=20)
+    ) -> GenieMessage:
         return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
 
@@ -2785,13 +2794,17 @@ class LakeviewAPI:
         return Dashboard.from_dict(res)
 
     def publish(
-        self, dashboard_id: str, *, embed_credentials: Optional[bool] = None, warehouse_id: Optional[str] = None
+        self,
+        *,
+        dashboard_id: Optional[str] = None,
+        embed_credentials: Optional[bool] = None,
+        warehouse_id: Optional[str] = None,
     ) -> PublishedDashboard:
         """Publish dashboard.
 
         Publish the current draft dashboard.
 
-        :param dashboard_id: str
+        :param dashboard_id: str (optional)
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
           Flag to indicate if the publisher's credentials should be embedded in the published dashboard. These

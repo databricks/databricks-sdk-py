@@ -2003,16 +2003,18 @@ class BudgetsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse:
+    def update(
+        self, budget: UpdateBudgetConfigurationBudget, *, budget_id: Optional[str] = None
+    ) -> UpdateBudgetConfigurationResponse:
         """Modify budget.
 
         Updates a budget configuration for an account. Both account and budget configuration are specified by
         ID.
 
-        :param budget_id: str
-          The Databricks budget configuration ID.
         :param budget: :class:`UpdateBudgetConfigurationBudget`
           The updated budget. This will overwrite the budget specified by the budget ID.
+        :param budget_id: str (optional)
+          The Databricks budget configuration ID.
 
         :returns: :class:`UpdateBudgetConfigurationResponse`
         """
@@ -2182,7 +2184,7 @@ class LogDeliveryAPI:
         parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
         return parsed if parsed is not None else []
 
-    def patch_status(self, log_delivery_configuration_id: str, status: LogDeliveryConfigStatus):
+    def patch_status(self, status: LogDeliveryConfigStatus, *, log_delivery_configuration_id: Optional[str] = None):
         """Enable or disable log delivery configuration.
 
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
@@ -2190,13 +2192,13 @@ class LogDeliveryAPI:
         re-enable a delivery configuration if this would violate the delivery configuration limits described
         under [Create log delivery](:method:LogDelivery/Create).
 
-        :param log_delivery_configuration_id: str
-          Databricks log delivery configuration ID
         :param status: :class:`LogDeliveryConfigStatus`
           Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
           to `ENABLED`. You can [enable or disable the
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
+        :param log_delivery_configuration_id: str (optional)
+          Databricks log delivery configuration ID
 
 
         """

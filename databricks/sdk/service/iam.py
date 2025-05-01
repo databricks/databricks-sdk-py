@@ -2473,12 +2473,18 @@ class AccountGroupsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update group details.
 
         Partially updates the details of a group.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -2501,12 +2507,12 @@ class AccountGroupsAPI:
 
     def update(
         self,
-        id: str,
         *,
         display_name: Optional[str] = None,
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         members: Optional[List[ComplexValue]] = None,
         meta: Optional[ResourceMeta] = None,
         roles: Optional[List[ComplexValue]] = None,
@@ -2516,8 +2522,6 @@ class AccountGroupsAPI:
 
         Updates the details of a group by replacing the entire group entity.
 
-        :param id: str
-          Databricks group ID
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
@@ -2527,6 +2531,8 @@ class AccountGroupsAPI:
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks group ID
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
@@ -2756,12 +2762,18 @@ class AccountServicePrincipalsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the Databricks account.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -2787,7 +2799,6 @@ class AccountServicePrincipalsAPI:
 
     def update(
         self,
-        id: str,
         *,
         active: Optional[bool] = None,
         application_id: Optional[str] = None,
@@ -2795,6 +2806,7 @@ class AccountServicePrincipalsAPI:
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ):
@@ -2804,8 +2816,6 @@ class AccountServicePrincipalsAPI:
 
         This action replaces the existing service principal with the same name.
 
-        :param id: str
-          Databricks service principal ID.
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -2819,6 +2829,8 @@ class AccountServicePrincipalsAPI:
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
@@ -3111,12 +3123,18 @@ class AccountUsersAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -3139,7 +3157,6 @@ class AccountUsersAPI:
 
     def update(
         self,
-        id: str,
         *,
         active: Optional[bool] = None,
         display_name: Optional[str] = None,
@@ -3147,6 +3164,7 @@ class AccountUsersAPI:
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         name: Optional[Name] = None,
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[UserSchema]] = None,
@@ -3156,8 +3174,6 @@ class AccountUsersAPI:
 
         Replaces a user's information with the data supplied in request.
 
-        :param id: str
-          Databricks user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
@@ -3175,6 +3191,8 @@ class AccountUsersAPI:
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -3419,12 +3437,18 @@ class GroupsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update group details.
 
         Partially updates the details of a group.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -3445,12 +3469,12 @@ class GroupsAPI:
 
     def update(
         self,
-        id: str,
         *,
         display_name: Optional[str] = None,
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         members: Optional[List[ComplexValue]] = None,
         meta: Optional[ResourceMeta] = None,
         roles: Optional[List[ComplexValue]] = None,
@@ -3460,8 +3484,6 @@ class GroupsAPI:
 
         Updates the details of a group by replacing the entire group entity.
 
-        :param id: str
-          Databricks group ID
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
@@ -3471,6 +3493,8 @@ class GroupsAPI:
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks group ID
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
@@ -3651,10 +3675,10 @@ class PermissionsAPI:
 
     def set(
         self,
-        request_object_type: str,
-        request_object_id: str,
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
+        request_object_id: Optional[str] = None,
+        request_object_type: Optional[str] = None,
     ) -> ObjectPermissions:
         """Set object permissions.
 
@@ -3662,13 +3686,13 @@ class PermissionsAPI:
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
 
-        :param request_object_type: str
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param request_object_id: str (optional)
+          The id of the request object.
+        :param request_object_type: str (optional)
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
           cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
           jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
-        :param request_object_id: str
-          The id of the request object.
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
 
         :returns: :class:`ObjectPermissions`
         """
@@ -3687,23 +3711,23 @@ class PermissionsAPI:
 
     def update(
         self,
-        request_object_type: str,
-        request_object_id: str,
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
+        request_object_id: Optional[str] = None,
+        request_object_type: Optional[str] = None,
     ) -> ObjectPermissions:
         """Update object permissions.
 
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
 
-        :param request_object_type: str
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param request_object_id: str (optional)
+          The id of the request object.
+        :param request_object_type: str (optional)
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
           cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
           jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
-        :param request_object_id: str
-          The id of the request object.
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
 
         :returns: :class:`ObjectPermissions`
         """
@@ -3905,12 +3929,18 @@ class ServicePrincipalsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the Databricks workspace.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -3931,7 +3961,6 @@ class ServicePrincipalsAPI:
 
     def update(
         self,
-        id: str,
         *,
         active: Optional[bool] = None,
         application_id: Optional[str] = None,
@@ -3939,6 +3968,7 @@ class ServicePrincipalsAPI:
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ):
@@ -3948,8 +3978,6 @@ class ServicePrincipalsAPI:
 
         This action replaces the existing service principal with the same name.
 
-        :param id: str
-          Databricks service principal ID.
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -3963,6 +3991,8 @@ class ServicePrincipalsAPI:
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
@@ -4274,12 +4304,18 @@ class UsersAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
+    def patch(
+        self,
+        *,
+        id: Optional[str] = None,
+        operations: Optional[List[Patch]] = None,
+        schemas: Optional[List[PatchSchema]] = None,
+    ):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
-        :param id: str
+        :param id: str (optional)
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
@@ -4323,7 +4359,6 @@ class UsersAPI:
 
     def update(
         self,
-        id: str,
         *,
         active: Optional[bool] = None,
         display_name: Optional[str] = None,
@@ -4331,6 +4366,7 @@ class UsersAPI:
         entitlements: Optional[List[ComplexValue]] = None,
         external_id: Optional[str] = None,
         groups: Optional[List[ComplexValue]] = None,
+        id: Optional[str] = None,
         name: Optional[Name] = None,
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[UserSchema]] = None,
@@ -4340,8 +4376,6 @@ class UsersAPI:
 
         Replaces a user's information with the data supplied in request.
 
-        :param id: str
-          Databricks user ID.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
@@ -4359,6 +4393,8 @@ class UsersAPI:
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
+        :param id: str (optional)
+          Databricks user ID.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -4496,23 +4532,27 @@ class WorkspaceAssignmentAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self, workspace_id: int, principal_id: int, *, permissions: Optional[List[WorkspacePermission]] = None
+        self,
+        *,
+        permissions: Optional[List[WorkspacePermission]] = None,
+        principal_id: Optional[int] = None,
+        workspace_id: Optional[int] = None,
     ) -> PermissionAssignment:
         """Create or update permissions assignment.
 
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
 
-        :param workspace_id: int
-          The workspace ID.
-        :param principal_id: int
-          The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`] (optional)
           Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
           (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values
           will be ignored. Note that excluding this field, or providing unsupported values, will have the same
           effect as providing an empty list, which will result in the deletion of all permissions for the
           principal.
+        :param principal_id: int (optional)
+          The ID of the user, service principal, or group.
+        :param workspace_id: int (optional)
+          The workspace ID.
 
         :returns: :class:`PermissionAssignment`
         """

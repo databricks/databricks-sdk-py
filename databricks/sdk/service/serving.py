@@ -4503,18 +4503,22 @@ class ServingEndpointsAPI:
         return ServerLogsResponse.from_dict(res)
 
     def patch(
-        self, name: str, *, add_tags: Optional[List[EndpointTag]] = None, delete_tags: Optional[List[str]] = None
+        self,
+        *,
+        add_tags: Optional[List[EndpointTag]] = None,
+        delete_tags: Optional[List[str]] = None,
+        name: Optional[str] = None,
     ) -> EndpointTags:
         """Update tags of a serving endpoint.
 
         Used to batch add and delete tags from a serving endpoint with a single API call.
 
-        :param name: str
-          The name of the serving endpoint who's tags to patch. This field is required.
         :param add_tags: List[:class:`EndpointTag`] (optional)
           List of endpoint tags to add
         :param delete_tags: List[str] (optional)
           List of tag keys to delete
+        :param name: str (optional)
+          The name of the serving endpoint who's tags to patch. This field is required.
 
         :returns: :class:`EndpointTags`
         """
@@ -4531,12 +4535,12 @@ class ServingEndpointsAPI:
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/tags", body=body, headers=headers)
         return EndpointTags.from_dict(res)
 
-    def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
+    def put(self, *, name: Optional[str] = None, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update rate limits of a serving endpoint.
 
         Deprecated: Please use AI Gateway to manage rate limits instead.
 
-        :param name: str
+        :param name: str (optional)
           The name of the serving endpoint whose rate limits are being updated. This field is required.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           The list of endpoint rate limits.
@@ -4556,11 +4560,11 @@ class ServingEndpointsAPI:
 
     def put_ai_gateway(
         self,
-        name: str,
         *,
         fallback_config: Optional[FallbackConfig] = None,
         guardrails: Optional[AiGatewayGuardrails] = None,
         inference_table_config: Optional[AiGatewayInferenceTableConfig] = None,
+        name: Optional[str] = None,
         rate_limits: Optional[List[AiGatewayRateLimit]] = None,
         usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None,
     ) -> PutAiGatewayResponse:
@@ -4569,8 +4573,6 @@ class ServingEndpointsAPI:
         Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
         pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
 
-        :param name: str
-          The name of the serving endpoint whose AI Gateway is being updated. This field is required.
         :param fallback_config: :class:`FallbackConfig` (optional)
           Configuration for traffic fallback which auto fallbacks to other served entities if the request to a
           served entity fails with certain error codes, to increase availability.
@@ -4579,6 +4581,8 @@ class ServingEndpointsAPI:
         :param inference_table_config: :class:`AiGatewayInferenceTableConfig` (optional)
           Configuration for payload logging using inference tables. Use these tables to monitor and audit data
           being sent to and received from model APIs and to improve model quality.
+        :param name: str (optional)
+          The name of the serving endpoint whose AI Gateway is being updated. This field is required.
         :param rate_limits: List[:class:`AiGatewayRateLimit`] (optional)
           Configuration for rate limits which can be set to limit endpoint traffic.
         :param usage_tracking_config: :class:`AiGatewayUsageTrackingConfig` (optional)
@@ -4608,7 +4612,6 @@ class ServingEndpointsAPI:
 
     def query(
         self,
-        name: str,
         *,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
@@ -4619,6 +4622,7 @@ class ServingEndpointsAPI:
         max_tokens: Optional[int] = None,
         messages: Optional[List[ChatMessage]] = None,
         n: Optional[int] = None,
+        name: Optional[str] = None,
         prompt: Optional[Any] = None,
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
@@ -4626,8 +4630,6 @@ class ServingEndpointsAPI:
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
-        :param name: str
-          The name of the serving endpoint. This field is required.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4654,6 +4656,8 @@ class ServingEndpointsAPI:
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
           used with other chat/completions query fields.
+        :param name: str (optional)
+          The name of the serving endpoint. This field is required.
         :param prompt: Any (optional)
           The prompt string (or array of strings) field used ONLY for __completions external & foundation
           model__ serving endpoints and should only be used with other completions query fields.
@@ -4717,18 +4721,18 @@ class ServingEndpointsAPI:
 
     def set_permissions(
         self,
-        serving_endpoint_id: str,
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
+        serving_endpoint_id: Optional[str] = None,
     ) -> ServingEndpointPermissions:
         """Set serving endpoint permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        :param serving_endpoint_id: str (optional)
+          The serving endpoint for which to get or manage permissions.
 
         :returns: :class:`ServingEndpointPermissions`
         """
@@ -4747,9 +4751,9 @@ class ServingEndpointsAPI:
 
     def update_config(
         self,
-        name: str,
         *,
         auto_capture_config: Optional[AutoCaptureConfigInput] = None,
+        name: Optional[str] = None,
         served_entities: Optional[List[ServedEntityInput]] = None,
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
@@ -4760,13 +4764,13 @@ class ServingEndpointsAPI:
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
 
-        :param name: str
-          The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
           Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
           existing provisioned throughput endpoints that never have inference table configured; in these cases
           please use AI Gateway to manage inference tables.
+        :param name: str (optional)
+          The name of the serving endpoint to update. This field is required.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
           The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)
@@ -4802,9 +4806,9 @@ class ServingEndpointsAPI:
 
     def update_config_and_wait(
         self,
-        name: str,
         *,
         auto_capture_config: Optional[AutoCaptureConfigInput] = None,
+        name: Optional[str] = None,
         served_entities: Optional[List[ServedEntityInput]] = None,
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
@@ -4820,18 +4824,18 @@ class ServingEndpointsAPI:
 
     def update_permissions(
         self,
-        serving_endpoint_id: str,
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
+        serving_endpoint_id: Optional[str] = None,
     ) -> ServingEndpointPermissions:
         """Update serving endpoint permissions.
 
         Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
         root object.
 
-        :param serving_endpoint_id: str
-          The serving endpoint for which to get or manage permissions.
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
+        :param serving_endpoint_id: str (optional)
+          The serving endpoint for which to get or manage permissions.
 
         :returns: :class:`ServingEndpointPermissions`
         """
@@ -4881,7 +4885,6 @@ class ServingEndpointsDataPlaneAPI:
 
     def query(
         self,
-        name: str,
         *,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
@@ -4892,6 +4895,7 @@ class ServingEndpointsDataPlaneAPI:
         max_tokens: Optional[int] = None,
         messages: Optional[List[ChatMessage]] = None,
         n: Optional[int] = None,
+        name: Optional[str] = None,
         prompt: Optional[Any] = None,
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
@@ -4899,8 +4903,6 @@ class ServingEndpointsDataPlaneAPI:
     ) -> QueryEndpointResponse:
         """Query a serving endpoint.
 
-        :param name: str
-          The name of the serving endpoint. This field is required.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4927,6 +4929,8 @@ class ServingEndpointsDataPlaneAPI:
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
           used with other chat/completions query fields.
+        :param name: str (optional)
+          The name of the serving endpoint. This field is required.
         :param prompt: Any (optional)
           The prompt string (or array of strings) field used ONLY for __completions external & foundation
           model__ serving endpoints and should only be used with other completions query fields.

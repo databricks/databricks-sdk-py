@@ -8719,12 +8719,13 @@ class AlertsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None) -> Alert:
+    def update(
+        self, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None, id: Optional[str] = None
+    ) -> Alert:
         """Update an alert.
 
         Updates an alert.
 
-        :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -8736,6 +8737,7 @@ class AlertsAPI:
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        :param id: str (optional)
 
         :returns: :class:`Alert`
         """
@@ -8883,7 +8885,15 @@ class AlertsLegacyAPI:
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
         return [LegacyAlert.from_dict(v) for v in res]
 
-    def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
+    def update(
+        self,
+        name: str,
+        options: AlertOptions,
+        query_id: str,
+        *,
+        alert_id: Optional[str] = None,
+        rearm: Optional[int] = None,
+    ):
         """Update an alert.
 
         Updates an alert.
@@ -8893,13 +8903,13 @@ class AlertsLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-        :param alert_id: str
         :param name: str
           Name of the alert.
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
           Query ID.
+        :param alert_id: str (optional)
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -9015,13 +9025,11 @@ class AlertsV2API:
 
         self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
 
-    def update_alert(self, id: str, update_mask: str, *, alert: Optional[AlertV2] = None) -> AlertV2:
+    def update_alert(self, update_mask: str, *, alert: Optional[AlertV2] = None, id: Optional[str] = None) -> AlertV2:
         """Update an alert.
 
         Update alert
 
-        :param id: str
-          UUID identifying the alert.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -9033,6 +9041,8 @@ class AlertsV2API:
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         :param alert: :class:`AlertV2` (optional)
+        :param id: str (optional)
+          UUID identifying the alert.
 
         :returns: :class:`AlertV2`
         """
@@ -9117,23 +9127,23 @@ class DashboardWidgetsAPI:
 
     def update(
         self,
-        id: str,
         dashboard_id: str,
         options: WidgetOptions,
         width: int,
         *,
+        id: Optional[str] = None,
         text: Optional[str] = None,
         visualization_id: Optional[str] = None,
     ) -> Widget:
         """Update existing widget.
 
-        :param id: str
-          Widget ID returned by :method:dashboardwidgets/create
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
         :param options: :class:`WidgetOptions`
         :param width: int
           Width of a widget
+        :param id: str (optional)
+          Widget ID returned by :method:dashboardwidgets/create
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the `visualization` field.
@@ -9328,8 +9338,8 @@ class DashboardsAPI:
 
     def update(
         self,
-        dashboard_id: str,
         *,
+        dashboard_id: Optional[str] = None,
         name: Optional[str] = None,
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
@@ -9341,7 +9351,7 @@ class DashboardsAPI:
 
         **Note**: You cannot undo this operation.
 
-        :param dashboard_id: str
+        :param dashboard_id: str (optional)
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
         :param run_as_role: :class:`RunAsRole` (optional)
@@ -9661,12 +9671,13 @@ class QueriesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, update_mask: str, *, query: Optional[UpdateQueryRequestQuery] = None) -> Query:
+    def update(
+        self, update_mask: str, *, id: Optional[str] = None, query: Optional[UpdateQueryRequestQuery] = None
+    ) -> Query:
         """Update a query.
 
         Updates a query.
 
-        :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -9677,6 +9688,7 @@ class QueriesAPI:
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
+        :param id: str (optional)
         :param query: :class:`UpdateQueryRequestQuery` (optional)
 
         :returns: :class:`Query`
@@ -9927,13 +9939,13 @@ class QueriesLegacyAPI:
 
     def update(
         self,
-        query_id: str,
         *,
         data_source_id: Optional[str] = None,
         description: Optional[str] = None,
         name: Optional[str] = None,
         options: Optional[Any] = None,
         query: Optional[str] = None,
+        query_id: Optional[str] = None,
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
     ) -> LegacyQuery:
@@ -9948,7 +9960,6 @@ class QueriesLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-        :param query_id: str
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
           warehouse ID. [Learn more]
@@ -9964,6 +9975,7 @@ class QueriesLegacyAPI:
           overridden at runtime.
         :param query: str (optional)
           The text of the query to be run.
+        :param query_id: str (optional)
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
@@ -10094,13 +10106,16 @@ class QueryVisualizationsAPI:
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
 
     def update(
-        self, id: str, update_mask: str, *, visualization: Optional[UpdateVisualizationRequestVisualization] = None
+        self,
+        update_mask: str,
+        *,
+        id: Optional[str] = None,
+        visualization: Optional[UpdateVisualizationRequestVisualization] = None,
     ) -> Visualization:
         """Update a visualization.
 
         Updates a visualization.
 
-        :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -10111,6 +10126,7 @@ class QueryVisualizationsAPI:
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
+        :param id: str (optional)
         :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
 
         :returns: :class:`Visualization`
@@ -10210,10 +10226,10 @@ class QueryVisualizationsLegacyAPI:
 
     def update(
         self,
-        id: str,
         *,
         created_at: Optional[str] = None,
         description: Optional[str] = None,
+        id: Optional[str] = None,
         name: Optional[str] = None,
         options: Optional[Any] = None,
         query: Optional[LegacyQuery] = None,
@@ -10229,11 +10245,11 @@ class QueryVisualizationsLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-        :param id: str
-          The UUID for this visualization.
         :param created_at: str (optional)
         :param description: str (optional)
           A short description of this visualization. This is not displayed in the UI.
+        :param id: str (optional)
+          The UUID for this visualization.
         :param name: str (optional)
           The name of the visualization that appears on dashboards and the query screen.
         :param options: Any (optional)
@@ -10844,7 +10860,6 @@ class WarehousesAPI:
 
     def edit(
         self,
-        id: str,
         *,
         auto_stop_mins: Optional[int] = None,
         channel: Optional[Channel] = None,
@@ -10852,6 +10867,7 @@ class WarehousesAPI:
         creator_name: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
+        id: Optional[str] = None,
         instance_profile_arn: Optional[str] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
@@ -10864,8 +10880,6 @@ class WarehousesAPI:
 
         Updates the configuration for a SQL warehouse.
 
-        :param id: str
-          Required. Id of the warehouse to configure.
         :param auto_stop_mins: int (optional)
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
@@ -10890,6 +10904,8 @@ class WarehousesAPI:
           Defaults to false.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute.
+        :param id: str (optional)
+          Required. Id of the warehouse to configure.
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_num_clusters: int (optional)
@@ -10962,7 +10978,6 @@ class WarehousesAPI:
 
     def edit_and_wait(
         self,
-        id: str,
         *,
         auto_stop_mins: Optional[int] = None,
         channel: Optional[Channel] = None,
@@ -10970,6 +10985,7 @@ class WarehousesAPI:
         creator_name: Optional[str] = None,
         enable_photon: Optional[bool] = None,
         enable_serverless_compute: Optional[bool] = None,
+        id: Optional[str] = None,
         instance_profile_arn: Optional[str] = None,
         max_num_clusters: Optional[int] = None,
         min_num_clusters: Optional[int] = None,
@@ -11090,16 +11106,19 @@ class WarehousesAPI:
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
+        warehouse_id: Optional[str] = None,
     ) -> WarehousePermissions:
         """Set SQL warehouse permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        :param warehouse_id: str (optional)
+          The SQL warehouse for which to get or manage permissions.
 
         :returns: :class:`WarehousePermissions`
         """
@@ -11229,16 +11248,19 @@ class WarehousesAPI:
         return self.stop(id=id).result(timeout=timeout)
 
     def update_permissions(
-        self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[WarehouseAccessControlRequest]] = None,
+        warehouse_id: Optional[str] = None,
     ) -> WarehousePermissions:
         """Update SQL warehouse permissions.
 
         Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
 
-        :param warehouse_id: str
-          The SQL warehouse for which to get or manage permissions.
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
+        :param warehouse_id: str (optional)
+          The SQL warehouse for which to get or manage permissions.
 
         :returns: :class:`WarehousePermissions`
         """

@@ -10115,16 +10115,19 @@ class ClusterPoliciesAPI:
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None,
+        cluster_policy_id: Optional[str] = None,
     ) -> ClusterPolicyPermissions:
         """Set cluster policy permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
         :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        :param cluster_policy_id: str (optional)
+          The cluster policy for which to get or manage permissions.
 
         :returns: :class:`ClusterPolicyPermissions`
         """
@@ -10142,16 +10145,19 @@ class ClusterPoliciesAPI:
         return ClusterPolicyPermissions.from_dict(res)
 
     def update_permissions(
-        self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None,
+        cluster_policy_id: Optional[str] = None,
     ) -> ClusterPolicyPermissions:
         """Update cluster policy permissions.
 
         Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
         object.
 
-        :param cluster_policy_id: str
-          The cluster policy for which to get or manage permissions.
         :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
+        :param cluster_policy_id: str (optional)
+          The cluster policy for which to get or manage permissions.
 
         :returns: :class:`ClusterPolicyPermissions`
         """
@@ -11392,16 +11398,19 @@ class ClustersAPI:
         return self.restart(cluster_id=cluster_id, restart_user=restart_user).result(timeout=timeout)
 
     def set_permissions(
-        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
+        cluster_id: Optional[str] = None,
     ) -> ClusterPermissions:
         """Set cluster permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
         :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        :param cluster_id: str (optional)
+          The cluster for which to get or manage permissions.
 
         :returns: :class:`ClusterPermissions`
         """
@@ -11548,15 +11557,18 @@ class ClustersAPI:
         return self.update(cluster=cluster, cluster_id=cluster_id, update_mask=update_mask).result(timeout=timeout)
 
     def update_permissions(
-        self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[ClusterAccessControlRequest]] = None,
+        cluster_id: Optional[str] = None,
     ) -> ClusterPermissions:
         """Update cluster permissions.
 
         Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
 
-        :param cluster_id: str
-          The cluster for which to get or manage permissions.
         :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
+        :param cluster_id: str (optional)
+          The cluster for which to get or manage permissions.
 
         :returns: :class:`ClusterPermissions`
         """
@@ -12021,15 +12033,19 @@ class GlobalInitScriptsAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self, script_id: str, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
+        self,
+        name: str,
+        script: str,
+        *,
+        enabled: Optional[bool] = None,
+        position: Optional[int] = None,
+        script_id: Optional[str] = None,
     ):
         """Update init script.
 
         Updates a global init script, specifying only the fields to change. All fields are optional.
         Unspecified fields retain their current value.
 
-        :param script_id: str
-          The ID of the global init script.
         :param name: str
           The name of the script
         :param script: str
@@ -12046,6 +12062,8 @@ class GlobalInitScriptsAPI:
 
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
+        :param script_id: str (optional)
+          The ID of the global init script.
 
 
         """
@@ -12360,16 +12378,19 @@ class InstancePoolsAPI:
         return parsed if parsed is not None else []
 
     def set_permissions(
-        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None,
+        instance_pool_id: Optional[str] = None,
     ) -> InstancePoolPermissions:
         """Set instance pool permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        :param instance_pool_id: str (optional)
+          The instance pool for which to get or manage permissions.
 
         :returns: :class:`InstancePoolPermissions`
         """
@@ -12385,16 +12406,19 @@ class InstancePoolsAPI:
         return InstancePoolPermissions.from_dict(res)
 
     def update_permissions(
-        self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
+        self,
+        *,
+        access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None,
+        instance_pool_id: Optional[str] = None,
     ) -> InstancePoolPermissions:
         """Update instance pool permissions.
 
         Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
         object.
 
-        :param instance_pool_id: str
-          The instance pool for which to get or manage permissions.
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
+        :param instance_pool_id: str (optional)
+          The instance pool for which to get or manage permissions.
 
         :returns: :class:`InstancePoolPermissions`
         """

@@ -1392,16 +1392,16 @@ class AppsAPI:
             query["page_token"] = json["next_page_token"]
 
     def set_permissions(
-        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[AppAccessControlRequest]] = None, app_name: Optional[str] = None
     ) -> AppPermissions:
         """Set app permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
-        :param app_name: str
-          The app for which to get or manage permissions.
         :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
+        :param app_name: str (optional)
+          The app for which to get or manage permissions.
 
         :returns: :class:`AppPermissions`
         """
@@ -1416,12 +1416,12 @@ class AppsAPI:
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
-    def start(self, name: str) -> Wait[App]:
+    def start(self, *, name: Optional[str] = None) -> Wait[App]:
         """Start an app.
 
         Start the last active deployment of the app in the workspace.
 
-        :param name: str
+        :param name: str (optional)
           The name of the app.
 
         :returns:
@@ -1437,15 +1437,15 @@ class AppsAPI:
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
-    def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
+    def start_and_wait(self, *, name: Optional[str] = None, timeout=timedelta(minutes=20)) -> App:
         return self.start(name=name).result(timeout=timeout)
 
-    def stop(self, name: str) -> Wait[App]:
+    def stop(self, *, name: Optional[str] = None) -> Wait[App]:
         """Stop an app.
 
         Stops the active deployment of the app in the workspace.
 
-        :param name: str
+        :param name: str (optional)
           The name of the app.
 
         :returns:
@@ -1461,7 +1461,7 @@ class AppsAPI:
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
         return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
 
-    def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
+    def stop_and_wait(self, *, name: Optional[str] = None, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
     def update(self, name: str, app: App) -> App:
@@ -1486,15 +1486,15 @@ class AppsAPI:
         return App.from_dict(res)
 
     def update_permissions(
-        self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
+        self, *, access_control_list: Optional[List[AppAccessControlRequest]] = None, app_name: Optional[str] = None
     ) -> AppPermissions:
         """Update app permissions.
 
         Updates the permissions on an app. Apps can inherit permissions from their root object.
 
-        :param app_name: str
-          The app for which to get or manage permissions.
         :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
+        :param app_name: str (optional)
+          The app for which to get or manage permissions.
 
         :returns: :class:`AppPermissions`
         """

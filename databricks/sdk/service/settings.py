@@ -5434,11 +5434,11 @@ class AccountIpAccessListsAPI:
 
     def replace(
         self,
-        ip_access_list_id: str,
         label: str,
         list_type: ListType,
         enabled: bool,
         *,
+        ip_access_list_id: Optional[str] = None,
         ip_addresses: Optional[List[str]] = None,
     ):
         """Replace access list.
@@ -5453,8 +5453,6 @@ class AccountIpAccessListsAPI:
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect.
 
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -5464,6 +5462,8 @@ class AccountIpAccessListsAPI:
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str (optional)
+          The ID for the corresponding IP access list
         :param ip_addresses: List[str] (optional)
 
 
@@ -5490,9 +5490,9 @@ class AccountIpAccessListsAPI:
 
     def update(
         self,
-        ip_access_list_id: str,
         *,
         enabled: Optional[bool] = None,
+        ip_access_list_id: Optional[str] = None,
         ip_addresses: Optional[List[str]] = None,
         label: Optional[str] = None,
         list_type: Optional[ListType] = None,
@@ -5513,10 +5513,10 @@ class AccountIpAccessListsAPI:
 
         It can take a few minutes for the changes to take effect.
 
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str (optional)
+          The ID for the corresponding IP access list
         :param ip_addresses: List[str] (optional)
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
@@ -7112,11 +7112,11 @@ class IpAccessListsAPI:
 
     def replace(
         self,
-        ip_access_list_id: str,
         label: str,
         list_type: ListType,
         enabled: bool,
         *,
+        ip_access_list_id: Optional[str] = None,
         ip_addresses: Optional[List[str]] = None,
     ):
         """Replace access list.
@@ -7132,8 +7132,6 @@ class IpAccessListsAPI:
         effect. Note that your resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus.
 
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -7143,6 +7141,8 @@ class IpAccessListsAPI:
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str (optional)
+          The ID for the corresponding IP access list
         :param ip_addresses: List[str] (optional)
 
 
@@ -7164,9 +7164,9 @@ class IpAccessListsAPI:
 
     def update(
         self,
-        ip_access_list_id: str,
         *,
         enabled: Optional[bool] = None,
+        ip_access_list_id: Optional[str] = None,
         ip_addresses: Optional[List[str]] = None,
         label: Optional[str] = None,
         list_type: Optional[ListType] = None,
@@ -7188,10 +7188,10 @@ class IpAccessListsAPI:
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
 
-        :param ip_access_list_id: str
-          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
+        :param ip_access_list_id: str (optional)
+          The ID for the corresponding IP access list
         :param ip_addresses: List[str] (optional)
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
@@ -7618,19 +7618,19 @@ class NotificationDestinationsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, id: str, *, config: Optional[Config] = None, display_name: Optional[str] = None
+        self, *, config: Optional[Config] = None, display_name: Optional[str] = None, id: Optional[str] = None
     ) -> NotificationDestination:
         """Update a notification destination.
 
         Updates a notification destination. Requires workspace admin permissions. At least one field is
         required in the request body.
 
-        :param id: str
-          UUID identifying notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)
           The display name for the notification destination.
+        :param id: str (optional)
+          UUID identifying notification destination.
 
         :returns: :class:`NotificationDestination`
         """

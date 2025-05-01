@@ -2838,12 +2838,12 @@ class PrivateAccessAPI:
 
     def replace(
         self,
-        private_access_settings_id: str,
         private_access_settings_name: str,
         region: str,
         *,
         allowed_vpc_endpoint_ids: Optional[List[str]] = None,
         private_access_level: Optional[PrivateAccessLevel] = None,
+        private_access_settings_id: Optional[str] = None,
         public_access_enabled: Optional[bool] = None,
     ):
         """Replace private access settings.
@@ -2866,8 +2866,6 @@ class PrivateAccessAPI:
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 
-        :param private_access_settings_id: str
-          Databricks Account API private access settings ID.
         :param private_access_settings_name: str
           The human-readable name of the private access settings object.
         :param region: str
@@ -2891,6 +2889,8 @@ class PrivateAccessAPI:
           only VPC endpoints that are registered in your Databricks account connect to your workspace. *
           `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
           see `allowed_vpc_endpoint_ids`.
+        :param private_access_settings_id: str (optional)
+          Databricks Account API private access settings ID.
         :param public_access_enabled: bool (optional)
           Determines if the workspace can be accessed over public internet. For fully private workspaces, you
           can optionally specify `false`, but only if you implement both the front-end and the back-end
@@ -3487,7 +3487,6 @@ class WorkspacesAPI:
 
     def update(
         self,
-        workspace_id: int,
         *,
         aws_region: Optional[str] = None,
         credentials_id: Optional[str] = None,
@@ -3498,6 +3497,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
+        workspace_id: Optional[int] = None,
     ) -> Wait[Workspace]:
         """Update workspace configuration.
 
@@ -3595,8 +3595,6 @@ class WorkspacesAPI:
         [Account Console]: https://docs.databricks.com/administration-guide/account-settings-e2/account-console-e2.html
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 
-        :param workspace_id: int
-          Workspace ID.
         :param aws_region: str (optional)
           The AWS region of the workspace's data plane (for example, `us-west-2`). This parameter is available
           only for updating failed workspaces.
@@ -3624,6 +3622,8 @@ class WorkspacesAPI:
         :param storage_customer_managed_key_id: str (optional)
           The ID of the key configuration object for workspace storage. This parameter is available for
           updating both failed and running workspaces.
+        :param workspace_id: int (optional)
+          Workspace ID.
 
         :returns:
           Long-running operation waiter for :class:`Workspace`.
@@ -3662,7 +3662,6 @@ class WorkspacesAPI:
 
     def update_and_wait(
         self,
-        workspace_id: int,
         *,
         aws_region: Optional[str] = None,
         credentials_id: Optional[str] = None,
@@ -3673,6 +3672,7 @@ class WorkspacesAPI:
         private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
+        workspace_id: Optional[int] = None,
         timeout=timedelta(minutes=20),
     ) -> Workspace:
         return self.update(

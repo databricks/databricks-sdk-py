@@ -1473,8 +1473,8 @@ class CustomAppIntegrationAPI:
 
     def update(
         self,
-        integration_id: str,
         *,
+        integration_id: Optional[str] = None,
         redirect_urls: Optional[List[str]] = None,
         scopes: Optional[List[str]] = None,
         token_access_policy: Optional[TokenAccessPolicy] = None,
@@ -1485,7 +1485,7 @@ class CustomAppIntegrationAPI:
         Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
         via :method:CustomAppIntegration/get.
 
-        :param integration_id: str
+        :param integration_id: str (optional)
         :param redirect_urls: List[str] (optional)
           List of OAuth redirect urls to be updated in the custom OAuth app integration
         :param scopes: List[str] (optional)
@@ -1684,13 +1684,13 @@ class PublishedAppIntegrationAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
+    def update(self, *, integration_id: Optional[str] = None, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
 
         Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
 
-        :param integration_id: str
+        :param integration_id: str (optional)
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published OAuth app integration
 
@@ -1924,17 +1924,17 @@ class ServicePrincipalSecretsAPI:
         self._api = api_client
 
     def create(
-        self, service_principal_id: int, *, lifetime: Optional[str] = None
+        self, *, lifetime: Optional[str] = None, service_principal_id: Optional[int] = None
     ) -> CreateServicePrincipalSecretResponse:
         """Create service principal secret.
 
         Create a secret for the given service principal.
 
-        :param service_principal_id: int
-          The service principal ID.
         :param lifetime: str (optional)
           The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
           default lifetime of 730 days (63072000s).
+        :param service_principal_id: int (optional)
+          The service principal ID.
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
