@@ -758,7 +758,7 @@ class EventLogSpec:
 @dataclass
 class FileLibrary:
     path: Optional[str] = None
-    """The absolute path of the file."""
+    """The absolute path of the source code."""
 
     def as_dict(self) -> dict:
         """Serializes the FileLibrary into a dictionary suitable for use as a JSON request body."""
@@ -1029,24 +1029,24 @@ class IngestionConfig:
 
 @dataclass
 class IngestionGatewayPipelineDefinition:
-    connection_id: Optional[str] = None
-    """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
-    gateway pipeline uses to communicate with the source."""
-
-    connection_name: Optional[str] = None
+    connection_name: str
     """Immutable. The Unity Catalog connection that this gateway pipeline uses to communicate with the
     source."""
 
-    gateway_storage_catalog: Optional[str] = None
+    gateway_storage_catalog: str
     """Required, Immutable. The name of the catalog for the gateway pipeline's storage location."""
+
+    gateway_storage_schema: str
+    """Required, Immutable. The name of the schema for the gateway pipelines's storage location."""
+
+    connection_id: Optional[str] = None
+    """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
+    gateway pipeline uses to communicate with the source."""
 
     gateway_storage_name: Optional[str] = None
     """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Delta Live Tables system will
     automatically create the storage location under the catalog and schema."""
-
-    gateway_storage_schema: Optional[str] = None
-    """Required, Immutable. The name of the schema for the gateway pipelines's storage location."""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionGatewayPipelineDefinition into a dictionary suitable for use as a JSON request body."""
@@ -1293,7 +1293,7 @@ class MaturityLevel(Enum):
 @dataclass
 class NotebookLibrary:
     path: Optional[str] = None
-    """The absolute path of the notebook."""
+    """The absolute path of the source code."""
 
     def as_dict(self) -> dict:
         """Serializes the NotebookLibrary into a dictionary suitable for use as a JSON request body."""
@@ -1892,7 +1892,7 @@ class PipelineClusterAutoscaleMode(Enum):
 
 @dataclass
 class PipelineDeployment:
-    kind: Optional[DeploymentKind] = None
+    kind: DeploymentKind
     """The deployment method that manages the pipeline."""
 
     metadata_file_path: Optional[str] = None
@@ -2584,17 +2584,17 @@ class PipelineTrigger:
 
 @dataclass
 class ReportSpec:
-    destination_catalog: Optional[str] = None
+    source_url: str
+    """Required. Report URL in the source system."""
+
+    destination_catalog: str
     """Required. Destination catalog to store table."""
 
-    destination_schema: Optional[str] = None
+    destination_schema: str
     """Required. Destination schema to store table."""
 
     destination_table: Optional[str] = None
     """Required. Destination table name. The pipeline fails if a table with that name already exists."""
-
-    source_url: Optional[str] = None
-    """Required. Report URL in the source system."""
 
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings override the
@@ -2731,19 +2731,19 @@ class RunAs:
 
 @dataclass
 class SchemaSpec:
-    destination_catalog: Optional[str] = None
+    source_schema: str
+    """Required. Schema name in the source database."""
+
+    destination_catalog: str
     """Required. Destination catalog to store tables."""
 
-    destination_schema: Optional[str] = None
+    destination_schema: str
     """Required. Destination schema to store tables in. Tables with the same name as the source tables
     are created in this destination schema. The pipeline fails If a table with the same name already
     exists."""
 
     source_catalog: Optional[str] = None
     """The source catalog name. Might be optional depending on the type of source."""
-
-    source_schema: Optional[str] = None
-    """Required. Schema name in the source database."""
 
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings are applied to all
@@ -2924,6 +2924,7 @@ class StackFrame:
 @dataclass
 class StartUpdate:
     cause: Optional[StartUpdateCause] = None
+    """What triggered this update."""
 
     full_refresh: Optional[bool] = None
     """If true, this update will reset all tables before running."""
@@ -2992,6 +2993,7 @@ class StartUpdate:
 
 
 class StartUpdateCause(Enum):
+    """What triggered this update."""
 
     API_CALL = "API_CALL"
     JOB_TASK = "JOB_TASK"
@@ -3045,10 +3047,13 @@ class StopPipelineResponse:
 
 @dataclass
 class TableSpec:
-    destination_catalog: Optional[str] = None
+    source_table: str
+    """Required. Table name in the source database."""
+
+    destination_catalog: str
     """Required. Destination catalog to store table."""
 
-    destination_schema: Optional[str] = None
+    destination_schema: str
     """Required. Destination schema to store table."""
 
     destination_table: Optional[str] = None
@@ -3060,9 +3065,6 @@ class TableSpec:
 
     source_schema: Optional[str] = None
     """Schema name in the source database. Might be optional depending on the type of source."""
-
-    source_table: Optional[str] = None
-    """Required. Table name in the source database."""
 
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings override the
@@ -3122,6 +3124,18 @@ class TableSpec:
 
 @dataclass
 class TableSpecificConfig:
+    exclude_columns: Optional[List[str]] = None
+    """A list of column names to be excluded for the ingestion. When not specified, include_columns
+    fully controls what columns to be ingested. When specified, all other columns including future
+    ones will be automatically included for ingestion. This field in mutually exclusive with
+    `include_columns`."""
+
+    include_columns: Optional[List[str]] = None
+    """A list of column names to be included for the ingestion. When not specified, all columns except
+    ones in exclude_columns will be included. Future columns will be automatically included. When
+    specified, all other future columns will be automatically excluded from ingestion. This field in
+    mutually exclusive with `exclude_columns`."""
+
     primary_keys: Optional[List[str]] = None
     """The primary key of the table used to apply changes."""
 
@@ -3139,6 +3153,10 @@ class TableSpecificConfig:
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.exclude_columns:
+            body["exclude_columns"] = [v for v in self.exclude_columns]
+        if self.include_columns:
+            body["include_columns"] = [v for v in self.include_columns]
         if self.primary_keys:
             body["primary_keys"] = [v for v in self.primary_keys]
         if self.salesforce_include_formula_fields is not None:
@@ -3152,6 +3170,10 @@ class TableSpecificConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.exclude_columns:
+            body["exclude_columns"] = self.exclude_columns
+        if self.include_columns:
+            body["include_columns"] = self.include_columns
         if self.primary_keys:
             body["primary_keys"] = self.primary_keys
         if self.salesforce_include_formula_fields is not None:
@@ -3166,6 +3188,8 @@ class TableSpecificConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
+            exclude_columns=d.get("exclude_columns", None),
+            include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
@@ -3325,6 +3349,7 @@ class UpdateStateInfo:
     creation_time: Optional[str] = None
 
     state: Optional[UpdateStateInfoState] = None
+    """The update state."""
 
     update_id: Optional[str] = None
 
@@ -3361,6 +3386,7 @@ class UpdateStateInfo:
 
 
 class UpdateStateInfoState(Enum):
+    """The update state."""
 
     CANCELED = "CANCELED"
     COMPLETED = "COMPLETED"
@@ -3687,6 +3713,7 @@ class PipelinesAPI:
         Retrieves events for a pipeline.
 
         :param pipeline_id: str
+          The pipeline to return events for.
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
           are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
@@ -3867,6 +3894,7 @@ class PipelinesAPI:
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
+          What triggered this update.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)

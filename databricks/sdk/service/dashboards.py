@@ -2097,7 +2097,7 @@ class GenieAPI:
             self.wait_get_message_genie_completed,
             response=GenieMessage.from_dict(op_response),
             conversation_id=conversation_id,
-            message_id=op_response["id"],
+            message_id=op_response["message_id"],
             space_id=space_id,
         )
 

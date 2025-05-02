@@ -1251,7 +1251,8 @@ class FilesAPI:
           The absolute path of the file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
-          If true, an existing file will be overwritten.
+          If true or unspecified, an existing file will be overwritten. If false, an error will be returned if
+          the path points to an existing file.
 
 
         """

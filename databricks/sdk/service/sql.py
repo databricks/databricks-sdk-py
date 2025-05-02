@@ -4791,7 +4791,7 @@ class ListAlertsResponseAlert:
 class ListAlertsV2Response:
     next_page_token: Optional[str] = None
 
-    results: Optional[List[ListAlertsV2ResponseAlert]] = None
+    results: Optional[List[AlertV2]] = None
 
     def as_dict(self) -> dict:
         """Serializes the ListAlertsV2Response into a dictionary suitable for use as a JSON request body."""
@@ -4814,131 +4814,7 @@ class ListAlertsV2Response:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2Response:
         """Deserializes the ListAlertsV2Response from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            results=_repeated_dict(d, "results", ListAlertsV2ResponseAlert),
-        )
-
-
-@dataclass
-class ListAlertsV2ResponseAlert:
-    create_time: Optional[str] = None
-    """The timestamp indicating when the alert was created."""
-
-    custom_description: Optional[str] = None
-    """Custom description for the alert. support mustache template."""
-
-    custom_summary: Optional[str] = None
-    """Custom summary for the alert. support mustache template."""
-
-    display_name: Optional[str] = None
-    """The display name of the alert."""
-
-    evaluation: Optional[AlertV2Evaluation] = None
-
-    id: Optional[str] = None
-    """UUID identifying the alert."""
-
-    lifecycle_state: Optional[LifecycleState] = None
-    """Indicates whether the query is trashed."""
-
-    owner_user_name: Optional[str] = None
-    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
-
-    query_text: Optional[str] = None
-    """Text of the query to be run."""
-
-    run_as_user_name: Optional[str] = None
-    """The run as username. This field is set to "Unavailable" if the user has been deleted."""
-
-    schedule: Optional[CronSchedule] = None
-
-    update_time: Optional[str] = None
-    """The timestamp indicating when the alert was updated."""
-
-    warehouse_id: Optional[str] = None
-    """ID of the SQL warehouse attached to the alert."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListAlertsV2ResponseAlert into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
-        if self.custom_description is not None:
-            body["custom_description"] = self.custom_description
-        if self.custom_summary is not None:
-            body["custom_summary"] = self.custom_summary
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.evaluation:
-            body["evaluation"] = self.evaluation.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state.value
-        if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
-        if self.query_text is not None:
-            body["query_text"] = self.query_text
-        if self.run_as_user_name is not None:
-            body["run_as_user_name"] = self.run_as_user_name
-        if self.schedule:
-            body["schedule"] = self.schedule.as_dict()
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListAlertsV2ResponseAlert into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
-        if self.custom_description is not None:
-            body["custom_description"] = self.custom_description
-        if self.custom_summary is not None:
-            body["custom_summary"] = self.custom_summary
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.evaluation:
-            body["evaluation"] = self.evaluation
-        if self.id is not None:
-            body["id"] = self.id
-        if self.lifecycle_state is not None:
-            body["lifecycle_state"] = self.lifecycle_state
-        if self.owner_user_name is not None:
-            body["owner_user_name"] = self.owner_user_name
-        if self.query_text is not None:
-            body["query_text"] = self.query_text
-        if self.run_as_user_name is not None:
-            body["run_as_user_name"] = self.run_as_user_name
-        if self.schedule:
-            body["schedule"] = self.schedule
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2ResponseAlert:
-        """Deserializes the ListAlertsV2ResponseAlert from a dictionary."""
-        return cls(
-            create_time=d.get("create_time", None),
-            custom_description=d.get("custom_description", None),
-            custom_summary=d.get("custom_summary", None),
-            display_name=d.get("display_name", None),
-            evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
-            id=d.get("id", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
-            owner_user_name=d.get("owner_user_name", None),
-            query_text=d.get("query_text", None),
-            run_as_user_name=d.get("run_as_user_name", None),
-            schedule=_from_dict(d, "schedule", CronSchedule),
-            update_time=d.get("update_time", None),
-            warehouse_id=d.get("warehouse_id", None),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), results=_repeated_dict(d, "results", AlertV2))
 
 
 class ListOrder(Enum):
@@ -8966,9 +8842,7 @@ class AlertsV2API:
         res = self._api.do("GET", f"/api/2.0/alerts/{id}", headers=headers)
         return AlertV2.from_dict(res)
 
-    def list_alerts(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[ListAlertsV2ResponseAlert]:
+    def list_alerts(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[AlertV2]:
         """List alerts.
 
         Gets a list of alerts accessible to the user, ordered by creation time.
@@ -8976,7 +8850,7 @@ class AlertsV2API:
         :param page_size: int (optional)
         :param page_token: str (optional)
 
-        :returns: Iterator over :class:`ListAlertsV2ResponseAlert`
+        :returns: Iterator over :class:`AlertV2`
         """
 
         query = {}
@@ -8992,7 +8866,7 @@ class AlertsV2API:
             json = self._api.do("GET", "/api/2.0/alerts", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
-                    yield ListAlertsV2ResponseAlert.from_dict(v)
+                    yield AlertV2.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]

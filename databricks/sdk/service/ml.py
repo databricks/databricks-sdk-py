@@ -592,7 +592,7 @@ class CreateExperimentResponse:
 @dataclass
 class CreateForecastingExperimentRequest:
     train_data_path: str
-    """The fully qualified name of a Unity Catalog table, formatted as
+    """The fully qualified path of a Unity Catalog table, formatted as
     catalog_name.schema_name.table_name, used as training data for the forecasting model."""
 
     target_column: str
@@ -616,6 +616,10 @@ class CreateForecastingExperimentRequest:
 
     experiment_path: Optional[str] = None
     """The path in the workspace to store the created experiment."""
+
+    future_feature_data_path: Optional[str] = None
+    """The fully qualified path of a Unity Catalog table, formatted as
+    catalog_name.schema_name.table_name, used to store future feature data for predictions."""
 
     holiday_regions: Optional[List[str]] = None
     """The region code(s) to automatically add holiday features. Currently supports only one region."""
@@ -665,6 +669,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_granularity"] = self.forecast_granularity
         if self.forecast_horizon is not None:
             body["forecast_horizon"] = self.forecast_horizon
+        if self.future_feature_data_path is not None:
+            body["future_feature_data_path"] = self.future_feature_data_path
         if self.holiday_regions:
             body["holiday_regions"] = [v for v in self.holiday_regions]
         if self.include_features:
@@ -702,6 +708,8 @@ class CreateForecastingExperimentRequest:
             body["forecast_granularity"] = self.forecast_granularity
         if self.forecast_horizon is not None:
             body["forecast_horizon"] = self.forecast_horizon
+        if self.future_feature_data_path is not None:
+            body["future_feature_data_path"] = self.future_feature_data_path
         if self.holiday_regions:
             body["holiday_regions"] = self.holiday_regions
         if self.include_features:
@@ -736,6 +744,7 @@ class CreateForecastingExperimentRequest:
             experiment_path=d.get("experiment_path", None),
             forecast_granularity=d.get("forecast_granularity", None),
             forecast_horizon=d.get("forecast_horizon", None),
+            future_feature_data_path=d.get("future_feature_data_path", None),
             holiday_regions=d.get("holiday_regions", None),
             include_features=d.get("include_features", None),
             max_runtime=d.get("max_runtime", None),
@@ -7322,6 +7331,7 @@ class ForecastingAPI:
         *,
         custom_weights_column: Optional[str] = None,
         experiment_path: Optional[str] = None,
+        future_feature_data_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
         include_features: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
@@ -7337,7 +7347,7 @@ class ForecastingAPI:
         Creates a serverless forecasting experiment. Returns the experiment ID.
 
         :param train_data_path: str
-          The fully qualified name of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
           used as training data for the forecasting model.
         :param target_column: str
           The column in the input training table used as the prediction target for model training. The values
@@ -7355,6 +7365,9 @@ class ForecastingAPI:
           The column in the training table used to customize weights for each time series.
         :param experiment_path: str (optional)
           The path in the workspace to store the created experiment.
+        :param future_feature_data_path: str (optional)
+          The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          used to store future feature data for predictions.
         :param holiday_regions: List[str] (optional)
           The region code(s) to automatically add holiday features. Currently supports only one region.
         :param include_features: List[str] (optional)
@@ -7395,6 +7408,8 @@ class ForecastingAPI:
             body["forecast_granularity"] = forecast_granularity
         if forecast_horizon is not None:
             body["forecast_horizon"] = forecast_horizon
+        if future_feature_data_path is not None:
+            body["future_feature_data_path"] = future_feature_data_path
         if holiday_regions is not None:
             body["holiday_regions"] = [v for v in holiday_regions]
         if include_features is not None:
@@ -7441,6 +7456,7 @@ class ForecastingAPI:
         *,
         custom_weights_column: Optional[str] = None,
         experiment_path: Optional[str] = None,
+        future_feature_data_path: Optional[str] = None,
         holiday_regions: Optional[List[str]] = None,
         include_features: Optional[List[str]] = None,
         max_runtime: Optional[int] = None,
@@ -7457,6 +7473,7 @@ class ForecastingAPI:
             experiment_path=experiment_path,
             forecast_granularity=forecast_granularity,
             forecast_horizon=forecast_horizon,
+            future_feature_data_path=future_feature_data_path,
             holiday_regions=holiday_regions,
             include_features=include_features,
             max_runtime=max_runtime,
