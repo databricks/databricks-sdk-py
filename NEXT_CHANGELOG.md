@@ -13,7 +13,6 @@
 ### API Changes
 * Added `future_feature_data_path` field for `databricks.sdk.service.ml.CreateForecastingExperimentRequest`.
 * Added `exclude_columns` and `include_columns` fields for `databricks.sdk.service.pipelines.TableSpecificConfig`.
-* Added `create_time`, `custom_description`, `custom_summary`, `display_name`, `evaluation`, `id`, `lifecycle_state`, `owner_user_name`, `parent_path`, `query_text`, `run_as_user_name`, `schedule`, `update_time` and `warehouse_id` fields for `databricks.sdk.service.sql.AlertV2`.
 * Added `network_check_control_plane_failure`, `network_check_dns_server_failure`, `network_check_metadata_endpoint_failure`, `network_check_multiple_components_failure`, `network_check_nic_failure`, `network_check_storage_failure` and `secret_permission_denied` enum values for `databricks.sdk.service.compute.TerminationReasonCode`.
 * [Breaking] Changed `pipeline_id` field for `databricks.sdk.service.pipelines.EditPipeline` to be required.
 * Changed `connection_name`, `gateway_storage_catalog` and `gateway_storage_schema` fields for `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition` to be required.
@@ -28,5 +27,4 @@
 * Changed `destination_catalog`, `destination_schema` and `source_table` fields for `databricks.sdk.service.pipelines.TableSpec` to be required.
 * [Breaking] Changed `results` field for `databricks.sdk.service.sql.ListAlertsV2Response` to type `databricks.sdk.service.sql.AlertV2List` dataclass.
 * [Breaking] Changed pagination for [AlertsV2API.list_alerts](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sql/alerts_v2.html#databricks.sdk.service.sql.AlertsV2API.list_alerts) method.
-* [Breaking] Changed waiter for [GenieAPI.create_message](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html#databricks.sdk.service.dashboards.GenieAPI.create_message) method.
-* [Breaking] Removed `create_time`, `custom_description`, `custom_summary`, `display_name`, `evaluation`, `id`, `lifecycle_state`, `owner_user_name`, `query_text`, `run_as_user_name`, `schedule`, `update_time` and `warehouse_id` fields for `databricks.sdk.service.sql.ListAlertsV2ResponseAlert`.
+* Fixed waiter for [GenieAPI.create_message](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html#databricks.sdk.service.dashboards.GenieAPI.create_message) method.
