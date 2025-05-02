@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.53.0
+
+### Bug Fixes
+* Fixed the deserialization of responses in VectorSearchAPI's `query_index()` method ([#961](https://github.com/databricks/databricks-sdk-py/pull/961)).
+
+
 ## Release v0.52.0
 
 ### API Changes
