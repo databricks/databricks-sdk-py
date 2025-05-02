@@ -1165,7 +1165,7 @@ class QueryVectorIndexResponse:
 class ResultData:
     """Data returned in the query result."""
 
-    data_array: Optional[List[ListValue]] = None
+    data_array: Optional[List[List[str]]] = None
     """Data rows returned in the query."""
 
     row_count: Optional[int] = None
@@ -1175,7 +1175,7 @@ class ResultData:
         """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_array:
-            body["data_array"] = [v.as_dict() for v in self.data_array]
+            body["data_array"] = [v for v in self.data_array]
         if self.row_count is not None:
             body["row_count"] = self.row_count
         return body
@@ -1192,7 +1192,7 @@ class ResultData:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
-        return cls(data_array=_repeated_dict(d, "data_array", ListValue), row_count=d.get("row_count", None))
+        return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
 
 
 @dataclass
