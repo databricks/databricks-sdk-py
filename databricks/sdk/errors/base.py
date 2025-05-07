@@ -84,6 +84,7 @@ class DatabricksError(IOError):
 
         # Retry-after is deprecated.
         if retry_after_secs:
+            raise Exception("who uses retry_after_secs?")
             warnings.warn(
                 "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version.",
                 stacklevel=2,
