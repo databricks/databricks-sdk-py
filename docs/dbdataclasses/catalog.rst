@@ -1041,6 +1041,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_CATALOG
       :value: "CREATE_CATALOG"
 
+   .. py:attribute:: CREATE_CLEAN_ROOM
+      :value: "CREATE_CLEAN_ROOM"
+
    .. py:attribute:: CREATE_CONNECTION
       :value: "CREATE_CONNECTION"
 
@@ -1101,6 +1104,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
 
+   .. py:attribute:: EXECUTE_CLEAN_ROOM_TASK
+      :value: "EXECUTE_CLEAN_ROOM_TASK"
+
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
@@ -1109,6 +1115,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MODIFY
       :value: "MODIFY"
+
+   .. py:attribute:: MODIFY_CLEAN_ROOM
+      :value: "MODIFY_CLEAN_ROOM"
 
    .. py:attribute:: READ_FILES
       :value: "READ_FILES"

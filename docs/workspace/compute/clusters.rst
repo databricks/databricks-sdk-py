@@ -583,7 +583,7 @@
 
         Ensures that given cluster is running, regardless of the current state
 
-    .. py:method:: events(cluster_id: str [, end_time: Optional[int], event_types: Optional[List[EventType]], limit: Optional[int], offset: Optional[int], order: Optional[GetEventsOrder], start_time: Optional[int]]) -> Iterator[ClusterEvent]
+    .. py:method:: events(cluster_id: str [, end_time: Optional[int], event_types: Optional[List[EventType]], limit: Optional[int], offset: Optional[int], order: Optional[GetEventsOrder], page_size: Optional[int], page_token: Optional[str], start_time: Optional[int]]) -> Iterator[ClusterEvent]
 
 
         Usage:
@@ -626,13 +626,25 @@
         :param event_types: List[:class:`EventType`] (optional)
           An optional set of event types to filter on. If empty, all event types are returned.
         :param limit: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
           value is 500.
         :param offset: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results
           are requested in descending order, the end_time field is required.
         :param order: :class:`GetEventsOrder` (optional)
           The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+        :param page_size: int (optional)
+          The maximum number of events to include in a page of events. The server may further constrain the
+          maximum number of results returned in a single page. If the page_size is empty or 0, the server will
+          decide the number of results to be returned. The field has to be in the range [0,500]. If the value
+          is outside the range, the server enforces 0 or 500.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of events respectively. If page_token is empty, the first page is returned.
         :param start_time: int (optional)
           The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
 
@@ -713,10 +725,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import compute
             
             w = WorkspaceClient()
             
-            nodes = w.clusters.list_node_types()
+            all = w.clusters.list(compute.ListClustersRequest())
 
         List clusters.
 

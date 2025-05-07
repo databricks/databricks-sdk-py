@@ -23,6 +23,7 @@ from google.oauth2 import service_account  # type: ignore
 from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
                     TokenCache, TokenSource)
+from .oidc_token_supplier import GitHubOIDCTokenSupplier
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -191,7 +192,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         token_url=oidc.token_endpoint,
         scopes=["all-apis"],
         use_header=True,
-        disable_async=not cfg.enable_experimental_async_token_refresh,
+        disable_async=cfg.disable_async_token_refresh,
     )
 
     def inner() -> Dict[str, str]:
@@ -291,7 +292,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
             endpoint_params={"resource": resource},
             use_params=True,
-            disable_async=not cfg.enable_experimental_async_token_refresh,
+            disable_async=cfg.disable_async_token_refresh,
         )
 
     _ensure_host_present(cfg, token_source_for)
@@ -314,6 +315,58 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
+@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
+def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
+    it for a Databricks Token.
+
+    Supported suppliers:
+    - GitHub OIDC
+    """
+    supplier = GitHubOIDCTokenSupplier()
+
+    audience = cfg.token_audience
+    if audience is None and cfg.is_account_client:
+        audience = cfg.account_id
+    if audience is None and not cfg.is_account_client:
+        audience = cfg.oidc_endpoints.token_endpoint
+
+    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
+    id_token = supplier.get_oidc_token(audience)
+    if not id_token:
+        return None
+
+    def token_source_for(audience: str) -> TokenSource:
+        id_token = supplier.get_oidc_token(audience)
+        if not id_token:
+            # Should not happen, since we checked it above.
+            raise Exception("Cannot get OIDC token")
+        params = {
+            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+            "subject_token": id_token,
+            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+        }
+        return ClientCredentials(
+            client_id=cfg.client_id,
+            client_secret="",  # we have no (rotatable) secrets in OIDC flow
+            token_url=cfg.oidc_endpoints.token_endpoint,
+            endpoint_params=params,
+            scopes=["all-apis"],
+            use_params=True,
+            disable_async=cfg.disable_async_token_refresh,
+        )
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = token_source_for(audience).token()
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
+
+    def token() -> Token:
+        return token_source_for(audience).token()
+
+    return OAuthCredentialsProvider(refreshed_headers, token)
+
+
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
 def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if "ACTIONS_ID_TOKEN_REQUEST_TOKEN" not in os.environ:
@@ -325,16 +378,8 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if not cfg.is_azure:
         return None
 
-    # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
-    headers = {"Authorization": f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
-    endpoint = f"{os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']}&audience=api://AzureADTokenExchange"
-    response = requests.get(endpoint, headers=headers)
-    if not response.ok:
-        return None
-
-    # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
-    response_json = response.json()
-    if "value" not in response_json:
+    token = GitHubOIDCTokenSupplier().get_oidc_token("api://AzureADTokenExchange")
+    if not token:
         return None
 
     logger.info(
@@ -344,7 +389,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     params = {
         "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
         "resource": cfg.effective_azure_login_app_id,
-        "client_assertion": response_json["value"],
+        "client_assertion": token,
     }
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
@@ -357,7 +402,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
         endpoint_params=params,
         use_params=True,
-        disable_async=not cfg.enable_experimental_async_token_refresh,
+        disable_async=cfg.disable_async_token_refresh,
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -694,7 +739,7 @@ class DatabricksCliTokenSource(CliTokenSource):
             token_type_field="token_type",
             access_token_field="access_token",
             expiry_field="expiry",
-            disable_async=not cfg.enable_experimental_async_token_refresh,
+            disable_async=cfg.disable_async_token_refresh,
         )
 
     @staticmethod
@@ -927,6 +972,7 @@ class DefaultCredentials:
             basic_auth,
             metadata_service,
             oauth_service_principal,
+            databricks_wif,
             azure_service_principal,
             github_oidc_azure,
             azure_cli,

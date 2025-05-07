@@ -152,9 +152,9 @@
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            get_status_response = w.workspace.get_status(path=notebook)
+            obj = w.workspace.get_status(path=notebook_path)
 
         Get status.
 
@@ -191,7 +191,9 @@
                 language=workspace.Language.PYTHON,
                 content=base64.b64encode(
                     (
-                        """print(1)
+                        """import time
+            time.sleep(10)
+            dbutils.notebook.exit('hello')
             """
                     ).encode()
                 ).decode(),

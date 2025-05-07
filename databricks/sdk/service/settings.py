@@ -635,6 +635,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"
 
@@ -768,18 +769,20 @@ class CreateIpAccessListResponse:
 
 
 @dataclass
-class CreateNetworkConnectivityConfigRequest:
+class CreateNetworkConnectivityConfiguration:
+    """Properties of the new network connectivity configuration."""
+
     name: str
     """The name of the network connectivity configuration. The name can contain alphanumeric
     characters, hyphens, and underscores. The length must be between 3 and 30 characters. The name
-    must match the regular expression `^[0-9a-zA-Z-_]{3,30}$`."""
+    must match the regular expression ^[0-9a-zA-Z-_]{3,30}$"""
 
     region: str
     """The region for the network connectivity configuration. Only workspaces in the same region can be
     attached to the network connectivity configuration."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateNetworkConnectivityConfigRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreateNetworkConnectivityConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
@@ -788,7 +791,7 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CreateNetworkConnectivityConfigRequest into a shallow dictionary of its immediate attributes."""
+        """Serializes the CreateNetworkConnectivityConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
@@ -797,8 +800,8 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfigRequest:
-        """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfiguration:
+        """Deserializes the CreateNetworkConnectivityConfiguration from a dictionary."""
         return cls(name=d.get("name", None), region=d.get("region", None))
 
 
@@ -913,57 +916,56 @@ class CreateOboTokenResponse:
 
 
 @dataclass
-class CreatePrivateEndpointRuleRequest:
+class CreatePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
     resource_id: str
     """The Azure resource ID of the target resource."""
 
-    group_id: CreatePrivateEndpointRuleRequestGroupId
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
 
-    network_connectivity_config_id: Optional[str] = None
-    """Your Network Connectvity Configuration ID."""
+    group_id: Optional[str] = None
+    """Only used by private endpoints to Azure first-party services. Enum: blob | dfs | sqlServer |
+    mysqlServer
+    
+    The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for blob and one for dfs."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreatePrivateEndpointRuleRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreatePrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
         if self.group_id is not None:
-            body["group_id"] = self.group_id.value
-        if self.network_connectivity_config_id is not None:
-            body["network_connectivity_config_id"] = self.network_connectivity_config_id
+            body["group_id"] = self.group_id
         if self.resource_id is not None:
             body["resource_id"] = self.resource_id
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePrivateEndpointRuleRequest into a shallow dictionary of its immediate attributes."""
+        """Serializes the CreatePrivateEndpointRule into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
         if self.group_id is not None:
             body["group_id"] = self.group_id
-        if self.network_connectivity_config_id is not None:
-            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
             body["resource_id"] = self.resource_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRuleRequest:
-        """Deserializes the CreatePrivateEndpointRuleRequest from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRule:
+        """Deserializes the CreatePrivateEndpointRule from a dictionary."""
         return cls(
-            group_id=_enum(d, "group_id", CreatePrivateEndpointRuleRequestGroupId),
-            network_connectivity_config_id=d.get("network_connectivity_config_id", None),
+            domain_names=d.get("domain_names", None),
+            group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
         )
-
-
-class CreatePrivateEndpointRuleRequestGroupId(Enum):
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
-
-    BLOB = "blob"
-    DFS = "dfs"
-    MYSQL_SERVER = "mysqlServer"
-    SQL_SERVER = "sqlServer"
 
 
 @dataclass
@@ -1961,6 +1963,14 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinatio
     GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
 
 
+class EgressResourceType(Enum):
+    """The target resources that are supported by Network Connectivity Config. Note: some egress types
+    can support general types that are not defined in EgressResourceType. E.g.: Azure private
+    endpoint supports private link enabled Azure services."""
+
+    AZURE_BLOB_STORAGE = "AZURE_BLOB_STORAGE"
+
+
 @dataclass
 class EmailConfig:
     addresses: Optional[List[str]] = None
@@ -2721,6 +2731,8 @@ class ListIpAccessListResponse:
 
 @dataclass
 class ListNccAzurePrivateEndpointRulesResponse:
+    """The private endpoint rule list was successfully retrieved."""
+
     items: Optional[List[NccAzurePrivateEndpointRule]] = None
 
     next_page_token: Optional[str] = None
@@ -2756,6 +2768,8 @@ class ListNccAzurePrivateEndpointRulesResponse:
 
 @dataclass
 class ListNetworkConnectivityConfigurationsResponse:
+    """The network connectivity configuration list was successfully retrieved."""
+
     items: Optional[List[NetworkConnectivityConfiguration]] = None
 
     next_page_token: Optional[str] = None
@@ -2991,17 +3005,19 @@ class NccAwsStableIpRule:
 
 @dataclass
 class NccAzurePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
     connection_state: Optional[NccAzurePrivateEndpointRuleConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
-    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect.
-    
-    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
-    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
-    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
-    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
-    removed by the private link resource owner, the private endpoint becomes informative and should
-    be deleted for clean-up."""
+    the connection state is ESTABLISHED. Remember that you must approve new endpoints on your
+    resources in the Azure portal before they take effect. The possible values are: - INIT:
+    (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has
+    been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to
+    use in your serverless compute resources. - REJECTED: Connection was rejected by the private
+    link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner,
+    the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the
+    endpoint was created but not approved in 14 days, it will be EXPIRED."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -3012,12 +3028,21 @@ class NccAzurePrivateEndpointRule:
     deactivated_at: Optional[int] = None
     """Time in epoch milliseconds when this object was deactivated."""
 
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
+
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
 
-    group_id: Optional[NccAzurePrivateEndpointRuleGroupId] = None
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+    group_id: Optional[str] = None
+    """Only used by private endpoints to Azure first-party services. Enum: blob | dfs | sqlServer |
+    mysqlServer
+    
+    The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for blob and one for dfs."""
 
     network_connectivity_config_id: Optional[str] = None
     """The ID of a network connectivity configuration, which is the parent resource of this private
@@ -3043,10 +3068,12 @@ class NccAzurePrivateEndpointRule:
             body["deactivated"] = self.deactivated
         if self.deactivated_at is not None:
             body["deactivated_at"] = self.deactivated_at
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.group_id is not None:
-            body["group_id"] = self.group_id.value
+            body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
@@ -3068,6 +3095,8 @@ class NccAzurePrivateEndpointRule:
             body["deactivated"] = self.deactivated
         if self.deactivated_at is not None:
             body["deactivated_at"] = self.deactivated_at
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.group_id is not None:
@@ -3090,8 +3119,9 @@ class NccAzurePrivateEndpointRule:
             creation_time=d.get("creation_time", None),
             deactivated=d.get("deactivated", None),
             deactivated_at=d.get("deactivated_at", None),
+            domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
-            group_id=_enum(d, "group_id", NccAzurePrivateEndpointRuleGroupId),
+            group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
             rule_id=d.get("rule_id", None),
@@ -3100,32 +3130,13 @@ class NccAzurePrivateEndpointRule:
 
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
-    """The current status of this private endpoint. The private endpoint rules are effective only if
-    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect.
-
-    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
-    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
-    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
-    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
-    removed by the private link resource owner, the private endpoint becomes informative and should
-    be deleted for clean-up."""
 
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
+    EXPIRED = "EXPIRED"
     INIT = "INIT"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
-
-
-class NccAzurePrivateEndpointRuleGroupId(Enum):
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
-
-    BLOB = "blob"
-    DFS = "dfs"
-    MYSQL_SERVER = "mysqlServer"
-    SQL_SERVER = "sqlServer"
 
 
 @dataclass
@@ -3138,9 +3149,9 @@ class NccAzureServiceEndpointRule:
     resources."""
 
     target_region: Optional[str] = None
-    """The Azure region in which this service endpoint rule applies."""
+    """The Azure region in which this service endpoint rule applies.."""
 
-    target_services: Optional[List[str]] = None
+    target_services: Optional[List[EgressResourceType]] = None
     """The Azure services to which this service endpoint rule applies to."""
 
     def as_dict(self) -> dict:
@@ -3151,7 +3162,7 @@ class NccAzureServiceEndpointRule:
         if self.target_region is not None:
             body["target_region"] = self.target_region
         if self.target_services:
-            body["target_services"] = [v for v in self.target_services]
+            body["target_services"] = [v.value for v in self.target_services]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3171,15 +3182,12 @@ class NccAzureServiceEndpointRule:
         return cls(
             subnets=d.get("subnets", None),
             target_region=d.get("target_region", None),
-            target_services=d.get("target_services", None),
+            target_services=_repeated_enum(d, "target_services", EgressResourceType),
         )
 
 
 @dataclass
 class NccEgressConfig:
-    """The network connectivity rules that apply to network traffic from your serverless compute
-    resources."""
-
     default_rules: Optional[NccEgressDefaultRules] = None
     """The network connectivity rules that are applied by default without resource specific
     configurations. You can find the stable network information of your serverless compute resources
@@ -3218,9 +3226,7 @@ class NccEgressConfig:
 
 @dataclass
 class NccEgressDefaultRules:
-    """The network connectivity rules that are applied by default without resource specific
-    configurations. You can find the stable network information of your serverless compute resources
-    here."""
+    """Default rules don't have specific targets."""
 
     aws_stable_ip_rule: Optional[NccAwsStableIpRule] = None
     """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
@@ -3259,8 +3265,7 @@ class NccEgressDefaultRules:
 
 @dataclass
 class NccEgressTargetRules:
-    """The network connectivity rules that configured for each destinations. These rules override
-    default rules."""
+    """Target rule controls the egress rules that are dedicated to specific resources."""
 
     azure_private_endpoint_rules: Optional[List[NccAzurePrivateEndpointRule]] = None
 
@@ -3288,6 +3293,8 @@ class NccEgressTargetRules:
 
 @dataclass
 class NetworkConnectivityConfiguration:
+    """Properties of the new network connectivity configuration."""
+
     account_id: Optional[str] = None
     """The Databricks account ID that hosts the credential."""
 
@@ -3301,7 +3308,7 @@ class NetworkConnectivityConfiguration:
     name: Optional[str] = None
     """The name of the network connectivity configuration. The name can contain alphanumeric
     characters, hyphens, and underscores. The length must be between 3 and 30 characters. The name
-    must match the regular expression `^[0-9a-zA-Z-_]{3,30}$`."""
+    must match the regular expression ^[0-9a-zA-Z-_]{3,30}$"""
 
     network_connectivity_config_id: Optional[str] = None
     """Databricks network connectivity configuration ID."""
@@ -5199,6 +5206,37 @@ class UpdatePersonalComputeSettingRequest:
 
 
 @dataclass
+class UpdatePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePrivateEndpointRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePrivateEndpointRule:
+        """Deserializes the UpdatePrivateEndpointRule from a dictionary."""
+        return cls(domain_names=d.get("domain_names", None))
+
+
+@dataclass
 class UpdateResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
@@ -6490,16 +6528,16 @@ class DisableLegacyFeaturesAPI:
 
 
 class EnableExportNotebookAPI:
-    """Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+    """Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
     enabled."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def get_enable_export_notebook(self) -> EnableExportNotebook:
-        """Get the Enable Export Notebook setting.
+        """Get the Notebook and File exporting setting.
 
-        Gets the Enable Export Notebook setting.
+        Gets the Notebook and File exporting setting.
 
         :returns: :class:`EnableExportNotebook`
         """
@@ -6514,10 +6552,10 @@ class EnableExportNotebookAPI:
     def patch_enable_export_notebook(
         self, allow_missing: bool, setting: EnableExportNotebook, field_mask: str
     ) -> EnableExportNotebook:
-        """Update the Enable Export Notebook setting.
+        """Update the Notebook and File exporting setting.
 
-        Updates the Enable Export Notebook setting. The model follows eventual consistency, which means the
-        get after the update operation might receive stale values for some time.
+        Updates the Notebook and File exporting setting. The model follows eventual consistency, which means
+        the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -6670,9 +6708,9 @@ class EnableNotebookTableClipboardAPI:
         self._api = api_client
 
     def get_enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboard:
-        """Get the Enable Notebook Table Clipboard setting.
+        """Get the Results Table Clipboard features setting.
 
-        Gets the Enable Notebook Table Clipboard setting.
+        Gets the Results Table Clipboard features setting.
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
@@ -6689,9 +6727,9 @@ class EnableNotebookTableClipboardAPI:
     def patch_enable_notebook_table_clipboard(
         self, allow_missing: bool, setting: EnableNotebookTableClipboard, field_mask: str
     ) -> EnableNotebookTableClipboard:
-        """Update the Enable Notebook Table Clipboard setting.
+        """Update the Results Table Clipboard features setting.
 
-        Updates the Enable Notebook Table Clipboard setting. The model follows eventual consistency, which
+        Updates the Results Table Clipboard features setting. The model follows eventual consistency, which
         means the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
@@ -6735,9 +6773,9 @@ class EnableResultsDownloadingAPI:
         self._api = api_client
 
     def get_enable_results_downloading(self) -> EnableResultsDownloading:
-        """Get the Enable Results Downloading setting.
+        """Get the Notebook results download setting.
 
-        Gets the Enable Results Downloading setting.
+        Gets the Notebook results download setting.
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -6752,10 +6790,10 @@ class EnableResultsDownloadingAPI:
     def patch_enable_results_downloading(
         self, allow_missing: bool, setting: EnableResultsDownloading, field_mask: str
     ) -> EnableResultsDownloading:
-        """Update the Enable Results Downloading setting.
+        """Update the Notebook results download setting.
 
-        Updates the Enable Results Downloading setting. The model follows eventual consistency, which means
-        the get after the update operation might receive stale values for some time.
+        Updates the Notebook results download setting. The model follows eventual consistency, which means the
+        get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -7183,29 +7221,40 @@ class IpAccessListsAPI:
 
 class NetworkConnectivityAPI:
     """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources."""
+    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
+    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
+    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
+    Azure Private Link. See [configure serverless secure connectivity].
+
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+    """
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_network_connectivity_configuration(self, name: str, region: str) -> NetworkConnectivityConfiguration:
+    def create_network_connectivity_configuration(
+        self, network_connectivity_config: CreateNetworkConnectivityConfiguration
+    ) -> NetworkConnectivityConfiguration:
         """Create a network connectivity configuration.
 
-        :param name: str
-          The name of the network connectivity configuration. The name can contain alphanumeric characters,
-          hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
-          regular expression `^[0-9a-zA-Z-_]{3,30}$`.
-        :param region: str
-          The region for the network connectivity configuration. Only workspaces in the same region can be
-          attached to the network connectivity configuration.
+        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
+        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
+        Databricks managed private endpoints so that Databricks serverless compute resources privately access
+        your resources.
+
+        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
+        workspaces to the new network connectivity configuration. You can share one network connectivity
+        configuration with multiple workspaces from the same Azure region within the same Databricks account.
+        See [configure serverless secure connectivity].
+
+        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+
+        :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
+          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
-        body = {}
-        if name is not None:
-            body["name"] = name
-        if region is not None:
-            body["region"] = region
+        body = network_connectivity_config.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7217,7 +7266,7 @@ class NetworkConnectivityAPI:
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def create_private_endpoint_rule(
-        self, network_connectivity_config_id: str, resource_id: str, group_id: CreatePrivateEndpointRuleRequestGroupId
+        self, network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule
     ) -> NccAzurePrivateEndpointRule:
         """Create a private endpoint rule.
 
@@ -7232,20 +7281,14 @@ class NetworkConnectivityAPI:
         [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
-        :param resource_id: str
-          The Azure resource ID of the target resource.
-        :param group_id: :class:`CreatePrivateEndpointRuleRequestGroupId`
-          The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-          storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
 
         :returns: :class:`NccAzurePrivateEndpointRule`
         """
-        body = {}
-        if group_id is not None:
-            body["group_id"] = group_id.value
-        if resource_id is not None:
-            body["resource_id"] = resource_id
+        body = private_endpoint_rule.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7265,7 +7308,7 @@ class NetworkConnectivityAPI:
         Deletes a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
 
         """
@@ -7317,7 +7360,7 @@ class NetworkConnectivityAPI:
         Gets a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
@@ -7336,7 +7379,7 @@ class NetworkConnectivityAPI:
     def get_private_endpoint_rule(
         self, network_connectivity_config_id: str, private_endpoint_rule_id: str
     ) -> NccAzurePrivateEndpointRule:
-        """Get a private endpoint rule.
+        """Gets a private endpoint rule.
 
         Gets the private endpoint rule.
 
@@ -7428,6 +7471,52 @@ class NetworkConnectivityAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def update_ncc_azure_private_endpoint_rule_public(
+        self,
+        network_connectivity_config_id: str,
+        private_endpoint_rule_id: str,
+        private_endpoint_rule: UpdatePrivateEndpointRule,
+        update_mask: str,
+    ) -> NccAzurePrivateEndpointRule:
+        """Update a private endpoint rule.
+
+        Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources
+        is allowed to be updated.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+        :returns: :class:`NccAzurePrivateEndpointRule`
+        """
+        body = private_endpoint_rule.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return NccAzurePrivateEndpointRule.from_dict(res)
 
 
 class NotificationDestinationsAPI:
@@ -7844,7 +7933,7 @@ class SettingsAPI:
 
     @property
     def enable_export_notebook(self) -> EnableExportNotebookAPI:
-        """Controls whether users can export notebooks and files from the Workspace."""
+        """Controls whether users can export notebooks and files from the Workspace UI."""
         return self._enable_export_notebook
 
     @property

@@ -1,5 +1,5 @@
-``w.settings.enable_results_downloading``: Enable Results Downloading
-=====================================================================
+``w.settings.enable_results_downloading``: Notebook results download
+====================================================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: EnableResultsDownloadingAPI
@@ -8,19 +8,19 @@
 
     .. py:method:: get_enable_results_downloading() -> EnableResultsDownloading
 
-        Get the Enable Results Downloading setting.
+        Get the Notebook results download setting.
 
-        Gets the Enable Results Downloading setting.
+        Gets the Notebook results download setting.
 
         :returns: :class:`EnableResultsDownloading`
         
 
     .. py:method:: patch_enable_results_downloading(allow_missing: bool, setting: EnableResultsDownloading, field_mask: str) -> EnableResultsDownloading
 
-        Update the Enable Results Downloading setting.
+        Update the Notebook results download setting.
 
-        Updates the Enable Results Downloading setting. The model follows eventual consistency, which means
-        the get after the update operation might receive stale values for some time.
+        Updates the Notebook results download setting. The model follows eventual consistency, which means the
+        get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.

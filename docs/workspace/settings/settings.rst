@@ -64,7 +64,7 @@
     .. py:property:: enable_export_notebook
         :type: EnableExportNotebookAPI
 
-        Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+        Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
         enabled.
 
     .. py:property:: enable_notebook_table_clipboard

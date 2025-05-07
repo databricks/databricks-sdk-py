@@ -1,27 +1,27 @@
-``w.settings.enable_export_notebook``: Enable Export Notebook
-=============================================================
+``w.settings.enable_export_notebook``: Notebook and File exporting
+==================================================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: EnableExportNotebookAPI
 
-    Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+    Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
     enabled.
 
     .. py:method:: get_enable_export_notebook() -> EnableExportNotebook
 
-        Get the Enable Export Notebook setting.
+        Get the Notebook and File exporting setting.
 
-        Gets the Enable Export Notebook setting.
+        Gets the Notebook and File exporting setting.
 
         :returns: :class:`EnableExportNotebook`
         
 
     .. py:method:: patch_enable_export_notebook(allow_missing: bool, setting: EnableExportNotebook, field_mask: str) -> EnableExportNotebook
 
-        Update the Enable Export Notebook setting.
+        Update the Notebook and File exporting setting.
 
-        Updates the Enable Export Notebook setting. The model follows eventual consistency, which means the
-        get after the update operation might receive stale values for some time.
+        Updates the Notebook and File exporting setting. The model follows eventual consistency, which means
+        the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.

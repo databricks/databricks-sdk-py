@@ -9,6 +9,7 @@ Manage Databricks SQL assets, including warehouses, dashboards, queries and quer
 
    alerts
    alerts_legacy
+   alerts_v2
    dashboard_widgets
    dashboards
    data_sources

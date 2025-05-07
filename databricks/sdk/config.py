@@ -61,6 +61,7 @@ class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
+    token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE", auth="github-oidc")
     username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
     password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
     client_id: str = ConfigAttribute(env="DATABRICKS_CLIENT_ID", auth="oauth")
@@ -95,9 +96,7 @@ class Config:
     max_connections_per_pool: int = ConfigAttribute()
     databricks_environment: Optional[DatabricksEnvironment] = None
 
-    enable_experimental_async_token_refresh: bool = ConfigAttribute(
-        env="DATABRICKS_ENABLE_EXPERIMENTAL_ASYNC_TOKEN_REFRESH"
-    )
+    disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")
 
     enable_experimental_files_api_client: bool = ConfigAttribute(env="DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT")
     files_api_client_download_max_total_recovers = None
