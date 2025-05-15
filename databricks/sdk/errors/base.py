@@ -62,31 +62,6 @@ class DatabricksError(IOError):
         :param details:
         :param kwargs:
         """
-        # SCIM-specific parameters are deprecated.
-        if detail:
-            warnings.warn(
-                "The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-        if scimType:
-            warnings.warn(
-                "The 'scimType' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-        if status:
-            warnings.warn(
-                "The 'status' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-
-        # API 1.2-specific parameters are deprecated.
-        if error:
-            warnings.warn(
-                "The 'error' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-
-        # Retry-after is deprecated.
-        if retry_after_secs:
-            warnings.warn(
-                "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
 
         if detail:
             # Handle SCIM error message details
@@ -101,7 +76,7 @@ class DatabricksError(IOError):
 
         super().__init__(message if message else error)
         self.error_code = error_code
-        self.retry_after_secs = retry_after_secs
+        self._retry_after_secs = retry_after_secs
         self._error_details = errdetails.parse_error_details(details or [])
         self.kwargs = kwargs
 
@@ -113,13 +88,17 @@ class DatabricksError(IOError):
                     continue
                 self.details.append(ErrorDetail.from_dict(d))
 
-    def get_error_info(self) -> List[ErrorDetail]:
-        return self._get_details_by_type(errdetails._ERROR_INFO_TYPE)
+    @property
+    def retry_after_secs(self) -> Optional[int]:
+        warnings.warn(
+            "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version."
+        )
+        return self._retry_after_secs
 
-    def _get_details_by_type(self, error_type) -> List[ErrorDetail]:
+    def get_error_info(self) -> List[ErrorDetail]:
         if self.details is None:
             return []
-        return [detail for detail in self.details if detail.type == error_type]
+        return [detail for detail in self.details if detail.type == errdetails._ERROR_INFO_TYPE]
 
     def get_error_details(self) -> errdetails.ErrorDetails:
         return self._error_details
