@@ -1,5 +1,4 @@
 import re
-import warnings
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -76,7 +75,7 @@ class DatabricksError(IOError):
 
         super().__init__(message if message else error)
         self.error_code = error_code
-        self._retry_after_secs = retry_after_secs
+        self.retry_after_secs = retry_after_secs
         self._error_details = errdetails.parse_error_details(details or [])
         self.kwargs = kwargs
 
@@ -87,13 +86,6 @@ class DatabricksError(IOError):
                 if not isinstance(d, dict):
                     continue
                 self.details.append(ErrorDetail.from_dict(d))
-
-    @property
-    def retry_after_secs(self) -> Optional[int]:
-        warnings.warn(
-            "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version."
-        )
-        return self._retry_after_secs
 
     def get_error_info(self) -> List[ErrorDetail]:
         if self.details is None:
