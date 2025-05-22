@@ -64,7 +64,7 @@ class Duration:
         # Get the fractional part and convert to nanoseconds
         # This preserves more precision than using microsecond * 1000
         fractional = total_seconds - seconds
-        nanoseconds = int(fractional * Decimal('1000000000'))
+        nanoseconds = int(fractional * Decimal("1000000000"))
         return cls(seconds=seconds, nanoseconds=nanoseconds)
 
     def to_timedelta(self) -> timedelta:
@@ -150,9 +150,9 @@ class Duration:
             return f"{self.seconds}s"
 
         # Use Decimal for precise decimal arithmetic
-        total = Decimal(self.seconds) + (Decimal(self.nanoseconds) / Decimal('1000000000'))
+        total = Decimal(self.seconds) + (Decimal(self.nanoseconds) / Decimal("1000000000"))
         # Format with up to 9 decimal places, removing trailing zeros
-        return f"{total:.9f}".rstrip('0').rstrip('.') + 's'
+        return f"{total:.9f}".rstrip("0").rstrip(".") + "s"
 
 
 class Timestamp:
@@ -213,7 +213,7 @@ class Timestamp:
             dt = dt.replace(tzinfo=timezone.utc)
         # Convert to UTC
         utc_dt = dt.astimezone(timezone.utc)
-        
+
         # Get seconds since epoch using Decimal for precise calculation
         # datetime.timestamp() returns float, so we need to handle it carefully
         ts = Decimal(str(utc_dt.timestamp()))
@@ -221,8 +221,8 @@ class Timestamp:
         # Get the fractional part and convert to nanoseconds
         # This preserves more precision than using microsecond * 1000
         fractional = ts - seconds
-        nanos = int(fractional * Decimal('1000000000'))
-        
+        nanos = int(fractional * Decimal("1000000000"))
+
         return cls(seconds=seconds, nanos=nanos)
 
     def to_datetime(self) -> datetime:
@@ -267,7 +267,7 @@ class Timestamp:
 
         # Build the datetime string with a standardized offset format
         dt_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
-        
+
         # Handle fractional seconds, truncating to microseconds for fromisoformat
         nanos = 0
         if frac:
@@ -343,6 +343,6 @@ class Timestamp:
         Returns:
             A new Timestamp instance with the specified fields replaced
         """
-        seconds = kwargs.get('seconds', self.seconds)
-        nanos = kwargs.get('nanos', self.nanos)
+        seconds = kwargs.get("seconds", self.seconds)
+        nanos = kwargs.get("nanos", self.nanos)
         return Timestamp(seconds=seconds, nanos=nanos)

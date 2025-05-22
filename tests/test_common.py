@@ -141,7 +141,15 @@ def test_timestamp_from_datetime(dt, expected_seconds, expected_nanos):
     ],
 )
 def test_timestamp_to_datetime(
-    seconds, nanos, expected_year, expected_month, expected_day, expected_hour, expected_minute, expected_second, expected_microsecond
+    seconds,
+    nanos,
+    expected_year,
+    expected_month,
+    expected_day,
+    expected_hour,
+    expected_minute,
+    expected_second,
+    expected_microsecond,
 ):
     """Test conversion from Timestamp to datetime."""
     ts = Timestamp(seconds=seconds, nanos=nanos)
@@ -225,7 +233,7 @@ def test_timestamp_equality(ts1, ts2, expected_equal):
 )
 def test_duration_float_precision(seconds, nanoseconds, expected_microseconds):
     """Test Duration float precision handling with various nanosecond values.
-    
+
     Note: timedelta only supports microsecond precision (6 decimal places),
     so nanosecond values are rounded to the nearest microsecond.
     """
@@ -254,7 +262,7 @@ def test_duration_float_precision(seconds, nanoseconds, expected_microseconds):
 )
 def test_duration_parse_precision(duration_str, expected_microseconds):
     """Test Duration parsing precision with various decimal values.
-    
+
     Note: timedelta only supports microsecond precision (6 decimal places),
     so nanosecond values are rounded to the nearest microsecond.
     """
