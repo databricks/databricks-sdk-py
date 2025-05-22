@@ -843,6 +843,66 @@ class CohereConfig:
 
 
 @dataclass
+class CreatePtEndpointRequest:
+    name: str
+    """The name of the serving endpoint. This field is required and must be unique across a Databricks
+    workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
+
+    config: PtEndpointCoreConfig
+    """The core config of the serving endpoint."""
+
+    ai_gateway: Optional[AiGatewayConfig] = None
+    """The AI Gateway configuration for the serving endpoint."""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy associated with the endpoint."""
+
+    tags: Optional[List[EndpointTag]] = None
+    """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreatePtEndpointRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.ai_gateway:
+            body["ai_gateway"] = self.ai_gateway.as_dict()
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePtEndpointRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai_gateway:
+            body["ai_gateway"] = self.ai_gateway
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.config:
+            body["config"] = self.config
+        if self.name is not None:
+            body["name"] = self.name
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePtEndpointRequest:
+        """Deserializes the CreatePtEndpointRequest from a dictionary."""
+        return cls(
+            ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
+            budget_policy_id=d.get("budget_policy_id", None),
+            config=_from_dict(d, "config", PtEndpointCoreConfig),
+            name=d.get("name", None),
+            tags=_repeated_dict(d, "tags", EndpointTag),
+        )
+
+
+@dataclass
 class CreateServingEndpoint:
     name: str
     """The name of the serving endpoint. This field is required and must be unique across a Databricks
@@ -2293,6 +2353,96 @@ class PayloadTable:
 
 
 @dataclass
+class PtEndpointCoreConfig:
+    served_entities: Optional[List[PtServedModel]] = None
+    """The list of served entities under the serving endpoint config."""
+
+    traffic_config: Optional[TrafficConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PtEndpointCoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.served_entities:
+            body["served_entities"] = [v.as_dict() for v in self.served_entities]
+        if self.traffic_config:
+            body["traffic_config"] = self.traffic_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PtEndpointCoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.served_entities:
+            body["served_entities"] = self.served_entities
+        if self.traffic_config:
+            body["traffic_config"] = self.traffic_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PtEndpointCoreConfig:
+        """Deserializes the PtEndpointCoreConfig from a dictionary."""
+        return cls(
+            served_entities=_repeated_dict(d, "served_entities", PtServedModel),
+            traffic_config=_from_dict(d, "traffic_config", TrafficConfig),
+        )
+
+
+@dataclass
+class PtServedModel:
+    entity_name: str
+    """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
+    a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
+    object, the full name of the object should be given in the form of
+    **catalog_name.schema_name.model_name**."""
+
+    provisioned_model_units: int
+    """The number of model units to be provisioned."""
+
+    entity_version: Optional[str] = None
+
+    name: Optional[str] = None
+    """The name of a served entity. It must be unique across an endpoint. A served entity name can
+    consist of alphanumeric characters, dashes, and underscores. If not specified for an external
+    model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
+    not specified for other entities, it defaults to entity_name-entity_version."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PtServedModel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_name is not None:
+            body["entity_name"] = self.entity_name
+        if self.entity_version is not None:
+            body["entity_version"] = self.entity_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PtServedModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_name is not None:
+            body["entity_name"] = self.entity_name
+        if self.entity_version is not None:
+            body["entity_version"] = self.entity_version
+        if self.name is not None:
+            body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PtServedModel:
+        """Deserializes the PtServedModel from a dictionary."""
+        return cls(
+            entity_name=d.get("entity_name", None),
+            entity_version=d.get("entity_version", None),
+            name=d.get("name", None),
+            provisioned_model_units=d.get("provisioned_model_units", None),
+        )
+
+
+@dataclass
 class PutAiGatewayRequest:
     fallback_config: Optional[FallbackConfig] = None
     """Configuration for traffic fallback which auto fallbacks to other served entities if the request
@@ -2867,6 +3017,9 @@ class ServedEntityInput:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
+    provisioned_model_units: Optional[int] = None
+    """The number of model units provisioned."""
+
     scale_to_zero_enabled: Optional[bool] = None
     """Whether the compute resources for the served entity should scale down to zero."""
 
@@ -2906,6 +3059,8 @@ class ServedEntityInput:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.workload_size is not None:
@@ -2933,6 +3088,8 @@ class ServedEntityInput:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.workload_size is not None:
@@ -2953,6 +3110,7 @@ class ServedEntityInput:
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
+            provisioned_model_units=d.get("provisioned_model_units", None),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             workload_size=d.get("workload_size", None),
             workload_type=_enum(d, "workload_type", ServingModelWorkloadType),
@@ -3006,6 +3164,9 @@ class ServedEntityOutput:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
+    provisioned_model_units: Optional[int] = None
+    """The number of model units provisioned."""
+
     scale_to_zero_enabled: Optional[bool] = None
     """Whether the compute resources for the served entity should scale down to zero."""
 
@@ -3053,6 +3214,8 @@ class ServedEntityOutput:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.state:
@@ -3088,6 +3251,8 @@ class ServedEntityOutput:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.state:
@@ -3113,6 +3278,7 @@ class ServedEntityOutput:
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
+            provisioned_model_units=d.get("provisioned_model_units", None),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             state=_from_dict(d, "state", ServedModelState),
             workload_size=d.get("workload_size", None),
@@ -3206,6 +3372,9 @@ class ServedModelInput:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
+    provisioned_model_units: Optional[int] = None
+    """The number of model units provisioned."""
+
     workload_size: Optional[str] = None
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
     concurrency that the compute autoscales between. A single unit of provisioned concurrency can
@@ -3240,6 +3409,8 @@ class ServedModelInput:
             body["model_version"] = self.model_version
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.workload_size is not None:
@@ -3265,6 +3436,8 @@ class ServedModelInput:
             body["model_version"] = self.model_version
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.workload_size is not None:
@@ -3284,6 +3457,7 @@ class ServedModelInput:
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),
+            provisioned_model_units=d.get("provisioned_model_units", None),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             workload_size=d.get("workload_size", None),
             workload_type=_enum(d, "workload_type", ServedModelInputWorkloadType),
@@ -3325,6 +3499,9 @@ class ServedModelOutput:
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
     not specified for other entities, it defaults to entity_name-entity_version."""
 
+    provisioned_model_units: Optional[int] = None
+    """The number of model units provisioned."""
+
     scale_to_zero_enabled: Optional[bool] = None
     """Whether the compute resources for the served entity should scale down to zero."""
 
@@ -3364,6 +3541,8 @@ class ServedModelOutput:
             body["model_version"] = self.model_version
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.state:
@@ -3391,6 +3570,8 @@ class ServedModelOutput:
             body["model_version"] = self.model_version
         if self.name is not None:
             body["name"] = self.name
+        if self.provisioned_model_units is not None:
+            body["provisioned_model_units"] = self.provisioned_model_units
         if self.scale_to_zero_enabled is not None:
             body["scale_to_zero_enabled"] = self.scale_to_zero_enabled
         if self.state:
@@ -3412,6 +3593,7 @@ class ServedModelOutput:
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),
+            provisioned_model_units=d.get("provisioned_model_units", None),
             scale_to_zero_enabled=d.get("scale_to_zero_enabled", None),
             state=_from_dict(d, "state", ServedModelState),
             workload_size=d.get("workload_size", None),
@@ -4095,6 +4277,37 @@ class TrafficConfig:
 
 
 @dataclass
+class UpdateProvisionedThroughputEndpointConfigRequest:
+    config: PtEndpointCoreConfig
+
+    name: Optional[str] = None
+    """The name of the pt endpoint to update. This field is required."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateProvisionedThroughputEndpointConfigRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config:
+            body["config"] = self.config.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateProvisionedThroughputEndpointConfigRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config:
+            body["config"] = self.config
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProvisionedThroughputEndpointConfigRequest:
+        """Deserializes the UpdateProvisionedThroughputEndpointConfigRequest from a dictionary."""
+        return cls(config=_from_dict(d, "config", PtEndpointCoreConfig), name=d.get("name", None))
+
+
+@dataclass
 class V1ResponseChoiceElement:
     finish_reason: Optional[str] = None
     """The finish reason returned by the endpoint."""
@@ -4308,6 +4521,70 @@ class ServingEndpointsAPI:
             rate_limits=rate_limits,
             route_optimized=route_optimized,
             tags=tags,
+        ).result(timeout=timeout)
+
+    def create_provisioned_throughput_endpoint(
+        self,
+        name: str,
+        config: PtEndpointCoreConfig,
+        *,
+        ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
+        tags: Optional[List[EndpointTag]] = None,
+    ) -> Wait[ServingEndpointDetailed]:
+        """Create a new PT serving endpoint.
+
+        :param name: str
+          The name of the serving endpoint. This field is required and must be unique across a Databricks
+          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+        :param config: :class:`PtEndpointCoreConfig`
+          The core config of the serving endpoint.
+        :param ai_gateway: :class:`AiGatewayConfig` (optional)
+          The AI Gateway configuration for the serving endpoint.
+        :param budget_policy_id: str (optional)
+          The budget policy associated with the endpoint.
+        :param tags: List[:class:`EndpointTag`] (optional)
+          Tags to be attached to the serving endpoint and automatically propagated to billing logs.
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
+        body = {}
+        if ai_gateway is not None:
+            body["ai_gateway"] = ai_gateway.as_dict()
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        if config is not None:
+            body["config"] = config.as_dict()
+        if name is not None:
+            body["name"] = name
+        if tags is not None:
+            body["tags"] = [v.as_dict() for v in tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        op_response = self._api.do("POST", "/api/2.0/serving-endpoints/pt", body=body, headers=headers)
+        return Wait(
+            self.wait_get_serving_endpoint_not_updating,
+            response=ServingEndpointDetailed.from_dict(op_response),
+            name=op_response["name"],
+        )
+
+    def create_provisioned_throughput_endpoint_and_wait(
+        self,
+        name: str,
+        config: PtEndpointCoreConfig,
+        *,
+        ai_gateway: Optional[AiGatewayConfig] = None,
+        budget_policy_id: Optional[str] = None,
+        tags: Optional[List[EndpointTag]] = None,
+        timeout=timedelta(minutes=20),
+    ) -> ServingEndpointDetailed:
+        return self.create_provisioned_throughput_endpoint(
+            ai_gateway=ai_gateway, budget_policy_id=budget_policy_id, config=config, name=name, tags=tags
         ).result(timeout=timeout)
 
     def delete(self, name: str):
@@ -4847,6 +5124,43 @@ class ServingEndpointsAPI:
             "PATCH", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
         )
         return ServingEndpointPermissions.from_dict(res)
+
+    def update_provisioned_throughput_endpoint_config(
+        self, name: str, config: PtEndpointCoreConfig
+    ) -> Wait[ServingEndpointDetailed]:
+        """Update config of a PT serving endpoint.
+
+        Updates any combination of the pt endpoint's served entities, the compute configuration of those
+        served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
+        updated instantly
+
+        :param name: str
+          The name of the pt endpoint to update. This field is required.
+        :param config: :class:`PtEndpointCoreConfig`
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        """
+        body = {}
+        if config is not None:
+            body["config"] = config.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/pt/{name}/config", body=body, headers=headers)
+        return Wait(
+            self.wait_get_serving_endpoint_not_updating,
+            response=ServingEndpointDetailed.from_dict(op_response),
+            name=op_response["name"],
+        )
+
+    def update_provisioned_throughput_endpoint_config_and_wait(
+        self, name: str, config: PtEndpointCoreConfig, timeout=timedelta(minutes=20)
+    ) -> ServingEndpointDetailed:
+        return self.update_provisioned_throughput_endpoint_config(config=config, name=name).result(timeout=timeout)
 
 
 class ServingEndpointsDataPlaneAPI:

@@ -1556,30 +1556,6 @@ class CreateAlertRequestAlert:
 
 
 @dataclass
-class CreateAlertV2Request:
-    alert: Optional[AlertV2] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAlertV2Request into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateAlertV2Request into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateAlertV2Request:
-        """Deserializes the CreateAlertV2Request from a dictionary."""
-        return cls(alert=_from_dict(d, "alert", AlertV2))
-
-
-@dataclass
 class CreateQueryRequest:
     auto_resolve_display_name: Optional[bool] = None
     """If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
@@ -7423,6 +7399,10 @@ class UpdateAlertRequest:
 
     alert: Optional[UpdateAlertRequestAlert] = None
 
+    auto_resolve_display_name: Optional[bool] = None
+    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+    alert's display name conflicts with an existing alert's display name."""
+
     id: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -7430,6 +7410,8 @@ class UpdateAlertRequest:
         body = {}
         if self.alert:
             body["alert"] = self.alert.as_dict()
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.id is not None:
             body["id"] = self.id
         if self.update_mask is not None:
@@ -7441,6 +7423,8 @@ class UpdateAlertRequest:
         body = {}
         if self.alert:
             body["alert"] = self.alert
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.id is not None:
             body["id"] = self.id
         if self.update_mask is not None:
@@ -7452,6 +7436,7 @@ class UpdateAlertRequest:
         """Deserializes the UpdateAlertRequest from a dictionary."""
         return cls(
             alert=_from_dict(d, "alert", UpdateAlertRequestAlert),
+            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
             id=d.get("id", None),
             update_mask=d.get("update_mask", None),
         )
@@ -7547,52 +7532,6 @@ class UpdateAlertRequestAlert:
 
 
 @dataclass
-class UpdateAlertV2Request:
-    update_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    alert: Optional[AlertV2] = None
-
-    id: Optional[str] = None
-    """UUID identifying the alert."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAlertV2Request into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAlertV2Request into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAlertV2Request:
-        """Deserializes the UpdateAlertV2Request from a dictionary."""
-        return cls(alert=_from_dict(d, "alert", AlertV2), id=d.get("id", None), update_mask=d.get("update_mask", None))
-
-
-@dataclass
 class UpdateQueryRequest:
     update_mask: str
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
@@ -7605,6 +7544,10 @@ class UpdateQueryRequest:
     fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
     API changes in the future."""
 
+    auto_resolve_display_name: Optional[bool] = None
+    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+    alert's display name conflicts with an existing alert's display name."""
+
     id: Optional[str] = None
 
     query: Optional[UpdateQueryRequestQuery] = None
@@ -7612,6 +7555,8 @@ class UpdateQueryRequest:
     def as_dict(self) -> dict:
         """Serializes the UpdateQueryRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.id is not None:
             body["id"] = self.id
         if self.query:
@@ -7623,6 +7568,8 @@ class UpdateQueryRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateQueryRequest into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = self.auto_resolve_display_name
         if self.id is not None:
             body["id"] = self.id
         if self.query:
@@ -7635,6 +7582,7 @@ class UpdateQueryRequest:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateQueryRequest:
         """Deserializes the UpdateQueryRequest from a dictionary."""
         return cls(
+            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
             id=d.get("id", None),
             query=_from_dict(d, "query", UpdateQueryRequestQuery),
             update_mask=d.get("update_mask", None),
@@ -8595,7 +8543,14 @@ class AlertsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None) -> Alert:
+    def update(
+        self,
+        id: str,
+        update_mask: str,
+        *,
+        alert: Optional[UpdateAlertRequestAlert] = None,
+        auto_resolve_display_name: Optional[bool] = None,
+    ) -> Alert:
         """Update an alert.
 
         Updates an alert.
@@ -8612,12 +8567,17 @@ class AlertsAPI:
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
 
         :returns: :class:`Alert`
         """
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
+        if auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = auto_resolve_display_name
         if update_mask is not None:
             body["update_mask"] = update_mask
         headers = {
@@ -8805,18 +8765,16 @@ class AlertsV2API:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_alert(self, *, alert: Optional[AlertV2] = None) -> AlertV2:
+    def create_alert(self, alert: AlertV2) -> AlertV2:
         """Create an alert.
 
         Create Alert
 
-        :param alert: :class:`AlertV2` (optional)
+        :param alert: :class:`AlertV2`
 
         :returns: :class:`AlertV2`
         """
-        body = {}
-        if alert is not None:
-            body["alert"] = alert.as_dict()
+        body = alert.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -8889,13 +8847,14 @@ class AlertsV2API:
 
         self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
 
-    def update_alert(self, id: str, update_mask: str, *, alert: Optional[AlertV2] = None) -> AlertV2:
+    def update_alert(self, id: str, alert: AlertV2, update_mask: str) -> AlertV2:
         """Update an alert.
 
         Update alert
 
         :param id: str
           UUID identifying the alert.
+        :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -8906,21 +8865,19 @@ class AlertsV2API:
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
-        :param alert: :class:`AlertV2` (optional)
 
         :returns: :class:`AlertV2`
         """
-        body = {}
-        if alert is not None:
-            body["alert"] = alert.as_dict()
+        body = alert.as_dict()
+        query = {}
         if update_mask is not None:
-            body["update_mask"] = update_mask
+            query["update_mask"] = update_mask
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PATCH", f"/api/2.0/alerts/{id}", body=body, headers=headers)
+        res = self._api.do("PATCH", f"/api/2.0/alerts/{id}", query=query, body=body, headers=headers)
         return AlertV2.from_dict(res)
 
 
@@ -9535,7 +9492,14 @@ class QueriesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, id: str, update_mask: str, *, query: Optional[UpdateQueryRequestQuery] = None) -> Query:
+    def update(
+        self,
+        id: str,
+        update_mask: str,
+        *,
+        auto_resolve_display_name: Optional[bool] = None,
+        query: Optional[UpdateQueryRequestQuery] = None,
+    ) -> Query:
         """Update a query.
 
         Updates a query.
@@ -9551,11 +9515,16 @@ class QueriesAPI:
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
         :param query: :class:`UpdateQueryRequestQuery` (optional)
 
         :returns: :class:`Query`
         """
         body = {}
+        if auto_resolve_display_name is not None:
+            body["auto_resolve_display_name"] = auto_resolve_display_name
         if query is not None:
             body["query"] = query.as_dict()
         if update_mask is not None:

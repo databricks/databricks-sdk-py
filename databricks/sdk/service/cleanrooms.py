@@ -338,6 +338,15 @@ class CleanRoomAssetNotebook:
     """Base 64 representation of the notebook contents. This is the same format as returned by
     :method:workspace/export with the format of **HTML**."""
 
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """top-level status derived from all reviews"""
+
+    reviews: Optional[List[CleanRoomNotebookReview]] = None
+    """All existing approvals or rejections"""
+
+    runner_collaborator_aliases: Optional[List[str]] = None
+    """collaborators that can run the notebook"""
+
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -345,6 +354,12 @@ class CleanRoomAssetNotebook:
             body["etag"] = self.etag
         if self.notebook_content is not None:
             body["notebook_content"] = self.notebook_content
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.reviews:
+            body["reviews"] = [v.as_dict() for v in self.reviews]
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = [v for v in self.runner_collaborator_aliases]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -354,12 +369,24 @@ class CleanRoomAssetNotebook:
             body["etag"] = self.etag
         if self.notebook_content is not None:
             body["notebook_content"] = self.notebook_content
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.reviews:
+            body["reviews"] = self.reviews
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = self.runner_collaborator_aliases
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
-        return cls(etag=d.get("etag", None), notebook_content=d.get("notebook_content", None))
+        return cls(
+            etag=d.get("etag", None),
+            notebook_content=d.get("notebook_content", None),
+            review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
+            reviews=_repeated_dict(d, "reviews", CleanRoomNotebookReview),
+            runner_collaborator_aliases=d.get("runner_collaborator_aliases", None),
+        )
 
 
 class CleanRoomAssetStatusEnum(Enum):
@@ -586,6 +613,78 @@ class CleanRoomCollaborator:
 
 
 @dataclass
+class CleanRoomNotebookReview:
+    comment: Optional[str] = None
+    """review comment"""
+
+    created_at_millis: Optional[int] = None
+    """timestamp of when the review was submitted"""
+
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """review outcome"""
+
+    review_sub_reason: Optional[CleanRoomNotebookReviewNotebookReviewSubReason] = None
+    """specified when the review was not explicitly made by a user"""
+
+    reviewer_collaborator_alias: Optional[str] = None
+    """collaborator alias of the reviewer"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason.value
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomNotebookReview:
+        """Deserializes the CleanRoomNotebookReview from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            created_at_millis=d.get("created_at_millis", None),
+            review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
+            review_sub_reason=_enum(d, "review_sub_reason", CleanRoomNotebookReviewNotebookReviewSubReason),
+            reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
+        )
+
+
+class CleanRoomNotebookReviewNotebookReviewState(Enum):
+
+    APPROVED = "APPROVED"
+    PENDING = "PENDING"
+    REJECTED = "REJECTED"
+
+
+class CleanRoomNotebookReviewNotebookReviewSubReason(Enum):
+
+    AUTO_APPROVED = "AUTO_APPROVED"
+    BACKFILLED = "BACKFILLED"
+
+
+@dataclass
 class CleanRoomNotebookTaskRun:
     """Stores information about a single task run."""
 
@@ -594,11 +693,17 @@ class CleanRoomNotebookTaskRun:
     LIST API. if the task was run within the same workspace the API is being called. If the task run
     was in a different workspace under the same metastore, only the workspace_id is included."""
 
+    notebook_etag: Optional[str] = None
+    """Etag of the notebook executed in this task run, used to identify the notebook version."""
+
     notebook_job_run_state: Optional[jobs.CleanRoomTaskRunState] = None
     """State of the task run."""
 
     notebook_name: Optional[str] = None
     """Asset name of the notebook executed in this task run."""
+
+    notebook_updated_at: Optional[int] = None
+    """The timestamp of when the notebook was last updated."""
 
     output_schema_expiration_time: Optional[int] = None
     """Expiration time of the output schema of the task run (if any), in epoch milliseconds."""
@@ -617,10 +722,14 @@ class CleanRoomNotebookTaskRun:
         body = {}
         if self.collaborator_job_run_info:
             body["collaborator_job_run_info"] = self.collaborator_job_run_info.as_dict()
+        if self.notebook_etag is not None:
+            body["notebook_etag"] = self.notebook_etag
         if self.notebook_job_run_state:
             body["notebook_job_run_state"] = self.notebook_job_run_state.as_dict()
         if self.notebook_name is not None:
             body["notebook_name"] = self.notebook_name
+        if self.notebook_updated_at is not None:
+            body["notebook_updated_at"] = self.notebook_updated_at
         if self.output_schema_expiration_time is not None:
             body["output_schema_expiration_time"] = self.output_schema_expiration_time
         if self.output_schema_name is not None:
@@ -636,10 +745,14 @@ class CleanRoomNotebookTaskRun:
         body = {}
         if self.collaborator_job_run_info:
             body["collaborator_job_run_info"] = self.collaborator_job_run_info
+        if self.notebook_etag is not None:
+            body["notebook_etag"] = self.notebook_etag
         if self.notebook_job_run_state:
             body["notebook_job_run_state"] = self.notebook_job_run_state
         if self.notebook_name is not None:
             body["notebook_name"] = self.notebook_name
+        if self.notebook_updated_at is not None:
+            body["notebook_updated_at"] = self.notebook_updated_at
         if self.output_schema_expiration_time is not None:
             body["output_schema_expiration_time"] = self.output_schema_expiration_time
         if self.output_schema_name is not None:
@@ -655,8 +768,10 @@ class CleanRoomNotebookTaskRun:
         """Deserializes the CleanRoomNotebookTaskRun from a dictionary."""
         return cls(
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
+            notebook_etag=d.get("notebook_etag", None),
             notebook_job_run_state=_from_dict(d, "notebook_job_run_state", jobs.CleanRoomTaskRunState),
             notebook_name=d.get("notebook_name", None),
+            notebook_updated_at=d.get("notebook_updated_at", None),
             output_schema_expiration_time=d.get("output_schema_expiration_time", None),
             output_schema_name=d.get("output_schema_name", None),
             run_duration=d.get("run_duration", None),

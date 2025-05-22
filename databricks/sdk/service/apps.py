@@ -655,6 +655,8 @@ class AppResource:
 
     sql_warehouse: Optional[AppResourceSqlWarehouse] = None
 
+    uc_securable: Optional[AppResourceUcSecurable] = None
+
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -670,6 +672,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint.as_dict()
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse.as_dict()
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -687,6 +691,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable
         return body
 
     @classmethod
@@ -699,6 +705,7 @@ class AppResource:
             secret=_from_dict(d, "secret", AppResourceSecret),
             serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
+            uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
 
 
@@ -878,6 +885,57 @@ class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
     CAN_MANAGE = "CAN_MANAGE"
     CAN_USE = "CAN_USE"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppResourceUcSecurable:
+    securable_full_name: str
+
+    securable_type: AppResourceUcSecurableUcSecurableType
+
+    permission: AppResourceUcSecurableUcSecurablePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceUcSecurable:
+        """Deserializes the AppResourceUcSecurable from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", AppResourceUcSecurableUcSecurablePermission),
+            securable_full_name=d.get("securable_full_name", None),
+            securable_type=_enum(d, "securable_type", AppResourceUcSecurableUcSecurableType),
+        )
+
+
+class AppResourceUcSecurableUcSecurablePermission(Enum):
+
+    READ_VOLUME = "READ_VOLUME"
+    WRITE_VOLUME = "WRITE_VOLUME"
+
+
+class AppResourceUcSecurableUcSecurableType(Enum):
+
+    VOLUME = "VOLUME"
 
 
 class ApplicationState(Enum):

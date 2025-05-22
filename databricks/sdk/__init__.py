@@ -23,6 +23,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountStorageCredentialsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI, CredentialsAPI,
+                                            DatabaseInstancesAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
@@ -89,12 +90,15 @@ from databricks.sdk.service.settings import (
     DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableExportNotebookAPI,
     EnableIpAccessListsAPI, EnableNotebookTableClipboardAPI,
     EnableResultsDownloadingAPI, EnhancedSecurityMonitoringAPI,
-    EsmEnablementAccountAPI, IpAccessListsAPI, NetworkConnectivityAPI,
-    NotificationDestinationsAPI, PersonalComputeAPI,
+    EsmEnablementAccountAPI, IpAccessListsAPI,
+    LlmProxyPartnerPoweredAccountAPI, LlmProxyPartnerPoweredEnforceAPI,
+    LlmProxyPartnerPoweredWorkspaceAPI, NetworkConnectivityAPI,
+    NetworkPoliciesAPI, NotificationDestinationsAPI, PersonalComputeAPI,
     RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI,
-    WorkspaceConfAPI)
+    WorkspaceConfAPI, WorkspaceNetworkConfigurationAPI)
 from databricks.sdk.service.sharing import (ProvidersAPI,
                                             RecipientActivationAPI,
+                                            RecipientFederationPoliciesAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         AlertsV2API, DashboardsAPI,
@@ -233,6 +237,7 @@ class WorkspaceClient:
         self._dashboard_widgets = service.sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = service.sql.DashboardsAPI(self._api_client)
         self._data_sources = service.sql.DataSourcesAPI(self._api_client)
+        self._database_instances = service.catalog.DatabaseInstancesAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = service.sql.DbsqlPermissionsAPI(self._api_client)
         self._experiments = service.ml.ExperimentsAPI(self._api_client)
@@ -282,6 +287,7 @@ class WorkspaceClient:
         self._query_visualizations = service.sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = service.sql.QueryVisualizationsLegacyAPI(self._api_client)
         self._recipient_activation = service.sharing.RecipientActivationAPI(self._api_client)
+        self._recipient_federation_policies = service.sharing.RecipientFederationPoliciesAPI(self._api_client)
         self._recipients = service.sharing.RecipientsAPI(self._api_client)
         self._redash_config = service.sql.RedashConfigAPI(self._api_client)
         self._registered_models = service.catalog.RegisteredModelsAPI(self._api_client)
@@ -458,6 +464,11 @@ class WorkspaceClient:
     def data_sources(self) -> service.sql.DataSourcesAPI:
         """This API is provided to assist you in making new query objects."""
         return self._data_sources
+
+    @property
+    def database_instances(self) -> service.catalog.DatabaseInstancesAPI:
+        """Database Instances provide access to a database via REST API or direct SQL."""
+        return self._database_instances
 
     @property
     def dbfs(self) -> DbfsExt:
@@ -683,6 +694,11 @@ class WorkspaceClient:
     def recipient_activation(self) -> service.sharing.RecipientActivationAPI:
         """The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`."""
         return self._recipient_activation
+
+    @property
+    def recipient_federation_policies(self) -> service.sharing.RecipientFederationPoliciesAPI:
+        """The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient object has the authentication type of `OIDC_RECIPIENT`, enabling data sharing from Databricks to non-Databricks recipients."""
+        return self._recipient_federation_policies
 
     @property
     def recipients(self) -> service.sharing.RecipientsAPI:
@@ -916,6 +932,7 @@ class AccountClient:
         self._metastore_assignments = service.catalog.AccountMetastoreAssignmentsAPI(self._api_client)
         self._metastores = service.catalog.AccountMetastoresAPI(self._api_client)
         self._network_connectivity = service.settings.NetworkConnectivityAPI(self._api_client)
+        self._network_policies = service.settings.NetworkPoliciesAPI(self._api_client)
         self._networks = service.provisioning.NetworksAPI(self._api_client)
         self._o_auth_published_apps = service.oauth2.OAuthPublishedAppsAPI(self._api_client)
         self._private_access = service.provisioning.PrivateAccessAPI(self._api_client)
@@ -930,6 +947,7 @@ class AccountClient:
         self._users = service.iam.AccountUsersAPI(self._api_client)
         self._vpc_endpoints = service.provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = service.iam.WorkspaceAssignmentAPI(self._api_client)
+        self._workspace_network_configuration = service.settings.WorkspaceNetworkConfigurationAPI(self._api_client)
         self._workspaces = service.provisioning.WorkspacesAPI(self._api_client)
         self._budgets = service.billing.BudgetsAPI(self._api_client)
 
@@ -1007,6 +1025,11 @@ class AccountClient:
         return self._network_connectivity
 
     @property
+    def network_policies(self) -> service.settings.NetworkPoliciesAPI:
+        """These APIs manage network policies for this account."""
+        return self._network_policies
+
+    @property
     def networks(self) -> service.provisioning.NetworksAPI:
         """These APIs manage network configurations for customer-managed VPCs (optional)."""
         return self._networks
@@ -1075,6 +1098,11 @@ class AccountClient:
     def workspace_assignment(self) -> service.iam.WorkspaceAssignmentAPI:
         """The Workspace Permission Assignment API allows you to manage workspace permissions for principals in your account."""
         return self._workspace_assignment
+
+    @property
+    def workspace_network_configuration(self) -> service.settings.WorkspaceNetworkConfigurationAPI:
+        """These APIs allow configuration of network settings for Databricks workspaces."""
+        return self._workspace_network_configuration
 
     @property
     def workspaces(self) -> service.provisioning.WorkspacesAPI:

@@ -588,6 +588,39 @@ class AwsIamRoleResponse:
 
 
 @dataclass
+class AwsSqsQueue:
+    managed_resource_id: Optional[str] = None
+    """Unique identifier included in the name of file events managed cloud resources."""
+
+    queue_url: Optional[str] = None
+    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}
+    REQUIRED for provided_sqs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.queue_url is not None:
+            body["queue_url"] = self.queue_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AwsSqsQueue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.queue_url is not None:
+            body["queue_url"] = self.queue_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AwsSqsQueue:
+        """Deserializes the AwsSqsQueue from a dictionary."""
+        return cls(managed_resource_id=d.get("managed_resource_id", None), queue_url=d.get("queue_url", None))
+
+
+@dataclass
 class AzureActiveDirectoryToken:
     """Azure Active Directory token, essentially the Oauth token for Azure Service Principal or Managed
     Identity. Read more at
@@ -758,6 +791,60 @@ class AzureManagedIdentityResponse:
 
 
 @dataclass
+class AzureQueueStorage:
+    managed_resource_id: Optional[str] = None
+    """Unique identifier included in the name of file events managed cloud resources."""
+
+    queue_url: Optional[str] = None
+    """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
+    REQUIRED for provided_aqs."""
+
+    resource_group: Optional[str] = None
+    """The resource group for the queue, event grid subscription, and external location storage
+    account. ONLY REQUIRED for locations with a service principal storage credential"""
+
+    subscription_id: Optional[str] = None
+    """OPTIONAL: The subscription id for the queue, event grid subscription, and external location
+    storage account. REQUIRED for locations with a service principal storage credential"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureQueueStorage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.queue_url is not None:
+            body["queue_url"] = self.queue_url
+        if self.resource_group is not None:
+            body["resource_group"] = self.resource_group
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AzureQueueStorage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.queue_url is not None:
+            body["queue_url"] = self.queue_url
+        if self.resource_group is not None:
+            body["resource_group"] = self.resource_group
+        if self.subscription_id is not None:
+            body["subscription_id"] = self.subscription_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AzureQueueStorage:
+        """Deserializes the AzureQueueStorage from a dictionary."""
+        return cls(
+            managed_resource_id=d.get("managed_resource_id", None),
+            queue_url=d.get("queue_url", None),
+            resource_group=d.get("resource_group", None),
+            subscription_id=d.get("subscription_id", None),
+        )
+
+
+@dataclass
 class AzureServicePrincipal:
     """The Azure service principal configuration. Only applicable when purpose is **STORAGE**."""
 
@@ -903,7 +990,8 @@ class CatalogInfo:
     provisioning_info: Optional[ProvisioningInfo] = None
     """Status of an asynchronously provisioned resource."""
 
-    securable_type: Optional[str] = None
+    securable_type: Optional[SecurableType] = None
+    """The type of Unity Catalog securable."""
 
     share_name: Optional[str] = None
     """The name of the share under the share provider."""
@@ -958,7 +1046,7 @@ class CatalogInfo:
         if self.provisioning_info:
             body["provisioning_info"] = self.provisioning_info.as_dict()
         if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
+            body["securable_type"] = self.securable_type.value
         if self.share_name is not None:
             body["share_name"] = self.share_name
         if self.storage_location is not None:
@@ -1045,7 +1133,7 @@ class CatalogInfo:
             properties=d.get("properties", None),
             provider_name=d.get("provider_name", None),
             provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo),
-            securable_type=d.get("securable_type", None),
+            securable_type=_enum(d, "securable_type", SecurableType),
             share_name=d.get("share_name", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
@@ -1055,7 +1143,6 @@ class CatalogInfo:
 
 
 class CatalogIsolationMode(Enum):
-    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     ISOLATED = "ISOLATED"
     OPEN = "OPEN"
@@ -1066,8 +1153,11 @@ class CatalogType(Enum):
 
     DELTASHARING_CATALOG = "DELTASHARING_CATALOG"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
+    INTERNAL_CATALOG = "INTERNAL_CATALOG"
     MANAGED_CATALOG = "MANAGED_CATALOG"
+    MANAGED_ONLINE_CATALOG = "MANAGED_ONLINE_CATALOG"
     SYSTEM_CATALOG = "SYSTEM_CATALOG"
+    UNKNOWN_CATALOG_TYPE = "UNKNOWN_CATALOG_TYPE"
 
 
 @dataclass
@@ -1772,11 +1862,11 @@ class CreateExternalLocation:
     credential_name: str
     """Name of the storage credential used with this location."""
 
-    access_point: Optional[str] = None
-    """The AWS access point to use when accesing s3 for this external location."""
-
     comment: Optional[str] = None
     """User-provided free-form text description."""
+
+    enable_file_events: Optional[bool] = None
+    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
 
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
@@ -1785,6 +1875,9 @@ class CreateExternalLocation:
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
     enabled, the access to the location falls back to cluster credentials if UC credentials are not
     sufficient."""
+
+    file_event_queue: Optional[FileEventQueue] = None
+    """[Create:OPT Update:OPT] File event queue settings."""
 
     read_only: Optional[bool] = None
     """Indicates whether the external location is read-only."""
@@ -1795,16 +1888,18 @@ class CreateExternalLocation:
     def as_dict(self) -> dict:
         """Serializes the CreateExternalLocation into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.comment is not None:
             body["comment"] = self.comment
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details.as_dict()
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.read_only is not None:
@@ -1818,16 +1913,18 @@ class CreateExternalLocation:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateExternalLocation into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.comment is not None:
             body["comment"] = self.comment
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue
         if self.name is not None:
             body["name"] = self.name
         if self.read_only is not None:
@@ -1842,11 +1939,12 @@ class CreateExternalLocation:
     def from_dict(cls, d: Dict[str, Any]) -> CreateExternalLocation:
         """Deserializes the CreateExternalLocation from a dictionary."""
         return cls(
-            access_point=d.get("access_point", None),
             comment=d.get("comment", None),
             credential_name=d.get("credential_name", None),
+            enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
+            file_event_queue=_from_dict(d, "file_event_queue", FileEventQueue),
             name=d.get("name", None),
             read_only=d.get("read_only", None),
             skip_validation=d.get("skip_validation", None),
@@ -2864,33 +2962,6 @@ class CredentialValidationResult:
         return cls(message=d.get("message", None), result=_enum(d, "result", ValidateCredentialResult))
 
 
-@dataclass
-class CurrentWorkspaceBindings:
-    """Currently assigned workspaces"""
-
-    workspaces: Optional[List[int]] = None
-    """A list of workspace IDs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CurrentWorkspaceBindings into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.workspaces:
-            body["workspaces"] = [v for v in self.workspaces]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CurrentWorkspaceBindings into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.workspaces:
-            body["workspaces"] = self.workspaces
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CurrentWorkspaceBindings:
-        """Deserializes the CurrentWorkspaceBindings from a dictionary."""
-        return cls(workspaces=d.get("workspaces", None))
-
-
 class DataSourceFormat(Enum):
     """Data source format"""
 
@@ -2917,6 +2988,183 @@ class DataSourceFormat(Enum):
     UNITY_CATALOG = "UNITY_CATALOG"
     VECTOR_INDEX_FORMAT = "VECTOR_INDEX_FORMAT"
     WORKDAY_RAAS_FORMAT = "WORKDAY_RAAS_FORMAT"
+
+
+@dataclass
+class DatabaseCatalog:
+    name: str
+    """The name of the catalog in UC."""
+
+    database_instance_name: str
+    """The name of the DatabaseInstance housing the database."""
+
+    database_name: str
+    """The name of the database (in a instance) associated with the catalog."""
+
+    create_database_if_not_exists: Optional[bool] = None
+
+    uid: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseCatalog into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_instance_name is not None:
+            body["database_instance_name"] = self.database_instance_name
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseCatalog into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_instance_name is not None:
+            body["database_instance_name"] = self.database_instance_name
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseCatalog:
+        """Deserializes the DatabaseCatalog from a dictionary."""
+        return cls(
+            create_database_if_not_exists=d.get("create_database_if_not_exists", None),
+            database_instance_name=d.get("database_instance_name", None),
+            database_name=d.get("database_name", None),
+            name=d.get("name", None),
+            uid=d.get("uid", None),
+        )
+
+
+@dataclass
+class DatabaseInstance:
+    """A DatabaseInstance represents a logical Postgres instance, comprised of both compute and
+    storage."""
+
+    name: str
+    """The name of the instance. This is the unique identifier for the instance."""
+
+    admin_password: Optional[str] = None
+    """Password for admin user to create. If not provided, no user will be created."""
+
+    admin_rolename: Optional[str] = None
+    """Name of the admin role for the instance. If not provided, defaults to 'databricks_admin'."""
+
+    capacity: Optional[str] = None
+    """The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4"."""
+
+    creation_time: Optional[str] = None
+    """The timestamp when the instance was created."""
+
+    creator: Optional[str] = None
+    """The email of the creator of the instance."""
+
+    pg_version: Optional[str] = None
+    """The version of Postgres running on the instance."""
+
+    read_write_dns: Optional[str] = None
+    """The DNS endpoint to connect to the instance for read+write access."""
+
+    state: Optional[DatabaseInstanceState] = None
+    """The current state of the instance."""
+
+    stopped: Optional[bool] = None
+    """Whether the instance is stopped."""
+
+    uid: Optional[str] = None
+    """An immutable UUID identifier for the instance."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseInstance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.admin_password is not None:
+            body["admin_password"] = self.admin_password
+        if self.admin_rolename is not None:
+            body["admin_rolename"] = self.admin_rolename
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.read_write_dns is not None:
+            body["read_write_dns"] = self.read_write_dns
+        if self.state is not None:
+            body["state"] = self.state.value
+        if self.stopped is not None:
+            body["stopped"] = self.stopped
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseInstance into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.admin_password is not None:
+            body["admin_password"] = self.admin_password
+        if self.admin_rolename is not None:
+            body["admin_rolename"] = self.admin_rolename
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.read_write_dns is not None:
+            body["read_write_dns"] = self.read_write_dns
+        if self.state is not None:
+            body["state"] = self.state
+        if self.stopped is not None:
+            body["stopped"] = self.stopped
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstance:
+        """Deserializes the DatabaseInstance from a dictionary."""
+        return cls(
+            admin_password=d.get("admin_password", None),
+            admin_rolename=d.get("admin_rolename", None),
+            capacity=d.get("capacity", None),
+            creation_time=d.get("creation_time", None),
+            creator=d.get("creator", None),
+            name=d.get("name", None),
+            pg_version=d.get("pg_version", None),
+            read_write_dns=d.get("read_write_dns", None),
+            state=_enum(d, "state", DatabaseInstanceState),
+            stopped=d.get("stopped", None),
+            uid=d.get("uid", None),
+        )
+
+
+class DatabaseInstanceState(Enum):
+
+    AVAILABLE = "AVAILABLE"
+    DELETING = "DELETING"
+    FAILING_OVER = "FAILING_OVER"
+    STARTING = "STARTING"
+    STOPPED = "STOPPED"
+    UPDATING = "UPDATING"
 
 
 @dataclass
@@ -3053,6 +3301,42 @@ class DeleteCredentialResponse:
 
 
 @dataclass
+class DeleteDatabaseCatalogResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDatabaseCatalogResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDatabaseCatalogResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseCatalogResponse:
+        """Deserializes the DeleteDatabaseCatalogResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteDatabaseInstanceResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDatabaseInstanceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDatabaseInstanceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseInstanceResponse:
+        """Deserializes the DeleteDatabaseInstanceResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
@@ -3067,6 +3351,24 @@ class DeleteResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteSyncedDatabaseTableResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteSyncedDatabaseTableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteSyncedDatabaseTableResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSyncedDatabaseTableResponse:
+        """Deserializes the DeleteSyncedDatabaseTableResponse from a dictionary."""
         return cls()
 
 
@@ -3336,11 +3638,53 @@ class EffectivePrivilegeAssignment:
 
 
 class EnablePredictiveOptimization(Enum):
-    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     DISABLE = "DISABLE"
     ENABLE = "ENABLE"
     INHERIT = "INHERIT"
+
+
+@dataclass
+class EnableRequest:
+    catalog_name: Optional[str] = None
+    """the catalog for which the system schema is to enabled in"""
+
+    metastore_id: Optional[str] = None
+    """The metastore ID under which the system schema lives."""
+
+    schema_name: Optional[str] = None
+    """Full name of the system schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnableRequest:
+        """Deserializes the EnableRequest from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            metastore_id=d.get("metastore_id", None),
+            schema_name=d.get("schema_name", None),
+        )
 
 
 @dataclass
@@ -3390,9 +3734,6 @@ class EncryptionDetails:
 
 @dataclass
 class ExternalLocationInfo:
-    access_point: Optional[str] = None
-    """The AWS access point to use when accesing s3 for this external location."""
-
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -3412,6 +3753,9 @@ class ExternalLocationInfo:
     credential_name: Optional[str] = None
     """Name of the storage credential used with this location."""
 
+    enable_file_events: Optional[bool] = None
+    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
+
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
@@ -3419,6 +3763,9 @@ class ExternalLocationInfo:
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
     enabled, the access to the location falls back to cluster credentials if UC credentials are not
     sufficient."""
+
+    file_event_queue: Optional[FileEventQueue] = None
+    """[Create:OPT Update:OPT] File event queue settings."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -3446,8 +3793,6 @@ class ExternalLocationInfo:
     def as_dict(self) -> dict:
         """Serializes the ExternalLocationInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
         if self.comment is not None:
@@ -3460,10 +3805,14 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details.as_dict()
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue.as_dict()
         if self.isolation_mode is not None:
             body["isolation_mode"] = self.isolation_mode.value
         if self.metastore_id is not None:
@@ -3485,8 +3834,6 @@ class ExternalLocationInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the ExternalLocationInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.browse_only is not None:
             body["browse_only"] = self.browse_only
         if self.comment is not None:
@@ -3499,10 +3846,14 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue
         if self.isolation_mode is not None:
             body["isolation_mode"] = self.isolation_mode
         if self.metastore_id is not None:
@@ -3525,15 +3876,16 @@ class ExternalLocationInfo:
     def from_dict(cls, d: Dict[str, Any]) -> ExternalLocationInfo:
         """Deserializes the ExternalLocationInfo from a dictionary."""
         return cls(
-            access_point=d.get("access_point", None),
             browse_only=d.get("browse_only", None),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_id=d.get("credential_id", None),
             credential_name=d.get("credential_name", None),
+            enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
+            file_event_queue=_from_dict(d, "file_event_queue", FileEventQueue),
             isolation_mode=_enum(d, "isolation_mode", IsolationMode),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -3583,6 +3935,67 @@ class FailedStatus:
         return cls(
             last_processed_commit_version=d.get("last_processed_commit_version", None),
             timestamp=d.get("timestamp", None),
+        )
+
+
+@dataclass
+class FileEventQueue:
+    managed_aqs: Optional[AzureQueueStorage] = None
+
+    managed_pubsub: Optional[GcpPubsub] = None
+
+    managed_sqs: Optional[AwsSqsQueue] = None
+
+    provided_aqs: Optional[AzureQueueStorage] = None
+
+    provided_pubsub: Optional[GcpPubsub] = None
+
+    provided_sqs: Optional[AwsSqsQueue] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the FileEventQueue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.managed_aqs:
+            body["managed_aqs"] = self.managed_aqs.as_dict()
+        if self.managed_pubsub:
+            body["managed_pubsub"] = self.managed_pubsub.as_dict()
+        if self.managed_sqs:
+            body["managed_sqs"] = self.managed_sqs.as_dict()
+        if self.provided_aqs:
+            body["provided_aqs"] = self.provided_aqs.as_dict()
+        if self.provided_pubsub:
+            body["provided_pubsub"] = self.provided_pubsub.as_dict()
+        if self.provided_sqs:
+            body["provided_sqs"] = self.provided_sqs.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileEventQueue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.managed_aqs:
+            body["managed_aqs"] = self.managed_aqs
+        if self.managed_pubsub:
+            body["managed_pubsub"] = self.managed_pubsub
+        if self.managed_sqs:
+            body["managed_sqs"] = self.managed_sqs
+        if self.provided_aqs:
+            body["provided_aqs"] = self.provided_aqs
+        if self.provided_pubsub:
+            body["provided_pubsub"] = self.provided_pubsub
+        if self.provided_sqs:
+            body["provided_sqs"] = self.provided_sqs
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileEventQueue:
+        """Deserializes the FileEventQueue from a dictionary."""
+        return cls(
+            managed_aqs=_from_dict(d, "managed_aqs", AzureQueueStorage),
+            managed_pubsub=_from_dict(d, "managed_pubsub", GcpPubsub),
+            managed_sqs=_from_dict(d, "managed_sqs", AwsSqsQueue),
+            provided_aqs=_from_dict(d, "provided_aqs", AzureQueueStorage),
+            provided_pubsub=_from_dict(d, "provided_pubsub", GcpPubsub),
+            provided_sqs=_from_dict(d, "provided_sqs", AwsSqsQueue),
         )
 
 
@@ -4137,6 +4550,41 @@ class GcpOauthToken:
 
 
 @dataclass
+class GcpPubsub:
+    managed_resource_id: Optional[str] = None
+    """Unique identifier included in the name of file events managed cloud resources."""
+
+    subscription_name: Optional[str] = None
+    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}
+    REQUIRED for provided_pubsub."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.subscription_name is not None:
+            body["subscription_name"] = self.subscription_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpPubsub into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.managed_resource_id is not None:
+            body["managed_resource_id"] = self.managed_resource_id
+        if self.subscription_name is not None:
+            body["subscription_name"] = self.subscription_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpPubsub:
+        """Deserializes the GcpPubsub from a dictionary."""
+        return cls(
+            managed_resource_id=d.get("managed_resource_id", None), subscription_name=d.get("subscription_name", None)
+        )
+
+
+@dataclass
 class GenerateTemporaryServiceCredentialAzureOptions:
     """The Azure cloud options to customize the requested temporary credential"""
 
@@ -4353,12 +4801,29 @@ class GenerateTemporaryTableCredentialResponse:
         )
 
 
-class GetBindingsSecurableType(Enum):
+@dataclass
+class GetCatalogWorkspaceBindingsResponse:
+    workspaces: Optional[List[int]] = None
+    """A list of workspace IDs"""
 
-    CATALOG = "catalog"
-    CREDENTIAL = "credential"
-    EXTERNAL_LOCATION = "external_location"
-    STORAGE_CREDENTIAL = "storage_credential"
+    def as_dict(self) -> dict:
+        """Serializes the GetCatalogWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspaces:
+            body["workspaces"] = [v for v in self.workspaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCatalogWorkspaceBindingsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspaces:
+            body["workspaces"] = self.workspaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetCatalogWorkspaceBindingsResponse:
+        """Deserializes the GetCatalogWorkspaceBindingsResponse from a dictionary."""
+        return cls(workspaces=d.get("workspaces", None))
 
 
 @dataclass
@@ -4571,6 +5036,41 @@ class GetQuotaResponse:
         return cls(quota_info=_from_dict(d, "quota_info", QuotaInfo))
 
 
+@dataclass
+class GetWorkspaceBindingsResponse:
+    bindings: Optional[List[WorkspaceBinding]] = None
+    """List of workspace bindings"""
+
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bindings:
+            body["bindings"] = [v.as_dict() for v in self.bindings]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetWorkspaceBindingsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bindings:
+            body["bindings"] = self.bindings
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceBindingsResponse:
+        """Deserializes the GetWorkspaceBindingsResponse from a dictionary."""
+        return cls(
+            bindings=_repeated_dict(d, "bindings", WorkspaceBinding), next_page_token=d.get("next_page_token", None)
+        )
+
+
 class IsolationMode(Enum):
 
     ISOLATION_MODE_ISOLATED = "ISOLATION_MODE_ISOLATED"
@@ -4727,6 +5227,41 @@ class ListCredentialsResponse:
         """Deserializes the ListCredentialsResponse from a dictionary."""
         return cls(
             credentials=_repeated_dict(d, "credentials", CredentialInfo), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListDatabaseInstancesResponse:
+    database_instances: Optional[List[DatabaseInstance]] = None
+    """List of instances."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of instances."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseInstancesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_instances:
+            body["database_instances"] = [v.as_dict() for v in self.database_instances]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseInstancesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_instances:
+            body["database_instances"] = self.database_instances
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseInstancesResponse:
+        """Deserializes the ListDatabaseInstancesResponse from a dictionary."""
+        return cls(
+            database_instances=_repeated_dict(d, "database_instances", DatabaseInstance),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -6235,6 +6770,43 @@ class NamedTableConstraint:
 
 
 @dataclass
+class NewPipelineSpec:
+    """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
+    fields of pipeline are still inferred by table def internally"""
+
+    storage_catalog: Optional[str] = None
+    """UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
+    needs to be a standard catalog where the user has permissions to create Delta tables."""
+
+    storage_schema: Optional[str] = None
+    """UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs
+    to be in the standard catalog where the user has permissions to create Delta tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.storage_catalog is not None:
+            body["storage_catalog"] = self.storage_catalog
+        if self.storage_schema is not None:
+            body["storage_schema"] = self.storage_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.storage_catalog is not None:
+            body["storage_catalog"] = self.storage_catalog
+        if self.storage_schema is not None:
+            body["storage_schema"] = self.storage_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
+        """Deserializes the NewPipelineSpec from a dictionary."""
+        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+
+
+@dataclass
 class OnlineTable:
     """Online Table information."""
 
@@ -6643,6 +7215,9 @@ class PrimaryKeyConstraint:
     child_columns: List[str]
     """Column names for this constraint."""
 
+    timeseries_columns: Optional[List[str]] = None
+    """Column names that represent a timeseries."""
+
     def as_dict(self) -> dict:
         """Serializes the PrimaryKeyConstraint into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6650,6 +7225,8 @@ class PrimaryKeyConstraint:
             body["child_columns"] = [v for v in self.child_columns]
         if self.name is not None:
             body["name"] = self.name
+        if self.timeseries_columns:
+            body["timeseries_columns"] = [v for v in self.timeseries_columns]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6659,12 +7236,18 @@ class PrimaryKeyConstraint:
             body["child_columns"] = self.child_columns
         if self.name is not None:
             body["name"] = self.name
+        if self.timeseries_columns:
+            body["timeseries_columns"] = self.timeseries_columns
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrimaryKeyConstraint:
         """Deserializes the PrimaryKeyConstraint from a dictionary."""
-        return cls(child_columns=d.get("child_columns", None), name=d.get("name", None))
+        return cls(
+            child_columns=d.get("child_columns", None),
+            name=d.get("name", None),
+            timeseries_columns=d.get("timeseries_columns", None),
+        )
 
 
 class Privilege(Enum):
@@ -6760,6 +7343,7 @@ class ProvisioningInfo:
     """Status of an asynchronously provisioned resource."""
 
     state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the resource."""
 
     def as_dict(self) -> dict:
         """Serializes the ProvisioningInfo into a dictionary suitable for use as a JSON request body."""
@@ -7188,7 +7772,6 @@ class SchemaInfo:
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
     """Full name of schema, in form of __catalog_name__.__schema_name__."""
@@ -7336,13 +7919,14 @@ SecurablePropertiesMap = Dict[str, str]
 
 
 class SecurableType(Enum):
-    """The type of Unity Catalog securable"""
+    """The type of Unity Catalog securable."""
 
     CATALOG = "CATALOG"
     CLEAN_ROOM = "CLEAN_ROOM"
     CONNECTION = "CONNECTION"
     CREDENTIAL = "CREDENTIAL"
     EXTERNAL_LOCATION = "EXTERNAL_LOCATION"
+    EXTERNAL_METADATA = "EXTERNAL_METADATA"
     FUNCTION = "FUNCTION"
     METASTORE = "METASTORE"
     PIPELINE = "PIPELINE"
@@ -7350,8 +7934,10 @@ class SecurableType(Enum):
     RECIPIENT = "RECIPIENT"
     SCHEMA = "SCHEMA"
     SHARE = "SHARE"
+    STAGING_TABLE = "STAGING_TABLE"
     STORAGE_CREDENTIAL = "STORAGE_CREDENTIAL"
     TABLE = "TABLE"
+    UNKNOWN_SECURABLE_TYPE = "UNKNOWN_SECURABLE_TYPE"
     VOLUME = "VOLUME"
 
 
@@ -7460,10 +8046,11 @@ class SseEncryptionDetails:
     """Server-Side Encryption properties for clients communicating with AWS s3."""
 
     algorithm: Optional[SseEncryptionDetailsAlgorithm] = None
-    """The type of key encryption to use (affects headers from s3 client)."""
+    """Sets the value of the 'x-amz-server-side-encryption' header in S3 request."""
 
     aws_kms_key_arn: Optional[str] = None
-    """When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE key to use."""
+    """Optional. The ARN of the SSE-KMS key used with the S3 location, when algorithm = "SSE-KMS". Sets
+    the value of the 'x-amz-server-side-encryption-aws-kms-key-id' header."""
 
     def as_dict(self) -> dict:
         """Serializes the SseEncryptionDetails into a dictionary suitable for use as a JSON request body."""
@@ -7493,7 +8080,6 @@ class SseEncryptionDetails:
 
 
 class SseEncryptionDetailsAlgorithm(Enum):
-    """The type of key encryption to use (affects headers from s3 client)."""
 
     AWS_SSE_KMS = "AWS_SSE_KMS"
     AWS_SSE_S3 = "AWS_SSE_S3"
@@ -7664,13 +8250,192 @@ class StorageCredentialInfo:
 
 
 @dataclass
+class SyncedDatabaseTable:
+    """Next field marker: 10"""
+
+    name: str
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    data_synchronization_status: Optional[OnlineTableStatus] = None
+    """Synced Table data synchronization status"""
+
+    database_instance_name: Optional[str] = None
+    """Name of the target database instance. This is required when creating synced database tables in
+    standard catalogs. This is optional when creating synced database tables in registered catalogs.
+    If this field is specified when creating synced database tables in registered catalogs, the
+    database instance name MUST match that of the registered catalog (or the request will be
+    rejected)."""
+
+    logical_database_name: Optional[str] = None
+    """Target Postgres database object (logical database) name for this table. This field is optional
+    in all scenarios.
+    
+    When creating a synced table in a registered Postgres catalog, the target Postgres database name
+    is inferred to be that of the registered catalog. If this field is specified in this scenario,
+    the Postgres database name MUST match that of the registered catalog (or the request will be
+    rejected).
+    
+    When creating a synced table in a standard catalog, the target database name is inferred to be
+    that of the standard catalog. In this scenario, specifying this field will allow targeting an
+    arbitrary postgres database."""
+
+    spec: Optional[SyncedTableSpec] = None
+    """Specification of a synced database table."""
+
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
+    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
+    may be in "PROVISIONING" as it runs asynchronously)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedDatabaseTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_synchronization_status:
+            body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
+        if self.database_instance_name is not None:
+            body["database_instance_name"] = self.database_instance_name
+        if self.logical_database_name is not None:
+            body["logical_database_name"] = self.logical_database_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedDatabaseTable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_synchronization_status:
+            body["data_synchronization_status"] = self.data_synchronization_status
+        if self.database_instance_name is not None:
+            body["database_instance_name"] = self.database_instance_name
+        if self.logical_database_name is not None:
+            body["logical_database_name"] = self.logical_database_name
+        if self.name is not None:
+            body["name"] = self.name
+        if self.spec:
+            body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedDatabaseTable:
+        """Deserializes the SyncedDatabaseTable from a dictionary."""
+        return cls(
+            data_synchronization_status=_from_dict(d, "data_synchronization_status", OnlineTableStatus),
+            database_instance_name=d.get("database_instance_name", None),
+            logical_database_name=d.get("logical_database_name", None),
+            name=d.get("name", None),
+            spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
+            unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
+        )
+
+
+class SyncedTableSchedulingPolicy(Enum):
+
+    CONTINUOUS = "CONTINUOUS"
+    SNAPSHOT = "SNAPSHOT"
+    TRIGGERED = "TRIGGERED"
+
+
+@dataclass
+class SyncedTableSpec:
+    """Specification of a synced database table."""
+
+    create_database_objects_if_missing: Optional[bool] = None
+    """If true, the synced table's logical database and schema resources in PG will be created if they
+    do not already exist."""
+
+    new_pipeline_spec: Optional[NewPipelineSpec] = None
+    """Spec of new pipeline. Should be empty if pipeline_id is set"""
+
+    pipeline_id: Optional[str] = None
+    """ID of the associated pipeline. Should be empty if new_pipeline_spec is set"""
+
+    primary_key_columns: Optional[List[str]] = None
+    """Primary Key columns to be used for data insert/update in the destination."""
+
+    scheduling_policy: Optional[SyncedTableSchedulingPolicy] = None
+    """Scheduling policy of the underlying pipeline."""
+
+    source_table_full_name: Optional[str] = None
+    """Three-part (catalog, schema, table) name of the source Delta table."""
+
+    timeseries_key: Optional[str] = None
+    """Time series key to deduplicate (tie-break) rows with the same primary key."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_database_objects_if_missing is not None:
+            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.new_pipeline_spec:
+            body["new_pipeline_spec"] = self.new_pipeline_spec.as_dict()
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.primary_key_columns:
+            body["primary_key_columns"] = [v for v in self.primary_key_columns]
+        if self.scheduling_policy is not None:
+            body["scheduling_policy"] = self.scheduling_policy.value
+        if self.source_table_full_name is not None:
+            body["source_table_full_name"] = self.source_table_full_name
+        if self.timeseries_key is not None:
+            body["timeseries_key"] = self.timeseries_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTableSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_database_objects_if_missing is not None:
+            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.new_pipeline_spec:
+            body["new_pipeline_spec"] = self.new_pipeline_spec
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        if self.primary_key_columns:
+            body["primary_key_columns"] = self.primary_key_columns
+        if self.scheduling_policy is not None:
+            body["scheduling_policy"] = self.scheduling_policy
+        if self.source_table_full_name is not None:
+            body["source_table_full_name"] = self.source_table_full_name
+        if self.timeseries_key is not None:
+            body["timeseries_key"] = self.timeseries_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpec:
+        """Deserializes the SyncedTableSpec from a dictionary."""
+        return cls(
+            create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
+            new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
+            pipeline_id=d.get("pipeline_id", None),
+            primary_key_columns=d.get("primary_key_columns", None),
+            scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSchedulingPolicy),
+            source_table_full_name=d.get("source_table_full_name", None),
+            timeseries_key=d.get("timeseries_key", None),
+        )
+
+
+@dataclass
 class SystemSchemaInfo:
-    schema: Optional[str] = None
+    schema: str
     """Name of the system schema."""
 
-    state: Optional[SystemSchemaInfoState] = None
+    state: str
     """The current state of enablement for the system schema. An empty string means the system schema
-    is available and ready for opt-in."""
+    is available and ready for opt-in. Possible values: AVAILABLE | ENABLE_INITIALIZED |
+    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE"""
 
     def as_dict(self) -> dict:
         """Serializes the SystemSchemaInfo into a dictionary suitable for use as a JSON request body."""
@@ -7678,7 +8443,7 @@ class SystemSchemaInfo:
         if self.schema is not None:
             body["schema"] = self.schema
         if self.state is not None:
-            body["state"] = self.state.value
+            body["state"] = self.state
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -7693,18 +8458,7 @@ class SystemSchemaInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SystemSchemaInfo:
         """Deserializes the SystemSchemaInfo from a dictionary."""
-        return cls(schema=d.get("schema", None), state=_enum(d, "state", SystemSchemaInfoState))
-
-
-class SystemSchemaInfoState(Enum):
-    """The current state of enablement for the system schema. An empty string means the system schema
-    is available and ready for opt-in."""
-
-    AVAILABLE = "AVAILABLE"
-    DISABLE_INITIALIZED = "DISABLE_INITIALIZED"
-    ENABLE_COMPLETED = "ENABLE_COMPLETED"
-    ENABLE_INITIALIZED = "ENABLE_INITIALIZED"
-    UNAVAILABLE = "UNAVAILABLE"
+        return cls(schema=d.get("schema", None), state=d.get("state", None))
 
 
 @dataclass
@@ -7843,7 +8597,6 @@ class TableInfo:
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
@@ -8340,14 +9093,6 @@ class UpdateAssignmentResponse:
         return cls()
 
 
-class UpdateBindingsSecurableType(Enum):
-
-    CATALOG = "catalog"
-    CREDENTIAL = "credential"
-    EXTERNAL_LOCATION = "external_location"
-    STORAGE_CREDENTIAL = "storage_credential"
-
-
 @dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
@@ -8429,6 +9174,31 @@ class UpdateCatalog:
             owner=d.get("owner", None),
             properties=d.get("properties", None),
         )
+
+
+@dataclass
+class UpdateCatalogWorkspaceBindingsResponse:
+    workspaces: Optional[List[int]] = None
+    """A list of workspace IDs"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCatalogWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.workspaces:
+            body["workspaces"] = [v for v in self.workspaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCatalogWorkspaceBindingsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspaces:
+            body["workspaces"] = self.workspaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalogWorkspaceBindingsResponse:
+        """Deserializes the UpdateCatalogWorkspaceBindingsResponse from a dictionary."""
+        return cls(workspaces=d.get("workspaces", None))
 
 
 @dataclass
@@ -8601,14 +9371,14 @@ class UpdateCredentialRequest:
 
 @dataclass
 class UpdateExternalLocation:
-    access_point: Optional[str] = None
-    """The AWS access point to use when accesing s3 for this external location."""
-
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
     credential_name: Optional[str] = None
     """Name of the storage credential used with this location."""
+
+    enable_file_events: Optional[bool] = None
+    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
 
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
@@ -8617,6 +9387,9 @@ class UpdateExternalLocation:
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
     enabled, the access to the location falls back to cluster credentials if UC credentials are not
     sufficient."""
+
+    file_event_queue: Optional[FileEventQueue] = None
+    """[Create:OPT Update:OPT] File event queue settings."""
 
     force: Optional[bool] = None
     """Force update even if changing url invalidates dependent external tables or mounts."""
@@ -8644,16 +9417,18 @@ class UpdateExternalLocation:
     def as_dict(self) -> dict:
         """Serializes the UpdateExternalLocation into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.comment is not None:
             body["comment"] = self.comment
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details.as_dict()
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue.as_dict()
         if self.force is not None:
             body["force"] = self.force
         if self.isolation_mode is not None:
@@ -8675,16 +9450,18 @@ class UpdateExternalLocation:
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateExternalLocation into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.access_point is not None:
-            body["access_point"] = self.access_point
         if self.comment is not None:
             body["comment"] = self.comment
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.enable_file_events is not None:
+            body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
             body["encryption_details"] = self.encryption_details
         if self.fallback is not None:
             body["fallback"] = self.fallback
+        if self.file_event_queue:
+            body["file_event_queue"] = self.file_event_queue
         if self.force is not None:
             body["force"] = self.force
         if self.isolation_mode is not None:
@@ -8707,11 +9484,12 @@ class UpdateExternalLocation:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExternalLocation:
         """Deserializes the UpdateExternalLocation from a dictionary."""
         return cls(
-            access_point=d.get("access_point", None),
             comment=d.get("comment", None),
             credential_name=d.get("credential_name", None),
+            enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
+            file_event_queue=_from_dict(d, "file_event_queue", FileEventQueue),
             force=d.get("force", None),
             isolation_mode=_enum(d, "isolation_mode", IsolationMode),
             name=d.get("name", None),
@@ -9175,7 +9953,6 @@ class UpdateSchema:
     """User-provided free-form text description."""
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
     """Full name of the schema."""
@@ -9457,16 +10234,17 @@ class UpdateWorkspaceBindings:
 @dataclass
 class UpdateWorkspaceBindingsParameters:
     add: Optional[List[WorkspaceBinding]] = None
-    """List of workspace bindings"""
+    """List of workspace bindings."""
 
     remove: Optional[List[WorkspaceBinding]] = None
-    """List of workspace bindings"""
+    """List of workspace bindings."""
 
     securable_name: Optional[str] = None
     """The name of the securable."""
 
-    securable_type: Optional[UpdateBindingsSecurableType] = None
-    """The type of the securable to bind to a workspace."""
+    securable_type: Optional[str] = None
+    """The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
+    external_location)."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceBindingsParameters into a dictionary suitable for use as a JSON request body."""
@@ -9478,7 +10256,7 @@ class UpdateWorkspaceBindingsParameters:
         if self.securable_name is not None:
             body["securable_name"] = self.securable_name
         if self.securable_type is not None:
-            body["securable_type"] = self.securable_type.value
+            body["securable_type"] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9501,8 +10279,35 @@ class UpdateWorkspaceBindingsParameters:
             add=_repeated_dict(d, "add", WorkspaceBinding),
             remove=_repeated_dict(d, "remove", WorkspaceBinding),
             securable_name=d.get("securable_name", None),
-            securable_type=_enum(d, "securable_type", UpdateBindingsSecurableType),
+            securable_type=d.get("securable_type", None),
         )
+
+
+@dataclass
+class UpdateWorkspaceBindingsResponse:
+    """A list of workspace IDs that are bound to the securable"""
+
+    bindings: Optional[List[WorkspaceBinding]] = None
+    """List of workspace bindings."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateWorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bindings:
+            body["bindings"] = [v.as_dict() for v in self.bindings]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateWorkspaceBindingsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bindings:
+            body["bindings"] = self.bindings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsResponse:
+        """Deserializes the UpdateWorkspaceBindingsResponse from a dictionary."""
+        return cls(bindings=_repeated_dict(d, "bindings", WorkspaceBinding))
 
 
 @dataclass
@@ -9990,9 +10795,11 @@ class VolumeType(Enum):
 
 @dataclass
 class WorkspaceBinding:
-    binding_type: Optional[WorkspaceBindingBindingType] = None
+    workspace_id: int
+    """Required"""
 
-    workspace_id: Optional[int] = None
+    binding_type: Optional[WorkspaceBindingBindingType] = None
+    """One of READ_WRITE/READ_ONLY. Default is READ_WRITE."""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceBinding into a dictionary suitable for use as a JSON request body."""
@@ -10021,46 +10828,11 @@ class WorkspaceBinding:
 
 
 class WorkspaceBindingBindingType(Enum):
+    """Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in
+    `credentials_common.proto`."""
 
     BINDING_TYPE_READ_ONLY = "BINDING_TYPE_READ_ONLY"
     BINDING_TYPE_READ_WRITE = "BINDING_TYPE_READ_WRITE"
-
-
-@dataclass
-class WorkspaceBindingsResponse:
-    """Currently assigned workspace bindings"""
-
-    bindings: Optional[List[WorkspaceBinding]] = None
-    """List of workspace bindings"""
-
-    next_page_token: Optional[str] = None
-    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
-    __page_token__ should be set to this value for the next request (for the next page of results)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.bindings:
-            body["bindings"] = [v.as_dict() for v in self.bindings]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceBindingsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.bindings:
-            body["bindings"] = self.bindings
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBindingsResponse:
-        """Deserializes the WorkspaceBindingsResponse from a dictionary."""
-        return cls(
-            bindings=_repeated_dict(d, "bindings", WorkspaceBinding), next_page_token=d.get("next_page_token", None)
-        )
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -10706,8 +11478,6 @@ class CatalogsAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/catalogs", query=query, headers=headers)
             if "catalogs" in json:
@@ -11316,6 +12086,241 @@ class CredentialsAPI:
         return ValidateCredentialResponse.from_dict(res)
 
 
+class DatabaseInstancesAPI:
+    """Database Instances provide access to a database via REST API or direct SQL."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_database_catalog(self, catalog: DatabaseCatalog) -> DatabaseCatalog:
+        """Create a Database Catalog.
+
+        :param catalog: :class:`DatabaseCatalog`
+
+        :returns: :class:`DatabaseCatalog`
+        """
+        body = catalog.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/database/catalogs", body=body, headers=headers)
+        return DatabaseCatalog.from_dict(res)
+
+    def create_database_instance(self, database_instance: DatabaseInstance) -> DatabaseInstance:
+        """Create a Database Instance.
+
+        :param database_instance: :class:`DatabaseInstance`
+          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
+
+        :returns: :class:`DatabaseInstance`
+        """
+        body = database_instance.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/database/instances", body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
+
+    def create_synced_database_table(self, synced_table: SyncedDatabaseTable) -> SyncedDatabaseTable:
+        """Create a Synced Database Table.
+
+        :param synced_table: :class:`SyncedDatabaseTable`
+          Next field marker: 10
+
+        :returns: :class:`SyncedDatabaseTable`
+        """
+        body = synced_table.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/database/synced_tables", body=body, headers=headers)
+        return SyncedDatabaseTable.from_dict(res)
+
+    def delete_database_catalog(self, name: str):
+        """Delete a Database Catalog.
+
+        :param name: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/database/catalogs/{name}", headers=headers)
+
+    def delete_database_instance(self, name: str, *, force: Optional[bool] = None, purge: Optional[bool] = None):
+        """Delete a Database Instance.
+
+        :param name: str
+          Name of the instance to delete.
+        :param force: bool (optional)
+          By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
+          flag is specified as true, all descendent instances will be deleted as well.
+        :param purge: bool (optional)
+          If false, the database instance is soft deleted. Soft deleted instances behave as if they are
+          deleted, and cannot be used for CRUD operations nor connected to. However they can be undeleted by
+          calling the undelete API for a limited time. If true, the database instance is hard deleted and
+          cannot be undeleted.
+
+
+        """
+
+        query = {}
+        if force is not None:
+            query["force"] = force
+        if purge is not None:
+            query["purge"] = purge
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/database/instances/{name}", query=query, headers=headers)
+
+    def delete_synced_database_table(self, name: str):
+        """Delete a Synced Database Table.
+
+        :param name: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
+
+    def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
+        """Find a Database Instance by uid.
+
+        :param uid: str (optional)
+          UID of the cluster to get.
+
+        :returns: :class:`DatabaseInstance`
+        """
+
+        query = {}
+        if uid is not None:
+            query["uid"] = uid
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/database/instances:findByUid", query=query, headers=headers)
+        return DatabaseInstance.from_dict(res)
+
+    def get_database_catalog(self, name: str) -> DatabaseCatalog:
+        """Get a Database Catalog.
+
+        :param name: str
+
+        :returns: :class:`DatabaseCatalog`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/catalogs/{name}", headers=headers)
+        return DatabaseCatalog.from_dict(res)
+
+    def get_database_instance(self, name: str) -> DatabaseInstance:
+        """Get a Database Instance.
+
+        :param name: str
+          Name of the cluster to get.
+
+        :returns: :class:`DatabaseInstance`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/instances/{name}", headers=headers)
+        return DatabaseInstance.from_dict(res)
+
+    def get_synced_database_table(self, name: str) -> SyncedDatabaseTable:
+        """Get a Synced Database Table.
+
+        :param name: str
+
+        :returns: :class:`SyncedDatabaseTable`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/synced_tables/{name}", headers=headers)
+        return SyncedDatabaseTable.from_dict(res)
+
+    def list_database_instances(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseInstance]:
+        """List Database Instances.
+
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Instances. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseInstance`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/database/instances", query=query, headers=headers)
+            if "database_instances" in json:
+                for v in json["database_instances"]:
+                    yield DatabaseInstance.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_database_instance(
+        self, name: str, database_instance: DatabaseInstance, update_mask: str
+    ) -> DatabaseInstance:
+        """Update a Database Instance.
+
+        :param name: str
+          The name of the instance. This is the unique identifier for the instance.
+        :param database_instance: :class:`DatabaseInstance`
+          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
+        :param update_mask: str
+          The list of fields to update.
+
+        :returns: :class:`DatabaseInstance`
+        """
+        body = database_instance.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
+
+
 class ExternalLocationsAPI:
     """An external location is an object that combines a cloud storage path with a storage credential that
     authorizes access to the cloud storage path. Each external location is subject to Unity Catalog
@@ -11337,10 +12342,11 @@ class ExternalLocationsAPI:
         url: str,
         credential_name: str,
         *,
-        access_point: Optional[str] = None,
         comment: Optional[str] = None,
+        enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
+        file_event_queue: Optional[FileEventQueue] = None,
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> ExternalLocationInfo:
@@ -11356,16 +12362,18 @@ class ExternalLocationsAPI:
           Path URL of the external location.
         :param credential_name: str
           Name of the storage credential used with this location.
-        :param access_point: str (optional)
-          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_file_events: bool (optional)
+          [Create:OPT Update:OPT] Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
+        :param file_event_queue: :class:`FileEventQueue` (optional)
+          [Create:OPT Update:OPT] File event queue settings.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -11374,16 +12382,18 @@ class ExternalLocationsAPI:
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
-        if access_point is not None:
-            body["access_point"] = access_point
         if comment is not None:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if enable_file_events is not None:
+            body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
             body["encryption_details"] = encryption_details.as_dict()
         if fallback is not None:
             body["fallback"] = fallback
+        if file_event_queue is not None:
+            body["file_event_queue"] = file_event_queue.as_dict()
         if name is not None:
             body["name"] = name
         if read_only is not None:
@@ -11486,8 +12496,6 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/external-locations", query=query, headers=headers)
             if "external_locations" in json:
@@ -11501,11 +12509,12 @@ class ExternalLocationsAPI:
         self,
         name: str,
         *,
-        access_point: Optional[str] = None,
         comment: Optional[str] = None,
         credential_name: Optional[str] = None,
+        enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
+        file_event_queue: Optional[FileEventQueue] = None,
         force: Optional[bool] = None,
         isolation_mode: Optional[IsolationMode] = None,
         new_name: Optional[str] = None,
@@ -11522,18 +12531,20 @@ class ExternalLocationsAPI:
 
         :param name: str
           Name of the external location.
-        :param access_point: str (optional)
-          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param enable_file_events: bool (optional)
+          [Create:OPT Update:OPT] Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
+        :param file_event_queue: :class:`FileEventQueue` (optional)
+          [Create:OPT Update:OPT] File event queue settings.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -11551,16 +12562,18 @@ class ExternalLocationsAPI:
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
-        if access_point is not None:
-            body["access_point"] = access_point
         if comment is not None:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if enable_file_events is not None:
+            body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
             body["encryption_details"] = encryption_details.as_dict()
         if fallback is not None:
             body["fallback"] = fallback
+        if file_event_queue is not None:
+            body["file_event_queue"] = file_event_queue.as_dict()
         if force is not None:
             body["force"] = force
         if isolation_mode is not None:
@@ -13429,7 +14442,6 @@ class SchemasAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
-          Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)
@@ -13808,7 +14820,7 @@ class SystemSchemasAPI:
             "DELETE", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
         )
 
-    def enable(self, metastore_id: str, schema_name: str):
+    def enable(self, metastore_id: str, schema_name: str, *, catalog_name: Optional[str] = None):
         """Enable a system schema.
 
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
@@ -13818,16 +14830,24 @@ class SystemSchemasAPI:
           The metastore ID under which the system schema lives.
         :param schema_name: str
           Full name of the system schema.
+        :param catalog_name: str (optional)
+          the catalog for which the system schema is to enabled in
 
 
         """
-
+        body = {}
+        if catalog_name is not None:
+            body["catalog_name"] = catalog_name
         headers = {
             "Accept": "application/json",
+            "Content-Type": "application/json",
         }
 
         self._api.do(
-            "PUT", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
+            "PUT",
+            f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}",
+            body=body,
+            headers=headers,
         )
 
     def list(
@@ -13860,8 +14880,6 @@ class SystemSchemasAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do(
                 "GET", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas", query=query, headers=headers
@@ -14539,12 +15557,12 @@ class WorkspaceBindingsAPI:
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - external_location"""
+    Securable types that support binding: - catalog - storage_credential - credential - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, name: str) -> CurrentWorkspaceBindings:
+    def get(self, name: str) -> GetCatalogWorkspaceBindingsResponse:
         """Get catalog workspace bindings.
 
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
@@ -14553,7 +15571,7 @@ class WorkspaceBindingsAPI:
         :param name: str
           The name of the catalog.
 
-        :returns: :class:`CurrentWorkspaceBindings`
+        :returns: :class:`GetCatalogWorkspaceBindingsResponse`
         """
 
         headers = {
@@ -14561,11 +15579,11 @@ class WorkspaceBindingsAPI:
         }
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", headers=headers)
-        return CurrentWorkspaceBindings.from_dict(res)
+        return GetCatalogWorkspaceBindingsResponse.from_dict(res)
 
     def get_bindings(
         self,
-        securable_type: GetBindingsSecurableType,
+        securable_type: str,
         securable_name: str,
         *,
         max_results: Optional[int] = None,
@@ -14576,8 +15594,9 @@ class WorkspaceBindingsAPI:
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
-        :param securable_type: :class:`GetBindingsSecurableType`
-          The type of the securable to bind to a workspace.
+        :param securable_type: str
+          The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
+          external_location).
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
@@ -14603,7 +15622,7 @@ class WorkspaceBindingsAPI:
         while True:
             json = self._api.do(
                 "GET",
-                f"/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}",
+                f"/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}",
                 query=query,
                 headers=headers,
             )
@@ -14620,7 +15639,7 @@ class WorkspaceBindingsAPI:
         *,
         assign_workspaces: Optional[List[int]] = None,
         unassign_workspaces: Optional[List[int]] = None,
-    ) -> CurrentWorkspaceBindings:
+    ) -> UpdateCatalogWorkspaceBindingsResponse:
         """Update catalog workspace bindings.
 
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
@@ -14633,7 +15652,7 @@ class WorkspaceBindingsAPI:
         :param unassign_workspaces: List[int] (optional)
           A list of workspace IDs.
 
-        :returns: :class:`CurrentWorkspaceBindings`
+        :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         """
         body = {}
         if assign_workspaces is not None:
@@ -14648,31 +15667,32 @@ class WorkspaceBindingsAPI:
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", body=body, headers=headers
         )
-        return CurrentWorkspaceBindings.from_dict(res)
+        return UpdateCatalogWorkspaceBindingsResponse.from_dict(res)
 
     def update_bindings(
         self,
-        securable_type: UpdateBindingsSecurableType,
+        securable_type: str,
         securable_name: str,
         *,
         add: Optional[List[WorkspaceBinding]] = None,
         remove: Optional[List[WorkspaceBinding]] = None,
-    ) -> WorkspaceBindingsResponse:
+    ) -> UpdateWorkspaceBindingsResponse:
         """Update securable workspace bindings.
 
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
-        :param securable_type: :class:`UpdateBindingsSecurableType`
-          The type of the securable to bind to a workspace.
+        :param securable_type: str
+          The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
+          external_location).
         :param securable_name: str
           The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings
+          List of workspace bindings.
         :param remove: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings
+          List of workspace bindings.
 
-        :returns: :class:`WorkspaceBindingsResponse`
+        :returns: :class:`UpdateWorkspaceBindingsResponse`
         """
         body = {}
         if add is not None:
@@ -14685,9 +15705,6 @@ class WorkspaceBindingsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}", body=body, headers=headers
         )
-        return WorkspaceBindingsResponse.from_dict(res)
+        return UpdateWorkspaceBindingsResponse.from_dict(res)
