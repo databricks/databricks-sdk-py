@@ -8,6 +8,7 @@ from __future__ import annotations
 import logging
 import re
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -56,14 +57,15 @@ class Duration:
         Returns:
             Duration: A new Duration instance with equivalent time span
 
-        Note:
-            The conversion may lose precision as timedelta only supports microsecond precision
         """
-        total_seconds = int(td.total_seconds())
-        # Get the microseconds part and convert to nanoseconds
-        microseconds = td.microseconds
-        nanoseconds = microseconds * 1000
-        return cls(seconds=total_seconds, nanoseconds=nanoseconds)
+        # Use Decimal for precise calculation of total seconds
+        total_seconds = Decimal(str(td.total_seconds()))
+        seconds = int(total_seconds)
+        # Get the fractional part and convert to nanoseconds
+        # This preserves more precision than using microsecond * 1000
+        fractional = total_seconds - seconds
+        nanoseconds = int(fractional * Decimal('1000000000'))
+        return cls(seconds=seconds, nanoseconds=nanoseconds)
 
     def to_timedelta(self) -> timedelta:
         """Convert Duration to datetime.timedelta.
@@ -72,9 +74,11 @@ class Duration:
             timedelta: A new timedelta instance with equivalent time span
 
         Note:
-            The conversion may lose precision as timedelta only supports microsecond precision
+            The conversion will lose nanosecond precision as timedelta
+            only supports microsecond precision. Nanoseconds beyond
+            microsecond precision will be truncated.
         """
-        # Convert nanoseconds to microseconds for timedelta
+        # Convert nanoseconds to microseconds, truncating any extra precision
         microseconds = self.nanoseconds // 1000
         return timedelta(seconds=self.seconds, microseconds=microseconds)
 
@@ -121,8 +125,8 @@ class Duration:
             raise ValueError("Duration string must end with 's'")
 
         try:
-            # Remove the 's' suffix and convert to float
-            value = float(duration_str[:-1])
+            # Remove the 's' suffix and convert to Decimal
+            value = Decimal(duration_str[:-1])
             # Split into integer and fractional parts
             seconds = int(value)
             # Convert fractional part to nanoseconds
@@ -145,10 +149,10 @@ class Duration:
         if self.nanoseconds == 0:
             return f"{self.seconds}s"
 
-        # Convert to decimal representation
-        total_seconds = self.seconds + (self.nanoseconds / 1_000_000_000)
+        # Use Decimal for precise decimal arithmetic
+        total = Decimal(self.seconds) + (Decimal(self.nanoseconds) / Decimal('1000000000'))
         # Format with up to 9 decimal places, removing trailing zeros
-        return f"{total_seconds:.9f}".rstrip("0").rstrip(".") + "s"
+        return f"{total:.9f}".rstrip('0').rstrip('.') + 's'
 
 
 class Timestamp:
@@ -200,16 +204,25 @@ class Timestamp:
             Timestamp: A new Timestamp instance
 
         Note:
-            The datetime is converted to UTC if it isn't already
+            The datetime is converted to UTC if it isn't already.
+            Note that datetime only supports microsecond precision, so nanoseconds
+            will be padded with zeros.
         """
         # If datetime is naive (no timezone), assume UTC
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         # Convert to UTC
         utc_dt = dt.astimezone(timezone.utc)
-        # Use timestamp() to get seconds since epoch
-        seconds = int(utc_dt.timestamp())
-        nanos = utc_dt.microsecond * 1000
+        
+        # Get seconds since epoch using Decimal for precise calculation
+        # datetime.timestamp() returns float, so we need to handle it carefully
+        ts = Decimal(str(utc_dt.timestamp()))
+        seconds = int(ts)
+        # Get the fractional part and convert to nanoseconds
+        # This preserves more precision than using microsecond * 1000
+        fractional = ts - seconds
+        nanos = int(fractional * Decimal('1000000000'))
+        
         return cls(seconds=seconds, nanos=nanos)
 
     def to_datetime(self) -> datetime:
@@ -219,11 +232,12 @@ class Timestamp:
             datetime: A new datetime instance in UTC timezone
 
         Note:
-            The returned datetime will have microsecond precision at most
+            The returned datetime will have microsecond precision at most.
+            Nanoseconds beyond microsecond precision will be truncated.
         """
         # Create base datetime from seconds
         dt = datetime.fromtimestamp(self.seconds, tz=timezone.utc)
-        # Add nanoseconds converted to microseconds
+        # Convert nanoseconds to microseconds, truncating any extra precision
         microseconds = self.nanos // 1000
         return dt.replace(microsecond=microseconds)
 
@@ -253,10 +267,16 @@ class Timestamp:
 
         # Build the datetime string with a standardized offset format
         dt_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
+        
+        # Handle fractional seconds, truncating to microseconds for fromisoformat
+        nanos = 0
         if frac:
-            # Pad or truncate to 9 digits for nanoseconds
+            # Pad to 9 digits for nanoseconds
             frac = (frac + "000000000")[:9]
-            dt_str += f".{frac}"
+            # Truncate to 6 digits (microseconds) for fromisoformat
+            dt_str += f".{frac[:6]}"
+            # Store full nanosecond precision separately
+            nanos = int(frac)
 
         # Handle timezone offset
         if offset == "Z":
@@ -267,8 +287,10 @@ class Timestamp:
         else:
             dt_str += offset
 
+        # Parse with microsecond precision
         dt = datetime.fromisoformat(dt_str)
-        return cls.from_datetime(dt)
+        # Create timestamp with full nanosecond precision
+        return cls.from_datetime(dt).replace(nanos=nanos)
 
     def to_string(self) -> str:
         """Convert Timestamp to RFC3339 formatted string.
@@ -311,3 +333,16 @@ class Timestamp:
         if not isinstance(other, Timestamp):
             return NotImplemented
         return self.seconds == other.seconds and self.nanos == other.nanos
+
+    def replace(self, **kwargs) -> "Timestamp":
+        """Create a new Timestamp with the given fields replaced.
+
+        Args:
+            **kwargs: Fields to replace (seconds, nanos)
+
+        Returns:
+            A new Timestamp instance with the specified fields replaced
+        """
+        seconds = kwargs.get('seconds', self.seconds)
+        nanos = kwargs.get('nanos', self.nanos)
+        return Timestamp(seconds=seconds, nanos=nanos)
