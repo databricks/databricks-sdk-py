@@ -14,14 +14,11 @@ from . import useragent
 from ._base_client import _fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
-from .environments import ALL_ENVS, AzureEnvironment, Cloud, DatabricksEnvironment, get_environment_for_hostname
-from .oauth import (
-    OidcEndpoints,
-    Token,
-    get_account_endpoints,
-    get_azure_entra_id_workspace_endpoints,
-    get_workspace_endpoints,
-)
+from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
+                           DatabricksEnvironment, get_environment_for_hostname)
+from .oauth import (OidcEndpoints, Token, get_account_endpoints,
+                    get_azure_entra_id_workspace_endpoints,
+                    get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
 

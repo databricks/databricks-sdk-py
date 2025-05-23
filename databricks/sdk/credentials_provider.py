@@ -151,7 +151,9 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import init_runtime_legacy_auth, init_runtime_native_auth, init_runtime_repl_auth
+    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+                                        init_runtime_native_auth,
+                                        init_runtime_repl_auth)
 
     for init in [
         init_runtime_native_auth,
@@ -319,6 +321,9 @@ def env_oidc(cfg) -> Optional[CredentialsProvider]:
 
     return _oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
 
+@credentials_strategy("file-oidc", ["host", "oidc_token_filepath"])
+def file_oidc(cfg) -> Optional[CredentialsProvider]:
+    return _oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
 
 # This function is a helper function to create an OIDC CredentialsProvider
 # that provides a Databricks token from an IdTokenSource.
@@ -1006,6 +1011,7 @@ class DefaultCredentials:
             metadata_service,
             oauth_service_principal,
             env_oidc,
+            file_oidc,
             github_oidc,
             azure_service_principal,
             github_oidc_azure,
