@@ -1,5 +1,4 @@
 import re
-import warnings
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -62,31 +61,6 @@ class DatabricksError(IOError):
         :param details:
         :param kwargs:
         """
-        # SCIM-specific parameters are deprecated.
-        if detail:
-            warnings.warn(
-                "The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-        if scimType:
-            warnings.warn(
-                "The 'scimType' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-        if status:
-            warnings.warn(
-                "The 'status' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-
-        # API 1.2-specific parameters are deprecated.
-        if error:
-            warnings.warn(
-                "The 'error' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
-
-        # Retry-after is deprecated.
-        if retry_after_secs:
-            warnings.warn(
-                "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version."
-            )
 
         if detail:
             # Handle SCIM error message details
@@ -114,12 +88,9 @@ class DatabricksError(IOError):
                 self.details.append(ErrorDetail.from_dict(d))
 
     def get_error_info(self) -> List[ErrorDetail]:
-        return self._get_details_by_type(errdetails._ERROR_INFO_TYPE)
-
-    def _get_details_by_type(self, error_type) -> List[ErrorDetail]:
         if self.details is None:
             return []
-        return [detail for detail in self.details if detail.type == error_type]
+        return [detail for detail in self.details if detail.type == errdetails._ERROR_INFO_TYPE]
 
     def get_error_details(self) -> errdetails.ErrorDetails:
         return self._error_details
