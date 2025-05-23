@@ -55,7 +55,7 @@ _env_id_test_cases = [
 
 
 @pytest.mark.parametrize("test_case", _env_id_test_cases)
-def test_env_id_token_source(test_case: EnvIdTestCase, monkeypatch):
+def test_env_id_token_source(test_case: EnvTestCase, monkeypatch):
     monkeypatch.setenv(test_case.env_name, test_case.env_value)
 
     source = oidc.EnvIdTokenSource(test_case.env_name)
