@@ -110,16 +110,19 @@ class FileIdTokenSource(IdTokenSource):
         """
         if not self.path:
             raise ValueError("Missing path")
+        
+        token = None
         try:
             with open(self.path, "r") as f:
                 token = f.read().strip()
-            if not token:
-                raise ValueError(f"File {self.path!r} is empty")
-            return IdToken(jwt=token)
         except FileNotFoundError:
             raise ValueError(f"File {self.path!r} does not exist")
         except Exception as e:
             raise ValueError(f"Error reading token file: {str(e)}")
+        
+        if not token:
+            raise ValueError(f"File {self.path!r} is empty")
+        return IdToken(jwt=token)
 
 
 class GitHubIdTokenSource(IdTokenSource):
