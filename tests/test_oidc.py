@@ -6,17 +6,6 @@ import pytest
 from databricks.sdk import oidc
 
 
-class MockIdTokenSource(oidc.IdTokenSource):
-    def __init__(self, id_token: str, exception: Exception = None):
-        self.id_token = id_token
-        self.exception = exception
-
-    def id_token(self) -> oidc.IdToken:
-        if self.exception:
-            raise self.exception
-        return oidc.IdToken(jwt=self.id_token)
-
-
 @dataclass
 class EnvTestCase:
     name: str
@@ -90,6 +79,8 @@ _file_id_test_cases = [
     ),
     FileTestCase(
         name="file_does_not_exist",
+        filepath="nonexistent-file",
+        wantException=ValueError,
     ),
     FileTestCase(
         name="file_exists",
@@ -106,9 +97,24 @@ def test_file_id_token_source(test_case: FileTestCase, tmp_path):
         token_file = tmp_path / test_case.file[0]
         token_file.write_text(test_case.file[1])
 
-    source = oidc.FileIdTokenSource(test_case.filepath)
+    fp = ""
+    if test_case.filepath:
+        fp = tmp_path / test_case.filepath
+
+    source = oidc.FileIdTokenSource(fp)
     if test_case.wantException:
         with pytest.raises(test_case.wantException):
             source.id_token()
     else:
         assert source.id_token() == test_case.want
+
+
+# class MockIdTokenSource(oidc.IdTokenSource):
+#     def __init__(self, id_token: str, exception: Exception = None):
+#         self.id_token = id_token
+#         self.exception = exception
+
+#     def id_token(self) -> oidc.IdToken:
+#         if self.exception:
+#             raise self.exception
+#         return oidc.IdToken(jwt=self.id_token)
