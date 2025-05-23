@@ -786,6 +786,98 @@ class CreateForecastingExperimentResponse:
 
 
 @dataclass
+class CreateLoggedModelRequest:
+    experiment_id: str
+    """The ID of the experiment that owns the model."""
+
+    model_type: Optional[str] = None
+    """The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``."""
+
+    name: Optional[str] = None
+    """The name of the model (optional). If not specified one will be generated."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Parameters attached to the model."""
+
+    source_run_id: Optional[str] = None
+    """The ID of the run that created the model."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """Tags attached to the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateLoggedModelRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateLoggedModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.params:
+            body["params"] = self.params
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateLoggedModelRequest:
+        """Deserializes the CreateLoggedModelRequest from a dictionary."""
+        return cls(
+            experiment_id=d.get("experiment_id", None),
+            model_type=d.get("model_type", None),
+            name=d.get("name", None),
+            params=_repeated_dict(d, "params", LoggedModelParameter),
+            source_run_id=d.get("source_run_id", None),
+            tags=_repeated_dict(d, "tags", LoggedModelTag),
+        )
+
+
+@dataclass
+class CreateLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The newly created logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateLoggedModelResponse:
+        """Deserializes the CreateLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
 class CreateModelRequest:
     name: str
     """Register models under this name"""
@@ -1401,6 +1493,42 @@ class DeleteExperimentResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteExperimentResponse:
         """Deserializes the DeleteExperimentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteLoggedModelResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteLoggedModelResponse:
+        """Deserializes the DeleteLoggedModelResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteLoggedModelTagResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelTagResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteLoggedModelTagResponse:
+        """Deserializes the DeleteLoggedModelTagResponse from a dictionary."""
         return cls()
 
 
@@ -2104,6 +2232,64 @@ class FileInfo:
 
 
 @dataclass
+class FinalizeLoggedModelRequest:
+    status: LoggedModelStatus
+    """Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that
+    something went wrong when logging the model weights / agent code)."""
+
+    model_id: Optional[str] = None
+    """The ID of the logged model to finalize."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FinalizeLoggedModelRequest:
+        """Deserializes the FinalizeLoggedModelRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), status=_enum(d, "status", LoggedModelStatus))
+
+
+@dataclass
+class FinalizeLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The updated logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FinalizeLoggedModelResponse:
+        """Deserializes the FinalizeLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
 class ForecastingExperiment:
     """Represents a forecasting experiment with its unique identifier, URL, and state."""
 
@@ -2338,6 +2524,31 @@ class GetLatestVersionsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsResponse:
         """Deserializes the GetLatestVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, "model_versions", ModelVersion))
+
+
+@dataclass
+class GetLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The retrieved logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
+        """Deserializes the GetLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
 
 
 @dataclass
@@ -2783,6 +2994,49 @@ class ListExperimentsResponse:
 
 
 @dataclass
+class ListLoggedModelArtifactsResponse:
+    files: Optional[List[FileInfo]] = None
+    """File location and metadata for artifacts."""
+
+    next_page_token: Optional[str] = None
+    """Token that can be used to retrieve the next page of artifact results"""
+
+    root_uri: Optional[str] = None
+    """Root artifact directory for the logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListLoggedModelArtifactsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.files:
+            body["files"] = [v.as_dict() for v in self.files]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.root_uri is not None:
+            body["root_uri"] = self.root_uri
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListLoggedModelArtifactsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.files:
+            body["files"] = self.files
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.root_uri is not None:
+            body["root_uri"] = self.root_uri
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListLoggedModelArtifactsResponse:
+        """Deserializes the ListLoggedModelArtifactsResponse from a dictionary."""
+        return cls(
+            files=_repeated_dict(d, "files", FileInfo),
+            next_page_token=d.get("next_page_token", None),
+            root_uri=d.get("root_uri", None),
+        )
+
+
+@dataclass
 class ListModelsResponse:
     next_page_token: Optional[str] = None
     """Pagination token to request next page of models for the same query."""
@@ -3009,6 +3263,56 @@ class LogInputsResponse:
 
 
 @dataclass
+class LogLoggedModelParamsRequest:
+    model_id: Optional[str] = None
+    """The ID of the logged model to log params for."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Parameters to attach to the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.params:
+            body["params"] = self.params
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogLoggedModelParamsRequest:
+        """Deserializes the LogLoggedModelParamsRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), params=_repeated_dict(d, "params", LoggedModelParameter))
+
+
+@dataclass
+class LogLoggedModelParamsRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogLoggedModelParamsRequestResponse:
+        """Deserializes the LogLoggedModelParamsRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogMetric:
     key: str
     """Name of the metric."""
@@ -3171,6 +3475,56 @@ class LogModelResponse:
 
 
 @dataclass
+class LogOutputsRequest:
+    run_id: str
+    """The ID of the Run from which to log outputs."""
+
+    models: Optional[List[ModelOutput]] = None
+    """The model outputs from the Run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LogOutputsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogOutputsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogOutputsRequest:
+        """Deserializes the LogOutputsRequest from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", ModelOutput), run_id=d.get("run_id", None))
+
+
+@dataclass
+class LogOutputsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the LogOutputsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogOutputsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogOutputsResponse:
+        """Deserializes the LogOutputsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogParam:
     key: str
     """Name of the param. Maximum size is 255 bytes."""
@@ -3238,6 +3592,270 @@ class LogParamResponse:
     def from_dict(cls, d: Dict[str, Any]) -> LogParamResponse:
         """Deserializes the LogParamResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class LoggedModel:
+    """A logged model message includes logged model attributes, tags, registration info, params, and
+    linked run metrics."""
+
+    data: Optional[LoggedModelData] = None
+    """The params and metrics attached to the logged model."""
+
+    info: Optional[LoggedModelInfo] = None
+    """The logged model attributes such as model ID, status, tags, etc."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data:
+            body["data"] = self.data.as_dict()
+        if self.info:
+            body["info"] = self.info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data:
+            body["data"] = self.data
+        if self.info:
+            body["info"] = self.info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModel:
+        """Deserializes the LoggedModel from a dictionary."""
+        return cls(data=_from_dict(d, "data", LoggedModelData), info=_from_dict(d, "info", LoggedModelInfo))
+
+
+@dataclass
+class LoggedModelData:
+    """A LoggedModelData message includes logged model params and linked metrics."""
+
+    metrics: Optional[List[Metric]] = None
+    """Performance metrics linked to the model."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Immutable string key-value pairs of the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = [v.as_dict() for v in self.metrics]
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.params:
+            body["params"] = self.params
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelData:
+        """Deserializes the LoggedModelData from a dictionary."""
+        return cls(
+            metrics=_repeated_dict(d, "metrics", Metric), params=_repeated_dict(d, "params", LoggedModelParameter)
+        )
+
+
+@dataclass
+class LoggedModelInfo:
+    """A LoggedModelInfo includes logged model attributes, tags, and registration info."""
+
+    artifact_uri: Optional[str] = None
+    """The URI of the directory where model artifacts are stored."""
+
+    creation_timestamp_ms: Optional[int] = None
+    """The timestamp when the model was created in milliseconds since the UNIX epoch."""
+
+    creator_id: Optional[int] = None
+    """The ID of the user or principal that created the model."""
+
+    experiment_id: Optional[str] = None
+    """The ID of the experiment that owns the model."""
+
+    last_updated_timestamp_ms: Optional[int] = None
+    """The timestamp when the model was last updated in milliseconds since the UNIX epoch."""
+
+    model_id: Optional[str] = None
+    """The unique identifier for the logged model."""
+
+    model_type: Optional[str] = None
+    """The type of model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``."""
+
+    name: Optional[str] = None
+    """The name of the model."""
+
+    source_run_id: Optional[str] = None
+    """The ID of the run that created the model."""
+
+    status: Optional[LoggedModelStatus] = None
+    """The status of whether or not the model is ready for use."""
+
+    status_message: Optional[str] = None
+    """Details on the current model status."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """Mutable string key-value pairs set on the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.artifact_uri is not None:
+            body["artifact_uri"] = self.artifact_uri
+        if self.creation_timestamp_ms is not None:
+            body["creation_timestamp_ms"] = self.creation_timestamp_ms
+        if self.creator_id is not None:
+            body["creator_id"] = self.creator_id
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.last_updated_timestamp_ms is not None:
+            body["last_updated_timestamp_ms"] = self.last_updated_timestamp_ms
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.status_message is not None:
+            body["status_message"] = self.status_message
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.artifact_uri is not None:
+            body["artifact_uri"] = self.artifact_uri
+        if self.creation_timestamp_ms is not None:
+            body["creation_timestamp_ms"] = self.creation_timestamp_ms
+        if self.creator_id is not None:
+            body["creator_id"] = self.creator_id
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.last_updated_timestamp_ms is not None:
+            body["last_updated_timestamp_ms"] = self.last_updated_timestamp_ms
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.status is not None:
+            body["status"] = self.status
+        if self.status_message is not None:
+            body["status_message"] = self.status_message
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelInfo:
+        """Deserializes the LoggedModelInfo from a dictionary."""
+        return cls(
+            artifact_uri=d.get("artifact_uri", None),
+            creation_timestamp_ms=d.get("creation_timestamp_ms", None),
+            creator_id=d.get("creator_id", None),
+            experiment_id=d.get("experiment_id", None),
+            last_updated_timestamp_ms=d.get("last_updated_timestamp_ms", None),
+            model_id=d.get("model_id", None),
+            model_type=d.get("model_type", None),
+            name=d.get("name", None),
+            source_run_id=d.get("source_run_id", None),
+            status=_enum(d, "status", LoggedModelStatus),
+            status_message=d.get("status_message", None),
+            tags=_repeated_dict(d, "tags", LoggedModelTag),
+        )
+
+
+@dataclass
+class LoggedModelParameter:
+    """Parameter associated with a LoggedModel."""
+
+    key: Optional[str] = None
+    """The key identifying this param."""
+
+    value: Optional[str] = None
+    """The value of this param."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelParameter:
+        """Deserializes the LoggedModelParameter from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+class LoggedModelStatus(Enum):
+    """A LoggedModelStatus enum value represents the status of a logged model."""
+
+    LOGGED_MODEL_PENDING = "LOGGED_MODEL_PENDING"
+    LOGGED_MODEL_READY = "LOGGED_MODEL_READY"
+    LOGGED_MODEL_UPLOAD_FAILED = "LOGGED_MODEL_UPLOAD_FAILED"
+
+
+@dataclass
+class LoggedModelTag:
+    """Tag for a LoggedModel."""
+
+    key: Optional[str] = None
+    """The tag key."""
+
+    value: Optional[str] = None
+    """The tag value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
+        """Deserializes the LoggedModelTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -3521,6 +4139,40 @@ class ModelInput:
     def from_dict(cls, d: Dict[str, Any]) -> ModelInput:
         """Deserializes the ModelInput from a dictionary."""
         return cls(model_id=d.get("model_id", None))
+
+
+@dataclass
+class ModelOutput:
+    """Represents a LoggedModel output of a Run."""
+
+    model_id: str
+    """The unique identifier of the model."""
+
+    step: int
+    """The step at which the model was produced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.step is not None:
+            body["step"] = self.step
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.step is not None:
+            body["step"] = self.step
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelOutput:
+        """Deserializes the ModelOutput from a dictionary."""
+        return cls(model_id=d.get("model_id", None), step=d.get("step", None))
 
 
 @dataclass
@@ -5006,6 +5658,199 @@ class SearchExperimentsResponse:
 
 
 @dataclass
+class SearchLoggedModelsDataset:
+    dataset_name: str
+    """The name of the dataset."""
+
+    dataset_digest: Optional[str] = None
+    """The digest of the dataset."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsDataset into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsDataset into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsDataset:
+        """Deserializes the SearchLoggedModelsDataset from a dictionary."""
+        return cls(dataset_digest=d.get("dataset_digest", None), dataset_name=d.get("dataset_name", None))
+
+
+@dataclass
+class SearchLoggedModelsOrderBy:
+    field_name: str
+    """The name of the field to order by, e.g. "metrics.accuracy"."""
+
+    ascending: Optional[bool] = None
+    """Whether the search results order is ascending or not."""
+
+    dataset_digest: Optional[str] = None
+    """If ``field_name`` refers to a metric, this field specifies the digest of the dataset associated
+    with the metric. Only metrics associated with the specified dataset name and digest will be
+    considered for ordering. This field may only be set if ``dataset_name`` is also set."""
+
+    dataset_name: Optional[str] = None
+    """If ``field_name`` refers to a metric, this field specifies the name of the dataset associated
+    with the metric. Only metrics associated with the specified dataset name will be considered for
+    ordering. This field may only be set if ``field_name`` refers to a metric."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsOrderBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.ascending is not None:
+            body["ascending"] = self.ascending
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsOrderBy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ascending is not None:
+            body["ascending"] = self.ascending
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsOrderBy:
+        """Deserializes the SearchLoggedModelsOrderBy from a dictionary."""
+        return cls(
+            ascending=d.get("ascending", None),
+            dataset_digest=d.get("dataset_digest", None),
+            dataset_name=d.get("dataset_name", None),
+            field_name=d.get("field_name", None),
+        )
+
+
+@dataclass
+class SearchLoggedModelsRequest:
+    datasets: Optional[List[SearchLoggedModelsDataset]] = None
+    """List of datasets on which to apply the metrics filter clauses. For example, a filter with
+    `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all
+    logged models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching
+    the criteria are considered. If no datasets are specified, then metrics across all datasets are
+    considered in the filter."""
+
+    experiment_ids: Optional[List[str]] = None
+    """The IDs of the experiments in which to search for logged models."""
+
+    filter: Optional[str] = None
+    """A filter expression over logged model info and data that allows returning a subset of logged
+    models. The syntax is a subset of SQL that supports AND'ing together binary operations.
+    
+    Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``."""
+
+    max_results: Optional[int] = None
+    """The maximum number of Logged Models to return. The maximum limit is 50."""
+
+    order_by: Optional[List[SearchLoggedModelsOrderBy]] = None
+    """The list of columns for ordering the results, with additional fields for sorting criteria."""
+
+    page_token: Optional[str] = None
+    """The token indicating the page of logged models to fetch."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.experiment_ids:
+            body["experiment_ids"] = [v for v in self.experiment_ids]
+        if self.filter is not None:
+            body["filter"] = self.filter
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.order_by:
+            body["order_by"] = [v.as_dict() for v in self.order_by]
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = self.datasets
+        if self.experiment_ids:
+            body["experiment_ids"] = self.experiment_ids
+        if self.filter is not None:
+            body["filter"] = self.filter
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.order_by:
+            body["order_by"] = self.order_by
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsRequest:
+        """Deserializes the SearchLoggedModelsRequest from a dictionary."""
+        return cls(
+            datasets=_repeated_dict(d, "datasets", SearchLoggedModelsDataset),
+            experiment_ids=d.get("experiment_ids", None),
+            filter=d.get("filter", None),
+            max_results=d.get("max_results", None),
+            order_by=_repeated_dict(d, "order_by", SearchLoggedModelsOrderBy),
+            page_token=d.get("page_token", None),
+        )
+
+
+@dataclass
+class SearchLoggedModelsResponse:
+    models: Optional[List[LoggedModel]] = None
+    """Logged models that match the search criteria."""
+
+    next_page_token: Optional[str] = None
+    """The token that can be used to retrieve the next page of logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsResponse:
+        """Deserializes the SearchLoggedModelsResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
 class SearchModelVersionsResponse:
     model_versions: Optional[List[ModelVersion]] = None
     """Models that match the search criteria"""
@@ -5241,6 +6086,56 @@ class SetExperimentTagResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTagResponse:
         """Deserializes the SetExperimentTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class SetLoggedModelTagsRequest:
+    model_id: Optional[str] = None
+    """The ID of the logged model to set the tags on."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """The tags to set on the logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetLoggedModelTagsRequest:
+        """Deserializes the SetLoggedModelTagsRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), tags=_repeated_dict(d, "tags", LoggedModelTag))
+
+
+@dataclass
+class SetLoggedModelTagsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetLoggedModelTagsResponse:
+        """Deserializes the SetLoggedModelTagsResponse from a dictionary."""
         return cls()
 
 
@@ -6208,6 +7103,54 @@ class ExperimentsAPI:
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
+    def create_logged_model(
+        self,
+        experiment_id: str,
+        *,
+        model_type: Optional[str] = None,
+        name: Optional[str] = None,
+        params: Optional[List[LoggedModelParameter]] = None,
+        source_run_id: Optional[str] = None,
+        tags: Optional[List[LoggedModelTag]] = None,
+    ) -> CreateLoggedModelResponse:
+        """Create a logged model.
+
+        :param experiment_id: str
+          The ID of the experiment that owns the model.
+        :param model_type: str (optional)
+          The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+        :param name: str (optional)
+          The name of the model (optional). If not specified one will be generated.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters attached to the model.
+        :param source_run_id: str (optional)
+          The ID of the run that created the model.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          Tags attached to the model.
+
+        :returns: :class:`CreateLoggedModelResponse`
+        """
+        body = {}
+        if experiment_id is not None:
+            body["experiment_id"] = experiment_id
+        if model_type is not None:
+            body["model_type"] = model_type
+        if name is not None:
+            body["name"] = name
+        if params is not None:
+            body["params"] = [v.as_dict() for v in params]
+        if source_run_id is not None:
+            body["source_run_id"] = source_run_id
+        if tags is not None:
+            body["tags"] = [v.as_dict() for v in tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/mlflow/logged-models", body=body, headers=headers)
+        return CreateLoggedModelResponse.from_dict(res)
+
     def create_run(
         self,
         *,
@@ -6276,6 +7219,38 @@ class ExperimentsAPI:
         }
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
+
+    def delete_logged_model(self, model_id: str):
+        """Delete a logged model.
+
+        :param model_id: str
+          The ID of the logged model to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
+
+    def delete_logged_model_tag(self, model_id: str, tag_key: str):
+        """Delete a tag on a logged model.
+
+        :param model_id: str
+          The ID of the logged model to delete the tag from.
+        :param tag_key: str
+          The tag key.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
 
     def delete_run(self, run_id: str):
         """Delete a run.
@@ -6356,6 +7331,28 @@ class ExperimentsAPI:
         }
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
+
+    def finalize_logged_model(self, model_id: str, status: LoggedModelStatus) -> FinalizeLoggedModelResponse:
+        """Finalize a logged model.
+
+        :param model_id: str
+          The ID of the logged model to finalize.
+        :param status: :class:`LoggedModelStatus`
+          Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
+          went wrong when logging the model weights / agent code).
+
+        :returns: :class:`FinalizeLoggedModelResponse`
+        """
+        body = {}
+        if status is not None:
+            body["status"] = status.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}", body=body, headers=headers)
+        return FinalizeLoggedModelResponse.from_dict(res)
 
     def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
         """Get an experiment by name.
@@ -6489,6 +7486,22 @@ class ExperimentsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def get_logged_model(self, model_id: str) -> GetLoggedModelResponse:
+        """Get a logged model.
+
+        :param model_id: str
+          The ID of the logged model to retrieve.
+
+        :returns: :class:`GetLoggedModelResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
+        return GetLoggedModelResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Get experiment permission levels.
@@ -6653,6 +7666,41 @@ class ExperimentsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_logged_model_artifacts(
+        self, model_id: str, *, artifact_directory_path: Optional[str] = None, page_token: Optional[str] = None
+    ) -> ListLoggedModelArtifactsResponse:
+        """List artifacts for a logged model.
+
+        List artifacts for a logged model. Takes an optional ``artifact_directory_path`` prefix which if
+        specified, the response contains only artifacts with the specified prefix.
+
+        :param model_id: str
+          The ID of the logged model for which to list the artifacts.
+        :param artifact_directory_path: str (optional)
+          Filter artifacts matching this path (a relative path from the root artifact directory).
+        :param page_token: str (optional)
+          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
+          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
+          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
+          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
+
+        :returns: :class:`ListLoggedModelArtifactsResponse`
+        """
+
+        query = {}
+        if artifact_directory_path is not None:
+            query["artifact_directory_path"] = artifact_directory_path
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/mlflow/logged-models/{model_id}/artifacts/directories", query=query, headers=headers
+        )
+        return ListLoggedModelArtifactsResponse.from_dict(res)
+
     def log_batch(
         self,
         *,
@@ -6766,6 +7814,30 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
+    def log_logged_model_params(self, model_id: str, *, params: Optional[List[LoggedModelParameter]] = None):
+        """Log params for a logged model.
+
+        Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
+        include hyperparameters used for ML model training. A param can be logged only once for a logged
+        model, and attempting to overwrite an existing param with a different value will result in an error
+
+        :param model_id: str
+          The ID of the logged model to log params for.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters to attach to the model.
+
+
+        """
+        body = {}
+        if params is not None:
+            body["params"] = [v.as_dict() for v in params]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("POST", f"/api/2.0/mlflow/logged-models/{model_id}/params", body=body, headers=headers)
+
     def log_metric(
         self,
         key: str,
@@ -6858,6 +7930,32 @@ class ExperimentsAPI:
         }
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
+
+    def log_outputs(self, run_id: str, *, models: Optional[List[ModelOutput]] = None):
+        """Log outputs from a run.
+
+        **NOTE**: Experimental: This API may change or be removed in a future release without warning.
+
+        Logs outputs, such as models, from an MLflow Run.
+
+        :param run_id: str
+          The ID of the Run from which to log outputs.
+        :param models: List[:class:`ModelOutput`] (optional)
+          The model outputs from the Run.
+
+
+        """
+        body = {}
+        if models is not None:
+            body["models"] = [v.as_dict() for v in models]
+        if run_id is not None:
+            body["run_id"] = run_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
 
     def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Log a param for a run.
@@ -7028,6 +8126,63 @@ class ExperimentsAPI:
                 return
             body["page_token"] = json["next_page_token"]
 
+    def search_logged_models(
+        self,
+        *,
+        datasets: Optional[List[SearchLoggedModelsDataset]] = None,
+        experiment_ids: Optional[List[str]] = None,
+        filter: Optional[str] = None,
+        max_results: Optional[int] = None,
+        order_by: Optional[List[SearchLoggedModelsOrderBy]] = None,
+        page_token: Optional[str] = None,
+    ) -> SearchLoggedModelsResponse:
+        """Search logged models.
+
+        Search for Logged Models that satisfy specified search criteria.
+
+        :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
+          List of datasets on which to apply the metrics filter clauses. For example, a filter with
+          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
+          are considered. If no datasets are specified, then metrics across all datasets are considered in the
+          filter.
+        :param experiment_ids: List[str] (optional)
+          The IDs of the experiments in which to search for logged models.
+        :param filter: str (optional)
+          A filter expression over logged model info and data that allows returning a subset of logged models.
+          The syntax is a subset of SQL that supports AND'ing together binary operations.
+
+          Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``.
+        :param max_results: int (optional)
+          The maximum number of Logged Models to return. The maximum limit is 50.
+        :param order_by: List[:class:`SearchLoggedModelsOrderBy`] (optional)
+          The list of columns for ordering the results, with additional fields for sorting criteria.
+        :param page_token: str (optional)
+          The token indicating the page of logged models to fetch.
+
+        :returns: :class:`SearchLoggedModelsResponse`
+        """
+        body = {}
+        if datasets is not None:
+            body["datasets"] = [v.as_dict() for v in datasets]
+        if experiment_ids is not None:
+            body["experiment_ids"] = [v for v in experiment_ids]
+        if filter is not None:
+            body["filter"] = filter
+        if max_results is not None:
+            body["max_results"] = max_results
+        if order_by is not None:
+            body["order_by"] = [v.as_dict() for v in order_by]
+        if page_token is not None:
+            body["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/mlflow/logged-models/search", body=body, headers=headers)
+        return SearchLoggedModelsResponse.from_dict(res)
+
     def search_runs(
         self,
         *,
@@ -7126,6 +8281,26 @@ class ExperimentsAPI:
         }
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
+
+    def set_logged_model_tags(self, model_id: str, *, tags: Optional[List[LoggedModelTag]] = None):
+        """Set a tag for a logged model.
+
+        :param model_id: str
+          The ID of the logged model to set the tags on.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          The tags to set on the logged model.
+
+
+        """
+        body = {}
+        if tags is not None:
+            body["tags"] = [v.as_dict() for v in tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
 
     def set_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None

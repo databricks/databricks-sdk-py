@@ -807,7 +807,7 @@ class ComputeConfig:
     num_gpus: int
     """Number of GPUs."""
 
-    gpu_node_pool_id: str
+    gpu_node_pool_id: Optional[str] = None
     """IDof the GPU pool to use."""
 
     gpu_type: Optional[str] = None
@@ -2708,9 +2708,7 @@ class JobEnvironment:
 
     spec: Optional[compute.Environment] = None
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. (Note: DLT uses a
-    copied version of the Environment proto below, at
-    //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In this minimal
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
     def as_dict(self) -> dict:
@@ -8469,7 +8467,8 @@ class TaskNotificationSettings:
 
 class TerminationCodeCode(Enum):
     """The code indicates why the run was terminated. Additional codes might be introduced in future
-    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run
+    was completed successfully but some child runs failed. * `USER_CANCELED`: The run was
     successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
     execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
     `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
@@ -8525,6 +8524,7 @@ class TerminationCodeCode(Enum):
     SKIPPED = "SKIPPED"
     STORAGE_ACCESS_ERROR = "STORAGE_ACCESS_ERROR"
     SUCCESS = "SUCCESS"
+    SUCCESS_WITH_FAILURES = "SUCCESS_WITH_FAILURES"
     UNAUTHORIZED_ERROR = "UNAUTHORIZED_ERROR"
     USER_CANCELED = "USER_CANCELED"
     WORKSPACE_RUN_LIMIT_EXCEEDED = "WORKSPACE_RUN_LIMIT_EXCEEDED"
@@ -8534,7 +8534,8 @@ class TerminationCodeCode(Enum):
 class TerminationDetails:
     code: Optional[TerminationCodeCode] = None
     """The code indicates why the run was terminated. Additional codes might be introduced in future
-    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run
+    was completed successfully but some child runs failed. * `USER_CANCELED`: The run was
     successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
     execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
     `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency

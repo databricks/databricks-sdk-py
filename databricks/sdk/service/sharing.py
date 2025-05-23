@@ -535,6 +535,74 @@ class DeltaSharingTableDependency:
 
 
 @dataclass
+class FederationPolicy:
+    comment: Optional[str] = None
+    """Description of the policy. This is a user-provided description."""
+
+    create_time: Optional[str] = None
+    """System-generated timestamp indicating when the policy was created."""
+
+    id: Optional[str] = None
+    """Unique, immutable system-generated identifier for the federation policy."""
+
+    name: Optional[str] = None
+    """Name of the federation policy. A recipient can have multiple policies with different names. The
+    name must contain only lowercase alphanumeric characters, numbers, and hyphens."""
+
+    oidc_policy: Optional[OidcFederationPolicy] = None
+    """Specifies the policy to use for validating OIDC claims in the federated tokens."""
+
+    update_time: Optional[str] = None
+    """System-generated timestamp indicating when the policy was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FederationPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oidc_policy:
+            body["oidc_policy"] = self.oidc_policy.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FederationPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oidc_policy:
+            body["oidc_policy"] = self.oidc_policy
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FederationPolicy:
+        """Deserializes the FederationPolicy from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            create_time=d.get("create_time", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            oidc_policy=_from_dict(d, "oidc_policy", OidcFederationPolicy),
+            update_time=d.get("update_time", None),
+        )
+
+
+@dataclass
 class FunctionParameterInfo:
     """Represents a parameter of a function. The same message is used for both input and output
     columns."""
@@ -806,6 +874,38 @@ class IpAccessList:
 
 
 @dataclass
+class ListFederationPoliciesResponse:
+    next_page_token: Optional[str] = None
+
+    policies: Optional[List[FederationPolicy]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListFederationPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = [v.as_dict() for v in self.policies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListFederationPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = self.policies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListFederationPoliciesResponse:
+        """Deserializes the ListFederationPoliciesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", FederationPolicy)
+        )
+
+
+@dataclass
 class ListProviderShareAssetsResponse:
     """Response to ListProviderShareAssets, which contains the list of assets of a share."""
 
@@ -1058,6 +1158,74 @@ class NotebookFile:
             share=d.get("share", None),
             share_id=d.get("share_id", None),
             tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
+
+
+@dataclass
+class OidcFederationPolicy:
+    """Specifies the policy to use for validating OIDC claims in your federated tokens from Delta
+    Sharing Clients. Refer to https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+    for more details."""
+
+    issuer: str
+    """The required token issuer, as specified in the 'iss' claim of federated tokens."""
+
+    subject_claim: str
+    """The claim that contains the subject of the token. Depending on the identity provider and the use
+    case (U2M or M2M), this can vary: - For Entra ID (AAD): * U2M flow (group access): Use `groups`.
+    * U2M flow (user access): Use `oid`. * M2M flow (OAuth App access): Use `azp`. - For other IdPs,
+    refer to the specific IdP documentation.
+    
+    Supported `subject_claim` values are: - `oid`: Object ID of the user. - `azp`: Client ID of the
+    OAuth app. - `groups`: Object ID of the group. - `sub`: Subject identifier for other use cases."""
+
+    subject: str
+    """The required token subject, as specified in the subject claim of federated tokens. The subject
+    claim identifies the identity of the user or machine accessing the resource. Examples for Entra
+    ID (AAD): - U2M flow (group access): If the subject claim is `groups`, this must be the Object
+    ID of the group in Entra ID. - U2M flow (user access): If the subject claim is `oid`, this must
+    be the Object ID of the user in Entra ID. - M2M flow (OAuth App access): If the subject claim is
+    `azp`, this must be the client ID of the OAuth app registered in Entra ID."""
+
+    audiences: Optional[List[str]] = None
+    """The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience
+    identifier is intended to represent the recipient of the token. Can be any non-empty string
+    value. As long as the audience in the token matches at least one audience in the policy,"""
+
+    def as_dict(self) -> dict:
+        """Serializes the OidcFederationPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.audiences:
+            body["audiences"] = [v for v in self.audiences]
+        if self.issuer is not None:
+            body["issuer"] = self.issuer
+        if self.subject is not None:
+            body["subject"] = self.subject
+        if self.subject_claim is not None:
+            body["subject_claim"] = self.subject_claim
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OidcFederationPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.audiences:
+            body["audiences"] = self.audiences
+        if self.issuer is not None:
+            body["issuer"] = self.issuer
+        if self.subject is not None:
+            body["subject"] = self.subject
+        if self.subject_claim is not None:
+            body["subject_claim"] = self.subject_claim
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OidcFederationPolicy:
+        """Deserializes the OidcFederationPolicy from a dictionary."""
+        return cls(
+            audiences=d.get("audiences", None),
+            issuer=d.get("issuer", None),
+            subject=d.get("subject", None),
+            subject_claim=d.get("subject_claim", None),
         )
 
 
@@ -2232,6 +2400,9 @@ class Table:
     internal_attributes: Optional[TableInternalAttributes] = None
     """Internal information for D2D sharing that should not be disclosed to external users."""
 
+    materialization_namespace: Optional[str] = None
+    """The catalog and schema of the materialized table"""
+
     materialized_table_name: Optional[str] = None
     """The name of a materialized table."""
 
@@ -2259,6 +2430,8 @@ class Table:
             body["id"] = self.id
         if self.internal_attributes:
             body["internal_attributes"] = self.internal_attributes.as_dict()
+        if self.materialization_namespace is not None:
+            body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
             body["materialized_table_name"] = self.materialized_table_name
         if self.name is not None:
@@ -2282,6 +2455,8 @@ class Table:
             body["id"] = self.id
         if self.internal_attributes:
             body["internal_attributes"] = self.internal_attributes
+        if self.materialization_namespace is not None:
+            body["materialization_namespace"] = self.materialization_namespace
         if self.materialized_table_name is not None:
             body["materialized_table_name"] = self.materialized_table_name
         if self.name is not None:
@@ -2303,6 +2478,7 @@ class Table:
             comment=d.get("comment", None),
             id=d.get("id", None),
             internal_attributes=_from_dict(d, "internal_attributes", TableInternalAttributes),
+            materialization_namespace=d.get("materialization_namespace", None),
             materialized_table_name=d.get("materialized_table_name", None),
             name=d.get("name", None),
             schema=d.get("schema", None),
@@ -2592,6 +2768,9 @@ class UpdateSharePermissions:
     name: Optional[str] = None
     """The name of the share."""
 
+    omit_permissions_list: Optional[bool] = None
+    """Optional. Whether to return the latest permissions list of the share in the response."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateSharePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2599,6 +2778,8 @@ class UpdateSharePermissions:
             body["changes"] = [v.as_dict() for v in self.changes]
         if self.name is not None:
             body["name"] = self.name
+        if self.omit_permissions_list is not None:
+            body["omit_permissions_list"] = self.omit_permissions_list
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2608,12 +2789,18 @@ class UpdateSharePermissions:
             body["changes"] = self.changes
         if self.name is not None:
             body["name"] = self.name
+        if self.omit_permissions_list is not None:
+            body["omit_permissions_list"] = self.omit_permissions_list
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
-        return cls(changes=_repeated_dict(d, "changes", PermissionsChange), name=d.get("name", None))
+        return cls(
+            changes=_repeated_dict(d, "changes", PermissionsChange),
+            name=d.get("name", None),
+            omit_permissions_list=d.get("omit_permissions_list", None),
+        )
 
 
 @dataclass
@@ -3086,6 +3273,197 @@ class RecipientActivationAPI:
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
         )
         return RetrieveTokenResponse.from_dict(res)
+
+
+class RecipientFederationPoliciesAPI:
+    """The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient
+    object has the authentication type of `OIDC_RECIPIENT`, enabling data sharing from Databricks to
+    non-Databricks recipients. OIDC Token Federation enables secure, secret-less authentication for accessing
+    Delta Sharing servers. Users and applications authenticate using short-lived OIDC tokens issued by their
+    own Identity Provider (IdP), such as Azure Entra ID or Okta, without the need for managing static
+    credentials or client secrets. A federation policy defines how non-Databricks recipients authenticate
+    using OIDC tokens. It validates the OIDC claims in federated tokens and is set at the recipient level. The
+    caller must be the owner of the recipient to create or manage a federation policy. Federation policies
+    support the following scenarios: - User-to-Machine (U2M) flow: A user accesses Delta Shares using their
+    own identity, such as connecting through PowerBI Delta Sharing Client. - Machine-to-Machine (M2M) flow: An
+    application accesses Delta Shares using its own identity, typically for automation tasks like nightly jobs
+    through Python Delta Sharing Client. OIDC Token Federation enables fine-grained access control, supports
+    Multi-Factor Authentication (MFA), and enhances security by minimizing the risk of credential leakage
+    through the use of short-lived, expiring tokens. It is designed for strong identity governance, secure
+    cross-platform data sharing, and reduced operational overhead for credential management.
+
+    For more information, see
+    https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security and
+    https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, recipient_name: str, policy: FederationPolicy) -> FederationPolicy:
+        """Create recipient federation policy.
+
+        Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
+        non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from
+        Databricks to non-Databricks clients, you can define a federation policy to authenticate
+        non-Databricks recipients. The federation policy validates OIDC claims in federated tokens and is
+        defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC
+        tokens.
+
+        Supported scenarios for federation policies: 1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user
+        accesses a resource using their own identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App):
+        An OAuth App accesses a resource using its own identity, typically for tasks like running nightly
+        jobs.
+
+        For an overview, refer to: - Blog post: Overview of feature:
+        https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+
+        For detailed configuration guides based on your use case: - Creating a Federation Policy as a
+        provider: https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed - Configuration and
+        usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing Client):
+        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m - Configuration and usage for
+        User-to-Machine (U2M) applications (e.g., PowerBI):
+        https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being created.
+        :param policy: :class:`FederationPolicy`
+
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies", body=body, headers=headers
+        )
+        return FederationPolicy.from_dict(res)
+
+    def delete(self, recipient_name: str, name: str):
+        """Delete recipient federation policy.
+
+        Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner
+        of the recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being deleted.
+        :param name: str
+          Name of the policy. This is the name of the policy to be deleted.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
+        )
+
+    def get_federation_policy(self, recipient_name: str, name: str) -> FederationPolicy:
+        """Get recipient federation policy.
+
+        Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
+        to non-Databricks recipients. The caller must have read access to the recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being retrieved.
+        :param name: str
+          Name of the policy. This is the name of the policy to be retrieved.
+
+        :returns: :class:`FederationPolicy`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
+        )
+        return FederationPolicy.from_dict(res)
+
+    def list(
+        self, recipient_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[FederationPolicy]:
+        """List recipient federation policies.
+
+        Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
+        non-Databricks recipients. The caller must have read access to the recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policies are being listed.
+        :param max_results: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`FederationPolicy`
+        """
+
+        query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies",
+                query=query,
+                headers=headers,
+            )
+            if "policies" in json:
+                for v in json["policies"]:
+                    yield FederationPolicy.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update(
+        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
+    ) -> FederationPolicy:
+        """Update recipient federation policy.
+
+        Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
+        recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being updated.
+        :param name: str
+          Name of the policy. This is the name of the current name of the policy.
+        :param policy: :class:`FederationPolicy`
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'comment,oidc_policy.audiences'.
+
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return FederationPolicy.from_dict(res)
 
 
 class RecipientsAPI:
@@ -3604,7 +3982,11 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def update_permissions(
-        self, name: str, *, changes: Optional[List[PermissionsChange]] = None
+        self,
+        name: str,
+        *,
+        changes: Optional[List[PermissionsChange]] = None,
+        omit_permissions_list: Optional[bool] = None,
     ) -> UpdateSharePermissionsResponse:
         """Update permissions.
 
@@ -3618,12 +4000,16 @@ class SharesAPI:
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
+        :param omit_permissions_list: bool (optional)
+          Optional. Whether to return the latest permissions list of the share in the response.
 
         :returns: :class:`UpdateSharePermissionsResponse`
         """
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
+        if omit_permissions_list is not None:
+            body["omit_permissions_list"] = omit_permissions_list
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
