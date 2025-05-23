@@ -10,8 +10,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
-import requests
-
 from . import oauth
 
 logger = logging.getLogger(__name__)
@@ -123,31 +121,6 @@ class FileIdTokenSource(IdTokenSource):
         if not token:
             raise ValueError(f"File {self.path!r} is empty")
         return IdToken(jwt=token)
-
-
-class GitHubIdTokenSource(IdTokenSource):
-    """
-    Supplies OIDC tokens from GitHub Actions.
-    """
-
-    def __init__(self, request_token: str, request_url: str):
-        self._request_token = request_token
-        self._request_url = request_url
-
-    def id_token(self, audience: str) -> IdToken:
-        # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
-        headers = {"Authorization": f"Bearer {self._request_token}"}
-        endpoint = f"{self._request_url}&audience={audience}"
-        response = requests.get(endpoint, headers=headers)
-        if not response.ok:
-            raise ValueError(f"Failed to get ID token: {response.status_code} {response.text}")
-
-        # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
-        response_json = response.json()
-        if "value" not in response_json:
-            raise ValueError("Missing value in response")
-
-        return IdToken(jwt=response_json["value"])
 
 
 class DatabricksOidcTokenSource(oauth.TokenSource):
