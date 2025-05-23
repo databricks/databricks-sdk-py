@@ -321,9 +321,11 @@ def env_oidc(cfg) -> Optional[CredentialsProvider]:
 
     return _oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
 
+
 @credentials_strategy("file-oidc", ["host", "oidc_token_filepath"])
 def file_oidc(cfg) -> Optional[CredentialsProvider]:
     return _oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
+
 
 # This function is a helper function to create an OIDC CredentialsProvider
 # that provides a Databricks token from an IdTokenSource.
