@@ -294,10 +294,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateAlertV2Request
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateQueryRequest
    :members:
    :undoc-members:
@@ -650,10 +646,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAlertsV2Response
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListAlertsV2ResponseAlert
    :members:
    :undoc-members:
 
@@ -1442,10 +1434,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateAlertRequestAlert
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAlertV2Request
    :members:
    :undoc-members:
 

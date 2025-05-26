@@ -124,6 +124,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreatePtEndpointRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateServingEndpoint
    :members:
    :undoc-members:
@@ -316,6 +320,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PayloadTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtEndpointCoreConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtServedModel
    :members:
    :undoc-members:
 
@@ -521,6 +533,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "MULTIGPU_MEDIUM"
 
 .. autoclass:: TrafficConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateProvisionedThroughputEndpointConfigRequest
    :members:
    :undoc-members:
 

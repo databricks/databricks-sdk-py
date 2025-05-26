@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AccountNetworkPolicy
+   :members:
+   :undoc-members:
+
 .. autoclass:: AibiDashboardEmbeddingAccessPolicy
    :members:
    :undoc-members:
@@ -240,7 +244,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteLlmProxyPartnerPoweredWorkspaceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteNetworkConnectivityConfigurationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteNetworkPolicyRpcResponse
    :members:
    :undoc-members:
 
@@ -362,6 +374,66 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GOOGLE_CLOUD_STORAGE
       :value: "GOOGLE_CLOUD_STORAGE"
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType
+
+   .. py:attribute:: DNS_NAME
+      :value: "DNS_NAME"
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter
+
+   The values should match the list of workloads used in networkconfig.proto
+
+   .. py:attribute:: DBSQL
+      :value: "DBSQL"
+
+   .. py:attribute:: ML_SERVING
+      :value: "ML_SERVING"
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode
+
+   .. py:attribute:: DRY_RUN
+      :value: "DRY_RUN"
+
+   .. py:attribute:: ENFORCED
+      :value: "ENFORCED"
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
+
+   At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and storage destinations, as well as UC connections and external locations.
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType
+
+   .. py:attribute:: AWS_S3
+      :value: "AWS_S3"
+
+   .. py:attribute:: AZURE_STORAGE
+      :value: "AZURE_STORAGE"
+
+   .. py:attribute:: GOOGLE_CLOUD_STORAGE
+      :value: "GOOGLE_CLOUD_STORAGE"
+
 .. py:class:: EgressResourceType
 
    The target resources that are supported by Network Connectivity Config. Note: some egress types can support general types that are not defined in EgressResourceType. E.g.: Azure private endpoint supports private link enabled Azure services.
@@ -457,6 +529,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListNetworkPoliciesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListNotificationDestinationsResponse
    :members:
    :undoc-members:
@@ -483,6 +559,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BLOCK
       :value: "BLOCK"
+
+.. autoclass:: LlmProxyPartnerPoweredAccount
+   :members:
+   :undoc-members:
+
+.. autoclass:: LlmProxyPartnerPoweredEnforce
+   :members:
+   :undoc-members:
+
+.. autoclass:: LlmProxyPartnerPoweredWorkspace
+   :members:
+   :undoc-members:
 
 .. autoclass:: MicrosoftTeamsConfig
    :members:
@@ -533,6 +621,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NetworkConnectivityConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: NetworkPolicyEgress
    :members:
    :undoc-members:
 
@@ -732,6 +824,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateLlmProxyPartnerPoweredAccountRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateLlmProxyPartnerPoweredEnforceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateLlmProxyPartnerPoweredWorkspaceRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateNotificationDestinationRequest
    :members:
    :undoc-members:
@@ -749,5 +853,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRestrictWorkspaceAdminsSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkspaceNetworkOption
    :members:
    :undoc-members:

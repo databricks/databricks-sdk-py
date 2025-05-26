@@ -5,9 +5,9 @@
     "databricks/sdk/version.py": "__version__ = \"$VERSION\""
   },
   "toolchain": {
-    "required": ["python3"],
+    "required": ["python3.12"],
     "pre_setup": [
-      "python3 -m venv .databricks"
+      "python3.12 -m venv .databricks"
     ],
     "prepend_path": ".databricks/bin",
     "setup": [
@@ -17,7 +17,7 @@
       "make fmt",
       "pytest -m 'not integration' --cov=databricks --cov-report html tests",
       "pip install .",
-      "python docs/gen-client-docs.py"
+      "python3.12 docs/gen-client-docs.py"
     ]
   }
 }

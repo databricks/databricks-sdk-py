@@ -105,7 +105,7 @@
 
         
 
-    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility]])
+    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int]])
 
 
         Usage:
@@ -162,9 +162,6 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
-          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-          when attempting to launch a cluster if the node type id is not available.
 
 
         

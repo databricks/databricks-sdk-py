@@ -1,23 +1,16 @@
-``w.settings.disable_legacy_dbfs``: Disable Legacy DBFS
-=======================================================
+``w.settings.llm_proxy_partner_powered_workspace``: Enable Partner Powered AI Features for Workspace
+====================================================================================================
 .. currentmodule:: databricks.sdk.service.settings
 
-.. py:class:: DisableLegacyDbfsAPI
+.. py:class:: LlmProxyPartnerPoweredWorkspaceAPI
 
-    Disabling legacy DBFS has the following implications:
+    Determines if partner powered models are enabled or not for a specific workspace
 
-    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
-    Databricks Runtime versions prior to 13.3LTS.
+    .. py:method:: delete( [, etag: Optional[str]]) -> DeleteLlmProxyPartnerPoweredWorkspaceResponse
 
-    When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
-    Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
-    all-purpose compute clusters and SQL warehouses.
+        Delete the enable partner powered AI features workspace setting.
 
-    .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyDbfsResponse
-
-        Delete the disable legacy DBFS setting.
-
-        Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.
+        Reverts the enable partner powered AI features workspace setting to its default value.
 
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -26,14 +19,14 @@
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
 
-        :returns: :class:`DeleteDisableLegacyDbfsResponse`
+        :returns: :class:`DeleteLlmProxyPartnerPoweredWorkspaceResponse`
         
 
-    .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyDbfs
+    .. py:method:: get( [, etag: Optional[str]]) -> LlmProxyPartnerPoweredWorkspace
 
-        Get the disable legacy DBFS setting.
+        Get the enable partner powered AI features workspace setting.
 
-        Gets the disable legacy DBFS setting.
+        Gets the enable partner powered AI features workspace setting.
 
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -42,18 +35,18 @@
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
 
-        :returns: :class:`DisableLegacyDbfs`
+        :returns: :class:`LlmProxyPartnerPoweredWorkspace`
         
 
-    .. py:method:: update(allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs
+    .. py:method:: update(allow_missing: bool, setting: LlmProxyPartnerPoweredWorkspace, field_mask: str) -> LlmProxyPartnerPoweredWorkspace
 
-        Update the disable legacy DBFS setting.
+        Update the enable partner powered AI features workspace setting.
 
-        Updates the disable legacy DBFS setting for the workspace.
+        Updates the enable partner powered AI features workspace setting.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`DisableLegacyDbfs`
+        :param setting: :class:`LlmProxyPartnerPoweredWorkspace`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -65,5 +58,5 @@
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
 
-        :returns: :class:`DisableLegacyDbfs`
+        :returns: :class:`LlmProxyPartnerPoweredWorkspace`
         
