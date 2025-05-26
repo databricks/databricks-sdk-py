@@ -107,14 +107,3 @@ def test_file_id_token_source(test_case: FileTestCase, tmp_path):
             source.id_token()
     else:
         assert source.id_token() == test_case.want
-
-
-# class MockIdTokenSource(oidc.IdTokenSource):
-#     def __init__(self, id_token: str, exception: Exception = None):
-#         self.id_token = id_token
-#         self.exception = exception
-
-#     def id_token(self) -> oidc.IdToken:
-#         if self.exception:
-#             raise self.exception
-#         return oidc.IdToken(jwt=self.id_token)
