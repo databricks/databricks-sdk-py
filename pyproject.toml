@@ -63,6 +63,9 @@ openai = [
     'langchain-openai; python_version > "3.7"',
     "httpx",
 ]
+mcp = [
+    "mcp>=1.9.1"
+]
 
 [tool.setuptools.dynamic]
 version = { attr = "databricks.sdk.version.__version__" }
