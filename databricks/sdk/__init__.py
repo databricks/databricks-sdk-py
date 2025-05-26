@@ -132,7 +132,7 @@ from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
-
+from databricks.sdk.service.mcp import MCP
 _LOG = logging.getLogger(__name__)
 
 
@@ -337,6 +337,7 @@ class WorkspaceClient:
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
+        self._mcp = MCP(self.config)
 
     @property
     def config(self) -> client.Config:
@@ -859,6 +860,10 @@ class WorkspaceClient:
     def forecasting(self) -> pkg_ml.ForecastingAPI:
         """The Forecasting API allows you to create and get serverless forecasting experiments."""
         return self._forecasting
+
+    @property 
+    def mcp(self) -> MCP:
+        return self._mcp
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""
