@@ -1,7 +1,7 @@
 import datetime
 import urllib.parse
-from typing import Callable, Dict, Generic, Optional, Type, TypeVar
-
+from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar, Any
+from databricks.sdk import common
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     if field not in d or d[field] is None:
@@ -41,6 +41,35 @@ def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
             res.append(val)
     return res
 
+def _get_duration(d: Dict[str, Any], field: str) -> Optional[common.Duration]:
+    if field not in d or d[field] is None:
+        return None
+    return common.Duration.parse(d[field])
+
+def _repeated_duration(d: Dict[str, Any], field: str) -> Optional[List[common.Duration]]:
+    if field not in d or not d[field]:
+        return None
+    return [common.Duration.parse(v) for v in d[field]]
+
+def _get_timestamp(d: Dict[str, Any], field: str) -> Optional[common.Timestamp]:
+    if field not in d or d[field] is None:
+        return None
+    return common.Timestamp.parse(d[field])
+
+def _repeated_timestamp(d: Dict[str, Any], field: str) -> Optional[List[common.Timestamp]]:
+    if field not in d or not d[field]:
+        return None
+    return [common.Timestamp.parse(v) for v in d[field]]
+
+def _get_value(d: Dict[str, Any], field: str) -> Optional[Any]:
+    if field not in d or d[field] is None:
+        return None
+    return d[field]
+
+def _repeated_value(d: Dict[str, Any], field: str) -> Optional[List[Any]]:
+    if field not in d or not d[field]:
+        return None
+    return d[field]
 
 def _escape_multi_segment_path_parameter(param: str) -> str:
     return urllib.parse.quote(param)
