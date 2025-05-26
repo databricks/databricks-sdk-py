@@ -11,6 +11,9 @@
 
 ### Bug Fixes
 
+- Fix a reported highlighting problem with the way API clients are imported in WorkspaceClient/AccountClient 
+  ([#979](https://github.com/databricks/databricks-sdk-py/pull/979)).
+
 ### Documentation
 
 ### Internal Changes
