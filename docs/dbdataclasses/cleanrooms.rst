@@ -84,6 +84,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CleanRoomNotebookReview
+   :members:
+   :undoc-members:
+
+.. py:class:: CleanRoomNotebookReviewNotebookReviewState
+
+   .. py:attribute:: APPROVED
+      :value: "APPROVED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
+
+.. py:class:: CleanRoomNotebookReviewNotebookReviewSubReason
+
+   .. py:attribute:: AUTO_APPROVED
+      :value: "AUTO_APPROVED"
+
+   .. py:attribute:: BACKFILLED
+      :value: "BACKFILLED"
+
 .. autoclass:: CleanRoomNotebookTaskRun
    :members:
    :undoc-members:

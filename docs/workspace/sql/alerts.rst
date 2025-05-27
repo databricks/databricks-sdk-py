@@ -152,7 +152,7 @@
         :returns: Iterator over :class:`ListAlertsResponseAlert`
         
 
-    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert]]) -> Alert
+    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert], auto_resolve_display_name: Optional[bool]]) -> Alert
 
 
         Usage:
@@ -215,6 +215,9 @@
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
 
         :returns: :class:`Alert`
         

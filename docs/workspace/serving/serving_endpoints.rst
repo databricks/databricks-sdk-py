@@ -60,6 +60,30 @@
     .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
+    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+
+        Create a new PT serving endpoint.
+
+        :param name: str
+          The name of the serving endpoint. This field is required and must be unique across a Databricks
+          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+        :param config: :class:`PtEndpointCoreConfig`
+          The core config of the serving endpoint.
+        :param ai_gateway: :class:`AiGatewayConfig` (optional)
+          The AI Gateway configuration for the serving endpoint.
+        :param budget_policy_id: str (optional)
+          The budget policy associated with the endpoint.
+        :param tags: List[:class:`EndpointTag`] (optional)
+          Tags to be attached to the serving endpoint and automatically propagated to billing logs.
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        
+
+    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+
+
     .. py:method:: delete(name: str)
 
         Delete a serving endpoint.
@@ -344,5 +368,25 @@
 
         :returns: :class:`ServingEndpointPermissions`
         
+
+    .. py:method:: update_provisioned_throughput_endpoint_config(name: str, config: PtEndpointCoreConfig) -> Wait[ServingEndpointDetailed]
+
+        Update config of a PT serving endpoint.
+
+        Updates any combination of the pt endpoint's served entities, the compute configuration of those
+        served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
+        updated instantly
+
+        :param name: str
+          The name of the pt endpoint to update. This field is required.
+        :param config: :class:`PtEndpointCoreConfig`
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        
+
+    .. py:method:: update_provisioned_throughput_endpoint_config_and_wait(name: str, config: PtEndpointCoreConfig, timeout: datetime.timedelta = 0:20:00) -> ServingEndpointDetailed
+
 
     .. py:method:: wait_get_serving_endpoint_not_updating(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[ServingEndpointDetailed], None]]) -> ServingEndpointDetailed

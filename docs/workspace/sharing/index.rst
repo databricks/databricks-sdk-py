@@ -9,5 +9,6 @@ Configure data sharing with Unity Catalog for providers, recipients, and shares
 
    providers
    recipient_activation
+   recipient_federation_policies
    recipients
    shares

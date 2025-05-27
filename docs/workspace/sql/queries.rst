@@ -126,7 +126,7 @@
         :returns: Iterator over :class:`Visualization`
         
 
-    .. py:method:: update(id: str, update_mask: str [, query: Optional[UpdateQueryRequestQuery]]) -> Query
+    .. py:method:: update(id: str, update_mask: str [, auto_resolve_display_name: Optional[bool], query: Optional[UpdateQueryRequestQuery]]) -> Query
 
 
         Usage:
@@ -179,6 +179,9 @@
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
         :param query: :class:`UpdateQueryRequestQuery` (optional)
 
         :returns: :class:`Query`

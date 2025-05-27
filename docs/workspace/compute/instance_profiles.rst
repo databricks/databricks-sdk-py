@@ -32,8 +32,10 @@
 
         Register an instance profile.
 
-        In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users.
+        Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
+        this instance profile when launching clusters.
+
+        This API is only available to admin users.
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.

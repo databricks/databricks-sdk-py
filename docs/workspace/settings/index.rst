@@ -22,6 +22,7 @@ Manage security settings for Accounts and Workspaces
    enable_notebook_table_clipboard
    enable_results_downloading
    enhanced_security_monitoring
+   llm_proxy_partner_powered_workspace
    restrict_workspace_admins
    token_management
    tokens
