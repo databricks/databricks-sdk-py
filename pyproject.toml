@@ -53,6 +53,8 @@ dev = [
     'langchain-openai; python_version > "3.7"',
     "httpx",
     "build", # some integration tests depend on the databricks-sdk-py wheel
+    "mcp>=1.9.1",
+    "pytest-asyncio"
 ]
 notebook = [
     "ipython>=8,<10",

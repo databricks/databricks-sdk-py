@@ -84,6 +84,7 @@ from databricks.sdk.service.marketplace import (
     ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
+from databricks.sdk.service.mcp import MCP
 from databricks.sdk.service.ml import (ExperimentsAPI, ForecastingAPI,
                                        ModelRegistryAPI)
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
@@ -132,7 +133,7 @@ from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
-from databricks.sdk.service.mcp import MCP
+
 _LOG = logging.getLogger(__name__)
 
 
@@ -861,7 +862,7 @@ class WorkspaceClient:
         """The Forecasting API allows you to create and get serverless forecasting experiments."""
         return self._forecasting
 
-    @property 
+    @property
     def mcp(self) -> MCP:
         return self._mcp
 
