@@ -156,7 +156,6 @@ class Token:
 
 
 class TokenSource:
-
     @abstractmethod
     def token(self) -> Token:
         pass
@@ -341,7 +340,6 @@ class Refreshable(TokenSource):
 
 
 class _OAuthCallback(BaseHTTPRequestHandler):
-
     def __init__(self, feedback: list, *args):
         self._feedback = feedback
         super().__init__(*args)
@@ -418,7 +416,6 @@ def get_azure_entra_id_workspace_endpoints(
 
 
 class SessionCredentials(Refreshable):
-
     def __init__(
         self,
         token: Token,
@@ -493,7 +490,6 @@ class SessionCredentials(Refreshable):
 
 
 class Consent:
-
     def __init__(
         self,
         state: str,
@@ -627,7 +623,6 @@ class OAuthClient:
         scopes: List[str] = None,
         client_secret: str = None,
     ):
-
         if not scopes:
             # all-apis ensures that the returned OAuth token can be used with all APIs, aside
             # from direct-to-dataplane APIs.

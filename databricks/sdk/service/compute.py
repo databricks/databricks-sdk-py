@@ -729,7 +729,8 @@ class ClusterAttributes:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -1118,7 +1119,8 @@ class ClusterDetails:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     cluster_source: Optional[ClusterSource] = None
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
@@ -2300,7 +2302,8 @@ class ClusterSpec:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2803,7 +2806,8 @@ class CreateCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -4117,7 +4121,8 @@ class EditCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -4772,8 +4777,9 @@ class EnforceClusterComplianceResponse:
 
 @dataclass
 class Environment:
-    """The environment entity used to preserve serverless environment side panel and jobs' environment
-    for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
+    """The environment entity used to preserve serverless environment side panel, jobs' environment for
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    environment spec, only pip dependencies are supported."""
 
     client: str
     """Client version used by the environment The client is the user-facing environment of the runtime.
@@ -4788,6 +4794,13 @@ class Environment:
     Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
     /Workspace/test/requirements.txt"]"""
 
+    environment_version: Optional[str] = None
+    """We renamed `client` to `environment_version` in notebook exports. This field is meant solely so
+    that imported notebooks with `environment_version` can be deserialized correctly, in a
+    backwards-compatible way (i.e. if `client` is specified instead of `environment_version`, it
+    will be deserialized correctly). Do NOT use this field for any other purpose, e.g. notebook
+    storage. This field is not yet exposed to customers (e.g. in the jobs API)."""
+
     jar_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
     `/Volumes/path/to/test.jar`."""
@@ -4799,6 +4812,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
@@ -4810,6 +4825,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
         return body
@@ -4820,6 +4837,7 @@ class Environment:
         return cls(
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
+            environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
         )
 
@@ -5261,15 +5279,29 @@ class GetEvents:
     """An optional set of event types to filter on. If empty, all event types are returned."""
 
     limit: Optional[int] = None
-    """The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
     value is 500."""
 
     offset: Optional[int] = None
-    """The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the
     results are requested in descending order, the end_time field is required."""
 
     order: Optional[GetEventsOrder] = None
     """The order to list events in; either "ASC" or "DESC". Defaults to "DESC"."""
+
+    page_size: Optional[int] = None
+    """The maximum number of events to include in a page of events. The server may further constrain
+    the maximum number of results returned in a single page. If the page_size is empty or 0, the
+    server will decide the number of results to be returned. The field has to be in the range
+    [0,500]. If the value is outside the range, the server enforces 0 or 500."""
+
+    page_token: Optional[str] = None
+    """Use next_page_token or prev_page_token returned from the previous request to list the next or
+    previous page of events respectively. If page_token is empty, the first page is returned."""
 
     start_time: Optional[int] = None
     """The start time in epoch milliseconds. If empty, returns events starting from the beginning of
@@ -5290,6 +5322,10 @@ class GetEvents:
             body["offset"] = self.offset
         if self.order is not None:
             body["order"] = self.order.value
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -5309,6 +5345,10 @@ class GetEvents:
             body["offset"] = self.offset
         if self.order is not None:
             body["order"] = self.order
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -5323,6 +5363,8 @@ class GetEvents:
             limit=d.get("limit", None),
             offset=d.get("offset", None),
             order=_enum(d, "order", GetEventsOrder),
+            page_size=d.get("page_size", None),
+            page_token=d.get("page_token", None),
             start_time=d.get("start_time", None),
         )
 
@@ -5338,11 +5380,24 @@ class GetEventsResponse:
     events: Optional[List[ClusterEvent]] = None
 
     next_page: Optional[GetEvents] = None
-    """The parameters required to retrieve the next page of events. Omitted if there are no more events
+    """Deprecated: use next_page_token or prev_page_token instead.
+    
+    The parameters required to retrieve the next page of events. Omitted if there are no more events
     to read."""
 
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
+
     total_count: Optional[int] = None
-    """The total number of events filtered by the start_time, end_time, and event_types."""
+    """Deprecated: Returns 0 when request uses page_token. Will start returning zero when request uses
+    offset/limit soon.
+    
+    The total number of events filtered by the start_time, end_time, and event_types."""
 
     def as_dict(self) -> dict:
         """Serializes the GetEventsResponse into a dictionary suitable for use as a JSON request body."""
@@ -5351,6 +5406,10 @@ class GetEventsResponse:
             body["events"] = [v.as_dict() for v in self.events]
         if self.next_page:
             body["next_page"] = self.next_page.as_dict()
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         if self.total_count is not None:
             body["total_count"] = self.total_count
         return body
@@ -5362,6 +5421,10 @@ class GetEventsResponse:
             body["events"] = self.events
         if self.next_page:
             body["next_page"] = self.next_page
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.prev_page_token is not None:
+            body["prev_page_token"] = self.prev_page_token
         if self.total_count is not None:
             body["total_count"] = self.total_count
         return body
@@ -5372,6 +5435,8 @@ class GetEventsResponse:
         return cls(
             events=_repeated_dict(d, "events", ClusterEvent),
             next_page=_from_dict(d, "next_page", GetEvents),
+            next_page_token=d.get("next_page_token", None),
+            prev_page_token=d.get("prev_page_token", None),
             total_count=d.get("total_count", None),
         )
 
@@ -9005,6 +9070,7 @@ class TerminationReasonCode(Enum):
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
     DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
+    DNS_RESOLUTION_ERROR = "DNS_RESOLUTION_ERROR"
     DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
@@ -9023,6 +9089,7 @@ class TerminationReasonCode(Enum):
     EXECUTION_COMPONENT_UNHEALTHY = "EXECUTION_COMPONENT_UNHEALTHY"
     EXECUTOR_POD_UNSCHEDULED = "EXECUTOR_POD_UNSCHEDULED"
     GCP_API_RATE_QUOTA_EXCEEDED = "GCP_API_RATE_QUOTA_EXCEEDED"
+    GCP_DENIED_BY_ORG_POLICY = "GCP_DENIED_BY_ORG_POLICY"
     GCP_FORBIDDEN = "GCP_FORBIDDEN"
     GCP_IAM_TIMEOUT = "GCP_IAM_TIMEOUT"
     GCP_INACCESSIBLE_KMS_KEY_FAILURE = "GCP_INACCESSIBLE_KMS_KEY_FAILURE"
@@ -9066,6 +9133,12 @@ class TerminationReasonCode(Enum):
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
     NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
+    NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
+    NETWORK_CHECK_DNS_SERVER_FAILURE = "NETWORK_CHECK_DNS_SERVER_FAILURE"
+    NETWORK_CHECK_METADATA_ENDPOINT_FAILURE = "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE"
+    NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE = "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE"
+    NETWORK_CHECK_NIC_FAILURE = "NETWORK_CHECK_NIC_FAILURE"
+    NETWORK_CHECK_STORAGE_FAILURE = "NETWORK_CHECK_STORAGE_FAILURE"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
@@ -9078,6 +9151,7 @@ class TerminationReasonCode(Enum):
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
+    SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
@@ -9296,7 +9370,8 @@ class UpdateClusterResource:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -10266,7 +10341,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10658,7 +10734,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10947,6 +11024,8 @@ class ClustersAPI:
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         order: Optional[GetEventsOrder] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
         start_time: Optional[int] = None,
     ) -> Iterator[ClusterEvent]:
         """List cluster activity events.
@@ -10961,13 +11040,25 @@ class ClustersAPI:
         :param event_types: List[:class:`EventType`] (optional)
           An optional set of event types to filter on. If empty, all event types are returned.
         :param limit: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
           value is 500.
         :param offset: int (optional)
+          Deprecated: use page_token in combination with page_size instead.
+
           The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the results
           are requested in descending order, the end_time field is required.
         :param order: :class:`GetEventsOrder` (optional)
           The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+        :param page_size: int (optional)
+          The maximum number of events to include in a page of events. The server may further constrain the
+          maximum number of results returned in a single page. If the page_size is empty or 0, the server will
+          decide the number of results to be returned. The field has to be in the range [0,500]. If the value
+          is outside the range, the server enforces 0 or 500.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of events respectively. If page_token is empty, the first page is returned.
         :param start_time: int (optional)
           The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
 
@@ -10986,6 +11077,10 @@ class ClustersAPI:
             body["offset"] = offset
         if order is not None:
             body["order"] = order.value
+        if page_size is not None:
+            body["page_size"] = page_size
+        if page_token is not None:
+            body["page_token"] = page_token
         if start_time is not None:
             body["start_time"] = start_time
         headers = {
@@ -12308,8 +12403,10 @@ class InstanceProfilesAPI:
     ):
         """Register an instance profile.
 
-        In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users.
+        Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
+        this instance profile when launching clusters.
+
+        This API is only available to admin users.
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.

@@ -1292,6 +1292,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DISASTER_RECOVERY_REPLICATION
       :value: "DISASTER_RECOVERY_REPLICATION"
 
+   .. py:attribute:: DNS_RESOLUTION_ERROR
+      :value: "DNS_RESOLUTION_ERROR"
+
    .. py:attribute:: DOCKER_CONTAINER_CREATION_EXCEPTION
       :value: "DOCKER_CONTAINER_CREATION_EXCEPTION"
 
@@ -1345,6 +1348,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GCP_API_RATE_QUOTA_EXCEEDED
       :value: "GCP_API_RATE_QUOTA_EXCEEDED"
+
+   .. py:attribute:: GCP_DENIED_BY_ORG_POLICY
+      :value: "GCP_DENIED_BY_ORG_POLICY"
 
    .. py:attribute:: GCP_FORBIDDEN
       :value: "GCP_FORBIDDEN"
@@ -1475,6 +1481,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NETVISOR_SETUP_TIMEOUT
       :value: "NETVISOR_SETUP_TIMEOUT"
 
+   .. py:attribute:: NETWORK_CHECK_CONTROL_PLANE_FAILURE
+      :value: "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
+
+   .. py:attribute:: NETWORK_CHECK_DNS_SERVER_FAILURE
+      :value: "NETWORK_CHECK_DNS_SERVER_FAILURE"
+
+   .. py:attribute:: NETWORK_CHECK_METADATA_ENDPOINT_FAILURE
+      :value: "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE"
+
+   .. py:attribute:: NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE
+      :value: "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE"
+
+   .. py:attribute:: NETWORK_CHECK_NIC_FAILURE
+      :value: "NETWORK_CHECK_NIC_FAILURE"
+
+   .. py:attribute:: NETWORK_CHECK_STORAGE_FAILURE
+      :value: "NETWORK_CHECK_STORAGE_FAILURE"
+
    .. py:attribute:: NETWORK_CONFIGURATION_FAILURE
       :value: "NETWORK_CONFIGURATION_FAILURE"
 
@@ -1510,6 +1534,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_CREATION_FAILURE
       :value: "SECRET_CREATION_FAILURE"
+
+   .. py:attribute:: SECRET_PERMISSION_DENIED
+      :value: "SECRET_PERMISSION_DENIED"
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"

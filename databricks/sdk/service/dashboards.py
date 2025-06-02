@@ -926,7 +926,7 @@ class GenieResultMetadata:
 @dataclass
 class GenieSpace:
     space_id: str
-    """Space ID"""
+    """Genie space ID"""
 
     title: str
     """Title of the Genie Space"""
@@ -1255,6 +1255,9 @@ class MessageErrorType(Enum):
     COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
+    DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
+    DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
+    DESCRIBE_QUERY_UNEXPECTED_FAILURE = "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
@@ -1267,9 +1270,13 @@ class MessageErrorType(Enum):
     ILLEGAL_PARAMETER_DEFINITION_EXCEPTION = "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
+    INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
     INVALID_CHAT_COMPLETION_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
     INVALID_COMPLETION_REQUEST_EXCEPTION = "INVALID_COMPLETION_REQUEST_EXCEPTION"
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
+    INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION = "INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION"
+    INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION = "INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION"
+    INVALID_SQL_UNKNOWN_TABLE_EXCEPTION = "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION"
     INVALID_TABLE_IDENTIFIER_EXCEPTION = "INVALID_TABLE_IDENTIFIER_EXCEPTION"
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
     MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
@@ -2097,7 +2104,7 @@ class GenieAPI:
             self.wait_get_message_genie_completed,
             response=GenieMessage.from_dict(op_response),
             conversation_id=conversation_id,
-            message_id=op_response["id"],
+            message_id=op_response["message_id"],
             space_id=space_id,
         )
 
@@ -2172,15 +2179,14 @@ class GenieAPI:
     ) -> GenieGenerateDownloadFullQueryResultResponse:
         """Generate full query result download.
 
-        Initiate full SQL query result download and obtain a `download_id` to track the download progress.
-        This call initiates a new SQL execution to generate the query result. The result is stored in an
-        external link can be retrieved using the [Get Download Full Query
-        Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks strongly recommends that
-        you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. See [Execute
-        Statement](:method:statementexecution/executestatement) for more details.
+        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        the download. The query result is stored in an external link and can be retrieved using the [Get
+        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
 
         :param space_id: str
-          Space ID
+          Genie space ID
         :param conversation_id: str
           Conversation ID
         :param message_id: str
@@ -2208,17 +2214,15 @@ class GenieAPI:
         """Get download full query result.
 
         After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
-        successfully receiving a `download_id`, use this API to Poll download progress and retrieve the SQL
-        query result external link(s) upon completion. Warning: Databricks strongly recommends that you
-        protect the URLs that are returned by the `EXTERNAL_LINKS` disposition. When you use the
-        `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated, which can be used to download
-        the results directly from Amazon S3. As a short-lived access credential is embedded in this presigned
-        URL, you should protect the URL. Because presigned URLs are already generated with embedded temporary
-        access credentials, you must not set an Authorization header in the download requests. See [Execute
+        successfully receiving a `download_id`, use this API to poll the download progress. When the download
+        is complete, the API returns one or more external links to the query result files. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
+        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
         Statement](:method:statementexecution/executestatement) for more details.
 
         :param space_id: str
-          Space ID
+          Genie space ID
         :param conversation_id: str
           Conversation ID
         :param message_id: str
@@ -2422,12 +2426,12 @@ class LakeviewAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
+    def create(self, dashboard: Dashboard) -> Dashboard:
         """Create dashboard.
 
         Create a draft dashboard.
 
-        :param dashboard: :class:`Dashboard` (optional)
+        :param dashboard: :class:`Dashboard`
 
         :returns: :class:`Dashboard`
         """
@@ -2440,12 +2444,12 @@ class LakeviewAPI:
         res = self._api.do("POST", "/api/2.0/lakeview/dashboards", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
-    def create_schedule(self, dashboard_id: str, *, schedule: Optional[Schedule] = None) -> Schedule:
+    def create_schedule(self, dashboard_id: str, schedule: Schedule) -> Schedule:
         """Create dashboard schedule.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
-        :param schedule: :class:`Schedule` (optional)
+        :param schedule: :class:`Schedule`
 
         :returns: :class:`Schedule`
         """
@@ -2458,16 +2462,14 @@ class LakeviewAPI:
         res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", body=body, headers=headers)
         return Schedule.from_dict(res)
 
-    def create_subscription(
-        self, dashboard_id: str, schedule_id: str, *, subscription: Optional[Subscription] = None
-    ) -> Subscription:
+    def create_subscription(self, dashboard_id: str, schedule_id: str, subscription: Subscription) -> Subscription:
         """Create schedule subscription.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
-        :param subscription: :class:`Subscription` (optional)
+        :param subscription: :class:`Subscription`
 
         :returns: :class:`Subscription`
         """
@@ -2853,14 +2855,14 @@ class LakeviewAPI:
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
 
-    def update(self, dashboard_id: str, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
+    def update(self, dashboard_id: str, dashboard: Dashboard) -> Dashboard:
         """Update dashboard.
 
         Update a draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
-        :param dashboard: :class:`Dashboard` (optional)
+        :param dashboard: :class:`Dashboard`
 
         :returns: :class:`Dashboard`
         """
@@ -2873,14 +2875,14 @@ class LakeviewAPI:
         res = self._api.do("PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
-    def update_schedule(self, dashboard_id: str, schedule_id: str, *, schedule: Optional[Schedule] = None) -> Schedule:
+    def update_schedule(self, dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule:
         """Update dashboard schedule.
 
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        :param schedule: :class:`Schedule` (optional)
+        :param schedule: :class:`Schedule`
 
         :returns: :class:`Schedule`
         """

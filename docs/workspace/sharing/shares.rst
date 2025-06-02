@@ -229,7 +229,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: update_permissions(name: str [, changes: Optional[List[PermissionsChange]]]) -> UpdateSharePermissionsResponse
+    .. py:method:: update_permissions(name: str [, changes: Optional[List[PermissionsChange]], omit_permissions_list: Optional[bool]]) -> UpdateSharePermissionsResponse
 
         Update permissions.
 
@@ -243,6 +243,8 @@
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
+        :param omit_permissions_list: bool (optional)
+          Optional. Whether to return the latest permissions list of the share in the response.
 
         :returns: :class:`UpdateSharePermissionsResponse`
         

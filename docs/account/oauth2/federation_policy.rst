@@ -45,11 +45,11 @@
 
     [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
 
-    .. py:method:: create( [, policy: Optional[FederationPolicy], policy_id: Optional[str]]) -> FederationPolicy
+    .. py:method:: create(policy: FederationPolicy [, policy_id: Optional[str]]) -> FederationPolicy
 
         Create account federation policy.
 
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param policy_id: str (optional)
           The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
           characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
@@ -87,13 +87,13 @@
         :returns: Iterator over :class:`FederationPolicy`
         
 
-    .. py:method:: update(policy_id: str [, policy: Optional[FederationPolicy], update_mask: Optional[str]]) -> FederationPolicy
+    .. py:method:: update(policy_id: str, policy: FederationPolicy [, update_mask: Optional[str]]) -> FederationPolicy
 
         Update account federation policy.
 
         :param policy_id: str
           The identifier for the federation policy.
-        :param policy: :class:`FederationPolicy` (optional)
+        :param policy: :class:`FederationPolicy`
         :param update_mask: str (optional)
           The field mask specifies which fields of the policy to update. To specify multiple fields in the
           field mask, use comma as the separator (no space). The special value '*' indicates that all fields

@@ -8,6 +8,32 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: Aggregation
+
+   .. py:attribute:: AVG
+      :value: "AVG"
+
+   .. py:attribute:: COUNT
+      :value: "COUNT"
+
+   .. py:attribute:: COUNT_DISTINCT
+      :value: "COUNT_DISTINCT"
+
+   .. py:attribute:: MAX
+      :value: "MAX"
+
+   .. py:attribute:: MEDIAN
+      :value: "MEDIAN"
+
+   .. py:attribute:: MIN
+      :value: "MIN"
+
+   .. py:attribute:: STDDEV
+      :value: "STDDEV"
+
+   .. py:attribute:: SUM
+      :value: "SUM"
+
 .. autoclass:: Alert
    :members:
    :undoc-members:
@@ -23,6 +49,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AlertConditionThreshold
    :members:
    :undoc-members:
+
+.. py:class:: AlertEvaluationState
+
+   UNSPECIFIED - default unspecify value for proto enum, do not use it in the code UNKNOWN - alert not yet evaluated TRIGGERED - alert is triggered OK - alert is not triggered ERROR - alert evaluation failed
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: OK
+      :value: "OK"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
 
 .. autoclass:: AlertOperandColumn
    :members:
@@ -86,6 +128,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNKNOWN
       :value: "UNKNOWN"
+
+.. autoclass:: AlertV2
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2Evaluation
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2Notification
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2Operand
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2OperandColumn
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2OperandValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertV2Subscription
+   :members:
+   :undoc-members:
 
 .. autoclass:: BaseChunkInfo
    :members:
@@ -186,6 +256,32 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USER_DEFINED_TYPE
       :value: "USER_DEFINED_TYPE"
 
+.. py:class:: ComparisonOperator
+
+   .. py:attribute:: EQUAL
+      :value: "EQUAL"
+
+   .. py:attribute:: GREATER_THAN
+      :value: "GREATER_THAN"
+
+   .. py:attribute:: GREATER_THAN_OR_EQUAL
+      :value: "GREATER_THAN_OR_EQUAL"
+
+   .. py:attribute:: IS_NOT_NULL
+      :value: "IS_NOT_NULL"
+
+   .. py:attribute:: IS_NULL
+      :value: "IS_NULL"
+
+   .. py:attribute:: LESS_THAN
+      :value: "LESS_THAN"
+
+   .. py:attribute:: LESS_THAN_OR_EQUAL
+      :value: "LESS_THAN_OR_EQUAL"
+
+   .. py:attribute:: NOT_EQUAL
+      :value: "NOT_EQUAL"
+
 .. autoclass:: CreateAlert
    :members:
    :undoc-members:
@@ -236,6 +332,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateWidget
+   :members:
+   :undoc-members:
+
+.. autoclass:: CronSchedule
    :members:
    :undoc-members:
 
@@ -542,6 +642,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAlertsResponseAlert
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAlertsV2Response
    :members:
    :undoc-members:
 
@@ -868,6 +972,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEWER
       :value: "VIEWER"
+
+.. py:class:: SchedulePauseStatus
+
+   .. py:attribute:: PAUSED
+      :value: "PAUSED"
+
+   .. py:attribute:: UNPAUSED
+      :value: "UNPAUSED"
 
 .. autoclass:: ServiceError
    :members:

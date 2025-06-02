@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AccountNetworkPolicy
+   :members:
+   :undoc-members:
+
 .. autoclass:: AibiDashboardEmbeddingAccessPolicy
    :members:
    :undoc-members:
@@ -151,6 +155,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"
 
+   .. py:attribute:: K_FSI
+      :value: "K_FSI"
+
    .. py:attribute:: NONE
       :value: "NONE"
 
@@ -169,7 +176,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateNetworkConnectivityConfigRequest
+.. autoclass:: CreateNetworkConnectivityConfiguration
    :members:
    :undoc-members:
 
@@ -185,25 +192,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreatePrivateEndpointRuleRequest
+.. autoclass:: CreatePrivateEndpointRule
    :members:
    :undoc-members:
-
-.. py:class:: CreatePrivateEndpointRuleRequestGroupId
-
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-
-   .. py:attribute:: BLOB
-      :value: "BLOB"
-
-   .. py:attribute:: DFS
-      :value: "DFS"
-
-   .. py:attribute:: MYSQL_SERVER
-      :value: "MYSQL_SERVER"
-
-   .. py:attribute:: SQL_SERVER
-      :value: "SQL_SERVER"
 
 .. autoclass:: CreateTokenRequest
    :members:
@@ -253,7 +244,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteLlmProxyPartnerPoweredWorkspaceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteNetworkConnectivityConfigurationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteNetworkPolicyRpcResponse
    :members:
    :undoc-members:
 
@@ -375,6 +374,73 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GOOGLE_CLOUD_STORAGE
       :value: "GOOGLE_CLOUD_STORAGE"
 
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyInternetDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType
+
+   .. py:attribute:: DNS_NAME
+      :value: "DNS_NAME"
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter
+
+   The values should match the list of workloads used in networkconfig.proto
+
+   .. py:attribute:: DBSQL
+      :value: "DBSQL"
+
+   .. py:attribute:: ML_SERVING
+      :value: "ML_SERVING"
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode
+
+   .. py:attribute:: DRY_RUN
+      :value: "DRY_RUN"
+
+   .. py:attribute:: ENFORCED
+      :value: "ENFORCED"
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
+
+   At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and storage destinations, as well as UC connections and external locations.
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType
+
+   .. py:attribute:: AWS_S3
+      :value: "AWS_S3"
+
+   .. py:attribute:: AZURE_STORAGE
+      :value: "AZURE_STORAGE"
+
+   .. py:attribute:: GOOGLE_CLOUD_STORAGE
+      :value: "GOOGLE_CLOUD_STORAGE"
+
+.. py:class:: EgressResourceType
+
+   The target resources that are supported by Network Connectivity Config. Note: some egress types can support general types that are not defined in EgressResourceType. E.g.: Azure private endpoint supports private link enabled Azure services.
+
+   .. py:attribute:: AZURE_BLOB_STORAGE
+      :value: "AZURE_BLOB_STORAGE"
+
 .. autoclass:: EmailConfig
    :members:
    :undoc-members:
@@ -463,6 +529,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListNetworkPoliciesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListNotificationDestinationsResponse
    :members:
    :undoc-members:
@@ -490,6 +560,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK
       :value: "BLOCK"
 
+.. autoclass:: LlmProxyPartnerPoweredAccount
+   :members:
+   :undoc-members:
+
+.. autoclass:: LlmProxyPartnerPoweredEnforce
+   :members:
+   :undoc-members:
+
+.. autoclass:: LlmProxyPartnerPoweredWorkspace
+   :members:
+   :undoc-members:
+
 .. autoclass:: MicrosoftTeamsConfig
    :members:
    :undoc-members:
@@ -504,14 +586,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
 
-   The current status of this private endpoint. The private endpoint rules are effective only if the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your resources in the Azure portal before they take effect.
-   The possible values are: - INIT: (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up.
-
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 
    .. py:attribute:: ESTABLISHED
       :value: "ESTABLISHED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
 
    .. py:attribute:: INIT
       :value: "INIT"
@@ -521,22 +603,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: REJECTED
       :value: "REJECTED"
-
-.. py:class:: NccAzurePrivateEndpointRuleGroupId
-
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-
-   .. py:attribute:: BLOB
-      :value: "BLOB"
-
-   .. py:attribute:: DFS
-      :value: "DFS"
-
-   .. py:attribute:: MYSQL_SERVER
-      :value: "MYSQL_SERVER"
-
-   .. py:attribute:: SQL_SERVER
-      :value: "SQL_SERVER"
 
 .. autoclass:: NccAzureServiceEndpointRule
    :members:
@@ -555,6 +621,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NetworkConnectivityConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: NetworkPolicyEgress
    :members:
    :undoc-members:
 
@@ -754,6 +824,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateLlmProxyPartnerPoweredAccountRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateLlmProxyPartnerPoweredEnforceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateLlmProxyPartnerPoweredWorkspaceRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateNotificationDestinationRequest
    :members:
    :undoc-members:
@@ -762,10 +844,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdatePrivateEndpointRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 
 .. autoclass:: UpdateRestrictWorkspaceAdminsSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: WorkspaceNetworkOption
    :members:
    :undoc-members:

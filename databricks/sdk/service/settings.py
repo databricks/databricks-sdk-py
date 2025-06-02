@@ -66,6 +66,49 @@ class AccountIpAccessEnable:
 
 
 @dataclass
+class AccountNetworkPolicy:
+    account_id: Optional[str] = None
+    """The associated account ID for this Network Policy object."""
+
+    egress: Optional[NetworkPolicyEgress] = None
+    """The network policies applying for egress traffic."""
+
+    network_policy_id: Optional[str] = None
+    """The unique identifier for the network policy."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountNetworkPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.egress:
+            body["egress"] = self.egress.as_dict()
+        if self.network_policy_id is not None:
+            body["network_policy_id"] = self.network_policy_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountNetworkPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.egress:
+            body["egress"] = self.egress
+        if self.network_policy_id is not None:
+            body["network_policy_id"] = self.network_policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountNetworkPolicy:
+        """Deserializes the AccountNetworkPolicy from a dictionary."""
+        return cls(
+            account_id=d.get("account_id", None),
+            egress=_from_dict(d, "egress", NetworkPolicyEgress),
+            network_policy_id=d.get("network_policy_id", None),
+        )
+
+
+@dataclass
 class AibiDashboardEmbeddingAccessPolicy:
     access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
 
@@ -635,6 +678,7 @@ class ComplianceStandard(Enum):
     IRAP_PROTECTED = "IRAP_PROTECTED"
     ISMAP = "ISMAP"
     ITAR_EAR = "ITAR_EAR"
+    K_FSI = "K_FSI"
     NONE = "NONE"
     PCI_DSS = "PCI_DSS"
 
@@ -768,18 +812,20 @@ class CreateIpAccessListResponse:
 
 
 @dataclass
-class CreateNetworkConnectivityConfigRequest:
+class CreateNetworkConnectivityConfiguration:
+    """Properties of the new network connectivity configuration."""
+
     name: str
     """The name of the network connectivity configuration. The name can contain alphanumeric
     characters, hyphens, and underscores. The length must be between 3 and 30 characters. The name
-    must match the regular expression `^[0-9a-zA-Z-_]{3,30}$`."""
+    must match the regular expression ^[0-9a-zA-Z-_]{3,30}$"""
 
     region: str
     """The region for the network connectivity configuration. Only workspaces in the same region can be
     attached to the network connectivity configuration."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateNetworkConnectivityConfigRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreateNetworkConnectivityConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
@@ -788,7 +834,7 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CreateNetworkConnectivityConfigRequest into a shallow dictionary of its immediate attributes."""
+        """Serializes the CreateNetworkConnectivityConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
@@ -797,8 +843,8 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfigRequest:
-        """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfiguration:
+        """Deserializes the CreateNetworkConnectivityConfiguration from a dictionary."""
         return cls(name=d.get("name", None), region=d.get("region", None))
 
 
@@ -913,57 +959,56 @@ class CreateOboTokenResponse:
 
 
 @dataclass
-class CreatePrivateEndpointRuleRequest:
+class CreatePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
     resource_id: str
     """The Azure resource ID of the target resource."""
 
-    group_id: CreatePrivateEndpointRuleRequestGroupId
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
 
-    network_connectivity_config_id: Optional[str] = None
-    """Your Network Connectvity Configuration ID."""
+    group_id: Optional[str] = None
+    """Only used by private endpoints to Azure first-party services. Enum: blob | dfs | sqlServer |
+    mysqlServer
+    
+    The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for blob and one for dfs."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreatePrivateEndpointRuleRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreatePrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
         if self.group_id is not None:
-            body["group_id"] = self.group_id.value
-        if self.network_connectivity_config_id is not None:
-            body["network_connectivity_config_id"] = self.network_connectivity_config_id
+            body["group_id"] = self.group_id
         if self.resource_id is not None:
             body["resource_id"] = self.resource_id
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePrivateEndpointRuleRequest into a shallow dictionary of its immediate attributes."""
+        """Serializes the CreatePrivateEndpointRule into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
         if self.group_id is not None:
             body["group_id"] = self.group_id
-        if self.network_connectivity_config_id is not None:
-            body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
             body["resource_id"] = self.resource_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRuleRequest:
-        """Deserializes the CreatePrivateEndpointRuleRequest from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRule:
+        """Deserializes the CreatePrivateEndpointRule from a dictionary."""
         return cls(
-            group_id=_enum(d, "group_id", CreatePrivateEndpointRuleRequestGroupId),
-            network_connectivity_config_id=d.get("network_connectivity_config_id", None),
+            domain_names=d.get("domain_names", None),
+            group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
         )
-
-
-class CreatePrivateEndpointRuleRequestGroupId(Enum):
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
-
-    BLOB = "blob"
-    DFS = "dfs"
-    MYSQL_SERVER = "mysqlServer"
-    SQL_SERVER = "sqlServer"
 
 
 @dataclass
@@ -1404,6 +1449,38 @@ class DeleteDisableLegacyFeaturesResponse:
 
 
 @dataclass
+class DeleteLlmProxyPartnerPoweredWorkspaceResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteLlmProxyPartnerPoweredWorkspaceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteLlmProxyPartnerPoweredWorkspaceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteLlmProxyPartnerPoweredWorkspaceResponse:
+        """Deserializes the DeleteLlmProxyPartnerPoweredWorkspaceResponse from a dictionary."""
+        return cls(etag=d.get("etag", None))
+
+
+@dataclass
 class DeleteNetworkConnectivityConfigurationResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
@@ -1418,6 +1495,24 @@ class DeleteNetworkConnectivityConfigurationResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkConnectivityConfigurationResponse:
         """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteNetworkPolicyRpcResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteNetworkPolicyRpcResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteNetworkPolicyRpcResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkPolicyRpcResponse:
+        """Deserializes the DeleteNetworkPolicyRpcResponse from a dictionary."""
         return cls()
 
 
@@ -1959,6 +2054,265 @@ class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinatio
     AZURE_STORAGE = "AZURE_STORAGE"
     CLOUDFLARE_R2 = "CLOUDFLARE_R2"
     GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicy:
+    restriction_mode: EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
+    """The restriction mode that controls how serverless workloads can access the internet."""
+
+    allowed_internet_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyInternetDestination]] = None
+    """List of internet destinations that serverless workloads are allowed to access when in
+    RESTRICTED_ACCESS mode."""
+
+    allowed_storage_destinations: Optional[List[EgressNetworkPolicyNetworkAccessPolicyStorageDestination]] = None
+    """List of storage destinations that serverless workloads are allowed to access when in
+    RESTRICTED_ACCESS mode."""
+
+    policy_enforcement: Optional[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement] = None
+    """Optional. When policy_enforcement is not provided, we default to ENFORCE_MODE_ALL_SERVICES"""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body["allowed_internet_destinations"] = [v.as_dict() for v in self.allowed_internet_destinations]
+        if self.allowed_storage_destinations:
+            body["allowed_storage_destinations"] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.policy_enforcement:
+            body["policy_enforcement"] = self.policy_enforcement.as_dict()
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body["allowed_internet_destinations"] = self.allowed_internet_destinations
+        if self.allowed_storage_destinations:
+            body["allowed_storage_destinations"] = self.allowed_storage_destinations
+        if self.policy_enforcement:
+            body["policy_enforcement"] = self.policy_enforcement
+        if self.restriction_mode is not None:
+            body["restriction_mode"] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicy:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicy from a dictionary."""
+        return cls(
+            allowed_internet_destinations=_repeated_dict(
+                d, "allowed_internet_destinations", EgressNetworkPolicyNetworkAccessPolicyInternetDestination
+            ),
+            allowed_storage_destinations=_repeated_dict(
+                d, "allowed_storage_destinations", EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+            ),
+            policy_enforcement=_from_dict(
+                d, "policy_enforcement", EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
+            ),
+            restriction_mode=_enum(d, "restriction_mode", EgressNetworkPolicyNetworkAccessPolicyRestrictionMode),
+        )
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicyInternetDestination:
+    """Users can specify accessible internet destinations when outbound access is restricted. We only
+    support DNS_NAME (FQDN format) destinations for the time being. Going forward we may extend
+    support to host names and IP addresses."""
+
+    destination: Optional[str] = None
+    """The internet destination to which access will be allowed. Format dependent on the destination
+    type."""
+
+    internet_destination_type: Optional[
+        EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType
+    ] = None
+    """The type of internet destination. Currently only DNS_NAME is supported."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyInternetDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.internet_destination_type is not None:
+            body["internet_destination_type"] = self.internet_destination_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyInternetDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None:
+            body["destination"] = self.destination
+        if self.internet_destination_type is not None:
+            body["internet_destination_type"] = self.internet_destination_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyInternetDestination:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicyInternetDestination from a dictionary."""
+        return cls(
+            destination=d.get("destination", None),
+            internet_destination_type=_enum(
+                d,
+                "internet_destination_type",
+                EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType,
+            ),
+        )
+
+
+class EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType(Enum):
+
+    DNS_NAME = "DNS_NAME"
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement:
+    dry_run_mode_product_filter: Optional[
+        List[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter]
+    ] = None
+    """When empty, it means dry run for all products. When non-empty, it means dry run for specific
+    products and for the other products, they will run in enforced mode."""
+
+    enforcement_mode: Optional[EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode] = None
+    """The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only
+    logs violations without blocking. When not specified, defaults to ENFORCED."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dry_run_mode_product_filter:
+            body["dry_run_mode_product_filter"] = [v.value for v in self.dry_run_mode_product_filter]
+        if self.enforcement_mode is not None:
+            body["enforcement_mode"] = self.enforcement_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dry_run_mode_product_filter:
+            body["dry_run_mode_product_filter"] = self.dry_run_mode_product_filter
+        if self.enforcement_mode is not None:
+            body["enforcement_mode"] = self.enforcement_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement from a dictionary."""
+        return cls(
+            dry_run_mode_product_filter=_repeated_enum(
+                d,
+                "dry_run_mode_product_filter",
+                EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter,
+            ),
+            enforcement_mode=_enum(
+                d, "enforcement_mode", EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode
+            ),
+        )
+
+
+class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter(Enum):
+    """The values should match the list of workloads used in networkconfig.proto"""
+
+    DBSQL = "DBSQL"
+    ML_SERVING = "ML_SERVING"
+
+
+class EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(Enum):
+
+    DRY_RUN = "DRY_RUN"
+    ENFORCED = "ENFORCED"
+
+
+class EgressNetworkPolicyNetworkAccessPolicyRestrictionMode(Enum):
+    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
+    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
+    only access explicitly allowed internet and storage destinations, as well as UC connections and
+    external locations."""
+
+    FULL_ACCESS = "FULL_ACCESS"
+    RESTRICTED_ACCESS = "RESTRICTED_ACCESS"
+
+
+@dataclass
+class EgressNetworkPolicyNetworkAccessPolicyStorageDestination:
+    """Users can specify accessible storage destinations."""
+
+    azure_storage_account: Optional[str] = None
+    """The Azure storage account name."""
+
+    azure_storage_service: Optional[str] = None
+    """The Azure storage service type (blob, dfs, etc.)."""
+
+    bucket_name: Optional[str] = None
+
+    region: Optional[str] = None
+    """The region of the S3 bucket."""
+
+    storage_destination_type: Optional[
+        EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType
+    ] = None
+    """The type of storage destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyStorageDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.azure_storage_account is not None:
+            body["azure_storage_account"] = self.azure_storage_account
+        if self.azure_storage_service is not None:
+            body["azure_storage_service"] = self.azure_storage_service
+        if self.bucket_name is not None:
+            body["bucket_name"] = self.bucket_name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_destination_type is not None:
+            body["storage_destination_type"] = self.storage_destination_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyNetworkAccessPolicyStorageDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.azure_storage_account is not None:
+            body["azure_storage_account"] = self.azure_storage_account
+        if self.azure_storage_service is not None:
+            body["azure_storage_service"] = self.azure_storage_service
+        if self.bucket_name is not None:
+            body["bucket_name"] = self.bucket_name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_destination_type is not None:
+            body["storage_destination_type"] = self.storage_destination_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EgressNetworkPolicyNetworkAccessPolicyStorageDestination:
+        """Deserializes the EgressNetworkPolicyNetworkAccessPolicyStorageDestination from a dictionary."""
+        return cls(
+            azure_storage_account=d.get("azure_storage_account", None),
+            azure_storage_service=d.get("azure_storage_service", None),
+            bucket_name=d.get("bucket_name", None),
+            region=d.get("region", None),
+            storage_destination_type=_enum(
+                d,
+                "storage_destination_type",
+                EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType,
+            ),
+        )
+
+
+class EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType(Enum):
+
+    AWS_S3 = "AWS_S3"
+    AZURE_STORAGE = "AZURE_STORAGE"
+    GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE"
+
+
+class EgressResourceType(Enum):
+    """The target resources that are supported by Network Connectivity Config. Note: some egress types
+    can support general types that are not defined in EgressResourceType. E.g.: Azure private
+    endpoint supports private link enabled Azure services."""
+
+    AZURE_BLOB_STORAGE = "AZURE_BLOB_STORAGE"
 
 
 @dataclass
@@ -2721,6 +3075,8 @@ class ListIpAccessListResponse:
 
 @dataclass
 class ListNccAzurePrivateEndpointRulesResponse:
+    """The private endpoint rule list was successfully retrieved."""
+
     items: Optional[List[NccAzurePrivateEndpointRule]] = None
 
     next_page_token: Optional[str] = None
@@ -2756,6 +3112,8 @@ class ListNccAzurePrivateEndpointRulesResponse:
 
 @dataclass
 class ListNetworkConnectivityConfigurationsResponse:
+    """The network connectivity configuration list was successfully retrieved."""
+
     items: Optional[List[NetworkConnectivityConfiguration]] = None
 
     next_page_token: Optional[str] = None
@@ -2786,6 +3144,41 @@ class ListNetworkConnectivityConfigurationsResponse:
         return cls(
             items=_repeated_dict(d, "items", NetworkConnectivityConfiguration),
             next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class ListNetworkPoliciesResponse:
+    items: Optional[List[AccountNetworkPolicy]] = None
+    """List of network policies."""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to get the next page of results. If null, there are no more results to
+    show."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListNetworkPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.items:
+            body["items"] = [v.as_dict() for v in self.items]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNetworkPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.items:
+            body["items"] = self.items
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListNetworkPoliciesResponse:
+        """Deserializes the ListNetworkPoliciesResponse from a dictionary."""
+        return cls(
+            items=_repeated_dict(d, "items", AccountNetworkPolicy), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -2929,6 +3322,156 @@ class ListType(Enum):
 
 
 @dataclass
+class LlmProxyPartnerPoweredAccount:
+    boolean_val: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredAccount into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredAccount into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LlmProxyPartnerPoweredAccount:
+        """Deserializes the LlmProxyPartnerPoweredAccount from a dictionary."""
+        return cls(
+            boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            etag=d.get("etag", None),
+            setting_name=d.get("setting_name", None),
+        )
+
+
+@dataclass
+class LlmProxyPartnerPoweredEnforce:
+    boolean_val: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredEnforce into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredEnforce into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LlmProxyPartnerPoweredEnforce:
+        """Deserializes the LlmProxyPartnerPoweredEnforce from a dictionary."""
+        return cls(
+            boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            etag=d.get("etag", None),
+            setting_name=d.get("setting_name", None),
+        )
+
+
+@dataclass
+class LlmProxyPartnerPoweredWorkspace:
+    boolean_val: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredWorkspace into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LlmProxyPartnerPoweredWorkspace into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LlmProxyPartnerPoweredWorkspace:
+        """Deserializes the LlmProxyPartnerPoweredWorkspace from a dictionary."""
+        return cls(
+            boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            etag=d.get("etag", None),
+            setting_name=d.get("setting_name", None),
+        )
+
+
+@dataclass
 class MicrosoftTeamsConfig:
     url: Optional[str] = None
     """[Input-Only] URL for Microsoft Teams."""
@@ -2991,17 +3534,19 @@ class NccAwsStableIpRule:
 
 @dataclass
 class NccAzurePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
     connection_state: Optional[NccAzurePrivateEndpointRuleConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
-    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect.
-    
-    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
-    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
-    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
-    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
-    removed by the private link resource owner, the private endpoint becomes informative and should
-    be deleted for clean-up."""
+    the connection state is ESTABLISHED. Remember that you must approve new endpoints on your
+    resources in the Azure portal before they take effect. The possible values are: - INIT:
+    (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has
+    been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to
+    use in your serverless compute resources. - REJECTED: Connection was rejected by the private
+    link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner,
+    the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the
+    endpoint was created but not approved in 14 days, it will be EXPIRED."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -3012,12 +3557,21 @@ class NccAzurePrivateEndpointRule:
     deactivated_at: Optional[int] = None
     """Time in epoch milliseconds when this object was deactivated."""
 
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
+
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
 
-    group_id: Optional[NccAzurePrivateEndpointRuleGroupId] = None
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
+    group_id: Optional[str] = None
+    """Only used by private endpoints to Azure first-party services. Enum: blob | dfs | sqlServer |
+    mysqlServer
+    
+    The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
+    storage (root DBFS), you need two endpoints, one for blob and one for dfs."""
 
     network_connectivity_config_id: Optional[str] = None
     """The ID of a network connectivity configuration, which is the parent resource of this private
@@ -3043,10 +3597,12 @@ class NccAzurePrivateEndpointRule:
             body["deactivated"] = self.deactivated
         if self.deactivated_at is not None:
             body["deactivated_at"] = self.deactivated_at
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.group_id is not None:
-            body["group_id"] = self.group_id.value
+            body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_id is not None:
@@ -3068,6 +3624,8 @@ class NccAzurePrivateEndpointRule:
             body["deactivated"] = self.deactivated
         if self.deactivated_at is not None:
             body["deactivated_at"] = self.deactivated_at
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
         if self.group_id is not None:
@@ -3090,8 +3648,9 @@ class NccAzurePrivateEndpointRule:
             creation_time=d.get("creation_time", None),
             deactivated=d.get("deactivated", None),
             deactivated_at=d.get("deactivated_at", None),
+            domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
-            group_id=_enum(d, "group_id", NccAzurePrivateEndpointRuleGroupId),
+            group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
             rule_id=d.get("rule_id", None),
@@ -3100,32 +3659,13 @@ class NccAzurePrivateEndpointRule:
 
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
-    """The current status of this private endpoint. The private endpoint rules are effective only if
-    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect.
-
-    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
-    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
-    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
-    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
-    removed by the private link resource owner, the private endpoint becomes informative and should
-    be deleted for clean-up."""
 
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
+    EXPIRED = "EXPIRED"
     INIT = "INIT"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
-
-
-class NccAzurePrivateEndpointRuleGroupId(Enum):
-    """The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`."""
-
-    BLOB = "blob"
-    DFS = "dfs"
-    MYSQL_SERVER = "mysqlServer"
-    SQL_SERVER = "sqlServer"
 
 
 @dataclass
@@ -3138,9 +3678,9 @@ class NccAzureServiceEndpointRule:
     resources."""
 
     target_region: Optional[str] = None
-    """The Azure region in which this service endpoint rule applies."""
+    """The Azure region in which this service endpoint rule applies.."""
 
-    target_services: Optional[List[str]] = None
+    target_services: Optional[List[EgressResourceType]] = None
     """The Azure services to which this service endpoint rule applies to."""
 
     def as_dict(self) -> dict:
@@ -3151,7 +3691,7 @@ class NccAzureServiceEndpointRule:
         if self.target_region is not None:
             body["target_region"] = self.target_region
         if self.target_services:
-            body["target_services"] = [v for v in self.target_services]
+            body["target_services"] = [v.value for v in self.target_services]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3171,15 +3711,12 @@ class NccAzureServiceEndpointRule:
         return cls(
             subnets=d.get("subnets", None),
             target_region=d.get("target_region", None),
-            target_services=d.get("target_services", None),
+            target_services=_repeated_enum(d, "target_services", EgressResourceType),
         )
 
 
 @dataclass
 class NccEgressConfig:
-    """The network connectivity rules that apply to network traffic from your serverless compute
-    resources."""
-
     default_rules: Optional[NccEgressDefaultRules] = None
     """The network connectivity rules that are applied by default without resource specific
     configurations. You can find the stable network information of your serverless compute resources
@@ -3218,9 +3755,7 @@ class NccEgressConfig:
 
 @dataclass
 class NccEgressDefaultRules:
-    """The network connectivity rules that are applied by default without resource specific
-    configurations. You can find the stable network information of your serverless compute resources
-    here."""
+    """Default rules don't have specific targets."""
 
     aws_stable_ip_rule: Optional[NccAwsStableIpRule] = None
     """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
@@ -3259,8 +3794,7 @@ class NccEgressDefaultRules:
 
 @dataclass
 class NccEgressTargetRules:
-    """The network connectivity rules that configured for each destinations. These rules override
-    default rules."""
+    """Target rule controls the egress rules that are dedicated to specific resources."""
 
     azure_private_endpoint_rules: Optional[List[NccAzurePrivateEndpointRule]] = None
 
@@ -3288,6 +3822,8 @@ class NccEgressTargetRules:
 
 @dataclass
 class NetworkConnectivityConfiguration:
+    """Properties of the new network connectivity configuration."""
+
     account_id: Optional[str] = None
     """The Databricks account ID that hosts the credential."""
 
@@ -3301,7 +3837,7 @@ class NetworkConnectivityConfiguration:
     name: Optional[str] = None
     """The name of the network connectivity configuration. The name can contain alphanumeric
     characters, hyphens, and underscores. The length must be between 3 and 30 characters. The name
-    must match the regular expression `^[0-9a-zA-Z-_]{3,30}$`."""
+    must match the regular expression ^[0-9a-zA-Z-_]{3,30}$"""
 
     network_connectivity_config_id: Optional[str] = None
     """Databricks network connectivity configuration ID."""
@@ -3363,6 +3899,37 @@ class NetworkConnectivityConfiguration:
             region=d.get("region", None),
             updated_time=d.get("updated_time", None),
         )
+
+
+@dataclass
+class NetworkPolicyEgress:
+    """The network policies applying for egress traffic. This message is used by the UI/REST API. We
+    translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
+    the format expected by the dataplane, see networkconfig.textproto). This policy should be
+    consistent with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details see
+    API-design: https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/"""
+
+    network_access: Optional[EgressNetworkPolicyNetworkAccessPolicy] = None
+    """The access policy enforced for egress traffic to the internet."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkPolicyEgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.network_access:
+            body["network_access"] = self.network_access.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkPolicyEgress into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.network_access:
+            body["network_access"] = self.network_access
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkPolicyEgress:
+        """Deserializes the NetworkPolicyEgress from a dictionary."""
+        return cls(network_access=_from_dict(d, "network_access", EgressNetworkPolicyNetworkAccessPolicy))
 
 
 @dataclass
@@ -5106,6 +5673,162 @@ class UpdateIpAccessList:
 
 
 @dataclass
+class UpdateLlmProxyPartnerPoweredAccountRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: LlmProxyPartnerPoweredAccount
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredAccountRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredAccountRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredAccountRequest:
+        """Deserializes the UpdateLlmProxyPartnerPoweredAccountRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredAccount),
+        )
+
+
+@dataclass
+class UpdateLlmProxyPartnerPoweredEnforceRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: LlmProxyPartnerPoweredEnforce
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredEnforceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredEnforceRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredEnforceRequest:
+        """Deserializes the UpdateLlmProxyPartnerPoweredEnforceRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredEnforce),
+        )
+
+
+@dataclass
+class UpdateLlmProxyPartnerPoweredWorkspaceRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: LlmProxyPartnerPoweredWorkspace
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None:
+            body["allow_missing"] = self.allow_missing
+        if self.field_mask is not None:
+            body["field_mask"] = self.field_mask
+        if self.setting:
+            body["setting"] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredWorkspaceRequest:
+        """Deserializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest from a dictionary."""
+        return cls(
+            allow_missing=d.get("allow_missing", None),
+            field_mask=d.get("field_mask", None),
+            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredWorkspace),
+        )
+
+
+@dataclass
 class UpdateNotificationDestinationRequest:
     config: Optional[Config] = None
     """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
@@ -5199,6 +5922,37 @@ class UpdatePersonalComputeSettingRequest:
 
 
 @dataclass
+class UpdatePrivateEndpointRule:
+    """Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure
+    portal after initialization."""
+
+    domain_names: Optional[List[str]] = None
+    """Only used by private endpoints to customer-managed resources.
+    
+    Domain names of target private link service. When updating this field, the full list of target
+    domain_names must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePrivateEndpointRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.domain_names:
+            body["domain_names"] = [v for v in self.domain_names]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePrivateEndpointRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.domain_names:
+            body["domain_names"] = self.domain_names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePrivateEndpointRule:
+        """Deserializes the UpdatePrivateEndpointRule from a dictionary."""
+        return cls(domain_names=d.get("domain_names", None))
+
+
+@dataclass
 class UpdateResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
@@ -5269,6 +6023,40 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
 
 
 WorkspaceConf = Dict[str, str]
+
+
+@dataclass
+class WorkspaceNetworkOption:
+    network_policy_id: Optional[str] = None
+    """The network policy ID to apply to the workspace. This controls the network access rules for all
+    serverless compute resources in the workspace. Each workspace can only be linked to one policy
+    at a time. If no policy is explicitly assigned, the workspace will use 'default-policy'."""
+
+    workspace_id: Optional[int] = None
+    """The workspace ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceNetworkOption into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.network_policy_id is not None:
+            body["network_policy_id"] = self.network_policy_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkspaceNetworkOption into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.network_policy_id is not None:
+            body["network_policy_id"] = self.network_policy_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceNetworkOption:
+        """Deserializes the WorkspaceNetworkOption from a dictionary."""
+        return cls(network_policy_id=d.get("network_policy_id", None), workspace_id=d.get("workspace_id", None))
 
 
 class AccountIpAccessListsAPI:
@@ -5521,6 +6309,8 @@ class AccountSettingsAPI:
         self._disable_legacy_features = DisableLegacyFeaturesAPI(self._api)
         self._enable_ip_access_lists = EnableIpAccessListsAPI(self._api)
         self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
+        self._llm_proxy_partner_powered_account = LlmProxyPartnerPoweredAccountAPI(self._api)
+        self._llm_proxy_partner_powered_enforce = LlmProxyPartnerPoweredEnforceAPI(self._api)
         self._personal_compute = PersonalComputeAPI(self._api)
 
     @property
@@ -5542,6 +6332,16 @@ class AccountSettingsAPI:
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
         """The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces."""
         return self._esm_enablement_account
+
+    @property
+    def llm_proxy_partner_powered_account(self) -> LlmProxyPartnerPoweredAccountAPI:
+        """Determines if partner powered models are enabled or not for a specific account."""
+        return self._llm_proxy_partner_powered_account
+
+    @property
+    def llm_proxy_partner_powered_enforce(self) -> LlmProxyPartnerPoweredEnforceAPI:
+        """Determines if the account-level partner-powered setting value is enforced upon the workspace-level partner-powered setting."""
+        return self._llm_proxy_partner_powered_enforce
 
     @property
     def personal_compute(self) -> PersonalComputeAPI:
@@ -6278,8 +7078,14 @@ class DisableLegacyAccessAPI:
 
 
 class DisableLegacyDbfsAPI:
-    """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
-    mounts). When the setting is off, all DBFS functionality is enabled"""
+    """Disabling legacy DBFS has the following implications:
+
+    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
+    Databricks Runtime versions prior to 13.3LTS.
+
+    When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
+    Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
+    all-purpose compute clusters and SQL warehouses."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6490,16 +7296,16 @@ class DisableLegacyFeaturesAPI:
 
 
 class EnableExportNotebookAPI:
-    """Controls whether users can export notebooks and files from the Workspace. By default, this setting is
+    """Controls whether users can export notebooks and files from the Workspace UI. By default, this setting is
     enabled."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def get_enable_export_notebook(self) -> EnableExportNotebook:
-        """Get the Enable Export Notebook setting.
+        """Get the Notebook and File exporting setting.
 
-        Gets the Enable Export Notebook setting.
+        Gets the Notebook and File exporting setting.
 
         :returns: :class:`EnableExportNotebook`
         """
@@ -6514,10 +7320,10 @@ class EnableExportNotebookAPI:
     def patch_enable_export_notebook(
         self, allow_missing: bool, setting: EnableExportNotebook, field_mask: str
     ) -> EnableExportNotebook:
-        """Update the Enable Export Notebook setting.
+        """Update the Notebook and File exporting setting.
 
-        Updates the Enable Export Notebook setting. The model follows eventual consistency, which means the
-        get after the update operation might receive stale values for some time.
+        Updates the Notebook and File exporting setting. The model follows eventual consistency, which means
+        the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -6670,9 +7476,9 @@ class EnableNotebookTableClipboardAPI:
         self._api = api_client
 
     def get_enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboard:
-        """Get the Enable Notebook Table Clipboard setting.
+        """Get the Results Table Clipboard features setting.
 
-        Gets the Enable Notebook Table Clipboard setting.
+        Gets the Results Table Clipboard features setting.
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
@@ -6689,9 +7495,9 @@ class EnableNotebookTableClipboardAPI:
     def patch_enable_notebook_table_clipboard(
         self, allow_missing: bool, setting: EnableNotebookTableClipboard, field_mask: str
     ) -> EnableNotebookTableClipboard:
-        """Update the Enable Notebook Table Clipboard setting.
+        """Update the Results Table Clipboard features setting.
 
-        Updates the Enable Notebook Table Clipboard setting. The model follows eventual consistency, which
+        Updates the Results Table Clipboard features setting. The model follows eventual consistency, which
         means the get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
@@ -6735,9 +7541,9 @@ class EnableResultsDownloadingAPI:
         self._api = api_client
 
     def get_enable_results_downloading(self) -> EnableResultsDownloading:
-        """Get the Enable Results Downloading setting.
+        """Get the Notebook results download setting.
 
-        Gets the Enable Results Downloading setting.
+        Gets the Notebook results download setting.
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -6752,10 +7558,10 @@ class EnableResultsDownloadingAPI:
     def patch_enable_results_downloading(
         self, allow_missing: bool, setting: EnableResultsDownloading, field_mask: str
     ) -> EnableResultsDownloading:
-        """Update the Enable Results Downloading setting.
+        """Update the Notebook results download setting.
 
-        Updates the Enable Results Downloading setting. The model follows eventual consistency, which means
-        the get after the update operation might receive stale values for some time.
+        Updates the Notebook results download setting. The model follows eventual consistency, which means the
+        get after the update operation might receive stale values for some time.
 
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -7181,31 +7987,304 @@ class IpAccessListsAPI:
         self._api.do("PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
 
-class NetworkConnectivityAPI:
-    """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources."""
+class LlmProxyPartnerPoweredAccountAPI:
+    """Determines if partner powered models are enabled or not for a specific account"""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_network_connectivity_configuration(self, name: str, region: str) -> NetworkConnectivityConfiguration:
+    def get(self, *, etag: Optional[str] = None) -> LlmProxyPartnerPoweredAccount:
+        """Get the enable partner powered AI features account setting.
+
+        Gets the enable partner powered AI features account setting.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`LlmProxyPartnerPoweredAccount`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/settings/types/llm_proxy_partner_powered/names/default",
+            query=query,
+            headers=headers,
+        )
+        return LlmProxyPartnerPoweredAccount.from_dict(res)
+
+    def update(
+        self, allow_missing: bool, setting: LlmProxyPartnerPoweredAccount, field_mask: str
+    ) -> LlmProxyPartnerPoweredAccount:
+        """Update the enable partner powered AI features account setting.
+
+        Updates the enable partner powered AI features account setting.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`LlmProxyPartnerPoweredAccount`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`LlmProxyPartnerPoweredAccount`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/settings/types/llm_proxy_partner_powered/names/default",
+            body=body,
+            headers=headers,
+        )
+        return LlmProxyPartnerPoweredAccount.from_dict(res)
+
+
+class LlmProxyPartnerPoweredEnforceAPI:
+    """Determines if the account-level partner-powered setting value is enforced upon the workspace-level
+    partner-powered setting"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> LlmProxyPartnerPoweredEnforce:
+        """Get the enforcement status of partner powered AI features account setting.
+
+        Gets the enforcement status of partner powered AI features account setting.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`LlmProxyPartnerPoweredEnforce`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/settings/types/llm_proxy_partner_powered_enforce/names/default",
+            query=query,
+            headers=headers,
+        )
+        return LlmProxyPartnerPoweredEnforce.from_dict(res)
+
+    def update(
+        self, allow_missing: bool, setting: LlmProxyPartnerPoweredEnforce, field_mask: str
+    ) -> LlmProxyPartnerPoweredEnforce:
+        """Update the enforcement status of partner powered AI features account setting.
+
+        Updates the enable enforcement status of partner powered AI features account setting.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`LlmProxyPartnerPoweredEnforce`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`LlmProxyPartnerPoweredEnforce`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/settings/types/llm_proxy_partner_powered_enforce/names/default",
+            body=body,
+            headers=headers,
+        )
+        return LlmProxyPartnerPoweredEnforce.from_dict(res)
+
+
+class LlmProxyPartnerPoweredWorkspaceAPI:
+    """Determines if partner powered models are enabled or not for a specific workspace"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteLlmProxyPartnerPoweredWorkspaceResponse:
+        """Delete the enable partner powered AI features workspace setting.
+
+        Reverts the enable partner powered AI features workspace setting to its default value.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`DeleteLlmProxyPartnerPoweredWorkspaceResponse`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "DELETE", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
+        )
+        return DeleteLlmProxyPartnerPoweredWorkspaceResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> LlmProxyPartnerPoweredWorkspace:
+        """Get the enable partner powered AI features workspace setting.
+
+        Gets the enable partner powered AI features workspace setting.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`LlmProxyPartnerPoweredWorkspace`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
+        )
+        return LlmProxyPartnerPoweredWorkspace.from_dict(res)
+
+    def update(
+        self, allow_missing: bool, setting: LlmProxyPartnerPoweredWorkspace, field_mask: str
+    ) -> LlmProxyPartnerPoweredWorkspace:
+        """Update the enable partner powered AI features workspace setting.
+
+        Updates the enable partner powered AI features workspace setting.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`LlmProxyPartnerPoweredWorkspace`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`LlmProxyPartnerPoweredWorkspace`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", body=body, headers=headers
+        )
+        return LlmProxyPartnerPoweredWorkspace.from_dict(res)
+
+
+class NetworkConnectivityAPI:
+    """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
+    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
+    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
+    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
+    Azure Private Link. See [configure serverless secure connectivity].
+
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+    """
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_network_connectivity_configuration(
+        self, network_connectivity_config: CreateNetworkConnectivityConfiguration
+    ) -> NetworkConnectivityConfiguration:
         """Create a network connectivity configuration.
 
-        :param name: str
-          The name of the network connectivity configuration. The name can contain alphanumeric characters,
-          hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
-          regular expression `^[0-9a-zA-Z-_]{3,30}$`.
-        :param region: str
-          The region for the network connectivity configuration. Only workspaces in the same region can be
-          attached to the network connectivity configuration.
+        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
+        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
+        Databricks managed private endpoints so that Databricks serverless compute resources privately access
+        your resources.
+
+        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
+        workspaces to the new network connectivity configuration. You can share one network connectivity
+        configuration with multiple workspaces from the same Azure region within the same Databricks account.
+        See [configure serverless secure connectivity].
+
+        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+
+        :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
+          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
-        body = {}
-        if name is not None:
-            body["name"] = name
-        if region is not None:
-            body["region"] = region
+        body = network_connectivity_config.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7217,7 +8296,7 @@ class NetworkConnectivityAPI:
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def create_private_endpoint_rule(
-        self, network_connectivity_config_id: str, resource_id: str, group_id: CreatePrivateEndpointRuleRequestGroupId
+        self, network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule
     ) -> NccAzurePrivateEndpointRule:
         """Create a private endpoint rule.
 
@@ -7232,20 +8311,14 @@ class NetworkConnectivityAPI:
         [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
-        :param resource_id: str
-          The Azure resource ID of the target resource.
-        :param group_id: :class:`CreatePrivateEndpointRuleRequestGroupId`
-          The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-          storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
 
         :returns: :class:`NccAzurePrivateEndpointRule`
         """
-        body = {}
-        if group_id is not None:
-            body["group_id"] = group_id.value
-        if resource_id is not None:
-            body["resource_id"] = resource_id
+        body = private_endpoint_rule.as_dict()
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -7265,7 +8338,7 @@ class NetworkConnectivityAPI:
         Deletes a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
 
         """
@@ -7317,7 +8390,7 @@ class NetworkConnectivityAPI:
         Gets a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
@@ -7336,7 +8409,7 @@ class NetworkConnectivityAPI:
     def get_private_endpoint_rule(
         self, network_connectivity_config_id: str, private_endpoint_rule_id: str
     ) -> NccAzurePrivateEndpointRule:
-        """Get a private endpoint rule.
+        """Gets a private endpoint rule.
 
         Gets the private endpoint rule.
 
@@ -7428,6 +8501,180 @@ class NetworkConnectivityAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def update_ncc_azure_private_endpoint_rule_public(
+        self,
+        network_connectivity_config_id: str,
+        private_endpoint_rule_id: str,
+        private_endpoint_rule: UpdatePrivateEndpointRule,
+        update_mask: str,
+    ) -> NccAzurePrivateEndpointRule:
+        """Update a private endpoint rule.
+
+        Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources
+        is allowed to be updated.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+        :returns: :class:`NccAzurePrivateEndpointRule`
+        """
+        body = private_endpoint_rule.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return NccAzurePrivateEndpointRule.from_dict(res)
+
+
+class NetworkPoliciesAPI:
+    """These APIs manage network policies for this account. Network policies control which network destinations
+    can be accessed from the Databricks environment. Each Databricks account includes a default policy named
+    'default-policy'. 'default-policy' is associated with any workspace lacking an explicit network policy
+    assignment, and is automatically associated with each newly created workspace. 'default-policy' is
+    reserved and cannot be deleted, but it can be updated to customize the default network access rules for
+    your account."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_network_policy_rpc(self, network_policy: AccountNetworkPolicy) -> AccountNetworkPolicy:
+        """Create a network policy.
+
+        Creates a new network policy to manage which network destinations can be accessed from the Databricks
+        environment.
+
+        :param network_policy: :class:`AccountNetworkPolicy`
+
+        :returns: :class:`AccountNetworkPolicy`
+        """
+        body = network_policy.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/network-policies", body=body, headers=headers
+        )
+        return AccountNetworkPolicy.from_dict(res)
+
+    def delete_network_policy_rpc(self, network_policy_id: str):
+        """Delete a network policy.
+
+        Deletes a network policy. Cannot be called on 'default-policy'.
+
+        :param network_policy_id: str
+          The unique identifier of the network policy to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/network-policies/{network_policy_id}", headers=headers
+        )
+
+    def get_network_policy_rpc(self, network_policy_id: str) -> AccountNetworkPolicy:
+        """Get a network policy.
+
+        Gets a network policy.
+
+        :param network_policy_id: str
+          The unique identifier of the network policy to retrieve.
+
+        :returns: :class:`AccountNetworkPolicy`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/network-policies/{network_policy_id}", headers=headers
+        )
+        return AccountNetworkPolicy.from_dict(res)
+
+    def list_network_policies_rpc(self, *, page_token: Optional[str] = None) -> Iterator[AccountNetworkPolicy]:
+        """List network policies.
+
+        Gets an array of network policies.
+
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`AccountNetworkPolicy`
+        """
+
+        query = {}
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/accounts/{self._api.account_id}/network-policies", query=query, headers=headers
+            )
+            if "items" in json:
+                for v in json["items"]:
+                    yield AccountNetworkPolicy.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_network_policy_rpc(
+        self, network_policy_id: str, network_policy: AccountNetworkPolicy
+    ) -> AccountNetworkPolicy:
+        """Update a network policy.
+
+        Updates a network policy. This allows you to modify the configuration of a network policy.
+
+        :param network_policy_id: str
+          The unique identifier for the network policy.
+        :param network_policy: :class:`AccountNetworkPolicy`
+
+        :returns: :class:`AccountNetworkPolicy`
+        """
+        body = network_policy.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PUT",
+            f"/api/2.0/accounts/{self._api.account_id}/network-policies/{network_policy_id}",
+            body=body,
+            headers=headers,
+        )
+        return AccountNetworkPolicy.from_dict(res)
 
 
 class NotificationDestinationsAPI:
@@ -7805,6 +9052,7 @@ class SettingsAPI:
         self._enable_notebook_table_clipboard = EnableNotebookTableClipboardAPI(self._api)
         self._enable_results_downloading = EnableResultsDownloadingAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
+        self._llm_proxy_partner_powered_workspace = LlmProxyPartnerPoweredWorkspaceAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
     @property
@@ -7839,12 +9087,12 @@ class SettingsAPI:
 
     @property
     def disable_legacy_dbfs(self) -> DisableLegacyDbfsAPI:
-        """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts)."""
+        """Disabling legacy DBFS has the following implications: 1."""
         return self._disable_legacy_dbfs
 
     @property
     def enable_export_notebook(self) -> EnableExportNotebookAPI:
-        """Controls whether users can export notebooks and files from the Workspace."""
+        """Controls whether users can export notebooks and files from the Workspace UI."""
         return self._enable_export_notebook
 
     @property
@@ -7861,6 +9109,11 @@ class SettingsAPI:
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:
         """Controls whether enhanced security monitoring is enabled for the current workspace."""
         return self._enhanced_security_monitoring
+
+    @property
+    def llm_proxy_partner_powered_workspace(self) -> LlmProxyPartnerPoweredWorkspaceAPI:
+        """Determines if partner powered models are enabled or not for a specific workspace."""
+        return self._llm_proxy_partner_powered_workspace
 
     @property
     def restrict_workspace_admins(self) -> RestrictWorkspaceAdminsAPI:
@@ -8158,3 +9411,64 @@ class WorkspaceConfAPI:
         }
 
         self._api.do("PATCH", "/api/2.0/workspace-conf", body=contents, headers=headers)
+
+
+class WorkspaceNetworkConfigurationAPI:
+    """These APIs allow configuration of network settings for Databricks workspaces. Each workspace is always
+    associated with exactly one network policy that controls which network destinations can be accessed from
+    the Databricks environment. By default, workspaces are associated with the 'default-policy' network
+    policy. You cannot create or delete a workspace's network configuration, only update it to associate the
+    workspace with a different policy."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_workspace_network_option_rpc(self, workspace_id: int) -> WorkspaceNetworkOption:
+        """Get workspace network configuration.
+
+        Gets the network configuration for a workspace. Every workspace has exactly one network policy
+        binding, with 'default-policy' used if no explicit assignment exists.
+
+        :param workspace_id: int
+          The workspace ID.
+
+        :returns: :class:`WorkspaceNetworkOption`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/network", headers=headers
+        )
+        return WorkspaceNetworkOption.from_dict(res)
+
+    def update_workspace_network_option_rpc(
+        self, workspace_id: int, workspace_network_option: WorkspaceNetworkOption
+    ) -> WorkspaceNetworkOption:
+        """Update workspace network configuration.
+
+        Updates the network configuration for a workspace. This operation associates the workspace with the
+        specified network policy. To revert to the default policy, specify 'default-policy' as the
+        network_policy_id.
+
+        :param workspace_id: int
+          The workspace ID.
+        :param workspace_network_option: :class:`WorkspaceNetworkOption`
+
+        :returns: :class:`WorkspaceNetworkOption`
+        """
+        body = workspace_network_option.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PUT",
+            f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/network",
+            body=body,
+            headers=headers,
+        )
+        return WorkspaceNetworkOption.from_dict(res)

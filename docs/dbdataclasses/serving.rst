@@ -124,6 +124,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreatePtEndpointRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateServingEndpoint
    :members:
    :undoc-members:
@@ -319,6 +323,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PtEndpointCoreConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: PtServedModel
+   :members:
+   :undoc-members:
+
 .. autoclass:: PutAiGatewayRequest
    :members:
    :undoc-members:
@@ -392,17 +404,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ServedModelInput
    :members:
    :undoc-members:
-
-.. py:class:: ServedModelInputWorkloadSize
-
-   .. py:attribute:: LARGE
-      :value: "LARGE"
-
-   .. py:attribute:: MEDIUM
-      :value: "MEDIUM"
-
-   .. py:attribute:: SMALL
-      :value: "SMALL"
 
 .. py:class:: ServedModelInputWorkloadType
 
@@ -532,6 +533,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "MULTIGPU_MEDIUM"
 
 .. autoclass:: TrafficConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateProvisionedThroughputEndpointConfigRequest
    :members:
    :undoc-members:
 

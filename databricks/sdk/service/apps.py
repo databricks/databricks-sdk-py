@@ -655,6 +655,8 @@ class AppResource:
 
     sql_warehouse: Optional[AppResourceSqlWarehouse] = None
 
+    uc_securable: Optional[AppResourceUcSecurable] = None
+
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -670,6 +672,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint.as_dict()
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse.as_dict()
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -687,6 +691,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable
         return body
 
     @classmethod
@@ -699,6 +705,7 @@ class AppResource:
             secret=_from_dict(d, "secret", AppResourceSecret),
             serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
+            uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
 
 
@@ -878,6 +885,57 @@ class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
     CAN_MANAGE = "CAN_MANAGE"
     CAN_USE = "CAN_USE"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppResourceUcSecurable:
+    securable_full_name: str
+
+    securable_type: AppResourceUcSecurableUcSecurableType
+
+    permission: AppResourceUcSecurableUcSecurablePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceUcSecurable:
+        """Deserializes the AppResourceUcSecurable from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", AppResourceUcSecurableUcSecurablePermission),
+            securable_full_name=d.get("securable_full_name", None),
+            securable_type=_enum(d, "securable_type", AppResourceUcSecurableUcSecurableType),
+        )
+
+
+class AppResourceUcSecurableUcSecurablePermission(Enum):
+
+    READ_VOLUME = "READ_VOLUME"
+    WRITE_VOLUME = "WRITE_VOLUME"
+
+
+class AppResourceUcSecurableUcSecurableType(Enum):
+
+    VOLUME = "VOLUME"
 
 
 class ApplicationState(Enum):
@@ -1173,12 +1231,12 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
-    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
+    def create(self, app: App, *, no_compute: Optional[bool] = None) -> Wait[App]:
         """Create an app.
 
         Creates a new app.
 
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
         :param no_compute: bool (optional)
           If true, the app will not be started after creation.
 
@@ -1198,9 +1256,7 @@ class AppsAPI:
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
-    def create_and_wait(
-        self, *, app: Optional[App] = None, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)
-    ) -> App:
+    def create_and_wait(self, app: App, *, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)) -> App:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
@@ -1221,14 +1277,14 @@ class AppsAPI:
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
-    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> Wait[AppDeployment]:
+    def deploy(self, app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]:
         """Create an app deployment.
 
         Creates an app deployment for the app with the supplied name.
 
         :param app_name: str
           The name of the app.
-        :param app_deployment: :class:`AppDeployment` (optional)
+        :param app_deployment: :class:`AppDeployment`
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
@@ -1249,7 +1305,7 @@ class AppsAPI:
         )
 
     def deploy_and_wait(
-        self, app_name: str, *, app_deployment: Optional[AppDeployment] = None, timeout=timedelta(minutes=20)
+        self, app_name: str, app_deployment: AppDeployment, timeout=timedelta(minutes=20)
     ) -> AppDeployment:
         return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
@@ -1466,7 +1522,7 @@ class AppsAPI:
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
-    def update(self, name: str, *, app: Optional[App] = None) -> App:
+    def update(self, name: str, app: App) -> App:
         """Update an app.
 
         Updates the app with the supplied name.
@@ -1474,7 +1530,7 @@ class AppsAPI:
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
           must be unique within the workspace.
-        :param app: :class:`App` (optional)
+        :param app: :class:`App`
 
         :returns: :class:`App`
         """

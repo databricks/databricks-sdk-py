@@ -22,7 +22,7 @@
 
         
 
-    .. py:method:: enable(metastore_id: str, schema_name: str)
+    .. py:method:: enable(metastore_id: str, schema_name: str [, catalog_name: Optional[str]])
 
         Enable a system schema.
 
@@ -33,6 +33,8 @@
           The metastore ID under which the system schema lives.
         :param schema_name: str
           Full name of the system schema.
+        :param catalog_name: str (optional)
+          the catalog for which the system schema is to enabled in
 
 
         

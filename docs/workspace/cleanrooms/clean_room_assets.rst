@@ -7,7 +7,7 @@
     Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the
     clean room.
 
-    .. py:method:: create(clean_room_name: str [, asset: Optional[CleanRoomAsset]]) -> CleanRoomAsset
+    .. py:method:: create(clean_room_name: str, asset: CleanRoomAsset) -> CleanRoomAsset
 
         Create an asset.
 
@@ -18,7 +18,7 @@
 
         :param clean_room_name: str
           Name of the clean room.
-        :param asset: :class:`CleanRoomAsset` (optional)
+        :param asset: :class:`CleanRoomAsset`
           Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`
@@ -68,7 +68,7 @@
         :returns: Iterator over :class:`CleanRoomAsset`
         
 
-    .. py:method:: update(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str [, asset: Optional[CleanRoomAsset]]) -> CleanRoomAsset
+    .. py:method:: update(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, asset: CleanRoomAsset) -> CleanRoomAsset
 
         Update an asset.
 
@@ -87,7 +87,7 @@
           *shared_catalog*.*shared_schema*.*asset_name*
 
           For notebooks, the name is the notebook file name.
-        :param asset: :class:`CleanRoomAsset` (optional)
+        :param asset: :class:`CleanRoomAsset`
           Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`

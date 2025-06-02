@@ -5,24 +5,37 @@
 .. py:class:: NetworkConnectivityAPI
 
     These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources.
+    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
+    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
+    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
+    Azure Private Link. See [configure serverless secure connectivity].
 
-    .. py:method:: create_network_connectivity_configuration(name: str, region: str) -> NetworkConnectivityConfiguration
+    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+    
+
+    .. py:method:: create_network_connectivity_configuration(network_connectivity_config: CreateNetworkConnectivityConfiguration) -> NetworkConnectivityConfiguration
 
         Create a network connectivity configuration.
 
-        :param name: str
-          The name of the network connectivity configuration. The name can contain alphanumeric characters,
-          hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
-          regular expression `^[0-9a-zA-Z-_]{3,30}$`.
-        :param region: str
-          The region for the network connectivity configuration. Only workspaces in the same region can be
-          attached to the network connectivity configuration.
+        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
+        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
+        Databricks managed private endpoints so that Databricks serverless compute resources privately access
+        your resources.
+
+        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
+        workspaces to the new network connectivity configuration. You can share one network connectivity
+        configuration with multiple workspaces from the same Azure region within the same Databricks account.
+        See [configure serverless secure connectivity].
+
+        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+
+        :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
+          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         
 
-    .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, resource_id: str, group_id: CreatePrivateEndpointRuleRequestGroupId) -> NccAzurePrivateEndpointRule
+    .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule) -> NccAzurePrivateEndpointRule
 
         Create a private endpoint rule.
 
@@ -37,12 +50,10 @@
         [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
-        :param resource_id: str
-          The Azure resource ID of the target resource.
-        :param group_id: :class:`CreatePrivateEndpointRuleRequestGroupId`
-          The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-          storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
 
         :returns: :class:`NccAzurePrivateEndpointRule`
         
@@ -54,7 +65,7 @@
         Deletes a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
 
         
@@ -83,14 +94,14 @@
         Gets a network connectivity configuration.
 
         :param network_connectivity_config_id: str
-          Your Network Connectvity Configuration ID.
+          Your Network Connectivity Configuration ID.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         
 
     .. py:method:: get_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule
 
-        Get a private endpoint rule.
+        Gets a private endpoint rule.
 
         Gets the private endpoint rule.
 
@@ -126,4 +137,28 @@
           Pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
+        
+
+    .. py:method:: update_ncc_azure_private_endpoint_rule_public(network_connectivity_config_id: str, private_endpoint_rule_id: str, private_endpoint_rule: UpdatePrivateEndpointRule, update_mask: str) -> NccAzurePrivateEndpointRule
+
+        Update a private endpoint rule.
+
+        Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources
+        is allowed to be updated.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
+          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
+          after initialization.
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+        :returns: :class:`NccAzurePrivateEndpointRule`
         
