@@ -246,13 +246,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   The type of connection.
+   Next Id: 31
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
+
+   .. py:attribute:: GA4_RAW_DATA
+      :value: "GA4_RAW_DATA"
 
    .. py:attribute:: GLUE
       :value: "GLUE"
@@ -272,8 +275,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
+   .. py:attribute:: POWER_BI
+      :value: "POWER_BI"
+
    .. py:attribute:: REDSHIFT
       :value: "REDSHIFT"
+
+   .. py:attribute:: SALESFORCE
+      :value: "SALESFORCE"
+
+   .. py:attribute:: SALESFORCE_DATA_CLOUD
+      :value: "SALESFORCE_DATA_CLOUD"
+
+   .. py:attribute:: SERVICENOW
+      :value: "SERVICENOW"
 
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
@@ -286,6 +301,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
+
+   .. py:attribute:: UNKNOWN_CONNECTION_TYPE
+      :value: "UNKNOWN_CONNECTION_TYPE"
+
+   .. py:attribute:: WORKDAY_RAAS
+      :value: "WORKDAY_RAAS"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -402,10 +423,40 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   The type of credential.
+   Next Id: 12
 
    .. py:attribute:: BEARER_TOKEN
       :value: "BEARER_TOKEN"
+
+   .. py:attribute:: OAUTH_ACCESS_TOKEN
+      :value: "OAUTH_ACCESS_TOKEN"
+
+   .. py:attribute:: OAUTH_M2M
+      :value: "OAUTH_M2M"
+
+   .. py:attribute:: OAUTH_REFRESH_TOKEN
+      :value: "OAUTH_REFRESH_TOKEN"
+
+   .. py:attribute:: OAUTH_RESOURCE_OWNER_PASSWORD
+      :value: "OAUTH_RESOURCE_OWNER_PASSWORD"
+
+   .. py:attribute:: OAUTH_U2M
+      :value: "OAUTH_U2M"
+
+   .. py:attribute:: OAUTH_U2M_MAPPING
+      :value: "OAUTH_U2M_MAPPING"
+
+   .. py:attribute:: OIDC_TOKEN
+      :value: "OIDC_TOKEN"
+
+   .. py:attribute:: PEM_PRIVATE_KEY
+      :value: "PEM_PRIVATE_KEY"
+
+   .. py:attribute:: SERVICE_CREDENTIAL
+      :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
+      :value: "UNKNOWN_CREDENTIAL_TYPE"
 
    .. py:attribute:: USERNAME_PASSWORD
       :value: "USERNAME_PASSWORD"
@@ -487,34 +538,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKDAY_RAAS_FORMAT
       :value: "WORKDAY_RAAS_FORMAT"
 
-.. autoclass:: DatabaseCatalog
-   :members:
-   :undoc-members:
-
-.. autoclass:: DatabaseInstance
-   :members:
-   :undoc-members:
-
-.. py:class:: DatabaseInstanceState
-
-   .. py:attribute:: AVAILABLE
-      :value: "AVAILABLE"
-
-   .. py:attribute:: DELETING
-      :value: "DELETING"
-
-   .. py:attribute:: FAILING_OVER
-      :value: "FAILING_OVER"
-
-   .. py:attribute:: STARTING
-      :value: "STARTING"
-
-   .. py:attribute:: STOPPED
-      :value: "STOPPED"
-
-   .. py:attribute:: UPDATING
-      :value: "UPDATING"
-
 .. autoclass:: DatabricksGcpServiceAccount
    :members:
    :undoc-members:
@@ -535,25 +558,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteDatabaseCatalogResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteDatabaseInstanceResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteSyncedDatabaseTableResponse
    :members:
    :undoc-members:
 
 .. autoclass:: DeltaRuntimePropertiesKvPairs
    :members:
    :undoc-members:
+
+.. py:class:: DeltaSharingScopeEnum
+
+   .. py:attribute:: INTERNAL
+      :value: "INTERNAL"
+
+   .. py:attribute:: INTERNAL_AND_EXTERNAL
+      :value: "INTERNAL_AND_EXTERNAL"
 
 .. autoclass:: Dependency
    :members:
@@ -738,15 +757,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: GetMetastoreSummaryResponseDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
+.. autoclass:: GetPermissionsResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: GetQuotaResponse
    :members:
@@ -781,10 +794,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListCredentialsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListDatabaseInstancesResponse
    :members:
    :undoc-members:
 
@@ -850,16 +859,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: MetastoreInfo
    :members:
    :undoc-members:
-
-.. py:class:: MetastoreInfoDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
 
 .. autoclass:: ModelVersionInfo
    :members:
@@ -1007,10 +1006,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: NewPipelineSpec
-   :members:
-   :undoc-members:
-
 .. autoclass:: OnlineTable
    :members:
    :undoc-members:
@@ -1069,10 +1064,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PermissionsChange
-   :members:
-   :undoc-members:
-
-.. autoclass:: PermissionsList
    :members:
    :undoc-members:
 
@@ -1375,25 +1366,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SyncedDatabaseTable
-   :members:
-   :undoc-members:
-
-.. py:class:: SyncedTableSchedulingPolicy
-
-   .. py:attribute:: CONTINUOUS
-      :value: "CONTINUOUS"
-
-   .. py:attribute:: SNAPSHOT
-      :value: "SNAPSHOT"
-
-   .. py:attribute:: TRIGGERED
-      :value: "TRIGGERED"
-
-.. autoclass:: SyncedTableSpec
-   :members:
-   :undoc-members:
-
 .. autoclass:: SystemSchemaInfo
    :members:
    :undoc-members:
@@ -1464,6 +1436,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+
 .. autoclass:: TriggeredUpdateStatus
    :members:
    :undoc-members:
@@ -1508,16 +1484,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: UpdateMetastoreDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
-
 .. autoclass:: UpdateModelVersionRequest
    :members:
    :undoc-members:
@@ -1527,6 +1493,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdatePermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdatePermissionsResponse
    :members:
    :undoc-members:
 
@@ -1543,6 +1513,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateStorageCredential
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateTableRequest
    :members:
    :undoc-members:
 

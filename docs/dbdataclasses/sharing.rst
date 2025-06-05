@@ -14,6 +14,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OAUTH_CLIENT_CREDENTIALS
       :value: "OAUTH_CLIENT_CREDENTIALS"
 
+   .. py:attribute:: OIDC_FEDERATION
+      :value: "OIDC_FEDERATION"
+
    .. py:attribute:: TOKEN
       :value: "TOKEN"
 
@@ -511,6 +514,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateProvider
    :members:

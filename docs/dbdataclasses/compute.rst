@@ -516,6 +516,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AUTOSCALING_STATS_REPORT
       :value: "AUTOSCALING_STATS_REPORT"
 
+   .. py:attribute:: CLUSTER_MIGRATED
+      :value: "CLUSTER_MIGRATED"
+
    .. py:attribute:: CREATING
       :value: "CREATING"
 
@@ -1328,6 +1331,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DRIVER_UNEXPECTED_FAILURE
       :value: "DRIVER_UNEXPECTED_FAILURE"
 
+   .. py:attribute:: DRIVER_UNHEALTHY
+      :value: "DRIVER_UNHEALTHY"
+
    .. py:attribute:: DRIVER_UNREACHABLE
       :value: "DRIVER_UNREACHABLE"
 
@@ -1649,6 +1655,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
 
 .. autoclass:: UninstallLibraries
    :members:

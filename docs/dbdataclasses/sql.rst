@@ -302,6 +302,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateQueryVisualizationsLegacyRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateVisualizationRequest
    :members:
    :undoc-members:
@@ -1029,6 +1033,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
+.. autoclass:: SetRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: SetResponse
    :members:
    :undoc-members:
@@ -1155,6 +1163,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
+
+.. autoclass:: TaskTimeOverRange
+   :members:
+   :undoc-members:
+
+.. autoclass:: TaskTimeOverRangeEntry
+   :members:
+   :undoc-members:
 
 .. autoclass:: TerminationReason
    :members:
@@ -1425,7 +1441,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+
 .. autoclass:: TransferOwnershipObjectId
+   :members:
+   :undoc-members:
+
+.. autoclass:: TransferOwnershipRequest
    :members:
    :undoc-members:
 

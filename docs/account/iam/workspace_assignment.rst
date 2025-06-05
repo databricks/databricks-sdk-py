@@ -10,27 +10,27 @@
     .. py:method:: delete(workspace_id: int, principal_id: int)
 
         Delete permissions assignment.
-
+        
         Deletes the workspace permissions assignment in a given account and workspace for the specified
         principal.
-
+        
         :param workspace_id: int
           The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
-
-
+        
+        
         
 
     .. py:method:: get(workspace_id: int) -> WorkspacePermissions
 
         List workspace permissions.
-
+        
         Get an array of workspace permissions for the specified account and workspace.
-
+        
         :param workspace_id: int
           The workspace ID.
-
+        
         :returns: :class:`WorkspacePermissions`
         
 
@@ -52,12 +52,12 @@
             all = a.workspace_assignment.list(workspace_id=workspace_id)
 
         Get permission assignments.
-
+        
         Get the permission assignments for the specified Databricks account and Databricks workspace.
-
+        
         :param workspace_id: int
           The workspace ID for the account.
-
+        
         :returns: Iterator over :class:`PermissionAssignment`
         
 
@@ -80,19 +80,19 @@
             
             spn_id = spn.id
             
-            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
+            workspace_id = os.environ["TEST_WORKSPACE_ID"]
             
-            _ = a.workspace_assignment.update(
+            a.workspace_assignment.update(
                 workspace_id=workspace_id,
                 principal_id=spn_id,
                 permissions=[iam.WorkspacePermission.USER],
             )
 
         Create or update permissions assignment.
-
+        
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
-
+        
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
@@ -103,6 +103,6 @@
           will be ignored. Note that excluding this field, or providing unsupported values, will have the same
           effect as providing an empty list, which will result in the deletion of all permissions for the
           principal.
-
+        
         :returns: :class:`PermissionAssignment`
         

@@ -28,10 +28,10 @@
             )
 
         Create network configuration.
-
+        
         Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
         used for new Databricks clusters. This requires a pre-existing VPC and subnets.
-
+        
         :param network_name: str
           The human-readable name of the network configuration.
         :param gcp_network_info: :class:`GcpNetworkInfo` (optional)
@@ -46,28 +46,28 @@
         :param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)
           If specified, contains the VPC endpoints used to allow cluster communication from this VPC over [AWS
           PrivateLink].
-
+          
           [AWS PrivateLink]: https://aws.amazon.com/privatelink/
         :param vpc_id: str (optional)
           The ID of the VPC associated with this network. VPC IDs can be used in multiple network
           configurations.
-
+        
         :returns: :class:`Network`
         
 
     .. py:method:: delete(network_id: str)
 
         Delete a network configuration.
-
+        
         Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
-
+        
         This operation is available only if your account is on the E2 version of the platform.
-
+        
         :param network_id: str
           Databricks Account API network configuration ID.
-
-
+        
+        
         
 
     .. py:method:: get(network_id: str) -> Network
@@ -93,12 +93,12 @@
             by_id = a.networks.get(network_id=netw.network_id)
 
         Get a network configuration.
-
+        
         Gets a Databricks network configuration, which represents a cloud VPC and its resources.
-
+        
         :param network_id: str
           Databricks Account API network configuration ID.
-
+        
         :returns: :class:`Network`
         
 
@@ -116,10 +116,10 @@
             configs = a.networks.list()
 
         Get all network configurations.
-
+        
         Gets a list of all Databricks network configurations for an account, specified by ID.
-
+        
         This operation is available only if your account is on the E2 version of the platform.
-
+        
         :returns: Iterator over :class:`Network`
         

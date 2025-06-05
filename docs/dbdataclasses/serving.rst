@@ -532,6 +532,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MULTIGPU_MEDIUM
       :value: "MULTIGPU_MEDIUM"
 
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+
 .. autoclass:: TrafficConfig
    :members:
    :undoc-members:

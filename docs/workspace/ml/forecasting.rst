@@ -9,9 +9,9 @@
     .. py:method:: create_experiment(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], future_feature_data_path: Optional[str], holiday_regions: Optional[List[str]], include_features: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]]]) -> Wait[ForecastingExperiment]
 
         Create a forecasting experiment.
-
+        
         Creates a serverless forecasting experiment. Returns the experiment ID.
-
+        
         :param train_data_path: str
           The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
           used as training data for the forecasting model.
@@ -60,7 +60,7 @@
         :param training_frameworks: List[str] (optional)
           List of frameworks to include for model tuning. Possible values are 'Prophet', 'ARIMA', 'DeepAR'. An
           empty list includes all supported frameworks.
-
+        
         :returns:
           Long-running operation waiter for :class:`ForecastingExperiment`.
           See :method:wait_get_experiment_forecasting_succeeded for more details.
@@ -72,12 +72,12 @@
     .. py:method:: get_experiment(experiment_id: str) -> ForecastingExperiment
 
         Get a forecasting experiment.
-
+        
         Public RPC to get forecasting experiment
-
+        
         :param experiment_id: str
           The unique ID of a forecasting experiment
-
+        
         :returns: :class:`ForecastingExperiment`
         
 

@@ -12,14 +12,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CancelQueryExecutionResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CancelQueryExecutionResponseStatus
-   :members:
-   :undoc-members:
-
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -38,18 +30,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteSubscriptionResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: Empty
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExecutePublishedDashboardQueryRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExecuteQueryResponse
    :members:
    :undoc-members:
 
@@ -77,6 +57,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieListSpacesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieMessage
    :members:
    :undoc-members:
@@ -98,10 +82,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieStartConversationResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetPublishedDashboardEmbeddedResponse
    :members:
    :undoc-members:
 
@@ -332,27 +312,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PendingStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: PollQueryStatusResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: PollQueryStatusResponseData
-   :members:
-   :undoc-members:
-
 .. autoclass:: PublishRequest
    :members:
    :undoc-members:
 
 .. autoclass:: PublishedDashboard
-   :members:
-   :undoc-members:
-
-.. autoclass:: QueryResponseStatus
    :members:
    :undoc-members:
 
@@ -388,11 +352,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SuccessStatus
+.. autoclass:: TextAttachment
    :members:
    :undoc-members:
 
-.. autoclass:: TextAttachment
+.. autoclass:: Token
    :members:
    :undoc-members:
 

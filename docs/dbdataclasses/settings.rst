@@ -212,6 +212,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. py:class:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
+
+   .. py:attribute:: DISCONNECTED
+      :value: "DISCONNECTED"
+
+   .. py:attribute:: ESTABLISHED
+      :value: "ESTABLISHED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
+
+.. autoclass:: DashboardEmailSubscriptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: DefaultNamespaceSetting
    :members:
    :undoc-members:
@@ -225,6 +250,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDashboardEmailSubscriptionsResponse
    :members:
    :undoc-members:
 
@@ -265,6 +294,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteRestrictWorkspaceAdminsSettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteSqlResultsDownloadResponse
    :members:
    :undoc-members:
 
@@ -521,10 +554,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListNccAzurePrivateEndpointRulesResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ListNetworkConnectivityConfigurationsResponse
    :members:
    :undoc-members:
@@ -538,6 +567,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListNotificationDestinationsResult
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPrivateEndpointRulesResponse
    :members:
    :undoc-members:
 
@@ -619,6 +652,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NccEgressTargetRules
    :members:
    :undoc-members:
+
+.. autoclass:: NccPrivateEndpointRule
+   :members:
+   :undoc-members:
+
+.. py:class:: NccPrivateEndpointRulePrivateLinkConnectionState
+
+   .. py:attribute:: DISCONNECTED
+      :value: "DISCONNECTED"
+
+   .. py:attribute:: ESTABLISHED
+      :value: "ESTABLISHED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REJECTED
+      :value: "REJECTED"
 
 .. autoclass:: NetworkConnectivityConfiguration
    :members:
@@ -702,7 +756,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SqlResultsDownload
+   :members:
+   :undoc-members:
+
 .. autoclass:: StringMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: Token
    :members:
    :undoc-members:
 
@@ -784,6 +846,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateDashboardEmailSubscriptionsRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateDefaultNamespaceSettingRequest
    :members:
    :undoc-members:
@@ -853,6 +919,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRestrictWorkspaceAdminsSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateSqlResultsDownloadRequest
    :members:
    :undoc-members:
 
