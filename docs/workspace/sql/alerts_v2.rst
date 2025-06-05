@@ -4,7 +4,7 @@
 
 .. py:class:: AlertsV2API
 
-    TODO: Add description
+    New version of SQL Alerts
 
     .. py:method:: create_alert(alert: AlertV2) -> AlertV2
 

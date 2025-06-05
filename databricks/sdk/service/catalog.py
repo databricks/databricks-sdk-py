@@ -1414,7 +1414,7 @@ class ConnectionInfo:
     """Username of current owner of the connection."""
 
     properties: Optional[Dict[str, str]] = None
-    """An object containing map of key-value properties attached to the connection."""
+    """A map of key-value properties attached to the securable."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
     """Status of an asynchronously provisioned resource."""
@@ -1422,7 +1422,8 @@ class ConnectionInfo:
     read_only: Optional[bool] = None
     """If the connection is read only."""
 
-    securable_type: Optional[str] = None
+    securable_type: Optional[SecurableType] = None
+    """The type of Unity Catalog securable."""
 
     updated_at: Optional[int] = None
     """Time at which this connection was updated, in epoch milliseconds."""
@@ -1465,7 +1466,7 @@ class ConnectionInfo:
         if self.read_only is not None:
             body["read_only"] = self.read_only
         if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
+            body["securable_type"] = self.securable_type.value
         if self.updated_at is not None:
             body["updated_at"] = self.updated_at
         if self.updated_by is not None:
@@ -1533,7 +1534,7 @@ class ConnectionInfo:
             properties=d.get("properties", None),
             provisioning_info=_from_dict(d, "provisioning_info", ProvisioningInfo),
             read_only=d.get("read_only", None),
-            securable_type=d.get("securable_type", None),
+            securable_type=_enum(d, "securable_type", SecurableType),
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
             url=d.get("url", None),
@@ -1541,21 +1542,28 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """The type of connection."""
+    """Next Id: 31"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
+    GA4_RAW_DATA = "GA4_RAW_DATA"
     GLUE = "GLUE"
     HIVE_METASTORE = "HIVE_METASTORE"
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
     POSTGRESQL = "POSTGRESQL"
+    POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
+    SALESFORCE = "SALESFORCE"
+    SALESFORCE_DATA_CLOUD = "SALESFORCE_DATA_CLOUD"
+    SERVICENOW = "SERVICENOW"
     SNOWFLAKE = "SNOWFLAKE"
     SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
+    UNKNOWN_CONNECTION_TYPE = "UNKNOWN_CONNECTION_TYPE"
+    WORKDAY_RAAS = "WORKDAY_RAAS"
 
 
 @dataclass
@@ -1706,7 +1714,7 @@ class CreateConnection:
     """User-provided free-form text description."""
 
     properties: Optional[Dict[str, str]] = None
-    """An object containing map of key-value properties attached to the connection."""
+    """A map of key-value properties attached to the securable."""
 
     read_only: Optional[bool] = None
     """If the connection is read only."""
@@ -2202,9 +2210,7 @@ class CreateMetastore:
     """The user-specified name of the metastore."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted
-    in the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is
-    omitted, the region of the workspace receiving the request will be used."""
+    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -2243,7 +2249,7 @@ class CreateMetastoreAssignment:
     """The unique ID of the metastore."""
 
     default_catalog_name: str
-    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
 
     workspace_id: Optional[int] = None
@@ -2924,9 +2930,19 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """The type of credential."""
+    """Next Id: 12"""
 
     BEARER_TOKEN = "BEARER_TOKEN"
+    OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
+    OAUTH_M2M = "OAUTH_M2M"
+    OAUTH_REFRESH_TOKEN = "OAUTH_REFRESH_TOKEN"
+    OAUTH_RESOURCE_OWNER_PASSWORD = "OAUTH_RESOURCE_OWNER_PASSWORD"
+    OAUTH_U2M = "OAUTH_U2M"
+    OAUTH_U2M_MAPPING = "OAUTH_U2M_MAPPING"
+    OIDC_TOKEN = "OIDC_TOKEN"
+    PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
+    SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
 
@@ -2988,183 +3004,6 @@ class DataSourceFormat(Enum):
     UNITY_CATALOG = "UNITY_CATALOG"
     VECTOR_INDEX_FORMAT = "VECTOR_INDEX_FORMAT"
     WORKDAY_RAAS_FORMAT = "WORKDAY_RAAS_FORMAT"
-
-
-@dataclass
-class DatabaseCatalog:
-    name: str
-    """The name of the catalog in UC."""
-
-    database_instance_name: str
-    """The name of the DatabaseInstance housing the database."""
-
-    database_name: str
-    """The name of the database (in a instance) associated with the catalog."""
-
-    create_database_if_not_exists: Optional[bool] = None
-
-    uid: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DatabaseCatalog into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.create_database_if_not_exists is not None:
-            body["create_database_if_not_exists"] = self.create_database_if_not_exists
-        if self.database_instance_name is not None:
-            body["database_instance_name"] = self.database_instance_name
-        if self.database_name is not None:
-            body["database_name"] = self.database_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.uid is not None:
-            body["uid"] = self.uid
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DatabaseCatalog into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.create_database_if_not_exists is not None:
-            body["create_database_if_not_exists"] = self.create_database_if_not_exists
-        if self.database_instance_name is not None:
-            body["database_instance_name"] = self.database_instance_name
-        if self.database_name is not None:
-            body["database_name"] = self.database_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.uid is not None:
-            body["uid"] = self.uid
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DatabaseCatalog:
-        """Deserializes the DatabaseCatalog from a dictionary."""
-        return cls(
-            create_database_if_not_exists=d.get("create_database_if_not_exists", None),
-            database_instance_name=d.get("database_instance_name", None),
-            database_name=d.get("database_name", None),
-            name=d.get("name", None),
-            uid=d.get("uid", None),
-        )
-
-
-@dataclass
-class DatabaseInstance:
-    """A DatabaseInstance represents a logical Postgres instance, comprised of both compute and
-    storage."""
-
-    name: str
-    """The name of the instance. This is the unique identifier for the instance."""
-
-    admin_password: Optional[str] = None
-    """Password for admin user to create. If not provided, no user will be created."""
-
-    admin_rolename: Optional[str] = None
-    """Name of the admin role for the instance. If not provided, defaults to 'databricks_admin'."""
-
-    capacity: Optional[str] = None
-    """The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4"."""
-
-    creation_time: Optional[str] = None
-    """The timestamp when the instance was created."""
-
-    creator: Optional[str] = None
-    """The email of the creator of the instance."""
-
-    pg_version: Optional[str] = None
-    """The version of Postgres running on the instance."""
-
-    read_write_dns: Optional[str] = None
-    """The DNS endpoint to connect to the instance for read+write access."""
-
-    state: Optional[DatabaseInstanceState] = None
-    """The current state of the instance."""
-
-    stopped: Optional[bool] = None
-    """Whether the instance is stopped."""
-
-    uid: Optional[str] = None
-    """An immutable UUID identifier for the instance."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DatabaseInstance into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.admin_password is not None:
-            body["admin_password"] = self.admin_password
-        if self.admin_rolename is not None:
-            body["admin_rolename"] = self.admin_rolename
-        if self.capacity is not None:
-            body["capacity"] = self.capacity
-        if self.creation_time is not None:
-            body["creation_time"] = self.creation_time
-        if self.creator is not None:
-            body["creator"] = self.creator
-        if self.name is not None:
-            body["name"] = self.name
-        if self.pg_version is not None:
-            body["pg_version"] = self.pg_version
-        if self.read_write_dns is not None:
-            body["read_write_dns"] = self.read_write_dns
-        if self.state is not None:
-            body["state"] = self.state.value
-        if self.stopped is not None:
-            body["stopped"] = self.stopped
-        if self.uid is not None:
-            body["uid"] = self.uid
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DatabaseInstance into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.admin_password is not None:
-            body["admin_password"] = self.admin_password
-        if self.admin_rolename is not None:
-            body["admin_rolename"] = self.admin_rolename
-        if self.capacity is not None:
-            body["capacity"] = self.capacity
-        if self.creation_time is not None:
-            body["creation_time"] = self.creation_time
-        if self.creator is not None:
-            body["creator"] = self.creator
-        if self.name is not None:
-            body["name"] = self.name
-        if self.pg_version is not None:
-            body["pg_version"] = self.pg_version
-        if self.read_write_dns is not None:
-            body["read_write_dns"] = self.read_write_dns
-        if self.state is not None:
-            body["state"] = self.state
-        if self.stopped is not None:
-            body["stopped"] = self.stopped
-        if self.uid is not None:
-            body["uid"] = self.uid
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstance:
-        """Deserializes the DatabaseInstance from a dictionary."""
-        return cls(
-            admin_password=d.get("admin_password", None),
-            admin_rolename=d.get("admin_rolename", None),
-            capacity=d.get("capacity", None),
-            creation_time=d.get("creation_time", None),
-            creator=d.get("creator", None),
-            name=d.get("name", None),
-            pg_version=d.get("pg_version", None),
-            read_write_dns=d.get("read_write_dns", None),
-            state=_enum(d, "state", DatabaseInstanceState),
-            stopped=d.get("stopped", None),
-            uid=d.get("uid", None),
-        )
-
-
-class DatabaseInstanceState(Enum):
-
-    AVAILABLE = "AVAILABLE"
-    DELETING = "DELETING"
-    FAILING_OVER = "FAILING_OVER"
-    STARTING = "STARTING"
-    STOPPED = "STOPPED"
-    UPDATING = "UPDATING"
 
 
 @dataclass
@@ -3301,42 +3140,6 @@ class DeleteCredentialResponse:
 
 
 @dataclass
-class DeleteDatabaseCatalogResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDatabaseCatalogResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDatabaseCatalogResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseCatalogResponse:
-        """Deserializes the DeleteDatabaseCatalogResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteDatabaseInstanceResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDatabaseInstanceResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDatabaseInstanceResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseInstanceResponse:
-        """Deserializes the DeleteDatabaseInstanceResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeleteResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
@@ -3351,24 +3154,6 @@ class DeleteResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteSyncedDatabaseTableResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteSyncedDatabaseTableResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteSyncedDatabaseTableResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteSyncedDatabaseTableResponse:
-        """Deserializes the DeleteSyncedDatabaseTableResponse from a dictionary."""
         return cls()
 
 
@@ -3398,6 +3183,12 @@ class DeltaRuntimePropertiesKvPairs:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaRuntimePropertiesKvPairs:
         """Deserializes the DeltaRuntimePropertiesKvPairs from a dictionary."""
         return cls(delta_runtime_properties=d.get("delta_runtime_properties", None))
+
+
+class DeltaSharingScopeEnum(Enum):
+
+    INTERNAL = "INTERNAL"
+    INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
 
 
 @dataclass
@@ -3484,12 +3275,18 @@ class DisableResponse:
 
 @dataclass
 class EffectivePermissionsList:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
     """The privileges conveyed to each principal (either directly or via inheritance)"""
 
     def as_dict(self) -> dict:
         """Serializes the EffectivePermissionsList into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.privilege_assignments:
             body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
         return body
@@ -3497,6 +3294,8 @@ class EffectivePermissionsList:
     def as_shallow_dict(self) -> dict:
         """Serializes the EffectivePermissionsList into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.privilege_assignments:
             body["privilege_assignments"] = self.privilege_assignments
         return body
@@ -3504,7 +3303,10 @@ class EffectivePermissionsList:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EffectivePermissionsList:
         """Deserializes the EffectivePermissionsList from a dictionary."""
-        return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", EffectivePrivilegeAssignment))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", EffectivePrivilegeAssignment),
+        )
 
 
 @dataclass
@@ -4847,7 +4649,7 @@ class GetMetastoreSummaryResponse:
     delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
     """The lifetime of delta sharing recipient token in seconds."""
 
-    delta_sharing_scope: Optional[GetMetastoreSummaryResponseDeltaSharingScope] = None
+    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
     external_access_enabled: Optional[bool] = None
@@ -4988,7 +4790,7 @@ class GetMetastoreSummaryResponse:
             delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
-            delta_sharing_scope=_enum(d, "delta_sharing_scope", GetMetastoreSummaryResponseDeltaSharingScope),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             external_access_enabled=d.get("external_access_enabled", None),
             global_metastore_id=d.get("global_metastore_id", None),
             metastore_id=d.get("metastore_id", None),
@@ -5004,11 +4806,40 @@ class GetMetastoreSummaryResponse:
         )
 
 
-class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
-    """The scope of Delta Sharing enabled for the metastore."""
+@dataclass
+class GetPermissionsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
-    INTERNAL = "INTERNAL"
-    INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+    """The privileges assigned to each principal"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetPermissionsResponse:
+        """Deserializes the GetPermissionsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+        )
 
 
 @dataclass
@@ -5231,41 +5062,6 @@ class ListCredentialsResponse:
 
 
 @dataclass
-class ListDatabaseInstancesResponse:
-    database_instances: Optional[List[DatabaseInstance]] = None
-    """List of instances."""
-
-    next_page_token: Optional[str] = None
-    """Pagination token to request the next page of instances."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListDatabaseInstancesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.database_instances:
-            body["database_instances"] = [v.as_dict() for v in self.database_instances]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListDatabaseInstancesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.database_instances:
-            body["database_instances"] = self.database_instances
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseInstancesResponse:
-        """Deserializes the ListDatabaseInstancesResponse from a dictionary."""
-        return cls(
-            database_instances=_repeated_dict(d, "database_instances", DatabaseInstance),
-            next_page_token=d.get("next_page_token", None),
-        )
-
-
-@dataclass
 class ListExternalLocationsResponse:
     external_locations: Optional[List[ExternalLocationInfo]] = None
     """An array of external locations."""
@@ -5341,11 +5137,17 @@ class ListMetastoresResponse:
     metastores: Optional[List[MetastoreInfo]] = None
     """An array of metastore information objects."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListMetastoresResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metastores:
             body["metastores"] = [v.as_dict() for v in self.metastores]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5353,12 +5155,16 @@ class ListMetastoresResponse:
         body = {}
         if self.metastores:
             body["metastores"] = self.metastores
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListMetastoresResponse:
         """Deserializes the ListMetastoresResponse from a dictionary."""
-        return cls(metastores=_repeated_dict(d, "metastores", MetastoreInfo))
+        return cls(
+            metastores=_repeated_dict(d, "metastores", MetastoreInfo), next_page_token=d.get("next_page_token", None)
+        )
 
 
 @dataclass
@@ -5674,11 +5480,11 @@ class MatchType(Enum):
 
 @dataclass
 class MetastoreAssignment:
-    metastore_id: str
-    """The unique ID of the metastore."""
-
     workspace_id: int
     """The unique ID of the Databricks workspace."""
+
+    metastore_id: str
+    """The unique ID of the metastore."""
 
     default_catalog_name: Optional[str] = None
     """The name of the default catalog in the metastore."""
@@ -5736,7 +5542,7 @@ class MetastoreInfo:
     delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
     """The lifetime of delta sharing recipient token in seconds."""
 
-    delta_sharing_scope: Optional[MetastoreInfoDeltaSharingScope] = None
+    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
     external_access_enabled: Optional[bool] = None
@@ -5877,7 +5683,7 @@ class MetastoreInfo:
             delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
-            delta_sharing_scope=_enum(d, "delta_sharing_scope", MetastoreInfoDeltaSharingScope),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             external_access_enabled=d.get("external_access_enabled", None),
             global_metastore_id=d.get("global_metastore_id", None),
             metastore_id=d.get("metastore_id", None),
@@ -5891,13 +5697,6 @@ class MetastoreInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
         )
-
-
-class MetastoreInfoDeltaSharingScope(Enum):
-    """The scope of Delta Sharing enabled for the metastore."""
-
-    INTERNAL = "INTERNAL"
-    INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
 
 
 @dataclass
@@ -6770,43 +6569,6 @@ class NamedTableConstraint:
 
 
 @dataclass
-class NewPipelineSpec:
-    """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
-    fields of pipeline are still inferred by table def internally"""
-
-    storage_catalog: Optional[str] = None
-    """UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
-    needs to be a standard catalog where the user has permissions to create Delta tables."""
-
-    storage_schema: Optional[str] = None
-    """UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs
-    to be in the standard catalog where the user has permissions to create Delta tables."""
-
-    def as_dict(self) -> dict:
-        """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.storage_catalog is not None:
-            body["storage_catalog"] = self.storage_catalog
-        if self.storage_schema is not None:
-            body["storage_schema"] = self.storage_schema
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.storage_catalog is not None:
-            body["storage_catalog"] = self.storage_catalog
-        if self.storage_schema is not None:
-            body["storage_schema"] = self.storage_schema
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
-        """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
-
-
-@dataclass
 class OnlineTable:
     """Online Table information."""
 
@@ -7121,31 +6883,6 @@ class PermissionsChange:
 
 
 @dataclass
-class PermissionsList:
-    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
-    """The privileges assigned to each principal"""
-
-    def as_dict(self) -> dict:
-        """Serializes the PermissionsList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.privilege_assignments:
-            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PermissionsList into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.privilege_assignments:
-            body["privilege_assignments"] = self.privilege_assignments
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PermissionsList:
-        """Deserializes the PermissionsList from a dictionary."""
-        return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment))
-
-
-@dataclass
 class PipelineProgress:
     """Progress information of the Online Table data synchronization pipeline."""
 
@@ -7333,9 +7070,6 @@ class PrivilegeAssignment:
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
-
-
-PropertiesKvPairs = Dict[str, str]
 
 
 @dataclass
@@ -7750,6 +7484,8 @@ class RegisteredModelInfo:
 
 @dataclass
 class SchemaInfo:
+    """Next ID: 40"""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -7757,7 +7493,7 @@ class SchemaInfo:
     catalog_name: Optional[str] = None
     """Name of parent catalog."""
 
-    catalog_type: Optional[str] = None
+    catalog_type: Optional[CatalogType] = None
     """The type of the parent catalog."""
 
     comment: Optional[str] = None
@@ -7772,6 +7508,7 @@ class SchemaInfo:
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
+    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
     """Full name of schema, in form of __catalog_name__.__schema_name__."""
@@ -7811,7 +7548,7 @@ class SchemaInfo:
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.catalog_type is not None:
-            body["catalog_type"] = self.catalog_type
+            body["catalog_type"] = self.catalog_type.value
         if self.comment is not None:
             body["comment"] = self.comment
         if self.created_at is not None:
@@ -7891,7 +7628,7 @@ class SchemaInfo:
         return cls(
             browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
-            catalog_type=d.get("catalog_type", None),
+            catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
@@ -7910,12 +7647,6 @@ class SchemaInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
         )
-
-
-SecurableOptionsMap = Dict[str, str]
-
-
-SecurablePropertiesMap = Dict[str, str]
 
 
 class SecurableType(Enum):
@@ -8246,184 +7977,6 @@ class StorageCredentialInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
             used_for_managed_storage=d.get("used_for_managed_storage", None),
-        )
-
-
-@dataclass
-class SyncedDatabaseTable:
-    """Next field marker: 10"""
-
-    name: str
-    """Full three-part (catalog, schema, table) name of the table."""
-
-    data_synchronization_status: Optional[OnlineTableStatus] = None
-    """Synced Table data synchronization status"""
-
-    database_instance_name: Optional[str] = None
-    """Name of the target database instance. This is required when creating synced database tables in
-    standard catalogs. This is optional when creating synced database tables in registered catalogs.
-    If this field is specified when creating synced database tables in registered catalogs, the
-    database instance name MUST match that of the registered catalog (or the request will be
-    rejected)."""
-
-    logical_database_name: Optional[str] = None
-    """Target Postgres database object (logical database) name for this table. This field is optional
-    in all scenarios.
-    
-    When creating a synced table in a registered Postgres catalog, the target Postgres database name
-    is inferred to be that of the registered catalog. If this field is specified in this scenario,
-    the Postgres database name MUST match that of the registered catalog (or the request will be
-    rejected).
-    
-    When creating a synced table in a standard catalog, the target database name is inferred to be
-    that of the standard catalog. In this scenario, specifying this field will allow targeting an
-    arbitrary postgres database."""
-
-    spec: Optional[SyncedTableSpec] = None
-    """Specification of a synced database table."""
-
-    table_serving_url: Optional[str] = None
-    """Data serving REST API URL for this table"""
-
-    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
-    """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
-    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
-    may be in "PROVISIONING" as it runs asynchronously)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SyncedDatabaseTable into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.data_synchronization_status:
-            body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
-        if self.database_instance_name is not None:
-            body["database_instance_name"] = self.database_instance_name
-        if self.logical_database_name is not None:
-            body["logical_database_name"] = self.logical_database_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spec:
-            body["spec"] = self.spec.as_dict()
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
-        if self.unity_catalog_provisioning_state is not None:
-            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SyncedDatabaseTable into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.data_synchronization_status:
-            body["data_synchronization_status"] = self.data_synchronization_status
-        if self.database_instance_name is not None:
-            body["database_instance_name"] = self.database_instance_name
-        if self.logical_database_name is not None:
-            body["logical_database_name"] = self.logical_database_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spec:
-            body["spec"] = self.spec
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
-        if self.unity_catalog_provisioning_state is not None:
-            body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SyncedDatabaseTable:
-        """Deserializes the SyncedDatabaseTable from a dictionary."""
-        return cls(
-            data_synchronization_status=_from_dict(d, "data_synchronization_status", OnlineTableStatus),
-            database_instance_name=d.get("database_instance_name", None),
-            logical_database_name=d.get("logical_database_name", None),
-            name=d.get("name", None),
-            spec=_from_dict(d, "spec", SyncedTableSpec),
-            table_serving_url=d.get("table_serving_url", None),
-            unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
-        )
-
-
-class SyncedTableSchedulingPolicy(Enum):
-
-    CONTINUOUS = "CONTINUOUS"
-    SNAPSHOT = "SNAPSHOT"
-    TRIGGERED = "TRIGGERED"
-
-
-@dataclass
-class SyncedTableSpec:
-    """Specification of a synced database table."""
-
-    create_database_objects_if_missing: Optional[bool] = None
-    """If true, the synced table's logical database and schema resources in PG will be created if they
-    do not already exist."""
-
-    new_pipeline_spec: Optional[NewPipelineSpec] = None
-    """Spec of new pipeline. Should be empty if pipeline_id is set"""
-
-    pipeline_id: Optional[str] = None
-    """ID of the associated pipeline. Should be empty if new_pipeline_spec is set"""
-
-    primary_key_columns: Optional[List[str]] = None
-    """Primary Key columns to be used for data insert/update in the destination."""
-
-    scheduling_policy: Optional[SyncedTableSchedulingPolicy] = None
-    """Scheduling policy of the underlying pipeline."""
-
-    source_table_full_name: Optional[str] = None
-    """Three-part (catalog, schema, table) name of the source Delta table."""
-
-    timeseries_key: Optional[str] = None
-    """Time series key to deduplicate (tie-break) rows with the same primary key."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SyncedTableSpec into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.create_database_objects_if_missing is not None:
-            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
-        if self.new_pipeline_spec:
-            body["new_pipeline_spec"] = self.new_pipeline_spec.as_dict()
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.primary_key_columns:
-            body["primary_key_columns"] = [v for v in self.primary_key_columns]
-        if self.scheduling_policy is not None:
-            body["scheduling_policy"] = self.scheduling_policy.value
-        if self.source_table_full_name is not None:
-            body["source_table_full_name"] = self.source_table_full_name
-        if self.timeseries_key is not None:
-            body["timeseries_key"] = self.timeseries_key
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SyncedTableSpec into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.create_database_objects_if_missing is not None:
-            body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
-        if self.new_pipeline_spec:
-            body["new_pipeline_spec"] = self.new_pipeline_spec
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.primary_key_columns:
-            body["primary_key_columns"] = self.primary_key_columns
-        if self.scheduling_policy is not None:
-            body["scheduling_policy"] = self.scheduling_policy
-        if self.source_table_full_name is not None:
-            body["source_table_full_name"] = self.source_table_full_name
-        if self.timeseries_key is not None:
-            body["timeseries_key"] = self.timeseries_key
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SyncedTableSpec:
-        """Deserializes the SyncedTableSpec from a dictionary."""
-        return cls(
-            create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
-            new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
-            pipeline_id=d.get("pipeline_id", None),
-            primary_key_columns=d.get("primary_key_columns", None),
-            scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSchedulingPolicy),
-            source_table_full_name=d.get("source_table_full_name", None),
-            timeseries_key=d.get("timeseries_key", None),
         )
 
 
@@ -9543,7 +9096,7 @@ class UpdateMetastore:
     delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
     """The lifetime of delta sharing recipient token in seconds."""
 
-    delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None
+    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
     id: Optional[str] = None
@@ -9615,7 +9168,7 @@ class UpdateMetastore:
             delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
-            delta_sharing_scope=_enum(d, "delta_sharing_scope", UpdateMetastoreDeltaSharingScope),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
             id=d.get("id", None),
             new_name=d.get("new_name", None),
             owner=d.get("owner", None),
@@ -9627,7 +9180,7 @@ class UpdateMetastore:
 @dataclass
 class UpdateMetastoreAssignment:
     default_catalog_name: Optional[str] = None
-    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
 
     metastore_id: Optional[str] = None
@@ -9666,13 +9219,6 @@ class UpdateMetastoreAssignment:
             metastore_id=d.get("metastore_id", None),
             workspace_id=d.get("workspace_id", None),
         )
-
-
-class UpdateMetastoreDeltaSharingScope(Enum):
-    """The scope of Delta Sharing enabled for the metastore."""
-
-    INTERNAL = "INTERNAL"
-    INTERNAL_AND_EXTERNAL = "INTERNAL_AND_EXTERNAL"
 
 
 @dataclass
@@ -9843,7 +9389,7 @@ class UpdatePermissions:
     full_name: Optional[str] = None
     """Full name of securable."""
 
-    securable_type: Optional[SecurableType] = None
+    securable_type: Optional[str] = None
     """Type of securable."""
 
     def as_dict(self) -> dict:
@@ -9854,7 +9400,7 @@ class UpdatePermissions:
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.securable_type is not None:
-            body["securable_type"] = self.securable_type.value
+            body["securable_type"] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -9874,8 +9420,33 @@ class UpdatePermissions:
         return cls(
             changes=_repeated_dict(d, "changes", PermissionsChange),
             full_name=d.get("full_name", None),
-            securable_type=_enum(d, "securable_type", SecurableType),
+            securable_type=d.get("securable_type", None),
         )
+
+
+@dataclass
+class UpdatePermissionsResponse:
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+    """The privileges assigned to each principal"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.privilege_assignments:
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePermissionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissionsResponse:
+        """Deserializes the UpdatePermissionsResponse from a dictionary."""
+        return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment))
 
 
 @dataclass
@@ -9953,6 +9524,7 @@ class UpdateSchema:
     """User-provided free-form text description."""
 
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
+    """Whether predictive optimization should be enabled for this object and objects under it."""
 
     full_name: Optional[str] = None
     """Full name of the schema."""
@@ -10135,6 +9707,39 @@ class UpdateStorageCredential:
             read_only=d.get("read_only", None),
             skip_validation=d.get("skip_validation", None),
         )
+
+
+@dataclass
+class UpdateTableRequest:
+    """Update a table owner."""
+
+    full_name: Optional[str] = None
+    """Full name of the table."""
+
+    owner: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateTableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateTableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateTableRequest:
+        """Deserializes the UpdateTableRequest from a dictionary."""
+        return cls(full_name=d.get("full_name", None), owner=d.get("owner", None))
 
 
 @dataclass
@@ -11586,7 +11191,7 @@ class ConnectionsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param properties: Dict[str,str] (optional)
-          An object containing map of key-value properties attached to the connection.
+          A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
 
@@ -11673,8 +11278,6 @@ class ConnectionsAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/connections", query=query, headers=headers)
             if "connections" in json:
@@ -12084,241 +11687,6 @@ class CredentialsAPI:
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
         return ValidateCredentialResponse.from_dict(res)
-
-
-class DatabaseInstancesAPI:
-    """Database Instances provide access to a database via REST API or direct SQL."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create_database_catalog(self, catalog: DatabaseCatalog) -> DatabaseCatalog:
-        """Create a Database Catalog.
-
-        :param catalog: :class:`DatabaseCatalog`
-
-        :returns: :class:`DatabaseCatalog`
-        """
-        body = catalog.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("POST", "/api/2.0/database/catalogs", body=body, headers=headers)
-        return DatabaseCatalog.from_dict(res)
-
-    def create_database_instance(self, database_instance: DatabaseInstance) -> DatabaseInstance:
-        """Create a Database Instance.
-
-        :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
-
-        :returns: :class:`DatabaseInstance`
-        """
-        body = database_instance.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("POST", "/api/2.0/database/instances", body=body, headers=headers)
-        return DatabaseInstance.from_dict(res)
-
-    def create_synced_database_table(self, synced_table: SyncedDatabaseTable) -> SyncedDatabaseTable:
-        """Create a Synced Database Table.
-
-        :param synced_table: :class:`SyncedDatabaseTable`
-          Next field marker: 10
-
-        :returns: :class:`SyncedDatabaseTable`
-        """
-        body = synced_table.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("POST", "/api/2.0/database/synced_tables", body=body, headers=headers)
-        return SyncedDatabaseTable.from_dict(res)
-
-    def delete_database_catalog(self, name: str):
-        """Delete a Database Catalog.
-
-        :param name: str
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.0/database/catalogs/{name}", headers=headers)
-
-    def delete_database_instance(self, name: str, *, force: Optional[bool] = None, purge: Optional[bool] = None):
-        """Delete a Database Instance.
-
-        :param name: str
-          Name of the instance to delete.
-        :param force: bool (optional)
-          By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
-          flag is specified as true, all descendent instances will be deleted as well.
-        :param purge: bool (optional)
-          If false, the database instance is soft deleted. Soft deleted instances behave as if they are
-          deleted, and cannot be used for CRUD operations nor connected to. However they can be undeleted by
-          calling the undelete API for a limited time. If true, the database instance is hard deleted and
-          cannot be undeleted.
-
-
-        """
-
-        query = {}
-        if force is not None:
-            query["force"] = force
-        if purge is not None:
-            query["purge"] = purge
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.0/database/instances/{name}", query=query, headers=headers)
-
-    def delete_synced_database_table(self, name: str):
-        """Delete a Synced Database Table.
-
-        :param name: str
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
-
-    def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
-        """Find a Database Instance by uid.
-
-        :param uid: str (optional)
-          UID of the cluster to get.
-
-        :returns: :class:`DatabaseInstance`
-        """
-
-        query = {}
-        if uid is not None:
-            query["uid"] = uid
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", "/api/2.0/database/instances:findByUid", query=query, headers=headers)
-        return DatabaseInstance.from_dict(res)
-
-    def get_database_catalog(self, name: str) -> DatabaseCatalog:
-        """Get a Database Catalog.
-
-        :param name: str
-
-        :returns: :class:`DatabaseCatalog`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/database/catalogs/{name}", headers=headers)
-        return DatabaseCatalog.from_dict(res)
-
-    def get_database_instance(self, name: str) -> DatabaseInstance:
-        """Get a Database Instance.
-
-        :param name: str
-          Name of the cluster to get.
-
-        :returns: :class:`DatabaseInstance`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/database/instances/{name}", headers=headers)
-        return DatabaseInstance.from_dict(res)
-
-    def get_synced_database_table(self, name: str) -> SyncedDatabaseTable:
-        """Get a Synced Database Table.
-
-        :param name: str
-
-        :returns: :class:`SyncedDatabaseTable`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/database/synced_tables/{name}", headers=headers)
-        return SyncedDatabaseTable.from_dict(res)
-
-    def list_database_instances(
-        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[DatabaseInstance]:
-        """List Database Instances.
-
-        :param page_size: int (optional)
-          Upper bound for items returned.
-        :param page_token: str (optional)
-          Pagination token to go to the next page of Database Instances. Requests first page if absent.
-
-        :returns: Iterator over :class:`DatabaseInstance`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        while True:
-            json = self._api.do("GET", "/api/2.0/database/instances", query=query, headers=headers)
-            if "database_instances" in json:
-                for v in json["database_instances"]:
-                    yield DatabaseInstance.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
-    def update_database_instance(
-        self, name: str, database_instance: DatabaseInstance, update_mask: str
-    ) -> DatabaseInstance:
-        """Update a Database Instance.
-
-        :param name: str
-          The name of the instance. This is the unique identifier for the instance.
-        :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
-        :param update_mask: str
-          The list of fields to update.
-
-        :returns: :class:`DatabaseInstance`
-        """
-        body = database_instance.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
-        return DatabaseInstance.from_dict(res)
 
 
 class ExternalLocationsAPI:
@@ -12794,22 +12162,46 @@ class GrantsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, securable_type: SecurableType, full_name: str, *, principal: Optional[str] = None) -> PermissionsList:
+    def get(
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
+    ) -> GetPermissionsResponse:
         """Get permissions.
 
-        Gets the permissions for a securable.
+        Gets the permissions for a securable. Does not include inherited permissions.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param max_results: int (optional)
+          Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
+          present in a single page response is guaranteed to contain all the privileges granted on the
+          requested Securable for the respective principal.
+
+          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
+          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
+          parameter error (this is to ensure that server is able to return at least one complete
+          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
+          minimum of this value and a server configured value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
           If provided, only the permissions for the specified principal (user or group) are returned.
 
-        :returns: :class:`PermissionsList`
+        :returns: :class:`GetPermissionsResponse`
         """
 
         query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
         headers = {
@@ -12817,24 +12209,41 @@ class GrantsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", query=query, headers=headers
         )
-        return PermissionsList.from_dict(res)
+        return GetPermissionsResponse.from_dict(res)
 
     def get_effective(
-        self, securable_type: SecurableType, full_name: str, *, principal: Optional[str] = None
+        self,
+        securable_type: str,
+        full_name: str,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+        principal: Optional[str] = None,
     ) -> EffectivePermissionsList:
         """Get effective permissions.
 
-        Gets the effective permissions for a securable.
+        Gets the effective permissions for a securable. Includes inherited permissions from any parent
+        securables.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param max_results: int (optional)
+          Specifies the maximum number of privileges to return (page length). Every
+          EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
+          effective privileges granted on (or inherited by) the requested Securable for the respective
+          principal.
+
+          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
+          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
+          invalid parameter error (this is to ensure that server is able to return at least one complete
+          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
+          length is the minimum of this value and a server configured value
+        :param page_token: str (optional)
+          Opaque token for the next page of results (pagination).
         :param principal: str (optional)
           If provided, only the effective permissions for the specified principal (user or group) are
           returned.
@@ -12843,6 +12252,10 @@ class GrantsAPI:
         """
 
         query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
         if principal is not None:
             query["principal"] = principal
         headers = {
@@ -12851,27 +12264,27 @@ class GrantsAPI:
 
         res = self._api.do(
             "GET",
-            f"/api/2.1/unity-catalog/effective-permissions/{securable_type.value}/{full_name}",
+            f"/api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}",
             query=query,
             headers=headers,
         )
         return EffectivePermissionsList.from_dict(res)
 
     def update(
-        self, securable_type: SecurableType, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
-    ) -> PermissionsList:
+        self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
+    ) -> UpdatePermissionsResponse:
         """Update permissions.
 
         Updates the permissions for a securable.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
 
-        :returns: :class:`PermissionsList`
+        :returns: :class:`UpdatePermissionsResponse`
         """
         body = {}
         if changes is not None:
@@ -12882,12 +12295,9 @@ class GrantsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/permissions/{securable_type.value}/{full_name}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", body=body, headers=headers
         )
-        return PermissionsList.from_dict(res)
+        return UpdatePermissionsResponse.from_dict(res)
 
 
 class MetastoresAPI:
@@ -12918,7 +12328,7 @@ class MetastoresAPI:
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
 
 
@@ -12946,9 +12356,7 @@ class MetastoresAPI:
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
-          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
-          the region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -13025,22 +12433,43 @@ class MetastoresAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", headers=headers)
         return MetastoreInfo.from_dict(res)
 
-    def list(self) -> Iterator[MetastoreInfo]:
+    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
         """List metastores.
 
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
+        :param max_results: int (optional)
+          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
+          minimum of this value and a server configured value; - when set to 0, the page length is set to a
+          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
+          returned metastores might be less than the specified max_results size, even zero. The only
+          definitive indication that no further metastores can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
         :returns: Iterator over :class:`MetastoreInfo`
         """
 
+        query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
         headers = {
             "Accept": "application/json",
         }
 
-        json = self._api.do("GET", "/api/2.1/unity-catalog/metastores", headers=headers)
-        parsed = ListMetastoresResponse.from_dict(json).metastores
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do("GET", "/api/2.1/unity-catalog/metastores", query=query, headers=headers)
+            if "metastores" in json:
+                for v in json["metastores"]:
+                    yield MetastoreInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
@@ -13088,7 +12517,7 @@ class MetastoresAPI:
         *,
         delta_sharing_organization_name: Optional[str] = None,
         delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
-        delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None,
+        delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         privilege_model_version: Optional[str] = None,
@@ -13106,7 +12535,7 @@ class MetastoresAPI:
           Sharing as the official name.
         :param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)
           The lifetime of delta sharing recipient token in seconds.
-        :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
+        :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
         :param new_name: str (optional)
           New name for the metastore.
@@ -13157,7 +12586,7 @@ class MetastoresAPI:
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
@@ -14409,8 +13838,6 @@ class SchemasAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/schemas", query=query, headers=headers)
             if "schemas" in json:
@@ -14442,6 +13869,7 @@ class SchemasAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)

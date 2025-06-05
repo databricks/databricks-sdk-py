@@ -94,9 +94,7 @@
             
             w = WorkspaceClient()
             
-            model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
-            
-            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
+            created = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
 
         Create a model.
 
@@ -129,7 +127,7 @@
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
             
-            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
+            created = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
 
         Create a model version.
 
@@ -242,7 +240,8 @@
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param model_name: str (optional)
-          Name of the model whose events would trigger this webhook.
+          If model name is not specified, a registry-wide webhook is created that listens for the specified
+          events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
@@ -262,6 +261,7 @@
         Deletes a comment on a model version.
 
         :param id: str
+          Unique identifier of an activity
 
 
         

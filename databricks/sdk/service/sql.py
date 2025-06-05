@@ -1697,6 +1697,68 @@ class CreateQueryRequestQuery:
 
 
 @dataclass
+class CreateQueryVisualizationsLegacyRequest:
+    """Add visualization to a query"""
+
+    query_id: str
+    """The identifier returned by :method:queries/create"""
+
+    type: str
+    """The type of visualization: chart, table, pivot table, and so on."""
+
+    options: Any
+    """The options object varies widely from one visualization type to the next and is unsupported.
+    Databricks does not recommend modifying visualization settings in JSON."""
+
+    description: Optional[str] = None
+    """A short description of this visualization. This is not displayed in the UI."""
+
+    name: Optional[str] = None
+    """The name of the visualization that appears on dashboards and the query screen."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateQueryVisualizationsLegacyRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query_id is not None:
+            body["query_id"] = self.query_id
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateQueryVisualizationsLegacyRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query_id is not None:
+            body["query_id"] = self.query_id
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateQueryVisualizationsLegacyRequest:
+        """Deserializes the CreateQueryVisualizationsLegacyRequest from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            name=d.get("name", None),
+            options=d.get("options", None),
+            query_id=d.get("query_id", None),
+            type=d.get("type", None),
+        )
+
+
+@dataclass
 class CreateVisualizationRequest:
     visualization: Optional[CreateVisualizationRequestVisualization] = None
 
@@ -6047,6 +6109,10 @@ class QueryMetrics:
     spill_to_disk_bytes: Optional[int] = None
     """Size of data temporarily written to disk while executing the query, in bytes."""
 
+    task_time_over_time_range: Optional[TaskTimeOverRange] = None
+    """sum of task times completed in a range of wall clock time, approximated to a configurable number
+    of points aggregated over all stages and jobs in the query (based on task_total_time_ms)"""
+
     task_total_time_ms: Optional[int] = None
     """Sum of execution time for all of the query’s tasks, in milliseconds."""
 
@@ -6097,6 +6163,8 @@ class QueryMetrics:
             body["rows_read_count"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+        if self.task_time_over_time_range:
+            body["task_time_over_time_range"] = self.task_time_over_time_range.as_dict()
         if self.task_total_time_ms is not None:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
@@ -6146,6 +6214,8 @@ class QueryMetrics:
             body["rows_read_count"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+        if self.task_time_over_time_range:
+            body["task_time_over_time_range"] = self.task_time_over_time_range
         if self.task_total_time_ms is not None:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
@@ -6177,6 +6247,7 @@ class QueryMetrics:
             rows_produced_count=d.get("rows_produced_count", None),
             rows_read_count=d.get("rows_read_count", None),
             spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
+            task_time_over_time_range=_from_dict(d, "task_time_over_time_range", TaskTimeOverRange),
             task_total_time_ms=d.get("task_total_time_ms", None),
             total_time_ms=d.get("total_time_ms", None),
             write_remote_bytes=d.get("write_remote_bytes", None),
@@ -6764,6 +6835,50 @@ class ServiceErrorCode(Enum):
 
 
 @dataclass
+class SetRequest:
+    """Set object ACL"""
+
+    access_control_list: Optional[List[AccessControl]] = None
+
+    object_id: Optional[str] = None
+    """Object ID. The ACL for the object with this UUID is overwritten by this request's POST content."""
+
+    object_type: Optional[ObjectTypePlural] = None
+    """The type of object permission to set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SetRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = self.access_control_list
+        if self.object_id is not None:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetRequest:
+        """Deserializes the SetRequest from a dictionary."""
+        return cls(
+            access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
+            object_id=d.get("objectId", None),
+            object_type=_enum(d, "objectType", ObjectTypePlural),
+        )
+
+
+@dataclass
 class SetResponse:
     access_control_list: Optional[List[AccessControl]] = None
 
@@ -7168,6 +7283,63 @@ class SuccessMessage(Enum):
 
 
 @dataclass
+class TaskTimeOverRange:
+    entries: Optional[List[TaskTimeOverRangeEntry]] = None
+
+    interval: Optional[int] = None
+    """interval length for all entries (difference in start time and end time of an entry range) the
+    same for all entries start time of first interval is query_start_time_ms"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TaskTimeOverRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entries:
+            body["entries"] = [v.as_dict() for v in self.entries]
+        if self.interval is not None:
+            body["interval"] = self.interval
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskTimeOverRange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entries:
+            body["entries"] = self.entries
+        if self.interval is not None:
+            body["interval"] = self.interval
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRange:
+        """Deserializes the TaskTimeOverRange from a dictionary."""
+        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=d.get("interval", None))
+
+
+@dataclass
+class TaskTimeOverRangeEntry:
+    task_completed_time_ms: Optional[int] = None
+    """total task completion time in this time range, aggregated over all stages and jobs in the query"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TaskTimeOverRangeEntry into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.task_completed_time_ms is not None:
+            body["task_completed_time_ms"] = self.task_completed_time_ms
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskTimeOverRangeEntry into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.task_completed_time_ms is not None:
+            body["task_completed_time_ms"] = self.task_completed_time_ms
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRangeEntry:
+        """Deserializes the TaskTimeOverRangeEntry from a dictionary."""
+        return cls(task_completed_time_ms=d.get("task_completed_time_ms", None))
+
+
+@dataclass
 class TerminationReason:
     code: Optional[TerminationReasonCode] = None
     """status code indicating why the cluster was terminated"""
@@ -7382,6 +7554,51 @@ class TransferOwnershipObjectId:
     def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipObjectId:
         """Deserializes the TransferOwnershipObjectId from a dictionary."""
         return cls(new_owner=d.get("new_owner", None))
+
+
+@dataclass
+class TransferOwnershipRequest:
+    """Transfer object ownership"""
+
+    new_owner: Optional[str] = None
+    """Email address for the new owner, who must exist in the workspace."""
+
+    object_id: Optional[TransferOwnershipObjectId] = None
+    """The ID of the object on which to change ownership."""
+
+    object_type: Optional[OwnableObjectType] = None
+    """The type of object on which to change ownership."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TransferOwnershipRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.new_owner is not None:
+            body["new_owner"] = self.new_owner
+        if self.object_id:
+            body["objectId"] = self.object_id.as_dict()
+        if self.object_type is not None:
+            body["objectType"] = self.object_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TransferOwnershipRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.new_owner is not None:
+            body["new_owner"] = self.new_owner
+        if self.object_id:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipRequest:
+        """Deserializes the TransferOwnershipRequest from a dictionary."""
+        return cls(
+            new_owner=d.get("new_owner", None),
+            object_id=_from_dict(d, "objectId", TransferOwnershipObjectId),
+            object_type=_enum(d, "objectType", OwnableObjectType),
+        )
 
 
 @dataclass
@@ -8760,7 +8977,7 @@ class AlertsLegacyAPI:
 
 
 class AlertsV2API:
-    """TODO: Add description"""
+    """New version of SQL Alerts"""
 
     def __init__(self, api_client):
         self._api = api_client

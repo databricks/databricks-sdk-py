@@ -5,12 +5,14 @@ Dataclasses
 .. toctree::
    :maxdepth: 1
    
+   aibuilder
    apps
    billing
    catalog
    cleanrooms
    compute
    dashboards
+   database
    files
    iam
    jobs
@@ -19,6 +21,7 @@ Dataclasses
    oauth2
    pipelines
    provisioning
+   qualitymonitorv2
    serving
    settings
    sharing

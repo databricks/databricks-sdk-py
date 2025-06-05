@@ -22,6 +22,7 @@ class AuthenticationType(Enum):
 
     DATABRICKS = "DATABRICKS"
     OAUTH_CLIENT_CREDENTIALS = "OAUTH_CLIENT_CREDENTIALS"
+    OIDC_FEDERATION = "OIDC_FEDERATION"
     TOKEN = "TOKEN"
 
 
@@ -2763,7 +2764,7 @@ class UpdateShare:
 @dataclass
 class UpdateSharePermissions:
     changes: Optional[List[PermissionsChange]] = None
-    """Array of permission changes."""
+    """Array of permissions change objects."""
 
     name: Optional[str] = None
     """The name of the share."""
@@ -3999,7 +4000,7 @@ class SharesAPI:
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
-          Array of permission changes.
+          Array of permissions change objects.
         :param omit_permissions_list: bool (optional)
           Optional. Whether to return the latest permissions list of the share in the response.
 

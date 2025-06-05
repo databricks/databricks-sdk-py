@@ -3005,8 +3005,16 @@ class ServedEntityInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3030,7 +3038,7 @@ class ServedEntityInput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3053,8 +3061,12 @@ class ServedEntityInput:
             body["external_model"] = self.external_model.as_dict()
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3082,8 +3094,12 @@ class ServedEntityInput:
             body["external_model"] = self.external_model
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3107,7 +3123,9 @@ class ServedEntityInput:
             environment_vars=d.get("environment_vars", None),
             external_model=_from_dict(d, "external_model", ExternalModel),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
             provisioned_model_units=d.get("provisioned_model_units", None),
@@ -3152,8 +3170,16 @@ class ServedEntityOutput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3179,7 +3205,7 @@ class ServedEntityOutput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3208,8 +3234,12 @@ class ServedEntityOutput:
             body["foundation_model"] = self.foundation_model.as_dict()
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3245,8 +3275,12 @@ class ServedEntityOutput:
             body["foundation_model"] = self.foundation_model
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3275,7 +3309,9 @@ class ServedEntityOutput:
             external_model=_from_dict(d, "external_model", ExternalModel),
             foundation_model=_from_dict(d, "foundation_model", FoundationModel),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
             provisioned_model_units=d.get("provisioned_model_units", None),
@@ -3360,8 +3396,16 @@ class ServedModelInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3382,7 +3426,7 @@ class ServedModelInput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3399,8 +3443,12 @@ class ServedModelInput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.model_name is not None:
@@ -3426,8 +3474,12 @@ class ServedModelInput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.model_name is not None:
@@ -3452,7 +3504,9 @@ class ServedModelInput:
         return cls(
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
@@ -3489,6 +3543,14 @@ class ServedModelOutput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
+
     model_name: Optional[str] = None
 
     model_version: Optional[str] = None
@@ -3514,7 +3576,7 @@ class ServedModelOutput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3535,6 +3597,10 @@ class ServedModelOutput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.model_name is not None:
             body["model_name"] = self.model_name
         if self.model_version is not None:
@@ -3564,6 +3630,10 @@ class ServedModelOutput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.model_name is not None:
             body["model_name"] = self.model_name
         if self.model_version is not None:
@@ -3590,6 +3660,8 @@ class ServedModelOutput:
             creator=d.get("creator", None),
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),

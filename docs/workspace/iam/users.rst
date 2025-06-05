@@ -80,12 +80,9 @@
             
             w = WorkspaceClient()
             
-            user = w.users.create(
-                display_name=f"sdk-{time.time_ns()}",
-                user_name=f"sdk-{time.time_ns()}@example.com",
-            )
+            other_owner = w.users.create(user_name=f"sdk-{time.time_ns()}@example.com")
             
-            w.users.delete(id=user.id)
+            w.users.delete(id=other_owner.id)
 
         Delete a user.
 

@@ -35,7 +35,7 @@
         :returns: :class:`NetworkConnectivityConfiguration`
         
 
-    .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule) -> NccAzurePrivateEndpointRule
+    .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule) -> NccPrivateEndpointRule
 
         Create a private endpoint rule.
 
@@ -55,7 +55,7 @@
           Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
           after initialization.
 
-        :returns: :class:`NccAzurePrivateEndpointRule`
+        :returns: :class:`NccPrivateEndpointRule`
         
 
     .. py:method:: delete_network_connectivity_configuration(network_connectivity_config_id: str)
@@ -70,7 +70,7 @@
 
         
 
-    .. py:method:: delete_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule
+    .. py:method:: delete_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccPrivateEndpointRule
 
         Delete a private endpoint rule.
 
@@ -84,7 +84,7 @@
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
 
-        :returns: :class:`NccAzurePrivateEndpointRule`
+        :returns: :class:`NccPrivateEndpointRule`
         
 
     .. py:method:: get_network_connectivity_configuration(network_connectivity_config_id: str) -> NetworkConnectivityConfiguration
@@ -99,7 +99,7 @@
         :returns: :class:`NetworkConnectivityConfiguration`
         
 
-    .. py:method:: get_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule
+    .. py:method:: get_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccPrivateEndpointRule
 
         Gets a private endpoint rule.
 
@@ -110,7 +110,7 @@
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
 
-        :returns: :class:`NccAzurePrivateEndpointRule`
+        :returns: :class:`NccPrivateEndpointRule`
         
 
     .. py:method:: list_network_connectivity_configurations( [, page_token: Optional[str]]) -> Iterator[NetworkConnectivityConfiguration]
@@ -125,7 +125,7 @@
         :returns: Iterator over :class:`NetworkConnectivityConfiguration`
         
 
-    .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_token: Optional[str]]) -> Iterator[NccAzurePrivateEndpointRule]
+    .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_token: Optional[str]]) -> Iterator[NccPrivateEndpointRule]
 
         List private endpoint rules.
 
@@ -136,10 +136,10 @@
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
 
-        :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
+        :returns: Iterator over :class:`NccPrivateEndpointRule`
         
 
-    .. py:method:: update_ncc_azure_private_endpoint_rule_public(network_connectivity_config_id: str, private_endpoint_rule_id: str, private_endpoint_rule: UpdatePrivateEndpointRule, update_mask: str) -> NccAzurePrivateEndpointRule
+    .. py:method:: update_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str, private_endpoint_rule: UpdatePrivateEndpointRule, update_mask: str) -> NccPrivateEndpointRule
 
         Update a private endpoint rule.
 
@@ -147,7 +147,8 @@
         is allowed to be updated.
 
         :param network_connectivity_config_id: str
-          Your Network Connectivity Configuration ID.
+          The ID of a network connectivity configuration, which is the parent resource of this private
+          endpoint rule object.
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
@@ -160,5 +161,5 @@
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
 
-        :returns: :class:`NccAzurePrivateEndpointRule`
+        :returns: :class:`NccPrivateEndpointRule`
         

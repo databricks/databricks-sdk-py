@@ -111,6 +111,11 @@ class CreatePipeline:
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
+
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
     must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
@@ -174,6 +179,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -235,6 +242,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -271,6 +280,7 @@ class CreatePipeline:
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -505,6 +515,11 @@ class EditPipeline:
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
+
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
     must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
@@ -570,6 +585,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -633,6 +650,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -670,6 +689,7 @@ class EditPipeline:
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -1186,6 +1206,7 @@ class IngestionSourceType(Enum):
     SERVICENOW = "SERVICENOW"
     SHAREPOINT = "SHAREPOINT"
     SQLSERVER = "SQLSERVER"
+    TERADATA = "TERADATA"
     WORKDAY_RAAS = "WORKDAY_RAAS"
 
 
@@ -2386,6 +2407,11 @@ class PipelineSpec:
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
 
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
+
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
     must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
@@ -2443,6 +2469,8 @@ class PipelineSpec:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2498,6 +2526,8 @@ class PipelineSpec:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2531,6 +2561,7 @@ class PipelineSpec:
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -3568,6 +3599,7 @@ class PipelinesAPI:
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ) -> CreatePipelineResponse:
@@ -3636,6 +3668,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -3698,6 +3733,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:
@@ -3713,7 +3750,8 @@ class PipelinesAPI:
     def delete(self, pipeline_id: str):
         """Delete a pipeline.
 
-        Deletes a pipeline.
+        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        its tables. You cannot undo this action.
 
         :param pipeline_id: str
 
@@ -4083,6 +4121,7 @@ class PipelinesAPI:
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ):
@@ -4154,6 +4193,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -4216,6 +4258,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:

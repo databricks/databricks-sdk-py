@@ -15,7 +15,7 @@
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -116,6 +116,9 @@
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -130,7 +133,8 @@
 
         Delete a pipeline.
 
-        Deletes a pipeline.
+        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        its tables. You cannot undo this action.
 
         :param pipeline_id: str
 
@@ -402,7 +406,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger]])
 
 
         Usage:
@@ -522,6 +526,9 @@
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated

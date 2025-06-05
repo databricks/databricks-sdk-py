@@ -198,6 +198,20 @@
         :returns: :class:`GenieSpace`
         
 
+    .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
+
+        List Genie spaces.
+
+        Get list of Genie Spaces.
+
+        :param page_size: int (optional)
+          Maximum number of spaces to return per page
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results
+
+        :returns: :class:`GenieListSpacesResponse`
+        
+
     .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]
 
         Start conversation.

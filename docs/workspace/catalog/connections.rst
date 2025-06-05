@@ -57,7 +57,7 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param properties: Dict[str,str] (optional)
-          An object containing map of key-value properties attached to the connection.
+          A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
 

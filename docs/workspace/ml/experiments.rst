@@ -207,7 +207,7 @@
           The ID of the logged model to finalize.
         :param status: :class:`LoggedModelStatus`
           Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
-          went wrong when logging the model weights / agent code).
+          went wrong when logging the model weights / agent code.
 
         :returns: :class:`FinalizeLoggedModelResponse`
         
@@ -228,26 +228,6 @@
           Name of the associated experiment.
 
         :returns: :class:`GetExperimentByNameResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_download(request_id: str) -> GetCredentialsForTraceDataDownloadResponse
-
-        Get credentials to download trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact download credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_upload(request_id: str) -> GetCredentialsForTraceDataUploadResponse
-
-        Get credentials to upload trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact upload credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
         
 
     .. py:method:: get_experiment(experiment_id: str) -> GetExperimentResponse
@@ -409,26 +389,6 @@
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
         :returns: Iterator over :class:`Experiment`
-        
-
-    .. py:method:: list_logged_model_artifacts(model_id: str [, artifact_directory_path: Optional[str], page_token: Optional[str]]) -> ListLoggedModelArtifactsResponse
-
-        List artifacts for a logged model.
-
-        List artifacts for a logged model. Takes an optional ``artifact_directory_path`` prefix which if
-        specified, the response contains only artifacts with the specified prefix.
-
-        :param model_id: str
-          The ID of the logged model for which to list the artifacts.
-        :param artifact_directory_path: str (optional)
-          Filter artifacts matching this path (a relative path from the root artifact directory).
-        :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
-          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
-
-        :returns: :class:`ListLoggedModelArtifactsResponse`
         
 
     .. py:method:: log_batch( [, metrics: Optional[List[Metric]], params: Optional[List[Param]], run_id: Optional[str], tags: Optional[List[RunTag]]])

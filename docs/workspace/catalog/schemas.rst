@@ -179,6 +179,7 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)

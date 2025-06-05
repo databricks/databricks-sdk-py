@@ -24,7 +24,7 @@
         :returns: :class:`CleanRoomAsset`
         
 
-    .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str)
+    .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str)
 
         Delete an asset.
 
@@ -34,13 +34,13 @@
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
 
         
 
-    .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset
+    .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str) -> CleanRoomAsset
 
         Get an asset.
 
@@ -50,7 +50,7 @@
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
         :returns: :class:`CleanRoomAsset`

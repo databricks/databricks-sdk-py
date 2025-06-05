@@ -2547,7 +2547,7 @@ class AccountGroupsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", query=query, headers=headers
@@ -2827,7 +2827,7 @@ class AccountServicePrincipalsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET",
@@ -3185,7 +3185,7 @@ class AccountUsersAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", query=query, headers=headers
@@ -3495,7 +3495,7 @@ class GroupsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query, headers=headers)
             if "Resources" in json:
@@ -3955,7 +3955,7 @@ class ServicePrincipalsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, headers=headers)
             if "Resources" in json:
@@ -4324,7 +4324,7 @@ class UsersAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query, headers=headers)
             if "Resources" in json:

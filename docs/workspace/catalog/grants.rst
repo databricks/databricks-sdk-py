@@ -14,7 +14,7 @@
     within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
     objects within that schema.
 
-    .. py:method:: get(securable_type: SecurableType, full_name: str [, principal: Optional[str]]) -> PermissionsList
+    .. py:method:: get(securable_type: str, full_name: str [, max_results: Optional[int], page_token: Optional[str], principal: Optional[str]]) -> GetPermissionsResponse
 
 
         Usage:
@@ -62,19 +62,31 @@
 
         Get permissions.
 
-        Gets the permissions for a securable.
+        Gets the permissions for a securable. Does not include inherited permissions.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param max_results: int (optional)
+          Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
+          present in a single page response is guaranteed to contain all the privileges granted on the
+          requested Securable for the respective principal.
+
+          If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
+          0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
+          parameter error (this is to ensure that server is able to return at least one complete
+          PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the
+          minimum of this value and a server configured value
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
           If provided, only the permissions for the specified principal (user or group) are returned.
 
-        :returns: :class:`PermissionsList`
+        :returns: :class:`GetPermissionsResponse`
         
 
-    .. py:method:: get_effective(securable_type: SecurableType, full_name: str [, principal: Optional[str]]) -> EffectivePermissionsList
+    .. py:method:: get_effective(securable_type: str, full_name: str [, max_results: Optional[int], page_token: Optional[str], principal: Optional[str]]) -> EffectivePermissionsList
 
 
         Usage:
@@ -122,12 +134,26 @@
 
         Get effective permissions.
 
-        Gets the effective permissions for a securable.
+        Gets the effective permissions for a securable. Includes inherited permissions from any parent
+        securables.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param max_results: int (optional)
+          Specifies the maximum number of privileges to return (page length). Every
+          EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
+          effective privileges granted on (or inherited by) the requested Securable for the respective
+          principal.
+
+          If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
+          error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
+          invalid parameter error (this is to ensure that server is able to return at least one complete
+          EffectivePrivilegeAssignment in a single page response) - greater than (or equal to) 150: page
+          length is the minimum of this value and a server configured value
+        :param page_token: str (optional)
+          Opaque token for the next page of results (pagination).
         :param principal: str (optional)
           If provided, only the effective permissions for the specified principal (user or group) are
           returned.
@@ -135,7 +161,7 @@
         :returns: :class:`EffectivePermissionsList`
         
 
-    .. py:method:: update(securable_type: SecurableType, full_name: str [, changes: Optional[List[PermissionsChange]]]) -> PermissionsList
+    .. py:method:: update(securable_type: str, full_name: str [, changes: Optional[List[PermissionsChange]]]) -> UpdatePermissionsResponse
 
 
         Usage:
@@ -193,12 +219,12 @@
 
         Updates the permissions for a securable.
 
-        :param securable_type: :class:`SecurableType`
+        :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
 
-        :returns: :class:`PermissionsList`
+        :returns: :class:`UpdatePermissionsResponse`
         

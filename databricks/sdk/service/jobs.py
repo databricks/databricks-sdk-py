@@ -54,6 +54,9 @@ class BaseJob:
     """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
     method."""
 
+    trigger_state: Optional[TriggerStateProto] = None
+    """State of the trigger associated with the job."""
+
     def as_dict(self) -> dict:
         """Serializes the BaseJob into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -69,6 +72,8 @@ class BaseJob:
             body["job_id"] = self.job_id
         if self.settings:
             body["settings"] = self.settings.as_dict()
+        if self.trigger_state:
+            body["trigger_state"] = self.trigger_state.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -86,6 +91,8 @@ class BaseJob:
             body["job_id"] = self.job_id
         if self.settings:
             body["settings"] = self.settings
+        if self.trigger_state:
+            body["trigger_state"] = self.trigger_state
         return body
 
     @classmethod
@@ -98,6 +105,7 @@ class BaseJob:
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             settings=_from_dict(d, "settings", JobSettings),
+            trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
 
 
@@ -1390,6 +1398,148 @@ class DashboardTaskOutput:
 
 
 @dataclass
+class DbtCloudJobRunStep:
+    """Format of response retrieved from dbt Cloud, for inclusion in output"""
+
+    index: Optional[int] = None
+    """Orders the steps in the job"""
+
+    logs: Optional[str] = None
+    """Output of the step"""
+
+    name: Optional[str] = None
+    """Name of the step in the job"""
+
+    status: Optional[DbtCloudRunStatus] = None
+    """State of the step"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtCloudJobRunStep into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.logs is not None:
+            body["logs"] = self.logs
+        if self.name is not None:
+            body["name"] = self.name
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtCloudJobRunStep into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.logs is not None:
+            body["logs"] = self.logs
+        if self.name is not None:
+            body["name"] = self.name
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtCloudJobRunStep:
+        """Deserializes the DbtCloudJobRunStep from a dictionary."""
+        return cls(
+            index=d.get("index", None),
+            logs=d.get("logs", None),
+            name=d.get("name", None),
+            status=_enum(d, "status", DbtCloudRunStatus),
+        )
+
+
+class DbtCloudRunStatus(Enum):
+    """Response enumeration from calling the dbt Cloud API, for inclusion in output"""
+
+    CANCELLED = "CANCELLED"
+    ERROR = "ERROR"
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    STARTING = "STARTING"
+    SUCCESS = "SUCCESS"
+
+
+@dataclass
+class DbtCloudTask:
+    connection_resource_name: Optional[str] = None
+    """The resource name of the UC connection that authenticates the dbt Cloud for this task"""
+
+    dbt_cloud_job_id: Optional[int] = None
+    """Id of the dbt Cloud job to be triggered"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtCloudTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.dbt_cloud_job_id is not None:
+            body["dbt_cloud_job_id"] = self.dbt_cloud_job_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtCloudTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.dbt_cloud_job_id is not None:
+            body["dbt_cloud_job_id"] = self.dbt_cloud_job_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtCloudTask:
+        """Deserializes the DbtCloudTask from a dictionary."""
+        return cls(
+            connection_resource_name=d.get("connection_resource_name", None),
+            dbt_cloud_job_id=d.get("dbt_cloud_job_id", None),
+        )
+
+
+@dataclass
+class DbtCloudTaskOutput:
+    dbt_cloud_job_run_id: Optional[int] = None
+    """Id of the job run in dbt Cloud"""
+
+    dbt_cloud_job_run_output: Optional[List[DbtCloudJobRunStep]] = None
+    """Steps of the job run as received from dbt Cloud"""
+
+    dbt_cloud_job_run_url: Optional[str] = None
+    """Url where full run details can be viewed"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtCloudTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dbt_cloud_job_run_id is not None:
+            body["dbt_cloud_job_run_id"] = self.dbt_cloud_job_run_id
+        if self.dbt_cloud_job_run_output:
+            body["dbt_cloud_job_run_output"] = [v.as_dict() for v in self.dbt_cloud_job_run_output]
+        if self.dbt_cloud_job_run_url is not None:
+            body["dbt_cloud_job_run_url"] = self.dbt_cloud_job_run_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtCloudTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_cloud_job_run_id is not None:
+            body["dbt_cloud_job_run_id"] = self.dbt_cloud_job_run_id
+        if self.dbt_cloud_job_run_output:
+            body["dbt_cloud_job_run_output"] = self.dbt_cloud_job_run_output
+        if self.dbt_cloud_job_run_url is not None:
+            body["dbt_cloud_job_run_url"] = self.dbt_cloud_job_run_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtCloudTaskOutput:
+        """Deserializes the DbtCloudTaskOutput from a dictionary."""
+        return cls(
+            dbt_cloud_job_run_id=d.get("dbt_cloud_job_run_id", None),
+            dbt_cloud_job_run_output=_repeated_dict(d, "dbt_cloud_job_run_output", DbtCloudJobRunStep),
+            dbt_cloud_job_run_url=d.get("dbt_cloud_job_run_url", None),
+        )
+
+
+@dataclass
 class DbtOutput:
     artifacts_headers: Optional[Dict[str, str]] = None
     """An optional map of headers to send when retrieving the artifact from the `artifacts_link`."""
@@ -1802,6 +1952,31 @@ class FileArrivalTriggerConfiguration:
             url=d.get("url", None),
             wait_after_last_change_seconds=d.get("wait_after_last_change_seconds", None),
         )
+
+
+@dataclass
+class FileArrivalTriggerState:
+    using_file_events: Optional[bool] = None
+    """Indicates whether the trigger leverages file events to detect file arrivals."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FileArrivalTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.using_file_events is not None:
+            body["using_file_events"] = self.using_file_events
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileArrivalTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.using_file_events is not None:
+            body["using_file_events"] = self.using_file_events
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileArrivalTriggerState:
+        """Deserializes the FileArrivalTriggerState from a dictionary."""
+        return cls(using_file_events=d.get("using_file_events", None))
 
 
 @dataclass
@@ -2321,6 +2496,9 @@ class Job:
     """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
     method."""
 
+    trigger_state: Optional[TriggerStateProto] = None
+    """State of the trigger associated with the job."""
+
     def as_dict(self) -> dict:
         """Serializes the Job into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2340,6 +2518,8 @@ class Job:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
             body["settings"] = self.settings.as_dict()
+        if self.trigger_state:
+            body["trigger_state"] = self.trigger_state.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2361,6 +2541,8 @@ class Job:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
             body["settings"] = self.settings
+        if self.trigger_state:
+            body["trigger_state"] = self.trigger_state
         return body
 
     @classmethod
@@ -2375,6 +2557,7 @@ class Job:
             next_page_token=d.get("next_page_token", None),
             run_as_user_name=d.get("run_as_user_name", None),
             settings=_from_dict(d, "settings", JobSettings),
+            trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
 
 
@@ -5771,6 +5954,8 @@ class RunOutput:
     dashboard_output: Optional[DashboardTaskOutput] = None
     """The output of a dashboard task, if available"""
 
+    dbt_cloud_output: Optional[DbtCloudTaskOutput] = None
+
     dbt_output: Optional[DbtOutput] = None
     """The output of a dbt task, if available."""
 
@@ -5819,6 +6004,8 @@ class RunOutput:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output.as_dict()
         if self.dashboard_output:
             body["dashboard_output"] = self.dashboard_output.as_dict()
+        if self.dbt_cloud_output:
+            body["dbt_cloud_output"] = self.dbt_cloud_output.as_dict()
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output.as_dict()
         if self.error is not None:
@@ -5848,6 +6035,8 @@ class RunOutput:
             body["clean_rooms_notebook_output"] = self.clean_rooms_notebook_output
         if self.dashboard_output:
             body["dashboard_output"] = self.dashboard_output
+        if self.dbt_cloud_output:
+            body["dbt_cloud_output"] = self.dbt_cloud_output
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output
         if self.error is not None:
@@ -5878,6 +6067,7 @@ class RunOutput:
                 d, "clean_rooms_notebook_output", CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
             ),
             dashboard_output=_from_dict(d, "dashboard_output", DashboardTaskOutput),
+            dbt_cloud_output=_from_dict(d, "dbt_cloud_output", DbtCloudTaskOutput),
             dbt_output=_from_dict(d, "dbt_output", DbtOutput),
             error=d.get("error", None),
             error_trace=d.get("error_trace", None),
@@ -6197,6 +6387,9 @@ class RunTask:
     dashboard_task: Optional[DashboardTask] = None
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
+    dbt_cloud_task: Optional[DbtCloudTask] = None
+    """Task type for dbt cloud"""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -6377,6 +6570,8 @@ class RunTask:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task.as_dict()
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -6472,6 +6667,8 @@ class RunTask:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -6562,6 +6759,7 @@ class RunTask:
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
+            dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -7585,6 +7783,9 @@ class SubmitTask:
     dashboard_task: Optional[DashboardTask] = None
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
+    dbt_cloud_task: Optional[DbtCloudTask] = None
+    """Task type for dbt cloud"""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -7695,6 +7896,8 @@ class SubmitTask:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task.as_dict()
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -7756,6 +7959,8 @@ class SubmitTask:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -7815,6 +8020,7 @@ class SubmitTask:
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
+            dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -7995,6 +8201,9 @@ class Task:
     dashboard_task: Optional[DashboardTask] = None
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
+    dbt_cloud_task: Optional[DbtCloudTask] = None
+    """Task type for dbt cloud"""
+
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
     requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
@@ -8130,6 +8339,8 @@ class Task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task.as_dict()
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -8201,6 +8412,8 @@ class Task:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
             body["dashboard_task"] = self.dashboard_task
+        if self.dbt_cloud_task:
+            body["dbt_cloud_task"] = self.dbt_cloud_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -8270,6 +8483,7 @@ class Task:
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
+            dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -8713,6 +8927,30 @@ class TriggerSettings:
             table=_from_dict(d, "table", TableUpdateTriggerConfiguration),
             table_update=_from_dict(d, "table_update", TableUpdateTriggerConfiguration),
         )
+
+
+@dataclass
+class TriggerStateProto:
+    file_arrival: Optional[FileArrivalTriggerState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggerStateProto into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerStateProto into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_arrival:
+            body["file_arrival"] = self.file_arrival
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerStateProto:
+        """Deserializes the TriggerStateProto from a dictionary."""
+        return cls(file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState))
 
 
 class TriggerType(Enum):

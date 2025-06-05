@@ -138,6 +138,10 @@ class CleanRoomAsset:
     asset_type: Optional[CleanRoomAssetAssetType] = None
     """The type of the asset."""
 
+    clean_room_name: Optional[str] = None
+    """The name of the clean room this asset belongs to. This is an output-only field to ensure proper
+    resource identification."""
+
     foreign_table: Optional[CleanRoomAssetForeignTable] = None
     """Foreign table details available to all collaborators of the clean room. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
@@ -192,6 +196,8 @@ class CleanRoomAsset:
             body["added_at"] = self.added_at
         if self.asset_type is not None:
             body["asset_type"] = self.asset_type.value
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
         if self.foreign_table:
             body["foreign_table"] = self.foreign_table.as_dict()
         if self.foreign_table_local_details:
@@ -223,6 +229,8 @@ class CleanRoomAsset:
             body["added_at"] = self.added_at
         if self.asset_type is not None:
             body["asset_type"] = self.asset_type
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
         if self.foreign_table:
             body["foreign_table"] = self.foreign_table
         if self.foreign_table_local_details:
@@ -253,6 +261,7 @@ class CleanRoomAsset:
         return cls(
             added_at=d.get("added_at", None),
             asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
+            clean_room_name=d.get("clean_room_name", None),
             foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
             foreign_table_local_details=_from_dict(
                 d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
@@ -1236,7 +1245,7 @@ class CleanRoomAssetsAPI:
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
 
-    def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str):
+    def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str):
         """Delete an asset.
 
         Delete a clean room asset - unshare/remove the asset from the clean room
@@ -1245,7 +1254,7 @@ class CleanRoomAssetsAPI:
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
 
@@ -1256,12 +1265,10 @@ class CleanRoomAssetsAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{asset_full_name}",
-            headers=headers,
+            "DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
         )
 
-    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset:
+    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str) -> CleanRoomAsset:
         """Get an asset.
 
         Get the details of a clean room asset by its type and full name.
@@ -1270,7 +1277,7 @@ class CleanRoomAssetsAPI:
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
         :returns: :class:`CleanRoomAsset`
@@ -1281,9 +1288,7 @@ class CleanRoomAssetsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{asset_full_name}",
-            headers=headers,
+            "GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
         )
         return CleanRoomAsset.from_dict(res)
 

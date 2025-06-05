@@ -271,109 +271,6 @@ class ApproveTransitionRequestResponse:
         return cls(activity=_from_dict(d, "activity", Activity))
 
 
-@dataclass
-class ArtifactCredentialInfo:
-    headers: Optional[List[ArtifactCredentialInfoHttpHeader]] = None
-    """A collection of HTTP headers that should be specified when uploading to or downloading from the
-    specified `signed_uri`."""
-
-    path: Optional[str] = None
-    """The path, relative to the Run's artifact root location, of the artifact that can be accessed
-    with the credential."""
-
-    run_id: Optional[str] = None
-    """The ID of the MLflow Run containing the artifact that can be accessed with the credential."""
-
-    signed_uri: Optional[str] = None
-    """The signed URI credential that provides access to the artifact."""
-
-    type: Optional[ArtifactCredentialType] = None
-    """The type of the signed credential URI (e.g., an AWS presigned URL or an Azure Shared Access
-    Signature URI)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.headers:
-            body["headers"] = [v.as_dict() for v in self.headers]
-        if self.path is not None:
-            body["path"] = self.path
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        if self.signed_uri is not None:
-            body["signed_uri"] = self.signed_uri
-        if self.type is not None:
-            body["type"] = self.type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.headers:
-            body["headers"] = self.headers
-        if self.path is not None:
-            body["path"] = self.path
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        if self.signed_uri is not None:
-            body["signed_uri"] = self.signed_uri
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfo:
-        """Deserializes the ArtifactCredentialInfo from a dictionary."""
-        return cls(
-            headers=_repeated_dict(d, "headers", ArtifactCredentialInfoHttpHeader),
-            path=d.get("path", None),
-            run_id=d.get("run_id", None),
-            signed_uri=d.get("signed_uri", None),
-            type=_enum(d, "type", ArtifactCredentialType),
-        )
-
-
-@dataclass
-class ArtifactCredentialInfoHttpHeader:
-    name: Optional[str] = None
-    """The HTTP header name."""
-
-    value: Optional[str] = None
-    """The HTTP header value."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfoHttpHeader into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfoHttpHeader into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfoHttpHeader:
-        """Deserializes the ArtifactCredentialInfoHttpHeader from a dictionary."""
-        return cls(name=d.get("name", None), value=d.get("value", None))
-
-
-class ArtifactCredentialType(Enum):
-    """The type of a given artifact access credential"""
-
-    AWS_PRESIGNED_URL = "AWS_PRESIGNED_URL"
-    AZURE_ADLS_GEN2_SAS_URI = "AZURE_ADLS_GEN2_SAS_URI"
-    AZURE_SAS_URI = "AZURE_SAS_URI"
-    GCP_SIGNED_URL = "GCP_SIGNED_URL"
-
-
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
     `EDIT_COMMENT`: Edit the comment
@@ -1076,7 +973,8 @@ class CreateRegistryWebhook:
     job_spec: Optional[JobSpec] = None
 
     model_name: Optional[str] = None
-    """Name of the model whose events would trigger this webhook."""
+    """If model name is not specified, a registry-wide webhook is created that listens for the
+    specified events across all versions of all registered models."""
 
     status: Optional[RegistryWebhookStatus] = None
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
@@ -2235,7 +2133,7 @@ class FileInfo:
 class FinalizeLoggedModelRequest:
     status: LoggedModelStatus
     """Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that
-    something went wrong when logging the model weights / agent code)."""
+    something went wrong when logging the model weights / agent code."""
 
     model_id: Optional[str] = None
     """The ID of the logged model to finalize."""
@@ -2341,56 +2239,6 @@ class ForecastingExperimentState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
-
-
-@dataclass
-class GetCredentialsForTraceDataDownloadResponse:
-    credential_info: Optional[ArtifactCredentialInfo] = None
-    """The artifact download credentials for the specified trace data."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataDownloadResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataDownloadResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataDownloadResponse:
-        """Deserializes the GetCredentialsForTraceDataDownloadResponse from a dictionary."""
-        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
-
-
-@dataclass
-class GetCredentialsForTraceDataUploadResponse:
-    credential_info: Optional[ArtifactCredentialInfo] = None
-    """The artifact upload credentials for the specified trace data."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataUploadResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataUploadResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataUploadResponse:
-        """Deserializes the GetCredentialsForTraceDataUploadResponse from a dictionary."""
-        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
 
 
 @dataclass
@@ -2990,49 +2838,6 @@ class ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
-        )
-
-
-@dataclass
-class ListLoggedModelArtifactsResponse:
-    files: Optional[List[FileInfo]] = None
-    """File location and metadata for artifacts."""
-
-    next_page_token: Optional[str] = None
-    """Token that can be used to retrieve the next page of artifact results"""
-
-    root_uri: Optional[str] = None
-    """Root artifact directory for the logged model."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListLoggedModelArtifactsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.files:
-            body["files"] = [v.as_dict() for v in self.files]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.root_uri is not None:
-            body["root_uri"] = self.root_uri
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListLoggedModelArtifactsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.files:
-            body["files"] = self.files
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        if self.root_uri is not None:
-            body["root_uri"] = self.root_uri
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListLoggedModelArtifactsResponse:
-        """Deserializes the ListLoggedModelArtifactsResponse from a dictionary."""
-        return cls(
-            files=_repeated_dict(d, "files", FileInfo),
-            next_page_token=d.get("next_page_token", None),
-            root_uri=d.get("root_uri", None),
         )
 
 
@@ -5494,10 +5299,7 @@ class RunInputs:
     """Run metrics."""
 
     model_inputs: Optional[List[ModelInput]] = None
-    """**NOTE**: Experimental: This API field may change or be removed in a future release without
-    warning.
-    
-    Model inputs to the Run."""
+    """Model inputs to the Run."""
 
     def as_dict(self) -> dict:
         """Serializes the RunInputs into a dictionary suitable for use as a JSON request body."""
@@ -7339,7 +7141,7 @@ class ExperimentsAPI:
           The ID of the logged model to finalize.
         :param status: :class:`LoggedModelStatus`
           Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
-          went wrong when logging the model weights / agent code).
+          went wrong when logging the model weights / agent code.
 
         :returns: :class:`FinalizeLoggedModelResponse`
         """
@@ -7380,38 +7182,6 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
-
-    def get_credentials_for_trace_data_download(self, request_id: str) -> GetCredentialsForTraceDataDownloadResponse:
-        """Get credentials to download trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact download credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-download", headers=headers)
-        return GetCredentialsForTraceDataDownloadResponse.from_dict(res)
-
-    def get_credentials_for_trace_data_upload(self, request_id: str) -> GetCredentialsForTraceDataUploadResponse:
-        """Get credentials to upload trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact upload credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-upload", headers=headers)
-        return GetCredentialsForTraceDataUploadResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
@@ -7665,41 +7435,6 @@ class ExperimentsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
-
-    def list_logged_model_artifacts(
-        self, model_id: str, *, artifact_directory_path: Optional[str] = None, page_token: Optional[str] = None
-    ) -> ListLoggedModelArtifactsResponse:
-        """List artifacts for a logged model.
-
-        List artifacts for a logged model. Takes an optional ``artifact_directory_path`` prefix which if
-        specified, the response contains only artifacts with the specified prefix.
-
-        :param model_id: str
-          The ID of the logged model for which to list the artifacts.
-        :param artifact_directory_path: str (optional)
-          Filter artifacts matching this path (a relative path from the root artifact directory).
-        :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
-          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
-
-        :returns: :class:`ListLoggedModelArtifactsResponse`
-        """
-
-        query = {}
-        if artifact_directory_path is not None:
-            query["artifact_directory_path"] = artifact_directory_path
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "GET", f"/api/2.0/mlflow/logged-models/{model_id}/artifacts/directories", query=query, headers=headers
-        )
-        return ListLoggedModelArtifactsResponse.from_dict(res)
 
     def log_batch(
         self,
@@ -8949,7 +8684,8 @@ class ModelRegistryAPI:
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param model_name: str (optional)
-          Name of the model whose events would trigger this webhook.
+          If model name is not specified, a registry-wide webhook is created that listens for the specified
+          events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
@@ -8988,6 +8724,7 @@ class ModelRegistryAPI:
         Deletes a comment on a model version.
 
         :param id: str
+          Unique identifier of an activity
 
 
         """
