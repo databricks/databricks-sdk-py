@@ -1101,10 +1101,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. autoclass:: Token
-   :members:
-   :undoc-members:
-
 .. autoclass:: TriggerInfo
    :members:
    :undoc-members:

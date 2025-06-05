@@ -7,12 +7,12 @@
     A recipient is an object you create using :method:recipients/create to represent an organization which you
     want to allow access shares. The way how sharing works differs depending on whether or not your recipient
     has access to a Databricks workspace that is enabled for Unity Catalog:
-    
+
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
     recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
     is the key identifier that enables the secure connection. This sharing mode is called
     **Databricks-to-Databricks sharing**.
-    
+
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
     create a recipient object, Databricks generates an activation link you can send to the recipient. The
     recipient follows the activation link to download the credential file, and then uses the credential file
@@ -37,10 +37,10 @@
             w.recipients.delete(name=created.name)
 
         Create a share recipient.
-        
+
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
         be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.
-        
+
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
@@ -64,20 +64,20 @@
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is only present when the
           __authentication_type__ is **DATABRICKS**.
-        
+
         :returns: :class:`RecipientInfo`
         
 
     .. py:method:: delete(name: str)
 
         Delete a share recipient.
-        
+
         Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
-        
-        
+
+
         
 
     .. py:method:: get(name: str) -> RecipientInfo
@@ -101,14 +101,14 @@
             w.recipients.delete(name=created.name)
 
         Get a share recipient.
-        
+
         Gets a share recipient from the metastore if:
-        
+
         * the caller is the owner of the share recipient, or: * is a metastore admin
-        
+
         :param name: str
           Name of the recipient.
-        
+
         :returns: :class:`RecipientInfo`
         
 
@@ -127,12 +127,12 @@
             all = w.recipients.list(sharing.ListRecipientsRequest())
 
         List share recipients.
-        
+
         Gets an array of all share recipients within the current metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
         ordering of the elements in the array.
-        
+
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
@@ -146,7 +146,7 @@
           from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`RecipientInfo`
         
 
@@ -171,17 +171,17 @@
             w.recipients.delete(name=created.name)
 
         Rotate a token.
-        
+
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
-        
+
         :param name: str
           The name of the Recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
           the existing token immediately, negative number will return an error.
-        
+
         :returns: :class:`RecipientInfo`
         
 
@@ -206,10 +206,10 @@
             w.recipients.delete(name=created.name)
 
         Get recipient share permissions.
-        
+
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
         owner of the Recipient.
-        
+
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
@@ -222,7 +222,7 @@
           unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
@@ -247,11 +247,11 @@
             w.recipients.delete(name=created.name)
 
         Update a share recipient.
-        
+
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
         owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
         :param comment: str (optional)
@@ -268,6 +268,6 @@
           Recipient properties as map of string key-value pairs. When provided in update request, the
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
-        
+
         :returns: :class:`RecipientInfo`
         

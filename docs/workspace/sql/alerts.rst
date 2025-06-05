@@ -51,28 +51,28 @@
             w.alerts.delete(id=alert.id)
 
         Create an alert.
-        
+
         Creates an alert.
-        
+
         :param alert: :class:`CreateAlertRequestAlert` (optional)
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
-        
+
         :returns: :class:`Alert`
         
 
     .. py:method:: delete(id: str)
 
         Delete an alert.
-        
+
         Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
         can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
         deleted after 30 days.
-        
+
         :param id: str
-        
-        
+
+
         
 
     .. py:method:: get(id: str) -> Alert
@@ -119,11 +119,11 @@
             w.alerts.delete(id=alert.id)
 
         Get an alert.
-        
+
         Gets an alert.
-        
+
         :param id: str
-        
+
         :returns: :class:`Alert`
         
 
@@ -142,13 +142,13 @@
             all = w.alerts.list(sql.ListAlertsRequest())
 
         List alerts.
-        
+
         Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
-        
+
         :param page_size: int (optional)
         :param page_token: str (optional)
-        
+
         :returns: Iterator over :class:`ListAlertsResponseAlert`
         
 
@@ -200,9 +200,9 @@
             w.alerts.delete(id=alert.id)
 
         Update an alert.
-        
+
         Updates an alert.
-        
+
         :param id: str
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
@@ -210,7 +210,7 @@
           `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
-          
+
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
@@ -218,6 +218,6 @@
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
           alert's display name conflicts with an existing alert's display name.
-        
+
         :returns: :class:`Alert`
         

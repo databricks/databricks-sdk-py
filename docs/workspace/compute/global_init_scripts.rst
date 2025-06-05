@@ -6,7 +6,7 @@
 
     The Global Init Scripts API enables Workspace administrators to configure global initialization scripts
     for their workspace. These scripts run on every node in every cluster in the workspace.
-    
+
     **Important:** Existing clusters must be restarted to pick up any changes made to global init scripts.
     Global init scripts are run in order. If the init script returns with a bad exit code, the Apache Spark
     container fails to launch and init scripts with later position are skipped. If enough containers fail, the
@@ -37,9 +37,9 @@
             w.global_init_scripts.delete(script_id=created.script_id)
 
         Create init script.
-        
+
         Creates a new global init script in this workspace.
-        
+
         :param name: str
           The name of the script
         :param script: str
@@ -49,27 +49,27 @@
         :param position: int (optional)
           The position of a global init script, where 0 represents the first script to run, 1 is the second
           script to run, in ascending order.
-          
+
           If you omit the numeric position for a new global init script, it defaults to last position. It will
           run after all current scripts. Setting any value greater than the position of the last script is
           equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2.
           Any position of (3) or greater puts the script in the last position. If an explicit position value
           conflicts with an existing script value, your request succeeds, but the original script at that
           position and all later scripts have their positions incremented by 1.
-        
+
         :returns: :class:`CreateResponse`
         
 
     .. py:method:: delete(script_id: str)
 
         Delete init script.
-        
+
         Deletes a global init script.
-        
+
         :param script_id: str
           The ID of the global init script.
-        
-        
+
+
         
 
     .. py:method:: get(script_id: str) -> GlobalInitScriptDetailsWithContent
@@ -99,12 +99,12 @@
             w.global_init_scripts.delete(script_id=created.script_id)
 
         Get an init script.
-        
+
         Gets all the details of a script, including its Base64-encoded contents.
-        
+
         :param script_id: str
           The ID of the global init script.
-        
+
         :returns: :class:`GlobalInitScriptDetailsWithContent`
         
 
@@ -122,11 +122,11 @@
             all = w.global_init_scripts.list()
 
         Get init scripts.
-        
+
         Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
         script](:method:globalinitscripts/get) operation.
-        
+
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         
 
@@ -161,10 +161,10 @@
             w.global_init_scripts.delete(script_id=created.script_id)
 
         Update init script.
-        
+
         Updates a global init script, specifying only the fields to change. All fields are optional.
         Unspecified fields retain their current value.
-        
+
         :param script_id: str
           The ID of the global init script.
         :param name: str
@@ -176,13 +176,13 @@
         :param position: int (optional)
           The position of a script, where 0 represents the first script to run, 1 is the second script to run,
           in ascending order. To move the script to run first, set its position to 0.
-          
+
           To move the script to the end, set its position to any value greater or equal to the position of the
           last script. Example, three existing scripts with positions 0, 1, and 2. Any position value of 2 or
           greater puts the script in the last position (2).
-          
+
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
-        
-        
+
+
         

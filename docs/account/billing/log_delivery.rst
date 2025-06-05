@@ -53,31 +53,31 @@
             )
 
         Create a new log delivery configuration.
-        
+
         Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
         to your storage location. This requires that you already created a [credential
         object](:method:Credentials/Create) (which encapsulates a cross-account service IAM role) and a
         [storage configuration object](:method:Storage/Create) (which encapsulates an S3 bucket).
-        
+
         For full details, including the required IAM role policies and bucket policies, see [Deliver and
         access billable usage logs] or [Configure audit logging].
-        
+
         **Note**: There is a limit on the number of log delivery configurations available per account (each
         limit applies separately to each log type including billable usage and audit logs). You can create a
         maximum of two enabled account-level delivery configurations (configurations without a workspace
         filter) per type. Additionally, you can create two enabled workspace-level delivery configurations per
         workspace for each log type, which means that the same workspace ID can occur in the workspace filter
         for no more than two delivery configurations per log type.
-        
+
         You cannot delete a log delivery configuration, but you can disable it (see [Enable or disable log
         delivery configuration](:method:LogDelivery/PatchStatus)).
-        
+
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-        
+
         :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams`
           * Log Delivery Configuration
-        
+
         :returns: :class:`WrappedLogDeliveryConfiguration`
         
 
@@ -129,12 +129,12 @@
             )
 
         Get log delivery configuration.
-        
+
         Gets a Databricks log delivery configuration object for an account, both specified by ID.
-        
+
         :param log_delivery_configuration_id: str
           The log delivery configuration id of customer
-        
+
         :returns: :class:`GetLogDeliveryConfigurationResponse`
         
 
@@ -153,9 +153,9 @@
             all = a.log_delivery.list(billing.ListLogDeliveryRequest())
 
         Get all log delivery configurations.
-        
+
         Gets all Databricks log delivery configurations associated with an account specified by ID.
-        
+
         :param credentials_id: str (optional)
           The Credentials id to filter the search results with
         :param page_token: str (optional)
@@ -165,19 +165,19 @@
           The log delivery status to filter the search results with
         :param storage_configuration_id: str (optional)
           The Storage Configuration id to filter the search results with
-        
+
         :returns: Iterator over :class:`LogDeliveryConfiguration`
         
 
     .. py:method:: patch_status(log_delivery_configuration_id: str, status: LogDeliveryConfigStatus)
 
         Enable or disable log delivery configuration.
-        
+
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't
         re-enable a delivery configuration if this would violate the delivery configuration limits described
         under [Create log delivery](:method:LogDelivery/Create).
-        
+
         :param log_delivery_configuration_id: str
           The log delivery configuration id of customer
         :param status: :class:`LogDeliveryConfigStatus`
@@ -185,6 +185,6 @@
           to `ENABLED`. You can [enable or disable the
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
-        
-        
+
+
         

@@ -29,7 +29,7 @@
 
         Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
         workspace is permanent. By default, it is turned off.
-        
+    
         This settings can NOT be disabled once it is enabled.
 
     .. py:property:: dashboard_email_subscriptions
@@ -44,12 +44,12 @@
 
         The default namespace setting API allows users to configure the default namespace for a Databricks
         workspace.
-        
+    
         Through this API, users can retrieve, set, or modify the default namespace used when queries do not
         reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
         default catalog, then a query 'SELECT * FROM myTable' would reference the object
         'retail_prod.default.myTable' (the schema 'default' is always assumed).
-        
+    
         This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
         namespace only applies when using Unity Catalog-enabled compute.
 
@@ -57,7 +57,7 @@
         :type: DisableLegacyAccessAPI
 
         'Disabling legacy access' has the following impacts:
-        
+    
         1. Disables direct access to Hive Metastores from the workspace. However, you can still access a Hive
         Metastore through Hive Metastore federation. 2. Disables fallback mode on external location access from
         the workspace. 3. Disables Databricks Runtime versions prior to 13.3LTS.
@@ -66,10 +66,10 @@
         :type: DisableLegacyDbfsAPI
 
         Disabling legacy DBFS has the following implications:
-        
+    
         1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
         Databricks Runtime versions prior to 13.3LTS.
-        
+    
         When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
         Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
         all-purpose compute clusters and SQL warehouses.
@@ -97,7 +97,7 @@
         Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
         security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
         compliance security profile is enabled, this is automatically enabled.
-        
+    
         If the compliance security profile is disabled, you can enable or disable this setting and it is not
         permanent.
 

@@ -5,7 +5,7 @@
 .. py:class:: AccountUsersAPI
 
     User identities recognized by Databricks and represented by email addresses.
-    
+
     Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
     provider to your Databricks account. SCIM streamlines onboarding a new employee or team by using your
     identity provider to create users and groups in Databricks account and give them the proper level of
@@ -36,23 +36,23 @@
             a.users.delete(id=user.id)
 
         Create a new user.
-        
+
         Creates a new user in the Databricks account. This new user will also be added to the Databricks
         account.
-        
+
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -66,7 +66,7 @@
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
+
         :returns: :class:`User`
         
 
@@ -91,14 +91,14 @@
             a.users.delete(id=user.id)
 
         Delete a user.
-        
+
         Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
         user.
-        
+
         :param id: str
           Unique ID for a user in the Databricks account.
-        
-        
+
+
         
 
     .. py:method:: get(id: str [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[GetSortOrder], start_index: Optional[int]]) -> User
@@ -125,9 +125,9 @@
             a.users.delete(id=user.id)
 
         Get user details.
-        
+
         Gets information for a specific user in Databricks account.
-        
+
         :param id: str
           Unique ID for a user in the Databricks account.
         :param attributes: str (optional)
@@ -141,7 +141,7 @@
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -150,16 +150,16 @@
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: :class:`User`
         
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[User]
 
         List users.
-        
+
         Gets details for all the users associated with a Databricks account.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -171,7 +171,7 @@
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -180,7 +180,7 @@
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`User`
         
 
@@ -218,24 +218,24 @@
             a.users.delete(id=user.id)
 
         Update user details.
-        
+
         Partially updates a user resource by applying the supplied operations on specific user attributes.
-        
+
         :param id: str
           Unique ID in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
 
         Replace a user.
-        
+
         Replaces a user's information with the data supplied in request.
-        
+
         :param id: str
           Databricks user ID.
         :param active: bool (optional)
@@ -244,13 +244,13 @@
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -262,6 +262,6 @@
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
-        
+
+
         

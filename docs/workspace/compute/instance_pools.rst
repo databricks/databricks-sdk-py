@@ -6,16 +6,16 @@
 
     Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud
     instances which reduces a cluster start and auto-scaling times.
-    
+
     Databricks pools reduce cluster start and auto-scaling times by maintaining a set of idle, ready-to-use
     instances. When a cluster is attached to a pool, cluster nodes are created using the pool’s idle
     instances. If the pool has no idle instances, the pool expands by allocating a new instance from the
     instance provider in order to accommodate the cluster’s request. When a cluster releases an instance, it
     returns to the pool and is free for another cluster to use. Only clusters attached to a pool can use that
     pool’s idle instances.
-    
+
     You can specify a different pool for the driver node and worker nodes, or use the same pool for both.
-    
+
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
@@ -40,9 +40,9 @@
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Create a new instance pool.
-        
+
         Creates a new instance pool using idle and ready-to-use cloud instances.
-        
+
         :param instance_pool_name: str
           Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
           characters.
@@ -60,7 +60,7 @@
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
           EBS volumes) with these tags in addition to `default_tags`. Notes:
-          
+
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
@@ -89,20 +89,20 @@
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the :method:clusters/sparkVersions API call.
-        
+
         :returns: :class:`CreateInstancePoolResponse`
         
 
     .. py:method:: delete(instance_pool_id: str)
 
         Delete an instance pool.
-        
+
         Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
-        
+
         :param instance_pool_id: str
           The instance pool to be terminated.
-        
-        
+
+
         
 
     .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int]])
@@ -132,9 +132,9 @@
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Edit an existing instance pool.
-        
+
         Modifies the configuration of an existing instance pool.
-        
+
         :param instance_pool_id: str
           Instance pool ID
         :param instance_pool_name: str
@@ -148,7 +148,7 @@
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances and
           EBS volumes) with these tags in addition to `default_tags`. Notes:
-          
+
           - Currently, Databricks allows at most 45 custom tags
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
@@ -162,8 +162,8 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        
-        
+
+
         
 
     .. py:method:: get(instance_pool_id: str) -> GetInstancePool
@@ -189,37 +189,37 @@
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
         Get instance pool information.
-        
+
         Retrieve the information for an instance pool based on its identifier.
-        
+
         :param instance_pool_id: str
           The canonical unique identifier for the instance pool.
-        
+
         :returns: :class:`GetInstancePool`
         
 
     .. py:method:: get_permission_levels(instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse
 
         Get instance pool permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
-        
+
         :returns: :class:`GetInstancePoolPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions(instance_pool_id: str) -> InstancePoolPermissions
 
         Get instance pool permissions.
-        
+
         Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
         object.
-        
+
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
-        
+
         :returns: :class:`InstancePoolPermissions`
         
 
@@ -237,36 +237,36 @@
             all = w.instance_pools.list()
 
         List instance pool info.
-        
+
         Gets a list of instance pools with their statistics.
-        
+
         :returns: Iterator over :class:`InstancePoolAndStats`
         
 
     .. py:method:: set_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
 
         Set instance pool permissions.
-        
+
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
-        
+
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
-        
+
         :returns: :class:`InstancePoolPermissions`
         
 
     .. py:method:: update_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
 
         Update instance pool permissions.
-        
+
         Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
         object.
-        
+
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
-        
+
         :returns: :class:`InstancePoolPermissions`
         

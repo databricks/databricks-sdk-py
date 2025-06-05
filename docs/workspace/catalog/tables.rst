@@ -9,39 +9,39 @@
     have the USE_CATALOG permission on its parent catalog. To query a table, users must have the SELECT
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
-    
+
     A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
     (rather than a managed or external table).
 
     .. py:method:: delete(full_name: str)
 
         Delete a table.
-        
+
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
         parent schema, or be the owner of the table and have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
-        
-        
+
+
         
 
     .. py:method:: exists(full_name: str) -> TableExistsResponse
 
         Get boolean reflecting if table exists.
-        
+
         Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
         owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
         and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
         the parent catalog * Have BROWSE privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
-        
+
         :returns: :class:`TableExistsResponse`
         
 
@@ -86,13 +86,13 @@
             w.tables.delete(full_name=table_full_name)
 
         Get a table.
-        
+
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
         the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
         the table owner or have the SELECT privilege on the table.
-        
+
         :param full_name: str
           Full name of the table.
         :param include_browse: bool (optional)
@@ -102,7 +102,7 @@
           Whether delta metadata should be included in the response.
         :param include_manifest_capabilities: bool (optional)
           Whether to include a manifest containing capabilities the table has.
-        
+
         :returns: :class:`TableInfo`
         
 
@@ -130,13 +130,13 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
 
         List tables.
-        
+
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
         must be a metastore admin or an owner of (or have the **SELECT** privilege on) the table. For the
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
-        
+
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param schema_name: str
@@ -162,7 +162,7 @@
           not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
-        
+
         :returns: Iterator over :class:`TableInfo`
         
 
@@ -190,18 +190,18 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
 
         List table summaries.
-        
+
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
-        
+
         * summaries for tables (within the current metastore and parent catalog and schema), when the user is
         a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
         catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
         **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
         **USE_CATALOG** privilege on the parent catalog.
-        
+
         There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param include_manifest_capabilities: bool (optional)
@@ -218,22 +218,22 @@
           A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
         :param table_name_pattern: str (optional)
           A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
-        
+
         :returns: Iterator over :class:`TableSummary`
         
 
     .. py:method:: update(full_name: str [, owner: Optional[str]])
 
         Update a table owner.
-        
+
         Change the owner of the table. The caller must be the owner of the parent catalog, have the
         **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
         of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
-        
-        
+
+
         

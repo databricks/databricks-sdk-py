@@ -515,10 +515,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
-.. autoclass:: Token
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateProvider
    :members:
    :undoc-members:
