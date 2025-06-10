@@ -688,6 +688,38 @@ class GenieGetMessageQueryResultResponse:
 
 
 @dataclass
+class GenieListSpacesResponse:
+    next_page_token: Optional[str] = None
+    """Token to get the next page of results"""
+
+    spaces: Optional[List[GenieSpace]] = None
+    """List of Genie spaces"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieListSpacesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.spaces:
+            body["spaces"] = [v.as_dict() for v in self.spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieListSpacesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.spaces:
+            body["spaces"] = self.spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieListSpacesResponse:
+        """Deserializes the GenieListSpacesResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), spaces=_repeated_dict(d, "spaces", GenieSpace))
+
+
+@dataclass
 class GenieMessage:
     id: str
     """Message ID. Legacy identifier, use message_id instead"""
@@ -1255,6 +1287,9 @@ class MessageErrorType(Enum):
     COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
+    DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
+    DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
+    DESCRIBE_QUERY_UNEXPECTED_FAILURE = "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
@@ -1267,9 +1302,13 @@ class MessageErrorType(Enum):
     ILLEGAL_PARAMETER_DEFINITION_EXCEPTION = "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
+    INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
     INVALID_CHAT_COMPLETION_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
     INVALID_COMPLETION_REQUEST_EXCEPTION = "INVALID_COMPLETION_REQUEST_EXCEPTION"
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
+    INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION = "INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION"
+    INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION = "INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION"
+    INVALID_SQL_UNKNOWN_TABLE_EXCEPTION = "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION"
     INVALID_TABLE_IDENTIFIER_EXCEPTION = "INVALID_TABLE_IDENTIFIER_EXCEPTION"
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
     MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
@@ -2374,6 +2413,33 @@ class GenieAPI:
 
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
+
+    def list_spaces(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> GenieListSpacesResponse:
+        """List Genie spaces.
+
+        Get list of Genie Spaces.
+
+        :param page_size: int (optional)
+          Maximum number of spaces to return per page
+        :param page_token: str (optional)
+          Pagination token for getting the next page of results
+
+        :returns: :class:`GenieListSpacesResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/genie/spaces", query=query, headers=headers)
+        return GenieListSpacesResponse.from_dict(res)
 
     def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
         """Start conversation.

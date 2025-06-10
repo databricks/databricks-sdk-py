@@ -729,7 +729,8 @@ class ClusterAttributes:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -831,6 +832,10 @@ class ClusterAttributes:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -865,6 +870,10 @@ class ClusterAttributes:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -916,6 +925,8 @@ class ClusterAttributes:
             body["node_type_id"] = self.node_type_id
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -928,6 +939,8 @@ class ClusterAttributes:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -975,6 +988,8 @@ class ClusterAttributes:
             body["node_type_id"] = self.node_type_id
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -987,6 +1002,8 @@ class ClusterAttributes:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1016,12 +1033,14 @@ class ClusterAttributes:
             kind=_enum(d, "kind", Kind),
             node_type_id=d.get("node_type_id", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -1118,7 +1137,8 @@ class ClusterDetails:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     cluster_source: Optional[ClusterSource] = None
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
@@ -1268,6 +1288,10 @@ class ClusterDetails:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -1333,6 +1357,10 @@ class ClusterDetails:
     termination_reason: Optional[TerminationReason] = None
     """Information about why the cluster was terminated. This field only appears when the cluster is in
     a `TERMINATING` or `TERMINATED` state."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -1412,6 +1440,8 @@ class ClusterDetails:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -1438,6 +1468,8 @@ class ClusterDetails:
             body["terminated_time"] = self.terminated_time
         if self.termination_reason:
             body["termination_reason"] = self.termination_reason.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1513,6 +1545,8 @@ class ClusterDetails:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -1539,6 +1573,8 @@ class ClusterDetails:
             body["terminated_time"] = self.terminated_time
         if self.termination_reason:
             body["termination_reason"] = self.termination_reason
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1582,6 +1618,7 @@ class ClusterDetails:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
@@ -1595,6 +1632,7 @@ class ClusterDetails:
             state_message=d.get("state_message", None),
             terminated_time=d.get("terminated_time", None),
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -2300,7 +2338,8 @@ class ClusterSpec:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2412,6 +2451,10 @@ class ClusterSpec:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -2450,6 +2493,10 @@ class ClusterSpec:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -2507,6 +2554,8 @@ class ClusterSpec:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -2519,6 +2568,8 @@ class ClusterSpec:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -2572,6 +2623,8 @@ class ClusterSpec:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -2584,6 +2637,8 @@ class ClusterSpec:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -2616,12 +2671,14 @@ class ClusterSpec:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -2803,7 +2860,8 @@ class CreateCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2915,6 +2973,10 @@ class CreateCluster:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -2949,6 +3011,10 @@ class CreateCluster:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -3008,6 +3074,8 @@ class CreateCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -3020,6 +3088,8 @@ class CreateCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -3075,6 +3145,8 @@ class CreateCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -3087,6 +3159,8 @@ class CreateCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -3120,12 +3194,14 @@ class CreateCluster:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -3215,6 +3291,10 @@ class CreateInstancePool:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set."""
+
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -3240,6 +3320,11 @@ class CreateInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """For pools with node type flexibility (Fleet-V2), this object contains the information about the
+    alternate node type ids to use when attempting to launch a cluster if the node type id is not
+    available. This field should not be set if enable_auto_alternate_node_types is true."""
+
     preloaded_docker_images: Optional[List[DockerImage]] = None
     """Custom Docker Image BYOC"""
 
@@ -3247,6 +3332,14 @@ class CreateInstancePool:
     """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
+
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateInstancePool into a dictionary suitable for use as a JSON request body."""
@@ -3259,6 +3352,8 @@ class CreateInstancePool:
             body["custom_tags"] = self.custom_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -3271,12 +3366,18 @@ class CreateInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3290,6 +3391,8 @@ class CreateInstancePool:
             body["custom_tags"] = self.custom_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -3302,12 +3405,18 @@ class CreateInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -3318,15 +3427,19 @@ class CreateInstancePool:
             azure_attributes=_from_dict(d, "azure_attributes", InstancePoolAzureAttributes),
             custom_tags=d.get("custom_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -3524,16 +3637,10 @@ class CustomPolicyTag:
     key: str
     """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
     “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
-    tags are preserved.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+    tags are preserved."""
 
     value: Optional[str] = None
-    """The value of the tag.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+    """The value of the tag."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
@@ -4117,7 +4224,8 @@ class EditCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -4229,6 +4337,10 @@ class EditCluster:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -4263,6 +4375,10 @@ class EditCluster:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -4322,6 +4438,8 @@ class EditCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -4334,6 +4452,8 @@ class EditCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -4389,6 +4509,8 @@ class EditCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -4401,6 +4523,8 @@ class EditCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -4434,12 +4558,14 @@ class EditCluster:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -4484,6 +4610,10 @@ class EditInstancePool:
     
     - Currently, Databricks allows at most 45 custom tags"""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set."""
+
     idle_instance_autotermination_minutes: Optional[int] = None
     """Automatically terminates the extra instances in the pool cache after they are inactive for this
     time in minutes if min_idle_instances requirement is already met. If not set, the extra pool
@@ -4500,14 +4630,25 @@ class EditInstancePool:
     """Minimum number of idle instances to keep in the instance pool"""
 
     node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
+    """For pools with node type flexibility (Fleet-V2), this object contains the information about the
+    alternate node type ids to use when attempting to launch a cluster if the node type id is not
+    available. This field should not be set if enable_auto_alternate_node_types is true."""
+
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
 
     def as_dict(self) -> dict:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None:
@@ -4522,6 +4663,10 @@ class EditInstancePool:
             body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4529,6 +4674,8 @@ class EditInstancePool:
         body = {}
         if self.custom_tags:
             body["custom_tags"] = self.custom_tags
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
         if self.instance_pool_id is not None:
@@ -4543,6 +4690,10 @@ class EditInstancePool:
             body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -4550,6 +4701,7 @@ class EditInstancePool:
         """Deserializes the EditInstancePool from a dictionary."""
         return cls(
             custom_tags=d.get("custom_tags", None),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
             instance_pool_id=d.get("instance_pool_id", None),
             instance_pool_name=d.get("instance_pool_name", None),
@@ -4557,6 +4709,8 @@ class EditInstancePool:
             min_idle_instances=d.get("min_idle_instances", None),
             node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -4782,23 +4936,22 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. (Note: DLT uses a
-    copied version of the Environment proto below, at
-    //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In this minimal
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
-    client: str
-    """Client version used by the environment The client is the user-facing environment of the runtime.
-    Each client comes with a specific set of pre-installed libraries. The version is a string,
-    consisting of the major client version."""
+    client: Optional[str] = None
+    """Use `environment_version` instead."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
-    dependency is a pip requirement file line
-    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
-    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
-    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
-    /Workspace/test/requirements.txt"]"""
+    dependency is a valid pip requirements file line per
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
+    a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
+    Databricks), or a VCS project URL."""
+
+    environment_version: Optional[str] = None
+    """Required. Environment version used by the environment. Each version comes with a specific Python
+    version and a set of Python packages. The version is a string, consisting of an integer."""
 
     jar_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
@@ -4811,6 +4964,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
@@ -4822,6 +4977,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
         return body
@@ -4832,6 +4989,7 @@ class Environment:
         return cls(
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
+            environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
         )
 
@@ -5032,6 +5190,7 @@ class EventType(Enum):
     AUTOSCALING_BACKOFF = "AUTOSCALING_BACKOFF"
     AUTOSCALING_FAILED = "AUTOSCALING_FAILED"
     AUTOSCALING_STATS_REPORT = "AUTOSCALING_STATS_REPORT"
+    CLUSTER_MIGRATED = "CLUSTER_MIGRATED"
     CREATING = "CREATING"
     DBFS_DOWN = "DBFS_DOWN"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
@@ -5468,6 +5627,10 @@ class GetInstancePool:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set."""
+
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -5498,8 +5661,9 @@ class GetInstancePool:
     """Minimum number of idle instances to keep in the instance pool"""
 
     node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
+    """For pools with node type flexibility (Fleet-V2), this object contains the information about the
+    alternate node type ids to use when attempting to launch a cluster if the node type id is not
+    available. This field should not be set if enable_auto_alternate_node_types is true."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -5515,6 +5679,10 @@ class GetInstancePool:
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
+
     state: Optional[InstancePoolState] = None
     """Current state of the instance pool."""
 
@@ -5523,6 +5691,10 @@ class GetInstancePool:
 
     status: Optional[InstancePoolStatus] = None
     """Status of failed pending instances in the pool."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
 
     def as_dict(self) -> dict:
         """Serializes the GetInstancePool into a dictionary suitable for use as a JSON request body."""
@@ -5537,6 +5709,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -5559,12 +5733,16 @@ class GetInstancePool:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state.value
         if self.stats:
             body["stats"] = self.stats.as_dict()
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5580,6 +5758,8 @@ class GetInstancePool:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -5602,12 +5782,16 @@ class GetInstancePool:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state
         if self.stats:
             body["stats"] = self.stats
         if self.status:
             body["status"] = self.status
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -5619,6 +5803,7 @@ class GetInstancePool:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -5630,9 +5815,11 @@ class GetInstancePool:
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             state=_enum(d, "state", InstancePoolState),
             stats=_from_dict(d, "stats", InstancePoolStats),
             status=_from_dict(d, "status", InstancePoolStatus),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -6429,6 +6616,10 @@ class InstancePoolAndStats:
     disk_spec: Optional[DiskSpec] = None
     """Defines the specification of the disks that will be attached to all spark containers."""
 
+    enable_auto_alternate_node_types: Optional[bool] = None
+    """For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids
+    are enabled. This field should not be true if node_type_flexibility is set."""
+
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
     additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -6462,8 +6653,9 @@ class InstancePoolAndStats:
     """Minimum number of idle instances to keep in the instance pool"""
 
     node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
+    """For pools with node type flexibility (Fleet-V2), this object contains the information about the
+    alternate node type ids to use when attempting to launch a cluster if the node type id is not
+    available. This field should not be set if enable_auto_alternate_node_types is true."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -6479,6 +6671,10 @@ class InstancePoolAndStats:
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
+
     state: Optional[InstancePoolState] = None
     """Current state of the instance pool."""
 
@@ -6487,6 +6683,10 @@ class InstancePoolAndStats:
 
     status: Optional[InstancePoolStatus] = None
     """Status of failed pending instances in the pool."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+    supported for GCP HYPERDISK_BALANCED types currently."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAndStats into a dictionary suitable for use as a JSON request body."""
@@ -6501,6 +6701,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec.as_dict()
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -6523,12 +6725,16 @@ class InstancePoolAndStats:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state.value
         if self.stats:
             body["stats"] = self.stats.as_dict()
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6544,6 +6750,8 @@ class InstancePoolAndStats:
             body["default_tags"] = self.default_tags
         if self.disk_spec:
             body["disk_spec"] = self.disk_spec
+        if self.enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = self.enable_auto_alternate_node_types
         if self.enable_elastic_disk is not None:
             body["enable_elastic_disk"] = self.enable_elastic_disk
         if self.gcp_attributes:
@@ -6566,12 +6774,16 @@ class InstancePoolAndStats:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state
         if self.stats:
             body["stats"] = self.stats
         if self.status:
             body["status"] = self.status
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -6583,6 +6795,7 @@ class InstancePoolAndStats:
             custom_tags=d.get("custom_tags", None),
             default_tags=d.get("default_tags", None),
             disk_spec=_from_dict(d, "disk_spec", DiskSpec),
+            enable_auto_alternate_node_types=d.get("enable_auto_alternate_node_types", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
             idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
@@ -6594,9 +6807,11 @@ class InstancePoolAndStats:
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             state=_enum(d, "state", InstancePoolState),
             stats=_from_dict(d, "stats", InstancePoolStats),
             status=_from_dict(d, "status", InstancePoolStatus),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -9116,6 +9331,7 @@ class TerminationReasonCode(Enum):
     DRIVER_OUT_OF_MEMORY = "DRIVER_OUT_OF_MEMORY"
     DRIVER_POD_CREATION_FAILURE = "DRIVER_POD_CREATION_FAILURE"
     DRIVER_UNEXPECTED_FAILURE = "DRIVER_UNEXPECTED_FAILURE"
+    DRIVER_UNHEALTHY = "DRIVER_UNHEALTHY"
     DRIVER_UNREACHABLE = "DRIVER_UNREACHABLE"
     DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE"
     DYNAMIC_SPARK_CONF_SIZE_EXCEEDED = "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
@@ -9404,7 +9620,8 @@ class UpdateClusterResource:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -9516,6 +9733,10 @@ class UpdateClusterResource:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -9554,6 +9775,10 @@ class UpdateClusterResource:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -9609,6 +9834,8 @@ class UpdateClusterResource:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -9621,6 +9848,8 @@ class UpdateClusterResource:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -9672,6 +9901,8 @@ class UpdateClusterResource:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -9684,6 +9915,8 @@ class UpdateClusterResource:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -9715,12 +9948,14 @@ class UpdateClusterResource:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -10320,11 +10555,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
@@ -10374,7 +10611,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10469,6 +10707,9 @@ class ClustersAPI:
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -10499,6 +10740,9 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -10558,6 +10802,8 @@ class ClustersAPI:
             body["num_workers"] = num_workers
         if policy_id is not None:
             body["policy_id"] = policy_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
         if runtime_engine is not None:
             body["runtime_engine"] = runtime_engine.value
         if single_user_name is not None:
@@ -10570,6 +10816,8 @@ class ClustersAPI:
             body["spark_version"] = spark_version
         if ssh_public_keys is not None:
             body["ssh_public_keys"] = [v for v in ssh_public_keys]
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
         if workload_type is not None:
@@ -10613,11 +10861,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
@@ -10646,12 +10896,14 @@ class ClustersAPI:
             node_type_id=node_type_id,
             num_workers=num_workers,
             policy_id=policy_id,
+            remote_disk_throughput=remote_disk_throughput,
             runtime_engine=runtime_engine,
             single_user_name=single_user_name,
             spark_conf=spark_conf,
             spark_env_vars=spark_env_vars,
             spark_version=spark_version,
             ssh_public_keys=ssh_public_keys,
+            total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
             workload_type=workload_type,
         ).result(timeout=timeout)
@@ -10715,11 +10967,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
@@ -10766,7 +11020,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10861,6 +11116,9 @@ class ClustersAPI:
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -10891,6 +11149,9 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -10950,6 +11211,8 @@ class ClustersAPI:
             body["num_workers"] = num_workers
         if policy_id is not None:
             body["policy_id"] = policy_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
         if runtime_engine is not None:
             body["runtime_engine"] = runtime_engine.value
         if single_user_name is not None:
@@ -10962,6 +11225,8 @@ class ClustersAPI:
             body["spark_version"] = spark_version
         if ssh_public_keys is not None:
             body["ssh_public_keys"] = [v for v in ssh_public_keys]
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
         if workload_type is not None:
@@ -11003,11 +11268,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
@@ -11036,12 +11303,14 @@ class ClustersAPI:
             node_type_id=node_type_id,
             num_workers=num_workers,
             policy_id=policy_id,
+            remote_disk_throughput=remote_disk_throughput,
             runtime_engine=runtime_engine,
             single_user_name=single_user_name,
             spark_conf=spark_conf,
             spark_env_vars=spark_env_vars,
             spark_version=spark_version,
             ssh_public_keys=ssh_public_keys,
+            total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
             workload_type=workload_type,
         ).result(timeout=timeout)
@@ -12101,13 +12370,17 @@ class InstancePoolsAPI:
         azure_attributes: Optional[InstancePoolAzureAttributes] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         disk_spec: Optional[DiskSpec] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         enable_elastic_disk: Optional[bool] = None,
         gcp_attributes: Optional[InstancePoolGcpAttributes] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         preloaded_docker_images: Optional[List[DockerImage]] = None,
         preloaded_spark_versions: Optional[List[str]] = None,
+        remote_disk_throughput: Optional[int] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
     ) -> CreateInstancePoolResponse:
         """Create a new instance pool.
 
@@ -12134,6 +12407,9 @@ class InstancePoolsAPI:
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -12153,12 +12429,22 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          For pools with node type flexibility (Fleet-V2), this object contains the information about the
+          alternate node type ids to use when attempting to launch a cluster if the node type id is not
+          available. This field should not be set if enable_auto_alternate_node_types is true.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the :method:clusters/sparkVersions API call.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only supported
+          for GCP HYPERDISK_BALANCED types currently.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+          supported for GCP HYPERDISK_BALANCED types currently.
 
         :returns: :class:`CreateInstancePoolResponse`
         """
@@ -12171,6 +12457,8 @@ class InstancePoolsAPI:
             body["custom_tags"] = custom_tags
         if disk_spec is not None:
             body["disk_spec"] = disk_spec.as_dict()
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if enable_elastic_disk is not None:
             body["enable_elastic_disk"] = enable_elastic_disk
         if gcp_attributes is not None:
@@ -12183,12 +12471,18 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         if preloaded_docker_images is not None:
             body["preloaded_docker_images"] = [v.as_dict() for v in preloaded_docker_images]
         if preloaded_spark_versions is not None:
             body["preloaded_spark_versions"] = [v for v in preloaded_spark_versions]
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12224,10 +12518,13 @@ class InstancePoolsAPI:
         node_type_id: str,
         *,
         custom_tags: Optional[Dict[str, str]] = None,
+        enable_auto_alternate_node_types: Optional[bool] = None,
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
         node_type_flexibility: Optional[NodeTypeFlexibility] = None,
+        remote_disk_throughput: Optional[int] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
     ):
         """Edit an existing instance pool.
 
@@ -12248,6 +12545,9 @@ class InstancePoolsAPI:
           EBS volumes) with these tags in addition to `default_tags`. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -12261,14 +12561,23 @@ class InstancePoolsAPI:
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
         :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
-          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-          when attempting to launch a cluster if the node type id is not available.
+          For pools with node type flexibility (Fleet-V2), this object contains the information about the
+          alternate node type ids to use when attempting to launch a cluster if the node type id is not
+          available. This field should not be set if enable_auto_alternate_node_types is true.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote shuffle disk is. Only supported
+          for GCP HYPERDISK_BALANCED types currently.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote shuffle disks should be. Only
+          supported for GCP HYPERDISK_BALANCED types currently.
 
 
         """
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = custom_tags
+        if enable_auto_alternate_node_types is not None:
+            body["enable_auto_alternate_node_types"] = enable_auto_alternate_node_types
         if idle_instance_autotermination_minutes is not None:
             body["idle_instance_autotermination_minutes"] = idle_instance_autotermination_minutes
         if instance_pool_id is not None:
@@ -12283,6 +12592,10 @@ class InstancePoolsAPI:
             body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12440,8 +12753,10 @@ class InstanceProfilesAPI:
     ):
         """Register an instance profile.
 
-        In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users.
+        Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
+        this instance profile when launching clusters.
+
+        This API is only available to admin users.
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.

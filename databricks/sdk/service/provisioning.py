@@ -779,9 +779,6 @@ class Credential:
         )
 
 
-CustomTags = Dict[str, str]
-
-
 @dataclass
 class CustomerFacingGcpCloudResourceContainer:
     """The general workspace configurations that are specific to Google Cloud."""

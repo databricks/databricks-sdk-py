@@ -744,12 +744,6 @@ class ListEndpointResponse:
 
 @dataclass
 class ListValue:
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `ListValue` is a wrapper around a repeated field of values.
-
-    The JSON representation for `ListValue` is JSON array."""
-
     values: Optional[List[Value]] = None
     """Repeated field of dynamically typed values."""
 
@@ -1051,6 +1045,8 @@ class QueryVectorIndexRequest:
     """Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
     vectors."""
 
+    reranker: Optional[RerankerConfig] = None
+
     score_threshold: Optional[float] = None
     """Threshold for the approximate nearest neighbor search. Defaults to 0.0."""
 
@@ -1073,6 +1069,8 @@ class QueryVectorIndexRequest:
             body["query_type"] = self.query_type
         if self.query_vector:
             body["query_vector"] = [v for v in self.query_vector]
+        if self.reranker:
+            body["reranker"] = self.reranker.as_dict()
         if self.score_threshold is not None:
             body["score_threshold"] = self.score_threshold
         return body
@@ -1096,6 +1094,8 @@ class QueryVectorIndexRequest:
             body["query_type"] = self.query_type
         if self.query_vector:
             body["query_vector"] = self.query_vector
+        if self.reranker:
+            body["reranker"] = self.reranker
         if self.score_threshold is not None:
             body["score_threshold"] = self.score_threshold
         return body
@@ -1112,6 +1112,7 @@ class QueryVectorIndexRequest:
             query_text=d.get("query_text", None),
             query_type=d.get("query_type", None),
             query_vector=d.get("query_vector", None),
+            reranker=_from_dict(d, "reranker", RerankerConfig),
             score_threshold=d.get("score_threshold", None),
         )
 
@@ -1159,6 +1160,60 @@ class QueryVectorIndexResponse:
             next_page_token=d.get("next_page_token", None),
             result=_from_dict(d, "result", ResultData),
         )
+
+
+@dataclass
+class RerankerConfig:
+    model: Optional[str] = None
+
+    parameters: Optional[RerankerConfigRerankerParameters] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RerankerConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.parameters:
+            body["parameters"] = self.parameters.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RerankerConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RerankerConfig:
+        """Deserializes the RerankerConfig from a dictionary."""
+        return cls(model=d.get("model", None), parameters=_from_dict(d, "parameters", RerankerConfigRerankerParameters))
+
+
+@dataclass
+class RerankerConfigRerankerParameters:
+    columns_to_rerank: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RerankerConfigRerankerParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = [v for v in self.columns_to_rerank]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RerankerConfigRerankerParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = self.columns_to_rerank
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RerankerConfigRerankerParameters:
+        """Deserializes the RerankerConfigRerankerParameters from a dictionary."""
+        return cls(columns_to_rerank=d.get("columns_to_rerank", None))
 
 
 @dataclass
@@ -1308,15 +1363,6 @@ class ScanVectorIndexResponse:
 
 @dataclass
 class Struct:
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
-    values. In some languages, `Struct` might be supported by a native representation. For example,
-    in scripting languages like JS a struct is represented as an object. The details of that
-    representation are described together with the proto support for the language.
-
-    The JSON representation for `Struct` is JSON object."""
-
     fields: Optional[List[MapStringValueEntry]] = None
     """Data entry, corresponding to a row in a vector index."""
 
@@ -1532,25 +1578,12 @@ class Value:
     bool_value: Optional[bool] = None
 
     list_value: Optional[ListValue] = None
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `ListValue` is a wrapper around a repeated field of values.
-    
-    The JSON representation for `ListValue` is JSON array."""
 
     number_value: Optional[float] = None
 
     string_value: Optional[str] = None
 
     struct_value: Optional[Struct] = None
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
-    values. In some languages, `Struct` might be supported by a native representation. For example,
-    in scripting languages like JS a struct is represented as an object. The details of that
-    representation are described together with the proto support for the language.
-    
-    The JSON representation for `Struct` is JSON object."""
 
     def as_dict(self) -> dict:
         """Serializes the Value into a dictionary suitable for use as a JSON request body."""
@@ -2111,6 +2144,7 @@ class VectorSearchIndexesAPI:
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
         query_vector: Optional[List[float]] = None,
+        reranker: Optional[RerankerConfig] = None,
         score_threshold: Optional[float] = None,
     ) -> QueryVectorIndexResponse:
         """Query an index.
@@ -2140,6 +2174,7 @@ class VectorSearchIndexesAPI:
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
+        :param reranker: :class:`RerankerConfig` (optional)
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 
@@ -2160,6 +2195,8 @@ class VectorSearchIndexesAPI:
             body["query_type"] = query_type
         if query_vector is not None:
             body["query_vector"] = [v for v in query_vector]
+        if reranker is not None:
+            body["reranker"] = reranker.as_dict()
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
         headers = {

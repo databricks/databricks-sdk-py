@@ -368,6 +368,13 @@ class FederationPolicy:
     oidc_policy: Optional[OidcFederationPolicy] = None
     """Specifies the policy to use for validating OIDC claims in your federated tokens."""
 
+    policy_id: Optional[str] = None
+    """The ID of the federation policy."""
+
+    service_principal_id: Optional[int] = None
+    """The service principal ID that this federation policy applies to. Only set for service principal
+    federation policies."""
+
     uid: Optional[str] = None
     """Unique, immutable id of the federation policy."""
 
@@ -385,6 +392,10 @@ class FederationPolicy:
             body["name"] = self.name
         if self.oidc_policy:
             body["oidc_policy"] = self.oidc_policy.as_dict()
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -402,6 +413,10 @@ class FederationPolicy:
             body["name"] = self.name
         if self.oidc_policy:
             body["oidc_policy"] = self.oidc_policy
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -416,6 +431,8 @@ class FederationPolicy:
             description=d.get("description", None),
             name=d.get("name", None),
             oidc_policy=_from_dict(d, "oidc_policy", OidcFederationPolicy),
+            policy_id=d.get("policy_id", None),
+            service_principal_id=d.get("service_principal_id", None),
             uid=d.get("uid", None),
             update_time=d.get("update_time", None),
         )
