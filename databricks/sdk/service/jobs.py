@@ -10,8 +10,14 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk import common
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from ._internal import (Wait, _enum, _from_dict, _get_duration,
+                        _get_field_mask, _get_timestamp, _get_value,
+                        _repeated_dict, _repeated_duration,
+                        _repeated_field_mask, _repeated_timestamp,
+                        _repeated_value)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -23,13 +29,13 @@ from databricks.sdk.service import compute
 
 @dataclass
 class AllWellKnown:
-    required_timestamp: str
+    required_timestamp: common.Timestamp
 
-    required_duration: str
+    required_duration: common.Duration
 
     required_struct: Dict[str, Any]
 
-    required_field_mask: str
+    required_field_mask: List[str]
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
     The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
     (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -40,9 +46,9 @@ class AllWellKnown:
 
     required_list_value: List[Any]
 
-    duration: Optional[str] = None
+    duration: Optional[common.Duration] = None
 
-    field_mask: Optional[str] = None
+    field_mask: Optional[List[str]] = None
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
     The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
     (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -51,21 +57,21 @@ class AllWellKnown:
 
     list_value: Optional[List[Any]] = None
 
-    repeated_duration: Optional[List[str]] = None
+    repeated_duration: Optional[List[common.Duration]] = None
 
-    repeated_field_mask: Optional[List[str]] = None
+    repeated_field_mask: Optional[List[List[str]]] = None
 
     repeated_list_value: Optional[List[List[Any]]] = None
 
     repeated_struct: Optional[List[Dict[str, Any]]] = None
 
-    repeated_timestamp: Optional[List[str]] = None
+    repeated_timestamp: Optional[List[common.Timestamp]] = None
 
     repeated_value: Optional[List[Any]] = None
 
     struct: Optional[Dict[str, Any]] = None
 
-    timestamp: Optional[str] = None
+    timestamp: Optional[common.Timestamp] = None
 
     value: Optional[Any] = None
 
@@ -73,39 +79,39 @@ class AllWellKnown:
         """Serializes the AllWellKnown into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.duration is not None:
-            body["duration"] = self.duration
+            body["duration"] = self.duration.to_string()
         if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
+            body["field_mask"] = self.field_mask.join(",")
         if self.list_value:
             body["list_value"] = [v for v in self.list_value]
         if self.repeated_duration:
-            body["repeated_duration"] = [v for v in self.repeated_duration]
+            body["repeated_duration"] = [v.to_string() for v in self.repeated_duration]
         if self.repeated_field_mask:
-            body["repeated_field_mask"] = [v for v in self.repeated_field_mask]
+            body["repeated_field_mask"] = [v.join(",") for v in self.repeated_field_mask]
         if self.repeated_list_value:
             body["repeated_list_value"] = [v for v in self.repeated_list_value]
         if self.repeated_struct:
             body["repeated_struct"] = [v for v in self.repeated_struct]
         if self.repeated_timestamp:
-            body["repeated_timestamp"] = [v for v in self.repeated_timestamp]
+            body["repeated_timestamp"] = [v.to_string() for v in self.repeated_timestamp]
         if self.repeated_value:
             body["repeated_value"] = [v for v in self.repeated_value]
         if self.required_duration is not None:
-            body["required_duration"] = self.required_duration
+            body["required_duration"] = self.required_duration.to_string()
         if self.required_field_mask is not None:
-            body["required_field_mask"] = self.required_field_mask
+            body["required_field_mask"] = self.required_field_mask.join(",")
         if self.required_list_value:
             body["required_list_value"] = [v for v in self.required_list_value]
         if self.required_struct:
             body["required_struct"] = self.required_struct
         if self.required_timestamp is not None:
-            body["required_timestamp"] = self.required_timestamp
+            body["required_timestamp"] = self.required_timestamp.to_string()
         if self.required_value:
             body["required_value"] = self.required_value
         if self.struct:
             body["struct"] = self.struct
         if self.timestamp is not None:
-            body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp.to_string()
         if self.value:
             body["value"] = self.value
         return body
@@ -155,24 +161,24 @@ class AllWellKnown:
     def from_dict(cls, d: Dict[str, Any]) -> AllWellKnown:
         """Deserializes the AllWellKnown from a dictionary."""
         return cls(
-            duration=d.get("duration", None),
-            field_mask=d.get("field_mask", None),
-            list_value=d.get("list_value", None),
-            repeated_duration=d.get("repeated_duration", None),
-            repeated_field_mask=d.get("repeated_field_mask", None),
+            duration=_get_duration(d, "duration"),
+            field_mask=_get_field_mask(d, "field_mask"),
+            list_value=_repeated_value(d, "list_value"),
+            repeated_duration=_repeated_duration(d, "repeated_duration"),
+            repeated_field_mask=_repeated_field_mask(d, "repeated_field_mask"),
             repeated_list_value=d.get("repeated_list_value", None),
             repeated_struct=d.get("repeated_struct", None),
-            repeated_timestamp=d.get("repeated_timestamp", None),
-            repeated_value=d.get("repeated_value", None),
-            required_duration=d.get("required_duration", None),
-            required_field_mask=d.get("required_field_mask", None),
-            required_list_value=d.get("required_list_value", None),
+            repeated_timestamp=_repeated_timestamp(d, "repeated_timestamp"),
+            repeated_value=_repeated_value(d, "repeated_value"),
+            required_duration=_get_duration(d, "required_duration"),
+            required_field_mask=_get_field_mask(d, "required_field_mask"),
+            required_list_value=_repeated_value(d, "required_list_value"),
             required_struct=d.get("required_struct", None),
-            required_timestamp=d.get("required_timestamp", None),
-            required_value=d.get("required_value", None),
+            required_timestamp=_get_timestamp(d, "required_timestamp"),
+            required_value=_get_value(d, "required_value"),
             struct=d.get("struct", None),
-            timestamp=d.get("timestamp", None),
-            value=d.get("value", None),
+            timestamp=_get_timestamp(d, "timestamp"),
+            value=_get_value(d, "value"),
         )
 
 
