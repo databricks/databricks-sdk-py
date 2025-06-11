@@ -3,6 +3,7 @@ import logging
 
 import requests
 
+_LOG = logging.getLogger(__name__)
 
 class _ErrorCustomizer(abc.ABC):
     """A customizer for errors from the Databricks REST API."""
@@ -23,7 +24,7 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
     def _parse_retry_after(cls, response: requests.Response) -> int:
         retry_after = response.headers.get("Retry-After")
         if retry_after is None:
-            logging.debug(
+            _LOG.debug(
                 f"No Retry-After header received in response with status code 429 or 503. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}"
             )
             # 429 requests should include a `Retry-After` header, but if it's missing,
@@ -39,7 +40,7 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
         try:
             return int(retry_after)
         except ValueError:
-            logging.debug(
+            _LOG.debug(
                 f"Invalid Retry-After header received: {retry_after}. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}"
             )
             # defaulting to 1 sleep second to make self._is_retryable() simpler

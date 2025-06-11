@@ -6,6 +6,8 @@
 
 ### Bug Fixes
 
+* Always create a new logger instance, rather than using Python's default global logger instance.
+
 ### Documentation
 
 ### Internal Changes
