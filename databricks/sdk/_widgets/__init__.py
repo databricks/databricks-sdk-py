@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 
 _LOG = logging.getLogger(__name__)
 
+
 class WidgetUtils(ABC):
 
     def get(self, name: str):

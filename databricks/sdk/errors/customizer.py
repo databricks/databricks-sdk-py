@@ -5,6 +5,7 @@ import requests
 
 _LOG = logging.getLogger(__name__)
 
+
 class _ErrorCustomizer(abc.ABC):
     """A customizer for errors from the Databricks REST API."""
 
