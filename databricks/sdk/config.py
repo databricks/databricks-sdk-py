@@ -60,10 +60,21 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+
+    # PAT token.
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
+
+    # Audience for OIDC ID token source accepting an audience as a parameter.
+    # For example, the GitHub action ID token source.
     token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE", auth="github-oidc")
+
+    # Environment variable for OIDC token.
+    oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")
+    oidc_token_filepath: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_FILE", auth="file-oidc")
+
     username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
     password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
+
     client_id: str = ConfigAttribute(env="DATABRICKS_CLIENT_ID", auth="oauth")
     client_secret: str = ConfigAttribute(env="DATABRICKS_CLIENT_SECRET", auth="oauth", sensitive=True)
     profile: str = ConfigAttribute(env="DATABRICKS_CONFIG_PROFILE")
@@ -194,7 +205,7 @@ class Config:
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()
         if debug_string:
-            message = f'{message.rstrip(".")}. {debug_string}'
+            message = f"{message.rstrip('.')}. {debug_string}"
         return message
 
     @staticmethod
@@ -337,9 +348,9 @@ class Config:
             safe = "***" if attr.sensitive else f"{value}"
             attrs_used.append(f"{attr.name}={safe}")
         if attrs_used:
-            buf.append(f'Config: {", ".join(attrs_used)}')
+            buf.append(f"Config: {', '.join(attrs_used)}")
         if envs_used:
-            buf.append(f'Env: {", ".join(envs_used)}')
+            buf.append(f"Env: {', '.join(envs_used)}")
         return ". ".join(buf)
 
     def to_dict(self) -> Dict[str, any]:
@@ -481,7 +492,7 @@ class Config:
         if profile not in profiles:
             raise ValueError(f"resolve: {config_path} has no {profile} profile configured")
         raw_config = profiles[profile]
-        logger.info(f'loading {profile} profile from {config_file}: {", ".join(raw_config.keys())}')
+        logger.info(f"loading {profile} profile from {config_file}: {', '.join(raw_config.keys())}")
         for k, v in raw_config.items():
             if k in self._inner:
                 # don't overwrite a value previously set

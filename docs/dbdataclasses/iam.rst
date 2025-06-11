@@ -193,6 +193,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_BIND
       :value: "CAN_BIND"
 
+   .. py:attribute:: CAN_CREATE
+      :value: "CAN_CREATE"
+
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
 
@@ -213,6 +216,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_MONITOR
       :value: "CAN_MONITOR"
+
+   .. py:attribute:: CAN_MONITOR_ONLY
+      :value: "CAN_MONITOR_ONLY"
 
    .. py:attribute:: CAN_QUERY
       :value: "CAN_QUERY"
@@ -243,10 +249,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: PermissionsRequest
    :members:
    :undoc-members:
 
@@ -292,6 +294,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL"
+
+.. autoclass:: SetObjectPermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateObjectPermissions
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateResponse
    :members:

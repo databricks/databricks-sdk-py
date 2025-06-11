@@ -1,5 +1,171 @@
 # Version changelog
 
+## Release v0.56.0
+
+### API Changes
+* Added `databricks.sdk.service.aibuilder`, `databricks.sdk.service.database` and `databricks.sdk.service.qualitymonitorv2` packages.
+* Added [w.custom_llms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/aibuilder/custom_llms.html) workspace-level service.
+* Added [w.dashboard_email_subscriptions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/dashboard_email_subscriptions.html) workspace-level service and [w.sql_results_download](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/sql_results_download.html) workspace-level service.
+* Added [w.database](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/database/database.html) workspace-level service.
+* Added [w.quality_monitor_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/qualitymonitorv2/quality_monitor_v2.html) workspace-level service.
+* Added `update_private_endpoint_rule()` method for [a.network_connectivity](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_connectivity.html) account-level service.
+* Added `list_spaces()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Added `page_token` field for `databricks.sdk.service.billing.ListLogDeliveryRequest`.
+* Added `next_page_token` field for `databricks.sdk.service.billing.WrappedLogDeliveryConfigurations`.
+* Added `next_page_token` field for `databricks.sdk.service.catalog.EffectivePermissionsList`.
+* Added `max_results` and `page_token` fields for `databricks.sdk.service.catalog.GetEffectiveRequest`.
+* Added `max_results` and `page_token` fields for `databricks.sdk.service.catalog.GetGrantRequest`.
+* Added `next_page_token` field for `databricks.sdk.service.catalog.ListMetastoresResponse`.
+* Added `clean_room_name` field for `databricks.sdk.service.cleanrooms.CleanRoomAsset`.
+* [Breaking] Added `name` field for `databricks.sdk.service.cleanrooms.DeleteCleanRoomAssetRequest`.
+* [Breaking] Added `name` field for `databricks.sdk.service.cleanrooms.GetCleanRoomAssetRequest`.
+* Added `trigger_state` field for `databricks.sdk.service.jobs.BaseJob`.
+* Added `trigger_state` field for `databricks.sdk.service.jobs.Job`.
+* Added `dbt_cloud_output` field for `databricks.sdk.service.jobs.RunOutput`.
+* Added `dbt_cloud_task` field for `databricks.sdk.service.jobs.RunTask`.
+* Added `dbt_cloud_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Added `dbt_cloud_task` field for `databricks.sdk.service.jobs.Task`.
+* Added `tags` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Added `tags` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Added `tags` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+* Added `max_provisioned_concurrency` and `min_provisioned_concurrency` fields for `databricks.sdk.service.serving.ServedEntityInput`.
+* Added `max_provisioned_concurrency` and `min_provisioned_concurrency` fields for `databricks.sdk.service.serving.ServedEntityOutput`.
+* Added `max_provisioned_concurrency` and `min_provisioned_concurrency` fields for `databricks.sdk.service.serving.ServedModelInput`.
+* Added `max_provisioned_concurrency` and `min_provisioned_concurrency` fields for `databricks.sdk.service.serving.ServedModelOutput`.
+* Added `endpoint_service` and `resource_names` fields for `databricks.sdk.service.settings.CreatePrivateEndpointRule`.
+* Added `aws_private_endpoint_rules` field for `databricks.sdk.service.settings.NccEgressTargetRules`.
+* Added `task_time_over_time_range` field for `databricks.sdk.service.sql.QueryMetrics`.
+* Added `deltasharing_catalog`, `foreign_catalog`, `internal_catalog`, `managed_catalog`, `managed_online_catalog`, `system_catalog` and `unknown_catalog_type` enum values for `databricks.sdk.service.catalog.CatalogType`.
+* Added `ga4_raw_data`, `power_bi`, `salesforce`, `salesforce_data_cloud`, `servicenow`, `unknown_connection_type` and `workday_raas` enum values for `databricks.sdk.service.catalog.ConnectionType`.
+* Added `oauth_access_token`, `oauth_m2m`, `oauth_refresh_token`, `oauth_resource_owner_password`, `oauth_u2m`, `oauth_u2m_mapping`, `oidc_token`, `pem_private_key`, `service_credential` and `unknown_credential_type` enum values for `databricks.sdk.service.catalog.CredentialType`.
+* Added `internal` and `internal_and_external` enum values for `databricks.sdk.service.catalog.DeltaSharingScopeEnum`.
+* Added `catalog`, `clean_room`, `connection`, `credential`, `external_location`, `external_metadata`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `staging_table`, `storage_credential`, `table`, `unknown_securable_type` and `volume` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* Added `cluster_migrated` enum value for `databricks.sdk.service.compute.EventType`.
+* Added `driver_unhealthy` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Added `teradata` enum value for `databricks.sdk.service.pipelines.IngestionSourceType`.
+* Added `oidc_federation` enum value for `databricks.sdk.service.sharing.AuthenticationType`.
+* [Breaking] Changed `create()` method for [a.log_delivery](https://databricks-sdk-py.readthedocs.io/en/latest/account/billing/log_delivery.html) account-level service with new required argument order.
+* [Breaking] Changed `get()` method for [a.log_delivery](https://databricks-sdk-py.readthedocs.io/en/latest/account/billing/log_delivery.html) account-level service to return `databricks.sdk.service.billing.GetLogDeliveryConfigurationResponse` dataclass.
+* [Breaking] Changed `create_private_endpoint_rule()`, `delete_private_endpoint_rule()` and `get_private_endpoint_rule()` methods for [a.network_connectivity](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_connectivity.html) account-level service to return `databricks.sdk.service.settings.NccPrivateEndpointRule` dataclass.
+* [Breaking] Changed `list_private_endpoint_rules()` method for [a.network_connectivity](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_connectivity.html) account-level service to return `databricks.sdk.service.settings.ListPrivateEndpointRulesResponse` dataclass.
+* [Breaking] Changed `delete()` and `get()` methods for [w.clean_room_assets](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_assets.html) workspace-level service . Method path has changed.
+* [Breaking] Changed `delete()` and `get()` methods for [w.clean_room_assets](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_assets.html) workspace-level service with new required argument order.
+* [Breaking] Changed `get()` method for [w.grants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/grants.html) workspace-level service to return `databricks.sdk.service.catalog.GetPermissionsResponse` dataclass.
+* [Breaking] Changed `update()` method for [w.grants](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/grants.html) workspace-level service to return `databricks.sdk.service.catalog.UpdatePermissionsResponse` dataclass.
+* [Breaking] Changed `list()` method for [w.metastores](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/metastores.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListMetastoresRequest` dataclass.
+* Changed `account_id`, `credentials_id`, `log_type`, `output_format` and `storage_configuration_id` fields for `databricks.sdk.service.billing.LogDeliveryConfiguration` to be required.
+* Changed `message` and `status` fields for `databricks.sdk.service.billing.LogDeliveryStatus` to be required.
+* [Breaking] Changed `log_delivery_configuration` field for `databricks.sdk.service.billing.WrappedCreateLogDeliveryConfiguration` to be required.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.ConnectionInfo` to type `databricks.sdk.service.catalog.SecurableType` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.GetEffectiveRequest` to type `str` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.GetGrantRequest` to type `str` dataclass.
+* [Breaking] Changed `delta_sharing_scope` field for `databricks.sdk.service.catalog.GetMetastoreSummaryResponse` to type `databricks.sdk.service.catalog.DeltaSharingScopeEnum` dataclass.
+* [Breaking] Changed `delta_sharing_scope` field for `databricks.sdk.service.catalog.MetastoreInfo` to type `databricks.sdk.service.catalog.DeltaSharingScopeEnum` dataclass.
+* [Breaking] Changed `catalog_type` field for `databricks.sdk.service.catalog.SchemaInfo` to type `databricks.sdk.service.catalog.CatalogType` dataclass.
+* [Breaking] Changed `delta_sharing_scope` field for `databricks.sdk.service.catalog.UpdateMetastore` to type `databricks.sdk.service.catalog.DeltaSharingScopeEnum` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.UpdatePermissions` to type `str` dataclass.
+* Changed `resource_id` field for `databricks.sdk.service.settings.CreatePrivateEndpointRule` to no longer be required.
+* [Breaking] Changed pagination for [NetworkConnectivityAPI.list_private_endpoint_rules](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_connectivity.html#databricks.sdk.service.settings.NetworkConnectivityAPI.list_private_endpoint_rules) method.
+* [Breaking] Removed [w.database_instances](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/database_instances.html) workspace-level service.
+* [Breaking] Removed [w.query_execution](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/query_execution.html) workspace-level service.
+* [Breaking] Removed `update_ncc_azure_private_endpoint_rule_public()` method for [a.network_connectivity](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_connectivity.html) account-level service.
+* [Breaking] Removed `get_credentials_for_trace_data_download()`, `get_credentials_for_trace_data_upload()` and `list_logged_model_artifacts()` methods for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/experiments.html) workspace-level service.
+* [Breaking] Removed `get_published_dashboard_embedded()` method for [w.lakeview_embedded](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/lakeview_embedded.html) workspace-level service.
+* [Breaking] Removed `asset_full_name` field for `databricks.sdk.service.cleanrooms.DeleteCleanRoomAssetRequest`.
+* [Breaking] Removed `asset_full_name` field for `databricks.sdk.service.cleanrooms.GetCleanRoomAssetRequest`.
+* [Breaking] Removed `internal` and `internal_and_external` enum values for `databricks.sdk.service.catalog.GetMetastoreSummaryResponseDeltaSharingScope`.
+* [Breaking] Removed `internal` and `internal_and_external` enum values for `databricks.sdk.service.catalog.MetastoreInfoDeltaSharingScope`.
+* [Breaking] Removed `catalog`, `clean_room`, `connection`, `credential`, `external_location`, `external_metadata`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `staging_table`, `storage_credential`, `table`, `unknown_securable_type` and `volume` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* [Breaking] Removed `internal` and `internal_and_external` enum values for `databricks.sdk.service.catalog.UpdateMetastoreDeltaSharingScope`.
+
+
+## Release v0.55.0
+
+### New Features and Improvements
+
+- Add support for OIDC ID token authentication from an environment variable
+  ([PR #977](https://github.com/databricks/databricks-sdk-py/pull/977)).
+- Add support for OIDC ID token authentication from a file
+  ([PR #977](https://github.com/databricks/databricks-sdk-py/pull/977)).
+
+### Bug Fixes
+
+- Fix a reported highlighting problem with the way API clients are imported in WorkspaceClient/AccountClient 
+  ([#979](https://github.com/databricks/databricks-sdk-py/pull/979)).
+
+
+## Release v0.54.0
+
+### API Changes
+* Added [a.llm_proxy_partner_powered_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/llm_proxy_partner_powered_account.html) account-level service, [a.llm_proxy_partner_powered_enforce](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/llm_proxy_partner_powered_enforce.html) account-level service, [w.llm_proxy_partner_powered_workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/llm_proxy_partner_powered_workspace.html) workspace-level service, [a.network_policies](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_policies.html) account-level service and [a.workspace_network_configuration](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/workspace_network_configuration.html) account-level service.
+* Added [w.database_instances](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/database_instances.html) workspace-level service.
+* Added [w.recipient_federation_policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sharing/recipient_federation_policies.html) workspace-level service.
+* Added `create_logged_model()`, `delete_logged_model()`, `delete_logged_model_tag()`, `finalize_logged_model()`, `get_logged_model()`, `list_logged_model_artifacts()`, `log_logged_model_params()`, `log_outputs()`, `search_logged_models()` and `set_logged_model_tags()` methods for [w.experiments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/experiments.html) workspace-level service.
+* Added `create_provisioned_throughput_endpoint()` and `update_provisioned_throughput_endpoint_config()` methods for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service.
+* Added `uc_securable` field for `databricks.sdk.service.apps.AppResource`.
+* Added `enable_file_events` and `file_event_queue` fields for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Added `catalog_name` field for `databricks.sdk.service.catalog.EnableRequest`.
+* Added `enable_file_events` and `file_event_queue` fields for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Added `timeseries_columns` field for `databricks.sdk.service.catalog.PrimaryKeyConstraint`.
+* Added `enable_file_events` and `file_event_queue` fields for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+* Added `review_state`, `reviews` and `runner_collaborator_aliases` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+* Added `notebook_etag` and `notebook_updated_at` fields for `databricks.sdk.service.cleanrooms.CleanRoomNotebookTaskRun`.
+* Added `policy_id` and `service_principal_id` fields for `databricks.sdk.service.oauth2.FederationPolicy`.
+* Added `root_path` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+* Added `root_path` field for `databricks.sdk.service.pipelines.EditPipeline`.
+* Added `source_type` field for `databricks.sdk.service.pipelines.IngestionPipelineDefinition`.
+* Added `glob` field for `databricks.sdk.service.pipelines.PipelineLibrary`.
+* Added `root_path` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+* Added `provisioned_model_units` field for `databricks.sdk.service.serving.ServedEntityInput`.
+* Added `provisioned_model_units` field for `databricks.sdk.service.serving.ServedEntityOutput`.
+* Added `provisioned_model_units` field for `databricks.sdk.service.serving.ServedModelInput`.
+* Added `provisioned_model_units` field for `databricks.sdk.service.serving.ServedModelOutput`.
+* Added `materialization_namespace` field for `databricks.sdk.service.sharing.Table`.
+* Added `omit_permissions_list` field for `databricks.sdk.service.sharing.UpdateSharePermissions`.
+* Added `auto_resolve_display_name` field for `databricks.sdk.service.sql.UpdateAlertRequest`.
+* Added `auto_resolve_display_name` field for `databricks.sdk.service.sql.UpdateQueryRequest`.
+* Added `internal_catalog`, `managed_online_catalog` and `unknown_catalog_type` enum values for `databricks.sdk.service.catalog.CatalogType`.
+* Added `catalog`, `clean_room`, `connection`, `credential`, `external_location`, `external_metadata`, `function`, `metastore`, `pipeline`, `provider`, `recipient`, `schema`, `share`, `staging_table`, `storage_credential`, `table`, `unknown_securable_type` and `volume` enum values for `databricks.sdk.service.catalog.SecurableType`.
+* Added `describe_query_invalid_sql_error`, `describe_query_timeout`, `describe_query_unexpected_failure`, `invalid_chat_completion_arguments_json_exception`, `invalid_sql_multiple_dataset_references_exception`, `invalid_sql_multiple_statements_exception` and `invalid_sql_unknown_table_exception` enum values for `databricks.sdk.service.dashboards.MessageErrorType`.
+* Added `can_create` and `can_monitor_only` enum values for `databricks.sdk.service.iam.PermissionLevel`.
+* Added `success_with_failures` enum value for `databricks.sdk.service.jobs.TerminationCodeCode`.
+* Added `infrastructure_maintenance` enum value for `databricks.sdk.service.pipelines.StartUpdateCause`.
+* Added `infrastructure_maintenance` enum value for `databricks.sdk.service.pipelines.UpdateInfoCause`.
+* [Breaking] Changed `create_alert()` and `update_alert()` methods for [w.alerts_v2](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sql/alerts_v2.html) workspace-level service with new required argument order.
+* [Breaking] Changed `set()` method for [w.permissions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iam/permissions.html) workspace-level service . New request type is `databricks.sdk.service.iam.SetObjectPermissions` dataclass.
+* [Breaking] Changed `update()` method for [w.permissions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/iam/permissions.html) workspace-level service . New request type is `databricks.sdk.service.iam.UpdateObjectPermissions` dataclass.
+* [Breaking] Changed `get()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/workspace_bindings.html) workspace-level service to return `databricks.sdk.service.catalog.GetCatalogWorkspaceBindingsResponse` dataclass.
+* [Breaking] Changed `get_bindings()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/workspace_bindings.html) workspace-level service to return `databricks.sdk.service.catalog.GetWorkspaceBindingsResponse` dataclass.
+* [Breaking] Changed `update()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/workspace_bindings.html) workspace-level service to return `databricks.sdk.service.catalog.UpdateCatalogWorkspaceBindingsResponse` dataclass.
+* [Breaking] Changed `update_bindings()` method for [w.workspace_bindings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/workspace_bindings.html) workspace-level service to return `databricks.sdk.service.catalog.UpdateWorkspaceBindingsResponse` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.CatalogInfo` to type `databricks.sdk.service.catalog.SecurableType` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.GetBindingsRequest` to type `str` dataclass.
+* Changed `schema` and `state` fields for `databricks.sdk.service.catalog.SystemSchemaInfo` to be required.
+* [Breaking] Changed `state` field for `databricks.sdk.service.catalog.SystemSchemaInfo` to type `str` dataclass.
+* [Breaking] Changed `securable_type` field for `databricks.sdk.service.catalog.UpdateWorkspaceBindingsParameters` to type `str` dataclass.
+* [Breaking] Changed `workspace_id` field for `databricks.sdk.service.catalog.WorkspaceBinding` to be required.
+* Changed `etag` and `name` fields for `databricks.sdk.service.iam.RuleSetResponse` to be required.
+* Changed `gpu_node_pool_id` field for `databricks.sdk.service.jobs.ComputeConfig` to no longer be required.
+* [Breaking] Changed `gpu_node_pool_id` field for `databricks.sdk.service.jobs.ComputeConfig` to no longer be required.
+* [Breaking] Changed `alert` field for `databricks.sdk.service.sql.CreateAlertV2Request` to be required.
+* [Breaking] Changed `alert` field for `databricks.sdk.service.sql.UpdateAlertV2Request` to be required.
+* [Breaking] Removed `access_point` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* [Breaking] Removed `access_point` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* [Breaking] Removed `access_point` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+* [Breaking] Removed `node_type_flexibility` field for `databricks.sdk.service.compute.EditInstancePool`.
+* [Breaking] Removed `node_type_flexibility` field for `databricks.sdk.service.compute.GetInstancePool`.
+* [Breaking] Removed `node_type_flexibility` field for `databricks.sdk.service.compute.InstancePoolAndStats`.
+* [Breaking] Removed `catalog`, `credential`, `external_location` and `storage_credential` enum values for `databricks.sdk.service.catalog.GetBindingsSecurableType`.
+* [Breaking] Removed `available`, `disable_initialized`, `enable_completed`, `enable_initialized` and `unavailable` enum values for `databricks.sdk.service.catalog.SystemSchemaInfoState`.
+* [Breaking] Removed `catalog`, `credential`, `external_location` and `storage_credential` enum values for `databricks.sdk.service.catalog.UpdateBindingsSecurableType`.
+
+
+## Release v0.53.0
+
+### Bug Fixes
+* Fixed the deserialization of responses in VectorSearchAPI's `query_index()` method ([#961](https://github.com/databricks/databricks-sdk-py/pull/961)).
+
+
 ## Release v0.52.0
 
 ### API Changes

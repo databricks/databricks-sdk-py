@@ -51,6 +51,26 @@
         :returns: :class:`CreateExperimentResponse`
         
 
+    .. py:method:: create_logged_model(experiment_id: str [, model_type: Optional[str], name: Optional[str], params: Optional[List[LoggedModelParameter]], source_run_id: Optional[str], tags: Optional[List[LoggedModelTag]]]) -> CreateLoggedModelResponse
+
+        Create a logged model.
+
+        :param experiment_id: str
+          The ID of the experiment that owns the model.
+        :param model_type: str (optional)
+          The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+        :param name: str (optional)
+          The name of the model (optional). If not specified one will be generated.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters attached to the model.
+        :param source_run_id: str (optional)
+          The ID of the run that created the model.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          Tags attached to the model.
+
+        :returns: :class:`CreateLoggedModelResponse`
+        
+
     .. py:method:: create_run( [, experiment_id: Optional[str], run_name: Optional[str], start_time: Optional[int], tags: Optional[List[RunTag]], user_id: Optional[str]]) -> CreateRunResponse
 
 
@@ -110,6 +130,28 @@
 
         
 
+    .. py:method:: delete_logged_model(model_id: str)
+
+        Delete a logged model.
+
+        :param model_id: str
+          The ID of the logged model to delete.
+
+
+        
+
+    .. py:method:: delete_logged_model_tag(model_id: str, tag_key: str)
+
+        Delete a tag on a logged model.
+
+        :param model_id: str
+          The ID of the logged model to delete the tag from.
+        :param tag_key: str
+          The tag key.
+
+
+        
+
     .. py:method:: delete_run(run_id: str)
 
         Delete a run.
@@ -157,6 +199,19 @@
 
         
 
+    .. py:method:: finalize_logged_model(model_id: str, status: LoggedModelStatus) -> FinalizeLoggedModelResponse
+
+        Finalize a logged model.
+
+        :param model_id: str
+          The ID of the logged model to finalize.
+        :param status: :class:`LoggedModelStatus`
+          Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
+          went wrong when logging the model weights / agent code.
+
+        :returns: :class:`FinalizeLoggedModelResponse`
+        
+
     .. py:method:: get_by_name(experiment_name: str) -> GetExperimentByNameResponse
 
         Get an experiment by name.
@@ -173,26 +228,6 @@
           Name of the associated experiment.
 
         :returns: :class:`GetExperimentByNameResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_download(request_id: str) -> GetCredentialsForTraceDataDownloadResponse
-
-        Get credentials to download trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact download credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_upload(request_id: str) -> GetCredentialsForTraceDataUploadResponse
-
-        Get credentials to upload trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact upload credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
         
 
     .. py:method:: get_experiment(experiment_id: str) -> GetExperimentResponse
@@ -245,6 +280,16 @@
           be removed in a future MLflow version.
 
         :returns: Iterator over :class:`Metric`
+        
+
+    .. py:method:: get_logged_model(model_id: str) -> GetLoggedModelResponse
+
+        Get a logged model.
+
+        :param model_id: str
+          The ID of the logged model to retrieve.
+
+        :returns: :class:`GetLoggedModelResponse`
         
 
     .. py:method:: get_permission_levels(experiment_id: str) -> GetExperimentPermissionLevelsResponse
@@ -424,6 +469,22 @@
 
         
 
+    .. py:method:: log_logged_model_params(model_id: str [, params: Optional[List[LoggedModelParameter]]])
+
+        Log params for a logged model.
+
+        Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
+        include hyperparameters used for ML model training. A param can be logged only once for a logged
+        model, and attempting to overwrite an existing param with a different value will result in an error
+
+        :param model_id: str
+          The ID of the logged model to log params for.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters to attach to the model.
+
+
+        
+
     .. py:method:: log_metric(key: str, value: float, timestamp: int [, dataset_digest: Optional[str], dataset_name: Optional[str], model_id: Optional[str], run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
 
         Log a metric for a run.
@@ -467,6 +528,22 @@
           MLmodel file in json format.
         :param run_id: str (optional)
           ID of the run to log under
+
+
+        
+
+    .. py:method:: log_outputs(run_id: str [, models: Optional[List[ModelOutput]]])
+
+        Log outputs from a run.
+
+        **NOTE**: Experimental: This API may change or be removed in a future release without warning.
+
+        Logs outputs, such as models, from an MLflow Run.
+
+        :param run_id: str
+          The ID of the Run from which to log outputs.
+        :param models: List[:class:`ModelOutput`] (optional)
+          The model outputs from the Run.
 
 
         
@@ -564,6 +641,35 @@
         :returns: Iterator over :class:`Experiment`
         
 
+    .. py:method:: search_logged_models( [, datasets: Optional[List[SearchLoggedModelsDataset]], experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[SearchLoggedModelsOrderBy]], page_token: Optional[str]]) -> SearchLoggedModelsResponse
+
+        Search logged models.
+
+        Search for Logged Models that satisfy specified search criteria.
+
+        :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
+          List of datasets on which to apply the metrics filter clauses. For example, a filter with
+          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
+          are considered. If no datasets are specified, then metrics across all datasets are considered in the
+          filter.
+        :param experiment_ids: List[str] (optional)
+          The IDs of the experiments in which to search for logged models.
+        :param filter: str (optional)
+          A filter expression over logged model info and data that allows returning a subset of logged models.
+          The syntax is a subset of SQL that supports AND'ing together binary operations.
+
+          Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``.
+        :param max_results: int (optional)
+          The maximum number of Logged Models to return. The maximum limit is 50.
+        :param order_by: List[:class:`SearchLoggedModelsOrderBy`] (optional)
+          The list of columns for ordering the results, with additional fields for sorting criteria.
+        :param page_token: str (optional)
+          The token indicating the page of logged models to fetch.
+
+        :returns: :class:`SearchLoggedModelsResponse`
+        
+
     .. py:method:: search_runs( [, experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str], run_view_type: Optional[ViewType]]) -> Iterator[Run]
 
         Search for runs.
@@ -613,6 +719,18 @@
           Name of the tag. Keys up to 250 bytes in size are supported.
         :param value: str
           String value of the tag being logged. Values up to 64KB in size are supported.
+
+
+        
+
+    .. py:method:: set_logged_model_tags(model_id: str [, tags: Optional[List[LoggedModelTag]]])
+
+        Set a tag for a logged model.
+
+        :param model_id: str
+          The ID of the logged model to set the tags on.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          The tags to set on the logged model.
 
 
         

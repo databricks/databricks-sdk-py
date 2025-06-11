@@ -30,13 +30,13 @@
             
             w = WorkspaceClient()
             
-            created = w.storage_credentials.create(
+            credential = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
                 aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             # cleanup
-            w.storage_credentials.delete(name=created.name)
+            w.storage_credentials.delete(name=credential.name)
 
         Create a storage credential.
 
@@ -96,13 +96,13 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
-            by_name = w.storage_credentials.get(name=created.name)
+            by_name = w.storage_credentials.get(get=created.name)
             
             # cleanup
-            w.storage_credentials.delete(name=created.name)
+            w.storage_credentials.delete(delete=created.name)
 
         Get a credential.
 

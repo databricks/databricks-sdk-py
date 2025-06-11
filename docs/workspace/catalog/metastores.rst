@@ -53,7 +53,7 @@
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
 
 
@@ -91,9 +91,7 @@
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
-          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
-          the region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -169,7 +167,7 @@
         :returns: :class:`MetastoreInfo`
         
 
-    .. py:method:: list() -> Iterator[MetastoreInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[MetastoreInfo]
 
 
         Usage:
@@ -186,6 +184,17 @@
 
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
+
+        :param max_results: int (optional)
+          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
+          minimum of this value and a server configured value; - when set to 0, the page length is set to a
+          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
+          returned metastores might be less than the specified max_results size, even zero. The only
+          definitive indication that no further metastores can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`MetastoreInfo`
         
@@ -249,7 +258,7 @@
 
         
 
-    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
+    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
 
         Usage:
@@ -285,7 +294,7 @@
           Sharing as the official name.
         :param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)
           The lifetime of delta sharing recipient token in seconds.
-        :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
+        :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
         :param new_name: str (optional)
           New name for the metastore.
@@ -311,7 +320,7 @@
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.

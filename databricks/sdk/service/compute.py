@@ -729,7 +729,8 @@ class ClusterAttributes:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -1118,7 +1119,8 @@ class ClusterDetails:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     cluster_source: Optional[ClusterSource] = None
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
@@ -2300,7 +2302,8 @@ class ClusterSpec:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2803,7 +2806,8 @@ class CreateCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -3524,16 +3528,10 @@ class CustomPolicyTag:
     key: str
     """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
     “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
-    tags are preserved.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+    tags are preserved."""
 
     value: Optional[str] = None
-    """The value of the tag.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+    """The value of the tag."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
@@ -4117,7 +4115,8 @@ class EditCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -4499,10 +4498,6 @@ class EditInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
-
     def as_dict(self) -> dict:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4518,8 +4513,6 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4539,8 +4532,6 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         return body
@@ -4555,7 +4546,6 @@ class EditInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
         )
 
@@ -4782,23 +4772,22 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. (Note: DLT uses a
-    copied version of the Environment proto below, at
-    //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In this minimal
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
-    client: str
-    """Client version used by the environment The client is the user-facing environment of the runtime.
-    Each client comes with a specific set of pre-installed libraries. The version is a string,
-    consisting of the major client version."""
+    client: Optional[str] = None
+    """Use `environment_version` instead."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
-    dependency is a pip requirement file line
-    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
-    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
-    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
-    /Workspace/test/requirements.txt"]"""
+    dependency is a valid pip requirements file line per
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
+    a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
+    Databricks), or a VCS project URL."""
+
+    environment_version: Optional[str] = None
+    """Required. Environment version used by the environment. Each version comes with a specific Python
+    version and a set of Python packages. The version is a string, consisting of an integer."""
 
     jar_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
@@ -4811,6 +4800,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
@@ -4822,6 +4813,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
         return body
@@ -4832,6 +4825,7 @@ class Environment:
         return cls(
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
+            environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
         )
 
@@ -5032,6 +5026,7 @@ class EventType(Enum):
     AUTOSCALING_BACKOFF = "AUTOSCALING_BACKOFF"
     AUTOSCALING_FAILED = "AUTOSCALING_FAILED"
     AUTOSCALING_STATS_REPORT = "AUTOSCALING_STATS_REPORT"
+    CLUSTER_MIGRATED = "CLUSTER_MIGRATED"
     CREATING = "CREATING"
     DBFS_DOWN = "DBFS_DOWN"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
@@ -5497,10 +5492,6 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
-
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -5551,8 +5542,6 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5594,8 +5583,6 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -5626,7 +5613,6 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -6461,10 +6447,6 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
-
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -6515,8 +6497,6 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6558,8 +6538,6 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -6590,7 +6568,6 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -8054,28 +8031,6 @@ class NodeType:
 
 
 @dataclass
-class NodeTypeFlexibility:
-    """For Fleet-V2 using classic clusters, this object contains the information about the alternate
-    node type ids to use when attempting to launch a cluster. It can be used with both the driver
-    and worker node types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
-        """Deserializes the NodeTypeFlexibility from a dictionary."""
-        return cls()
-
-
-@dataclass
 class PendingInstanceError:
     """Error message of a failed pending instances"""
 
@@ -9116,6 +9071,7 @@ class TerminationReasonCode(Enum):
     DRIVER_OUT_OF_MEMORY = "DRIVER_OUT_OF_MEMORY"
     DRIVER_POD_CREATION_FAILURE = "DRIVER_POD_CREATION_FAILURE"
     DRIVER_UNEXPECTED_FAILURE = "DRIVER_UNEXPECTED_FAILURE"
+    DRIVER_UNHEALTHY = "DRIVER_UNHEALTHY"
     DRIVER_UNREACHABLE = "DRIVER_UNREACHABLE"
     DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE"
     DYNAMIC_SPARK_CONF_SIZE_EXCEEDED = "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
@@ -9404,7 +9360,8 @@ class UpdateClusterResource:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -10374,7 +10331,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10766,7 +10724,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -12227,7 +12186,6 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
-        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
     ):
         """Edit an existing instance pool.
 
@@ -12260,9 +12218,6 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
-          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-          when attempting to launch a cluster if the node type id is not available.
 
 
         """
@@ -12279,8 +12234,6 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
-        if node_type_flexibility is not None:
-            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         headers = {
@@ -12440,8 +12393,10 @@ class InstanceProfilesAPI:
     ):
         """Register an instance profile.
 
-        In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users.
+        Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
+        this instance profile when launching clusters.
+
+        This API is only available to admin users.
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.

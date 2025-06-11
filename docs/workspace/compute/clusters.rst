@@ -147,7 +147,8 @@
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -417,7 +418,8 @@
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -725,11 +727,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import compute
             
             w = WorkspaceClient()
             
-            all = w.clusters.list(compute.ListClustersRequest())
+            nodes = w.clusters.list_node_types()
 
         List clusters.
 

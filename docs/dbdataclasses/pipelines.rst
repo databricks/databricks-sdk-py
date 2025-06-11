@@ -130,6 +130,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: IngestionSourceType
+
+   .. py:attribute:: DYNAMICS365
+      :value: "DYNAMICS365"
+
+   .. py:attribute:: GA4_RAW_DATA
+      :value: "GA4_RAW_DATA"
+
+   .. py:attribute:: MANAGED_POSTGRESQL
+      :value: "MANAGED_POSTGRESQL"
+
+   .. py:attribute:: MYSQL
+      :value: "MYSQL"
+
+   .. py:attribute:: NETSUITE
+      :value: "NETSUITE"
+
+   .. py:attribute:: ORACLE
+      :value: "ORACLE"
+
+   .. py:attribute:: POSTGRESQL
+      :value: "POSTGRESQL"
+
+   .. py:attribute:: SALESFORCE
+      :value: "SALESFORCE"
+
+   .. py:attribute:: SERVICENOW
+      :value: "SERVICENOW"
+
+   .. py:attribute:: SHAREPOINT
+      :value: "SHAREPOINT"
+
+   .. py:attribute:: SQLSERVER
+      :value: "SQLSERVER"
+
+   .. py:attribute:: TERADATA
+      :value: "TERADATA"
+
+   .. py:attribute:: WORKDAY_RAAS
+      :value: "WORKDAY_RAAS"
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -168,6 +209,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Origin
+   :members:
+   :undoc-members:
+
+.. autoclass:: PathPattern
    :members:
    :undoc-members:
 
@@ -328,8 +373,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: StartUpdateCause
 
+   What triggered this update.
+
    .. py:attribute:: API_CALL
       :value: "API_CALL"
+
+   .. py:attribute:: INFRASTRUCTURE_MAINTENANCE
+      :value: "INFRASTRUCTURE_MAINTENANCE"
 
    .. py:attribute:: JOB_TASK
       :value: "JOB_TASK"
@@ -382,6 +432,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: API_CALL
       :value: "API_CALL"
+
+   .. py:attribute:: INFRASTRUCTURE_MAINTENANCE
+      :value: "INFRASTRUCTURE_MAINTENANCE"
 
    .. py:attribute:: JOB_TASK
       :value: "JOB_TASK"
@@ -440,6 +493,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: UpdateStateInfoState
+
+   The update state.
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"

@@ -20,6 +20,8 @@
     `enable_experimental_files_api_client = True` in your configuration profile or use the environment
     variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 
+    Use of Files API may incur Databricks data transfer charges.
+
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 
     .. py:method:: create_directory(directory_path: str)
@@ -149,7 +151,8 @@
           The absolute path of the file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
-          If true, an existing file will be overwritten.
+          If true or unspecified, an existing file will be overwritten. If false, an error will be returned if
+          the path points to an existing file.
 
 
         

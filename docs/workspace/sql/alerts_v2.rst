@@ -4,15 +4,15 @@
 
 .. py:class:: AlertsV2API
 
-    TODO: Add description
+    New version of SQL Alerts
 
-    .. py:method:: create_alert( [, alert: Optional[AlertV2]]) -> AlertV2
+    .. py:method:: create_alert(alert: AlertV2) -> AlertV2
 
         Create an alert.
 
         Create Alert
 
-        :param alert: :class:`AlertV2` (optional)
+        :param alert: :class:`AlertV2`
 
         :returns: :class:`AlertV2`
         
@@ -28,7 +28,7 @@
         :returns: :class:`AlertV2`
         
 
-    .. py:method:: list_alerts( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListAlertsV2ResponseAlert]
+    .. py:method:: list_alerts( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AlertV2]
 
         List alerts.
 
@@ -37,7 +37,7 @@
         :param page_size: int (optional)
         :param page_token: str (optional)
 
-        :returns: Iterator over :class:`ListAlertsV2ResponseAlert`
+        :returns: Iterator over :class:`AlertV2`
         
 
     .. py:method:: trash_alert(id: str)
@@ -53,7 +53,7 @@
 
         
 
-    .. py:method:: update_alert(id: str, update_mask: str [, alert: Optional[AlertV2]]) -> AlertV2
+    .. py:method:: update_alert(id: str, alert: AlertV2, update_mask: str) -> AlertV2
 
         Update an alert.
 
@@ -61,6 +61,7 @@
 
         :param id: str
           UUID identifying the alert.
+        :param alert: :class:`AlertV2`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -71,7 +72,6 @@
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
-        :param alert: :class:`AlertV2` (optional)
 
         :returns: :class:`AlertV2`
         

@@ -145,6 +145,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IS_OWNER
       :value: "IS_OWNER"
 
+.. autoclass:: AppResourceUcSecurable
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceUcSecurableUcSecurablePermission
+
+   .. py:attribute:: READ_VOLUME
+      :value: "READ_VOLUME"
+
+   .. py:attribute:: WRITE_VOLUME
+      :value: "WRITE_VOLUME"
+
+.. py:class:: AppResourceUcSecurableUcSecurableType
+
+   .. py:attribute:: VOLUME
+      :value: "VOLUME"
+
 .. py:class:: ApplicationState
 
    .. py:attribute:: CRASHED

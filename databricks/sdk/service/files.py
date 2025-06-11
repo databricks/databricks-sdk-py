@@ -1049,6 +1049,8 @@ class FilesAPI:
     `enable_experimental_files_api_client = True` in your configuration profile or use the environment
     variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 
+    Use of Files API may incur Databricks data transfer charges.
+
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
 
     def __init__(self, api_client):

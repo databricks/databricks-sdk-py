@@ -744,12 +744,6 @@ class ListEndpointResponse:
 
 @dataclass
 class ListValue:
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `ListValue` is a wrapper around a repeated field of values.
-
-    The JSON representation for `ListValue` is JSON array."""
-
     values: Optional[List[Value]] = None
     """Repeated field of dynamically typed values."""
 
@@ -1165,7 +1159,7 @@ class QueryVectorIndexResponse:
 class ResultData:
     """Data returned in the query result."""
 
-    data_array: Optional[List[ListValue]] = None
+    data_array: Optional[List[List[str]]] = None
     """Data rows returned in the query."""
 
     row_count: Optional[int] = None
@@ -1175,7 +1169,7 @@ class ResultData:
         """Serializes the ResultData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data_array:
-            body["data_array"] = [v.as_dict() for v in self.data_array]
+            body["data_array"] = [v for v in self.data_array]
         if self.row_count is not None:
             body["row_count"] = self.row_count
         return body
@@ -1192,7 +1186,7 @@ class ResultData:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
-        return cls(data_array=_repeated_dict(d, "data_array", ListValue), row_count=d.get("row_count", None))
+        return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
 
 
 @dataclass
@@ -1308,15 +1302,6 @@ class ScanVectorIndexResponse:
 
 @dataclass
 class Struct:
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
-    values. In some languages, `Struct` might be supported by a native representation. For example,
-    in scripting languages like JS a struct is represented as an object. The details of that
-    representation are described together with the proto support for the language.
-
-    The JSON representation for `Struct` is JSON object."""
-
     fields: Optional[List[MapStringValueEntry]] = None
     """Data entry, corresponding to a row in a vector index."""
 
@@ -1532,25 +1517,12 @@ class Value:
     bool_value: Optional[bool] = None
 
     list_value: Optional[ListValue] = None
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `ListValue` is a wrapper around a repeated field of values.
-    
-    The JSON representation for `ListValue` is JSON array."""
 
     number_value: Optional[float] = None
 
     string_value: Optional[str] = None
 
     struct_value: Optional[Struct] = None
-    """copied from proto3 / Google Well Known Types, source:
-    https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-    `Struct` represents a structured data value, consisting of fields which map to dynamically typed
-    values. In some languages, `Struct` might be supported by a native representation. For example,
-    in scripting languages like JS a struct is represented as an object. The details of that
-    representation are described together with the proto support for the language.
-    
-    The JSON representation for `Struct` is JSON object."""
 
     def as_dict(self) -> dict:
         """Serializes the Value into a dictionary suitable for use as a JSON request body."""

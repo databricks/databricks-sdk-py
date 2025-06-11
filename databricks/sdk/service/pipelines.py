@@ -89,6 +89,11 @@ class CreatePipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     run_as: Optional[RunAs] = None
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -105,6 +110,11 @@ class CreatePipeline:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -159,6 +169,8 @@ class CreatePipeline:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as.as_dict()
         if self.schema is not None:
@@ -167,6 +179,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -218,6 +232,8 @@ class CreatePipeline:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as
         if self.schema is not None:
@@ -226,6 +242,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -257,10 +275,12 @@ class CreatePipeline:
             notifications=_repeated_dict(d, "notifications", Notifications),
             photon=d.get("photon", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             run_as=_from_dict(d, "run_as", RunAs),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -473,6 +493,11 @@ class EditPipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     run_as: Optional[RunAs] = None
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -489,6 +514,11 @@ class EditPipeline:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -545,6 +575,8 @@ class EditPipeline:
             body["pipeline_id"] = self.pipeline_id
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as.as_dict()
         if self.schema is not None:
@@ -553,6 +585,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -606,6 +640,8 @@ class EditPipeline:
             body["pipeline_id"] = self.pipeline_id
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as
         if self.schema is not None:
@@ -614,6 +650,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -646,10 +684,12 @@ class EditPipeline:
             photon=d.get("photon", None),
             pipeline_id=d.get("pipeline_id", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             run_as=_from_dict(d, "run_as", RunAs),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -1103,6 +1143,10 @@ class IngestionPipelineDefinition:
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
 
+    source_type: Optional[IngestionSourceType] = None
+    """The type of the foreign source. The source type will be inferred from the source connection or
+    ingestion gateway. This field is output only and will be ignored if provided."""
+
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings are applied to all
     tables in the pipeline."""
@@ -1116,6 +1160,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = [v.as_dict() for v in self.objects]
+        if self.source_type is not None:
+            body["source_type"] = self.source_type.value
         if self.table_configuration:
             body["table_configuration"] = self.table_configuration.as_dict()
         return body
@@ -1129,6 +1175,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = self.objects
+        if self.source_type is not None:
+            body["source_type"] = self.source_type
         if self.table_configuration:
             body["table_configuration"] = self.table_configuration
         return body
@@ -1140,8 +1188,26 @@ class IngestionPipelineDefinition:
             connection_name=d.get("connection_name", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
+            source_type=_enum(d, "source_type", IngestionSourceType),
             table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
+
+
+class IngestionSourceType(Enum):
+
+    DYNAMICS365 = "DYNAMICS365"
+    GA4_RAW_DATA = "GA4_RAW_DATA"
+    MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    MYSQL = "MYSQL"
+    NETSUITE = "NETSUITE"
+    ORACLE = "ORACLE"
+    POSTGRESQL = "POSTGRESQL"
+    SALESFORCE = "SALESFORCE"
+    SERVICENOW = "SERVICENOW"
+    SHAREPOINT = "SHAREPOINT"
+    SQLSERVER = "SQLSERVER"
+    TERADATA = "TERADATA"
+    WORKDAY_RAAS = "WORKDAY_RAAS"
 
 
 @dataclass
@@ -1506,6 +1572,31 @@ class Origin:
             uc_resource_id=d.get("uc_resource_id", None),
             update_id=d.get("update_id", None),
         )
+
+
+@dataclass
+class PathPattern:
+    include: Optional[str] = None
+    """The source code to include for pipelines"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PathPattern into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include is not None:
+            body["include"] = self.include
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PathPattern into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include is not None:
+            body["include"] = self.include
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PathPattern:
+        """Deserializes the PathPattern from a dictionary."""
+        return cls(include=d.get("include", None))
 
 
 @dataclass
@@ -2018,6 +2109,10 @@ class PipelineLibrary:
     file: Optional[FileLibrary] = None
     """The path to a file that defines a pipeline and is stored in the Databricks Repos."""
 
+    glob: Optional[PathPattern] = None
+    """The unified field to include source codes. Each entry can be a notebook path, a file path, or a
+    folder path that ends `/**`. This field cannot be used together with `notebook` or `file`."""
+
     jar: Optional[str] = None
     """URI of the jar to be installed. Currently only DBFS is supported."""
 
@@ -2035,6 +2130,8 @@ class PipelineLibrary:
         body = {}
         if self.file:
             body["file"] = self.file.as_dict()
+        if self.glob:
+            body["glob"] = self.glob.as_dict()
         if self.jar is not None:
             body["jar"] = self.jar
         if self.maven:
@@ -2050,6 +2147,8 @@ class PipelineLibrary:
         body = {}
         if self.file:
             body["file"] = self.file
+        if self.glob:
+            body["glob"] = self.glob
         if self.jar is not None:
             body["jar"] = self.jar
         if self.maven:
@@ -2065,6 +2164,7 @@ class PipelineLibrary:
         """Deserializes the PipelineLibrary from a dictionary."""
         return cls(
             file=_from_dict(d, "file", FileLibrary),
+            glob=_from_dict(d, "glob", PathPattern),
             jar=d.get("jar", None),
             maven=_from_dict(d, "maven", compute.MavenLibrary),
             notebook=_from_dict(d, "notebook", NotebookLibrary),
@@ -2293,6 +2393,11 @@ class PipelineSpec:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to."""
 
@@ -2301,6 +2406,11 @@ class PipelineSpec:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -2351,12 +2461,16 @@ class PipelineSpec:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.schema is not None:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2404,12 +2518,16 @@ class PipelineSpec:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.schema is not None:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2439,9 +2557,11 @@ class PipelineSpec:
             notifications=_repeated_dict(d, "notifications", Notifications),
             photon=d.get("photon", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -2996,6 +3116,7 @@ class StartUpdateCause(Enum):
     """What triggered this update."""
 
     API_CALL = "API_CALL"
+    INFRASTRUCTURE_MAINTENANCE = "INFRASTRUCTURE_MAINTENANCE"
     JOB_TASK = "JOB_TASK"
     RETRY_ON_FAILURE = "RETRY_ON_FAILURE"
     SCHEMA_CHANGE = "SCHEMA_CHANGE"
@@ -3321,6 +3442,7 @@ class UpdateInfoCause(Enum):
     """What triggered this update."""
 
     API_CALL = "API_CALL"
+    INFRASTRUCTURE_MAINTENANCE = "INFRASTRUCTURE_MAINTENANCE"
     JOB_TASK = "JOB_TASK"
     RETRY_ON_FAILURE = "RETRY_ON_FAILURE"
     SCHEMA_CHANGE = "SCHEMA_CHANGE"
@@ -3472,10 +3594,12 @@ class PipelinesAPI:
         notifications: Optional[List[Notifications]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ) -> CreatePipelineResponse:
@@ -3528,6 +3652,10 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -3540,6 +3668,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -3592,6 +3723,8 @@ class PipelinesAPI:
             body["photon"] = photon
         if restart_window is not None:
             body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
         if run_as is not None:
             body["run_as"] = run_as.as_dict()
         if schema is not None:
@@ -3600,6 +3733,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:
@@ -3615,7 +3750,8 @@ class PipelinesAPI:
     def delete(self, pipeline_id: str):
         """Delete a pipeline.
 
-        Deletes a pipeline.
+        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        its tables. You cannot undo this action.
 
         :param pipeline_id: str
 
@@ -3980,10 +4116,12 @@ class PipelinesAPI:
         notifications: Optional[List[Notifications]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ):
@@ -4039,6 +4177,10 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -4051,6 +4193,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -4103,6 +4248,8 @@ class PipelinesAPI:
             body["photon"] = photon
         if restart_window is not None:
             body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
         if run_as is not None:
             body["run_as"] = run_as.as_dict()
         if schema is not None:
@@ -4111,6 +4258,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:
