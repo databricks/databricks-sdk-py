@@ -739,9 +739,7 @@ class DbfsAPI:
         self._api = api_client
 
     def add_block(self, handle: int, data: str):
-        """Append data block.
-
-        Appends a block of data to the stream specified by the input handle. If the handle does not exist,
+        """Appends a block of data to the stream specified by the input handle. If the handle does not exist,
         this call will throw an exception with ``RESOURCE_DOES_NOT_EXIST``.
 
         If the block of data exceeds 1 MB, this call will throw an exception with ``MAX_BLOCK_SIZE_EXCEEDED``.
@@ -766,9 +764,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/add-block", body=body, headers=headers)
 
     def close(self, handle: int):
-        """Close the stream.
-
-        Closes the stream specified by the input handle. If the handle does not exist, this call throws an
+        """Closes the stream specified by the input handle. If the handle does not exist, this call throws an
         exception with ``RESOURCE_DOES_NOT_EXIST``.
 
         :param handle: int
@@ -787,9 +783,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/close", body=body, headers=headers)
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
-        """Open a stream.
-
-        Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
+        """Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
         timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
         set to false, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
 
@@ -819,9 +813,7 @@ class DbfsAPI:
         return CreateResponse.from_dict(res)
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
-        """Delete a file/directory.
-
-        Delete the file or directory (optionally recursively delete all files in the directory). This call
+        """Delete the file or directory (optionally recursively delete all files in the directory). This call
         throws an exception with `IO_ERROR` if the path is a non-empty directory and `recursive` is set to
         `false` or on other similar errors.
 
@@ -857,9 +849,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/delete", body=body, headers=headers)
 
     def get_status(self, path: str) -> FileInfo:
-        """Get the information of a file or directory.
-
-        Gets the file information for a file or directory. If the file or directory does not exist, this call
+        """Gets the file information for a file or directory. If the file or directory does not exist, this call
         throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 
         :param path: str
@@ -879,9 +869,7 @@ class DbfsAPI:
         return FileInfo.from_dict(res)
 
     def list(self, path: str) -> Iterator[FileInfo]:
-        """List directory contents or file details.
-
-        List the contents of a directory, or details of the file. If the file or directory does not exist,
+        """List the contents of a directory, or details of the file. If the file or directory does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 
         When calling list on a large directory, the list operation will time out after approximately 60
@@ -909,9 +897,7 @@ class DbfsAPI:
         return parsed if parsed is not None else []
 
     def mkdirs(self, path: str):
-        """Create a directory.
-
-        Creates the given directory and necessary parent directories if they do not exist. If a file (not a
+        """Creates the given directory and necessary parent directories if they do not exist. If a file (not a
         directory) exists at any prefix of the input path, this call throws an exception with
         `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
         of the necessary parent directories.
@@ -932,9 +918,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/mkdirs", body=body, headers=headers)
 
     def move(self, source_path: str, destination_path: str):
-        """Move a file.
-
-        Moves a file from one location to another location within DBFS. If the source file does not exist,
+        """Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
         path is a directory, this call always recursively moves all files.
@@ -959,9 +943,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/move", body=body, headers=headers)
 
     def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
-        """Upload a file.
-
-        Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
+        """Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
         can also be used as a convenient single call for data upload.
 
         Alternatively you can pass contents as base64 string.
@@ -996,9 +978,7 @@ class DbfsAPI:
         self._api.do("POST", "/api/2.0/dbfs/put", body=body, headers=headers)
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
-        """Get the contents of a file.
-
-        Returns the contents of a file. If the file does not exist, this call throws an exception with
+        """Returns the contents of a file. If the file does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset
         is negative, this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds
         1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
@@ -1057,9 +1037,7 @@ class FilesAPI:
         self._api = api_client
 
     def create_directory(self, directory_path: str):
-        """Create a directory.
-
-        Creates an empty directory. If necessary, also creates any parent directories of the new, empty
+        """Creates an empty directory. If necessary, also creates any parent directories of the new, empty
         directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
 
@@ -1076,9 +1054,7 @@ class FilesAPI:
         )
 
     def delete(self, file_path: str):
-        """Delete a file.
-
-        Deletes a file. If the request is successful, there is no response body.
+        """Deletes a file. If the request is successful, there is no response body.
 
         :param file_path: str
           The absolute path of the file.
@@ -1091,9 +1067,7 @@ class FilesAPI:
         self._api.do("DELETE", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}", headers=headers)
 
     def delete_directory(self, directory_path: str):
-        """Delete a directory.
-
-        Deletes an empty directory.
+        """Deletes an empty directory.
 
         To delete a non-empty directory, first delete all of its contents. This can be done by listing the
         directory contents and deleting each file and subdirectory recursively.
@@ -1111,9 +1085,7 @@ class FilesAPI:
         )
 
     def download(self, file_path: str) -> DownloadResponse:
-        """Download a file.
-
-        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
+        """Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
         a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
 
         :param file_path: str
@@ -1140,9 +1112,7 @@ class FilesAPI:
         return DownloadResponse.from_dict(res)
 
     def get_directory_metadata(self, directory_path: str):
-        """Get directory metadata.
-
-        Get the metadata of a directory. The response HTTP headers contain the metadata. There is no response
+        """Get the metadata of a directory. The response HTTP headers contain the metadata. There is no response
         body.
 
         This method is useful to check if a directory exists and the caller has access to it.
@@ -1163,9 +1133,7 @@ class FilesAPI:
         )
 
     def get_metadata(self, file_path: str) -> GetMetadataResponse:
-        """Get file metadata.
-
-        Get the metadata of a file. The response HTTP headers contain the metadata. There is no response body.
+        """Get the metadata of a file. The response HTTP headers contain the metadata. There is no response body.
 
         :param file_path: str
           The absolute path of the file.
@@ -1190,9 +1158,7 @@ class FilesAPI:
     def list_directory_contents(
         self, directory_path: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DirectoryEntry]:
-        """List directory contents.
-
-        Returns the contents of a directory. If there is no directory at the specified path, the API returns a
+        """Returns the contents of a directory. If there is no directory at the specified path, the API returns a
         HTTP 404 error.
 
         :param directory_path: str
@@ -1242,9 +1208,7 @@ class FilesAPI:
             query["page_token"] = json["next_page_token"]
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
-        """Upload a file.
-
-        Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
+        """Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
         octet stream); do not encode or otherwise modify the bytes before sending. The contents of the
         resulting file will be exactly the bytes sent in the request body. If the request is successful, there
         is no response body.
