@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import Dict, Optional, Union, cast
 
-logger = logging.getLogger("databricks.sdk")
+_LOG = logging.getLogger(__name__)
 is_local_implementation = True
 
 # All objects that are injected into the Notebook's user namespace should also be made
@@ -28,7 +28,7 @@ try:
     # a workaround here for exposing required information in notebook environment
     from dbruntime.sdk_credential_provider import init_runtime_native_auth
 
-    logger.debug("runtime SDK credential provider available")
+    _LOG.debug("runtime SDK credential provider available")
     dbruntime_objects.append("init_runtime_native_auth")
 except ImportError:
     init_runtime_native_auth = None
@@ -42,10 +42,10 @@ def init_runtime_repl_auth():
 
         ctx = get_context()
         if ctx is None:
-            logger.debug("Empty REPL context returned, skipping runtime auth")
+            _LOG.debug("Empty REPL context returned, skipping runtime auth")
             return None, None
         if ctx.workspaceUrl is None:
-            logger.debug("Workspace URL is not available, skipping runtime auth")
+            _LOG.debug("Workspace URL is not available, skipping runtime auth")
             return None, None
         host = f"https://{ctx.workspaceUrl}"
 
@@ -113,12 +113,12 @@ except ImportError:
         sqlContext: SQLContext = None  # type: ignore
         table = sqlContext.table
     except Exception as e:
-        logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
+        _LOG.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
 
     try:
         from pyspark.sql.functions import udf  # type: ignore
     except ImportError as e:
-        logging.debug(f"Failed to initialise udf global: {e}")
+        _LOG.debug(f"Failed to initialise udf global: {e}")
 
     try:
         from databricks.connect import DatabricksSession  # type: ignore
@@ -128,13 +128,13 @@ except ImportError:
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
-        logging.debug(f"Failed to initialize globals 'spark' and 'sql', continuing. Cause: {e}")
+        _LOG.debug(f"Failed to initialize globals 'spark' and 'sql', continuing. Cause: {e}")
 
     try:
         # We expect this to fail locally since dbconnect does not support sparkcontext. This is just for typing
         sc = spark.sparkContext  # type: ignore
     except Exception as e:
-        logging.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
+        _LOG.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
 
     def display(input=None, *args, **kwargs) -> None:  # type: ignore
         """
