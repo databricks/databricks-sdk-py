@@ -60,8 +60,6 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.tables.delete(full_name=table_full_name)
 
-        Get permissions.
-
         Gets the permissions for a securable. Does not include inherited permissions.
 
         :param securable_type: str
@@ -131,8 +129,6 @@
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.tables.delete(full_name=table_full_name)
-
-        Get effective permissions.
 
         Gets the effective permissions for a securable. Includes inherited permissions from any parent
         securables.
@@ -214,8 +210,6 @@
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.tables.delete(full_name=table_full_name)
-
-        Update permissions.
 
         Updates the permissions for a securable.
 

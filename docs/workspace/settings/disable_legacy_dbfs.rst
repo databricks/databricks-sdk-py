@@ -15,8 +15,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyDbfsResponse
 
-        Delete the disable legacy DBFS setting.
-
         Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.
 
         :param etag: str (optional)
@@ -31,8 +29,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyDbfs
 
-        Get the disable legacy DBFS setting.
-
         Gets the disable legacy DBFS setting.
 
         :param etag: str (optional)
@@ -46,8 +42,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs
-
-        Update the disable legacy DBFS setting.
 
         Updates the disable legacy DBFS setting for the workspace.
 

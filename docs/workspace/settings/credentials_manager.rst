@@ -9,8 +9,6 @@
 
     .. py:method:: exchange_token(partition_id: PartitionId, token_type: List[TokenType], scopes: List[str]) -> ExchangeTokenResponse
 
-        Exchange token.
-
         Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
         determine token permissions.
 

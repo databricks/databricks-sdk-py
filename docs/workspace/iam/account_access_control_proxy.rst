@@ -10,8 +10,6 @@
 
     .. py:method:: get_assignable_roles_for_resource(resource: str) -> GetAssignableRolesForResourceResponse
 
-        Get assignable roles for a resource.
-
         Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
         set on the resource can contain an access rule of the role.
 
@@ -27,8 +25,6 @@
         
 
     .. py:method:: get_rule_set(name: str, etag: str) -> RuleSetResponse
-
-        Get a rule set.
 
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported.
@@ -57,8 +53,6 @@
         
 
     .. py:method:: update_rule_set(name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse
-
-        Update a rule set.
 
         Replace the rules of a rule set. First, use get to read the current version of the rule set before
         modifying it. This pattern helps prevent conflicts between concurrent updates.

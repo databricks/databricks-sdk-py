@@ -36,8 +36,6 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Create a share recipient.
-
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
         be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.
 
@@ -70,8 +68,6 @@
 
     .. py:method:: delete(name: str)
 
-        Delete a share recipient.
-
         Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
 
         :param name: str
@@ -100,8 +96,6 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Get a share recipient.
-
         Gets a share recipient from the metastore if:
 
         * the caller is the owner of the share recipient, or: * is a metastore admin
@@ -125,8 +119,6 @@
             w = WorkspaceClient()
             
             all = w.recipients.list(sharing.ListRecipientsRequest())
-
-        List share recipients.
 
         Gets an array of all share recipients within the current metastore where:
 
@@ -170,8 +162,6 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Rotate a token.
-
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
 
@@ -204,8 +194,6 @@
             
             # cleanup
             w.recipients.delete(name=created.name)
-
-        Get recipient share permissions.
 
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
         owner of the Recipient.
@@ -245,8 +233,6 @@
             
             # cleanup
             w.recipients.delete(name=created.name)
-
-        Update a share recipient.
 
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the

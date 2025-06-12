@@ -23,9 +23,10 @@
             
             a = AccountClient()
             
-            spn = a.service_principals.create(display_name=f"sdk-{time.time_ns()}")
-
-        Create a service principal.
+            sp_create = a.service_principals.create(active=True, display_name=f"sdk-{time.time_ns()}")
+            
+            # cleanup
+            a.service_principals.delete(id=sp_create.id)
 
         Creates a new service principal in the Databricks account.
 
@@ -54,8 +55,6 @@
 
     .. py:method:: delete(id: str)
 
-        Delete a service principal.
-
         Delete a single service principal in the Databricks account.
 
         :param id: str
@@ -83,8 +82,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        Get service principal details.
 
         Gets the details for a single service principal define in the Databricks account.
 
@@ -115,8 +112,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        List service principals.
 
         Gets the set of service principals associated with a Databricks account.
 
@@ -170,8 +165,6 @@
             # cleanup
             a.service_principals.delete(id=sp_create.id)
 
-        Update service principal details.
-
         Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
@@ -204,8 +197,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        Replace service principal.
 
         Updates the details of a single service principal.
 

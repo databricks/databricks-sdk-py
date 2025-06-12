@@ -15,8 +15,6 @@
 
         Create an Online Feature Store.
 
-        Create an Online Feature Store.
-
         :param online_store: :class:`OnlineStore`
           An OnlineStore is a logical database instance that stores and serves features online.
 
@@ -24,8 +22,6 @@
         
 
     .. py:method:: delete_online_store(name: str)
-
-        Delete an Online Feature Store.
 
         Delete an Online Feature Store.
 
@@ -39,8 +35,6 @@
 
         Get an Online Feature Store.
 
-        Get an Online Feature Store.
-
         :param name: str
           Name of the online store to get.
 
@@ -48,8 +42,6 @@
         
 
     .. py:method:: list_online_stores( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[OnlineStore]
-
-        List Online Feature Stores.
 
         List Online Feature Stores.
 
@@ -65,8 +57,6 @@
 
         Publish features.
 
-        Publish features.
-
         :param source_table_name: str
           The full three-part (catalog, schema, table) name of the source table.
         :param publish_spec: :class:`PublishSpec`
@@ -76,8 +66,6 @@
         
 
     .. py:method:: update_online_store(name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore
-
-        Update an Online Feature Store.
 
         Update an Online Feature Store.
 

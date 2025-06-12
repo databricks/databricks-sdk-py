@@ -14,8 +14,6 @@
 
     .. py:method:: create(query_id: str, type: str, options: Any [, description: Optional[str], name: Optional[str]]) -> LegacyVisualization
 
-        Add visualization to a query.
-
         Creates visualization in the query.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
@@ -40,8 +38,6 @@
 
     .. py:method:: delete(id: str)
 
-        Remove visualization.
-
         Removes a visualization from the query.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
@@ -56,8 +52,6 @@
         
 
     .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[LegacyQuery], type: Optional[str], updated_at: Optional[str]]) -> LegacyVisualization
-
-        Edit existing visualization.
 
         Updates visualization in the query.
 

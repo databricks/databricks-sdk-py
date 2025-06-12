@@ -31,8 +31,6 @@
 
     .. py:method:: create(catalog_name: str, schema_name: str, name: str [, comment: Optional[str], storage_location: Optional[str]]) -> RegisteredModelInfo
 
-        Create a Registered Model.
-
         Creates a new registered model in Unity Catalog.
 
         File storage for model versions in the registered model will be located in the default location which
@@ -59,8 +57,6 @@
 
     .. py:method:: delete(full_name: str)
 
-        Delete a Registered Model.
-
         Deletes a registered model and all its model versions from the specified parent catalog and schema.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
@@ -74,8 +70,6 @@
         
 
     .. py:method:: delete_alias(full_name: str, alias: str)
-
-        Delete a Registered Model Alias.
 
         Deletes a registered model alias.
 
@@ -92,8 +86,6 @@
         
 
     .. py:method:: get(full_name: str [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> RegisteredModelInfo
-
-        Get a Registered Model.
 
         Get a registered model.
 
@@ -113,8 +105,6 @@
         
 
     .. py:method:: list( [, catalog_name: Optional[str], include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[RegisteredModelInfo]
-
-        List Registered Models.
 
         List registered models. You can list registered models under a particular schema, or list all
         registered models in the current metastore.
@@ -158,8 +148,6 @@
 
     .. py:method:: set_alias(full_name: str, alias: str, version_num: int) -> RegisteredModelAlias
 
-        Set a Registered Model Alias.
-
         Set an alias on the specified registered model.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
@@ -177,8 +165,6 @@
         
 
     .. py:method:: update(full_name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> RegisteredModelInfo
-
-        Update a Registered Model.
 
         Updates the specified registered model.
 

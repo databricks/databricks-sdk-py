@@ -17,8 +17,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDefaultNamespaceSettingResponse
 
-        Delete the default namespace setting.
-
         Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
         requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
         `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
@@ -36,8 +34,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DefaultNamespaceSetting
 
-        Get the default namespace setting.
-
         Gets the default namespace setting.
 
         :param etag: str (optional)
@@ -51,8 +47,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting
-
-        Update the default namespace setting.
 
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
         requests (as part of the setting field). The etag can be retrieved by making a `GET` request before

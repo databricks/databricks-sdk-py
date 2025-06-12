@@ -339,6 +339,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PipelinesEnvironment
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReportSpec
    :members:
    :undoc-members:

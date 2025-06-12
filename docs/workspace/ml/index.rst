@@ -8,5 +8,6 @@ Create and manage experiments, features, and other machine learning artifacts
    :maxdepth: 1
 
    experiments
+   feature_store
    forecasting
    model_registry

@@ -8,8 +8,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> LlmProxyPartnerPoweredAccount
 
-        Get the enable partner powered AI features account setting.
-
         Gets the enable partner powered AI features account setting.
 
         :param etag: str (optional)
@@ -23,8 +21,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: LlmProxyPartnerPoweredAccount, field_mask: str) -> LlmProxyPartnerPoweredAccount
-
-        Update the enable partner powered AI features account setting.
 
         Updates the enable partner powered AI features account setting.
 

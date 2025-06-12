@@ -36,8 +36,6 @@
             # cleanup
             w.queries.delete(id=query.id)
 
-        Create a query.
-
         Creates a query.
 
         :param auto_resolve_display_name: bool (optional)
@@ -49,8 +47,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete a query.
 
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is
@@ -91,8 +87,6 @@
             # cleanup
             w.queries.delete(id=query.id)
 
-        Get a query.
-
         Gets a query.
 
         :param id: str
@@ -101,8 +95,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListQueryObjectsResponseQuery]
-
-        List queries.
 
         Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
@@ -114,8 +106,6 @@
         
 
     .. py:method:: list_visualizations(id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Visualization]
-
-        List visualizations on a query.
 
         Gets a list of visualizations on a query.
 
@@ -163,8 +153,6 @@
             
             # cleanup
             w.queries.delete(id=query.id)
-
-        Update a query.
 
         Updates a query.
 

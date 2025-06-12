@@ -10,16 +10,12 @@
 
         Cancel a Custom LLM Optimization Run.
 
-        Cancel a Custom LLM Optimization Run.
-
         :param id: str
 
 
         
 
     .. py:method:: create_custom_llm(name: str, instructions: str [, agent_artifact_path: Optional[str], datasets: Optional[List[Dataset]], guidelines: Optional[List[str]]]) -> CustomLlm
-
-        Create a Custom LLM.
 
         Create a Custom LLM.
 
@@ -44,8 +40,6 @@
 
         Delete a Custom LLM.
 
-        Delete a Custom LLM.
-
         :param id: str
           The id of the custom llm
 
@@ -53,8 +47,6 @@
         
 
     .. py:method:: get_custom_llm(id: str) -> CustomLlm
-
-        Get a Custom LLM.
 
         Get a Custom LLM.
 
@@ -68,8 +60,6 @@
 
         Start a Custom LLM Optimization Run.
 
-        Start a Custom LLM Optimization Run.
-
         :param id: str
           The Id of the tile.
 
@@ -77,8 +67,6 @@
         
 
     .. py:method:: update_custom_llm(id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm
-
-        Update a Custom LLM.
 
         Update a Custom LLM.
 

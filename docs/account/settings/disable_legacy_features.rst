@@ -12,8 +12,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyFeaturesResponse
 
-        Delete the disable legacy features setting.
-
         Deletes the disable legacy features setting.
 
         :param etag: str (optional)
@@ -28,8 +26,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyFeatures
 
-        Get the disable legacy features setting.
-
         Gets the value of the disable legacy features setting.
 
         :param etag: str (optional)
@@ -43,8 +39,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyFeatures, field_mask: str) -> DisableLegacyFeatures
-
-        Update the disable legacy features setting.
 
         Updates the value of the disable legacy features setting.
 

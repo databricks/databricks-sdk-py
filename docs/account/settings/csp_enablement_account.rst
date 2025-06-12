@@ -13,8 +13,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> CspEnablementAccountSetting
 
-        Get the compliance security profile setting for new workspaces.
-
         Gets the compliance security profile setting for new workspaces.
 
         :param etag: str (optional)
@@ -28,8 +26,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: CspEnablementAccountSetting, field_mask: str) -> CspEnablementAccountSetting
-
-        Update the compliance security profile setting for new workspaces.
 
         Updates the value of the compliance security profile setting for new workspaces.
 

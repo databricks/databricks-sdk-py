@@ -9,8 +9,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> LlmProxyPartnerPoweredEnforce
 
-        Get the enforcement status of partner powered AI features account setting.
-
         Gets the enforcement status of partner powered AI features account setting.
 
         :param etag: str (optional)
@@ -24,8 +22,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: LlmProxyPartnerPoweredEnforce, field_mask: str) -> LlmProxyPartnerPoweredEnforce
-
-        Update the enforcement status of partner powered AI features account setting.
 
         Updates the enable enforcement status of partner powered AI features account setting.
 

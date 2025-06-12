@@ -66,8 +66,6 @@
             # cleanup
             w.dashboards.delete(dashboard_id=created.id)
 
-        Remove a dashboard.
-
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
 
@@ -96,8 +94,6 @@
             # cleanup
             w.dashboards.delete(dashboard_id=created.id)
 
-        Retrieve a definition.
-
         Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
         :param dashboard_id: str
@@ -118,8 +114,6 @@
             w = WorkspaceClient()
             
             all = w.dashboards.list(sql.ListDashboardsRequest())
-
-        Get dashboard objects.
 
         Fetch a paginated list of dashboard objects.
 
@@ -158,8 +152,6 @@
             # cleanup
             w.dashboards.delete(dashboard_id=created.id)
 
-        Restore a dashboard.
-
         A restored dashboard appears in list views and searches and can be shared.
 
         :param dashboard_id: str
@@ -168,8 +160,6 @@
         
 
     .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Dashboard
-
-        Change a dashboard definition.
 
         Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
         does not add, modify, or remove widgets.

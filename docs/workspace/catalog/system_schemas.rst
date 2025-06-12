@@ -9,8 +9,6 @@
 
     .. py:method:: disable(metastore_id: str, schema_name: str)
 
-        Disable a system schema.
-
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
         or a metastore admin.
 
@@ -23,8 +21,6 @@
         
 
     .. py:method:: enable(metastore_id: str, schema_name: str [, catalog_name: Optional[str]])
-
-        Enable a system schema.
 
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
         metastore admin.
@@ -40,8 +36,6 @@
         
 
     .. py:method:: list(metastore_id: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SystemSchemaInfo]
-
-        List system schemas.
 
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
         admin.

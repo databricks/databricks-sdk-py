@@ -10,8 +10,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> EsmEnablementAccountSetting
 
-        Get the enhanced security monitoring setting for new workspaces.
-
         Gets the enhanced security monitoring setting for new workspaces.
 
         :param etag: str (optional)
@@ -25,8 +23,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: EsmEnablementAccountSetting, field_mask: str) -> EsmEnablementAccountSetting
-
-        Update the enhanced security monitoring setting for new workspaces.
 
         Updates the value of the enhanced security monitoring setting for new workspaces.
 

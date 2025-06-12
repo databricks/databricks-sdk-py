@@ -9,8 +9,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAccountIpAccessEnableResponse
 
-        Delete the account IP access toggle setting.
-
         Reverts the value of the account IP access toggle setting to default (ON)
 
         :param etag: str (optional)
@@ -25,8 +23,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> AccountIpAccessEnable
 
-        Get the account IP access toggle setting.
-
         Gets the value of the account IP access toggle setting.
 
         :param etag: str (optional)
@@ -40,8 +36,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: AccountIpAccessEnable, field_mask: str) -> AccountIpAccessEnable
-
-        Update the account IP access toggle setting.
 
         Updates the value of the account IP access toggle setting.
 

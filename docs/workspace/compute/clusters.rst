@@ -59,8 +59,6 @@
             w.users.delete(id=other_owner.id)
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Change cluster owner.
-
         Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
         this operation. The service principal application ID can be supplied as an argument to
         `owner_username`.
@@ -100,8 +98,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
         necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
@@ -320,8 +316,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Terminate cluster.
-
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
         termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen.
@@ -374,8 +368,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
         updated if it is in a `RUNNING` or `TERMINATED` state.
@@ -616,8 +608,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        List cluster activity events.
-
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
         events to read, the response includes all the parameters necessary to request the next page of events.
 
@@ -684,8 +674,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Get cluster info.
-
         Retrieves the information for a cluster given its identifier. Clusters can be described while they are
         running, or up to 60 days after they are terminated.
 
@@ -697,8 +685,6 @@
 
     .. py:method:: get_permission_levels(cluster_id: str) -> GetClusterPermissionLevelsResponse
 
-        Get cluster permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param cluster_id: str
@@ -708,8 +694,6 @@
         
 
     .. py:method:: get_permissions(cluster_id: str) -> ClusterPermissions
-
-        Get cluster permissions.
 
         Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
 
@@ -727,12 +711,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import compute
             
             w = WorkspaceClient()
             
-            nodes = w.clusters.list_node_types()
-
-        List clusters.
+            all = w.clusters.list(compute.ListClustersRequest())
 
         Return information about all pinned and active clusters, and all clusters terminated within the last
         30 days. Clusters terminated prior to this period are not included.
@@ -764,16 +747,12 @@
             
             nodes = w.clusters.list_node_types()
 
-        List node types.
-
         Returns a list of supported Spark node types. These node types can be used to launch a cluster.
 
         :returns: :class:`ListNodeTypesResponse`
         
 
     .. py:method:: list_zones() -> ListAvailableZonesResponse
-
-        List availability zones.
 
         Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
         zones can be used to launch a cluster.
@@ -782,8 +761,6 @@
         
 
     .. py:method:: permanent_delete(cluster_id: str)
-
-        Permanently delete cluster.
 
         Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously
         removed.
@@ -828,8 +805,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Pin cluster.
-
         Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
         cluster that is already pinned will have no effect. This API can only be called by workspace admins.
 
@@ -868,8 +843,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
         `RUNNING` state.
@@ -927,8 +900,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
         nothing will happen.
@@ -1008,8 +979,6 @@
 
     .. py:method:: set_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
 
-        Set cluster permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -1021,8 +990,6 @@
         
 
     .. py:method:: spark_versions() -> GetSparkVersionsResponse
-
-        List available Spark versions.
 
         Returns the list of available Spark versions. These versions can be used to launch a cluster.
 
@@ -1059,8 +1026,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
         - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
@@ -1110,8 +1075,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Unpin cluster.
-
         Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
         Unpinning a cluster that is not pinned will have no effect. This API can only be called by workspace
         admins.
@@ -1122,8 +1085,6 @@
         
 
     .. py:method:: update(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource]]) -> Wait[ClusterDetails]
-
-        Update cluster configuration (partial).
 
         Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
         fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
@@ -1161,8 +1122,6 @@
 
 
     .. py:method:: update_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
-
-        Update cluster permissions.
 
         Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
 

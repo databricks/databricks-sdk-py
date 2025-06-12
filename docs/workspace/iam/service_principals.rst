@@ -20,21 +20,13 @@
             import time
             
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import iam
             
             w = WorkspaceClient()
             
-            groups = w.groups.group_display_name_to_id_map(iam.ListGroupsRequest())
-            
-            spn = w.service_principals.create(
-                display_name=f"sdk-{time.time_ns()}",
-                groups=[iam.ComplexValue(value=groups["admins"])],
-            )
+            created = w.service_principals.create(display_name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.service_principals.delete(id=spn.id)
-
-        Create a service principal.
+            w.service_principals.delete(id=created.id)
 
         Creates a new service principal in the Databricks workspace.
 
@@ -62,8 +54,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete a service principal.
 
         Delete a single service principal in the Databricks workspace.
 
@@ -93,8 +83,6 @@
             # cleanup
             w.service_principals.delete(id=created.id)
 
-        Get service principal details.
-
         Gets the details for a single service principal define in the Databricks workspace.
 
         :param id: str
@@ -116,8 +104,6 @@
             w = WorkspaceClient()
             
             all = w.service_principals.list(iam.ListServicePrincipalsRequest())
-
-        List service principals.
 
         Gets the set of service principals associated with a Databricks workspace.
 
@@ -171,8 +157,6 @@
             # cleanup
             w.service_principals.delete(id=created.id)
 
-        Update service principal details.
-
         Partially updates the details of a single service principal in the Databricks workspace.
 
         :param id: str
@@ -208,8 +192,6 @@
             
             # cleanup
             w.service_principals.delete(id=created.id)
-
-        Replace service principal.
 
         Updates the details of a single service principal.
 
