@@ -204,9 +204,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: DbtCloudRunStatus
+.. autoclass:: DbtCloudTask
+   :members:
+   :undoc-members:
 
-   Response enumeration from calling the dbt Cloud API, for inclusion in output
+.. autoclass:: DbtCloudTaskOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtPlatformJobRunStep
+   :members:
+   :undoc-members:
+
+.. py:class:: DbtPlatformRunStatus
+
+   Response enumeration from calling the dbt platform API, for inclusion in output
 
    .. py:attribute:: CANCELLED
       :value: "CANCELLED"
@@ -226,15 +242,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. autoclass:: DbtCloudTask
+.. autoclass:: DbtPlatformTask
    :members:
    :undoc-members:
 
-.. autoclass:: DbtCloudTaskOutput
-   :members:
-   :undoc-members:
-
-.. autoclass:: DbtOutput
+.. autoclass:: DbtPlatformTaskOutput
    :members:
    :undoc-members:
 

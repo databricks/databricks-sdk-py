@@ -11,8 +11,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> ComplianceSecurityProfileSetting
 
-        Get the compliance security profile setting.
-
         Gets the compliance security profile setting.
 
         :param etag: str (optional)
@@ -26,8 +24,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: ComplianceSecurityProfileSetting, field_mask: str) -> ComplianceSecurityProfileSetting
-
-        Update the compliance security profile setting.
 
         Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
         in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`

@@ -9,8 +9,6 @@
 
     .. py:method:: create(listing: Listing) -> CreateListingResponse
 
-        Create a listing.
-
         Create a new listing
 
         :param listing: :class:`Listing`
@@ -19,8 +17,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete a listing.
 
         Delete a listing
 
@@ -31,8 +27,6 @@
 
     .. py:method:: get(id: str) -> GetListingResponse
 
-        Get a listing.
-
         Get a listing
 
         :param id: str
@@ -41,8 +35,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Listing]
-
-        List listings.
 
         List listings owned by this provider
 
@@ -53,8 +45,6 @@
         
 
     .. py:method:: update(id: str, listing: Listing) -> UpdateListingResponse
-
-        Update listing.
 
         Update a listing
 

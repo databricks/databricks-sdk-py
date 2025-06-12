@@ -29,8 +29,6 @@
             # cleanup
             w.groups.delete(id=group.id)
 
-        Create a new group.
-
         Creates a group in the Databricks workspace with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
@@ -71,11 +69,6 @@
             group = w.groups.create(display_name=f"sdk-{time.time_ns()}")
             
             w.groups.delete(id=group.id)
-            
-            # cleanup
-            w.groups.delete(id=group.id)
-
-        Delete a group.
 
         Deletes a group from the Databricks workspace.
 
@@ -105,8 +98,6 @@
             # cleanup
             w.groups.delete(id=group.id)
 
-        Get group details.
-
         Gets the information for a specific group in the Databricks workspace.
 
         :param id: str
@@ -116,8 +107,6 @@
         
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[Group]
-
-        List group details.
 
         Gets all details of the groups associated with the Databricks workspace.
 
@@ -185,8 +174,6 @@
             w.users.delete(id=user.id)
             w.groups.delete(id=group.id)
 
-        Update group details.
-
         Partially updates the details of a group.
 
         :param id: str
@@ -199,8 +186,6 @@
         
 
     .. py:method:: update(id: str [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]])
-
-        Replace a group.
 
         Updates the details of a group by replacing the entire group entity.
 

@@ -30,8 +30,6 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.schemas.delete(full_name=created_schema.full_name)
 
-        Create a schema.
-
         Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
 
@@ -50,8 +48,6 @@
         
 
     .. py:method:: delete(full_name: str [, force: Optional[bool]])
-
-        Delete a schema.
 
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
         owner of the parent catalog.
@@ -87,8 +83,6 @@
             w.catalogs.delete(name=new_catalog.name, force=True)
             w.schemas.delete(full_name=created.full_name)
 
-        Get a schema.
-
         Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
         schema, or a user that has the **USE_SCHEMA** privilege on the schema.
 
@@ -120,8 +114,6 @@
             
             # cleanup
             w.catalogs.delete(name=new_catalog.name, force=True)
-
-        List schemas.
 
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
@@ -166,8 +158,6 @@
             # cleanup
             w.catalogs.delete(name=new_catalog.name, force=True)
             w.schemas.delete(full_name=created.full_name)
-
-        Update a schema.
 
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
         the caller is a metastore admin, only the __owner__ field can be changed in the update. If the

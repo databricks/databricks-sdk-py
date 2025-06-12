@@ -9,8 +9,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteSqlResultsDownloadResponse
 
-        Delete the SQL Results Download setting.
-
         Reverts the SQL Results Download setting to its default value.
 
         :param etag: str (optional)
@@ -25,8 +23,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> SqlResultsDownload
 
-        Get the SQL Results Download setting.
-
         Gets the SQL Results Download setting.
 
         :param etag: str (optional)
@@ -40,8 +36,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: SqlResultsDownload, field_mask: str) -> SqlResultsDownload
-
-        Update the SQL Results Download setting.
 
         Updates the SQL Results Download setting.
 

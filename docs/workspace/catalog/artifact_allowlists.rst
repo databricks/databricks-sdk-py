@@ -9,8 +9,6 @@
 
     .. py:method:: get(artifact_type: ArtifactType) -> ArtifactAllowlistInfo
 
-        Get an artifact allowlist.
-
         Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
         the **MANAGE ALLOWLIST** privilege on the metastore.
 
@@ -21,8 +19,6 @@
         
 
     .. py:method:: update(artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher] [, created_at: Optional[int], created_by: Optional[str], metastore_id: Optional[str]]) -> ArtifactAllowlistInfo
-
-        Set an artifact allowlist.
 
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on

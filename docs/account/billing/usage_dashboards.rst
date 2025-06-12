@@ -10,8 +10,6 @@
 
     .. py:method:: create( [, dashboard_type: Optional[UsageDashboardType], workspace_id: Optional[int]]) -> CreateBillingUsageDashboardResponse
 
-        Create new usage dashboard.
-
         Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
         :param dashboard_type: :class:`UsageDashboardType` (optional)
@@ -24,8 +22,6 @@
         
 
     .. py:method:: get( [, dashboard_type: Optional[UsageDashboardType], workspace_id: Optional[int]]) -> GetBillingUsageDashboardResponse
-
-        Get usage dashboard.
 
         Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
 

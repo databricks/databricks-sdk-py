@@ -20,8 +20,6 @@
             
             resp = a.billable_usage.download(start_month="2024-08", end_month="2024-09")
 
-        Return billable usage logs.
-
         Returns billable usage logs in CSV format for the specified account and date range. For the data
         schema, see [CSV file schema]. Note that this method might take multiple minutes to complete.
 

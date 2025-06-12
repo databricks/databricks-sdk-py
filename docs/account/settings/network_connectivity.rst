@@ -15,8 +15,6 @@
 
     .. py:method:: create_network_connectivity_configuration(network_connectivity_config: CreateNetworkConnectivityConfiguration) -> NetworkConnectivityConfiguration
 
-        Create a network connectivity configuration.
-
         Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
         accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
         Databricks managed private endpoints so that Databricks serverless compute resources privately access
@@ -36,8 +34,6 @@
         
 
     .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule: CreatePrivateEndpointRule) -> NccPrivateEndpointRule
-
-        Create a private endpoint rule.
 
         Create a private endpoint rule for the specified network connectivity config object. Once the object
         is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure
@@ -60,8 +56,6 @@
 
     .. py:method:: delete_network_connectivity_configuration(network_connectivity_config_id: str)
 
-        Delete a network connectivity configuration.
-
         Deletes a network connectivity configuration.
 
         :param network_connectivity_config_id: str
@@ -71,8 +65,6 @@
         
 
     .. py:method:: delete_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccPrivateEndpointRule
-
-        Delete a private endpoint rule.
 
         Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
         endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
@@ -89,8 +81,6 @@
 
     .. py:method:: get_network_connectivity_configuration(network_connectivity_config_id: str) -> NetworkConnectivityConfiguration
 
-        Get a network connectivity configuration.
-
         Gets a network connectivity configuration.
 
         :param network_connectivity_config_id: str
@@ -100,8 +90,6 @@
         
 
     .. py:method:: get_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccPrivateEndpointRule
-
-        Gets a private endpoint rule.
 
         Gets the private endpoint rule.
 
@@ -115,8 +103,6 @@
 
     .. py:method:: list_network_connectivity_configurations( [, page_token: Optional[str]]) -> Iterator[NetworkConnectivityConfiguration]
 
-        List network connectivity configurations.
-
         Gets an array of network connectivity configurations.
 
         :param page_token: str (optional)
@@ -126,8 +112,6 @@
         
 
     .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_token: Optional[str]]) -> Iterator[NccPrivateEndpointRule]
-
-        List private endpoint rules.
 
         Gets an array of private endpoint rules.
 
@@ -140,8 +124,6 @@
         
 
     .. py:method:: update_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str, private_endpoint_rule: UpdatePrivateEndpointRule, update_mask: str) -> NccPrivateEndpointRule
-
-        Update a private endpoint rule.
 
         Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources
         is allowed to be updated.

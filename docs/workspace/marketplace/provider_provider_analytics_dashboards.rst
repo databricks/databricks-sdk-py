@@ -8,8 +8,6 @@
 
     .. py:method:: create() -> ProviderAnalyticsDashboard
 
-        Create provider analytics dashboard.
-
         Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
         Lakeview dashboard id.
 
@@ -20,8 +18,6 @@
 
         Get provider analytics dashboard.
 
-        Get provider analytics dashboard.
-
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         
 
@@ -29,14 +25,10 @@
 
         Get latest version of provider analytics dashboard.
 
-        Get latest version of provider analytics dashboard.
-
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         
 
     .. py:method:: update(id: str [, version: Optional[int]]) -> UpdateProviderAnalyticsDashboardResponse
-
-        Update provider analytics dashboard.
 
         Update provider analytics dashboard.
 

@@ -9,8 +9,6 @@
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[PersonalizationRequest]
 
-        All personalization requests across all listings.
-
         List personalization requests to this provider. This will return all personalization requests,
         regardless of which listing they are for.
 
@@ -21,8 +19,6 @@
         
 
     .. py:method:: update(listing_id: str, request_id: str, status: PersonalizationRequestStatus [, reason: Optional[str], share: Optional[ShareInfo]]) -> UpdatePersonalizationRequestResponse
-
-        Update personalization request status.
 
         Update personalization request. This method only permits updating the status of the request.
 

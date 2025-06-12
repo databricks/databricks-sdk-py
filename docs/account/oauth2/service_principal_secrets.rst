@@ -19,8 +19,6 @@
 
     .. py:method:: create(service_principal_id: int [, lifetime: Optional[str]]) -> CreateServicePrincipalSecretResponse
 
-        Create service principal secret.
-
         Create a secret for the given service principal.
 
         :param service_principal_id: int
@@ -34,8 +32,6 @@
 
     .. py:method:: delete(service_principal_id: int, secret_id: str)
 
-        Delete service principal secret.
-
         Delete a secret from the given service principal.
 
         :param service_principal_id: int
@@ -47,8 +43,6 @@
         
 
     .. py:method:: list(service_principal_id: int [, page_token: Optional[str]]) -> Iterator[SecretInfo]
-
-        List service principal secrets.
 
         List all secrets associated with the given service principal. This operation only returns information
         about the secrets themselves and does not include the secret values.

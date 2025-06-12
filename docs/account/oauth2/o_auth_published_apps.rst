@@ -10,8 +10,6 @@
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[PublishedAppOutput]
 
-        Get all the published OAuth apps.
-
         Get all the available published OAuth apps in Databricks.
 
         :param page_size: int (optional)

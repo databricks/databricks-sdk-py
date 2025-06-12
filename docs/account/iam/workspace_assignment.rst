@@ -9,8 +9,6 @@
 
     .. py:method:: delete(workspace_id: int, principal_id: int)
 
-        Delete permissions assignment.
-
         Deletes the workspace permissions assignment in a given account and workspace for the specified
         principal.
 
@@ -23,8 +21,6 @@
         
 
     .. py:method:: get(workspace_id: int) -> WorkspacePermissions
-
-        List workspace permissions.
 
         Get an array of workspace permissions for the specified account and workspace.
 
@@ -50,8 +46,6 @@
             workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
             all = a.workspace_assignment.list(workspace_id=workspace_id)
-
-        Get permission assignments.
 
         Get the permission assignments for the specified Databricks account and Databricks workspace.
 
@@ -80,15 +74,13 @@
             
             spn_id = spn.id
             
-            workspace_id = os.environ["TEST_WORKSPACE_ID"]
+            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
-            a.workspace_assignment.update(
+            _ = a.workspace_assignment.update(
                 workspace_id=workspace_id,
                 principal_id=spn_id,
                 permissions=[iam.WorkspacePermission.USER],
             )
-
-        Create or update permissions assignment.
 
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.

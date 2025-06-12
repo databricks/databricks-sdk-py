@@ -21,21 +21,83 @@ class CancelCustomLlmOptimizationRunRequest:
 
 
 @dataclass
-class CancelResponse:
+class CancelOptimizeResponse:
     def as_dict(self) -> dict:
-        """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CancelOptimizeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the CancelResponse into a shallow dictionary of its immediate attributes."""
+        """Serializes the CancelOptimizeResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelResponse:
-        """Deserializes the CancelResponse from a dictionary."""
+    def from_dict(cls, d: Dict[str, Any]) -> CancelOptimizeResponse:
+        """Deserializes the CancelOptimizeResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class CreateCustomLlmRequest:
+    name: str
+    """Name of the custom LLM. Only alphanumeric characters and dashes allowed."""
+
+    instructions: str
+    """Instructions for the custom LLM to follow"""
+
+    agent_artifact_path: Optional[str] = None
+    """Optional: UC path for agent artifacts. If you are using a dataset that you only have read
+    permissions, please provide a destination path where you have write permissions. Please provide
+    this in catalog.schema format."""
+
+    datasets: Optional[List[Dataset]] = None
+    """Datasets used for training and evaluating the model, not for inference. Currently, only 1
+    dataset is accepted."""
+
+    guidelines: Optional[List[str]] = None
+    """Guidelines for the custom LLM to adhere to"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateCustomLlmRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.agent_artifact_path is not None:
+            body["agent_artifact_path"] = self.agent_artifact_path
+        if self.datasets:
+            body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.guidelines:
+            body["guidelines"] = [v for v in self.guidelines]
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCustomLlmRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.agent_artifact_path is not None:
+            body["agent_artifact_path"] = self.agent_artifact_path
+        if self.datasets:
+            body["datasets"] = self.datasets
+        if self.guidelines:
+            body["guidelines"] = self.guidelines
+        if self.instructions is not None:
+            body["instructions"] = self.instructions
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomLlmRequest:
+        """Deserializes the CreateCustomLlmRequest from a dictionary."""
+        return cls(
+            agent_artifact_path=d.get("agent_artifact_path", None),
+            datasets=_repeated_dict(d, "datasets", Dataset),
+            guidelines=d.get("guidelines", None),
+            instructions=d.get("instructions", None),
+            name=d.get("name", None),
+        )
 
 
 @dataclass
@@ -160,6 +222,24 @@ class Dataset:
 
 
 @dataclass
+class DeleteCustomLlmResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteCustomLlmResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteCustomLlmResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCustomLlmResponse:
+        """Deserializes the DeleteCustomLlmResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class StartCustomLlmOptimizationRunRequest:
     id: Optional[str] = None
     """The Id of the tile."""
@@ -273,13 +353,13 @@ class UpdateCustomLlmRequest:
         )
 
 
-class CustomLlmsAPI:
+class AiBuilderAPI:
     """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel(self, id: str):
+    def cancel_optimize(self, id: str):
         """Cancel a Custom LLM Optimization Run.
 
         :param id: str
@@ -294,7 +374,84 @@ class CustomLlmsAPI:
 
         self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize/cancel", headers=headers)
 
-    def create(self, id: str) -> CustomLlm:
+    def create_custom_llm(
+        self,
+        name: str,
+        instructions: str,
+        *,
+        agent_artifact_path: Optional[str] = None,
+        datasets: Optional[List[Dataset]] = None,
+        guidelines: Optional[List[str]] = None,
+    ) -> CustomLlm:
+        """Create a Custom LLM.
+
+        :param name: str
+          Name of the custom LLM. Only alphanumeric characters and dashes allowed.
+        :param instructions: str
+          Instructions for the custom LLM to follow
+        :param agent_artifact_path: str (optional)
+          Optional: UC path for agent artifacts. If you are using a dataset that you only have read
+          permissions, please provide a destination path where you have write permissions. Please provide this
+          in catalog.schema format.
+        :param datasets: List[:class:`Dataset`] (optional)
+          Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is
+          accepted.
+        :param guidelines: List[str] (optional)
+          Guidelines for the custom LLM to adhere to
+
+        :returns: :class:`CustomLlm`
+        """
+        body = {}
+        if agent_artifact_path is not None:
+            body["agent_artifact_path"] = agent_artifact_path
+        if datasets is not None:
+            body["datasets"] = [v.as_dict() for v in datasets]
+        if guidelines is not None:
+            body["guidelines"] = [v for v in guidelines]
+        if instructions is not None:
+            body["instructions"] = instructions
+        if name is not None:
+            body["name"] = name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/custom-llms", body=body, headers=headers)
+        return CustomLlm.from_dict(res)
+
+    def delete_custom_llm(self, id: str):
+        """Delete a Custom LLM.
+
+        :param id: str
+          The id of the custom llm
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/custom-lms/{id}", headers=headers)
+
+    def get_custom_llm(self, id: str) -> CustomLlm:
+        """Get a Custom LLM.
+
+        :param id: str
+          The id of the custom llm
+
+        :returns: :class:`CustomLlm`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/custom-llms/{id}", headers=headers)
+        return CustomLlm.from_dict(res)
+
+    def start_optimize(self, id: str) -> CustomLlm:
         """Start a Custom LLM Optimization Run.
 
         :param id: str
@@ -311,23 +468,7 @@ class CustomLlmsAPI:
         res = self._api.do("POST", f"/api/2.0/custom-llms/{id}/optimize", headers=headers)
         return CustomLlm.from_dict(res)
 
-    def get(self, id: str) -> CustomLlm:
-        """Get a Custom LLM.
-
-        :param id: str
-          The id of the custom llm
-
-        :returns: :class:`CustomLlm`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/custom-llms/{id}", headers=headers)
-        return CustomLlm.from_dict(res)
-
-    def update(self, id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm:
+    def update_custom_llm(self, id: str, custom_llm: CustomLlm, update_mask: str) -> CustomLlm:
         """Update a Custom LLM.
 
         :param id: str

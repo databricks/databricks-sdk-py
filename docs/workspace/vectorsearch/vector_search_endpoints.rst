@@ -8,8 +8,6 @@
 
     .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str]]) -> Wait[EndpointInfo]
 
-        Create an endpoint.
-
         Create a new endpoint.
 
         :param name: str
@@ -29,8 +27,6 @@
 
     .. py:method:: delete_endpoint(endpoint_name: str)
 
-        Delete an endpoint.
-
         Delete a vector search endpoint.
 
         :param endpoint_name: str
@@ -40,8 +36,6 @@
         
 
     .. py:method:: get_endpoint(endpoint_name: str) -> EndpointInfo
-
-        Get an endpoint.
 
         Get details for a single vector search endpoint.
 
@@ -53,8 +47,6 @@
 
     .. py:method:: list_endpoints( [, page_token: Optional[str]]) -> Iterator[EndpointInfo]
 
-        List all endpoints.
-
         List all vector search endpoints in the workspace.
 
         :param page_token: str (optional)
@@ -64,8 +56,6 @@
         
 
     .. py:method:: update_endpoint_budget_policy(endpoint_name: str, budget_policy_id: str) -> PatchEndpointBudgetPolicyResponse
-
-        Update the budget policy of an endpoint.
 
         Update the budget policy of an endpoint
 

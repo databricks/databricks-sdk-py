@@ -16,6 +16,7 @@
 
         .. code-block::
 
+            import os
             import time
             
             from databricks.sdk import AccountClient
@@ -23,15 +24,13 @@
             
             a = AccountClient()
             
-            bucket = a.storage.create(
+            storage = a.storage.create(
                 storage_configuration_name=f"sdk-{time.time_ns()}",
-                root_bucket_info=provisioning.RootBucketInfo(bucket_name=f"sdk-{time.time_ns()}"),
+                root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]),
             )
             
             # cleanup
-            a.storage.delete(storage_configuration_id=bucket.storage_configuration_id)
-
-        Create new storage configuration.
+            a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
 
         Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
         object that represents the root AWS S3 bucket in your account. Databricks stores related workspace
@@ -52,8 +51,6 @@
         
 
     .. py:method:: delete(storage_configuration_id: str)
-
-        Delete storage configuration.
 
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
@@ -85,8 +82,6 @@
             
             by_id = a.storage.get(storage_configuration_id=storage.storage_configuration_id)
 
-        Get storage configuration.
-
         Gets a Databricks storage configuration for an account, both specified by ID.
 
         :param storage_configuration_id: str
@@ -107,8 +102,6 @@
             a = AccountClient()
             
             configs = a.storage.list()
-
-        Get all storage configurations.
 
         Gets a list of all Databricks storage configurations for your account, specified by ID.
 

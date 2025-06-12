@@ -9,8 +9,6 @@
 
     .. py:method:: create(app: App [, no_compute: Optional[bool]]) -> Wait[App]
 
-        Create an app.
-
         Creates a new app.
 
         :param app: :class:`App`
@@ -27,8 +25,6 @@
 
     .. py:method:: delete(name: str) -> App
 
-        Delete an app.
-
         Deletes an app.
 
         :param name: str
@@ -38,8 +34,6 @@
         
 
     .. py:method:: deploy(app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]
-
-        Create an app deployment.
 
         Creates an app deployment for the app with the supplied name.
 
@@ -57,8 +51,6 @@
 
     .. py:method:: get(name: str) -> App
 
-        Get an app.
-
         Retrieves information for the app with the supplied name.
 
         :param name: str
@@ -68,8 +60,6 @@
         
 
     .. py:method:: get_deployment(app_name: str, deployment_id: str) -> AppDeployment
-
-        Get an app deployment.
 
         Retrieves information for the app deployment with the supplied name and deployment id.
 
@@ -83,8 +73,6 @@
 
     .. py:method:: get_permission_levels(app_name: str) -> GetAppPermissionLevelsResponse
 
-        Get app permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param app_name: str
@@ -95,8 +83,6 @@
 
     .. py:method:: get_permissions(app_name: str) -> AppPermissions
 
-        Get app permissions.
-
         Gets the permissions of an app. Apps can inherit permissions from their root object.
 
         :param app_name: str
@@ -106,8 +92,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[App]
-
-        List apps.
 
         Lists all apps in the workspace.
 
@@ -120,8 +104,6 @@
         
 
     .. py:method:: list_deployments(app_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeployment]
-
-        List app deployments.
 
         Lists all app deployments for the app with the supplied name.
 
@@ -137,8 +119,6 @@
 
     .. py:method:: set_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions
 
-        Set app permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -150,8 +130,6 @@
         
 
     .. py:method:: start(name: str) -> Wait[App]
-
-        Start an app.
 
         Start the last active deployment of the app in the workspace.
 
@@ -168,8 +146,6 @@
 
     .. py:method:: stop(name: str) -> Wait[App]
 
-        Stop an app.
-
         Stops the active deployment of the app in the workspace.
 
         :param name: str
@@ -185,8 +161,6 @@
 
     .. py:method:: update(name: str, app: App) -> App
 
-        Update an app.
-
         Updates the app with the supplied name.
 
         :param name: str
@@ -198,8 +172,6 @@
         
 
     .. py:method:: update_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions
-
-        Update app permissions.
 
         Updates the permissions on an app. Apps can inherit permissions from their root object.
 

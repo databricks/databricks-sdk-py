@@ -8,8 +8,6 @@
 
     .. py:method:: list(clean_room_name: str [, notebook_name: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CleanRoomNotebookTaskRun]
 
-        List notebook task runs.
-
         List all the historical notebook task runs in a clean room.
 
         :param clean_room_name: str

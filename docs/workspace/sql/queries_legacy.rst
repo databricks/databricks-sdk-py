@@ -15,8 +15,6 @@
 
     .. py:method:: create( [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], parent: Optional[str], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> LegacyQuery
 
-        Create a new query definition.
-
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
         making the request.
 
@@ -58,8 +56,6 @@
 
     .. py:method:: delete(query_id: str)
 
-        Delete a query.
-
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
@@ -75,8 +71,6 @@
 
     .. py:method:: get(query_id: str) -> LegacyQuery
 
-        Get a query definition.
-
         Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
@@ -91,8 +85,6 @@
         
 
     .. py:method:: list( [, order: Optional[str], page: Optional[int], page_size: Optional[int], q: Optional[str]]) -> Iterator[LegacyQuery]
-
-        Get a list of queries.
 
         Gets a list of queries. Optionally, this list can be filtered by a search term.
 
@@ -130,8 +122,6 @@
 
     .. py:method:: restore(query_id: str)
 
-        Restore a query.
-
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
@@ -146,8 +136,6 @@
         
 
     .. py:method:: update(query_id: str [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> LegacyQuery
-
-        Change a query definition.
 
         Modify this query definition.
 

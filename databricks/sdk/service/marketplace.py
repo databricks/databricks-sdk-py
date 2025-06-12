@@ -3512,9 +3512,7 @@ class ConsumerFulfillmentsAPI:
     def get(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SharedDataObject]:
-        """Get listing content metadata.
-
-        Get a high level preview of the metadata of listing installable content.
+        """Get a high level preview of the metadata of listing installable content.
 
         :param listing_id: str
         :param page_size: int (optional)
@@ -3546,9 +3544,7 @@ class ConsumerFulfillmentsAPI:
     def list(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListingFulfillment]:
-        """List all listing fulfillments.
-
-        Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.
+        """Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.
         Standard installations contain metadata about the attached share or git repo. Only one of these fields
         will be present. Personalized installations contain metadata about the attached share or git repo, as
         well as the Delta Sharing recipient type.
@@ -3597,9 +3593,7 @@ class ConsumerInstallationsAPI:
         repo_detail: Optional[RepoInstallation] = None,
         share_name: Optional[str] = None,
     ) -> Installation:
-        """Install from a listing.
-
-        Install payload associated with a Databricks Marketplace listing.
+        """Install payload associated with a Databricks Marketplace listing.
 
         :param listing_id: str
         :param accepted_consumer_terms: :class:`ConsumerTerms` (optional)
@@ -3633,9 +3627,7 @@ class ConsumerInstallationsAPI:
         return Installation.from_dict(res)
 
     def delete(self, listing_id: str, installation_id: str):
-        """Uninstall from a listing.
-
-        Uninstall an installation associated with a Databricks Marketplace listing.
+        """Uninstall an installation associated with a Databricks Marketplace listing.
 
         :param listing_id: str
         :param installation_id: str
@@ -3656,9 +3648,7 @@ class ConsumerInstallationsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[InstallationDetail]:
-        """List all installations.
-
-        List all installations across all listings.
+        """List all installations across all listings.
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -3687,9 +3677,7 @@ class ConsumerInstallationsAPI:
     def list_listing_installations(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[InstallationDetail]:
-        """List installations for a listing.
-
-        List all installations for a particular listing.
+        """List all installations for a particular listing.
 
         :param listing_id: str
         :param page_size: int (optional)
@@ -3729,9 +3717,7 @@ class ConsumerInstallationsAPI:
         *,
         rotate_token: Optional[bool] = None,
     ) -> UpdateInstallationResponse:
-        """Update an installation.
-
-        This is a update API that will update the part of the fields defined in the installation table as well
+        """This is a update API that will update the part of the fields defined in the installation table as well
         as interact with external services according to the fields not included in the installation table 1.
         the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the
         rotateToken flag is true and the tokenInfo field is empty
@@ -3770,9 +3756,7 @@ class ConsumerListingsAPI:
         self._api = api_client
 
     def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetListingsResponse:
-        """Get one batch of listings. One may specify up to 50 IDs per request.
-
-        Batch get a published listing in the Databricks Marketplace that the consumer has access to.
+        """Batch get a published listing in the Databricks Marketplace that the consumer has access to.
 
         :param ids: List[str] (optional)
 
@@ -3790,9 +3774,7 @@ class ConsumerListingsAPI:
         return BatchGetListingsResponse.from_dict(res)
 
     def get(self, id: str) -> GetListingResponse:
-        """Get listing.
-
-        Get a published listing in the Databricks Marketplace that the consumer has access to.
+        """Get a published listing in the Databricks Marketplace that the consumer has access to.
 
         :param id: str
 
@@ -3819,9 +3801,7 @@ class ConsumerListingsAPI:
         provider_ids: Optional[List[str]] = None,
         tags: Optional[List[ListingTag]] = None,
     ) -> Iterator[Listing]:
-        """List listings.
-
-        List all published listings in the Databricks Marketplace that the consumer has access to.
+        """List all published listings in the Databricks Marketplace that the consumer has access to.
 
         :param assets: List[:class:`AssetType`] (optional)
           Matches any of the following asset types
@@ -3887,9 +3867,7 @@ class ConsumerListingsAPI:
         page_token: Optional[str] = None,
         provider_ids: Optional[List[str]] = None,
     ) -> Iterator[Listing]:
-        """Search listings.
-
-        Search published listings in the Databricks Marketplace that the consumer has access to. This query
+        """Search published listings in the Databricks Marketplace that the consumer has access to. This query
         supports a variety of different search parameters and performs fuzzy matching.
 
         :param query: str
@@ -3958,9 +3936,7 @@ class ConsumerPersonalizationRequestsAPI:
         last_name: Optional[str] = None,
         recipient_type: Optional[DeltaSharingRecipientType] = None,
     ) -> CreatePersonalizationRequestResponse:
-        """Create a personalization request.
-
-        Create a personalization request for a listing.
+        """Create a personalization request for a listing.
 
         :param listing_id: str
         :param intended_use: str
@@ -4005,9 +3981,7 @@ class ConsumerPersonalizationRequestsAPI:
         return CreatePersonalizationRequestResponse.from_dict(res)
 
     def get(self, listing_id: str) -> GetPersonalizationRequestResponse:
-        """Get the personalization request for a listing.
-
-        Get the personalization request for a listing. Each consumer can make at *most* one personalization
+        """Get the personalization request for a listing. Each consumer can make at *most* one personalization
         request for a listing.
 
         :param listing_id: str
@@ -4027,9 +4001,7 @@ class ConsumerPersonalizationRequestsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PersonalizationRequest]:
-        """List all personalization requests.
-
-        List personalization requests for a consumer across all listings.
+        """List personalization requests for a consumer across all listings.
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -4065,9 +4037,7 @@ class ConsumerProvidersAPI:
         self._api = api_client
 
     def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetProvidersResponse:
-        """Get one batch of providers. One may specify up to 50 IDs per request.
-
-        Batch get a provider in the Databricks Marketplace with at least one visible listing.
+        """Batch get a provider in the Databricks Marketplace with at least one visible listing.
 
         :param ids: List[str] (optional)
 
@@ -4085,9 +4055,7 @@ class ConsumerProvidersAPI:
         return BatchGetProvidersResponse.from_dict(res)
 
     def get(self, id: str) -> GetProviderResponse:
-        """Get a provider.
-
-        Get a provider in the Databricks Marketplace with at least one visible listing.
+        """Get a provider in the Databricks Marketplace with at least one visible listing.
 
         :param id: str
 
@@ -4104,9 +4072,7 @@ class ConsumerProvidersAPI:
     def list(
         self, *, is_featured: Optional[bool] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ProviderInfo]:
-        """List providers.
-
-        List all providers in the Databricks Marketplace with at least one visible listing.
+        """List all providers in the Databricks Marketplace with at least one visible listing.
 
         :param is_featured: bool (optional)
         :param page_size: int (optional)
@@ -4143,9 +4109,7 @@ class ProviderExchangeFiltersAPI:
         self._api = api_client
 
     def create(self, filter: ExchangeFilter) -> CreateExchangeFilterResponse:
-        """Create a new exchange filter.
-
-        Add an exchange filter.
+        """Add an exchange filter.
 
         :param filter: :class:`ExchangeFilter`
 
@@ -4163,9 +4127,7 @@ class ProviderExchangeFiltersAPI:
         return CreateExchangeFilterResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete an exchange filter.
-
-        Delete an exchange filter
+        """Delete an exchange filter
 
         :param id: str
 
@@ -4181,9 +4143,7 @@ class ProviderExchangeFiltersAPI:
     def list(
         self, exchange_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeFilter]:
-        """List exchange filters.
-
-        List exchange filter
+        """List exchange filter
 
         :param exchange_id: str
         :param page_size: int (optional)
@@ -4213,9 +4173,7 @@ class ProviderExchangeFiltersAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, filter: ExchangeFilter) -> UpdateExchangeFilterResponse:
-        """Update exchange filter.
-
-        Update an exchange filter.
+        """Update an exchange filter.
 
         :param id: str
         :param filter: :class:`ExchangeFilter`
@@ -4241,9 +4199,7 @@ class ProviderExchangesAPI:
         self._api = api_client
 
     def add_listing_to_exchange(self, listing_id: str, exchange_id: str) -> AddExchangeForListingResponse:
-        """Add an exchange for listing.
-
-        Associate an exchange with a listing
+        """Associate an exchange with a listing
 
         :param listing_id: str
         :param exchange_id: str
@@ -4264,9 +4220,7 @@ class ProviderExchangesAPI:
         return AddExchangeForListingResponse.from_dict(res)
 
     def create(self, exchange: Exchange) -> CreateExchangeResponse:
-        """Create an exchange.
-
-        Create an exchange
+        """Create an exchange
 
         :param exchange: :class:`Exchange`
 
@@ -4284,9 +4238,7 @@ class ProviderExchangesAPI:
         return CreateExchangeResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete an exchange.
-
-        This removes a listing from marketplace.
+        """This removes a listing from marketplace.
 
         :param id: str
 
@@ -4300,9 +4252,7 @@ class ProviderExchangesAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
 
     def delete_listing_from_exchange(self, id: str):
-        """Remove an exchange for listing.
-
-        Disassociate an exchange with a listing
+        """Disassociate an exchange with a listing
 
         :param id: str
 
@@ -4318,8 +4268,6 @@ class ProviderExchangesAPI:
     def get(self, id: str) -> GetExchangeResponse:
         """Get an exchange.
 
-        Get an exchange.
-
         :param id: str
 
         :returns: :class:`GetExchangeResponse`
@@ -4333,9 +4281,7 @@ class ProviderExchangesAPI:
         return GetExchangeResponse.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Exchange]:
-        """List exchanges.
-
-        List exchanges visible to provider
+        """List exchanges visible to provider
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -4364,9 +4310,7 @@ class ProviderExchangesAPI:
     def list_exchanges_for_listing(
         self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeListing]:
-        """List exchanges for listing.
-
-        List exchanges associated with a listing
+        """List exchanges associated with a listing
 
         :param listing_id: str
         :param page_size: int (optional)
@@ -4400,9 +4344,7 @@ class ProviderExchangesAPI:
     def list_listings_for_exchange(
         self, exchange_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeListing]:
-        """List listings for exchange.
-
-        List listings associated with an exchange
+        """List listings associated with an exchange
 
         :param exchange_id: str
         :param page_size: int (optional)
@@ -4434,9 +4376,7 @@ class ProviderExchangesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, exchange: Exchange) -> UpdateExchangeResponse:
-        """Update exchange.
-
-        Update an exchange
+        """Update an exchange
 
         :param id: str
         :param exchange: :class:`Exchange`
@@ -4469,9 +4409,7 @@ class ProviderFilesAPI:
         *,
         display_name: Optional[str] = None,
     ) -> CreateFileResponse:
-        """Create a file.
-
-        Create a file. Currently, only provider icons and attached notebooks are supported.
+        """Create a file. Currently, only provider icons and attached notebooks are supported.
 
         :param file_parent: :class:`FileParent`
         :param marketplace_file_type: :class:`MarketplaceFileType`
@@ -4498,9 +4436,7 @@ class ProviderFilesAPI:
         return CreateFileResponse.from_dict(res)
 
     def delete(self, file_id: str):
-        """Delete a file.
-
-        Delete a file
+        """Delete a file
 
         :param file_id: str
 
@@ -4514,9 +4450,7 @@ class ProviderFilesAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
 
     def get(self, file_id: str) -> GetFileResponse:
-        """Get a file.
-
-        Get a file
+        """Get a file
 
         :param file_id: str
 
@@ -4533,9 +4467,7 @@ class ProviderFilesAPI:
     def list(
         self, file_parent: FileParent, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FileInfo]:
-        """List files.
-
-        List files attached to a parent entity.
+        """List files attached to a parent entity.
 
         :param file_parent: :class:`FileParent`
         :param page_size: int (optional)
@@ -4573,9 +4505,7 @@ class ProviderListingsAPI:
         self._api = api_client
 
     def create(self, listing: Listing) -> CreateListingResponse:
-        """Create a listing.
-
-        Create a new listing
+        """Create a new listing
 
         :param listing: :class:`Listing`
 
@@ -4593,9 +4523,7 @@ class ProviderListingsAPI:
         return CreateListingResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a listing.
-
-        Delete a listing
+        """Delete a listing
 
         :param id: str
 
@@ -4609,9 +4537,7 @@ class ProviderListingsAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
 
     def get(self, id: str) -> GetListingResponse:
-        """Get a listing.
-
-        Get a listing
+        """Get a listing
 
         :param id: str
 
@@ -4626,9 +4552,7 @@ class ProviderListingsAPI:
         return GetListingResponse.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Listing]:
-        """List listings.
-
-        List listings owned by this provider
+        """List listings owned by this provider
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -4655,9 +4579,7 @@ class ProviderListingsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, listing: Listing) -> UpdateListingResponse:
-        """Update listing.
-
-        Update a listing
+        """Update a listing
 
         :param id: str
         :param listing: :class:`Listing`
@@ -4686,9 +4608,7 @@ class ProviderPersonalizationRequestsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PersonalizationRequest]:
-        """All personalization requests across all listings.
-
-        List personalization requests to this provider. This will return all personalization requests,
+        """List personalization requests to this provider. This will return all personalization requests,
         regardless of which listing they are for.
 
         :param page_size: int (optional)
@@ -4726,9 +4646,7 @@ class ProviderPersonalizationRequestsAPI:
         reason: Optional[str] = None,
         share: Optional[ShareInfo] = None,
     ) -> UpdatePersonalizationRequestResponse:
-        """Update personalization request status.
-
-        Update personalization request. This method only permits updating the status of the request.
+        """Update personalization request. This method only permits updating the status of the request.
 
         :param listing_id: str
         :param request_id: str
@@ -4766,9 +4684,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         self._api = api_client
 
     def create(self) -> ProviderAnalyticsDashboard:
-        """Create provider analytics dashboard.
-
-        Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
+        """Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
         Lakeview dashboard id.
 
         :returns: :class:`ProviderAnalyticsDashboard`
@@ -4784,8 +4700,6 @@ class ProviderProviderAnalyticsDashboardsAPI:
     def get(self) -> ListProviderAnalyticsDashboardResponse:
         """Get provider analytics dashboard.
 
-        Get provider analytics dashboard.
-
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         """
 
@@ -4799,8 +4713,6 @@ class ProviderProviderAnalyticsDashboardsAPI:
     def get_latest_version(self) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Get latest version of provider analytics dashboard.
 
-        Get latest version of provider analytics dashboard.
-
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         """
 
@@ -4813,8 +4725,6 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
     def update(self, id: str, *, version: Optional[int] = None) -> UpdateProviderAnalyticsDashboardResponse:
         """Update provider analytics dashboard.
-
-        Update provider analytics dashboard.
 
         :param id: str
           id is immutable property and can't be updated.
@@ -4843,9 +4753,7 @@ class ProviderProvidersAPI:
         self._api = api_client
 
     def create(self, provider: ProviderInfo) -> CreateProviderResponse:
-        """Create a provider.
-
-        Create a provider
+        """Create a provider
 
         :param provider: :class:`ProviderInfo`
 
@@ -4863,9 +4771,7 @@ class ProviderProvidersAPI:
         return CreateProviderResponse.from_dict(res)
 
     def delete(self, id: str):
-        """Delete provider.
-
-        Delete provider
+        """Delete provider
 
         :param id: str
 
@@ -4879,9 +4785,7 @@ class ProviderProvidersAPI:
         self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
 
     def get(self, id: str) -> GetProviderResponse:
-        """Get provider.
-
-        Get provider profile
+        """Get provider profile
 
         :param id: str
 
@@ -4896,9 +4800,7 @@ class ProviderProvidersAPI:
         return GetProviderResponse.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ProviderInfo]:
-        """List providers.
-
-        List provider profiles for account.
+        """List provider profiles for account.
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -4925,9 +4827,7 @@ class ProviderProvidersAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, id: str, provider: ProviderInfo) -> UpdateProviderResponse:
-        """Update provider.
-
-        Update provider profile
+        """Update provider profile
 
         :param id: str
         :param provider: :class:`ProviderInfo`

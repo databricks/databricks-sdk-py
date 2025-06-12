@@ -2962,9 +2962,7 @@ class ProvidersAPI:
         comment: Optional[str] = None,
         recipient_profile_str: Optional[str] = None,
     ) -> ProviderInfo:
-        """Create an auth provider.
-
-        Creates a new authentication provider minimally based on a name and authentication type. The caller
+        """Creates a new authentication provider minimally based on a name and authentication type. The caller
         must be an admin on the metastore.
 
         :param name: str
@@ -2997,9 +2995,7 @@ class ProvidersAPI:
         return ProviderInfo.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a provider.
-
-        Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
+        """Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
         provider.
 
         :param name: str
@@ -3013,9 +3009,7 @@ class ProvidersAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
     def get(self, name: str) -> ProviderInfo:
-        """Get a provider.
-
-        Gets a specific authentication provider. The caller must supply the name of the provider, and must
+        """Gets a specific authentication provider. The caller must supply the name of the provider, and must
         either be a metastore admin or the owner of the provider.
 
         :param name: str
@@ -3038,9 +3032,7 @@ class ProvidersAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ProviderInfo]:
-        """List providers.
-
-        Gets an array of available authentication providers. The caller must either be a metastore admin or
+        """Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
         is no guarantee of a specific ordering of the elements in the array.
 
@@ -3093,9 +3085,7 @@ class ProvidersAPI:
         table_max_results: Optional[int] = None,
         volume_max_results: Optional[int] = None,
     ) -> ListProviderShareAssetsResponse:
-        """List assets by provider share.
-
-        Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
+        """Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
         share.
 
         :param provider_name: str
@@ -3135,9 +3125,7 @@ class ProvidersAPI:
     def list_shares(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ProviderShare]:
-        """List shares by Provider.
-
-        Gets an array of a specified provider's shares within the metastore where:
+        """Gets an array of a specified provider's shares within the metastore where:
 
         * the caller is a metastore admin, or * the caller is the owner.
 
@@ -3186,9 +3174,7 @@ class ProvidersAPI:
         owner: Optional[str] = None,
         recipient_profile_str: Optional[str] = None,
     ) -> ProviderInfo:
-        """Update a provider.
-
-        Updates the information for an authentication provider, if the caller is a metastore admin or is the
+        """Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
         admin and the owner of the provider.
 
@@ -3237,9 +3223,7 @@ class RecipientActivationAPI:
         self._api = api_client
 
     def get_activation_url_info(self, activation_url: str):
-        """Get a share activation URL.
-
-        Gets an activation URL for a share.
+        """Gets an activation URL for a share.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
@@ -3256,9 +3240,7 @@ class RecipientActivationAPI:
         )
 
     def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
-        """Get an access token.
-
-        Retrieve access token with an activation url. This is a public API without any authentication.
+        """Retrieve access token with an activation url. This is a public API without any authentication.
 
         :param activation_url: str
           The one time activation url. It also accepts activation token.
@@ -3301,9 +3283,7 @@ class RecipientFederationPoliciesAPI:
         self._api = api_client
 
     def create(self, recipient_name: str, policy: FederationPolicy) -> FederationPolicy:
-        """Create recipient federation policy.
-
-        Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
+        """Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
         non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from
         Databricks to non-Databricks clients, you can define a federation policy to authenticate
         non-Databricks recipients. The federation policy validates OIDC claims in federated tokens and is
@@ -3343,9 +3323,7 @@ class RecipientFederationPoliciesAPI:
         return FederationPolicy.from_dict(res)
 
     def delete(self, recipient_name: str, name: str):
-        """Delete recipient federation policy.
-
-        Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner
+        """Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner
         of the recipient.
 
         :param recipient_name: str
@@ -3365,9 +3343,7 @@ class RecipientFederationPoliciesAPI:
         )
 
     def get_federation_policy(self, recipient_name: str, name: str) -> FederationPolicy:
-        """Get recipient federation policy.
-
-        Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
+        """Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
         to non-Databricks recipients. The caller must have read access to the recipient.
 
         :param recipient_name: str
@@ -3390,9 +3366,7 @@ class RecipientFederationPoliciesAPI:
     def list(
         self, recipient_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FederationPolicy]:
-        """List recipient federation policies.
-
-        Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
+        """Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
         non-Databricks recipients. The caller must have read access to the recipient.
 
         :param recipient_name: str
@@ -3429,9 +3403,7 @@ class RecipientFederationPoliciesAPI:
     def update(
         self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
     ) -> FederationPolicy:
-        """Update recipient federation policy.
-
-        Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
+        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
         recipient.
 
         :param recipient_name: str
@@ -3498,9 +3470,7 @@ class RecipientsAPI:
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
         sharing_code: Optional[str] = None,
     ) -> RecipientInfo:
-        """Create a share recipient.
-
-        Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
+        """Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
         be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.
 
         :param name: str
@@ -3557,9 +3527,7 @@ class RecipientsAPI:
         return RecipientInfo.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a share recipient.
-
-        Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
+        """Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
 
         :param name: str
           Name of the recipient.
@@ -3572,9 +3540,7 @@ class RecipientsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
-        """Get a share recipient.
-
-        Gets a share recipient from the metastore if:
+        """Gets a share recipient from the metastore if:
 
         * the caller is the owner of the share recipient, or: * is a metastore admin
 
@@ -3598,9 +3564,7 @@ class RecipientsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[RecipientInfo]:
-        """List share recipients.
-
-        Gets an array of all share recipients within the current metastore where:
+        """Gets an array of all share recipients within the current metastore where:
 
         * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
         ordering of the elements in the array.
@@ -3645,9 +3609,7 @@ class RecipientsAPI:
             query["page_token"] = json["next_page_token"]
 
     def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
-        """Rotate a token.
-
-        Refreshes the specified recipient's delta sharing authentication token with the provided token info.
+        """Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
 
         :param name: str
@@ -3673,9 +3635,7 @@ class RecipientsAPI:
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetRecipientSharePermissionsResponse:
-        """Get recipient share permissions.
-
-        Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
+        """Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
         owner of the Recipient.
 
         :param name: str
@@ -3719,9 +3679,7 @@ class RecipientsAPI:
         owner: Optional[str] = None,
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
     ) -> RecipientInfo:
-        """Update a share recipient.
-
-        Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
+        """Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
         owner of the recipient.
 
@@ -3776,9 +3734,7 @@ class SharesAPI:
         self._api = api_client
 
     def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
-        """Create a share.
-
-        Creates a new share for data objects. Data objects can be added after creation with **update**. The
+        """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
         :param name: str
@@ -3806,9 +3762,7 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a share.
-
-        Deletes a data object share from the metastore. The caller must be an owner of the share.
+        """Deletes a data object share from the metastore. The caller must be an owner of the share.
 
         :param name: str
           The name of the share.
@@ -3821,9 +3775,7 @@ class SharesAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
     def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
-        """Get a share.
-
-        Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
+        """Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
         share.
 
         :param name: str
@@ -3845,9 +3797,7 @@ class SharesAPI:
         return ShareInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ShareInfo]:
-        """List shares.
-
-        Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
+        """Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
@@ -3887,9 +3837,7 @@ class SharesAPI:
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetSharePermissionsResponse:
-        """Get permissions.
-
-        Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
+        """Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
         owner of the share.
 
         :param name: str
@@ -3930,15 +3878,13 @@ class SharesAPI:
         storage_root: Optional[str] = None,
         updates: Optional[List[SharedDataObjectUpdate]] = None,
     ) -> ShareInfo:
-        """Update a share.
-
-        Updates the share with the changes and data objects in the request. The caller must be the owner of
+        """Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
         When the caller is a metastore admin, only the __owner__ field can be updated.
 
-        In the case that the share name is changed, **updateShare** requires that the caller is both the share
-        owner and a metastore admin.
+        In the case the share name is changed, **updateShare** requires that the caller is the owner of the
+        share and has the CREATE_SHARE privilege.
 
         If there are notebook files in the share, the __storage_root__ field cannot be updated.
 
@@ -3989,9 +3935,7 @@ class SharesAPI:
         changes: Optional[List[PermissionsChange]] = None,
         omit_permissions_list: Optional[bool] = None,
     ) -> UpdateSharePermissionsResponse:
-        """Update permissions.
-
-        Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
+        """Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
 
         For new recipient grants, the user must also be the recipient owner or metastore admin. recipient

@@ -8,8 +8,6 @@
 
     .. py:method:: get_published_dashboard_token_info(dashboard_id: str [, external_value: Optional[str], external_viewer_id: Optional[str]]) -> GetPublishedDashboardTokenInfoResponse
 
-        Read an information of a published dashboard to mint an OAuth token.
-
         Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
         `authorization_details` can be enriched to apply additional restriction.
 

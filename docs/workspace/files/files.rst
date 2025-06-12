@@ -26,8 +26,6 @@
 
     .. py:method:: create_directory(directory_path: str)
 
-        Create a directory.
-
         Creates an empty directory. If necessary, also creates any parent directories of the new, empty
         directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
@@ -40,8 +38,6 @@
 
     .. py:method:: delete(file_path: str)
 
-        Delete a file.
-
         Deletes a file. If the request is successful, there is no response body.
 
         :param file_path: str
@@ -51,8 +47,6 @@
         
 
     .. py:method:: delete_directory(directory_path: str)
-
-        Delete a directory.
 
         Deletes an empty directory.
 
@@ -67,8 +61,6 @@
 
     .. py:method:: download(file_path: str) -> DownloadResponse
 
-        Download a file.
-
         Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
         a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
 
@@ -79,8 +71,6 @@
         
 
     .. py:method:: get_directory_metadata(directory_path: str)
-
-        Get directory metadata.
 
         Get the metadata of a directory. The response HTTP headers contain the metadata. There is no response
         body.
@@ -98,8 +88,6 @@
 
     .. py:method:: get_metadata(file_path: str) -> GetMetadataResponse
 
-        Get file metadata.
-
         Get the metadata of a file. The response HTTP headers contain the metadata. There is no response body.
 
         :param file_path: str
@@ -109,8 +97,6 @@
         
 
     .. py:method:: list_directory_contents(directory_path: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectoryEntry]
-
-        List directory contents.
 
         Returns the contents of a directory. If there is no directory at the specified path, the API returns a
         HTTP 404 error.
@@ -139,8 +125,6 @@
         
 
     .. py:method:: upload(file_path: str, contents: BinaryIO [, overwrite: Optional[bool]])
-
-        Upload a file.
 
         Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
         octet stream); do not encode or otherwise modify the bytes before sending. The contents of the

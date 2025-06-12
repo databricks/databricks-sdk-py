@@ -39,8 +39,6 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Get catalog workspace bindings.
-
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
@@ -51,8 +49,6 @@
         
 
     .. py:method:: get_bindings(securable_type: str, securable_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceBinding]
-
-        Get securable workspace bindings.
 
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
@@ -96,8 +92,6 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Update catalog workspace bindings.
-
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
@@ -112,8 +106,6 @@
         
 
     .. py:method:: update_bindings(securable_type: str, securable_name: str [, add: Optional[List[WorkspaceBinding]], remove: Optional[List[WorkspaceBinding]]]) -> UpdateWorkspaceBindingsResponse
-
-        Update securable workspace bindings.
 
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.

@@ -8,8 +8,6 @@
 
     .. py:method:: create(listing_id: str [, accepted_consumer_terms: Optional[ConsumerTerms], catalog_name: Optional[str], recipient_type: Optional[DeltaSharingRecipientType], repo_detail: Optional[RepoInstallation], share_name: Optional[str]]) -> Installation
 
-        Install from a listing.
-
         Install payload associated with a Databricks Marketplace listing.
 
         :param listing_id: str
@@ -25,8 +23,6 @@
 
     .. py:method:: delete(listing_id: str, installation_id: str)
 
-        Uninstall from a listing.
-
         Uninstall an installation associated with a Databricks Marketplace listing.
 
         :param listing_id: str
@@ -36,8 +32,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[InstallationDetail]
-
-        List all installations.
 
         List all installations across all listings.
 
@@ -49,8 +43,6 @@
 
     .. py:method:: list_listing_installations(listing_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[InstallationDetail]
 
-        List installations for a listing.
-
         List all installations for a particular listing.
 
         :param listing_id: str
@@ -61,8 +53,6 @@
         
 
     .. py:method:: update(listing_id: str, installation_id: str, installation: InstallationDetail [, rotate_token: Optional[bool]]) -> UpdateInstallationResponse
-
-        Update an installation.
 
         This is a update API that will update the part of the fields defined in the installation table as well
         as interact with external services according to the fields not included in the installation table 1.

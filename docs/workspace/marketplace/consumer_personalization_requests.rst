@@ -8,8 +8,6 @@
 
     .. py:method:: create(listing_id: str, intended_use: str, accepted_consumer_terms: ConsumerTerms [, comment: Optional[str], company: Optional[str], first_name: Optional[str], is_from_lighthouse: Optional[bool], last_name: Optional[str], recipient_type: Optional[DeltaSharingRecipientType]]) -> CreatePersonalizationRequestResponse
 
-        Create a personalization request.
-
         Create a personalization request for a listing.
 
         :param listing_id: str
@@ -27,8 +25,6 @@
 
     .. py:method:: get(listing_id: str) -> GetPersonalizationRequestResponse
 
-        Get the personalization request for a listing.
-
         Get the personalization request for a listing. Each consumer can make at *most* one personalization
         request for a listing.
 
@@ -38,8 +34,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[PersonalizationRequest]
-
-        List all personalization requests.
 
         List personalization requests for a consumer across all listings.
 

@@ -10,8 +10,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDashboardEmailSubscriptionsResponse
 
-        Delete the Dashboard Email Subscriptions setting.
-
         Reverts the Dashboard Email Subscriptions setting to its default value.
 
         :param etag: str (optional)
@@ -26,8 +24,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DashboardEmailSubscriptions
 
-        Get the Dashboard Email Subscriptions setting.
-
         Gets the Dashboard Email Subscriptions setting.
 
         :param etag: str (optional)
@@ -41,8 +37,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DashboardEmailSubscriptions, field_mask: str) -> DashboardEmailSubscriptions
-
-        Update the Dashboard Email Subscriptions setting.
 
         Updates the Dashboard Email Subscriptions setting.
 

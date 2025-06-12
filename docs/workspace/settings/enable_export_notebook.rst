@@ -9,16 +9,12 @@
 
     .. py:method:: get_enable_export_notebook() -> EnableExportNotebook
 
-        Get the Notebook and File exporting setting.
-
         Gets the Notebook and File exporting setting.
 
         :returns: :class:`EnableExportNotebook`
         
 
     .. py:method:: patch_enable_export_notebook(allow_missing: bool, setting: EnableExportNotebook, field_mask: str) -> EnableExportNotebook
-
-        Update the Notebook and File exporting setting.
 
         Updates the Notebook and File exporting setting. The model follows eventual consistency, which means
         the get after the update operation might receive stale values for some time.

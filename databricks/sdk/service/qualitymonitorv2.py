@@ -163,9 +163,7 @@ class QualityMonitorV2API:
         self._api = api_client
 
     def create_quality_monitor(self, quality_monitor: QualityMonitor) -> QualityMonitor:
-        """Create a quality monitor.
-
-        Create a quality monitor on UC object
+        """Create a quality monitor on UC object
 
         :param quality_monitor: :class:`QualityMonitor`
 
@@ -181,9 +179,7 @@ class QualityMonitorV2API:
         return QualityMonitor.from_dict(res)
 
     def delete_quality_monitor(self, object_type: str, object_id: str):
-        """Delete a quality monitor.
-
-        Delete a quality monitor on UC object
+        """Delete a quality monitor on UC object
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.
@@ -200,9 +196,7 @@ class QualityMonitorV2API:
         self._api.do("DELETE", f"/api/2.0/quality-monitors/{object_type}/{object_id}", headers=headers)
 
     def get_quality_monitor(self, object_type: str, object_id: str) -> QualityMonitor:
-        """Read a quality monitor.
-
-        Read a quality monitor on UC object
+        """Read a quality monitor on UC object
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.
@@ -222,9 +216,7 @@ class QualityMonitorV2API:
     def list_quality_monitor(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[QualityMonitor]:
-        """List quality monitors.
-
-        (Unimplemented) List quality monitors
+        """(Unimplemented) List quality monitors
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -253,9 +245,7 @@ class QualityMonitorV2API:
     def update_quality_monitor(
         self, object_type: str, object_id: str, quality_monitor: QualityMonitor
     ) -> QualityMonitor:
-        """Update a quality monitor.
-
-        (Unimplemented) Update a quality monitor on UC object
+        """(Unimplemented) Update a quality monitor on UC object
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.

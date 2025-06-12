@@ -74,11 +74,15 @@ class DatabaseCatalog:
 
 @dataclass
 class DatabaseCredential:
+    expiration_time: Optional[str] = None
+
     token: Optional[str] = None
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseCredential into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
         if self.token is not None:
             body["token"] = self.token
         return body
@@ -86,6 +90,8 @@ class DatabaseCredential:
     def as_shallow_dict(self) -> dict:
         """Serializes the DatabaseCredential into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
         if self.token is not None:
             body["token"] = self.token
         return body
@@ -93,7 +99,7 @@ class DatabaseCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseCredential:
         """Deserializes the DatabaseCredential from a dictionary."""
-        return cls(token=d.get("token", None))
+        return cls(expiration_time=d.get("expiration_time", None), token=d.get("token", None))
 
 
 @dataclass
@@ -112,6 +118,12 @@ class DatabaseInstance:
 
     creator: Optional[str] = None
     """The email of the creator of the instance."""
+
+    effective_stopped: Optional[bool] = None
+    """xref AIP-129. `stopped` is owned by the client, while `effective_stopped` is owned by the
+    server. `stopped` will only be set in Create/Update response messages if and only if the user
+    provides the field via the request. `effective_stopped` on the other hand will always bet set in
+    all response messages (Create/Update/Get/List)."""
 
     pg_version: Optional[str] = None
     """The version of Postgres running on the instance."""
@@ -137,6 +149,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_stopped is not None:
+            body["effective_stopped"] = self.effective_stopped
         if self.name is not None:
             body["name"] = self.name
         if self.pg_version is not None:
@@ -160,6 +174,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_stopped is not None:
+            body["effective_stopped"] = self.effective_stopped
         if self.name is not None:
             body["name"] = self.name
         if self.pg_version is not None:
@@ -181,6 +197,7 @@ class DatabaseInstance:
             capacity=d.get("capacity", None),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
+            effective_stopped=d.get("effective_stopped", None),
             name=d.get("name", None),
             pg_version=d.get("pg_version", None),
             read_write_dns=d.get("read_write_dns", None),
@@ -227,9 +244,6 @@ class DatabaseTable:
     postgres database. Note that this has implications for the `create_database_objects_is_missing`
     field in `spec`."""
 
-    table_serving_url: Optional[str] = None
-    """Data serving REST API URL for this table"""
-
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -239,8 +253,6 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -252,8 +264,6 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
         return body
 
     @classmethod
@@ -263,7 +273,6 @@ class DatabaseTable:
             database_instance_name=d.get("database_instance_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
-            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -487,9 +496,6 @@ class SyncedDatabaseTable:
     spec: Optional[SyncedTableSpec] = None
     """Specification of a synced database table."""
 
-    table_serving_url: Optional[str] = None
-    """Data serving REST API URL for this table"""
-
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
     state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
@@ -508,8 +514,6 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec.as_dict()
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -527,8 +531,6 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec
-        if self.table_serving_url is not None:
-            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -542,7 +544,6 @@ class SyncedDatabaseTable:
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
-            table_serving_url=d.get("table_serving_url", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 
@@ -744,11 +745,14 @@ class SyncedTableSpec:
     """If true, the synced table's logical database and schema resources in PG will be created if they
     do not already exist."""
 
-    new_pipeline_spec: Optional[NewPipelineSpec] = None
-    """Spec of new pipeline. Should be empty if pipeline_id is set"""
+    existing_pipeline_id: Optional[str] = None
+    """User-specified ID of a pre-existing pipeline to bin pack. This field is optional, and should be
+    empty if new_pipeline_spec is set. This field will only be set by the server in response
+    messages if it is specified in the request. The SyncedTableStatus message will always contain
+    the effective pipeline ID (either client provided or server generated), however."""
 
-    pipeline_id: Optional[str] = None
-    """ID of the associated pipeline. Should be empty if new_pipeline_spec is set"""
+    new_pipeline_spec: Optional[NewPipelineSpec] = None
+    """Spec of new pipeline. Should be empty if pipeline_id / existing_pipeline_id is set"""
 
     primary_key_columns: Optional[List[str]] = None
     """Primary Key columns to be used for data insert/update in the destination."""
@@ -767,10 +771,10 @@ class SyncedTableSpec:
         body = {}
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.existing_pipeline_id is not None:
+            body["existing_pipeline_id"] = self.existing_pipeline_id
         if self.new_pipeline_spec:
             body["new_pipeline_spec"] = self.new_pipeline_spec.as_dict()
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
         if self.primary_key_columns:
             body["primary_key_columns"] = [v for v in self.primary_key_columns]
         if self.scheduling_policy is not None:
@@ -786,10 +790,10 @@ class SyncedTableSpec:
         body = {}
         if self.create_database_objects_if_missing is not None:
             body["create_database_objects_if_missing"] = self.create_database_objects_if_missing
+        if self.existing_pipeline_id is not None:
+            body["existing_pipeline_id"] = self.existing_pipeline_id
         if self.new_pipeline_spec:
             body["new_pipeline_spec"] = self.new_pipeline_spec
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
         if self.primary_key_columns:
             body["primary_key_columns"] = self.primary_key_columns
         if self.scheduling_policy is not None:
@@ -805,8 +809,8 @@ class SyncedTableSpec:
         """Deserializes the SyncedTableSpec from a dictionary."""
         return cls(
             create_database_objects_if_missing=d.get("create_database_objects_if_missing", None),
+            existing_pipeline_id=d.get("existing_pipeline_id", None),
             new_pipeline_spec=_from_dict(d, "new_pipeline_spec", NewPipelineSpec),
-            pipeline_id=d.get("pipeline_id", None),
             primary_key_columns=d.get("primary_key_columns", None),
             scheduling_policy=_enum(d, "scheduling_policy", SyncedTableSchedulingPolicy),
             source_table_full_name=d.get("source_table_full_name", None),
@@ -848,6 +852,10 @@ class SyncedTableStatus:
     message: Optional[str] = None
     """A text description of the current state of the synced table."""
 
+    pipeline_id: Optional[str] = None
+    """ID of the associated pipeline. The pipeline ID may have been provided by the client (in the case
+    of bin packing), or generated by the server (when creating a new pipeline)."""
+
     provisioning_status: Optional[SyncedTableProvisioningStatus] = None
     """Detailed status of a synced table. Shown if the synced table is in the
     PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
@@ -867,6 +875,8 @@ class SyncedTableStatus:
             body["failed_status"] = self.failed_status.as_dict()
         if self.message is not None:
             body["message"] = self.message
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
         if self.provisioning_status:
             body["provisioning_status"] = self.provisioning_status.as_dict()
         if self.triggered_update_status:
@@ -884,6 +894,8 @@ class SyncedTableStatus:
             body["failed_status"] = self.failed_status
         if self.message is not None:
             body["message"] = self.message
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
         if self.provisioning_status:
             body["provisioning_status"] = self.provisioning_status
         if self.triggered_update_status:
@@ -898,6 +910,7 @@ class SyncedTableStatus:
             detailed_state=_enum(d, "detailed_state", SyncedTableState),
             failed_status=_from_dict(d, "failed_status", SyncedTableFailedStatus),
             message=d.get("message", None),
+            pipeline_id=d.get("pipeline_id", None),
             provisioning_status=_from_dict(d, "provisioning_status", SyncedTableProvisioningStatus),
             triggered_update_status=_from_dict(d, "triggered_update_status", SyncedTableTriggeredUpdateStatus),
         )
@@ -1047,10 +1060,12 @@ class DatabaseAPI:
           By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
-          If false, the database instance is soft deleted. Soft deleted instances behave as if they are
-          deleted, and cannot be used for CRUD operations nor connected to. However they can be undeleted by
-          calling the undelete API for a limited time. If true, the database instance is hard deleted and
-          cannot be undeleted.
+          Note purge=false is in development. If false, the database instance is soft deleted (implementation
+          pending). Soft deleted instances behave as if they are deleted, and cannot be used for CRUD
+          operations nor connected to. However they can be undeleted by calling the undelete API for a limited
+          time (implementation pending). If true, the database instance is hard deleted and cannot be
+          undeleted. For the time being, setting this value to true is required to delete an instance (soft
+          delete is not yet supported).
 
 
         """

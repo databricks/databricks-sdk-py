@@ -1222,9 +1222,7 @@ class CleanRoomAssetsAPI:
         self._api = api_client
 
     def create(self, clean_room_name: str, asset: CleanRoomAsset) -> CleanRoomAsset:
-        """Create an asset.
-
-        Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
+        """Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
         asset that is added through this method, the clean room owner must also have enough privilege on the
         asset to consume it. The privilege must be maintained indefinitely for the clean room to be able to
         access the asset. Typically, you should use a group as the clean room owner.
@@ -1246,9 +1244,7 @@ class CleanRoomAssetsAPI:
         return CleanRoomAsset.from_dict(res)
 
     def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str):
-        """Delete an asset.
-
-        Delete a clean room asset - unshare/remove the asset from the clean room
+        """Delete a clean room asset - unshare/remove the asset from the clean room
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1269,9 +1265,7 @@ class CleanRoomAssetsAPI:
         )
 
     def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str) -> CleanRoomAsset:
-        """Get an asset.
-
-        Get the details of a clean room asset by its type and full name.
+        """Get the details of a clean room asset by its type and full name.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1322,9 +1316,7 @@ class CleanRoomAssetsAPI:
     def update(
         self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, asset: CleanRoomAsset
     ) -> CleanRoomAsset:
-        """Update an asset.
-
-        Update a clean room asset. For example, updating the content of a notebook; changing the shared
+        """Update a clean room asset. For example, updating the content of a notebook; changing the shared
         partitions of a table; etc.
 
         :param clean_room_name: str
@@ -1373,9 +1365,7 @@ class CleanRoomTaskRunsAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[CleanRoomNotebookTaskRun]:
-        """List notebook task runs.
-
-        List all the historical notebook task runs in a clean room.
+        """List all the historical notebook task runs in a clean room.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1419,9 +1409,7 @@ class CleanRoomsAPI:
         self._api = api_client
 
     def create(self, clean_room: CleanRoom) -> CleanRoom:
-        """Create a clean room.
-
-        Create a new clean room with the specified collaborators. This method is asynchronous; the returned
+        """Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
         :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
         state, with only name, owner, comment, created_at and status populated. The clean room will be usable
@@ -1445,9 +1433,7 @@ class CleanRoomsAPI:
     def create_output_catalog(
         self, clean_room_name: str, output_catalog: CleanRoomOutputCatalog
     ) -> CreateCleanRoomOutputCatalogResponse:
-        """Create an output catalog.
-
-        Create the output catalog of the clean room.
+        """Create the output catalog of the clean room.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1467,9 +1453,7 @@ class CleanRoomsAPI:
         return CreateCleanRoomOutputCatalogResponse.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a clean room.
-
-        Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
+        """Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
         collaborators have not deleted the clean room, they will still have the clean room in their metastore,
         but it will be in a DELETED state and no operations other than deletion can be performed on it.
 
@@ -1486,9 +1470,7 @@ class CleanRoomsAPI:
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
 
     def get(self, name: str) -> CleanRoom:
-        """Get a clean room.
-
-        Get the details of a clean room given its name.
+        """Get the details of a clean room given its name.
 
         :param name: str
 
@@ -1503,9 +1485,7 @@ class CleanRoomsAPI:
         return CleanRoom.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[CleanRoom]:
-        """List clean rooms.
-
-        Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
+        """Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
         returned.
 
         :param page_size: int (optional)
@@ -1535,9 +1515,7 @@ class CleanRoomsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, name: str, *, clean_room: Optional[CleanRoom] = None) -> CleanRoom:
-        """Update a clean room.
-
-        Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
+        """Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.
 
         When the caller is a metastore admin, only the __owner__ field can be updated.

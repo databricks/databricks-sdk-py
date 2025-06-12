@@ -2326,9 +2326,7 @@ class CredentialsAPI:
         self._api = api_client
 
     def create(self, credentials_name: str, aws_credentials: CreateCredentialAwsCredentials) -> Credential:
-        """Create credential configuration.
-
-        Creates a Databricks credential configuration that represents cloud cross-account credentials for a
+        """Creates a Databricks credential configuration that represents cloud cross-account credentials for a
         specified account. Databricks uses this to set up network infrastructure properly to host Databricks
         clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account
         ID) in the returned credential object, and configure the required access policy.
@@ -2361,9 +2359,7 @@ class CredentialsAPI:
         return Credential.from_dict(res)
 
     def delete(self, credentials_id: str):
-        """Delete credential configuration.
-
-        Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
+        """Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
         delete a credential that is associated with any workspace.
 
         :param credentials_id: str
@@ -2381,9 +2377,7 @@ class CredentialsAPI:
         )
 
     def get(self, credentials_id: str) -> Credential:
-        """Get credential configuration.
-
-        Gets a Databricks credential configuration object for an account, both specified by ID.
+        """Gets a Databricks credential configuration object for an account, both specified by ID.
 
         :param credentials_id: str
           Databricks Account API credential configuration ID
@@ -2401,9 +2395,7 @@ class CredentialsAPI:
         return Credential.from_dict(res)
 
     def list(self) -> Iterator[Credential]:
-        """Get all credential configurations.
-
-        Gets all Databricks credential configurations associated with an account specified by ID.
+        """Gets all Databricks credential configurations associated with an account specified by ID.
 
         :returns: Iterator over :class:`Credential`
         """
@@ -2441,9 +2433,7 @@ class EncryptionKeysAPI:
         aws_key_info: Optional[CreateAwsKeyInfo] = None,
         gcp_key_info: Optional[CreateGcpKeyInfo] = None,
     ) -> CustomerManagedKey:
-        """Create encryption key configuration.
-
-        Creates a customer-managed key configuration object for an account, specified by ID. This operation
+        """Creates a customer-managed key configuration object for an account, specified by ID. This operation
         uploads a reference to a customer-managed key to Databricks. If the key is assigned as a workspace's
         customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks
         and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is
@@ -2482,9 +2472,7 @@ class EncryptionKeysAPI:
         return CustomerManagedKey.from_dict(res)
 
     def delete(self, customer_managed_key_id: str):
-        """Delete encryption key configuration.
-
-        Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
+        """Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
         that is associated with a running workspace.
 
         :param customer_managed_key_id: str
@@ -2504,9 +2492,7 @@ class EncryptionKeysAPI:
         )
 
     def get(self, customer_managed_key_id: str) -> CustomerManagedKey:
-        """Get encryption key configuration.
-
-        Gets a customer-managed key configuration object for an account, specified by ID. This operation
+        """Gets a customer-managed key configuration object for an account, specified by ID. This operation
         uploads a reference to a customer-managed key to Databricks. If assigned as a workspace's
         customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks
         and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is
@@ -2537,9 +2523,7 @@ class EncryptionKeysAPI:
         return CustomerManagedKey.from_dict(res)
 
     def list(self) -> Iterator[CustomerManagedKey]:
-        """Get all encryption key configurations.
-
-        Gets all customer-managed key configuration objects for an account. If the key is specified as a
+        """Gets all customer-managed key configuration objects for an account. If the key is specified as a
         workspace's managed services customer-managed key, Databricks uses the key to encrypt the workspace's
         notebooks and secrets in the control plane, in addition to Databricks SQL queries and query history.
         If the key is specified as a workspace's storage customer-managed key, the key is used to encrypt the
@@ -2578,9 +2562,7 @@ class NetworksAPI:
         vpc_endpoints: Optional[NetworkVpcEndpoints] = None,
         vpc_id: Optional[str] = None,
     ) -> Network:
-        """Create network configuration.
-
-        Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
+        """Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
         used for new Databricks clusters. This requires a pre-existing VPC and subnets.
 
         :param network_name: str
@@ -2627,9 +2609,7 @@ class NetworksAPI:
         return Network.from_dict(res)
 
     def delete(self, network_id: str):
-        """Delete a network configuration.
-
-        Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
+        """Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
 
         This operation is available only if your account is on the E2 version of the platform.
@@ -2647,9 +2627,7 @@ class NetworksAPI:
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/networks/{network_id}", headers=headers)
 
     def get(self, network_id: str) -> Network:
-        """Get a network configuration.
-
-        Gets a Databricks network configuration, which represents a cloud VPC and its resources.
+        """Gets a Databricks network configuration, which represents a cloud VPC and its resources.
 
         :param network_id: str
           Databricks Account API network configuration ID.
@@ -2665,9 +2643,7 @@ class NetworksAPI:
         return Network.from_dict(res)
 
     def list(self) -> Iterator[Network]:
-        """Get all network configurations.
-
-        Gets a list of all Databricks network configurations for an account, specified by ID.
+        """Gets a list of all Databricks network configurations for an account, specified by ID.
 
         This operation is available only if your account is on the E2 version of the platform.
 
@@ -2697,9 +2673,7 @@ class PrivateAccessAPI:
         private_access_level: Optional[PrivateAccessLevel] = None,
         public_access_enabled: Optional[bool] = None,
     ) -> PrivateAccessSettings:
-        """Create private access settings.
-
-        Creates a private access settings object, which specifies how your workspace is accessed over [AWS
+        """Creates a private access settings object, which specifies how your workspace is accessed over [AWS
         PrivateLink]. To use AWS PrivateLink, a workspace must have a private access settings object
         referenced by ID in the workspace's `private_access_settings_id` property.
 
@@ -2764,9 +2738,7 @@ class PrivateAccessAPI:
         return PrivateAccessSettings.from_dict(res)
 
     def delete(self, private_access_settings_id: str):
-        """Delete a private access settings object.
-
-        Deletes a private access settings object, which determines how your workspace is accessed over [AWS
+        """Deletes a private access settings object, which determines how your workspace is accessed over [AWS
         PrivateLink].
 
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].",
@@ -2791,9 +2763,7 @@ class PrivateAccessAPI:
         )
 
     def get(self, private_access_settings_id: str) -> PrivateAccessSettings:
-        """Get a private access settings object.
-
-        Gets a private access settings object, which specifies how your workspace is accessed over [AWS
+        """Gets a private access settings object, which specifies how your workspace is accessed over [AWS
         PrivateLink].
 
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].",
@@ -2819,9 +2789,7 @@ class PrivateAccessAPI:
         return PrivateAccessSettings.from_dict(res)
 
     def list(self) -> Iterator[PrivateAccessSettings]:
-        """Get all private access settings objects.
-
-        Gets a list of all private access settings objects for an account, specified by ID.
+        """Gets a list of all private access settings objects for an account, specified by ID.
 
         :returns: Iterator over :class:`PrivateAccessSettings`
         """
@@ -2843,9 +2811,7 @@ class PrivateAccessAPI:
         private_access_level: Optional[PrivateAccessLevel] = None,
         public_access_enabled: Optional[bool] = None,
     ):
-        """Replace private access settings.
-
-        Updates an existing private access settings object, which specifies how your workspace is accessed
+        """Updates an existing private access settings object, which specifies how your workspace is accessed
         over [AWS PrivateLink]. To use AWS PrivateLink, a workspace must have a private access settings object
         referenced by ID in the workspace's `private_access_settings_id` property.
 
@@ -2929,9 +2895,7 @@ class StorageAPI:
         self._api = api_client
 
     def create(self, storage_configuration_name: str, root_bucket_info: RootBucketInfo) -> StorageConfiguration:
-        """Create new storage configuration.
-
-        Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
+        """Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
         object that represents the root AWS S3 bucket in your account. Databricks stores related workspace
         assets including DBFS, cluster logs, and job results. For the AWS S3 bucket, you need to configure the
         required bucket policy.
@@ -2964,9 +2928,7 @@ class StorageAPI:
         return StorageConfiguration.from_dict(res)
 
     def delete(self, storage_configuration_id: str):
-        """Delete storage configuration.
-
-        Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
+        """Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
 
         :param storage_configuration_id: str
@@ -2986,9 +2948,7 @@ class StorageAPI:
         )
 
     def get(self, storage_configuration_id: str) -> StorageConfiguration:
-        """Get storage configuration.
-
-        Gets a Databricks storage configuration for an account, both specified by ID.
+        """Gets a Databricks storage configuration for an account, both specified by ID.
 
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
@@ -3008,9 +2968,7 @@ class StorageAPI:
         return StorageConfiguration.from_dict(res)
 
     def list(self) -> Iterator[StorageConfiguration]:
-        """Get all storage configurations.
-
-        Gets a list of all Databricks storage configurations for your account, specified by ID.
+        """Gets a list of all Databricks storage configurations for your account, specified by ID.
 
         :returns: Iterator over :class:`StorageConfiguration`
         """
@@ -3037,9 +2995,7 @@ class VpcEndpointsAPI:
         gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None,
         region: Optional[str] = None,
     ) -> VpcEndpoint:
-        """Create VPC endpoint configuration.
-
-        Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
+        """Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
         communicate privately with Databricks over [AWS PrivateLink].
 
         After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically
@@ -3083,9 +3039,7 @@ class VpcEndpointsAPI:
         return VpcEndpoint.from_dict(res)
 
     def delete(self, vpc_endpoint_id: str):
-        """Delete VPC endpoint configuration.
-
-        Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
+        """Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
         privately with Databricks over [AWS PrivateLink].
 
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
@@ -3109,9 +3063,7 @@ class VpcEndpointsAPI:
         )
 
     def get(self, vpc_endpoint_id: str) -> VpcEndpoint:
-        """Get a VPC endpoint configuration.
-
-        Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
+        """Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
         privately with Databricks over [AWS PrivateLink].
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
@@ -3133,9 +3085,7 @@ class VpcEndpointsAPI:
         return VpcEndpoint.from_dict(res)
 
     def list(self) -> Iterator[VpcEndpoint]:
-        """Get all VPC endpoint configurations.
-
-        Gets a list of all VPC endpoints for an account, specified by ID.
+        """Gets a list of all VPC endpoints for an account, specified by ID.
 
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
 
@@ -3216,9 +3166,7 @@ class WorkspacesAPI:
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
     ) -> Wait[Workspace]:
-        """Create a new workspace.
-
-        Creates a new workspace.
+        """Creates a new workspace.
 
         **Important**: This operation is asynchronous. A response with HTTP status code 200 means the request
         has been accepted and is in progress, but does not mean that the workspace deployed successfully and
@@ -3412,9 +3360,7 @@ class WorkspacesAPI:
         ).result(timeout=timeout)
 
     def delete(self, workspace_id: int):
-        """Delete a workspace.
-
-        Terminates and deletes a Databricks workspace. From an API perspective, deletion is immediate.
+        """Terminates and deletes a Databricks workspace. From an API perspective, deletion is immediate.
         However, it might take a few minutes for all workspaces resources to be deleted, depending on the size
         and number of workspace resources.
 
@@ -3434,9 +3380,7 @@ class WorkspacesAPI:
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}", headers=headers)
 
     def get(self, workspace_id: int) -> Workspace:
-        """Get a workspace.
-
-        Gets information including status for a Databricks workspace, specified by ID. In the response, the
+        """Gets information including status for a Databricks workspace, specified by ID. In the response, the
         `workspace_status` field indicates the current status. After initial workspace creation (which is
         asynchronous), make repeated `GET` requests with the workspace ID and check its status. The workspace
         becomes available when the status changes to `RUNNING`.
@@ -3465,9 +3409,7 @@ class WorkspacesAPI:
         return Workspace.from_dict(res)
 
     def list(self) -> Iterator[Workspace]:
-        """Get all workspaces.
-
-        Gets a list of all workspaces associated with an account, specified by ID.
+        """Gets a list of all workspaces associated with an account, specified by ID.
 
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
@@ -3496,9 +3438,7 @@ class WorkspacesAPI:
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
     ) -> Wait[Workspace]:
-        """Update workspace configuration.
-
-        Updates a workspace configuration for either a running workspace or a failed workspace. The elements
+        """Updates a workspace configuration for either a running workspace or a failed workspace. The elements
         that can be updated varies between these two use cases.
 
         ### Update a failed workspace You can update a Databricks workspace configuration for failed workspace

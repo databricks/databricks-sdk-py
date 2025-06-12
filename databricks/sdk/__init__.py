@@ -36,7 +36,7 @@ from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
-from databricks.sdk.service.aibuilder import CustomLlmsAPI
+from databricks.sdk.service.aibuilder import AiBuilderAPI
 from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
@@ -87,8 +87,8 @@ from databricks.sdk.service.marketplace import (
     ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
-from databricks.sdk.service.ml import (ExperimentsAPI, ForecastingAPI,
-                                       ModelRegistryAPI)
+from databricks.sdk.service.ml import (ExperimentsAPI, FeatureStoreAPI,
+                                       ForecastingAPI, ModelRegistryAPI)
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
@@ -235,6 +235,7 @@ class WorkspaceClient:
         serving_endpoints = ServingEndpointsExt(self._api_client)
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
+        self._ai_builder = pkg_aibuilder.AiBuilderAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
         self._alerts_v2 = pkg_sql.AlertsV2API(self._api_client)
@@ -256,7 +257,6 @@ class WorkspaceClient:
         self._credentials = pkg_catalog.CredentialsAPI(self._api_client)
         self._credentials_manager = pkg_settings.CredentialsManagerAPI(self._api_client)
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
-        self._custom_llms = pkg_aibuilder.CustomLlmsAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
@@ -265,6 +265,7 @@ class WorkspaceClient:
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
+        self._feature_store = pkg_ml.FeatureStoreAPI(self._api_client)
         self._files = _make_files_client(self._api_client, self._config)
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
         self._genie = pkg_dashboards.GenieAPI(self._api_client)
@@ -365,6 +366,11 @@ class WorkspaceClient:
     def account_access_control_proxy(self) -> pkg_iam.AccountAccessControlProxyAPI:
         """These APIs manage access rules on resources in an account."""
         return self._account_access_control_proxy
+
+    @property
+    def ai_builder(self) -> pkg_aibuilder.AiBuilderAPI:
+        """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
+        return self._ai_builder
 
     @property
     def alerts(self) -> pkg_sql.AlertsAPI:
@@ -472,11 +478,6 @@ class WorkspaceClient:
         return self._current_user
 
     @property
-    def custom_llms(self) -> pkg_aibuilder.CustomLlmsAPI:
-        """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
-        return self._custom_llms
-
-    @property
     def dashboard_widgets(self) -> pkg_sql.DashboardWidgetsAPI:
         """This is an evolving API that facilitates the addition and removal of widgets from existing dashboards within the Databricks Workspace."""
         return self._dashboard_widgets
@@ -515,6 +516,11 @@ class WorkspaceClient:
     def external_locations(self) -> pkg_catalog.ExternalLocationsAPI:
         """An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path."""
         return self._external_locations
+
+    @property
+    def feature_store(self) -> pkg_ml.FeatureStoreAPI:
+        """A feature store is a centralized repository that enables data scientists to find and share features."""
+        return self._feature_store
 
     @property
     def files(self) -> pkg_files.FilesAPI:

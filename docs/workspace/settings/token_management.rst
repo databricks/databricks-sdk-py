@@ -34,8 +34,6 @@
             w.service_principals.delete(id=spn.id)
             w.token_management.delete(token_id=obo.token_info.token_id)
 
-        Create on-behalf token.
-
         Creates a token on behalf of a service principal.
 
         :param application_id: str
@@ -49,8 +47,6 @@
         
 
     .. py:method:: delete(token_id: str)
-
-        Delete a token.
 
         Deletes a token, specified by its ID.
 
@@ -89,8 +85,6 @@
             w.service_principals.delete(id=spn.id)
             w.token_management.delete(token_id=obo.token_info.token_id)
 
-        Get token info.
-
         Gets information about a token, specified by its ID.
 
         :param token_id: str
@@ -101,16 +95,12 @@
 
     .. py:method:: get_permission_levels() -> GetTokenPermissionLevelsResponse
 
-        Get token permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :returns: :class:`GetTokenPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions() -> TokenPermissions
-
-        Get token permissions.
 
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
 
@@ -131,8 +121,6 @@
             
             all = w.token_management.list(settings.ListTokenManagementRequest())
 
-        List all tokens.
-
         Lists all tokens associated with the specified workspace or user.
 
         :param created_by_id: int (optional)
@@ -145,8 +133,6 @@
 
     .. py:method:: set_permissions( [, access_control_list: Optional[List[TokenAccessControlRequest]]]) -> TokenPermissions
 
-        Set token permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -156,8 +142,6 @@
         
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[TokenAccessControlRequest]]]) -> TokenPermissions
-
-        Update token permissions.
 
         Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
 

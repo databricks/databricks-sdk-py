@@ -91,8 +91,6 @@
 
     .. py:method:: cancel_execution(statement_id: str)
 
-        Cancel statement execution.
-
         Requests that an executing statement be canceled. Callers must poll for status to see the terminal
         state.
 
@@ -105,7 +103,7 @@
 
     .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
 
-        Execute a SQL statement.
+        Execute a SQL statement
 
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
@@ -216,8 +214,6 @@
 
     .. py:method:: get_statement(statement_id: str) -> StatementResponse
 
-        Get status, manifest, and result first chunk.
-
         This request can be used to poll for the statement's status. When the `status.state` field is
         `SUCCEEDED` it will also return the result manifest and the first chunk of the result data. When the
         statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
@@ -234,8 +230,6 @@
         
 
     .. py:method:: get_statement_result_chunk_n(statement_id: str, chunk_index: int) -> ResultData
-
-        Get result chunk by index.
 
         After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.
         Whereas the first chunk with `chunk_index=0` is typically fetched with

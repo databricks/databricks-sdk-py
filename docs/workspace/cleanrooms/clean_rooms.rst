@@ -10,8 +10,6 @@
 
     .. py:method:: create(clean_room: CleanRoom) -> CleanRoom
 
-        Create a clean room.
-
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
         :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
@@ -27,8 +25,6 @@
 
     .. py:method:: create_output_catalog(clean_room_name: str, output_catalog: CleanRoomOutputCatalog) -> CreateCleanRoomOutputCatalogResponse
 
-        Create an output catalog.
-
         Create the output catalog of the clean room.
 
         :param clean_room_name: str
@@ -39,8 +35,6 @@
         
 
     .. py:method:: delete(name: str)
-
-        Delete a clean room.
 
         Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
         collaborators have not deleted the clean room, they will still have the clean room in their metastore,
@@ -54,8 +48,6 @@
 
     .. py:method:: get(name: str) -> CleanRoom
 
-        Get a clean room.
-
         Get the details of a clean room given its name.
 
         :param name: str
@@ -64,8 +56,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CleanRoom]
-
-        List clean rooms.
 
         Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
         returned.
@@ -79,8 +69,6 @@
         
 
     .. py:method:: update(name: str [, clean_room: Optional[CleanRoom]]) -> CleanRoom
-
-        Update a clean room.
 
         Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.

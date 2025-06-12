@@ -20,8 +20,6 @@
 
     .. py:method:: all_cluster_statuses() -> Iterator[ClusterLibraryStatuses]
 
-        Get all statuses.
-
         Get the status of all libraries on all clusters. A status is returned for all libraries installed on
         this cluster via the API or the libraries UI.
 
@@ -29,8 +27,6 @@
         
 
     .. py:method:: cluster_status(cluster_id: str) -> Iterator[LibraryFullStatus]
-
-        Get status.
 
         Get the status of libraries on a cluster. A status is returned for all libraries installed on this
         cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
@@ -46,8 +42,6 @@
 
     .. py:method:: install(cluster_id: str, libraries: List[Library])
 
-        Add a library.
-
         Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
         after the completion of this request.
 
@@ -60,8 +54,6 @@
         
 
     .. py:method:: uninstall(cluster_id: str, libraries: List[Library])
-
-        Uninstall libraries.
 
         Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
         restarted. A request to uninstall a library that is not currently installed is ignored.

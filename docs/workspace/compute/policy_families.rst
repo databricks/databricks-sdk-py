@@ -30,8 +30,6 @@
             
             first_family = w.policy_families.get(policy_family_id=all[0].policy_family_id)
 
-        Get policy family information.
-
         Retrieve the information for an policy family based on its identifier and version
 
         :param policy_family_id: str
@@ -55,8 +53,6 @@
             w = WorkspaceClient()
             
             all = w.policy_families.list(compute.ListPolicyFamiliesRequest())
-
-        List policy families.
 
         Returns the list of policy definition types available to use at their latest version. This API is
         paginated.

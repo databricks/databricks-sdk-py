@@ -1758,9 +1758,7 @@ class GenieAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
-        """Create conversation message.
-
-        Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
+        """Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
         previously created messages in the conversation to respond.
 
         :param space_id: str
@@ -1806,9 +1804,7 @@ class GenieAPI:
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Execute message attachment SQL query.
-
-        Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
+        """Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
         needs to be re-executed.
 
         :param space_id: str
@@ -1837,9 +1833,7 @@ class GenieAPI:
     def execute_message_query(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """[Deprecated] Execute SQL query in a conversation message.
-
-        Execute the SQL query in the message.
+        """Execute the SQL query in the message.
 
         :param space_id: str
           Genie space ID
@@ -1865,9 +1859,7 @@ class GenieAPI:
     def generate_download_full_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGenerateDownloadFullQueryResultResponse:
-        """Generate full query result download.
-
-        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        """Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
         the download. The query result is stored in an external link and can be retrieved using the [Get
         Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
         strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
@@ -1899,9 +1891,7 @@ class GenieAPI:
     def get_download_full_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str
     ) -> GenieGetDownloadFullQueryResultResponse:
-        """Get download full query result.
-
-        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        """After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
         successfully receiving a `download_id`, use this API to poll the download progress. When the download
         is complete, the API returns one or more external links to the query result files. Warning: Databricks
         strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
@@ -1936,9 +1926,7 @@ class GenieAPI:
         return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
-        """Get conversation message.
-
-        Get message from conversation.
+        """Get message from conversation.
 
         :param space_id: str
           The ID associated with the Genie space where the target conversation is located.
@@ -1964,9 +1952,7 @@ class GenieAPI:
     def get_message_attachment_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get message attachment SQL query result.
-
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        """Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
 
         :param space_id: str
@@ -1995,9 +1981,7 @@ class GenieAPI:
     def get_message_query_result(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """[Deprecated] Get conversation message SQL query result.
-
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        """Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY`.
 
         :param space_id: str
@@ -2024,9 +2008,7 @@ class GenieAPI:
     def get_message_query_result_by_attachment(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """[Deprecated] Get conversation message SQL query result.
-
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        """Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
 
         :param space_id: str
@@ -2053,9 +2035,7 @@ class GenieAPI:
         return GenieGetMessageQueryResultResponse.from_dict(res)
 
     def get_space(self, space_id: str) -> GenieSpace:
-        """Get Genie Space.
-
-        Get details of a Genie Space.
+        """Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space
@@ -2073,9 +2053,7 @@ class GenieAPI:
     def list_spaces(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> GenieListSpacesResponse:
-        """List Genie spaces.
-
-        Get list of Genie Spaces.
+        """Get list of Genie Spaces.
 
         :param page_size: int (optional)
           Maximum number of spaces to return per page
@@ -2098,9 +2076,7 @@ class GenieAPI:
         return GenieListSpacesResponse.from_dict(res)
 
     def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
-        """Start conversation.
-
-        Start a new conversation.
+        """Start a new conversation.
 
         :param space_id: str
           The ID associated with the Genie space where you want to start a conversation.
@@ -2142,9 +2118,7 @@ class LakeviewAPI:
         self._api = api_client
 
     def create(self, dashboard: Dashboard) -> Dashboard:
-        """Create dashboard.
-
-        Create a draft dashboard.
+        """Create a draft dashboard.
 
         :param dashboard: :class:`Dashboard`
 
@@ -2263,9 +2237,7 @@ class LakeviewAPI:
         )
 
     def get(self, dashboard_id: str) -> Dashboard:
-        """Get dashboard.
-
-        Get a draft dashboard.
+        """Get a draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -2281,9 +2253,7 @@ class LakeviewAPI:
         return Dashboard.from_dict(res)
 
     def get_published(self, dashboard_id: str) -> PublishedDashboard:
-        """Get published dashboard.
-
-        Get the current published dashboard.
+        """Get the current published dashboard.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -2473,9 +2443,7 @@ class LakeviewAPI:
         parent_path: Optional[str] = None,
         update_parameter_syntax: Optional[bool] = None,
     ) -> Dashboard:
-        """Migrate dashboard.
-
-        Migrates a classic SQL dashboard to Lakeview.
+        """Migrates a classic SQL dashboard to Lakeview.
 
         :param source_dashboard_id: str
           UUID of the dashboard to be migrated.
@@ -2509,9 +2477,7 @@ class LakeviewAPI:
     def publish(
         self, dashboard_id: str, *, embed_credentials: Optional[bool] = None, warehouse_id: Optional[str] = None
     ) -> PublishedDashboard:
-        """Publish dashboard.
-
-        Publish the current draft dashboard.
+        """Publish the current draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
@@ -2537,9 +2503,7 @@ class LakeviewAPI:
         return PublishedDashboard.from_dict(res)
 
     def trash(self, dashboard_id: str):
-        """Trash dashboard.
-
-        Trash a dashboard.
+        """Trash a dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -2554,9 +2518,7 @@ class LakeviewAPI:
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
 
     def unpublish(self, dashboard_id: str):
-        """Unpublish dashboard.
-
-        Unpublish the dashboard.
+        """Unpublish the dashboard.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.
@@ -2571,9 +2533,7 @@ class LakeviewAPI:
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
 
     def update(self, dashboard_id: str, dashboard: Dashboard) -> Dashboard:
-        """Update dashboard.
-
-        Update a draft dashboard.
+        """Update a draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
@@ -2622,9 +2582,7 @@ class LakeviewEmbeddedAPI:
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
     ) -> GetPublishedDashboardTokenInfoResponse:
-        """Read an information of a published dashboard to mint an OAuth token.
-
-        Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
+        """Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
         `authorization_details` can be enriched to apply additional restriction.
 
         Example: Adding the following `authorization_details` object to downscope the viewer permission to
