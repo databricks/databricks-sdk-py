@@ -8,7 +8,7 @@ PYTHON_VERSION_NO_DOTS = $(subst .,,$(PYTHON_VERSION))
 REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION_NO_DOTS).txt
 
 dev-env:
-	python$(PYTHON_VERSION) -m venv .venv$(PYTHON_VERSION_NO_DOTS)
+	python -m venv .venv$(PYTHON_VERSION_NO_DOTS)
 ifeq ($(OS), Windows_NT)
 	.venv$(PYTHON_VERSION_NO_DOTS)\Scripts\activate
 else
