@@ -31,11 +31,12 @@ jobs:
           python-version: ${{ inputs.pyVersion }}
 
       - name: Run tests
+        shell: bash
         run: |
           if [ "${{ matrix.dep-type }}" = "latest" ]; then
-            make dev-latest test
+            make dev-latest test PYTHON_VERSION=${{ inputs.pyVersion }}
           else
-            make dev test
+            make dev test PYTHON_VERSION=${{ inputs.pyVersion }}
           fi
 
       - name: Publish test coverage

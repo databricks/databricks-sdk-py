@@ -1,15 +1,23 @@
+# Default Python version if not specified
+# This is expected to have the form X.Y.
+# The corresponding requirements file is requirements-dev-pyXY.txt.
+PYTHON_VERSION ?= 3.13
+
+# Generate requirements filename based on Python version
+REQUIREMENTS_FILE = requirements-dev-py$(subst .,,$(PYTHON_VERSION)).txt
+
 dev-env:
-	python3 -m venv .venv
+	python$(PYTHON_VERSION) -m venv .venv$(PYTHON_VERSION)
 ifeq ($(OS), Windows_NT)
-	.venv\Scripts\activate
+	.venv$(PYTHON_VERSION)\Scripts\activate
 else
-	. .venv/bin/activate
+	. .venv$(PYTHON_VERSION)/bin/activate
 endif
 
 dev: dev-env
-	# Install all dependencies from the requirements-dev.txt file
-	# Regenerate this file with `make update-dev-dep-lockfile`
-	pip install -r requirements-dev.txt
+	# Install all dependencies from the version-specific requirements file
+	# Regenerate this file with `make update-dev-dep-lockfile PYTHON_VERSION=X.Y`
+	pip install -r $(REQUIREMENTS_FILE)
 
 dev-latest: dev-env
 	# Install all dependencies from the pyproject.toml file
@@ -19,7 +27,7 @@ install-pip-tools:
 	pip install pip-tools
 
 update-dev-dep-lockfile: install-pip-tools
-	pip-compile pyproject.toml --extra dev --output-file requirements-dev.txt
+	pip-compile pyproject.toml --extra dev --output-file $(REQUIREMENTS_FILE)
 
 install:
 	pip install .
