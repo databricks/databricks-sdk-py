@@ -31,9 +31,6 @@ jobs:
           python-version: ${{ inputs.pyVersion }}
 
       - name: Run tests
-        # Tolerate failure when using latest deps; this is just an early warning notification
-        # that there may have been a breaking change in a dependency.
-        continue-on-error: ${{ matrix.use-latest-deps }}
         run: |
           if [ "${{ matrix.use-latest-deps }}" = "true" ]; then
             make dev-latest test
@@ -42,7 +39,6 @@ jobs:
           fi
 
       - name: Publish test coverage
-        if: ${{ !matrix.use-latest-deps }}
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
