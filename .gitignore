@@ -1,4 +1,4 @@
-.venv*
+.venv
 *.
 build
 dist
@@ -11,4 +11,3 @@ databricks-sdk-py.iml
 .databricks
 .coverage
 htmlcov
-.python-version

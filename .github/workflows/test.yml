@@ -14,10 +14,6 @@ jobs:
   test:
     strategy:
         fail-fast: false
-        matrix:
-            dep-type:
-              - latest
-              - frozen
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout
@@ -31,16 +27,9 @@ jobs:
           python-version: ${{ inputs.pyVersion }}
 
       - name: Run tests
-        shell: bash
-        run: |
-          if [ "${{ matrix.dep-type }}" = "latest" ]; then
-            make dev-latest test
-          else
-            make dev test
-          fi
+        run: make dev install test
 
       - name: Publish test coverage
-        if: ${{ matrix.dep-type == 'frozen' }}
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
