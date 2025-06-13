@@ -15,9 +15,9 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            use-latest-deps:
-              - true
-              - false
+            dep-type:
+              - latest
+              - frozen
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout
@@ -32,14 +32,14 @@ jobs:
 
       - name: Run tests
         run: |
-          if [ "${{ matrix.use-latest-deps }}" = "true" ]; then
+          if [ "${{ matrix.dep-type }}" = "latest" ]; then
             make dev-latest test
           else
             make dev test
           fi
 
       - name: Publish test coverage
-        if: ${{ !matrix.use-latest-deps }}
+        if: ${{ matrix.dep-type == 'frozen' }}
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
