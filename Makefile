@@ -17,7 +17,8 @@ REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION).txt
 #    - make dev test    # uses frozen dependencies
 #    - make dev-latest test  # uses latest dependencies
 #
-# To update all Python versions using pyenv:
+# To update dependencies for all Python versions using pyenv:
+# rm -rf .venv* requirements-dev-py*.txt
 # for v in 3.8 3.9 3.10 3.11 3.12 3.13; do
 #  pyenv local $v
 #  make dev-env update-dev-dep-lockfile
