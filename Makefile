@@ -7,6 +7,12 @@ PYTHON_VERSION_NO_DOTS = $(subst .,,$(PYTHON_VERSION))
 # Generate requirements filename based on Python version
 REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION_NO_DOTS).txt
 
+# A quick one-liner to update all environments using pyenv:
+# for v in 3.8 3.9 3.10 3.11 3.12 3.13; do
+#  pyenv local $v
+#  make dev-env update-dev-dep-lockfile PYTHON_VERSION=$v
+# done
+
 dev-env:
 	python -m venv .venv$(PYTHON_VERSION_NO_DOTS)
 ifeq ($(OS), Windows_NT)
