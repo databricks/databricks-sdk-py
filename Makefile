@@ -10,9 +10,9 @@ REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION_NO_DOTS).txt
 dev-env:
 	python$(PYTHON_VERSION) -m venv .venv$(PYTHON_VERSION_NO_DOTS)
 ifeq ($(OS), Windows_NT)
-	.venv$(PYTHON_VERSION)\Scripts\activate
+	.venv$(PYTHON_VERSION_NO_DOTS)\Scripts\activate
 else
-	. .venv$(PYTHON_VERSION)/bin/activate
+	. .venv$(PYTHON_VERSION_NO_DOTS)/bin/activate
 endif
 
 dev: dev-env
