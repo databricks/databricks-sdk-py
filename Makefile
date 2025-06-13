@@ -1,11 +1,25 @@
-dev:
+dev-env:
 	python3 -m venv .venv
 ifeq ($(OS), Windows_NT)
 	.venv\Scripts\activate
 else
 	. .venv/bin/activate
 endif
+
+dev: dev-env
+	# Install all dependencies from the requirements-dev.txt file
+	# Regenerate this file with `make update-dev-dep-lockfile`
+	pip install -r requirements-dev.txt
+
+dev-latest: dev-env
+	# Install all dependencies from the pyproject.toml file
 	pip install '.[dev]'
+
+install-pip-tools:
+	pip install pip-tools
+
+update-dev-dep-lockfile: install-pip-tools
+	pip-compile pyproject.toml --extra dev --output-file requirements-dev.txt
 
 install:
 	pip install .

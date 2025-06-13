@@ -14,6 +14,10 @@ jobs:
   test:
     strategy:
         fail-fast: false
+        matrix:
+            use-latest-deps:
+              - true
+              - false
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout
@@ -27,9 +31,18 @@ jobs:
           python-version: ${{ inputs.pyVersion }}
 
       - name: Run tests
-        run: make dev install test
+        # Tolerate failure when using latest deps; this is just an early warning notification
+        # that there may have been a breaking change in a dependency.
+        continue-on-error: ${{ matrix.use-latest-deps }}
+        run: |
+          if [ "${{ matrix.use-latest-deps }}" = "true" ]; then
+            make dev-latest test
+          else
+            make dev test
+          fi
 
       - name: Publish test coverage
+        if: ${{ !matrix.use-latest-deps }}
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
