@@ -2,12 +2,13 @@
 # This is expected to have the form X.Y.
 # The corresponding requirements file is requirements-dev-pyXY.txt.
 PYTHON_VERSION ?= 3.13
+PYTHON_VERSION_NO_DOTS = $(subst .,,$(PYTHON_VERSION))
 
 # Generate requirements filename based on Python version
-REQUIREMENTS_FILE = requirements-dev-py$(subst .,,$(PYTHON_VERSION)).txt
+REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION_NO_DOTS).txt
 
 dev-env:
-	python$(PYTHON_VERSION) -m venv .venv$(PYTHON_VERSION)
+	python$(PYTHON_VERSION) -m venv .venv$(PYTHON_VERSION_NO_DOTS)
 ifeq ($(OS), Windows_NT)
 	.venv$(PYTHON_VERSION)\Scripts\activate
 else
