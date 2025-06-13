@@ -47,8 +47,6 @@ dev = [
     "ipywidgets",
     "requests-mock",
     "pyfakefs",
-    # "databricks-connect", # For some tests, databricks-connect is installed dynamically. However, this creates
-    # a circular dependency because databricks-connect depends on this sdk.
     "pytest-rerunfailures",
     "openai",
     'langchain-openai; python_version > "3.7"',
