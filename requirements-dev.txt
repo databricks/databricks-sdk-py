@@ -124,7 +124,7 @@ packaging==24.2
     #   langsmith
     #   pytest
     #   pytest-rerunfailures
-pandas==2.3.0
+pandas==2.2.3 # rolled back from 2.3.0 because of  https://github.com/pandas-dev/pandas/issues/61579
     # via databricks-connect
 parso==0.8.4
     # via jedi
