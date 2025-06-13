@@ -1,24 +1,34 @@
-# Default Python version if not specified
-# This is expected to have the form X.Y.
-# The corresponding requirements file is requirements-dev-pyXY.txt.
-PYTHON_VERSION ?= 3.13
-PYTHON_VERSION_NO_DOTS = $(subst .,,$(PYTHON_VERSION))
+# Detect Python version from the system
+PYTHON_VERSION := $(shell python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
 
 # Generate requirements filename based on Python version
-REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION_NO_DOTS).txt
+REQUIREMENTS_FILE = requirements-dev-py$(PYTHON_VERSION).txt
 
-# A quick one-liner to update all environments using pyenv:
+# Testing workflow:
+# 1. GitHub Actions runs tests for each Python version (3.8-3.12) on multiple OSes
+# 2. For each Python version, tests run in two modes:
+#    - 'latest': Uses dependencies directly from pyproject.toml
+#    - 'frozen': Uses version-specific requirements-dev-pyXY.txt
+# 3. Each Python version gets its own virtual environment (.venvXY)
+# 4. Tests are only blocking in `frozen` mode. Tests run in `latest` mode are
+#    allowed to fail and serve as a warning that there may have been a breaking
+#    change in a dependency.
+# 5. To run tests locally:
+#    - make dev test    # uses frozen dependencies
+#    - make dev-latest test  # uses latest dependencies
+#
+# To update all Python versions using pyenv:
 # for v in 3.8 3.9 3.10 3.11 3.12 3.13; do
 #  pyenv local $v
-#  make dev-env update-dev-dep-lockfile PYTHON_VERSION=$v
+#  make dev-env update-dev-dep-lockfile
 # done
 
 dev-env:
-	python -m venv .venv$(PYTHON_VERSION_NO_DOTS)
+	python -m venv .venv$(PYTHON_VERSION)
 ifeq ($(OS), Windows_NT)
-	.venv$(PYTHON_VERSION_NO_DOTS)\Scripts\activate
+	.venv$(PYTHON_VERSION)\Scripts\activate
 else
-	. .venv$(PYTHON_VERSION_NO_DOTS)/bin/activate
+	. .venv$(PYTHON_VERSION)/bin/activate
 endif
 
 dev: dev-env

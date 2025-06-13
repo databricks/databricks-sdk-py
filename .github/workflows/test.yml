@@ -34,9 +34,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.dep-type }}" = "latest" ]; then
-            make dev-latest test PYTHON_VERSION=${{ inputs.pyVersion }}
+            make dev-latest test
           else
-            make dev test PYTHON_VERSION=${{ inputs.pyVersion }}
+            make dev test
           fi
 
       - name: Publish test coverage
