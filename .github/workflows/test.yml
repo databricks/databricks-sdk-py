@@ -39,6 +39,7 @@ jobs:
           fi
 
       - name: Publish test coverage
+        if: ${{ !matrix.use-latest-deps }}
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
