@@ -41,10 +41,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GenieCreateConversationMessageRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: GenieGenerateDownloadFullQueryResultResponse
    :members:
    :undoc-members:
@@ -74,10 +70,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieSpace
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieStartConversationMessageRequest
    :members:
    :undoc-members:
 
@@ -307,14 +299,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUBMITTED
       :value: "SUBMITTED"
-
-.. autoclass:: MigrateDashboardRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: PublishRequest
-   :members:
-   :undoc-members:
 
 .. autoclass:: PublishedDashboard
    :members:

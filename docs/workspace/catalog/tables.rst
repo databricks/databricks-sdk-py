@@ -117,7 +117,7 @@
             
             created_schema = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=created_catalog.name)
             
-            summaries = w.tables.list_summaries(catalog_name=created_catalog.name, schema_name_pattern=created_schema.name)
+            all_tables = w.tables.list(catalog_name=created_catalog.name, schema_name=created_schema.name)
             
             # cleanup
             w.schemas.delete(full_name=created_schema.full_name)

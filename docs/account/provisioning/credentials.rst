@@ -24,15 +24,15 @@
             
             a = AccountClient()
             
-            role = a.credentials.create(
+            creds = a.credentials.create(
                 credentials_name=f"sdk-{time.time_ns()}",
                 aws_credentials=provisioning.CreateCredentialAwsCredentials(
-                    sts_role=provisioning.CreateCredentialStsRole(role_arn=os.environ["TEST_CROSSACCOUNT_ARN"])
+                    sts_role=provisioning.CreateCredentialStsRole(role_arn=os.environ["TEST_LOGDELIVERY_ARN"])
                 ),
             )
             
             # cleanup
-            a.credentials.delete(credentials_id=role.credentials_id)
+            a.credentials.delete(credentials_id=creds.credentials_id)
 
         Creates a Databricks credential configuration that represents cloud cross-account credentials for a
         specified account. Databricks uses this to set up network infrastructure properly to host Databricks
