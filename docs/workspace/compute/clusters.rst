@@ -711,11 +711,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import compute
             
             w = WorkspaceClient()
             
-            all = w.clusters.list(compute.ListClustersRequest())
+            nodes = w.clusters.list_node_types()
 
         Return information about all pinned and active clusters, and all clusters terminated within the last
         30 days. Clusters terminated prior to this period are not included.

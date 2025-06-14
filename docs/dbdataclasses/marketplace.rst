@@ -4,10 +4,6 @@ Marketplace
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.marketplace`` module.
 
 .. py:currentmodule:: databricks.sdk.service.marketplace
-.. autoclass:: AddExchangeForListingRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: AddExchangeForListingResponse
    :members:
    :undoc-members:
@@ -127,15 +123,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PAID
       :value: "PAID"
 
-.. autoclass:: CreateExchangeFilterRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateExchangeFilterResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateExchangeRequest
    :members:
    :undoc-members:
 
@@ -143,19 +131,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateFileRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateFileResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateInstallationRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateListingRequest
    :members:
    :undoc-members:
 
@@ -163,15 +139,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreatePersonalizationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreatePersonalizationRequestResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateProviderRequest
    :members:
    :undoc-members:
 
@@ -535,15 +503,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateExchangeFilterRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateExchangeFilterResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateExchangeRequest
    :members:
    :undoc-members:
 
@@ -551,15 +511,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateInstallationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateInstallationResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateListingRequest
    :members:
    :undoc-members:
 
@@ -567,23 +519,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdatePersonalizationRequestRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdatePersonalizationRequestResponse
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateProviderAnalyticsDashboardRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateProviderAnalyticsDashboardResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateProviderRequest
    :members:
    :undoc-members:
 

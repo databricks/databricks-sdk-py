@@ -87,58 +87,6 @@ class AzureKeyVaultSecretScopeMetadata:
 
 
 @dataclass
-class CreateCredentialsRequest:
-    git_provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
-
-    personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more].
-    
-    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCredentialsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsRequest:
-        """Deserializes the CreateCredentialsRequest from a dictionary."""
-        return cls(
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
-        )
-
-
-@dataclass
 class CreateCredentialsResponse:
     credential_id: int
     """ID of the credential object in the workspace."""
@@ -179,61 +127,6 @@ class CreateCredentialsResponse:
             credential_id=d.get("credential_id", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
-        )
-
-
-@dataclass
-class CreateRepoRequest:
-    url: str
-    """URL of the Git repository to be linked."""
-
-    provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    path: Optional[str] = None
-    """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
-    repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`."""
-
-    sparse_checkout: Optional[SparseCheckout] = None
-    """If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
-    sparse checkout after the repo is created."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateRepoRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.provider is not None:
-            body["provider"] = self.provider
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateRepoRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.provider is not None:
-            body["provider"] = self.provider
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateRepoRequest:
-        """Deserializes the CreateRepoRequest from a dictionary."""
-        return cls(
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
         )
 
 
@@ -313,57 +206,6 @@ class CreateRepoResponse:
 
 
 @dataclass
-class CreateScope:
-    scope: str
-    """Scope name requested by the user. Scope names are unique."""
-
-    backend_azure_keyvault: Optional[AzureKeyVaultSecretScopeMetadata] = None
-    """The metadata for the secret scope if the type is `AZURE_KEYVAULT`"""
-
-    initial_manage_principal: Optional[str] = None
-    """The principal that is initially granted `MANAGE` permission to the created scope."""
-
-    scope_backend_type: Optional[ScopeBackendType] = None
-    """The backend type the scope will be created with. If not specified, will default to `DATABRICKS`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateScope into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault.as_dict()
-        if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateScope into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault
-        if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateScope:
-        """Deserializes the CreateScope from a dictionary."""
-        return cls(
-            backend_azure_keyvault=_from_dict(d, "backend_azure_keyvault", AzureKeyVaultSecretScopeMetadata),
-            initial_manage_principal=d.get("initial_manage_principal", None),
-            scope=d.get("scope", None),
-            scope_backend_type=_enum(d, "scope_backend_type", ScopeBackendType),
-        )
-
-
-@dataclass
 class CreateScopeResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
@@ -423,72 +265,6 @@ class CredentialInfo:
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
         )
-
-
-@dataclass
-class Delete:
-    path: str
-    """The absolute path of the notebook or directory."""
-
-    recursive: Optional[bool] = None
-    """The flag that specifies whether to delete the object recursively. It is `false` by default.
-    Please note this deleting directory is not atomic. If it fails in the middle, some of objects
-    under this directory may be deleted and cannot be undone."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Delete into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Delete:
-        """Deserializes the Delete from a dictionary."""
-        return cls(path=d.get("path", None), recursive=d.get("recursive", None))
-
-
-@dataclass
-class DeleteAcl:
-    scope: str
-    """The name of the scope to remove permissions from."""
-
-    principal: str
-    """The principal to remove an existing ACL from."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAcl into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAcl into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAcl:
-        """Deserializes the DeleteAcl from a dictionary."""
-        return cls(principal=d.get("principal", None), scope=d.get("scope", None))
 
 
 @dataclass
@@ -564,31 +340,6 @@ class DeleteResponse:
 
 
 @dataclass
-class DeleteScope:
-    scope: str
-    """Name of the scope to delete."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteScope into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteScope into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteScope:
-        """Deserializes the DeleteScope from a dictionary."""
-        return cls(scope=d.get("scope", None))
-
-
-@dataclass
 class DeleteScopeResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
@@ -604,38 +355,6 @@ class DeleteScopeResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
         """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DeleteSecret:
-    scope: str
-    """The name of the scope that contains the secret to delete."""
-
-    key: str
-    """Name of the secret to delete."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteSecret into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteSecret into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecret:
-        """Deserializes the DeleteSecret from a dictionary."""
-        return cls(key=d.get("key", None), scope=d.get("scope", None))
 
 
 @dataclass
@@ -905,80 +624,6 @@ class GetWorkspaceObjectPermissionLevelsResponse:
         return cls(permission_levels=_repeated_dict(d, "permission_levels", WorkspaceObjectPermissionsDescription))
 
 
-@dataclass
-class Import:
-    path: str
-    """The absolute path of the object or directory. Importing a directory is only supported for the
-    `DBC` and `SOURCE` formats."""
-
-    content: Optional[str] = None
-    """The base64-encoded content. This has a limit of 10 MB.
-    
-    If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is
-    thrown. This parameter might be absent, and instead a posted file is used."""
-
-    format: Optional[ImportFormat] = None
-    """This specifies the format of the file to be imported.
-    
-    The value is case sensitive.
-    
-    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
-    content provided in the request. If the item is imported as a notebook, then the item's
-    extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
-    code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
-    as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive
-    format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
-    format."""
-
-    language: Optional[Language] = None
-    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
-
-    overwrite: Optional[bool] = None
-    """The flag that specifies whether to overwrite existing object. It is `false` by default. For
-    `DBC` format, `overwrite` is not supported since it may contain a directory."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Import into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.format is not None:
-            body["format"] = self.format.value
-        if self.language is not None:
-            body["language"] = self.language.value
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Import into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.format is not None:
-            body["format"] = self.format
-        if self.language is not None:
-            body["language"] = self.language
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Import:
-        """Deserializes the Import from a dictionary."""
-        return cls(
-            content=d.get("content", None),
-            format=_enum(d, "format", ImportFormat),
-            language=_enum(d, "language", Language),
-            overwrite=d.get("overwrite", None),
-            path=d.get("path", None),
-        )
-
-
 class ImportFormat(Enum):
     """The format for workspace import and export."""
 
@@ -1177,32 +822,6 @@ class ListSecretsResponse:
 
 
 @dataclass
-class Mkdirs:
-    path: str
-    """The absolute path of the directory. If the parent directories do not exist, it will also create
-    them. If the directory already exists, this command will do nothing and succeed."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Mkdirs into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Mkdirs into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Mkdirs:
-        """Deserializes the Mkdirs from a dictionary."""
-        return cls(path=d.get("path", None))
-
-
-@dataclass
 class MkdirsResponse:
     def as_dict(self) -> dict:
         """Serializes the MkdirsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1321,49 +940,6 @@ class ObjectType(Enum):
 
 
 @dataclass
-class PutAcl:
-    scope: str
-    """The name of the scope to apply permissions to."""
-
-    principal: str
-    """The principal in which the permission is applied."""
-
-    permission: AclPermission
-    """The permission level applied to the principal."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutAcl into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission is not None:
-            body["permission"] = self.permission.value
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutAcl into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission is not None:
-            body["permission"] = self.permission
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutAcl:
-        """Deserializes the PutAcl from a dictionary."""
-        return cls(
-            permission=_enum(d, "permission", AclPermission),
-            principal=d.get("principal", None),
-            scope=d.get("scope", None),
-        )
-
-
-@dataclass
 class PutAclResponse:
     def as_dict(self) -> dict:
         """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
@@ -1379,57 +955,6 @@ class PutAclResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
         """Deserializes the PutAclResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class PutSecret:
-    scope: str
-    """The name of the scope to which the secret will be associated with."""
-
-    key: str
-    """A unique name to identify the secret."""
-
-    bytes_value: Optional[str] = None
-    """If specified, value will be stored as bytes."""
-
-    string_value: Optional[str] = None
-    """If specified, note that the value will be stored in UTF-8 (MB4) form."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutSecret into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.string_value is not None:
-            body["string_value"] = self.string_value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutSecret into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.string_value is not None:
-            body["string_value"] = self.string_value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutSecret:
-        """Deserializes the PutSecret from a dictionary."""
-        return cls(
-            bytes_value=d.get("bytes_value", None),
-            key=d.get("key", None),
-            scope=d.get("scope", None),
-            string_value=d.get("string_value", None),
-        )
 
 
 @dataclass
@@ -1760,40 +1285,6 @@ class RepoPermissionsDescription:
         )
 
 
-@dataclass
-class RepoPermissionsRequest:
-    access_control_list: Optional[List[RepoAccessControlRequest]] = None
-
-    repo_id: Optional[str] = None
-    """The repo for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsRequest:
-        """Deserializes the RepoPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlRequest),
-            repo_id=d.get("repo_id", None),
-        )
-
-
 class ScopeBackendType(Enum):
 
     AZURE_KEYVAULT = "AZURE_KEYVAULT"
@@ -1934,66 +1425,6 @@ class SparseCheckoutUpdate:
 
 
 @dataclass
-class UpdateCredentialsRequest:
-    git_provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    credential_id: Optional[int] = None
-    """The ID for the corresponding credential to access."""
-
-    git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
-
-    personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more].
-    
-    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCredentialsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsRequest:
-        """Deserializes the UpdateCredentialsRequest from a dictionary."""
-        return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
-        )
-
-
-@dataclass
 class UpdateCredentialsResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2009,60 +1440,6 @@ class UpdateCredentialsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsResponse:
         """Deserializes the UpdateCredentialsResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateRepoRequest:
-    branch: Optional[str] = None
-    """Branch that the local version of the repo is checked out to."""
-
-    repo_id: Optional[int] = None
-    """ID of the Git folder (repo) object in the workspace."""
-
-    sparse_checkout: Optional[SparseCheckoutUpdate] = None
-    """If specified, update the sparse checkout settings. The update will fail if sparse checkout is
-    not enabled for the repo."""
-
-    tag: Optional[str] = None
-    """Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the
-    repo in a detached HEAD state. Before committing new changes, you must update the repo to a
-    branch instead of the detached HEAD."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateRepoRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.branch is not None:
-            body["branch"] = self.branch
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
-        if self.tag is not None:
-            body["tag"] = self.tag
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateRepoRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.branch is not None:
-            body["branch"] = self.branch
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
-        if self.tag is not None:
-            body["tag"] = self.tag
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateRepoRequest:
-        """Deserializes the UpdateRepoRequest from a dictionary."""
-        return cls(
-            branch=d.get("branch", None),
-            repo_id=d.get("repo_id", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckoutUpdate),
-            tag=d.get("tag", None),
-        )
 
 
 @dataclass
@@ -2314,48 +1691,6 @@ class WorkspaceObjectPermissionsDescription:
         return cls(
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", WorkspaceObjectPermissionLevel),
-        )
-
-
-@dataclass
-class WorkspaceObjectPermissionsRequest:
-    access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
-
-    workspace_object_id: Optional[str] = None
-    """The workspace object for which to get or manage permissions."""
-
-    workspace_object_type: Optional[str] = None
-    """The workspace object type for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
-        if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
-        if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsRequest:
-        """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlRequest),
-            workspace_object_id=d.get("workspace_object_id", None),
-            workspace_object_type=d.get("workspace_object_type", None),
         )
 
 

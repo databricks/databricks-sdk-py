@@ -23,23 +23,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCredentialsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateCredentialsResponse
    :members:
    :undoc-members:
 
-.. autoclass:: CreateRepoRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateRepoResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateScope
    :members:
    :undoc-members:
 
@@ -48,14 +36,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CredentialInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: Delete
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteAcl
    :members:
    :undoc-members:
 
@@ -75,15 +55,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteScope
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteScopeResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteSecret
    :members:
    :undoc-members:
 
@@ -137,10 +109,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetWorkspaceObjectPermissionLevelsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: Import
    :members:
    :undoc-members:
 
@@ -213,10 +181,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: Mkdirs
-   :members:
-   :undoc-members:
-
 .. autoclass:: MkdirsResponse
    :members:
    :undoc-members:
@@ -247,15 +211,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REPO
       :value: "REPO"
 
-.. autoclass:: PutAcl
-   :members:
-   :undoc-members:
-
 .. autoclass:: PutAclResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: PutSecret
    :members:
    :undoc-members:
 
@@ -303,10 +259,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RepoPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. py:class:: ScopeBackendType
 
    .. py:attribute:: AZURE_KEYVAULT
@@ -331,15 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCredentialsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateCredentialsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRepoRequest
    :members:
    :undoc-members:
 
@@ -380,9 +324,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: WorkspaceObjectPermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: WorkspaceObjectPermissionsRequest
    :members:
    :undoc-members:

@@ -74,9 +74,9 @@
             
             spn_id = spn.id
             
-            workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
+            workspace_id = os.environ["TEST_WORKSPACE_ID"]
             
-            _ = a.workspace_assignment.update(
+            a.workspace_assignment.update(
                 workspace_id=workspace_id,
                 principal_id=spn_id,
                 permissions=[iam.WorkspacePermission.USER],
