@@ -155,6 +155,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EMBEDDING
       :value: "EMBEDDING"
 
+.. autoclass:: EndpointCoreConfigInput
+   :members:
+   :undoc-members:
+
 .. autoclass:: EndpointCoreConfigOutput
    :members:
    :undoc-members:

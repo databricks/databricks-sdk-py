@@ -581,6 +581,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LegacyVisualization
+   :members:
+   :undoc-members:
+
 .. py:class:: LifecycleState
 
    .. py:attribute:: ACTIVE

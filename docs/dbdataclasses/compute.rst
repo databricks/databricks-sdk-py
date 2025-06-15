@@ -552,6 +552,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GetEvents
+   :members:
+   :undoc-members:
+
 .. py:class:: GetEventsOrder
 
    .. py:attribute:: ASC
@@ -710,6 +714,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: InstancePoolStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: InstanceProfile
    :members:
    :undoc-members:
 

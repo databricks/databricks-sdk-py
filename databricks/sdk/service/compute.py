@@ -3675,6 +3675,108 @@ class GetClusterPolicyPermissionLevelsResponse:
         return cls(permission_levels=_repeated_dict(d, "permission_levels", ClusterPolicyPermissionsDescription))
 
 
+@dataclass
+class GetEvents:
+    cluster_id: str
+    """The ID of the cluster to retrieve events about."""
+
+    end_time: Optional[int] = None
+    """The end time in epoch milliseconds. If empty, returns events up to the current time."""
+
+    event_types: Optional[List[EventType]] = None
+    """An optional set of event types to filter on. If empty, all event types are returned."""
+
+    limit: Optional[int] = None
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The maximum number of events to include in a page of events. Defaults to 50, and maximum allowed
+    value is 500."""
+
+    offset: Optional[int] = None
+    """Deprecated: use page_token in combination with page_size instead.
+    
+    The offset in the result set. Defaults to 0 (no offset). When an offset is specified and the
+    results are requested in descending order, the end_time field is required."""
+
+    order: Optional[GetEventsOrder] = None
+    """The order to list events in; either "ASC" or "DESC". Defaults to "DESC"."""
+
+    page_size: Optional[int] = None
+    """The maximum number of events to include in a page of events. The server may further constrain
+    the maximum number of results returned in a single page. If the page_size is empty or 0, the
+    server will decide the number of results to be returned. The field has to be in the range
+    [0,500]. If the value is outside the range, the server enforces 0 or 500."""
+
+    page_token: Optional[str] = None
+    """Use next_page_token or prev_page_token returned from the previous request to list the next or
+    previous page of events respectively. If page_token is empty, the first page is returned."""
+
+    start_time: Optional[int] = None
+    """The start time in epoch milliseconds. If empty, returns events starting from the beginning of
+    time."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetEvents into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None:
+            body["cluster_id"] = self.cluster_id
+        if self.end_time is not None:
+            body["end_time"] = self.end_time
+        if self.event_types:
+            body["event_types"] = [v.value for v in self.event_types]
+        if self.limit is not None:
+            body["limit"] = self.limit
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.order is not None:
+            body["order"] = self.order.value
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetEvents into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None:
+            body["cluster_id"] = self.cluster_id
+        if self.end_time is not None:
+            body["end_time"] = self.end_time
+        if self.event_types:
+            body["event_types"] = self.event_types
+        if self.limit is not None:
+            body["limit"] = self.limit
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.order is not None:
+            body["order"] = self.order
+        if self.page_size is not None:
+            body["page_size"] = self.page_size
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetEvents:
+        """Deserializes the GetEvents from a dictionary."""
+        return cls(
+            cluster_id=d.get("cluster_id", None),
+            end_time=d.get("end_time", None),
+            event_types=_repeated_enum(d, "event_types", EventType),
+            limit=d.get("limit", None),
+            offset=d.get("offset", None),
+            order=_enum(d, "order", GetEventsOrder),
+            page_size=d.get("page_size", None),
+            page_token=d.get("page_token", None),
+            start_time=d.get("start_time", None),
+        )
+
+
 class GetEventsOrder(Enum):
 
     ASC = "ASC"
@@ -5116,6 +5218,58 @@ class InstancePoolStatus:
     def from_dict(cls, d: Dict[str, Any]) -> InstancePoolStatus:
         """Deserializes the InstancePoolStatus from a dictionary."""
         return cls(pending_instance_errors=_repeated_dict(d, "pending_instance_errors", PendingInstanceError))
+
+
+@dataclass
+class InstanceProfile:
+    instance_profile_arn: str
+    """The AWS ARN of the instance profile to register with Databricks. This field is required."""
+
+    iam_role_arn: Optional[str] = None
+    """The AWS IAM role ARN of the role associated with the instance profile. This field is required if
+    your role name and instance profile name do not match and you want to use the instance profile
+    with [Databricks SQL Serverless].
+    
+    Otherwise, this field is optional.
+    
+    [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html"""
+
+    is_meta_instance_profile: Optional[bool] = None
+    """Boolean flag indicating whether the instance profile should only be used in credential
+    passthrough scenarios. If true, it means the instance profile contains an meta IAM role which
+    could assume a wide range of roles. Therefore it should always be used with authorization. This
+    field is optional, the default value is `false`."""
+
+    def as_dict(self) -> dict:
+        """Serializes the InstanceProfile into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.iam_role_arn is not None:
+            body["iam_role_arn"] = self.iam_role_arn
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstanceProfile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.iam_role_arn is not None:
+            body["iam_role_arn"] = self.iam_role_arn
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body["is_meta_instance_profile"] = self.is_meta_instance_profile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InstanceProfile:
+        """Deserializes the InstanceProfile from a dictionary."""
+        return cls(
+            iam_role_arn=d.get("iam_role_arn", None),
+            instance_profile_arn=d.get("instance_profile_arn", None),
+            is_meta_instance_profile=d.get("is_meta_instance_profile", None),
+        )
 
 
 class Kind(Enum):

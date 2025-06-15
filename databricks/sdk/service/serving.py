@@ -1078,6 +1078,69 @@ class EmbeddingsV1ResponseEmbeddingElementObject(Enum):
 
 
 @dataclass
+class EndpointCoreConfigInput:
+    auto_capture_config: Optional[AutoCaptureConfigInput] = None
+    """Configuration for Inference Tables which automatically logs requests and responses to Unity
+    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
+    updating existing provisioned throughput endpoints that never have inference table configured;
+    in these cases please use AI Gateway to manage inference tables."""
+
+    name: Optional[str] = None
+    """The name of the serving endpoint to update. This field is required."""
+
+    served_entities: Optional[List[ServedEntityInput]] = None
+    """The list of served entities under the serving endpoint config."""
+
+    served_models: Optional[List[ServedModelInput]] = None
+    """(Deprecated, use served_entities instead) The list of served models under the serving endpoint
+    config."""
+
+    traffic_config: Optional[TrafficConfig] = None
+    """The traffic configuration associated with the serving endpoint config."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigInput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.auto_capture_config:
+            body["auto_capture_config"] = self.auto_capture_config.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.served_entities:
+            body["served_entities"] = [v.as_dict() for v in self.served_entities]
+        if self.served_models:
+            body["served_models"] = [v.as_dict() for v in self.served_models]
+        if self.traffic_config:
+            body["traffic_config"] = self.traffic_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auto_capture_config:
+            body["auto_capture_config"] = self.auto_capture_config
+        if self.name is not None:
+            body["name"] = self.name
+        if self.served_entities:
+            body["served_entities"] = self.served_entities
+        if self.served_models:
+            body["served_models"] = self.served_models
+        if self.traffic_config:
+            body["traffic_config"] = self.traffic_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigInput:
+        """Deserializes the EndpointCoreConfigInput from a dictionary."""
+        return cls(
+            auto_capture_config=_from_dict(d, "auto_capture_config", AutoCaptureConfigInput),
+            name=d.get("name", None),
+            served_entities=_repeated_dict(d, "served_entities", ServedEntityInput),
+            served_models=_repeated_dict(d, "served_models", ServedModelInput),
+            traffic_config=_from_dict(d, "traffic_config", TrafficConfig),
+        )
+
+
+@dataclass
 class EndpointCoreConfigOutput:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity

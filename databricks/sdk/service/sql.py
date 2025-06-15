@@ -3601,6 +3601,92 @@ class LegacyQuery:
         )
 
 
+@dataclass
+class LegacyVisualization:
+    """The visualization description API changes frequently and is unsupported. You can duplicate a
+    visualization by copying description objects received _from the API_ and then using them to
+    create a new one with a POST request to the same endpoint. Databricks does not recommend
+    constructing ad-hoc visualizations entirely in JSON."""
+
+    created_at: Optional[str] = None
+
+    description: Optional[str] = None
+    """A short description of this visualization. This is not displayed in the UI."""
+
+    id: Optional[str] = None
+    """The UUID for this visualization."""
+
+    name: Optional[str] = None
+    """The name of the visualization that appears on dashboards and the query screen."""
+
+    options: Optional[Any] = None
+    """The options object varies widely from one visualization type to the next and is unsupported.
+    Databricks does not recommend modifying visualization settings in JSON."""
+
+    query: Optional[LegacyQuery] = None
+
+    type: Optional[str] = None
+    """The type of visualization: chart, table, pivot table, and so on."""
+
+    updated_at: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the LegacyVisualization into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query:
+            body["query"] = self.query.as_dict()
+        if self.type is not None:
+            body["type"] = self.type
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LegacyVisualization into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.description is not None:
+            body["description"] = self.description
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query:
+            body["query"] = self.query
+        if self.type is not None:
+            body["type"] = self.type
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LegacyVisualization:
+        """Deserializes the LegacyVisualization from a dictionary."""
+        return cls(
+            created_at=d.get("created_at", None),
+            description=d.get("description", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            options=d.get("options", None),
+            query=_from_dict(d, "query", LegacyQuery),
+            type=d.get("type", None),
+            updated_at=d.get("updated_at", None),
+        )
+
+
 class LifecycleState(Enum):
 
     ACTIVE = "ACTIVE"

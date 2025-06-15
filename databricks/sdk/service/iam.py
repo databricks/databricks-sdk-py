@@ -414,6 +414,97 @@ class GrantRule:
         return cls(principals=d.get("principals", None), role=d.get("role", None))
 
 
+@dataclass
+class Group:
+    display_name: Optional[str] = None
+    """String that represents a human-readable group name"""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+    values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
+    external_id: Optional[str] = None
+
+    groups: Optional[List[ComplexValue]] = None
+
+    id: Optional[str] = None
+    """Databricks group ID"""
+
+    members: Optional[List[ComplexValue]] = None
+
+    meta: Optional[ResourceMeta] = None
+    """Container for the group identifier. Workspace local versus account."""
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[GroupSchema]] = None
+    """The schema of the group."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Group into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.entitlements:
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = [v.as_dict() for v in self.groups]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.members:
+            body["members"] = [v.as_dict() for v in self.members]
+        if self.meta:
+            body["meta"] = self.meta.as_dict()
+        if self.roles:
+            body["roles"] = [v.as_dict() for v in self.roles]
+        if self.schemas:
+            body["schemas"] = [v.value for v in self.schemas]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Group into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.entitlements:
+            body["entitlements"] = self.entitlements
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = self.groups
+        if self.id is not None:
+            body["id"] = self.id
+        if self.members:
+            body["members"] = self.members
+        if self.meta:
+            body["meta"] = self.meta
+        if self.roles:
+            body["roles"] = self.roles
+        if self.schemas:
+            body["schemas"] = self.schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Group:
+        """Deserializes the Group from a dictionary."""
+        return cls(
+            display_name=d.get("displayName", None),
+            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
+            external_id=d.get("externalId", None),
+            groups=_repeated_dict(d, "groups", ComplexValue),
+            id=d.get("id", None),
+            members=_repeated_dict(d, "members", ComplexValue),
+            meta=_from_dict(d, "meta", ResourceMeta),
+            roles=_repeated_dict(d, "roles", ComplexValue),
+            schemas=_repeated_enum(d, "schemas", GroupSchema),
+        )
+
+
 class GroupSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP = "urn:ietf:params:scim:schemas:core:2.0:Group"
@@ -1462,6 +1553,98 @@ class RuleSetUpdateRequest:
         )
 
 
+@dataclass
+class ServicePrincipal:
+    active: Optional[bool] = None
+    """If this user is active"""
+
+    application_id: Optional[str] = None
+    """UUID relating to the service principal"""
+
+    display_name: Optional[str] = None
+    """String that represents a concatenation of given and family names."""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+    supported values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
+    external_id: Optional[str] = None
+
+    groups: Optional[List[ComplexValue]] = None
+
+    id: Optional[str] = None
+    """Databricks service principal ID."""
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[ServicePrincipalSchema]] = None
+    """The schema of the List response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.active is not None:
+            body["active"] = self.active
+        if self.application_id is not None:
+            body["applicationId"] = self.application_id
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.entitlements:
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = [v.as_dict() for v in self.groups]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.roles:
+            body["roles"] = [v.as_dict() for v in self.roles]
+        if self.schemas:
+            body["schemas"] = [v.value for v in self.schemas]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServicePrincipal into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.active is not None:
+            body["active"] = self.active
+        if self.application_id is not None:
+            body["applicationId"] = self.application_id
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.entitlements:
+            body["entitlements"] = self.entitlements
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = self.groups
+        if self.id is not None:
+            body["id"] = self.id
+        if self.roles:
+            body["roles"] = self.roles
+        if self.schemas:
+            body["schemas"] = self.schemas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ServicePrincipal:
+        """Deserializes the ServicePrincipal from a dictionary."""
+        return cls(
+            active=d.get("active", None),
+            application_id=d.get("applicationId", None),
+            display_name=d.get("displayName", None),
+            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
+            external_id=d.get("externalId", None),
+            groups=_repeated_dict(d, "groups", ComplexValue),
+            id=d.get("id", None),
+            roles=_repeated_dict(d, "roles", ComplexValue),
+            schemas=_repeated_enum(d, "schemas", ServicePrincipalSchema),
+        )
+
+
 class ServicePrincipalSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
@@ -1483,6 +1666,118 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class User:
+    active: Optional[bool] = None
+    """If this user is active"""
+
+    display_name: Optional[str] = None
+    """String that represents a concatenation of given and family names. For example `John Smith`. This
+    field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled].
+    Use Account SCIM APIs to update `displayName`.
+    
+    [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"""
+
+    emails: Optional[List[ComplexValue]] = None
+    """All the emails associated with the Databricks user."""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
+    values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
+    external_id: Optional[str] = None
+    """External ID is not currently supported. It is reserved for future use."""
+
+    groups: Optional[List[ComplexValue]] = None
+
+    id: Optional[str] = None
+    """Databricks user ID."""
+
+    name: Optional[Name] = None
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[UserSchema]] = None
+    """The schema of the user."""
+
+    user_name: Optional[str] = None
+    """Email address of the Databricks user."""
+
+    def as_dict(self) -> dict:
+        """Serializes the User into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.active is not None:
+            body["active"] = self.active
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.emails:
+            body["emails"] = [v.as_dict() for v in self.emails]
+        if self.entitlements:
+            body["entitlements"] = [v.as_dict() for v in self.entitlements]
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = [v.as_dict() for v in self.groups]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name:
+            body["name"] = self.name.as_dict()
+        if self.roles:
+            body["roles"] = [v.as_dict() for v in self.roles]
+        if self.schemas:
+            body["schemas"] = [v.value for v in self.schemas]
+        if self.user_name is not None:
+            body["userName"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the User into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.active is not None:
+            body["active"] = self.active
+        if self.display_name is not None:
+            body["displayName"] = self.display_name
+        if self.emails:
+            body["emails"] = self.emails
+        if self.entitlements:
+            body["entitlements"] = self.entitlements
+        if self.external_id is not None:
+            body["externalId"] = self.external_id
+        if self.groups:
+            body["groups"] = self.groups
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name:
+            body["name"] = self.name
+        if self.roles:
+            body["roles"] = self.roles
+        if self.schemas:
+            body["schemas"] = self.schemas
+        if self.user_name is not None:
+            body["userName"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> User:
+        """Deserializes the User from a dictionary."""
+        return cls(
+            active=d.get("active", None),
+            display_name=d.get("displayName", None),
+            emails=_repeated_dict(d, "emails", ComplexValue),
+            entitlements=_repeated_dict(d, "entitlements", ComplexValue),
+            external_id=d.get("externalId", None),
+            groups=_repeated_dict(d, "groups", ComplexValue),
+            id=d.get("id", None),
+            name=_from_dict(d, "name", Name),
+            roles=_repeated_dict(d, "roles", ComplexValue),
+            schemas=_repeated_enum(d, "schemas", UserSchema),
+            user_name=d.get("userName", None),
+        )
 
 
 class UserSchema(Enum):

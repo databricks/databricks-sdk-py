@@ -1626,6 +1626,89 @@ class CreateFunctionSqlDataAccess(Enum):
 
 
 @dataclass
+class CreateMetastore:
+    name: str
+    """The user-specified name of the metastore."""
+
+    region: Optional[str] = None
+    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+
+    storage_root: Optional[str] = None
+    """The storage root URL for metastore"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateMetastore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateMetastore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastore:
+        """Deserializes the CreateMetastore from a dictionary."""
+        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
+
+
+@dataclass
+class CreateMetastoreAssignment:
+    metastore_id: str
+    """The unique ID of the metastore."""
+
+    default_catalog_name: str
+    """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
+
+    workspace_id: Optional[int] = None
+    """A workspace ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_catalog_name is not None:
+            body["default_catalog_name"] = self.default_catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateMetastoreAssignment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_catalog_name is not None:
+            body["default_catalog_name"] = self.default_catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastoreAssignment:
+        """Deserializes the CreateMetastoreAssignment from a dictionary."""
+        return cls(
+            default_catalog_name=d.get("default_catalog_name", None),
+            metastore_id=d.get("metastore_id", None),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
 class CreateResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
@@ -1641,6 +1724,101 @@ class CreateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class CreateStorageCredential:
+    name: str
+    """The credential name. The name must be unique among storage and service credentials within the
+    metastore."""
+
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
+    """The AWS IAM role configuration."""
+
+    azure_managed_identity: Optional[AzureManagedIdentityRequest] = None
+    """The Azure managed identity configuration."""
+
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
+    comment: Optional[str] = None
+    """Comment associated with the credential."""
+
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
+    """The Databricks managed GCP service account configuration."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
+    skip_validation: Optional[bool] = None
+    """Supplying true to this argument skips validation of the created credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateStorageCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        if self.skip_validation is not None:
+            body["skip_validation"] = self.skip_validation
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateStorageCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
+        if self.name is not None:
+            body["name"] = self.name
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        if self.skip_validation is not None:
+            body["skip_validation"] = self.skip_validation
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateStorageCredential:
+        """Deserializes the CreateStorageCredential from a dictionary."""
+        return cls(
+            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
+            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityRequest),
+            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
+            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
+            comment=d.get("comment", None),
+            databricks_gcp_service_account=_from_dict(
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
+            ),
+            name=d.get("name", None),
+            read_only=d.get("read_only", None),
+            skip_validation=d.get("skip_validation", None),
+        )
 
 
 @dataclass
@@ -7311,6 +7489,140 @@ class UpdateCatalogWorkspaceBindingsResponse:
 
 
 @dataclass
+class UpdateMetastore:
+    delta_sharing_organization_name: Optional[str] = None
+    """The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta
+    Sharing as the official name."""
+
+    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
+    """The lifetime of delta sharing recipient token in seconds."""
+
+    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
+    """The scope of Delta Sharing enabled for the metastore."""
+
+    id: Optional[str] = None
+    """Unique ID of the metastore."""
+
+    new_name: Optional[str] = None
+    """New name for the metastore."""
+
+    owner: Optional[str] = None
+    """The owner of the metastore."""
+
+    privilege_model_version: Optional[str] = None
+    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+
+    storage_root_credential_id: Optional[str] = None
+    """UUID of storage credential to access the metastore storage_root."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateMetastore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_sharing_organization_name is not None:
+            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
+        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
+            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
+                self.delta_sharing_recipient_token_lifetime_in_seconds
+            )
+        if self.delta_sharing_scope is not None:
+            body["delta_sharing_scope"] = self.delta_sharing_scope.value
+        if self.id is not None:
+            body["id"] = self.id
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.privilege_model_version is not None:
+            body["privilege_model_version"] = self.privilege_model_version
+        if self.storage_root_credential_id is not None:
+            body["storage_root_credential_id"] = self.storage_root_credential_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateMetastore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_sharing_organization_name is not None:
+            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
+        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
+            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
+                self.delta_sharing_recipient_token_lifetime_in_seconds
+            )
+        if self.delta_sharing_scope is not None:
+            body["delta_sharing_scope"] = self.delta_sharing_scope
+        if self.id is not None:
+            body["id"] = self.id
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.privilege_model_version is not None:
+            body["privilege_model_version"] = self.privilege_model_version
+        if self.storage_root_credential_id is not None:
+            body["storage_root_credential_id"] = self.storage_root_credential_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastore:
+        """Deserializes the UpdateMetastore from a dictionary."""
+        return cls(
+            delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
+            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
+                "delta_sharing_recipient_token_lifetime_in_seconds", None
+            ),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
+            id=d.get("id", None),
+            new_name=d.get("new_name", None),
+            owner=d.get("owner", None),
+            privilege_model_version=d.get("privilege_model_version", None),
+            storage_root_credential_id=d.get("storage_root_credential_id", None),
+        )
+
+
+@dataclass
+class UpdateMetastoreAssignment:
+    default_catalog_name: Optional[str] = None
+    """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
+
+    metastore_id: Optional[str] = None
+    """The unique ID of the metastore."""
+
+    workspace_id: Optional[int] = None
+    """A workspace ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_catalog_name is not None:
+            body["default_catalog_name"] = self.default_catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateMetastoreAssignment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_catalog_name is not None:
+            body["default_catalog_name"] = self.default_catalog_name
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastoreAssignment:
+        """Deserializes the UpdateMetastoreAssignment from a dictionary."""
+        return cls(
+            default_catalog_name=d.get("default_catalog_name", None),
+            metastore_id=d.get("metastore_id", None),
+            workspace_id=d.get("workspace_id", None),
+        )
+
+
+@dataclass
 class UpdatePermissionsResponse:
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -7351,6 +7663,132 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class UpdateStorageCredential:
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
+    """The AWS IAM role configuration."""
+
+    azure_managed_identity: Optional[AzureManagedIdentityResponse] = None
+    """The Azure managed identity configuration."""
+
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
+    comment: Optional[str] = None
+    """Comment associated with the credential."""
+
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
+    """The Databricks managed GCP service account configuration."""
+
+    force: Optional[bool] = None
+    """Force update even if there are dependent external locations or external tables."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
+    name: Optional[str] = None
+    """Name of the storage credential."""
+
+    new_name: Optional[str] = None
+    """New name for the storage credential."""
+
+    owner: Optional[str] = None
+    """Username of current owner of credential."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
+    skip_validation: Optional[bool] = None
+    """Supplying true to this argument skips validation of the updated credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateStorageCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
+        if self.force is not None:
+            body["force"] = self.force
+        if self.isolation_mode is not None:
+            body["isolation_mode"] = self.isolation_mode.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        if self.skip_validation is not None:
+            body["skip_validation"] = self.skip_validation
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateStorageCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
+        if self.force is not None:
+            body["force"] = self.force
+        if self.isolation_mode is not None:
+            body["isolation_mode"] = self.isolation_mode
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        if self.skip_validation is not None:
+            body["skip_validation"] = self.skip_validation
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateStorageCredential:
+        """Deserializes the UpdateStorageCredential from a dictionary."""
+        return cls(
+            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
+            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityResponse),
+            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
+            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
+            comment=d.get("comment", None),
+            databricks_gcp_service_account=_from_dict(
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
+            ),
+            force=d.get("force", None),
+            isolation_mode=_enum(d, "isolation_mode", IsolationMode),
+            name=d.get("name", None),
+            new_name=d.get("new_name", None),
+            owner=d.get("owner", None),
+            read_only=d.get("read_only", None),
+            skip_validation=d.get("skip_validation", None),
+        )
 
 
 @dataclass

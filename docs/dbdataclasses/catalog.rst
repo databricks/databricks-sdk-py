@@ -329,7 +329,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READS_SQL_DATA
       :value: "READS_SQL_DATA"
 
+.. autoclass:: CreateMetastore
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateMetastoreAssignment
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateStorageCredential
    :members:
    :undoc-members:
 
@@ -1352,11 +1364,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateMetastore
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateMetastoreAssignment
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdatePermissionsResponse
    :members:
    :undoc-members:
 
 .. autoclass:: UpdateResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateStorageCredential
    :members:
    :undoc-members:
 
