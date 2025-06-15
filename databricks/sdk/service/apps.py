@@ -606,40 +606,6 @@ class AppPermissionsDescription:
 
 
 @dataclass
-class AppPermissionsRequest:
-    access_control_list: Optional[List[AppAccessControlRequest]] = None
-
-    app_name: Optional[str] = None
-    """The app for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AppPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.app_name is not None:
-            body["app_name"] = self.app_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.app_name is not None:
-            body["app_name"] = self.app_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsRequest:
-        """Deserializes the AppPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlRequest),
-            app_name=d.get("app_name", None),
-        )
-
-
-@dataclass
 class AppResource:
     name: str
     """Name of the App Resource."""
@@ -1110,18 +1076,6 @@ class ListAppsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
         return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
-
-
-@dataclass
-class StartAppRequest:
-    name: Optional[str] = None
-    """The name of the app."""
-
-
-@dataclass
-class StopAppRequest:
-    name: Optional[str] = None
-    """The name of the app."""
 
 
 class AppsAPI:

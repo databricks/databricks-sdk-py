@@ -4,18 +4,6 @@ Unity Catalog
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.catalog`` module.
 
 .. py:currentmodule:: databricks.sdk.service.catalog
-.. autoclass:: AccountsCreateMetastore
-   :members:
-   :undoc-members:
-
-.. autoclass:: AccountsCreateMetastoreAssignment
-   :members:
-   :undoc-members:
-
-.. autoclass:: AccountsCreateStorageCredential
-   :members:
-   :undoc-members:
-
 .. autoclass:: AccountsMetastoreAssignment
    :members:
    :undoc-members:
@@ -25,18 +13,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: AccountsStorageCredentialInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: AccountsUpdateMetastore
-   :members:
-   :undoc-members:
-
-.. autoclass:: AccountsUpdateMetastoreAssignment
-   :members:
-   :undoc-members:
-
-.. autoclass:: AccountsUpdateStorageCredential
    :members:
    :undoc-members:
 
@@ -312,22 +288,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCatalog
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateConnection
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateCredentialRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateExternalLocation
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateFunction
    :members:
    :undoc-members:
@@ -338,10 +298,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: S
       :value: "S"
-
-.. autoclass:: CreateFunctionRequest
-   :members:
-   :undoc-members:
 
 .. py:class:: CreateFunctionRoutineBody
 
@@ -381,31 +337,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateMonitor
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateRegisteredModelRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateResponse
    :members:
    :undoc-members:
 
-.. autoclass:: CreateSchema
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateStorageCredential
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateTableConstraint
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateVolumeRequestContent
    :members:
    :undoc-members:
 
@@ -623,10 +559,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INHERIT
       :value: "INHERIT"
 
-.. autoclass:: EnableRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: EnableResponse
    :members:
    :undoc-members:
@@ -734,14 +666,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenerateTemporaryServiceCredentialGcpOptions
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenerateTemporaryServiceCredentialRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenerateTemporaryTableCredentialRequest
    :members:
    :undoc-members:
 
@@ -1264,10 +1188,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RegenerateDashboardRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: RegenerateDashboardResponse
    :members:
    :undoc-members:
@@ -1341,14 +1261,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"
-
-.. autoclass:: SetArtifactAllowlist
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetRegisteredModelAliasRequest
-   :members:
-   :undoc-members:
 
 .. autoclass:: SseEncryptionDetails
    :members:
@@ -1448,27 +1360,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCatalog
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateCatalogWorkspaceBindingsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateConnection
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateCredentialRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateExternalLocation
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateFunction
    :members:
    :undoc-members:
 
@@ -1480,23 +1372,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateModelVersionRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateMonitor
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdatePermissions
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdatePermissionsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRegisteredModelRequest
    :members:
    :undoc-members:
 
@@ -1504,35 +1380,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateSchema
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateStorageCredential
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateTableRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateVolumeRequestContent
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateWorkspaceBindings
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateWorkspaceBindingsParameters
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateWorkspaceBindingsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ValidateCredentialRequest
    :members:
    :undoc-members:
 
@@ -1552,10 +1404,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SKIP
       :value: "SKIP"
-
-.. autoclass:: ValidateStorageCredential
-   :members:
-   :undoc-members:
 
 .. autoclass:: ValidateStorageCredentialResponse
    :members:

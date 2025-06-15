@@ -349,39 +349,6 @@ class DeleteSyncedDatabaseTableResponse:
 
 
 @dataclass
-class GenerateDatabaseCredentialRequest:
-    """Generates a credential that can be used to access database instances"""
-
-    instance_names: Optional[List[str]] = None
-    """Instances to which the token will be scoped."""
-
-    request_id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the GenerateDatabaseCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.instance_names:
-            body["instance_names"] = [v for v in self.instance_names]
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenerateDatabaseCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.instance_names:
-            body["instance_names"] = self.instance_names
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenerateDatabaseCredentialRequest:
-        """Deserializes the GenerateDatabaseCredentialRequest from a dictionary."""
-        return cls(instance_names=d.get("instance_names", None), request_id=d.get("request_id", None))
-
-
-@dataclass
 class ListDatabaseInstancesResponse:
     database_instances: Optional[List[DatabaseInstance]] = None
     """List of instances."""

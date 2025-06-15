@@ -124,14 +124,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreatePtEndpointRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateServingEndpoint
-   :members:
-   :undoc-members:
-
 .. autoclass:: CustomProviderConfig
    :members:
    :undoc-members:
@@ -214,10 +206,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ExportMetricsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExternalFunctionRequest
    :members:
    :undoc-members:
 
@@ -315,10 +303,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PatchServingEndpointTags
-   :members:
-   :undoc-members:
-
 .. autoclass:: PayloadTable
    :members:
    :undoc-members:
@@ -331,23 +315,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PutAiGatewayRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: PutAiGatewayResponse
    :members:
    :undoc-members:
 
-.. autoclass:: PutRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: PutResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: QueryEndpointInput
    :members:
    :undoc-members:
 
@@ -509,10 +481,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ServingEndpointPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. py:class:: ServingModelWorkloadType
 
    Please keep this in sync with with workload types in InferenceEndpointEntities.scala
@@ -533,10 +501,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "MULTIGPU_MEDIUM"
 
 .. autoclass:: TrafficConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateProvisionedThroughputEndpointConfigRequest
    :members:
    :undoc-members:
 
