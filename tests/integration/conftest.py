@@ -38,13 +38,9 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(items):
-    # safer to refer to fixture fns instead of strings
-    client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct]]
+    # All tests defined in tests/integration are considered integration tests.
     for item in items:
-        current_fixtures = getattr(item, "fixturenames", ())
-        for requires_client in client_fixtures:
-            if requires_client in current_fixtures:
-                item.add_marker("integration")
+        item.add_marker("integration")
 
 
 @pytest.fixture(scope="session")
