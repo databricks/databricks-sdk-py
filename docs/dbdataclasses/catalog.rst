@@ -1169,7 +1169,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXECUTE_CLEAN_ROOM_TASK
       :value: "EXECUTE_CLEAN_ROOM_TASK"
-   
+
    .. py:attribute:: EXTERNAL_USE_SCHEMA
       :value: "EXTERNAL_USE_SCHEMA"
 
