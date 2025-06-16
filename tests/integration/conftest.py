@@ -40,7 +40,9 @@ def pytest_configure(config):
 def pytest_collection_modifyitems(items):
     # All tests defined in tests/integration are considered integration tests.
     for item in items:
-        item.add_marker("integration")
+        directory = item.path.parent
+        if directory.name == "integration" and directory.parent.name == "tests":
+            item.add_marker("integration")
 
 
 @pytest.fixture(scope="session")
