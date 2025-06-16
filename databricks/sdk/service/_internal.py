@@ -2,7 +2,7 @@ import datetime
 import urllib.parse
 from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar
 
-from databricks.sdk import common
+from databricks.sdk.common_types import common
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:

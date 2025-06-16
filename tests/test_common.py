@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from databricks.sdk.common import Duration, Timestamp
+from databricks.sdk.common_types.common import Duration, Timestamp
 
 
 @pytest.mark.parametrize(

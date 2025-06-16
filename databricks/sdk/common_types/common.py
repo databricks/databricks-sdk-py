@@ -5,12 +5,9 @@ This module provides common types used by different APIs.
 
 from __future__ import annotations
 
-import logging
 import re
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-
-_LOG = logging.getLogger("databricks.sdk")
 
 # Python datetime library does not have nanoseconds precision. These classes below are used to work around this limitation.
 
