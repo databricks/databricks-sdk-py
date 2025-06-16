@@ -1755,9 +1755,7 @@ class VectorSearchEndpointsAPI:
     def create_endpoint(
         self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
     ) -> Wait[EndpointInfo]:
-        """Create an endpoint.
-
-        Create a new endpoint.
+        """Create a new endpoint.
 
         :param name: str
           Name of the vector search endpoint
@@ -1802,9 +1800,7 @@ class VectorSearchEndpointsAPI:
         )
 
     def delete_endpoint(self, endpoint_name: str):
-        """Delete an endpoint.
-
-        Delete a vector search endpoint.
+        """Delete a vector search endpoint.
 
         :param endpoint_name: str
           Name of the vector search endpoint
@@ -1819,9 +1815,7 @@ class VectorSearchEndpointsAPI:
         self._api.do("DELETE", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
-        """Get an endpoint.
-
-        Get details for a single vector search endpoint.
+        """Get details for a single vector search endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -1837,9 +1831,7 @@ class VectorSearchEndpointsAPI:
         return EndpointInfo.from_dict(res)
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
-        """List all endpoints.
-
-        List all vector search endpoints in the workspace.
+        """List all vector search endpoints in the workspace.
 
         :param page_token: str (optional)
           Token for pagination
@@ -1866,9 +1858,7 @@ class VectorSearchEndpointsAPI:
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
     ) -> PatchEndpointBudgetPolicyResponse:
-        """Update the budget policy of an endpoint.
-
-        Update the budget policy of an endpoint
+        """Update the budget policy of an endpoint
 
         :param endpoint_name: str
           Name of the vector search endpoint
@@ -1938,9 +1928,7 @@ class VectorSearchIndexesAPI:
         delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
         direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
     ) -> VectorIndex:
-        """Create an index.
-
-        Create a new index.
+        """Create a new index.
 
         :param name: str
           Name of the index
@@ -1982,9 +1970,7 @@ class VectorSearchIndexesAPI:
         return VectorIndex.from_dict(res)
 
     def delete_data_vector_index(self, index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
-        """Delete data from index.
-
-        Handles the deletion of data from a specified vector index.
+        """Handles the deletion of data from a specified vector index.
 
         :param index_name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
@@ -2009,8 +1995,6 @@ class VectorSearchIndexesAPI:
     def delete_index(self, index_name: str):
         """Delete an index.
 
-        Delete an index.
-
         :param index_name: str
           Name of the index
 
@@ -2026,8 +2010,6 @@ class VectorSearchIndexesAPI:
     def get_index(self, index_name: str) -> VectorIndex:
         """Get an index.
 
-        Get an index.
-
         :param index_name: str
           Name of the index
 
@@ -2042,9 +2024,7 @@ class VectorSearchIndexesAPI:
         return VectorIndex.from_dict(res)
 
     def list_indexes(self, endpoint_name: str, *, page_token: Optional[str] = None) -> Iterator[MiniVectorIndex]:
-        """List indexes.
-
-        List all indexes in the given endpoint.
+        """List all indexes in the given endpoint.
 
         :param endpoint_name: str
           Name of the endpoint
@@ -2085,9 +2065,7 @@ class VectorSearchIndexesAPI:
         query_vector: Optional[List[float]] = None,
         score_threshold: Optional[float] = None,
     ) -> QueryVectorIndexResponse:
-        """Query an index.
-
-        Query the specified vector index.
+        """Query the specified vector index.
 
         :param index_name: str
           Name of the vector index to query.
@@ -2145,9 +2123,7 @@ class VectorSearchIndexesAPI:
     def query_next_page(
         self, index_name: str, *, endpoint_name: Optional[str] = None, page_token: Optional[str] = None
     ) -> QueryVectorIndexResponse:
-        """Query next page.
-
-        Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
+        """Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
         to fetch next page of results.
 
         :param index_name: str
@@ -2177,9 +2153,7 @@ class VectorSearchIndexesAPI:
     def scan_index(
         self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
-        """Scan an index.
-
-        Scan the specified vector index and return the first `num_results` entries after the exclusive
+        """Scan the specified vector index and return the first `num_results` entries after the exclusive
         `primary_key`.
 
         :param index_name: str
@@ -2205,9 +2179,7 @@ class VectorSearchIndexesAPI:
         return ScanVectorIndexResponse.from_dict(res)
 
     def sync_index(self, index_name: str):
-        """Synchronize an index.
-
-        Triggers a synchronization process for a specified vector index.
+        """Triggers a synchronization process for a specified vector index.
 
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
@@ -2222,9 +2194,7 @@ class VectorSearchIndexesAPI:
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
-        """Upsert data into an index.
-
-        Handles the upserting of data into a specified vector index.
+        """Handles the upserting of data into a specified vector index.
 
         :param index_name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.

@@ -4,11 +4,9 @@
 
 .. py:class:: AlertsV2API
 
-    TODO: Add description
+    New version of SQL Alerts
 
     .. py:method:: create_alert(alert: AlertV2) -> AlertV2
-
-        Create an alert.
 
         Create Alert
 
@@ -19,8 +17,6 @@
 
     .. py:method:: get_alert(id: str) -> AlertV2
 
-        Get an alert.
-
         Gets an alert.
 
         :param id: str
@@ -29,8 +25,6 @@
         
 
     .. py:method:: list_alerts( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AlertV2]
-
-        List alerts.
 
         Gets a list of alerts accessible to the user, ordered by creation time.
 
@@ -42,8 +36,6 @@
 
     .. py:method:: trash_alert(id: str)
 
-        Delete an alert.
-
         Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
         trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
         30 days.
@@ -54,8 +46,6 @@
         
 
     .. py:method:: update_alert(id: str, alert: AlertV2, update_mask: str) -> AlertV2
-
-        Update an alert.
 
         Update alert
 

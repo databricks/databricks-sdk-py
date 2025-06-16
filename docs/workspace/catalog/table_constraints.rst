@@ -17,8 +17,6 @@
 
     .. py:method:: create(full_name_arg: str, constraint: TableConstraint) -> TableConstraint
 
-        Create a table constraint.
-
         Creates a new table constraint.
 
         For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
@@ -38,8 +36,6 @@
         
 
     .. py:method:: delete(full_name: str, constraint_name: str, cascade: bool)
-
-        Delete a table constraint.
 
         Deletes a table constraint.
 

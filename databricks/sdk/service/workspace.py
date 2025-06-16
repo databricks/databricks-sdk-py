@@ -2372,9 +2372,7 @@ class GitCredentialsAPI:
     def create(
         self, git_provider: str, *, git_username: Optional[str] = None, personal_access_token: Optional[str] = None
     ) -> CreateCredentialsResponse:
-        """Create a credential entry.
-
-        Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
+        """Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
         existing credentials, or the DELETE endpoint to delete existing credentials.
 
@@ -2412,9 +2410,7 @@ class GitCredentialsAPI:
         return CreateCredentialsResponse.from_dict(res)
 
     def delete(self, credential_id: int):
-        """Delete a credential.
-
-        Deletes the specified Git credential.
+        """Deletes the specified Git credential.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
@@ -2429,9 +2425,7 @@ class GitCredentialsAPI:
         self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
 
     def get(self, credential_id: int) -> GetCredentialsResponse:
-        """Get a credential entry.
-
-        Gets the Git credential with the specified credential ID.
+        """Gets the Git credential with the specified credential ID.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
@@ -2447,9 +2441,7 @@ class GitCredentialsAPI:
         return GetCredentialsResponse.from_dict(res)
 
     def list(self) -> Iterator[CredentialInfo]:
-        """Get Git credentials.
-
-        Lists the calling user's Git credentials. One credential per user is supported.
+        """Lists the calling user's Git credentials. One credential per user is supported.
 
         :returns: Iterator over :class:`CredentialInfo`
         """
@@ -2470,9 +2462,7 @@ class GitCredentialsAPI:
         git_username: Optional[str] = None,
         personal_access_token: Optional[str] = None,
     ):
-        """Update a credential.
-
-        Updates the specified Git credential.
+        """Updates the specified Git credential.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
@@ -2526,9 +2516,7 @@ class ReposAPI:
     def create(
         self, url: str, provider: str, *, path: Optional[str] = None, sparse_checkout: Optional[SparseCheckout] = None
     ) -> CreateRepoResponse:
-        """Create a repo.
-
-        Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
+        """Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
 
         :param url: str
@@ -2564,9 +2552,7 @@ class ReposAPI:
         return CreateRepoResponse.from_dict(res)
 
     def delete(self, repo_id: int):
-        """Delete a repo.
-
-        Deletes the specified repo.
+        """Deletes the specified repo.
 
         :param repo_id: int
           The ID for the corresponding repo to delete.
@@ -2581,9 +2567,7 @@ class ReposAPI:
         self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", headers=headers)
 
     def get(self, repo_id: int) -> GetRepoResponse:
-        """Get a repo.
-
-        Returns the repo with the given repo ID.
+        """Returns the repo with the given repo ID.
 
         :param repo_id: int
           ID of the Git folder (repo) object in the workspace.
@@ -2599,9 +2583,7 @@ class ReposAPI:
         return GetRepoResponse.from_dict(res)
 
     def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
-        """Get repo permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param repo_id: str
           The repo for which to get or manage permissions.
@@ -2617,9 +2599,7 @@ class ReposAPI:
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, repo_id: str) -> RepoPermissions:
-        """Get repo permissions.
-
-        Gets the permissions of a repo. Repos can inherit permissions from their root object.
+        """Gets the permissions of a repo. Repos can inherit permissions from their root object.
 
         :param repo_id: str
           The repo for which to get or manage permissions.
@@ -2635,9 +2615,7 @@ class ReposAPI:
         return RepoPermissions.from_dict(res)
 
     def list(self, *, next_page_token: Optional[str] = None, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
-        """Get repos.
-
-        Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        """Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
         through additional pages.
 
         :param next_page_token: str (optional)
@@ -2672,9 +2650,7 @@ class ReposAPI:
     def set_permissions(
         self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
     ) -> RepoPermissions:
-        """Set repo permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param repo_id: str
@@ -2702,9 +2678,7 @@ class ReposAPI:
         sparse_checkout: Optional[SparseCheckoutUpdate] = None,
         tag: Optional[str] = None,
     ):
-        """Update a repo.
-
-        Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
+        """Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
         branch.
 
         :param repo_id: int
@@ -2738,9 +2712,7 @@ class ReposAPI:
     def update_permissions(
         self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
     ) -> RepoPermissions:
-        """Update repo permissions.
-
-        Updates the permissions on a repo. Repos can inherit permissions from their root object.
+        """Updates the permissions on a repo. Repos can inherit permissions from their root object.
 
         :param repo_id: str
           The repo for which to get or manage permissions.
@@ -2782,9 +2754,7 @@ class SecretsAPI:
         initial_manage_principal: Optional[str] = None,
         scope_backend_type: Optional[ScopeBackendType] = None,
     ):
-        """Create a new secret scope.
-
-        The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
+        """The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
         exceed 128 characters.
 
         :param scope: str
@@ -2815,9 +2785,7 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
 
     def delete_acl(self, scope: str, principal: str):
-        """Delete an ACL.
-
-        Deletes the given ACL on the given scope.
+        """Deletes the given ACL on the given scope.
 
         Users must have the `MANAGE` permission to invoke this API. Throws `RESOURCE_DOES_NOT_EXIST` if no
         such secret scope, principal, or ACL exists. Throws `PERMISSION_DENIED` if the user does not have
@@ -2843,9 +2811,7 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body, headers=headers)
 
     def delete_scope(self, scope: str):
-        """Delete a secret scope.
-
-        Deletes a secret scope.
+        """Deletes a secret scope.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws `PERMISSION_DENIED` if the user
         does not have permission to make this API call.
@@ -2866,9 +2832,7 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
 
     def delete_secret(self, scope: str, key: str):
-        """Delete a secret.
-
-        Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
+        """Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
         secret scope.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists. Throws `PERMISSION_DENIED`
@@ -2894,9 +2858,7 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
-        """Get secret ACL details.
-
-        Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
+        """Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
         permission to invoke this API.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
@@ -2923,9 +2885,7 @@ class SecretsAPI:
         return AclItem.from_dict(res)
 
     def get_secret(self, scope: str, key: str) -> GetSecretResponse:
-        """Get a secret.
-
-        Gets the bytes representation of a secret value for the specified scope and key.
+        """Gets the bytes representation of a secret value for the specified scope and key.
 
         Users need the READ permission to make this call.
 
@@ -2956,9 +2916,7 @@ class SecretsAPI:
         return GetSecretResponse.from_dict(res)
 
     def list_acls(self, scope: str) -> Iterator[AclItem]:
-        """Lists ACLs.
-
-        List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
+        """List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
         user does not have permission to make this API call.
@@ -2981,9 +2939,7 @@ class SecretsAPI:
         return parsed if parsed is not None else []
 
     def list_scopes(self) -> Iterator[SecretScope]:
-        """List all scopes.
-
-        Lists all secret scopes available in the workspace.
+        """Lists all secret scopes available in the workspace.
 
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
 
@@ -2999,9 +2955,7 @@ class SecretsAPI:
         return parsed if parsed is not None else []
 
     def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
-        """List secret keys.
-
-        Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
+        """Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
 
         The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws `RESOURCE_DOES_NOT_EXIST` if
@@ -3026,9 +2980,7 @@ class SecretsAPI:
         return parsed if parsed is not None else []
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
-        """Create/update an ACL.
-
-        Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
+        """Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
         group) on the specified scope point.
 
         In general, a user or group will use the most powerful permission available to them, and permissions
@@ -3079,9 +3031,7 @@ class SecretsAPI:
     def put_secret(
         self, scope: str, key: str, *, bytes_value: Optional[str] = None, string_value: Optional[str] = None
     ):
-        """Add a secret.
-
-        Inserts a secret under the provided scope with the given name. If a secret already exists with the
+        """Inserts a secret under the provided scope with the given name. If a secret already exists with the
         same name, this command overwrites the existing secret's value. The server encrypts the secret using
         the secret scope's encryption settings before storing it.
 
@@ -3135,9 +3085,7 @@ class WorkspaceAPI:
         self._api = api_client
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
-        """Delete a workspace object.
-
-        Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
+        """Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
         non-empty directory and `recursive` is set to `false`, this call returns an error
         `DIRECTORY_NOT_EMPTY`.
@@ -3166,9 +3114,7 @@ class WorkspaceAPI:
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
-        """Export a workspace object.
-
-        Exports an object or the contents of an entire directory.
+        """Exports an object or the contents of an entire directory.
 
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 
@@ -3208,9 +3154,7 @@ class WorkspaceAPI:
     def get_permission_levels(
         self, workspace_object_type: str, workspace_object_id: str
     ) -> GetWorkspaceObjectPermissionLevelsResponse:
-        """Get workspace object permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
@@ -3232,9 +3176,7 @@ class WorkspaceAPI:
         return GetWorkspaceObjectPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, workspace_object_type: str, workspace_object_id: str) -> WorkspaceObjectPermissions:
-        """Get workspace object permissions.
-
-        Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
+        """Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
 
         :param workspace_object_type: str
@@ -3255,9 +3197,7 @@ class WorkspaceAPI:
         return WorkspaceObjectPermissions.from_dict(res)
 
     def get_status(self, path: str) -> ObjectInfo:
-        """Get status.
-
-        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
+        """Gets the status of an object or a directory. If `path` does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`.
 
         :param path: str
@@ -3285,9 +3225,7 @@ class WorkspaceAPI:
         language: Optional[Language] = None,
         overwrite: Optional[bool] = None,
     ):
-        """Import a workspace object.
-
-        Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
+        """Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
         `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
         format with the `language` field unset. To import a single file as `SOURCE`, you must set the
@@ -3339,9 +3277,7 @@ class WorkspaceAPI:
         self._api.do("POST", "/api/2.0/workspace/import", body=body, headers=headers)
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
-        """List contents.
-
-        Lists the contents of a directory, or the object if it is not a directory. If the input path does not
+        """Lists the contents of a directory, or the object if it is not a directory. If the input path does not
         exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
 
         :param path: str
@@ -3366,9 +3302,7 @@ class WorkspaceAPI:
         return parsed if parsed is not None else []
 
     def mkdirs(self, path: str):
-        """Create a directory.
-
-        Creates the specified directory (and necessary parent directories if they do not exist). If there is
+        """Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
 
@@ -3398,9 +3332,7 @@ class WorkspaceAPI:
         *,
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
     ) -> WorkspaceObjectPermissions:
-        """Set workspace object permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
 
@@ -3432,9 +3364,7 @@ class WorkspaceAPI:
         *,
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None,
     ) -> WorkspaceObjectPermissions:
-        """Update workspace object permissions.
-
-        Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
+        """Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
 
         :param workspace_object_type: str

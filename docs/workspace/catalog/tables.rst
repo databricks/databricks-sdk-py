@@ -15,8 +15,6 @@
 
     .. py:method:: delete(full_name: str)
 
-        Delete a table.
-
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
         parent schema, or be the owner of the table and have the **USE_CATALOG** privilege on the parent
@@ -29,8 +27,6 @@
         
 
     .. py:method:: exists(full_name: str) -> TableExistsResponse
-
-        Get boolean reflecting if table exists.
 
         Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
@@ -85,8 +81,6 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.tables.delete(full_name=table_full_name)
 
-        Get a table.
-
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
         the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
@@ -128,8 +122,6 @@
             # cleanup
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-
-        List tables.
 
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
         must be a metastore admin or an owner of (or have the **SELECT** privilege on) the table. For the
@@ -189,8 +181,6 @@
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
 
-        List table summaries.
-
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
@@ -223,8 +213,6 @@
         
 
     .. py:method:: update(full_name: str [, owner: Optional[str]])
-
-        Update a table owner.
 
         Change the owner of the table. The caller must be the owner of the parent catalog, have the
         **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner

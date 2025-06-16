@@ -14,8 +14,6 @@
 
     .. py:method:: get_quota(parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse
 
-        Get information for a single resource quota.
-
         The GetQuota API returns usage information for a single resource quota, defined as a child-parent
         pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
         asynchronously. The updated count might not be returned in the first call.
@@ -31,8 +29,6 @@
         
 
     .. py:method:: list_quotas( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[QuotaInfo]
-
-        List all resource quotas under a metastore.
 
         ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
         counts returned. This API does not trigger a refresh of quota counts.

@@ -25,8 +25,6 @@
             # cleanup
             w.tokens.delete(token_id=token.token_info.token_id)
 
-        Create a user token.
-
         Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
@@ -42,8 +40,6 @@
         
 
     .. py:method:: delete(token_id: str)
-
-        Revoke token.
 
         Revokes an access token.
 
@@ -67,8 +63,6 @@
             w = WorkspaceClient()
             
             all = w.tokens.list()
-
-        List tokens.
 
         Lists all the valid tokens for a user-workspace pair.
 

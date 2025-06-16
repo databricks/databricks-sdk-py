@@ -17,8 +17,6 @@
 
     .. py:method:: enforce_compliance(job_id: int [, validate_only: Optional[bool]]) -> EnforcePolicyComplianceResponse
 
-        Enforce job policy compliance.
-
         Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
         are compliant with the current versions of their respective cluster policies. All-purpose clusters
         used in the job will not be updated.
@@ -33,8 +31,6 @@
 
     .. py:method:: get_compliance(job_id: int) -> GetPolicyComplianceResponse
 
-        Get job policy compliance.
-
         Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
         they use was updated after the job was last edited and some of its job clusters no longer comply with
         their updated policies.
@@ -46,8 +42,6 @@
         
 
     .. py:method:: list_compliance(policy_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[JobCompliance]
-
-        List job policy compliance.
 
         Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
         compliance if a cluster policy they use was updated after the job was last edited and its job clusters

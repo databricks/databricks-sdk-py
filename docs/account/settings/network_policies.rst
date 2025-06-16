@@ -13,8 +13,6 @@
 
     .. py:method:: create_network_policy_rpc(network_policy: AccountNetworkPolicy) -> AccountNetworkPolicy
 
-        Create a network policy.
-
         Creates a new network policy to manage which network destinations can be accessed from the Databricks
         environment.
 
@@ -24,8 +22,6 @@
         
 
     .. py:method:: delete_network_policy_rpc(network_policy_id: str)
-
-        Delete a network policy.
 
         Deletes a network policy. Cannot be called on 'default-policy'.
 
@@ -37,8 +33,6 @@
 
     .. py:method:: get_network_policy_rpc(network_policy_id: str) -> AccountNetworkPolicy
 
-        Get a network policy.
-
         Gets a network policy.
 
         :param network_policy_id: str
@@ -49,8 +43,6 @@
 
     .. py:method:: list_network_policies_rpc( [, page_token: Optional[str]]) -> Iterator[AccountNetworkPolicy]
 
-        List network policies.
-
         Gets an array of network policies.
 
         :param page_token: str (optional)
@@ -60,8 +52,6 @@
         
 
     .. py:method:: update_network_policy_rpc(network_policy_id: str, network_policy: AccountNetworkPolicy) -> AccountNetworkPolicy
-
-        Update a network policy.
 
         Updates a network policy. This allows you to modify the configuration of a network policy.
 

@@ -200,7 +200,53 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DbtCloudJobRunStep
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtCloudTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtCloudTaskOutput
+   :members:
+   :undoc-members:
+
 .. autoclass:: DbtOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtPlatformJobRunStep
+   :members:
+   :undoc-members:
+
+.. py:class:: DbtPlatformRunStatus
+
+   Response enumeration from calling the dbt platform API, for inclusion in output
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+.. autoclass:: DbtPlatformTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: DbtPlatformTaskOutput
    :members:
    :undoc-members:
 
@@ -241,6 +287,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FileArrivalTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. autoclass:: FileArrivalTriggerState
    :members:
    :undoc-members:
 
@@ -1068,6 +1118,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TriggerSettings
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggerStateProto
    :members:
    :undoc-members:
 

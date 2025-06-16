@@ -34,8 +34,6 @@
             # cleanup
             a.credentials.delete(credentials_id=role.credentials_id)
 
-        Create credential configuration.
-
         Creates a Databricks credential configuration that represents cloud cross-account credentials for a
         specified account. Databricks uses this to set up network infrastructure properly to host Databricks
         clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account
@@ -57,8 +55,6 @@
         
 
     .. py:method:: delete(credentials_id: str)
-
-        Delete credential configuration.
 
         Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
         delete a credential that is associated with any workspace.
@@ -96,8 +92,6 @@
             # cleanup
             a.credentials.delete(credentials_id=role.credentials_id)
 
-        Get credential configuration.
-
         Gets a Databricks credential configuration object for an account, both specified by ID.
 
         :param credentials_id: str
@@ -118,8 +112,6 @@
             a = AccountClient()
             
             configs = a.credentials.list()
-
-        Get all credential configurations.
 
         Gets all Databricks credential configurations associated with an account specified by ID.
 

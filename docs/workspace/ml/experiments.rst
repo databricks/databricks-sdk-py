@@ -29,8 +29,6 @@
             # cleanup
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
 
-        Create experiment.
-
         Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
@@ -96,8 +94,6 @@
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
             w.experiments.delete_run(run_id=created.run.info.run_id)
 
-        Create a run.
-
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
         data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
         associated with a single execution.
@@ -118,8 +114,6 @@
         
 
     .. py:method:: delete_experiment(experiment_id: str)
-
-        Delete an experiment.
 
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
         experiment uses FileStore, artifacts associated with the experiment are also deleted.
@@ -154,8 +148,6 @@
 
     .. py:method:: delete_run(run_id: str)
 
-        Delete a run.
-
         Marks a run for deletion.
 
         :param run_id: str
@@ -165,8 +157,6 @@
         
 
     .. py:method:: delete_runs(experiment_id: str, max_timestamp_millis: int [, max_runs: Optional[int]]) -> DeleteRunsResponse
-
-        Delete runs by creation time.
 
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
         most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
@@ -185,8 +175,6 @@
         
 
     .. py:method:: delete_tag(run_id: str, key: str)
-
-        Delete a tag on a run.
 
         Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
         completes.
@@ -207,14 +195,12 @@
           The ID of the logged model to finalize.
         :param status: :class:`LoggedModelStatus`
           Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
-          went wrong when logging the model weights / agent code).
+          went wrong when logging the model weights / agent code.
 
         :returns: :class:`FinalizeLoggedModelResponse`
         
 
     .. py:method:: get_by_name(experiment_name: str) -> GetExperimentByNameResponse
-
-        Get an experiment by name.
 
         Gets metadata for an experiment.
 
@@ -228,26 +214,6 @@
           Name of the associated experiment.
 
         :returns: :class:`GetExperimentByNameResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_download(request_id: str) -> GetCredentialsForTraceDataDownloadResponse
-
-        Get credentials to download trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact download credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
-        
-
-    .. py:method:: get_credentials_for_trace_data_upload(request_id: str) -> GetCredentialsForTraceDataUploadResponse
-
-        Get credentials to upload trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact upload credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
         
 
     .. py:method:: get_experiment(experiment_id: str) -> GetExperimentResponse
@@ -270,8 +236,6 @@
             # cleanup
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
 
-        Get an experiment.
-
         Gets metadata for an experiment. This method works on deleted experiments.
 
         :param experiment_id: str
@@ -281,8 +245,6 @@
         
 
     .. py:method:: get_history(metric_key: str [, max_results: Optional[int], page_token: Optional[str], run_id: Optional[str], run_uuid: Optional[str]]) -> Iterator[Metric]
-
-        Get metric history for a run.
 
         Gets a list of all values for the specified metric for a given run.
 
@@ -314,8 +276,6 @@
 
     .. py:method:: get_permission_levels(experiment_id: str) -> GetExperimentPermissionLevelsResponse
 
-        Get experiment permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param experiment_id: str
@@ -326,8 +286,6 @@
 
     .. py:method:: get_permissions(experiment_id: str) -> ExperimentPermissions
 
-        Get experiment permissions.
-
         Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
 
         :param experiment_id: str
@@ -337,8 +295,6 @@
         
 
     .. py:method:: get_run(run_id: str [, run_uuid: Optional[str]]) -> GetRunResponse
-
-        Get a run.
 
         Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
@@ -355,8 +311,6 @@
         
 
     .. py:method:: list_artifacts( [, page_token: Optional[str], path: Optional[str], run_id: Optional[str], run_uuid: Optional[str]]) -> Iterator[FileInfo]
-
-        List artifacts.
 
         List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
@@ -395,8 +349,6 @@
             
             all = w.experiments.list_experiments(ml.ListExperimentsRequest())
 
-        List experiments.
-
         Gets a list of all experiments.
 
         :param max_results: int (optional)
@@ -411,29 +363,7 @@
         :returns: Iterator over :class:`Experiment`
         
 
-    .. py:method:: list_logged_model_artifacts(model_id: str [, artifact_directory_path: Optional[str], page_token: Optional[str]]) -> ListLoggedModelArtifactsResponse
-
-        List artifacts for a logged model.
-
-        List artifacts for a logged model. Takes an optional ``artifact_directory_path`` prefix which if
-        specified, the response contains only artifacts with the specified prefix.
-
-        :param model_id: str
-          The ID of the logged model for which to list the artifacts.
-        :param artifact_directory_path: str (optional)
-          Filter artifacts matching this path (a relative path from the root artifact directory).
-        :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
-          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
-          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
-          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
-
-        :returns: :class:`ListLoggedModelArtifactsResponse`
-        
-
     .. py:method:: log_batch( [, metrics: Optional[List[Metric]], params: Optional[List[Param]], run_id: Optional[str], tags: Optional[List[RunTag]]])
-
-        Log a batch of metrics/params/tags for a run.
 
         Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
         will respond with an error (non-200 status code).
@@ -493,10 +423,6 @@
 
     .. py:method:: log_inputs(run_id: str [, datasets: Optional[List[DatasetInput]], models: Optional[List[ModelInput]]])
 
-        Log inputs to a run.
-
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
-
         Logs inputs, such as datasets and models, to an MLflow Run.
 
         :param run_id: str
@@ -511,8 +437,6 @@
 
     .. py:method:: log_logged_model_params(model_id: str [, params: Optional[List[LoggedModelParameter]]])
 
-        Log params for a logged model.
-
         Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
         include hyperparameters used for ML model training. A param can be logged only once for a logged
         model, and attempting to overwrite an existing param with a different value will result in an error
@@ -526,8 +450,6 @@
         
 
     .. py:method:: log_metric(key: str, value: float, timestamp: int [, dataset_digest: Optional[str], dataset_name: Optional[str], model_id: Optional[str], run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
-
-        Log a metric for a run.
 
         Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
@@ -560,9 +482,10 @@
 
     .. py:method:: log_model( [, model_json: Optional[str], run_id: Optional[str]])
 
-        Log a model.
+        **Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this
+        endpoint.
 
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        Log a model to an MLflow Run.
 
         :param model_json: str (optional)
           MLmodel file in json format.
@@ -573,10 +496,6 @@
         
 
     .. py:method:: log_outputs(run_id: str [, models: Optional[List[ModelOutput]]])
-
-        Log outputs from a run.
-
-        **NOTE**: Experimental: This API may change or be removed in a future release without warning.
 
         Logs outputs, such as models, from an MLflow Run.
 
@@ -589,8 +508,6 @@
         
 
     .. py:method:: log_param(key: str, value: str [, run_id: Optional[str], run_uuid: Optional[str]])
-
-        Log a param for a run.
 
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
@@ -611,8 +528,6 @@
 
     .. py:method:: restore_experiment(experiment_id: str)
 
-        Restore an experiment.
-
         Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
@@ -627,8 +542,6 @@
 
     .. py:method:: restore_run(run_id: str)
 
-        Restore a run.
-
         Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
@@ -640,8 +553,6 @@
         
 
     .. py:method:: restore_runs(experiment_id: str, min_timestamp_millis: int [, max_runs: Optional[int]]) -> RestoreRunsResponse
-
-        Restore runs by deletion time.
 
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
         at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
@@ -660,8 +571,6 @@
         
 
     .. py:method:: search_experiments( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str], view_type: Optional[ViewType]]) -> Iterator[Experiment]
-
-        Search experiments.
 
         Searches for experiments that satisfy specified search criteria.
 
@@ -682,8 +591,6 @@
         
 
     .. py:method:: search_logged_models( [, datasets: Optional[List[SearchLoggedModelsDataset]], experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[SearchLoggedModelsOrderBy]], page_token: Optional[str]]) -> SearchLoggedModelsResponse
-
-        Search logged models.
 
         Search for Logged Models that satisfy specified search criteria.
 
@@ -711,8 +618,6 @@
         
 
     .. py:method:: search_runs( [, experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str], run_view_type: Optional[ViewType]]) -> Iterator[Run]
-
-        Search for runs.
 
         Searches for runs that satisfy expressions.
 
@@ -749,8 +654,6 @@
 
     .. py:method:: set_experiment_tag(experiment_id: str, key: str, value: str)
 
-        Set a tag for an experiment.
-
         Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
         :param experiment_id: str
@@ -765,7 +668,7 @@
 
     .. py:method:: set_logged_model_tags(model_id: str [, tags: Optional[List[LoggedModelTag]]])
 
-        Set a tag for a logged model.
+        Set tags for a logged model.
 
         :param model_id: str
           The ID of the logged model to set the tags on.
@@ -776,8 +679,6 @@
         
 
     .. py:method:: set_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions
-
-        Set experiment permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
@@ -790,8 +691,6 @@
         
 
     .. py:method:: set_tag(key: str, value: str [, run_id: Optional[str], run_uuid: Optional[str]])
-
-        Set a tag for a run.
 
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
 
@@ -828,8 +727,6 @@
             # cleanup
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
 
-        Update an experiment.
-
         Updates experiment metadata.
 
         :param experiment_id: str
@@ -841,8 +738,6 @@
         
 
     .. py:method:: update_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions
-
-        Update experiment permissions.
 
         Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
 
@@ -879,8 +774,6 @@
             # cleanup
             w.experiments.delete_experiment(experiment_id=experiment.experiment_id)
             w.experiments.delete_run(run_id=created.run.info.run_id)
-
-        Update a run.
 
         Updates run metadata.
 

@@ -28,8 +28,6 @@
             # cleanup
             w.service_principals.delete(id=created.id)
 
-        Create a service principal.
-
         Creates a new service principal in the Databricks workspace.
 
         :param active: bool (optional)
@@ -56,8 +54,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete a service principal.
 
         Delete a single service principal in the Databricks workspace.
 
@@ -87,8 +83,6 @@
             # cleanup
             w.service_principals.delete(id=created.id)
 
-        Get service principal details.
-
         Gets the details for a single service principal define in the Databricks workspace.
 
         :param id: str
@@ -110,8 +104,6 @@
             w = WorkspaceClient()
             
             all = w.service_principals.list(iam.ListServicePrincipalsRequest())
-
-        List service principals.
 
         Gets the set of service principals associated with a Databricks workspace.
 
@@ -165,8 +157,6 @@
             # cleanup
             w.service_principals.delete(id=created.id)
 
-        Update service principal details.
-
         Partially updates the details of a single service principal in the Databricks workspace.
 
         :param id: str
@@ -202,8 +192,6 @@
             
             # cleanup
             w.service_principals.delete(id=created.id)
-
-        Replace service principal.
 
         Updates the details of a single service principal.
 

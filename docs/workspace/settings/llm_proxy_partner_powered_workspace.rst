@@ -8,8 +8,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteLlmProxyPartnerPoweredWorkspaceResponse
 
-        Delete the enable partner powered AI features workspace setting.
-
         Reverts the enable partner powered AI features workspace setting to its default value.
 
         :param etag: str (optional)
@@ -24,8 +22,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> LlmProxyPartnerPoweredWorkspace
 
-        Get the enable partner powered AI features workspace setting.
-
         Gets the enable partner powered AI features workspace setting.
 
         :param etag: str (optional)
@@ -39,8 +35,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: LlmProxyPartnerPoweredWorkspace, field_mask: str) -> LlmProxyPartnerPoweredWorkspace
-
-        Update the enable partner powered AI features workspace setting.
 
         Updates the enable partner powered AI features workspace setting.
 

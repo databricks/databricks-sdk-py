@@ -165,6 +165,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
 
+   .. py:attribute:: TERADATA
+      :value: "TERADATA"
+
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
 
@@ -333,6 +336,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "UNHEALTHY"
 
 .. autoclass:: PipelineTrigger
+   :members:
+   :undoc-members:
+
+.. autoclass:: PipelinesEnvironment
    :members:
    :undoc-members:
 

@@ -45,8 +45,6 @@
             # cleanup
             w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
 
-        Create access list.
-
         Creates an IP access list for this workspace.
 
         A list can be an allow list or a block list. See the top of this file for a description of how the
@@ -75,8 +73,6 @@
         
 
     .. py:method:: delete(ip_access_list_id: str)
-
-        Delete access list.
 
         Deletes an IP access list, specified by its list ID.
 
@@ -111,8 +107,6 @@
             # cleanup
             w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
 
-        Get access list.
-
         Gets an IP access list, specified by its list ID.
 
         :param ip_access_list_id: str
@@ -133,8 +127,6 @@
             w = WorkspaceClient()
             
             all = w.ip_access_lists.list()
-
-        Get access lists.
 
         Gets all IP access lists for the specified workspace.
 
@@ -172,8 +164,6 @@
             # cleanup
             w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
 
-        Replace access list.
-
         Replaces an IP access list, specified by its ID.
 
         A list can include allow lists and block lists. See the top of this file for a description of how the
@@ -202,8 +192,6 @@
         
 
     .. py:method:: update(ip_access_list_id: str [, enabled: Optional[bool], ip_addresses: Optional[List[str]], label: Optional[str], list_type: Optional[ListType]])
-
-        Update access list.
 
         Updates an existing IP access list, specified by its ID.
 

@@ -47,8 +47,6 @@
             w.storage_credentials.delete(name=storage_credential.name)
             w.external_locations.delete(name=external_location.name)
 
-        Create an external location.
-
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
         credential.
@@ -80,8 +78,6 @@
         
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
-
-        Delete an external location.
 
         Deletes the specified external location from the metastore. The caller must be the owner of the
         external location.
@@ -126,8 +122,6 @@
             w.storage_credentials.delete(name=credential.name)
             w.external_locations.delete(name=created.name)
 
-        Get an external location.
-
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
 
@@ -152,8 +146,6 @@
             w = WorkspaceClient()
             
             all = w.external_locations.list()
-
-        List external locations.
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
@@ -208,8 +200,6 @@
             # cleanup
             w.storage_credentials.delete(delete=credential.name)
             w.external_locations.delete(delete=created.name)
-
-        Update an external location.
 
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external

@@ -22,8 +22,6 @@
 
     .. py:method:: get(object_type: ObjectTypePlural, object_id: str) -> GetResponse
 
-        Get object ACL.
-
         Gets a JSON representation of the access control list (ACL) for a specified object.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
@@ -40,8 +38,6 @@
         
 
     .. py:method:: set(object_type: ObjectTypePlural, object_id: str [, access_control_list: Optional[List[AccessControl]]]) -> SetResponse
-
-        Set object ACL.
 
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
@@ -61,8 +57,6 @@
         
 
     .. py:method:: transfer_ownership(object_type: OwnableObjectType, object_id: TransferOwnershipObjectId [, new_owner: Optional[str]]) -> Success
-
-        Transfer object ownership.
 
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 

@@ -9,8 +9,6 @@
 
     .. py:method:: create( [, visualization: Optional[CreateVisualizationRequestVisualization]]) -> Visualization
 
-        Add a visualization to a query.
-
         Adds a visualization to a query.
 
         :param visualization: :class:`CreateVisualizationRequestVisualization` (optional)
@@ -20,8 +18,6 @@
 
     .. py:method:: delete(id: str)
 
-        Remove a visualization.
-
         Removes a visualization.
 
         :param id: str
@@ -30,8 +26,6 @@
         
 
     .. py:method:: update(id: str, update_mask: str [, visualization: Optional[UpdateVisualizationRequestVisualization]]) -> Visualization
-
-        Update a visualization.
 
         Updates a visualization.
 

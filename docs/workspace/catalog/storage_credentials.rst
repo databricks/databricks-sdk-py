@@ -38,12 +38,14 @@
             # cleanup
             w.storage_credentials.delete(name=created.name)
 
-        Create a storage credential.
-
         Creates a new storage credential.
 
+        The caller must be a metastore admin or have the **CREATE_STORAGE_CREDENTIAL** privilege on the
+        metastore.
+
         :param name: str
-          The credential name. The name must be unique within the metastore.
+          The credential name. The name must be unique among storage and service credentials within the
+          metastore.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
@@ -57,7 +59,8 @@
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The Databricks managed GCP service account configuration.
         :param read_only: bool (optional)
-          Whether the storage credential is only usable for read operations.
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the created credential.
 
@@ -66,15 +69,14 @@
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
-        Delete a credential.
-
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
 
         :param name: str
           Name of the storage credential.
         :param force: bool (optional)
-          Force deletion even if there are dependent external locations or external tables.
+          Force an update even if there are dependent external locations or external tables (when purpose is
+          **STORAGE**) or dependent services (when purpose is **SERVICE**).
 
 
         
@@ -104,8 +106,6 @@
             # cleanup
             w.storage_credentials.delete(delete=created.name)
 
-        Get a credential.
-
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
 
@@ -127,8 +127,6 @@
             w = WorkspaceClient()
             
             all = w.storage_credentials.list()
-
-        List credentials.
 
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
@@ -176,9 +174,10 @@
             # cleanup
             w.storage_credentials.delete(name=created.name)
 
-        Update a credential.
-
         Updates a storage credential on the metastore.
+
+        The caller must be the owner of the storage credential or a metastore admin. If the caller is a
+        metastore admin, only the **owner** field can be changed.
 
         :param name: str
           Name of the storage credential.
@@ -197,12 +196,14 @@
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the storage credential.
         :param owner: str (optional)
           Username of current owner of credential.
         :param read_only: bool (optional)
-          Whether the storage credential is only usable for read operations.
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the updated credential.
 
@@ -210,8 +211,6 @@
         
 
     .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityRequest], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
-
-        Validate a storage credential.
 
         Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
@@ -238,7 +237,7 @@
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
         :param storage_credential_name: str (optional)
-          The name of the storage credential to validate.
+          Required. The name of an existing credential or long-lived cloud credential to validate.
         :param url: str (optional)
           The external location url to validate.
 

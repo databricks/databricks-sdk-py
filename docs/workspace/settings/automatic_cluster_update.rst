@@ -9,8 +9,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> AutomaticClusterUpdateSetting
 
-        Get the automatic cluster update setting.
-
         Gets the automatic cluster update setting.
 
         :param etag: str (optional)
@@ -24,8 +22,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str) -> AutomaticClusterUpdateSetting
-
-        Update the automatic cluster update setting.
 
         Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
         `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request

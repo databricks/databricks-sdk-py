@@ -32,6 +32,13 @@
     
         This settings can NOT be disabled once it is enabled.
 
+    .. py:property:: dashboard_email_subscriptions
+        :type: DashboardEmailSubscriptionsAPI
+
+        Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send
+        subscription emails containing PDFs and/or images of the dashboard. By default, this setting is enabled
+        (set to `true`)
+
     .. py:property:: default_namespace
         :type: DefaultNamespaceAPI
 
@@ -111,3 +118,9 @@
         service principals they have the Service Principal User role on. They can also only change a job owner to
         themselves. And they can change the job run_as setting to themselves or to a service principal on which
         they have the Service Principal User role.
+
+    .. py:property:: sql_results_download
+        :type: SqlResultsDownloadAPI
+
+        Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI
+        Dashboards UIs. By default, this setting is enabled (set to `true`)

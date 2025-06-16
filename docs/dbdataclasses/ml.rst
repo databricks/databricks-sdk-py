@@ -61,30 +61,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ArtifactCredentialInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: ArtifactCredentialInfoHttpHeader
-   :members:
-   :undoc-members:
-
-.. py:class:: ArtifactCredentialType
-
-   The type of a given artifact access credential
-
-   .. py:attribute:: AWS_PRESIGNED_URL
-      :value: "AWS_PRESIGNED_URL"
-
-   .. py:attribute:: AZURE_ADLS_GEN2_SAS_URI
-      :value: "AZURE_ADLS_GEN2_SAS_URI"
-
-   .. py:attribute:: AZURE_SAS_URI
-      :value: "AZURE_SAS_URI"
-
-   .. py:attribute:: GCP_SIGNED_URL
-      :value: "GCP_SIGNED_URL"
-
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on a comment. Valid values are: * `EDIT_COMMENT`: Edit the comment
@@ -216,6 +192,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteOnlineStoreResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRun
    :members:
    :undoc-members:
@@ -340,14 +320,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
 
-.. autoclass:: GetCredentialsForTraceDataDownloadResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetCredentialsForTraceDataUploadResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: GetExperimentByNameResponse
    :members:
    :undoc-members:
@@ -424,11 +396,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListLoggedModelArtifactsResponse
+.. autoclass:: ListModelsResponse
    :members:
    :undoc-members:
 
-.. autoclass:: ListModelsResponse
+.. autoclass:: ListOnlineStoresResponse
    :members:
    :undoc-members:
 
@@ -578,6 +550,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OnlineStore
+   :members:
+   :undoc-members:
+
+.. py:class:: OnlineStoreState
+
+   .. py:attribute:: AVAILABLE
+      :value: "AVAILABLE"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: FAILING_OVER
+      :value: "FAILING_OVER"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
 .. autoclass:: Param
    :members:
    :undoc-members:
@@ -600,6 +596,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
+
+.. autoclass:: PublishSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: PublishSpecPublishMode
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+.. autoclass:: PublishTableRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: PublishTableResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: RegisteredModelAccessControlRequest
    :members:

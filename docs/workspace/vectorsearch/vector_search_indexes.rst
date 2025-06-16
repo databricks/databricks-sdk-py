@@ -14,8 +14,6 @@
 
     .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> VectorIndex
 
-        Create an index.
-
         Create a new index.
 
         :param name: str
@@ -39,8 +37,6 @@
 
     .. py:method:: delete_data_vector_index(index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
 
-        Delete data from index.
-
         Handles the deletion of data from a specified vector index.
 
         :param index_name: str
@@ -55,8 +51,6 @@
 
         Delete an index.
 
-        Delete an index.
-
         :param index_name: str
           Name of the index
 
@@ -67,8 +61,6 @@
 
         Get an index.
 
-        Get an index.
-
         :param index_name: str
           Name of the index
 
@@ -76,8 +68,6 @@
         
 
     .. py:method:: list_indexes(endpoint_name: str [, page_token: Optional[str]]) -> Iterator[MiniVectorIndex]
-
-        List indexes.
 
         List all indexes in the given endpoint.
 
@@ -90,8 +80,6 @@
         
 
     .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
-
-        Query an index.
 
         Query the specified vector index.
 
@@ -126,8 +114,6 @@
 
     .. py:method:: query_next_page(index_name: str [, endpoint_name: Optional[str], page_token: Optional[str]]) -> QueryVectorIndexResponse
 
-        Query next page.
-
         Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
         to fetch next page of results.
 
@@ -142,8 +128,6 @@
         
 
     .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
-
-        Scan an index.
 
         Scan the specified vector index and return the first `num_results` entries after the exclusive
         `primary_key`.
@@ -160,8 +144,6 @@
 
     .. py:method:: sync_index(index_name: str)
 
-        Synchronize an index.
-
         Triggers a synchronization process for a specified vector index.
 
         :param index_name: str
@@ -171,8 +153,6 @@
         
 
     .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
-
-        Upsert data into an index.
 
         Handles the upserting of data into a specified vector index.
 

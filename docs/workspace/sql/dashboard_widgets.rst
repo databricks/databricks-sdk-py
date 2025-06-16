@@ -9,7 +9,7 @@
 
     .. py:method:: create(dashboard_id: str, options: WidgetOptions, width: int [, text: Optional[str], visualization_id: Optional[str]]) -> Widget
 
-        Add widget to a dashboard.
+        Add widget to a dashboard
 
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
@@ -27,7 +27,7 @@
 
     .. py:method:: delete(id: str)
 
-        Remove widget.
+        Remove widget
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
@@ -37,7 +37,7 @@
 
     .. py:method:: update(id: str, dashboard_id: str, options: WidgetOptions, width: int [, text: Optional[str], visualization_id: Optional[str]]) -> Widget
 
-        Update existing widget.
+        Update existing widget
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create

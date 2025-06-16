@@ -58,8 +58,6 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.volumes.delete(name=created_volume.full_name)
 
-        Create a Volume.
-
         Creates a new volume.
 
         The user could create either an external volume or a managed volume. An external volume will be
@@ -98,8 +96,6 @@
 
     .. py:method:: delete(name: str)
 
-        Delete a Volume.
-
         Deletes a volume from the specified parent catalog and schema.
 
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
@@ -134,8 +130,6 @@
             # cleanup
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-
-        List Volumes.
 
         Gets an array of volumes for the current metastore under the parent catalog and schema.
 
@@ -222,8 +216,6 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.volumes.delete(name=created_volume.full_name)
 
-        Get a Volume.
-
         Gets a volume from the metastore for a specific catalog and schema.
 
         The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the
@@ -289,8 +281,6 @@
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.volumes.delete(name=created_volume.full_name)
-
-        Update a Volume.
 
         Updates the specified volume under the specified parent catalog and schema.
 

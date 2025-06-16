@@ -36,8 +36,6 @@
             # cleanup
             w.global_init_scripts.delete(script_id=created.script_id)
 
-        Create init script.
-
         Creates a new global init script in this workspace.
 
         :param name: str
@@ -61,8 +59,6 @@
         
 
     .. py:method:: delete(script_id: str)
-
-        Delete init script.
 
         Deletes a global init script.
 
@@ -98,8 +94,6 @@
             # cleanup
             w.global_init_scripts.delete(script_id=created.script_id)
 
-        Get an init script.
-
         Gets all the details of a script, including its Base64-encoded contents.
 
         :param script_id: str
@@ -120,8 +114,6 @@
             w = WorkspaceClient()
             
             all = w.global_init_scripts.list()
-
-        Get init scripts.
 
         Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
@@ -159,8 +151,6 @@
             
             # cleanup
             w.global_init_scripts.delete(script_id=created.script_id)
-
-        Update init script.
 
         Updates a global init script, specifying only the fields to change. All fields are optional.
         Unspecified fields retain their current value.

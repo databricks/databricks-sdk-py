@@ -50,8 +50,6 @@
             a.credentials.delete(credentials_id=role.credentials_id)
             a.workspaces.delete(workspace_id=waiter.workspace_id)
 
-        Create a new workspace.
-
         Creates a new workspace.
 
         **Important**: This operation is asynchronous. A response with HTTP status code 200 means the request
@@ -160,8 +158,6 @@
 
     .. py:method:: delete(workspace_id: int)
 
-        Delete a workspace.
-
         Terminates and deletes a Databricks workspace. From an API perspective, deletion is immediate.
         However, it might take a few minutes for all workspaces resources to be deleted, depending on the size
         and number of workspace resources.
@@ -189,8 +185,6 @@
             created = a.waiter.get()
             
             by_id = a.workspaces.get(workspace_id=created.workspace_id)
-
-        Get a workspace.
 
         Gets information including status for a Databricks workspace, specified by ID. In the response, the
         `workspace_status` field indicates the current status. After initial workspace creation (which is
@@ -223,8 +217,6 @@
             a = AccountClient()
             
             all = a.workspaces.list()
-
-        Get all workspaces.
 
         Gets a list of all workspaces associated with an account, specified by ID.
 
@@ -265,8 +257,6 @@
             
             # cleanup
             a.credentials.delete(credentials_id=update_role.credentials_id)
-
-        Update workspace configuration.
 
         Updates a workspace configuration for either a running workspace or a failed workspace. The elements
         that can be updated varies between these two use cases.

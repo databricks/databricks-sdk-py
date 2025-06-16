@@ -249,6 +249,21 @@ class Generator:
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
         Package("apps", "Apps", "Build custom applications on Databricks"),
         Package("cleanrooms", "Clean Rooms", "Manage clean rooms and their assets and task runs"),
+        Package(
+            "qualitymonitorv2",
+            "Quality Monitor",
+            "Manage quality monitor on Unity Catalog objects."
+        ),
+        Package(
+            "database",
+            "Database Instances",
+            "Create Database Instances and manage their configurations, including integrations with Unity Catalog"
+        ),
+        Package(
+            "aibuilder",
+            "AI Builder",
+            "Create and manage AI Builder resources."
+        )
     ]
 
     def __init__(self):
@@ -277,11 +292,11 @@ class Generator:
                 key = f"{key}.{clean_parent_service}"
 
             key = f"{key}.{tag['x-databricks-service']}".lower()
-
+            package = tag['x-databricks-package']
             t = Tag(name=tag['name'],
                     service=tag['x-databricks-service'],
                     is_account=tag.get('x-databricks-is-accounts', False),
-                    package=pkgs[tag['x-databricks-package']])
+                    package=pkgs[package])
             mapping[key] = t
         return mapping
 

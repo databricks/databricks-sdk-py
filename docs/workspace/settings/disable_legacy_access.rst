@@ -12,8 +12,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyAccessResponse
 
-        Delete Legacy Access Disablement Status.
-
         Deletes legacy access disablement status.
 
         :param etag: str (optional)
@@ -28,8 +26,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyAccess
 
-        Retrieve Legacy Access Disablement Status.
-
         Retrieves legacy access disablement Status.
 
         :param etag: str (optional)
@@ -43,8 +39,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyAccess, field_mask: str) -> DisableLegacyAccess
-
-        Update Legacy Access Disablement Status.
 
         Updates legacy access disablement status.
 

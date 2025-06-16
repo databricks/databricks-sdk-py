@@ -14,8 +14,6 @@
 
     .. py:method:: create_credential(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount], purpose: Optional[CredentialPurpose], read_only: Optional[bool], skip_validation: Optional[bool]]) -> CredentialInfo
 
-        Create a credential.
-
         Creates a new credential. The type of credential to be created is determined by the **purpose** field,
         which should be either **SERVICE** or **STORAGE**.
 
@@ -26,15 +24,15 @@
           The credential name. The name must be unique among storage and service credentials within the
           metastore.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
+          The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration. Only applicable when purpose is **STORAGE**.
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
+          The Databricks managed GCP service account configuration.
         :param purpose: :class:`CredentialPurpose` (optional)
           Indicates the purpose of the credential.
         :param read_only: bool (optional)
@@ -47,8 +45,6 @@
         
 
     .. py:method:: delete_credential(name_arg: str [, force: Optional[bool]])
-
-        Delete a credential.
 
         Deletes a service or storage credential from the metastore. The caller must be an owner of the
         credential.
@@ -63,8 +59,6 @@
         
 
     .. py:method:: generate_temporary_service_credential(credential_name: str [, azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions], gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions]]) -> TemporaryCredentials
-
-        Generate a temporary service credential.
 
         Returns a set of temporary credentials generated using the specified service credential. The caller
         must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.
@@ -81,8 +75,6 @@
 
     .. py:method:: get_credential(name_arg: str) -> CredentialInfo
 
-        Get a credential.
-
         Gets a service or storage credential from the metastore. The caller must be a metastore admin, the
         owner of the credential, or have any permission on the credential.
 
@@ -93,8 +85,6 @@
         
 
     .. py:method:: list_credentials( [, max_results: Optional[int], page_token: Optional[str], purpose: Optional[CredentialPurpose]]) -> Iterator[CredentialInfo]
-
-        List credentials.
 
         Gets an array of credentials (as __CredentialInfo__ objects).
 
@@ -117,8 +107,6 @@
 
     .. py:method:: update_credential(name_arg: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> CredentialInfo
 
-        Update a credential.
-
         Updates a service or storage credential on the metastore.
 
         The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
@@ -127,15 +115,15 @@
         :param name_arg: str
           Name of the credential.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
+          The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration. Only applicable when purpose is **STORAGE**.
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
+          The Databricks managed GCP service account configuration.
         :param force: bool (optional)
           Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
           external locations and external tables (when purpose is **STORAGE**).
@@ -155,8 +143,6 @@
         
 
     .. py:method:: validate_credential( [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], credential_name: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount], external_location_name: Optional[str], purpose: Optional[CredentialPurpose], read_only: Optional[bool], url: Optional[str]]) -> ValidateCredentialResponse
-
-        Validate a credential.
 
         Validates a credential.
 

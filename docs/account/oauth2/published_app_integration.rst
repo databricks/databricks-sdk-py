@@ -11,8 +11,6 @@
 
         Create Published OAuth App Integration.
 
-        Create Published OAuth App Integration.
-
         You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
 
         :param app_id: str (optional)
@@ -25,8 +23,6 @@
 
     .. py:method:: delete(integration_id: str)
 
-        Delete Published OAuth App Integration.
-
         Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
 
@@ -37,8 +33,6 @@
 
     .. py:method:: get(integration_id: str) -> GetPublishedAppIntegrationOutput
 
-        Get OAuth Published App Integration.
-
         Gets the Published OAuth App Integration for the given integration id.
 
         :param integration_id: str
@@ -47,8 +41,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[GetPublishedAppIntegrationOutput]
-
-        Get published oauth app integrations.
 
         Get the list of published OAuth app integrations for the specified Databricks account
 
@@ -59,8 +51,6 @@
         
 
     .. py:method:: update(integration_id: str [, token_access_policy: Optional[TokenAccessPolicy]])
-
-        Updates Published OAuth App Integration.
 
         Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.

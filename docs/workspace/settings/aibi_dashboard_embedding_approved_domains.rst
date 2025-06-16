@@ -9,8 +9,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
 
-        Delete AI/BI dashboard embedding approved domains.
-
         Delete the list of domains approved to host embedded AI/BI dashboards, reverting back to the default
         empty list.
 
@@ -26,8 +24,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> AibiDashboardEmbeddingApprovedDomainsSetting
 
-        Retrieve the list of domains approved to host embedded AI/BI dashboards.
-
         Retrieves the list of domains approved to host embedded AI/BI dashboards.
 
         :param etag: str (optional)
@@ -41,8 +37,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: AibiDashboardEmbeddingApprovedDomainsSetting, field_mask: str) -> AibiDashboardEmbeddingApprovedDomainsSetting
-
-        Update the list of domains approved to host embedded AI/BI dashboards.
 
         Updates the list of domains approved to host embedded AI/BI dashboards. This update will fail if the
         current workspace access policy is not ALLOW_APPROVED_DOMAINS.

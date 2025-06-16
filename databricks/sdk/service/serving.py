@@ -3005,8 +3005,16 @@ class ServedEntityInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3030,7 +3038,7 @@ class ServedEntityInput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3053,8 +3061,12 @@ class ServedEntityInput:
             body["external_model"] = self.external_model.as_dict()
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3082,8 +3094,12 @@ class ServedEntityInput:
             body["external_model"] = self.external_model
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3107,7 +3123,9 @@ class ServedEntityInput:
             environment_vars=d.get("environment_vars", None),
             external_model=_from_dict(d, "external_model", ExternalModel),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
             provisioned_model_units=d.get("provisioned_model_units", None),
@@ -3152,8 +3170,16 @@ class ServedEntityOutput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3179,7 +3205,7 @@ class ServedEntityOutput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3208,8 +3234,12 @@ class ServedEntityOutput:
             body["foundation_model"] = self.foundation_model.as_dict()
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3245,8 +3275,12 @@ class ServedEntityOutput:
             body["foundation_model"] = self.foundation_model
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.name is not None:
@@ -3275,7 +3309,9 @@ class ServedEntityOutput:
             external_model=_from_dict(d, "external_model", ExternalModel),
             foundation_model=_from_dict(d, "foundation_model", FoundationModel),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             name=d.get("name", None),
             provisioned_model_units=d.get("provisioned_model_units", None),
@@ -3360,8 +3396,16 @@ class ServedModelInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
 
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
@@ -3382,7 +3426,7 @@ class ServedModelInput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3399,8 +3443,12 @@ class ServedModelInput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.model_name is not None:
@@ -3426,8 +3474,12 @@ class ServedModelInput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
         if self.max_provisioned_throughput is not None:
             body["max_provisioned_throughput"] = self.max_provisioned_throughput
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.min_provisioned_throughput is not None:
             body["min_provisioned_throughput"] = self.min_provisioned_throughput
         if self.model_name is not None:
@@ -3452,7 +3504,9 @@ class ServedModelInput:
         return cls(
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
             max_provisioned_throughput=d.get("max_provisioned_throughput", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             min_provisioned_throughput=d.get("min_provisioned_throughput", None),
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
@@ -3489,6 +3543,14 @@ class ServedModelOutput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_concurrency: Optional[int] = None
+    """The maximum provisioned concurrency that the endpoint can scale up to. Do not use if
+    workload_size is specified."""
+
+    min_provisioned_concurrency: Optional[int] = None
+    """The minimum provisioned concurrency that the endpoint can scale down to. Do not use if
+    workload_size is specified."""
+
     model_name: Optional[str] = None
 
     model_version: Optional[str] = None
@@ -3514,7 +3576,7 @@ class ServedModelOutput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency).
     Additional custom workload sizes can also be used when available in the workspace. If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    is 0."""
+    is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."""
 
     workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3535,6 +3597,10 @@ class ServedModelOutput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.model_name is not None:
             body["model_name"] = self.model_name
         if self.model_version is not None:
@@ -3564,6 +3630,10 @@ class ServedModelOutput:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
             body["instance_profile_arn"] = self.instance_profile_arn
+        if self.max_provisioned_concurrency is not None:
+            body["max_provisioned_concurrency"] = self.max_provisioned_concurrency
+        if self.min_provisioned_concurrency is not None:
+            body["min_provisioned_concurrency"] = self.min_provisioned_concurrency
         if self.model_name is not None:
             body["model_name"] = self.model_name
         if self.model_version is not None:
@@ -3590,6 +3660,8 @@ class ServedModelOutput:
             creator=d.get("creator", None),
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
+            max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
+            min_provisioned_concurrency=d.get("min_provisioned_concurrency", None),
             model_name=d.get("model_name", None),
             model_version=d.get("model_version", None),
             name=d.get("name", None),
@@ -3727,6 +3799,9 @@ class ServingEndpoint:
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
 
+    description: Optional[str] = None
+    """Description of the endpoint"""
+
     id: Optional[str] = None
     """System-generated ID of the endpoint, included to be used by the Permissions API."""
 
@@ -3758,6 +3833,8 @@ class ServingEndpoint:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -3785,6 +3862,8 @@ class ServingEndpoint:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -3808,6 +3887,7 @@ class ServingEndpoint:
             config=_from_dict(d, "config", EndpointCoreConfigSummary),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
+            description=d.get("description", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             name=d.get("name", None),
@@ -3949,6 +4029,9 @@ class ServingEndpointDetailed:
     data_plane_info: Optional[ModelDataPlaneInfo] = None
     """Information required to query DataPlane APIs."""
 
+    description: Optional[str] = None
+    """Description of the serving model"""
+
     endpoint_url: Optional[str] = None
     """Endpoint invocation url if route optimization is enabled for endpoint"""
 
@@ -3995,6 +4078,8 @@ class ServingEndpointDetailed:
             body["creator"] = self.creator
         if self.data_plane_info:
             body["data_plane_info"] = self.data_plane_info.as_dict()
+        if self.description is not None:
+            body["description"] = self.description
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -4032,6 +4117,8 @@ class ServingEndpointDetailed:
             body["creator"] = self.creator
         if self.data_plane_info:
             body["data_plane_info"] = self.data_plane_info
+        if self.description is not None:
+            body["description"] = self.description
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -4064,6 +4151,7 @@ class ServingEndpointDetailed:
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             data_plane_info=_from_dict(d, "data_plane_info", ModelDataPlaneInfo),
+            description=d.get("description", None),
             endpoint_url=d.get("endpoint_url", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
@@ -4417,9 +4505,7 @@ class ServingEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
-        """Get build logs for a served model.
-
-        Retrieves the build logs associated with the provided served model.
+        """Retrieves the build logs associated with the provided served model.
 
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
@@ -4600,9 +4686,7 @@ class ServingEndpointsAPI:
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 
     def export_metrics(self, name: str) -> ExportMetricsResponse:
-        """Get metrics of a serving endpoint.
-
-        Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
+        """Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
 
         :param name: str
@@ -4619,9 +4703,7 @@ class ServingEndpointsAPI:
         return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
-        """Get a single serving endpoint.
-
-        Retrieves the details for a single serving endpoint.
+        """Retrieves the details for a single serving endpoint.
 
         :param name: str
           The name of the serving endpoint. This field is required.
@@ -4637,9 +4719,7 @@ class ServingEndpointsAPI:
         return ServingEndpointDetailed.from_dict(res)
 
     def get_open_api(self, name: str) -> GetOpenApiResponse:
-        """Get the schema for a serving endpoint.
-
-        Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
+        """Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
         the supported paths, input and output format and datatypes.
 
         :param name: str
@@ -4656,9 +4736,7 @@ class ServingEndpointsAPI:
         return GetOpenApiResponse.from_dict(res)
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
-        """Get serving endpoint permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
@@ -4676,9 +4754,7 @@ class ServingEndpointsAPI:
         return GetServingEndpointPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
-        """Get serving endpoint permissions.
-
-        Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
+        """Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
         object.
 
         :param serving_endpoint_id: str
@@ -4758,9 +4834,7 @@ class ServingEndpointsAPI:
         return parsed if parsed is not None else []
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
-        """Get the latest logs for a served model.
-
-        Retrieves the service logs associated with the provided served model.
+        """Retrieves the service logs associated with the provided served model.
 
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
@@ -4782,9 +4856,7 @@ class ServingEndpointsAPI:
     def patch(
         self, name: str, *, add_tags: Optional[List[EndpointTag]] = None, delete_tags: Optional[List[str]] = None
     ) -> EndpointTags:
-        """Update tags of a serving endpoint.
-
-        Used to batch add and delete tags from a serving endpoint with a single API call.
+        """Used to batch add and delete tags from a serving endpoint with a single API call.
 
         :param name: str
           The name of the serving endpoint who's tags to patch. This field is required.
@@ -4809,9 +4881,7 @@ class ServingEndpointsAPI:
         return EndpointTags.from_dict(res)
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
-        """Update rate limits of a serving endpoint.
-
-        Deprecated: Please use AI Gateway to manage rate limits instead.
+        """Deprecated: Please use AI Gateway to manage rate limits instead.
 
         :param name: str
           The name of the serving endpoint whose rate limits are being updated. This field is required.
@@ -4841,9 +4911,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[AiGatewayRateLimit]] = None,
         usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None,
     ) -> PutAiGatewayResponse:
-        """Update AI Gateway of a serving endpoint.
-
-        Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
+        """Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
         pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
 
         :param name: str
@@ -4998,9 +5066,7 @@ class ServingEndpointsAPI:
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
     ) -> ServingEndpointPermissions:
-        """Set serving endpoint permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param serving_endpoint_id: str
@@ -5031,9 +5097,7 @@ class ServingEndpointsAPI:
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
     ) -> Wait[ServingEndpointDetailed]:
-        """Update config of a serving endpoint.
-
-        Updates any combination of the serving endpoint's served entities, the compute configuration of those
+        """Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
 
@@ -5101,9 +5165,7 @@ class ServingEndpointsAPI:
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
     ) -> ServingEndpointPermissions:
-        """Update serving endpoint permissions.
-
-        Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
+        """Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
         root object.
 
         :param serving_endpoint_id: str
@@ -5128,9 +5190,7 @@ class ServingEndpointsAPI:
     def update_provisioned_throughput_endpoint_config(
         self, name: str, config: PtEndpointCoreConfig
     ) -> Wait[ServingEndpointDetailed]:
-        """Update config of a PT serving endpoint.
-
-        Updates any combination of the pt endpoint's served entities, the compute configuration of those
+        """Updates any combination of the pt endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
         updated instantly
 

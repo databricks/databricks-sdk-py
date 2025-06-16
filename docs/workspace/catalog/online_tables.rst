@@ -8,8 +8,6 @@
 
     .. py:method:: create(table: OnlineTable) -> Wait[OnlineTable]
 
-        Create an Online Table.
-
         Create a new Online Table.
 
         :param table: :class:`OnlineTable`
@@ -25,8 +23,6 @@
 
     .. py:method:: delete(name: str)
 
-        Delete an Online Table.
-
         Delete an online table. Warning: This will delete all the data in the online table. If the source
         Delta table was deleted or modified since this Online Table was created, this will lose the data
         forever!
@@ -38,8 +34,6 @@
         
 
     .. py:method:: get(name: str) -> OnlineTable
-
-        Get an Online Table.
 
         Get information about an existing online table and its status.
 

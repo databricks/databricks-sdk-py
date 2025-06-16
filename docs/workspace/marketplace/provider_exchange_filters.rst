@@ -8,8 +8,6 @@
 
     .. py:method:: create(filter: ExchangeFilter) -> CreateExchangeFilterResponse
 
-        Create a new exchange filter.
-
         Add an exchange filter.
 
         :param filter: :class:`ExchangeFilter`
@@ -19,8 +17,6 @@
 
     .. py:method:: delete(id: str)
 
-        Delete an exchange filter.
-
         Delete an exchange filter
 
         :param id: str
@@ -29,8 +25,6 @@
         
 
     .. py:method:: list(exchange_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ExchangeFilter]
-
-        List exchange filters.
 
         List exchange filter
 
@@ -42,8 +36,6 @@
         
 
     .. py:method:: update(id: str, filter: ExchangeFilter) -> UpdateExchangeFilterResponse
-
-        Update exchange filter.
 
         Update an exchange filter.
 

@@ -35,8 +35,6 @@
             # cleanup
             a.users.delete(id=user.id)
 
-        Create a new user.
-
         Creates a new user in the Databricks account. This new user will also be added to the Databricks
         account.
 
@@ -90,8 +88,6 @@
             
             a.users.delete(id=user.id)
 
-        Delete a user.
-
         Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
         user.
 
@@ -124,8 +120,6 @@
             # cleanup
             a.users.delete(id=user.id)
 
-        Get user details.
-
         Gets information for a specific user in Databricks account.
 
         :param id: str
@@ -155,8 +149,6 @@
         
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[User]
-
-        List users.
 
         Gets details for all the users associated with a Databricks account.
 
@@ -217,8 +209,6 @@
             # cleanup
             a.users.delete(id=user.id)
 
-        Update user details.
-
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
@@ -231,8 +221,6 @@
         
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
-
-        Replace a user.
 
         Replaces a user's information with the data supplied in request.
 

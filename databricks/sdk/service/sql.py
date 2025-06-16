@@ -1697,6 +1697,68 @@ class CreateQueryRequestQuery:
 
 
 @dataclass
+class CreateQueryVisualizationsLegacyRequest:
+    """Add visualization to a query"""
+
+    query_id: str
+    """The identifier returned by :method:queries/create"""
+
+    type: str
+    """The type of visualization: chart, table, pivot table, and so on."""
+
+    options: Any
+    """The options object varies widely from one visualization type to the next and is unsupported.
+    Databricks does not recommend modifying visualization settings in JSON."""
+
+    description: Optional[str] = None
+    """A short description of this visualization. This is not displayed in the UI."""
+
+    name: Optional[str] = None
+    """The name of the visualization that appears on dashboards and the query screen."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateQueryVisualizationsLegacyRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query_id is not None:
+            body["query_id"] = self.query_id
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateQueryVisualizationsLegacyRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.options:
+            body["options"] = self.options
+        if self.query_id is not None:
+            body["query_id"] = self.query_id
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateQueryVisualizationsLegacyRequest:
+        """Deserializes the CreateQueryVisualizationsLegacyRequest from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            name=d.get("name", None),
+            options=d.get("options", None),
+            query_id=d.get("query_id", None),
+            type=d.get("type", None),
+        )
+
+
+@dataclass
 class CreateVisualizationRequest:
     visualization: Optional[CreateVisualizationRequestVisualization] = None
 
@@ -5657,12 +5719,16 @@ class QueryEditContent:
 @dataclass
 class QueryFilter:
     query_start_time_range: Optional[TimeRange] = None
-    """A range filter for query submitted time. The time range must be <= 30 days."""
+    """A range filter for query submitted time. The time range must be less than or equal to 30 days."""
 
     statement_ids: Optional[List[str]] = None
     """A list of statement IDs."""
 
     statuses: Optional[List[QueryStatus]] = None
+    """A list of statuses (QUEUED, RUNNING, CANCELED, FAILED, FINISHED) to match query results.
+    Corresponds to the `status` field in the response. Filtering for multiple statuses is not
+    recommended. Instead, opt to filter by a single status multiple times and then combine the
+    results."""
 
     user_ids: Optional[List[int]] = None
     """A list of user IDs who ran the queries."""
@@ -5723,7 +5789,9 @@ class QueryInfo:
     are expected to remain static over time, this cannot be guaranteed."""
 
     duration: Optional[int] = None
-    """Total execution time of the statement ( excluding result fetch time )."""
+    """Total time of the statement execution. This value does not include the time taken to retrieve
+    the results, which can result in a discrepancy between this value and the start-to-finish
+    wall-clock time."""
 
     endpoint_id: Optional[str] = None
     """Alias for `warehouse_id`."""
@@ -6047,6 +6115,10 @@ class QueryMetrics:
     spill_to_disk_bytes: Optional[int] = None
     """Size of data temporarily written to disk while executing the query, in bytes."""
 
+    task_time_over_time_range: Optional[TaskTimeOverRange] = None
+    """sum of task times completed in a range of wall clock time, approximated to a configurable number
+    of points aggregated over all stages and jobs in the query (based on task_total_time_ms)"""
+
     task_total_time_ms: Optional[int] = None
     """Sum of execution time for all of the query’s tasks, in milliseconds."""
 
@@ -6097,6 +6169,8 @@ class QueryMetrics:
             body["rows_read_count"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+        if self.task_time_over_time_range:
+            body["task_time_over_time_range"] = self.task_time_over_time_range.as_dict()
         if self.task_total_time_ms is not None:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
@@ -6146,6 +6220,8 @@ class QueryMetrics:
             body["rows_read_count"] = self.rows_read_count
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
+        if self.task_time_over_time_range:
+            body["task_time_over_time_range"] = self.task_time_over_time_range
         if self.task_total_time_ms is not None:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
@@ -6177,6 +6253,7 @@ class QueryMetrics:
             rows_produced_count=d.get("rows_produced_count", None),
             rows_read_count=d.get("rows_read_count", None),
             spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
+            task_time_over_time_range=_from_dict(d, "task_time_over_time_range", TaskTimeOverRange),
             task_total_time_ms=d.get("task_total_time_ms", None),
             total_time_ms=d.get("total_time_ms", None),
             write_remote_bytes=d.get("write_remote_bytes", None),
@@ -6764,6 +6841,50 @@ class ServiceErrorCode(Enum):
 
 
 @dataclass
+class SetRequest:
+    """Set object ACL"""
+
+    access_control_list: Optional[List[AccessControl]] = None
+
+    object_id: Optional[str] = None
+    """Object ID. The ACL for the object with this UUID is overwritten by this request's POST content."""
+
+    object_type: Optional[ObjectTypePlural] = None
+    """The type of object permission to set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SetRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+        if self.object_id is not None:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = self.access_control_list
+        if self.object_id is not None:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetRequest:
+        """Deserializes the SetRequest from a dictionary."""
+        return cls(
+            access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
+            object_id=d.get("objectId", None),
+            object_type=_enum(d, "objectType", ObjectTypePlural),
+        )
+
+
+@dataclass
 class SetResponse:
     access_control_list: Optional[List[AccessControl]] = None
 
@@ -7168,6 +7289,63 @@ class SuccessMessage(Enum):
 
 
 @dataclass
+class TaskTimeOverRange:
+    entries: Optional[List[TaskTimeOverRangeEntry]] = None
+
+    interval: Optional[int] = None
+    """interval length for all entries (difference in start time and end time of an entry range) the
+    same for all entries start time of first interval is query_start_time_ms"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TaskTimeOverRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entries:
+            body["entries"] = [v.as_dict() for v in self.entries]
+        if self.interval is not None:
+            body["interval"] = self.interval
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskTimeOverRange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entries:
+            body["entries"] = self.entries
+        if self.interval is not None:
+            body["interval"] = self.interval
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRange:
+        """Deserializes the TaskTimeOverRange from a dictionary."""
+        return cls(entries=_repeated_dict(d, "entries", TaskTimeOverRangeEntry), interval=d.get("interval", None))
+
+
+@dataclass
+class TaskTimeOverRangeEntry:
+    task_completed_time_ms: Optional[int] = None
+    """total task completion time in this time range, aggregated over all stages and jobs in the query"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TaskTimeOverRangeEntry into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.task_completed_time_ms is not None:
+            body["task_completed_time_ms"] = self.task_completed_time_ms
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskTimeOverRangeEntry into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.task_completed_time_ms is not None:
+            body["task_completed_time_ms"] = self.task_completed_time_ms
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TaskTimeOverRangeEntry:
+        """Deserializes the TaskTimeOverRangeEntry from a dictionary."""
+        return cls(task_completed_time_ms=d.get("task_completed_time_ms", None))
+
+
+@dataclass
 class TerminationReason:
     code: Optional[TerminationReasonCode] = None
     """status code indicating why the cluster was terminated"""
@@ -7382,6 +7560,51 @@ class TransferOwnershipObjectId:
     def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipObjectId:
         """Deserializes the TransferOwnershipObjectId from a dictionary."""
         return cls(new_owner=d.get("new_owner", None))
+
+
+@dataclass
+class TransferOwnershipRequest:
+    """Transfer object ownership"""
+
+    new_owner: Optional[str] = None
+    """Email address for the new owner, who must exist in the workspace."""
+
+    object_id: Optional[TransferOwnershipObjectId] = None
+    """The ID of the object on which to change ownership."""
+
+    object_type: Optional[OwnableObjectType] = None
+    """The type of object on which to change ownership."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TransferOwnershipRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.new_owner is not None:
+            body["new_owner"] = self.new_owner
+        if self.object_id:
+            body["objectId"] = self.object_id.as_dict()
+        if self.object_type is not None:
+            body["objectType"] = self.object_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TransferOwnershipRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.new_owner is not None:
+            body["new_owner"] = self.new_owner
+        if self.object_id:
+            body["objectId"] = self.object_id
+        if self.object_type is not None:
+            body["objectType"] = self.object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipRequest:
+        """Deserializes the TransferOwnershipRequest from a dictionary."""
+        return cls(
+            new_owner=d.get("new_owner", None),
+            object_id=_from_dict(d, "objectId", TransferOwnershipObjectId),
+            object_type=_enum(d, "objectType", OwnableObjectType),
+        )
 
 
 @dataclass
@@ -8452,9 +8675,7 @@ class AlertsAPI:
     def create(
         self, *, alert: Optional[CreateAlertRequestAlert] = None, auto_resolve_display_name: Optional[bool] = None
     ) -> Alert:
-        """Create an alert.
-
-        Creates an alert.
+        """Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
         :param auto_resolve_display_name: bool (optional)
@@ -8477,9 +8698,7 @@ class AlertsAPI:
         return Alert.from_dict(res)
 
     def delete(self, id: str):
-        """Delete an alert.
-
-        Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
+        """Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
         can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
         deleted after 30 days.
 
@@ -8495,9 +8714,7 @@ class AlertsAPI:
         self._api.do("DELETE", f"/api/2.0/sql/alerts/{id}", headers=headers)
 
     def get(self, id: str) -> Alert:
-        """Get an alert.
-
-        Gets an alert.
+        """Gets an alert.
 
         :param id: str
 
@@ -8514,9 +8731,7 @@ class AlertsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListAlertsResponseAlert]:
-        """List alerts.
-
-        Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
+        """Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
@@ -8551,9 +8766,7 @@ class AlertsAPI:
         alert: Optional[UpdateAlertRequestAlert] = None,
         auto_resolve_display_name: Optional[bool] = None,
     ) -> Alert:
-        """Update an alert.
-
-        Updates an alert.
+        """Updates an alert.
 
         :param id: str
         :param update_mask: str
@@ -8612,9 +8825,7 @@ class AlertsLegacyAPI:
         parent: Optional[str] = None,
         rearm: Optional[int] = None,
     ) -> LegacyAlert:
-        """Create an alert.
-
-        Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
+        """Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
@@ -8656,9 +8867,7 @@ class AlertsLegacyAPI:
         return LegacyAlert.from_dict(res)
 
     def delete(self, alert_id: str):
-        """Delete an alert.
-
-        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
+        """Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
@@ -8678,9 +8887,7 @@ class AlertsLegacyAPI:
         self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
 
     def get(self, alert_id: str) -> LegacyAlert:
-        """Get an alert.
-
-        Gets an alert.
+        """Gets an alert.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
         instead. [Learn more]
@@ -8700,9 +8907,7 @@ class AlertsLegacyAPI:
         return LegacyAlert.from_dict(res)
 
     def list(self) -> Iterator[LegacyAlert]:
-        """Get alerts.
-
-        Gets a list of alerts.
+        """Gets a list of alerts.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
         instead. [Learn more]
@@ -8720,9 +8925,7 @@ class AlertsLegacyAPI:
         return [LegacyAlert.from_dict(v) for v in res]
 
     def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
-        """Update an alert.
-
-        Updates an alert.
+        """Updates an alert.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
         instead. [Learn more]
@@ -8760,15 +8963,13 @@ class AlertsLegacyAPI:
 
 
 class AlertsV2API:
-    """TODO: Add description"""
+    """New version of SQL Alerts"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_alert(self, alert: AlertV2) -> AlertV2:
-        """Create an alert.
-
-        Create Alert
+        """Create Alert
 
         :param alert: :class:`AlertV2`
 
@@ -8784,9 +8985,7 @@ class AlertsV2API:
         return AlertV2.from_dict(res)
 
     def get_alert(self, id: str) -> AlertV2:
-        """Get an alert.
-
-        Gets an alert.
+        """Gets an alert.
 
         :param id: str
 
@@ -8801,9 +9000,7 @@ class AlertsV2API:
         return AlertV2.from_dict(res)
 
     def list_alerts(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[AlertV2]:
-        """List alerts.
-
-        Gets a list of alerts accessible to the user, ordered by creation time.
+        """Gets a list of alerts accessible to the user, ordered by creation time.
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -8830,9 +9027,7 @@ class AlertsV2API:
             query["page_token"] = json["next_page_token"]
 
     def trash_alert(self, id: str):
-        """Delete an alert.
-
-        Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
+        """Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
         trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
         30 days.
 
@@ -8848,9 +9043,7 @@ class AlertsV2API:
         self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
 
     def update_alert(self, id: str, alert: AlertV2, update_mask: str) -> AlertV2:
-        """Update an alert.
-
-        Update alert
+        """Update alert
 
         :param id: str
           UUID identifying the alert.
@@ -8897,7 +9090,7 @@ class DashboardWidgetsAPI:
         text: Optional[str] = None,
         visualization_id: Optional[str] = None,
     ) -> Widget:
-        """Add widget to a dashboard.
+        """Add widget to a dashboard
 
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
@@ -8932,7 +9125,7 @@ class DashboardWidgetsAPI:
         return Widget.from_dict(res)
 
     def delete(self, id: str):
-        """Remove widget.
+        """Remove widget
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
@@ -8956,7 +9149,7 @@ class DashboardWidgetsAPI:
         text: Optional[str] = None,
         visualization_id: Optional[str] = None,
     ) -> Widget:
-        """Update existing widget.
+        """Update existing widget
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
@@ -9052,9 +9245,7 @@ class DashboardsAPI:
         return Dashboard.from_dict(res)
 
     def delete(self, dashboard_id: str):
-        """Remove a dashboard.
-
-        Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
+        """Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
 
         :param dashboard_id: str
@@ -9069,9 +9260,7 @@ class DashboardsAPI:
         self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
 
     def get(self, dashboard_id: str) -> Dashboard:
-        """Retrieve a definition.
-
-        Returns a JSON representation of a dashboard object, including its visualization and query objects.
+        """Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
         :param dashboard_id: str
 
@@ -9093,9 +9282,7 @@ class DashboardsAPI:
         page_size: Optional[int] = None,
         q: Optional[str] = None,
     ) -> Iterator[Dashboard]:
-        """Get dashboard objects.
-
-        Fetch a paginated list of dashboard objects.
+        """Fetch a paginated list of dashboard objects.
 
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
@@ -9142,9 +9329,7 @@ class DashboardsAPI:
             query["page"] += 1
 
     def restore(self, dashboard_id: str):
-        """Restore a dashboard.
-
-        A restored dashboard appears in list views and searches and can be shared.
+        """A restored dashboard appears in list views and searches and can be shared.
 
         :param dashboard_id: str
 
@@ -9165,9 +9350,7 @@ class DashboardsAPI:
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
     ) -> Dashboard:
-        """Change a dashboard definition.
-
-        Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
+        """Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
         does not add, modify, or remove widgets.
 
         **Note**: You cannot undo this operation.
@@ -9215,9 +9398,7 @@ class DataSourcesAPI:
         self._api = api_client
 
     def list(self) -> Iterator[DataSource]:
-        """Get a list of SQL warehouses.
-
-        Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
+        """Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
 
@@ -9258,9 +9439,7 @@ class DbsqlPermissionsAPI:
         self._api = api_client
 
     def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
-        """Get object ACL.
-
-        Gets a JSON representation of the access control list (ACL) for a specified object.
+        """Gets a JSON representation of the access control list (ACL) for a specified object.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
         :method:workspace/getpermissions instead. [Learn more]
@@ -9289,9 +9468,7 @@ class DbsqlPermissionsAPI:
         *,
         access_control_list: Optional[List[AccessControl]] = None,
     ) -> SetResponse:
-        """Set object ACL.
-
-        Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
+        """Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
@@ -9323,9 +9500,7 @@ class DbsqlPermissionsAPI:
     def transfer_ownership(
         self, object_type: OwnableObjectType, object_id: TransferOwnershipObjectId, *, new_owner: Optional[str] = None
     ) -> Success:
-        """Transfer object ownership.
-
-        Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
+        """Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
         **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
         :method:queries/update and :method:alerts/update respectively instead. [Learn more]
@@ -9369,9 +9544,7 @@ class QueriesAPI:
     def create(
         self, *, auto_resolve_display_name: Optional[bool] = None, query: Optional[CreateQueryRequestQuery] = None
     ) -> Query:
-        """Create a query.
-
-        Creates a query.
+        """Creates a query.
 
         :param auto_resolve_display_name: bool (optional)
           If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
@@ -9394,9 +9567,7 @@ class QueriesAPI:
         return Query.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a query.
-
-        Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
+        """Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is
         permanently deleted after 30 days.
 
@@ -9412,9 +9583,7 @@ class QueriesAPI:
         self._api.do("DELETE", f"/api/2.0/sql/queries/{id}", headers=headers)
 
     def get(self, id: str) -> Query:
-        """Get a query.
-
-        Gets a query.
+        """Gets a query.
 
         :param id: str
 
@@ -9431,9 +9600,7 @@ class QueriesAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListQueryObjectsResponseQuery]:
-        """List queries.
-
-        Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
+        """Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
         :param page_size: int (optional)
@@ -9463,9 +9630,7 @@ class QueriesAPI:
     def list_visualizations(
         self, id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Visualization]:
-        """List visualizations on a query.
-
-        Gets a list of visualizations on a query.
+        """Gets a list of visualizations on a query.
 
         :param id: str
         :param page_size: int (optional)
@@ -9500,9 +9665,7 @@ class QueriesAPI:
         auto_resolve_display_name: Optional[bool] = None,
         query: Optional[UpdateQueryRequestQuery] = None,
     ) -> Query:
-        """Update a query.
-
-        Updates a query.
+        """Updates a query.
 
         :param id: str
         :param update_mask: str
@@ -9563,9 +9726,7 @@ class QueriesLegacyAPI:
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
     ) -> LegacyQuery:
-        """Create a new query definition.
-
-        Creates a new query definition. Queries created with this endpoint belong to the authenticated user
+        """Creates a new query definition. Queries created with this endpoint belong to the authenticated user
         making the request.
 
         The `data_source_id` field specifies the ID of the SQL warehouse to run this query against. You can
@@ -9629,9 +9790,7 @@ class QueriesLegacyAPI:
         return LegacyQuery.from_dict(res)
 
     def delete(self, query_id: str):
-        """Delete a query.
-
-        Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
+        """Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
@@ -9651,9 +9810,7 @@ class QueriesLegacyAPI:
         self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
 
     def get(self, query_id: str) -> LegacyQuery:
-        """Get a query definition.
-
-        Retrieve a query object definition along with contextual permissions information about the currently
+        """Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
@@ -9681,9 +9838,7 @@ class QueriesLegacyAPI:
         page_size: Optional[int] = None,
         q: Optional[str] = None,
     ) -> Iterator[LegacyQuery]:
-        """Get a list of queries.
-
-        Gets a list of queries. Optionally, this list can be filtered by a search term.
+        """Gets a list of queries. Optionally, this list can be filtered by a search term.
 
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
@@ -9747,9 +9902,7 @@ class QueriesLegacyAPI:
             query["page"] += 1
 
     def restore(self, query_id: str):
-        """Restore a query.
-
-        Restore a query that has been moved to the trash. A restored query appears in list views and searches.
+        """Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
         **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
@@ -9780,9 +9933,7 @@ class QueriesLegacyAPI:
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
     ) -> LegacyQuery:
-        """Change a query definition.
-
-        Modify this query definition.
+        """Modify this query definition.
 
         **Note**: You cannot undo this operation.
 
@@ -9853,16 +10004,16 @@ class QueryHistoryAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> ListQueriesResponse:
-        """List Queries.
-
-        List the history of queries through SQL warehouses, and serverless compute.
+        """List the history of queries through SQL warehouses, and serverless compute.
 
         You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are
         returned first (up to max_results in request). The pagination token returned in response can be used
         to list subsequent query statuses.
 
         :param filter_by: :class:`QueryFilter` (optional)
-          A filter to limit query history results. This field is optional.
+          An optional filter object to limit query history results. Accepts parameters such as user IDs,
+          endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are
+          specified with dot notation. For example: `filter_by.statement_ids`.
         :param include_metrics: bool (optional)
           Whether to include the query metrics with each query. Only use this for a small subset of queries
           (max_results). Defaults to false.
@@ -9901,9 +10052,7 @@ class QueryVisualizationsAPI:
         self._api = api_client
 
     def create(self, *, visualization: Optional[CreateVisualizationRequestVisualization] = None) -> Visualization:
-        """Add a visualization to a query.
-
-        Adds a visualization to a query.
+        """Adds a visualization to a query.
 
         :param visualization: :class:`CreateVisualizationRequestVisualization` (optional)
 
@@ -9921,9 +10070,7 @@ class QueryVisualizationsAPI:
         return Visualization.from_dict(res)
 
     def delete(self, id: str):
-        """Remove a visualization.
-
-        Removes a visualization.
+        """Removes a visualization.
 
         :param id: str
 
@@ -9939,9 +10086,7 @@ class QueryVisualizationsAPI:
     def update(
         self, id: str, update_mask: str, *, visualization: Optional[UpdateVisualizationRequestVisualization] = None
     ) -> Visualization:
-        """Update a visualization.
-
-        Updates a visualization.
+        """Updates a visualization.
 
         :param id: str
         :param update_mask: str
@@ -9987,9 +10132,7 @@ class QueryVisualizationsLegacyAPI:
     def create(
         self, query_id: str, type: str, options: Any, *, description: Optional[str] = None, name: Optional[str] = None
     ) -> LegacyVisualization:
-        """Add visualization to a query.
-
-        Creates visualization in the query.
+        """Creates visualization in the query.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
         :method:queryvisualizations/create instead. [Learn more]
@@ -10030,9 +10173,7 @@ class QueryVisualizationsLegacyAPI:
         return LegacyVisualization.from_dict(res)
 
     def delete(self, id: str):
-        """Remove visualization.
-
-        Removes a visualization from the query.
+        """Removes a visualization from the query.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
         :method:queryvisualizations/delete instead. [Learn more]
@@ -10063,9 +10204,7 @@ class QueryVisualizationsLegacyAPI:
         type: Optional[str] = None,
         updated_at: Optional[str] = None,
     ) -> LegacyVisualization:
-        """Edit existing visualization.
-
-        Updates visualization in the query.
+        """Updates visualization in the query.
 
         **Note**: A new version of the Databricks SQL API is now available. Please use
         :method:queryvisualizations/update instead. [Learn more]
@@ -10223,9 +10362,7 @@ class StatementExecutionAPI:
         self._api = api_client
 
     def cancel_execution(self, statement_id: str):
-        """Cancel statement execution.
-
-        Requests that an executing statement be canceled. Callers must poll for status to see the terminal
+        """Requests that an executing statement be canceled. Callers must poll for status to see the terminal
         state.
 
         :param statement_id: str
@@ -10254,7 +10391,7 @@ class StatementExecutionAPI:
         schema: Optional[str] = None,
         wait_timeout: Optional[str] = None,
     ) -> StatementResponse:
-        """Execute a SQL statement.
+        """Execute a SQL statement
 
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
@@ -10394,9 +10531,7 @@ class StatementExecutionAPI:
         return StatementResponse.from_dict(res)
 
     def get_statement(self, statement_id: str) -> StatementResponse:
-        """Get status, manifest, and result first chunk.
-
-        This request can be used to poll for the statement's status. When the `status.state` field is
+        """This request can be used to poll for the statement's status. When the `status.state` field is
         `SUCCEEDED` it will also return the result manifest and the first chunk of the result data. When the
         statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
         state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
@@ -10419,9 +10554,7 @@ class StatementExecutionAPI:
         return StatementResponse.from_dict(res)
 
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
-        """Get result chunk by index.
-
-        After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.
+        """After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.
         Whereas the first chunk with `chunk_index=0` is typically fetched with
         :method:statementexecution/executeStatement or :method:statementexecution/getStatement, this request
         can be used to fetch subsequent chunks. The response structure is identical to the nested `result`
@@ -10531,9 +10664,7 @@ class WarehousesAPI:
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
-        """Create a warehouse.
-
-        Creates a new SQL warehouse.
+        """Creates a new SQL warehouse.
 
         :param auto_stop_mins: int (optional)
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
@@ -10669,9 +10800,7 @@ class WarehousesAPI:
         ).result(timeout=timeout)
 
     def delete(self, id: str):
-        """Delete a warehouse.
-
-        Deletes a SQL warehouse.
+        """Deletes a SQL warehouse.
 
         :param id: str
           Required. Id of the SQL warehouse.
@@ -10703,9 +10832,7 @@ class WarehousesAPI:
         tags: Optional[EndpointTags] = None,
         warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None,
     ) -> Wait[GetWarehouseResponse]:
-        """Update a warehouse.
-
-        Updates the configuration for a SQL warehouse.
+        """Updates the configuration for a SQL warehouse.
 
         :param id: str
           Required. Id of the warehouse to configure.
@@ -10840,9 +10967,7 @@ class WarehousesAPI:
         ).result(timeout=timeout)
 
     def get(self, id: str) -> GetWarehouseResponse:
-        """Get warehouse info.
-
-        Gets the information for a single SQL warehouse.
+        """Gets the information for a single SQL warehouse.
 
         :param id: str
           Required. Id of the SQL warehouse.
@@ -10858,9 +10983,7 @@ class WarehousesAPI:
         return GetWarehouseResponse.from_dict(res)
 
     def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
-        """Get SQL warehouse permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param warehouse_id: str
           The SQL warehouse for which to get or manage permissions.
@@ -10876,9 +10999,7 @@ class WarehousesAPI:
         return GetWarehousePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, warehouse_id: str) -> WarehousePermissions:
-        """Get SQL warehouse permissions.
-
-        Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
+        """Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
 
         :param warehouse_id: str
@@ -10895,9 +11016,7 @@ class WarehousesAPI:
         return WarehousePermissions.from_dict(res)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
-        """Get the workspace configuration.
-
-        Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+        """Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         """
@@ -10910,9 +11029,7 @@ class WarehousesAPI:
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
     def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
-        """List warehouses.
-
-        Lists all SQL warehouses that a user has manager permissions on.
+        """Lists all SQL warehouses that a user has manager permissions on.
 
         :param run_as_user_id: int (optional)
           Service Principal which will be used to fetch the list of warehouses. If not specified, the user
@@ -10935,9 +11052,7 @@ class WarehousesAPI:
     def set_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
     ) -> WarehousePermissions:
-        """Set SQL warehouse permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param warehouse_id: str
@@ -10970,9 +11085,7 @@ class WarehousesAPI:
         security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None,
         sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None,
     ):
-        """Set the workspace configuration.
-
-        Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+        """Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
         :param channel: :class:`Channel` (optional)
           Optional: Channel selection details
@@ -11026,9 +11139,7 @@ class WarehousesAPI:
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
 
     def start(self, id: str) -> Wait[GetWarehouseResponse]:
-        """Start a warehouse.
-
-        Starts a SQL warehouse.
+        """Starts a SQL warehouse.
 
         :param id: str
           Required. Id of the SQL warehouse.
@@ -11049,9 +11160,7 @@ class WarehousesAPI:
         return self.start(id=id).result(timeout=timeout)
 
     def stop(self, id: str) -> Wait[GetWarehouseResponse]:
-        """Stop a warehouse.
-
-        Stops a SQL warehouse.
+        """Stops a SQL warehouse.
 
         :param id: str
           Required. Id of the SQL warehouse.
@@ -11074,9 +11183,7 @@ class WarehousesAPI:
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
     ) -> WarehousePermissions:
-        """Update SQL warehouse permissions.
-
-        Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
+        """Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
 
         :param warehouse_id: str
