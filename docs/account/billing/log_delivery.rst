@@ -52,8 +52,6 @@
                 status=billing.LogDeliveryConfigStatus.DISABLED,
             )
 
-        Create a new log delivery configuration.
-
         Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
         to your storage location. This requires that you already created a [credential
         object](:method:Credentials/Create) (which encapsulates a cross-account service IAM role) and a
@@ -128,8 +126,6 @@
                 status=billing.LogDeliveryConfigStatus.DISABLED,
             )
 
-        Get log delivery configuration.
-
         Gets a Databricks log delivery configuration object for an account, both specified by ID.
 
         :param log_delivery_configuration_id: str
@@ -152,8 +148,6 @@
             
             all = a.log_delivery.list(billing.ListLogDeliveryRequest())
 
-        Get all log delivery configurations.
-
         Gets all Databricks log delivery configurations associated with an account specified by ID.
 
         :param credentials_id: str (optional)
@@ -170,8 +164,6 @@
         
 
     .. py:method:: patch_status(log_delivery_configuration_id: str, status: LogDeliveryConfigStatus)
-
-        Enable or disable log delivery configuration.
 
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't

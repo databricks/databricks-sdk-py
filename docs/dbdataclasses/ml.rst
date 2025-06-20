@@ -192,6 +192,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteOnlineStoreResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRun
    :members:
    :undoc-members:
@@ -396,6 +400,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListOnlineStoresResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListRegistryWebhooks
    :members:
    :undoc-members:
@@ -542,6 +550,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OnlineStore
+   :members:
+   :undoc-members:
+
+.. py:class:: OnlineStoreState
+
+   .. py:attribute:: AVAILABLE
+      :value: "AVAILABLE"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: FAILING_OVER
+      :value: "FAILING_OVER"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
 .. autoclass:: Param
    :members:
    :undoc-members:
@@ -564,6 +596,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
+
+.. autoclass:: PublishSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: PublishSpecPublishMode
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+.. autoclass:: PublishTableRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: PublishTableResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: RegisteredModelAccessControlRequest
    :members:

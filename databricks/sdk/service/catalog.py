@@ -520,8 +520,10 @@ class AwsIamRole:
 
 @dataclass
 class AwsIamRoleRequest:
+    """The AWS IAM role configuration"""
+
     role_arn: str
-    """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
+    """The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsIamRoleRequest into a dictionary suitable for use as a JSON request body."""
@@ -545,11 +547,13 @@ class AwsIamRoleRequest:
 
 @dataclass
 class AwsIamRoleResponse:
+    """The AWS IAM role configuration"""
+
     role_arn: str
-    """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
+    """The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."""
 
     external_id: Optional[str] = None
-    """The external ID used in role assumption to prevent confused deputy problem.."""
+    """The external ID used in role assumption to prevent the confused deputy problem."""
 
     unity_catalog_iam_arn: Optional[str] = None
     """The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity
@@ -659,9 +663,7 @@ class AzureManagedIdentity:
     `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity. This field is only used to
-    persist the credential_id once it is fetched from the credentials manager - as we only use the
-    protobuf serializer to store credentials, this ID gets persisted to the database. ."""
+    """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
     """The Azure resource ID of the managed identity. Use the format,
@@ -704,16 +706,18 @@ class AzureManagedIdentity:
 
 @dataclass
 class AzureManagedIdentityRequest:
+    """The Azure managed identity configuration."""
+
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}."""
+    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
 
     managed_identity_id: Optional[str] = None
-    """The Azure resource ID of the managed identity. Use the format
-    /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
+    """The Azure resource ID of the managed identity. Use the format,
+    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
-    assume the AzureManagedIdentity is for a system-assigned identity."""
+    assume the AzureManagedIdentity is using the system-assigned identity."""
 
     def as_dict(self) -> dict:
         """Serializes the AzureManagedIdentityRequest into a dictionary suitable for use as a JSON request body."""
@@ -744,19 +748,21 @@ class AzureManagedIdentityRequest:
 
 @dataclass
 class AzureManagedIdentityResponse:
+    """The Azure managed identity configuration."""
+
     access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
-    /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}."""
+    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
 
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this managed identity."""
 
     managed_identity_id: Optional[str] = None
-    """The Azure resource ID of the managed identity. Use the format
-    /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
+    """The Azure resource ID of the managed identity. Use the format,
+    `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
     This is only available for user-assgined identities. For system-assigned identities, the
     access_connector_id is used to identify the identity. If this field is not provided, then we
-    assume the AzureManagedIdentity is for a system-assigned identity."""
+    assume the AzureManagedIdentity is using the system-assigned identity."""
 
     def as_dict(self) -> dict:
         """Serializes the AzureManagedIdentityResponse into a dictionary suitable for use as a JSON request body."""
@@ -1162,14 +1168,17 @@ class CatalogType(Enum):
 
 @dataclass
 class CloudflareApiToken:
+    """The Cloudflare API token configuration. Read more at
+    https://developers.cloudflare.com/r2/api/s3/tokens/"""
+
     access_key_id: str
-    """The Cloudflare access key id of the token."""
+    """The access key ID associated with the API token."""
 
     secret_access_key: str
-    """The secret access token generated for the access key id"""
+    """The secret access token generated for the above access key ID."""
 
     account_id: str
-    """The account id associated with the API token."""
+    """The ID of the account associated with the API token."""
 
     def as_dict(self) -> dict:
         """Serializes the CloudflareApiToken into a dictionary suitable for use as a JSON request body."""
@@ -1542,7 +1551,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 31"""
+    """Next Id: 33"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1773,19 +1782,19 @@ class CreateCredentialRequest:
     metastore."""
 
     aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration"""
+    """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
     azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration. Only applicable when purpose is **STORAGE**."""
+    """The Azure service principal configuration."""
 
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """The Databricks managed GCP service account configuration."""
 
     purpose: Optional[CredentialPurpose] = None
     """Indicates the purpose of the credential."""
@@ -2563,7 +2572,8 @@ class CreateSchema:
 @dataclass
 class CreateStorageCredential:
     name: str
-    """The credential name. The name must be unique within the metastore."""
+    """The credential name. The name must be unique among storage and service credentials within the
+    metastore."""
 
     aws_iam_role: Optional[AwsIamRoleRequest] = None
     """The AWS IAM role configuration."""
@@ -2584,7 +2594,8 @@ class CreateStorageCredential:
     """The Databricks managed GCP service account configuration."""
 
     read_only: Optional[bool] = None
-    """Whether the storage credential is only usable for read operations."""
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
 
     skip_validation: Optional[bool] = None
     """Supplying true to this argument skips validation of the created credential."""
@@ -2760,13 +2771,13 @@ class CreateVolumeRequestContent:
 @dataclass
 class CredentialInfo:
     aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration"""
+    """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
     azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration. Only applicable when purpose is **STORAGE**."""
+    """The Azure service principal configuration."""
 
     comment: Optional[str] = None
     """Comment associated with the credential."""
@@ -2778,7 +2789,7 @@ class CredentialInfo:
     """Username of credential creator."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """The Databricks managed GCP service account configuration."""
 
     full_name: Optional[str] = None
     """The full name of the credential."""
@@ -3011,9 +3022,7 @@ class DatabricksGcpServiceAccount:
     """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
 
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this managed identity. This field is only used to
-    persist the credential_id once it is fetched from the credentials manager - as we only use the
-    protobuf serializer to store credentials, this ID gets persisted to the database"""
+    """The Databricks internal ID that represents this managed identity."""
 
     email: Optional[str] = None
     """The email of the service account."""
@@ -3055,6 +3064,8 @@ class DatabricksGcpServiceAccount:
 
 @dataclass
 class DatabricksGcpServiceAccountRequest:
+    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+
     def as_dict(self) -> dict:
         """Serializes the DatabricksGcpServiceAccountRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3073,11 +3084,13 @@ class DatabricksGcpServiceAccountRequest:
 
 @dataclass
 class DatabricksGcpServiceAccountResponse:
+    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+
     credential_id: Optional[str] = None
-    """The Databricks internal ID that represents this service account. This is an output-only field."""
+    """The Databricks internal ID that represents this managed identity."""
 
     email: Optional[str] = None
-    """The email of the service account. This is an output-only field."""
+    """The email of the service account."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabricksGcpServiceAccountResponse into a dictionary suitable for use as a JSON request body."""
@@ -7834,7 +7847,7 @@ class StorageCredentialInfo:
     """Comment associated with the credential."""
 
     created_at: Optional[int] = None
-    """Time at which this Credential was created, in epoch milliseconds."""
+    """Time at which this credential was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
     """Username of credential creator."""
@@ -7849,18 +7862,21 @@ class StorageCredentialInfo:
     """The unique identifier of the credential."""
 
     isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     metastore_id: Optional[str] = None
-    """Unique identifier of parent metastore."""
+    """Unique identifier of the parent metastore."""
 
     name: Optional[str] = None
-    """The credential name. The name must be unique within the metastore."""
+    """The credential name. The name must be unique among storage and service credentials within the
+    metastore."""
 
     owner: Optional[str] = None
     """Username of current owner of credential."""
 
     read_only: Optional[bool] = None
-    """Whether the storage credential is only usable for read operations."""
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
 
     updated_at: Optional[int] = None
     """Time at which this credential was last modified, in epoch milliseconds."""
@@ -7869,7 +7885,8 @@ class StorageCredentialInfo:
     """Username of user who last modified the credential."""
 
     used_for_managed_storage: Optional[bool] = None
-    """Whether this credential is the current metastore's root storage credential."""
+    """Whether this credential is the current metastore's root storage credential. Only applicable when
+    purpose is **STORAGE**."""
 
     def as_dict(self) -> dict:
         """Serializes the StorageCredentialInfo into a dictionary suitable for use as a JSON request body."""
@@ -8808,19 +8825,19 @@ class UpdateConnection:
 @dataclass
 class UpdateCredentialRequest:
     aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration"""
+    """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
     azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration. Only applicable when purpose is **STORAGE**."""
+    """The Azure service principal configuration."""
 
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
+    """The Databricks managed GCP service account configuration."""
 
     force: Optional[bool] = None
     """Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
@@ -9609,6 +9626,7 @@ class UpdateStorageCredential:
     """Force update even if there are dependent external locations or external tables."""
 
     isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     name: Optional[str] = None
     """Name of the storage credential."""
@@ -9620,7 +9638,8 @@ class UpdateStorageCredential:
     """Username of current owner of credential."""
 
     read_only: Optional[bool] = None
-    """Whether the storage credential is only usable for read operations."""
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
 
     skip_validation: Optional[bool] = None
     """Supplying true to this argument skips validation of the updated credential."""
@@ -10067,7 +10086,7 @@ class ValidateStorageCredential:
     """Whether the storage credential is only usable for read operations."""
 
     storage_credential_name: Optional[str] = None
-    """The name of the storage credential to validate."""
+    """Required. The name of an existing credential or long-lived cloud credential to validate."""
 
     url: Optional[str] = None
     """The external location url to validate."""
@@ -10212,7 +10231,8 @@ class ValidationResult:
 
 
 class ValidationResultOperation(Enum):
-    """The operation tested."""
+    """A enum represents the file operation performed on the external location with the storage
+    credential"""
 
     DELETE = "DELETE"
     LIST = "LIST"
@@ -10222,7 +10242,7 @@ class ValidationResultOperation(Enum):
 
 
 class ValidationResultResult(Enum):
-    """The results of the tested operation."""
+    """A enum represents the result of the file operation"""
 
     FAIL = "FAIL"
     PASS = "PASS"
@@ -10449,9 +10469,7 @@ class AccountMetastoreAssignmentsAPI:
     def create(
         self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
     ):
-        """Assigns a workspace to a metastore.
-
-        Creates an assignment to a metastore for a workspace
+        """Creates an assignment to a metastore for a workspace
 
         :param workspace_id: int
           Workspace ID.
@@ -10477,9 +10495,7 @@ class AccountMetastoreAssignmentsAPI:
         )
 
     def delete(self, workspace_id: int, metastore_id: str):
-        """Delete a metastore assignment.
-
-        Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
+        """Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
 
         :param workspace_id: int
           Workspace ID.
@@ -10500,9 +10516,7 @@ class AccountMetastoreAssignmentsAPI:
         )
 
     def get(self, workspace_id: int) -> AccountsMetastoreAssignment:
-        """Gets the metastore assignment for a workspace.
-
-        Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
+        """Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
         a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
         will not be found and a 404 returned.
 
@@ -10522,9 +10536,7 @@ class AccountMetastoreAssignmentsAPI:
         return AccountsMetastoreAssignment.from_dict(res)
 
     def list(self, metastore_id: str) -> Iterator[int]:
-        """Get all workspaces assigned to a metastore.
-
-        Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
+        """Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -10545,9 +10557,7 @@ class AccountMetastoreAssignmentsAPI:
     def update(
         self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
     ):
-        """Updates a metastore assignment to a workspaces.
-
-        Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
+        """Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
         updated.
 
         :param workspace_id: int
@@ -10582,9 +10592,7 @@ class AccountMetastoresAPI:
         self._api = api_client
 
     def create(self, *, metastore_info: Optional[CreateMetastore] = None) -> AccountsMetastoreInfo:
-        """Create metastore.
-
-        Creates a Unity Catalog metastore.
+        """Creates a Unity Catalog metastore.
 
         :param metastore_info: :class:`CreateMetastore` (optional)
 
@@ -10602,9 +10610,7 @@ class AccountMetastoresAPI:
         return AccountsMetastoreInfo.from_dict(res)
 
     def delete(self, metastore_id: str, *, force: Optional[bool] = None):
-        """Delete a metastore.
-
-        Deletes a Unity Catalog metastore for an account, both specified by ID.
+        """Deletes a Unity Catalog metastore for an account, both specified by ID.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -10629,9 +10635,7 @@ class AccountMetastoresAPI:
         )
 
     def get(self, metastore_id: str) -> AccountsMetastoreInfo:
-        """Get a metastore.
-
-        Gets a Unity Catalog metastore from an account, both specified by ID.
+        """Gets a Unity Catalog metastore from an account, both specified by ID.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -10649,9 +10653,7 @@ class AccountMetastoresAPI:
         return AccountsMetastoreInfo.from_dict(res)
 
     def list(self) -> Iterator[MetastoreInfo]:
-        """Get all metastores associated with an account.
-
-        Gets all Unity Catalog metastores associated with an account specified by ID.
+        """Gets all Unity Catalog metastores associated with an account specified by ID.
 
         :returns: Iterator over :class:`MetastoreInfo`
         """
@@ -10665,9 +10667,7 @@ class AccountMetastoresAPI:
         return parsed if parsed is not None else []
 
     def update(self, metastore_id: str, *, metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
-        """Update a metastore.
-
-        Updates an existing Unity Catalog metastore.
+        """Updates an existing Unity Catalog metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -10698,9 +10698,7 @@ class AccountStorageCredentialsAPI:
     def create(
         self, metastore_id: str, *, credential_info: Optional[CreateStorageCredential] = None
     ) -> AccountsStorageCredentialInfo:
-        """Create a storage credential.
-
-        Creates a new storage credential. The request object is specific to the cloud:
+        """Creates a new storage credential. The request object is specific to the cloud:
 
         * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure credentials *
         **GcpServiceAcountKey** for GCP credentials.
@@ -10731,9 +10729,7 @@ class AccountStorageCredentialsAPI:
         return AccountsStorageCredentialInfo.from_dict(res)
 
     def delete(self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None):
-        """Delete a storage credential.
-
-        Deletes a storage credential from the metastore. The caller must be an owner of the storage
+        """Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
 
         :param metastore_id: str
@@ -10761,9 +10757,7 @@ class AccountStorageCredentialsAPI:
         )
 
     def get(self, metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo:
-        """Gets the named storage credential.
-
-        Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
+        """Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have a level of privilege on the storage credential.
 
         :param metastore_id: str
@@ -10786,9 +10780,7 @@ class AccountStorageCredentialsAPI:
         return AccountsStorageCredentialInfo.from_dict(res)
 
     def list(self, metastore_id: str) -> Iterator[StorageCredentialInfo]:
-        """Get all storage credentials assigned to a metastore.
-
-        Gets a list of all storage credentials that have been assigned to given metastore.
+        """Gets a list of all storage credentials that have been assigned to given metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
@@ -10815,9 +10807,7 @@ class AccountStorageCredentialsAPI:
         *,
         credential_info: Optional[UpdateStorageCredential] = None,
     ) -> AccountsStorageCredentialInfo:
-        """Updates a storage credential.
-
-        Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
+        """Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
         If the caller is a metastore admin, only the __owner__ credential can be changed.
 
         :param metastore_id: str
@@ -10853,9 +10843,7 @@ class ArtifactAllowlistsAPI:
         self._api = api_client
 
     def get(self, artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
-        """Get an artifact allowlist.
-
-        Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
+        """Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
         the **MANAGE ALLOWLIST** privilege on the metastore.
 
         :param artifact_type: :class:`ArtifactType`
@@ -10880,9 +10868,7 @@ class ArtifactAllowlistsAPI:
         created_by: Optional[str] = None,
         metastore_id: Optional[str] = None,
     ) -> ArtifactAllowlistInfo:
-        """Set an artifact allowlist.
-
-        Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
+        """Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
 
@@ -10942,9 +10928,7 @@ class CatalogsAPI:
         share_name: Optional[str] = None,
         storage_root: Optional[str] = None,
     ) -> CatalogInfo:
-        """Create a catalog.
-
-        Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
+        """Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
 
         :param name: str
@@ -10994,9 +10978,7 @@ class CatalogsAPI:
         return CatalogInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
-        """Delete a catalog.
-
-        Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
+        """Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
         of the catalog.
 
         :param name: str
@@ -11017,9 +10999,7 @@ class CatalogsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> CatalogInfo:
-        """Get a catalog.
-
-        Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
+        """Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
         catalog, or a user that has the **USE_CATALOG** privilege set for their account.
 
         :param name: str
@@ -11048,9 +11028,7 @@ class CatalogsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[CatalogInfo]:
-        """List catalogs.
-
-        Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
+        """Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
         retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the
         **USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -11104,9 +11082,7 @@ class CatalogsAPI:
         owner: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
     ) -> CatalogInfo:
-        """Update a catalog.
-
-        Updates the catalog that matches the supplied name. The caller must be either the owner of the
+        """Updates the catalog that matches the supplied name. The caller must be either the owner of the
         catalog, or a metastore admin (when changing the owner field of the catalog).
 
         :param name: str
@@ -11175,9 +11151,7 @@ class ConnectionsAPI:
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
-        """Create a connection.
-
-        Creates a new connection
+        """Creates a new connection
 
         Creates a new connection to an external data source. It allows users to specify connection details and
         configurations for interaction with the external server.
@@ -11219,9 +11193,7 @@ class ConnectionsAPI:
         return ConnectionInfo.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a connection.
-
-        Deletes the connection that matches the supplied name.
+        """Deletes the connection that matches the supplied name.
 
         :param name: str
           The name of the connection to be deleted.
@@ -11236,9 +11208,7 @@ class ConnectionsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
 
     def get(self, name: str) -> ConnectionInfo:
-        """Get a connection.
-
-        Gets a connection from it's name.
+        """Gets a connection from it's name.
 
         :param name: str
           Name of the connection.
@@ -11254,9 +11224,7 @@ class ConnectionsAPI:
         return ConnectionInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
-        """List connections.
-
-        List all connections.
+        """List all connections.
 
         :param max_results: int (optional)
           Maximum number of connections to return. - If not set, all connections are returned (not
@@ -11290,9 +11258,7 @@ class ConnectionsAPI:
     def update(
         self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
     ) -> ConnectionInfo:
-        """Update a connection.
-
-        Updates the connection that matches the supplied name.
+        """Updates the connection that matches the supplied name.
 
         :param name: str
           Name of the connection.
@@ -11346,9 +11312,7 @@ class CredentialsAPI:
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> CredentialInfo:
-        """Create a credential.
-
-        Creates a new credential. The type of credential to be created is determined by the **purpose** field,
+        """Creates a new credential. The type of credential to be created is determined by the **purpose** field,
         which should be either **SERVICE** or **STORAGE**.
 
         The caller must be a metastore admin or have the metastore privilege **CREATE_STORAGE_CREDENTIAL** for
@@ -11358,15 +11322,15 @@ class CredentialsAPI:
           The credential name. The name must be unique among storage and service credentials within the
           metastore.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
+          The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration. Only applicable when purpose is **STORAGE**.
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
+          The Databricks managed GCP service account configuration.
         :param purpose: :class:`CredentialPurpose` (optional)
           Indicates the purpose of the credential.
         :param read_only: bool (optional)
@@ -11405,9 +11369,7 @@ class CredentialsAPI:
         return CredentialInfo.from_dict(res)
 
     def delete_credential(self, name_arg: str, *, force: Optional[bool] = None):
-        """Delete a credential.
-
-        Deletes a service or storage credential from the metastore. The caller must be an owner of the
+        """Deletes a service or storage credential from the metastore. The caller must be an owner of the
         credential.
 
         :param name_arg: str
@@ -11435,9 +11397,7 @@ class CredentialsAPI:
         azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None,
         gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions] = None,
     ) -> TemporaryCredentials:
-        """Generate a temporary service credential.
-
-        Returns a set of temporary credentials generated using the specified service credential. The caller
+        """Returns a set of temporary credentials generated using the specified service credential. The caller
         must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.
 
         :param credential_name: str
@@ -11465,9 +11425,7 @@ class CredentialsAPI:
         return TemporaryCredentials.from_dict(res)
 
     def get_credential(self, name_arg: str) -> CredentialInfo:
-        """Get a credential.
-
-        Gets a service or storage credential from the metastore. The caller must be a metastore admin, the
+        """Gets a service or storage credential from the metastore. The caller must be a metastore admin, the
         owner of the credential, or have any permission on the credential.
 
         :param name_arg: str
@@ -11490,9 +11448,7 @@ class CredentialsAPI:
         page_token: Optional[str] = None,
         purpose: Optional[CredentialPurpose] = None,
     ) -> Iterator[CredentialInfo]:
-        """List credentials.
-
-        Gets an array of credentials (as __CredentialInfo__ objects).
+        """Gets an array of credentials (as __CredentialInfo__ objects).
 
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
@@ -11547,9 +11503,7 @@ class CredentialsAPI:
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> CredentialInfo:
-        """Update a credential.
-
-        Updates a service or storage credential on the metastore.
+        """Updates a service or storage credential on the metastore.
 
         The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
         If the caller is a metastore admin, only the __owner__ field can be changed.
@@ -11557,15 +11511,15 @@ class CredentialsAPI:
         :param name_arg: str
           Name of the credential.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
+          The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
-          The Azure service principal configuration. Only applicable when purpose is **STORAGE**.
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
+          The Databricks managed GCP service account configuration.
         :param force: bool (optional)
           Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
           external locations and external tables (when purpose is **STORAGE**).
@@ -11626,9 +11580,7 @@ class CredentialsAPI:
         read_only: Optional[bool] = None,
         url: Optional[str] = None,
     ) -> ValidateCredentialResponse:
-        """Validate a credential.
-
-        Validates a credential.
+        """Validates a credential.
 
         For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
         credential must be provided.
@@ -11718,9 +11670,7 @@ class ExternalLocationsAPI:
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> ExternalLocationInfo:
-        """Create an external location.
-
-        Creates a new external location entry in the metastore. The caller must be a metastore admin or have
+        """Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
         credential.
 
@@ -11779,9 +11729,7 @@ class ExternalLocationsAPI:
         return ExternalLocationInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
-        """Delete an external location.
-
-        Deletes the specified external location from the metastore. The caller must be the owner of the
+        """Deletes the specified external location from the metastore. The caller must be the owner of the
         external location.
 
         :param name: str
@@ -11802,9 +11750,7 @@ class ExternalLocationsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> ExternalLocationInfo:
-        """Get an external location.
-
-        Gets an external location from the metastore. The caller must be either a metastore admin, the owner
+        """Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
 
         :param name: str
@@ -11833,9 +11779,7 @@ class ExternalLocationsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ExternalLocationInfo]:
-        """List external locations.
-
-        Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
+        """Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -11891,9 +11835,7 @@ class ExternalLocationsAPI:
         skip_validation: Optional[bool] = None,
         url: Optional[str] = None,
     ) -> ExternalLocationInfo:
-        """Update an external location.
-
-        Updates an external location in the metastore. The caller must be the owner of the external location,
+        """Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
         location.
 
@@ -11976,9 +11918,7 @@ class FunctionsAPI:
         self._api = api_client
 
     def create(self, function_info: CreateFunction) -> FunctionInfo:
-        """Create a function.
-
-        **WARNING: This API is experimental and will change in future versions**
+        """**WARNING: This API is experimental and will change in future versions**
 
         Creates a new function
 
@@ -12003,9 +11943,7 @@ class FunctionsAPI:
         return FunctionInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
-        """Delete a function.
-
-        Deletes the function that matches the supplied name. For the deletion to succeed, the user must
+        """Deletes the function that matches the supplied name. For the deletion to succeed, the user must
         satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
         owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
         Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
@@ -12030,9 +11968,7 @@ class FunctionsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> FunctionInfo:
-        """Get a function.
-
-        Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
+        """Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
         satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
         parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
         of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
@@ -12068,9 +12004,7 @@ class FunctionsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[FunctionInfo]:
-        """List functions.
-
-        List functions within the specified parent catalog and schema. If the user is a metastore admin, all
+        """List functions within the specified parent catalog and schema. If the user is a metastore admin, all
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
         on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only
         functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
@@ -12119,9 +12053,7 @@ class FunctionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
-        """Update a function.
-
-        Updates the function that matches the supplied name. Only the owner of the function can be updated. If
+        """Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
         owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
         function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
@@ -12171,9 +12103,7 @@ class GrantsAPI:
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
     ) -> GetPermissionsResponse:
-        """Get permissions.
-
-        Gets the permissions for a securable. Does not include inherited permissions.
+        """Gets the permissions for a securable. Does not include inherited permissions.
 
         :param securable_type: str
           Type of securable.
@@ -12222,9 +12152,7 @@ class GrantsAPI:
         page_token: Optional[str] = None,
         principal: Optional[str] = None,
     ) -> EffectivePermissionsList:
-        """Get effective permissions.
-
-        Gets the effective permissions for a securable. Includes inherited permissions from any parent
+        """Gets the effective permissions for a securable. Includes inherited permissions from any parent
         securables.
 
         :param securable_type: str
@@ -12273,9 +12201,7 @@ class GrantsAPI:
     def update(
         self, securable_type: str, full_name: str, *, changes: Optional[List[PermissionsChange]] = None
     ) -> UpdatePermissionsResponse:
-        """Update permissions.
-
-        Updates the permissions for a securable.
+        """Updates the permissions for a securable.
 
         :param securable_type: str
           Type of securable.
@@ -12317,9 +12243,7 @@ class MetastoresAPI:
         self._api = api_client
 
     def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
-        """Create an assignment.
-
-        Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
+        """Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
 
@@ -12346,9 +12270,7 @@ class MetastoresAPI:
         self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
     def create(self, name: str, *, region: Optional[str] = None, storage_root: Optional[str] = None) -> MetastoreInfo:
-        """Create a metastore.
-
-        Creates a new metastore based on a provided name and optional storage root path. By default (if the
+        """Creates a new metastore based on a provided name and optional storage root path. By default (if the
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
@@ -12378,9 +12300,7 @@ class MetastoresAPI:
         return MetastoreInfo.from_dict(res)
 
     def current(self) -> MetastoreAssignment:
-        """Get metastore assignment for workspace.
-
-        Gets the metastore assignment for the workspace being accessed.
+        """Gets the metastore assignment for the workspace being accessed.
 
         :returns: :class:`MetastoreAssignment`
         """
@@ -12393,9 +12313,7 @@ class MetastoresAPI:
         return MetastoreAssignment.from_dict(res)
 
     def delete(self, id: str, *, force: Optional[bool] = None):
-        """Delete a metastore.
-
-        Deletes a metastore. The caller must be a metastore admin.
+        """Deletes a metastore. The caller must be a metastore admin.
 
         :param id: str
           Unique ID of the metastore.
@@ -12415,9 +12333,7 @@ class MetastoresAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, headers=headers)
 
     def get(self, id: str) -> MetastoreInfo:
-        """Get a metastore.
-
-        Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
+        """Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
         info.
 
         :param id: str
@@ -12434,9 +12350,7 @@ class MetastoresAPI:
         return MetastoreInfo.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
-        """List metastores.
-
-        Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
+        """Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
@@ -12472,9 +12386,7 @@ class MetastoresAPI:
             query["page_token"] = json["next_page_token"]
 
     def summary(self) -> GetMetastoreSummaryResponse:
-        """Get a metastore summary.
-
-        Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
+        """Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
 
         :returns: :class:`GetMetastoreSummaryResponse`
@@ -12488,9 +12400,7 @@ class MetastoresAPI:
         return GetMetastoreSummaryResponse.from_dict(res)
 
     def unassign(self, workspace_id: int, metastore_id: str):
-        """Delete an assignment.
-
-        Deletes a metastore assignment. The caller must be an account administrator.
+        """Deletes a metastore assignment. The caller must be an account administrator.
 
         :param workspace_id: int
           A workspace ID.
@@ -12523,9 +12433,7 @@ class MetastoresAPI:
         privilege_model_version: Optional[str] = None,
         storage_root_credential_id: Optional[str] = None,
     ) -> MetastoreInfo:
-        """Update a metastore.
-
-        Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        """Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
         :param id: str
@@ -12576,9 +12484,7 @@ class MetastoresAPI:
     def update_assignment(
         self, workspace_id: int, *, default_catalog_name: Optional[str] = None, metastore_id: Optional[str] = None
     ):
-        """Update an assignment.
-
-        Updates a metastore assignment. This operation can be used to update __metastore_id__ or
+        """Updates a metastore assignment. This operation can be used to update __metastore_id__ or
         __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
         Workspace admin.
@@ -12618,9 +12524,7 @@ class ModelVersionsAPI:
         self._api = api_client
 
     def delete(self, full_name: str, version: int):
-        """Delete a Model Version.
-
-        Deletes a model version from the specified registered model. Any aliases assigned to the model version
+        """Deletes a model version from the specified registered model. Any aliases assigned to the model version
         will also be deleted.
 
         The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
@@ -12647,9 +12551,7 @@ class ModelVersionsAPI:
         include_aliases: Optional[bool] = None,
         include_browse: Optional[bool] = None,
     ) -> ModelVersionInfo:
-        """Get a Model Version.
-
-        Get a model version.
+        """Get a model version.
 
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the parent
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
@@ -12683,9 +12585,7 @@ class ModelVersionsAPI:
         return ModelVersionInfo.from_dict(res)
 
     def get_by_alias(self, full_name: str, alias: str, *, include_aliases: Optional[bool] = None) -> ModelVersionInfo:
-        """Get Model Version By Alias.
-
-        Get a model version by alias.
+        """Get a model version by alias.
 
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
@@ -12721,9 +12621,7 @@ class ModelVersionsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersionInfo]:
-        """List Model Versions.
-
-        List model versions. You can list model versions under a particular schema, or list all model versions
+        """List model versions. You can list model versions under a particular schema, or list all model versions
         in the current metastore.
 
         The returned models are filtered based on the privileges of the calling user. For example, the
@@ -12775,9 +12673,7 @@ class ModelVersionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
-        """Update a Model Version.
-
-        Updates the specified model version.
+        """Updates the specified model version.
 
         The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
@@ -12844,9 +12740,7 @@ class OnlineTablesAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create(self, table: OnlineTable) -> Wait[OnlineTable]:
-        """Create an Online Table.
-
-        Create a new Online Table.
+        """Create a new Online Table.
 
         :param table: :class:`OnlineTable`
           Online Table information.
@@ -12870,9 +12764,7 @@ class OnlineTablesAPI:
         return self.create(table=table).result(timeout=timeout)
 
     def delete(self, name: str):
-        """Delete an Online Table.
-
-        Delete an online table. Warning: This will delete all the data in the online table. If the source
+        """Delete an online table. Warning: This will delete all the data in the online table. If the source
         Delta table was deleted or modified since this Online Table was created, this will lose the data
         forever!
 
@@ -12889,9 +12781,7 @@ class OnlineTablesAPI:
         self._api.do("DELETE", f"/api/2.0/online-tables/{name}", headers=headers)
 
     def get(self, name: str) -> OnlineTable:
-        """Get an Online Table.
-
-        Get information about an existing online table and its status.
+        """Get information about an existing online table and its status.
 
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
@@ -12919,9 +12809,7 @@ class QualityMonitorsAPI:
         self._api = api_client
 
     def cancel_refresh(self, table_name: str, refresh_id: str):
-        """Cancel refresh.
-
-        Cancel an active monitor refresh for the given refresh ID.
+        """Cancel an active monitor refresh for the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -12962,9 +12850,7 @@ class QualityMonitorsAPI:
         time_series: Optional[MonitorTimeSeries] = None,
         warehouse_id: Optional[str] = None,
     ) -> MonitorInfo:
-        """Create a table monitor.
-
-        Creates a new monitor for the specified table.
+        """Creates a new monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
@@ -13046,9 +12932,7 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str):
-        """Delete a table monitor.
-
-        Deletes a monitor for the specified table.
+        """Deletes a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13071,9 +12955,7 @@ class QualityMonitorsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
 
     def get(self, table_name: str) -> MonitorInfo:
-        """Get a table monitor.
-
-        Gets a monitor for the specified table.
+        """Gets a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
@@ -13098,9 +12980,7 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
-        """Get refresh.
-
-        Gets info about a specific monitor refresh using the given refresh ID.
+        """Gets info about a specific monitor refresh using the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13127,9 +13007,7 @@ class QualityMonitorsAPI:
         return MonitorRefreshInfo.from_dict(res)
 
     def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
-        """List refreshes.
-
-        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        """Gets an array containing the history of the most recent refreshes (up to 25) for this table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13154,9 +13032,7 @@ class QualityMonitorsAPI:
     def regenerate_dashboard(
         self, table_name: str, *, warehouse_id: Optional[str] = None
     ) -> RegenerateDashboardResponse:
-        """Regenerate a monitoring dashboard.
-
-        Regenerates the monitoring dashboard for the specified table.
+        """Regenerates the monitoring dashboard for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13188,9 +13064,7 @@ class QualityMonitorsAPI:
         return RegenerateDashboardResponse.from_dict(res)
 
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
-        """Queue a metric refresh for a monitor.
-
-        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
+        """Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
         background.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -13229,9 +13103,7 @@ class QualityMonitorsAPI:
         snapshot: Optional[MonitorSnapshot] = None,
         time_series: Optional[MonitorTimeSeries] = None,
     ) -> MonitorInfo:
-        """Update a table monitor.
-
-        Updates a monitor for the specified table.
+        """Updates a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13345,9 +13217,7 @@ class RegisteredModelsAPI:
         comment: Optional[str] = None,
         storage_location: Optional[str] = None,
     ) -> RegisteredModelInfo:
-        """Create a Registered Model.
-
-        Creates a new registered model in Unity Catalog.
+        """Creates a new registered model in Unity Catalog.
 
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
@@ -13390,9 +13260,7 @@ class RegisteredModelsAPI:
         return RegisteredModelInfo.from_dict(res)
 
     def delete(self, full_name: str):
-        """Delete a Registered Model.
-
-        Deletes a registered model and all its model versions from the specified parent catalog and schema.
+        """Deletes a registered model and all its model versions from the specified parent catalog and schema.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
@@ -13409,9 +13277,7 @@ class RegisteredModelsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}", headers=headers)
 
     def delete_alias(self, full_name: str, alias: str):
-        """Delete a Registered Model Alias.
-
-        Deletes a registered model alias.
+        """Deletes a registered model alias.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
@@ -13432,9 +13298,7 @@ class RegisteredModelsAPI:
     def get(
         self, full_name: str, *, include_aliases: Optional[bool] = None, include_browse: Optional[bool] = None
     ) -> RegisteredModelInfo:
-        """Get a Registered Model.
-
-        Get a registered model.
+        """Get a registered model.
 
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
@@ -13472,9 +13336,7 @@ class RegisteredModelsAPI:
         page_token: Optional[str] = None,
         schema_name: Optional[str] = None,
     ) -> Iterator[RegisteredModelInfo]:
-        """List Registered Models.
-
-        List registered models. You can list registered models under a particular schema, or list all
+        """List registered models. You can list registered models under a particular schema, or list all
         registered models in the current metastore.
 
         The returned models are filtered based on the privileges of the calling user. For example, the
@@ -13539,9 +13401,7 @@ class RegisteredModelsAPI:
             query["page_token"] = json["next_page_token"]
 
     def set_alias(self, full_name: str, alias: str, version_num: int) -> RegisteredModelAlias:
-        """Set a Registered Model Alias.
-
-        Set an alias on the specified registered model.
+        """Set an alias on the specified registered model.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
@@ -13577,9 +13437,7 @@ class RegisteredModelsAPI:
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
     ) -> RegisteredModelInfo:
-        """Update a Registered Model.
-
-        Updates the specified registered model.
+        """Updates the specified registered model.
 
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
@@ -13627,9 +13485,7 @@ class ResourceQuotasAPI:
         self._api = api_client
 
     def get_quota(self, parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse:
-        """Get information for a single resource quota.
-
-        The GetQuota API returns usage information for a single resource quota, defined as a child-parent
+        """The GetQuota API returns usage information for a single resource quota, defined as a child-parent
         pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
         asynchronously. The updated count might not be returned in the first call.
 
@@ -13657,9 +13513,7 @@ class ResourceQuotasAPI:
     def list_quotas(
         self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[QuotaInfo]:
-        """List all resource quotas under a metastore.
-
-        ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
+        """ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
         counts returned. This API does not trigger a refresh of quota counts.
 
         :param max_results: int (optional)
@@ -13709,9 +13563,7 @@ class SchemasAPI:
         properties: Optional[Dict[str, str]] = None,
         storage_root: Optional[str] = None,
     ) -> SchemaInfo:
-        """Create a schema.
-
-        Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
+        """Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
 
         :param name: str
@@ -13747,9 +13599,7 @@ class SchemasAPI:
         return SchemaInfo.from_dict(res)
 
     def delete(self, full_name: str, *, force: Optional[bool] = None):
-        """Delete a schema.
-
-        Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
+        """Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
         owner of the parent catalog.
 
         :param full_name: str
@@ -13770,9 +13620,7 @@ class SchemasAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
-        """Get a schema.
-
-        Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
+        """Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
         schema, or a user that has the **USE_SCHEMA** privilege on the schema.
 
         :param full_name: str
@@ -13802,9 +13650,7 @@ class SchemasAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[SchemaInfo]:
-        """List schemas.
-
-        Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
+        """Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
         owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
         There is no guarantee of a specific ordering of the elements in the array.
@@ -13857,9 +13703,7 @@ class SchemasAPI:
         owner: Optional[str] = None,
         properties: Optional[Dict[str, str]] = None,
     ) -> SchemaInfo:
-        """Update a schema.
-
-        Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
+        """Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
         the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
         __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
@@ -13927,12 +13771,14 @@ class StorageCredentialsAPI:
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> StorageCredentialInfo:
-        """Create a storage credential.
+        """Creates a new storage credential.
 
-        Creates a new storage credential.
+        The caller must be a metastore admin or have the **CREATE_STORAGE_CREDENTIAL** privilege on the
+        metastore.
 
         :param name: str
-          The credential name. The name must be unique within the metastore.
+          The credential name. The name must be unique among storage and service credentials within the
+          metastore.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
@@ -13946,7 +13792,8 @@ class StorageCredentialsAPI:
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The Databricks managed GCP service account configuration.
         :param read_only: bool (optional)
-          Whether the storage credential is only usable for read operations.
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the created credential.
 
@@ -13980,15 +13827,14 @@ class StorageCredentialsAPI:
         return StorageCredentialInfo.from_dict(res)
 
     def delete(self, name: str, *, force: Optional[bool] = None):
-        """Delete a credential.
-
-        Deletes a storage credential from the metastore. The caller must be an owner of the storage
+        """Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
 
         :param name: str
           Name of the storage credential.
         :param force: bool (optional)
-          Force deletion even if there are dependent external locations or external tables.
+          Force an update even if there are dependent external locations or external tables (when purpose is
+          **STORAGE**) or dependent services (when purpose is **SERVICE**).
 
 
         """
@@ -14003,9 +13849,7 @@ class StorageCredentialsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/storage-credentials/{name}", query=query, headers=headers)
 
     def get(self, name: str) -> StorageCredentialInfo:
-        """Get a credential.
-
-        Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
+        """Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
 
         :param name: str
@@ -14024,9 +13868,7 @@ class StorageCredentialsAPI:
     def list(
         self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[StorageCredentialInfo]:
-        """List credentials.
-
-        Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
+        """Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
@@ -14052,8 +13894,6 @@ class StorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/storage-credentials", query=query, headers=headers)
             if "storage_credentials" in json:
@@ -14080,9 +13920,10 @@ class StorageCredentialsAPI:
         read_only: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ) -> StorageCredentialInfo:
-        """Update a credential.
+        """Updates a storage credential on the metastore.
 
-        Updates a storage credential on the metastore.
+        The caller must be the owner of the storage credential or a metastore admin. If the caller is a
+        metastore admin, only the **owner** field can be changed.
 
         :param name: str
           Name of the storage credential.
@@ -14101,12 +13942,14 @@ class StorageCredentialsAPI:
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the storage credential.
         :param owner: str (optional)
           Username of current owner of credential.
         :param read_only: bool (optional)
-          Whether the storage credential is only usable for read operations.
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the updated credential.
 
@@ -14158,9 +14001,7 @@ class StorageCredentialsAPI:
         storage_credential_name: Optional[str] = None,
         url: Optional[str] = None,
     ) -> ValidateStorageCredentialResponse:
-        """Validate a storage credential.
-
-        Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
+        """Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
         the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
         overlapping urls.
@@ -14185,7 +14026,7 @@ class StorageCredentialsAPI:
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
         :param storage_credential_name: str (optional)
-          The name of the storage credential to validate.
+          Required. The name of an existing credential or long-lived cloud credential to validate.
         :param url: str (optional)
           The external location url to validate.
 
@@ -14227,9 +14068,7 @@ class SystemSchemasAPI:
         self._api = api_client
 
     def disable(self, metastore_id: str, schema_name: str):
-        """Disable a system schema.
-
-        Disables the system schema and removes it from the system catalog. The caller must be an account admin
+        """Disables the system schema and removes it from the system catalog. The caller must be an account admin
         or a metastore admin.
 
         :param metastore_id: str
@@ -14249,9 +14088,7 @@ class SystemSchemasAPI:
         )
 
     def enable(self, metastore_id: str, schema_name: str, *, catalog_name: Optional[str] = None):
-        """Enable a system schema.
-
-        Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
+        """Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
         metastore admin.
 
         :param metastore_id: str
@@ -14281,9 +14118,7 @@ class SystemSchemasAPI:
     def list(
         self, metastore_id: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SystemSchemaInfo]:
-        """List system schemas.
-
-        Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
+        """Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
         admin.
 
         :param metastore_id: str
@@ -14336,9 +14171,7 @@ class TableConstraintsAPI:
         self._api = api_client
 
     def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
-        """Create a table constraint.
-
-        Creates a new table constraint.
+        """Creates a new table constraint.
 
         For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
         user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
@@ -14369,9 +14202,7 @@ class TableConstraintsAPI:
         return TableConstraint.from_dict(res)
 
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
-        """Delete a table constraint.
-
-        Deletes a table constraint.
+        """Deletes a table constraint.
 
         For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the
         user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
@@ -14417,9 +14248,7 @@ class TablesAPI:
         self._api = api_client
 
     def delete(self, full_name: str):
-        """Delete a table.
-
-        Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
+        """Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
         parent schema, or be the owner of the table and have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema.
@@ -14437,9 +14266,7 @@ class TablesAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
-        """Get boolean reflecting if table exists.
-
-        Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
+        """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
         owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
@@ -14467,9 +14294,7 @@ class TablesAPI:
         include_delta_metadata: Optional[bool] = None,
         include_manifest_capabilities: Optional[bool] = None,
     ) -> TableInfo:
-        """Get a table.
-
-        Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
+        """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
         the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
@@ -14516,9 +14341,7 @@ class TablesAPI:
         omit_username: Optional[bool] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[TableInfo]:
-        """List tables.
-
-        Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
+        """Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
         must be a metastore admin or an owner of (or have the **SELECT** privilege on) the table. For the
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
@@ -14599,9 +14422,7 @@ class TablesAPI:
         schema_name_pattern: Optional[str] = None,
         table_name_pattern: Optional[str] = None,
     ) -> Iterator[TableSummary]:
-        """List table summaries.
-
-        Gets an array of summaries for tables for a schema and catalog within the metastore. The table
+        """Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
 
         * summaries for tables (within the current metastore and parent catalog and schema), when the user is
@@ -14661,9 +14482,7 @@ class TablesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, full_name: str, *, owner: Optional[str] = None):
-        """Update a table owner.
-
-        Change the owner of the table. The caller must be the owner of the parent catalog, have the
+        """Change the owner of the table. The caller must be the owner of the parent catalog, have the
         **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
         of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
@@ -14705,9 +14524,7 @@ class TemporaryTableCredentialsAPI:
     def generate_temporary_table_credentials(
         self, *, operation: Optional[TableOperation] = None, table_id: Optional[str] = None
     ) -> GenerateTemporaryTableCredentialResponse:
-        """Generate a temporary table credential.
-
-        Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
+        """Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
         must have external_access_enabled flag set to true (default false). The caller must have
         EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog
         owners.
@@ -14755,9 +14572,7 @@ class VolumesAPI:
         comment: Optional[str] = None,
         storage_location: Optional[str] = None,
     ) -> VolumeInfo:
-        """Create a Volume.
-
-        Creates a new volume.
+        """Creates a new volume.
 
         The user could create either an external volume or a managed volume. An external volume will be
         created in the specified external location, while a managed volume will be located in the default
@@ -14814,9 +14629,7 @@ class VolumesAPI:
         return VolumeInfo.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a Volume.
-
-        Deletes a volume from the specified parent catalog and schema.
+        """Deletes a volume from the specified parent catalog and schema.
 
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
@@ -14841,9 +14654,7 @@ class VolumesAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[VolumeInfo]:
-        """List Volumes.
-
-        Gets an array of volumes for the current metastore under the parent catalog and schema.
+        """Gets an array of volumes for the current metastore under the parent catalog and schema.
 
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
@@ -14904,9 +14715,7 @@ class VolumesAPI:
             query["page_token"] = json["next_page_token"]
 
     def read(self, name: str, *, include_browse: Optional[bool] = None) -> VolumeInfo:
-        """Get a Volume.
-
-        Gets a volume from the metastore for a specific catalog and schema.
+        """Gets a volume from the metastore for a specific catalog and schema.
 
         The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the
         volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
@@ -14934,9 +14743,7 @@ class VolumesAPI:
     def update(
         self, name: str, *, comment: Optional[str] = None, new_name: Optional[str] = None, owner: Optional[str] = None
     ) -> VolumeInfo:
-        """Update a Volume.
-
-        Updates the specified volume under the specified parent catalog and schema.
+        """Updates the specified volume under the specified parent catalog and schema.
 
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
@@ -14991,9 +14798,7 @@ class WorkspaceBindingsAPI:
         self._api = api_client
 
     def get(self, name: str) -> GetCatalogWorkspaceBindingsResponse:
-        """Get catalog workspace bindings.
-
-        Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
+        """Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
         :param name: str
@@ -15017,9 +14822,7 @@ class WorkspaceBindingsAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[WorkspaceBinding]:
-        """Get securable workspace bindings.
-
-        Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
+        """Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
         :param securable_type: str
@@ -15068,9 +14871,7 @@ class WorkspaceBindingsAPI:
         assign_workspaces: Optional[List[int]] = None,
         unassign_workspaces: Optional[List[int]] = None,
     ) -> UpdateCatalogWorkspaceBindingsResponse:
-        """Update catalog workspace bindings.
-
-        Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
+        """Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
         :param name: str
@@ -15105,9 +14906,7 @@ class WorkspaceBindingsAPI:
         add: Optional[List[WorkspaceBinding]] = None,
         remove: Optional[List[WorkspaceBinding]] = None,
     ) -> UpdateWorkspaceBindingsResponse:
-        """Update securable workspace bindings.
-
-        Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
+        """Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
         :param securable_type: str

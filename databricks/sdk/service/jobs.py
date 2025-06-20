@@ -1399,7 +1399,8 @@ class DashboardTaskOutput:
 
 @dataclass
 class DbtCloudJobRunStep:
-    """Format of response retrieved from dbt Cloud, for inclusion in output"""
+    """Format of response retrieved from dbt Cloud, for inclusion in output Deprecated in favor of
+    DbtPlatformJobRunStep"""
 
     index: Optional[int] = None
     """Orders the steps in the job"""
@@ -1410,7 +1411,7 @@ class DbtCloudJobRunStep:
     name: Optional[str] = None
     """Name of the step in the job"""
 
-    status: Optional[DbtCloudRunStatus] = None
+    status: Optional[DbtPlatformRunStatus] = None
     """State of the step"""
 
     def as_dict(self) -> dict:
@@ -1446,23 +1447,14 @@ class DbtCloudJobRunStep:
             index=d.get("index", None),
             logs=d.get("logs", None),
             name=d.get("name", None),
-            status=_enum(d, "status", DbtCloudRunStatus),
+            status=_enum(d, "status", DbtPlatformRunStatus),
         )
-
-
-class DbtCloudRunStatus(Enum):
-    """Response enumeration from calling the dbt Cloud API, for inclusion in output"""
-
-    CANCELLED = "CANCELLED"
-    ERROR = "ERROR"
-    QUEUED = "QUEUED"
-    RUNNING = "RUNNING"
-    STARTING = "STARTING"
-    SUCCESS = "SUCCESS"
 
 
 @dataclass
 class DbtCloudTask:
+    """Deprecated in favor of DbtPlatformTask"""
+
     connection_resource_name: Optional[str] = None
     """The resource name of the UC connection that authenticates the dbt Cloud for this task"""
 
@@ -1498,6 +1490,8 @@ class DbtCloudTask:
 
 @dataclass
 class DbtCloudTaskOutput:
+    """Deprecated in favor of DbtPlatformTaskOutput"""
+
     dbt_cloud_job_run_id: Optional[int] = None
     """Id of the job run in dbt Cloud"""
 
@@ -1570,6 +1564,176 @@ class DbtOutput:
     def from_dict(cls, d: Dict[str, Any]) -> DbtOutput:
         """Deserializes the DbtOutput from a dictionary."""
         return cls(artifacts_headers=d.get("artifacts_headers", None), artifacts_link=d.get("artifacts_link", None))
+
+
+@dataclass
+class DbtPlatformJobRunStep:
+    """Format of response retrieved from dbt platform, for inclusion in output"""
+
+    index: Optional[int] = None
+    """Orders the steps in the job"""
+
+    logs: Optional[str] = None
+    """Output of the step"""
+
+    logs_truncated: Optional[bool] = None
+    """Whether the logs of this step have been truncated. If true, the logs has been truncated to 10000
+    characters."""
+
+    name: Optional[str] = None
+    """Name of the step in the job"""
+
+    name_truncated: Optional[bool] = None
+    """Whether the name of the job has been truncated. If true, the name has been truncated to 100
+    characters."""
+
+    status: Optional[DbtPlatformRunStatus] = None
+    """State of the step"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtPlatformJobRunStep into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.logs is not None:
+            body["logs"] = self.logs
+        if self.logs_truncated is not None:
+            body["logs_truncated"] = self.logs_truncated
+        if self.name is not None:
+            body["name"] = self.name
+        if self.name_truncated is not None:
+            body["name_truncated"] = self.name_truncated
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtPlatformJobRunStep into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.index is not None:
+            body["index"] = self.index
+        if self.logs is not None:
+            body["logs"] = self.logs
+        if self.logs_truncated is not None:
+            body["logs_truncated"] = self.logs_truncated
+        if self.name is not None:
+            body["name"] = self.name
+        if self.name_truncated is not None:
+            body["name_truncated"] = self.name_truncated
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtPlatformJobRunStep:
+        """Deserializes the DbtPlatformJobRunStep from a dictionary."""
+        return cls(
+            index=d.get("index", None),
+            logs=d.get("logs", None),
+            logs_truncated=d.get("logs_truncated", None),
+            name=d.get("name", None),
+            name_truncated=d.get("name_truncated", None),
+            status=_enum(d, "status", DbtPlatformRunStatus),
+        )
+
+
+class DbtPlatformRunStatus(Enum):
+    """Response enumeration from calling the dbt platform API, for inclusion in output"""
+
+    CANCELLED = "CANCELLED"
+    ERROR = "ERROR"
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    STARTING = "STARTING"
+    SUCCESS = "SUCCESS"
+
+
+@dataclass
+class DbtPlatformTask:
+    connection_resource_name: Optional[str] = None
+    """The resource name of the UC connection that authenticates the dbt platform for this task"""
+
+    dbt_platform_job_id: Optional[str] = None
+    """Id of the dbt platform job to be triggered. Specified as a string for maximum compatibility with
+    clients."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtPlatformTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.dbt_platform_job_id is not None:
+            body["dbt_platform_job_id"] = self.dbt_platform_job_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtPlatformTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_resource_name is not None:
+            body["connection_resource_name"] = self.connection_resource_name
+        if self.dbt_platform_job_id is not None:
+            body["dbt_platform_job_id"] = self.dbt_platform_job_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtPlatformTask:
+        """Deserializes the DbtPlatformTask from a dictionary."""
+        return cls(
+            connection_resource_name=d.get("connection_resource_name", None),
+            dbt_platform_job_id=d.get("dbt_platform_job_id", None),
+        )
+
+
+@dataclass
+class DbtPlatformTaskOutput:
+    dbt_platform_job_run_id: Optional[str] = None
+    """Id of the job run in dbt platform. Specified as a string for maximum compatibility with clients."""
+
+    dbt_platform_job_run_output: Optional[List[DbtPlatformJobRunStep]] = None
+    """Steps of the job run as received from dbt platform"""
+
+    dbt_platform_job_run_url: Optional[str] = None
+    """Url where full run details can be viewed"""
+
+    steps_truncated: Optional[bool] = None
+    """Whether the number of steps in the output has been truncated. If true, the output will contain
+    the first 20 steps of the output."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DbtPlatformTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dbt_platform_job_run_id is not None:
+            body["dbt_platform_job_run_id"] = self.dbt_platform_job_run_id
+        if self.dbt_platform_job_run_output:
+            body["dbt_platform_job_run_output"] = [v.as_dict() for v in self.dbt_platform_job_run_output]
+        if self.dbt_platform_job_run_url is not None:
+            body["dbt_platform_job_run_url"] = self.dbt_platform_job_run_url
+        if self.steps_truncated is not None:
+            body["steps_truncated"] = self.steps_truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtPlatformTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_platform_job_run_id is not None:
+            body["dbt_platform_job_run_id"] = self.dbt_platform_job_run_id
+        if self.dbt_platform_job_run_output:
+            body["dbt_platform_job_run_output"] = self.dbt_platform_job_run_output
+        if self.dbt_platform_job_run_url is not None:
+            body["dbt_platform_job_run_url"] = self.dbt_platform_job_run_url
+        if self.steps_truncated is not None:
+            body["steps_truncated"] = self.steps_truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DbtPlatformTaskOutput:
+        """Deserializes the DbtPlatformTaskOutput from a dictionary."""
+        return cls(
+            dbt_platform_job_run_id=d.get("dbt_platform_job_run_id", None),
+            dbt_platform_job_run_output=_repeated_dict(d, "dbt_platform_job_run_output", DbtPlatformJobRunStep),
+            dbt_platform_job_run_url=d.get("dbt_platform_job_run_url", None),
+            steps_truncated=d.get("steps_truncated", None),
+        )
 
 
 @dataclass
@@ -5955,9 +6119,12 @@ class RunOutput:
     """The output of a dashboard task, if available"""
 
     dbt_cloud_output: Optional[DbtCloudTaskOutput] = None
+    """Deprecated in favor of the new dbt_platform_output"""
 
     dbt_output: Optional[DbtOutput] = None
     """The output of a dbt task, if available."""
+
+    dbt_platform_output: Optional[DbtPlatformTaskOutput] = None
 
     error: Optional[str] = None
     """An error message indicating why a task failed or why output is not available. The message is
@@ -6008,6 +6175,8 @@ class RunOutput:
             body["dbt_cloud_output"] = self.dbt_cloud_output.as_dict()
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output.as_dict()
+        if self.dbt_platform_output:
+            body["dbt_platform_output"] = self.dbt_platform_output.as_dict()
         if self.error is not None:
             body["error"] = self.error
         if self.error_trace is not None:
@@ -6039,6 +6208,8 @@ class RunOutput:
             body["dbt_cloud_output"] = self.dbt_cloud_output
         if self.dbt_output:
             body["dbt_output"] = self.dbt_output
+        if self.dbt_platform_output:
+            body["dbt_platform_output"] = self.dbt_platform_output
         if self.error is not None:
             body["error"] = self.error
         if self.error_trace is not None:
@@ -6069,6 +6240,7 @@ class RunOutput:
             dashboard_output=_from_dict(d, "dashboard_output", DashboardTaskOutput),
             dbt_cloud_output=_from_dict(d, "dbt_cloud_output", DbtCloudTaskOutput),
             dbt_output=_from_dict(d, "dbt_output", DbtOutput),
+            dbt_platform_output=_from_dict(d, "dbt_platform_output", DbtPlatformTaskOutput),
             error=d.get("error", None),
             error_trace=d.get("error_trace", None),
             info=d.get("info", None),
@@ -6388,7 +6560,9 @@ class RunTask:
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_cloud_task: Optional[DbtCloudTask] = None
-    """Task type for dbt cloud"""
+    """Task type for dbt cloud, deprecated in favor of the new name dbt_platform_task"""
+
+    dbt_platform_task: Optional[DbtPlatformTask] = None
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -6572,6 +6746,8 @@ class RunTask:
             body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -6669,6 +6845,8 @@ class RunTask:
             body["dashboard_task"] = self.dashboard_task
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -6760,6 +6938,7 @@ class RunTask:
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
+            dbt_platform_task=_from_dict(d, "dbt_platform_task", DbtPlatformTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -7784,7 +7963,9 @@ class SubmitTask:
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_cloud_task: Optional[DbtCloudTask] = None
-    """Task type for dbt cloud"""
+    """Task type for dbt cloud, deprecated in favor of the new name dbt_platform_task"""
+
+    dbt_platform_task: Optional[DbtPlatformTask] = None
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -7898,6 +8079,8 @@ class SubmitTask:
             body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -7961,6 +8144,8 @@ class SubmitTask:
             body["dashboard_task"] = self.dashboard_task
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -8021,6 +8206,7 @@ class SubmitTask:
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
+            dbt_platform_task=_from_dict(d, "dbt_platform_task", DbtPlatformTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -8202,7 +8388,9 @@ class Task:
     """The task refreshes a dashboard and sends a snapshot to subscribers."""
 
     dbt_cloud_task: Optional[DbtCloudTask] = None
-    """Task type for dbt cloud"""
+    """Task type for dbt cloud, deprecated in favor of the new name dbt_platform_task"""
+
+    dbt_platform_task: Optional[DbtPlatformTask] = None
 
     dbt_task: Optional[DbtTask] = None
     """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
@@ -8341,6 +8529,8 @@ class Task:
             body["dashboard_task"] = self.dashboard_task.as_dict()
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task.as_dict()
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task.as_dict()
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task.as_dict()
         if self.depends_on:
@@ -8414,6 +8604,8 @@ class Task:
             body["dashboard_task"] = self.dashboard_task
         if self.dbt_cloud_task:
             body["dbt_cloud_task"] = self.dbt_cloud_task
+        if self.dbt_platform_task:
+            body["dbt_platform_task"] = self.dbt_platform_task
         if self.dbt_task:
             body["dbt_task"] = self.dbt_task
         if self.depends_on:
@@ -8484,6 +8676,7 @@ class Task:
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
+            dbt_platform_task=_from_dict(d, "dbt_platform_task", DbtPlatformTask),
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
@@ -9274,9 +9467,7 @@ class JobsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def cancel_all_runs(self, *, all_queued_runs: Optional[bool] = None, job_id: Optional[int] = None):
-        """Cancel all runs of a job.
-
-        Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
+        """Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
 
         :param all_queued_runs: bool (optional)
@@ -9299,9 +9490,7 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
-        """Cancel a run.
-
-        Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
+        """Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
         this request completes.
 
         :param run_id: int
@@ -9358,8 +9547,6 @@ class JobsAPI:
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> CreateResponse:
         """Create a new job.
-
-        Create a new job.
 
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
@@ -9518,9 +9705,7 @@ class JobsAPI:
         return CreateResponse.from_dict(res)
 
     def delete(self, job_id: int):
-        """Delete a job.
-
-        Deletes a job.
+        """Deletes a job.
 
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
@@ -9537,9 +9722,7 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/delete", body=body, headers=headers)
 
     def delete_run(self, run_id: int):
-        """Delete a job run.
-
-        Deletes a non-active run. Returns an error if the run is active.
+        """Deletes a non-active run. Returns an error if the run is active.
 
         :param run_id: int
           ID of the run to delete.
@@ -9556,9 +9739,7 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/runs/delete", body=body, headers=headers)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
-        """Export and retrieve a job run.
-
-        Export and retrieve the job run task.
+        """Export and retrieve the job run task.
 
         :param run_id: int
           The canonical identifier for the run. This field is required.
@@ -9581,9 +9762,7 @@ class JobsAPI:
         return ExportRunOutput.from_dict(res)
 
     def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
-        """Get a single job.
-
-        Retrieves the details for a single job.
+        """Retrieves the details for a single job.
 
         Large arrays in the results will be paginated when they exceed 100 elements. A request for a single
         job will return all properties for that job, and the first 100 elements of array properties (`tasks`,
@@ -9614,9 +9793,7 @@ class JobsAPI:
         return Job.from_dict(res)
 
     def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
-        """Get job permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param job_id: str
           The job for which to get or manage permissions.
@@ -9632,9 +9809,7 @@ class JobsAPI:
         return GetJobPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, job_id: str) -> JobPermissions:
-        """Get job permissions.
-
-        Gets the permissions of a job. Jobs can inherit permissions from their root object.
+        """Gets the permissions of a job. Jobs can inherit permissions from their root object.
 
         :param job_id: str
           The job for which to get or manage permissions.
@@ -9657,9 +9832,7 @@ class JobsAPI:
         include_resolved_values: Optional[bool] = None,
         page_token: Optional[str] = None,
     ) -> Run:
-        """Get a single job run.
-
-        Retrieves the metadata of a run.
+        """Retrieves the metadata of a run.
 
         Large arrays in the results will be paginated when they exceed 100 elements. A request for a single
         run will return all properties for that run, and the first 100 elements of array properties (`tasks`,
@@ -9698,9 +9871,7 @@ class JobsAPI:
         return Run.from_dict(res)
 
     def get_run_output(self, run_id: int) -> RunOutput:
-        """Get the output for a single run.
-
-        Retrieve the output and metadata of a single task run. When a notebook task returns a value through
+        """Retrieve the output and metadata of a single task run. When a notebook task returns a value through
         the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks
         restricts this API to returning the first 5 MB of the output. To return a larger result, you can store
         job results in a cloud storage service.
@@ -9734,9 +9905,7 @@ class JobsAPI:
         offset: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[BaseJob]:
-        """List jobs.
-
-        Retrieves a list of jobs.
+        """Retrieves a list of jobs.
 
         :param expand_tasks: bool (optional)
           Whether to include task and cluster details in the response. Note that only the first 100 elements
@@ -9794,9 +9963,7 @@ class JobsAPI:
         start_time_from: Optional[int] = None,
         start_time_to: Optional[int] = None,
     ) -> Iterator[BaseRun]:
-        """List job runs.
-
-        List runs in descending order by start time.
+        """List runs in descending order by start time.
 
         :param active_only: bool (optional)
           If active_only is `true`, only active runs are included in the results; otherwise, lists both active
@@ -9884,9 +10051,7 @@ class JobsAPI:
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
     ) -> Wait[Run]:
-        """Repair a job run.
-
-        Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
+        """Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
         and task settings, and can be viewed in the history for the original job run.
 
         :param run_id: int
@@ -10064,9 +10229,7 @@ class JobsAPI:
         ).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings):
-        """Update all job settings (reset).
-
-        Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
+        """Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
         job settings partially.
 
         :param job_id: int
@@ -10108,9 +10271,7 @@ class JobsAPI:
         spark_submit_params: Optional[List[str]] = None,
         sql_params: Optional[Dict[str, str]] = None,
     ) -> Wait[Run]:
-        """Trigger a new job run.
-
-        Run a job and return the `run_id` of the triggered run.
+        """Run a job and return the `run_id` of the triggered run.
 
         :param job_id: int
           The ID of the job to be executed
@@ -10293,9 +10454,7 @@ class JobsAPI:
     def set_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
-        """Set job permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param job_id: str
@@ -10333,9 +10492,7 @@ class JobsAPI:
         timeout_seconds: Optional[int] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> Wait[Run]:
-        """Create and trigger a one-time run.
-
-        Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
+        """Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
 
@@ -10472,9 +10629,7 @@ class JobsAPI:
     def update(
         self, job_id: int, *, fields_to_remove: Optional[List[str]] = None, new_settings: Optional[JobSettings] = None
     ):
-        """Update job settings partially.
-
-        Add, update, or remove specific settings of an existing job. Use the [_Reset_
+        """Add, update, or remove specific settings of an existing job. Use the [_Reset_
         endpoint](:method:jobs/reset) to overwrite all job settings.
 
         :param job_id: int
@@ -10512,9 +10667,7 @@ class JobsAPI:
     def update_permissions(
         self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
-        """Update job permissions.
-
-        Updates the permissions on a job. Jobs can inherit permissions from their root object.
+        """Updates the permissions on a job. Jobs can inherit permissions from their root object.
 
         :param job_id: str
           The job for which to get or manage permissions.
@@ -10552,9 +10705,7 @@ class PolicyComplianceForJobsAPI:
     def enforce_compliance(
         self, job_id: int, *, validate_only: Optional[bool] = None
     ) -> EnforcePolicyComplianceResponse:
-        """Enforce job policy compliance.
-
-        Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
+        """Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
         are compliant with the current versions of their respective cluster policies. All-purpose clusters
         used in the job will not be updated.
 
@@ -10579,9 +10730,7 @@ class PolicyComplianceForJobsAPI:
         return EnforcePolicyComplianceResponse.from_dict(res)
 
     def get_compliance(self, job_id: int) -> GetPolicyComplianceResponse:
-        """Get job policy compliance.
-
-        Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
+        """Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
         they use was updated after the job was last edited and some of its job clusters no longer comply with
         their updated policies.
 
@@ -10604,9 +10753,7 @@ class PolicyComplianceForJobsAPI:
     def list_compliance(
         self, policy_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[JobCompliance]:
-        """List job policy compliance.
-
-        Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
+        """Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
         compliance if a cluster policy they use was updated after the job was last edited and its job clusters
         no longer comply with the updated policy.
 

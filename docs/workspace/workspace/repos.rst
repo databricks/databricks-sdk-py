@@ -38,8 +38,6 @@
             # cleanup
             w.repos.delete(repo_id=ri.id)
 
-        Create a repo.
-
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
 
@@ -60,8 +58,6 @@
         
 
     .. py:method:: delete(repo_id: int)
-
-        Delete a repo.
 
         Deletes the specified repo.
 
@@ -97,8 +93,6 @@
             # cleanup
             w.repos.delete(repo_id=ri.id)
 
-        Get a repo.
-
         Returns the repo with the given repo ID.
 
         :param repo_id: int
@@ -109,8 +103,6 @@
 
     .. py:method:: get_permission_levels(repo_id: str) -> GetRepoPermissionLevelsResponse
 
-        Get repo permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param repo_id: str
@@ -120,8 +112,6 @@
         
 
     .. py:method:: get_permissions(repo_id: str) -> RepoPermissions
-
-        Get repo permissions.
 
         Gets the permissions of a repo. Repos can inherit permissions from their root object.
 
@@ -145,8 +135,6 @@
             
             all = w.repos.list(workspace.ListReposRequest())
 
-        Get repos.
-
         Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
         through additional pages.
 
@@ -162,8 +150,6 @@
         
 
     .. py:method:: set_permissions(repo_id: str [, access_control_list: Optional[List[RepoAccessControlRequest]]]) -> RepoPermissions
-
-        Set repo permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
@@ -201,8 +187,6 @@
             # cleanup
             w.repos.delete(repo_id=ri.id)
 
-        Update a repo.
-
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
         branch.
 
@@ -222,8 +206,6 @@
         
 
     .. py:method:: update_permissions(repo_id: str [, access_control_list: Optional[List[RepoAccessControlRequest]]]) -> RepoPermissions
-
-        Update repo permissions.
 
         Updates the permissions on a repo. Repos can inherit permissions from their root object.
 

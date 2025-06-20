@@ -58,6 +58,9 @@ class CreatePipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -149,6 +152,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.filters:
@@ -212,6 +217,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.filters:
@@ -265,6 +272,7 @@ class CreatePipeline:
             development=d.get("development", None),
             dry_run=d.get("dry_run", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -455,6 +463,9 @@ class EditPipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -551,6 +562,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.expected_last_modified is not None:
@@ -616,6 +629,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
@@ -672,6 +687,7 @@ class EditPipeline:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             expected_last_modified=d.get("expected_last_modified", None),
             filters=_from_dict(d, "filters", Filters),
@@ -2362,6 +2378,9 @@ class PipelineSpec:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -2441,6 +2460,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.filters:
@@ -2498,6 +2519,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.filters:
@@ -2547,6 +2570,7 @@ class PipelineSpec:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -2700,6 +2724,39 @@ class PipelineTrigger:
     def from_dict(cls, d: Dict[str, Any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
         return cls(cron=_from_dict(d, "cron", CronTrigger), manual=_from_dict(d, "manual", ManualTrigger))
+
+
+@dataclass
+class PipelinesEnvironment:
+    """The environment entity used to preserve serverless environment side panel, jobs' environment for
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    environment spec, only pip dependencies are supported."""
+
+    dependencies: Optional[List[str]] = None
+    """List of pip dependencies, as supported by the version of pip in this environment. Each
+    dependency is a pip requirement file line
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
+    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
+    Databricks), <vcs project url>"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = [v for v in self.dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelinesEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = self.dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinesEnvironment:
+        """Deserializes the PipelinesEnvironment from a dictionary."""
+        return cls(dependencies=d.get("dependencies", None))
 
 
 @dataclass
@@ -2915,7 +2972,7 @@ class SchemaSpec:
 @dataclass
 class Sequencing:
     control_plane_seq_no: Optional[int] = None
-    """A sequence number, unique and increasing within the control plane."""
+    """A sequence number, unique and increasing per pipeline."""
 
     data_plane_id: Optional[DataPlaneId] = None
     """the ID assigned by the data plane."""
@@ -3584,6 +3641,7 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         dry_run: Optional[bool] = None,
         edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
         event_log: Optional[EventLogSpec] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
@@ -3603,9 +3661,7 @@ class PipelinesAPI:
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ) -> CreatePipelineResponse:
-        """Create a pipeline.
-
-        Creates a new data processing pipeline based on the requested configuration. If successful, this
+        """Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
 
         :param allow_duplicate_names: bool (optional)
@@ -3631,6 +3687,8 @@ class PipelinesAPI:
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
@@ -3703,6 +3761,8 @@ class PipelinesAPI:
             body["dry_run"] = dry_run
         if edition is not None:
             body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
         if event_log is not None:
             body["event_log"] = event_log.as_dict()
         if filters is not None:
@@ -3748,9 +3808,7 @@ class PipelinesAPI:
         return CreatePipelineResponse.from_dict(res)
 
     def delete(self, pipeline_id: str):
-        """Delete a pipeline.
-
-        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        """Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
         its tables. You cannot undo this action.
 
         :param pipeline_id: str
@@ -3780,9 +3838,7 @@ class PipelinesAPI:
         return GetPipelineResponse.from_dict(res)
 
     def get_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
-        """Get pipeline permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
@@ -3798,9 +3854,7 @@ class PipelinesAPI:
         return GetPipelinePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
-        """Get pipeline permissions.
-
-        Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
+        """Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
@@ -3816,9 +3870,7 @@ class PipelinesAPI:
         return PipelinePermissions.from_dict(res)
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
-        """Get a pipeline update.
-
-        Gets an update from an active pipeline.
+        """Gets an update from an active pipeline.
 
         :param pipeline_id: str
           The ID of the pipeline.
@@ -3844,9 +3896,7 @@ class PipelinesAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[PipelineEvent]:
-        """List pipeline events.
-
-        Retrieves events for a pipeline.
+        """Retrieves events for a pipeline.
 
         :param pipeline_id: str
           The pipeline to return events for.
@@ -3902,9 +3952,7 @@ class PipelinesAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[PipelineStateInfo]:
-        """List pipelines.
-
-        Lists pipelines defined in the Delta Live Tables system.
+        """Lists pipelines defined in the Delta Live Tables system.
 
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
@@ -3958,9 +4006,7 @@ class PipelinesAPI:
         page_token: Optional[str] = None,
         until_update_id: Optional[str] = None,
     ) -> ListUpdatesResponse:
-        """List pipeline updates.
-
-        List updates for an active pipeline.
+        """List updates for an active pipeline.
 
         :param pipeline_id: str
           The pipeline to return updates for.
@@ -3991,9 +4037,7 @@ class PipelinesAPI:
     def set_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
-        """Set pipeline permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param pipeline_id: str
@@ -4023,9 +4067,7 @@ class PipelinesAPI:
         refresh_selection: Optional[List[str]] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
-        """Start a pipeline.
-
-        Starts a new update for the pipeline. If there is already an active update for the pipeline, the
+        """Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
@@ -4067,9 +4109,7 @@ class PipelinesAPI:
         return StartUpdateResponse.from_dict(res)
 
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
-        """Stop a pipeline.
-
-        Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
+        """Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
         request is a no-op.
 
         :param pipeline_id: str
@@ -4105,6 +4145,7 @@ class PipelinesAPI:
         deployment: Optional[PipelineDeployment] = None,
         development: Optional[bool] = None,
         edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
         event_log: Optional[EventLogSpec] = None,
         expected_last_modified: Optional[int] = None,
         filters: Optional[Filters] = None,
@@ -4125,9 +4166,7 @@ class PipelinesAPI:
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ):
-        """Edit a pipeline.
-
-        Updates a pipeline with the supplied configuration.
+        """Updates a pipeline with the supplied configuration.
 
         :param pipeline_id: str
           Unique identifier for this pipeline.
@@ -4153,6 +4192,8 @@ class PipelinesAPI:
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
@@ -4226,6 +4267,8 @@ class PipelinesAPI:
             body["development"] = development
         if edition is not None:
             body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
         if event_log is not None:
             body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
@@ -4274,9 +4317,7 @@ class PipelinesAPI:
     def update_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
-        """Update pipeline permissions.
-
-        Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        """Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.

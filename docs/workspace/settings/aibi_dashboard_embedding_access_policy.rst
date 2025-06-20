@@ -9,8 +9,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
 
-        Delete the AI/BI dashboard embedding access policy.
-
         Delete the AI/BI dashboard embedding access policy, reverting back to the default.
 
         :param etag: str (optional)
@@ -24,8 +22,6 @@
         
 
     .. py:method:: get( [, etag: Optional[str]]) -> AibiDashboardEmbeddingAccessPolicySetting
-
-        Retrieve the AI/BI dashboard embedding access policy.
 
         Retrieves the AI/BI dashboard embedding access policy. The default setting is ALLOW_APPROVED_DOMAINS,
         permitting AI/BI dashboards to be embedded on approved domains.
@@ -41,8 +37,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: AibiDashboardEmbeddingAccessPolicySetting, field_mask: str) -> AibiDashboardEmbeddingAccessPolicySetting
-
-        Update the AI/BI dashboard embedding access policy.
 
         Updates the AI/BI dashboard embedding access policy at the workspace level.
 

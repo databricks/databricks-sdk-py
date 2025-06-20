@@ -8,8 +8,6 @@
 
     .. py:method:: create(provider: ProviderInfo) -> CreateProviderResponse
 
-        Create a provider.
-
         Create a provider
 
         :param provider: :class:`ProviderInfo`
@@ -18,8 +16,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete provider.
 
         Delete provider
 
@@ -30,8 +26,6 @@
 
     .. py:method:: get(id: str) -> GetProviderResponse
 
-        Get provider.
-
         Get provider profile
 
         :param id: str
@@ -40,8 +34,6 @@
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
-
-        List providers.
 
         List provider profiles for account.
 
@@ -52,8 +44,6 @@
         
 
     .. py:method:: update(id: str, provider: ProviderInfo) -> UpdateProviderResponse
-
-        Update provider.
 
         Update provider profile
 

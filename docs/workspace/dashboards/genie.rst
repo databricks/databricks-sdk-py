@@ -11,8 +11,6 @@
 
     .. py:method:: create_message(space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]
 
-        Create conversation message.
-
         Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
         previously created messages in the conversation to respond.
 
@@ -33,8 +31,6 @@
 
     .. py:method:: execute_message_attachment_query(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
-        Execute message attachment SQL query.
-
         Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
         needs to be re-executed.
 
@@ -52,8 +48,6 @@
 
     .. py:method:: execute_message_query(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
-        [Deprecated] Execute SQL query in a conversation message.
-
         Execute the SQL query in the message.
 
         :param space_id: str
@@ -67,8 +61,6 @@
         
 
     .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
-
-        Generate full query result download.
 
         Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
         the download. The query result is stored in an external link and can be retrieved using the [Get
@@ -89,8 +81,6 @@
         
 
     .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str) -> GenieGetDownloadFullQueryResultResponse
-
-        Get download full query result.
 
         After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
         successfully receiving a `download_id`, use this API to poll the download progress. When the download
@@ -117,8 +107,6 @@
 
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
-        Get conversation message.
-
         Get message from conversation.
 
         :param space_id: str
@@ -132,8 +120,6 @@
         
 
     .. py:method:: get_message_attachment_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
-
-        Get message attachment SQL query result.
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
@@ -152,8 +138,6 @@
 
     .. py:method:: get_message_query_result(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
-        [Deprecated] Get conversation message SQL query result.
-
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY`.
 
@@ -168,8 +152,6 @@
         
 
     .. py:method:: get_message_query_result_by_attachment(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
-
-        [Deprecated] Get conversation message SQL query result.
 
         Get the result of SQL query if the message has a query attachment. This is only available if a message
         has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
@@ -188,8 +170,6 @@
 
     .. py:method:: get_space(space_id: str) -> GenieSpace
 
-        Get Genie Space.
-
         Get details of a Genie Space.
 
         :param space_id: str
@@ -199,8 +179,6 @@
         
 
     .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
-
-        List Genie spaces.
 
         Get list of Genie Spaces.
 
@@ -213,8 +191,6 @@
         
 
     .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]
-
-        Start conversation.
 
         Start a new conversation.
 

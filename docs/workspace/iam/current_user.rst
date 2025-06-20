@@ -19,8 +19,6 @@
             
             me = w.current_user.me()
 
-        Get current user info.
-
         Get details about the current method caller's identity.
 
         :returns: :class:`User`

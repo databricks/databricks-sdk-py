@@ -13,8 +13,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> EnhancedSecurityMonitoringSetting
 
-        Get the enhanced security monitoring setting.
-
         Gets the enhanced security monitoring setting.
 
         :param etag: str (optional)
@@ -28,8 +26,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: EnhancedSecurityMonitoringSetting, field_mask: str) -> EnhancedSecurityMonitoringSetting
-
-        Update the enhanced security monitoring setting.
 
         Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
         in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`

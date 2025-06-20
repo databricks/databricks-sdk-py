@@ -50,8 +50,6 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Create an alert.
-
         Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
@@ -63,8 +61,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete an alert.
 
         Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
         can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
@@ -118,8 +114,6 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Get an alert.
-
         Gets an alert.
 
         :param id: str
@@ -140,8 +134,6 @@
             w = WorkspaceClient()
             
             all = w.alerts.list(sql.ListAlertsRequest())
-
-        List alerts.
 
         Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
@@ -198,8 +190,6 @@
             # cleanup
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
-
-        Update an alert.
 
         Updates an alert.
 

@@ -46,8 +46,6 @@
             
             _ = w.permissions.get(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
 
-        Get object permissions.
-
         Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
         object.
 
@@ -79,8 +77,6 @@
             obj = w.workspace.get_status(path=notebook_path)
             
             levels = w.permissions.get_permission_levels(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
-
-        Get object permission levels.
 
         Gets the permission levels that a user can have on an object.
 
@@ -127,8 +123,6 @@
             # cleanup
             w.groups.delete(id=group.id)
 
-        Set object permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
@@ -145,8 +139,6 @@
         
 
     .. py:method:: update(request_object_type: str, request_object_id: str [, access_control_list: Optional[List[AccessControlRequest]]]) -> ObjectPermissions
-
-        Update object permissions.
 
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.

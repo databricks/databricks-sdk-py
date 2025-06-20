@@ -3799,6 +3799,9 @@ class ServingEndpoint:
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
 
+    description: Optional[str] = None
+    """Description of the endpoint"""
+
     id: Optional[str] = None
     """System-generated ID of the endpoint, included to be used by the Permissions API."""
 
@@ -3830,6 +3833,8 @@ class ServingEndpoint:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -3857,6 +3862,8 @@ class ServingEndpoint:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -3880,6 +3887,7 @@ class ServingEndpoint:
             config=_from_dict(d, "config", EndpointCoreConfigSummary),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
+            description=d.get("description", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             name=d.get("name", None),
@@ -4021,6 +4029,9 @@ class ServingEndpointDetailed:
     data_plane_info: Optional[ModelDataPlaneInfo] = None
     """Information required to query DataPlane APIs."""
 
+    description: Optional[str] = None
+    """Description of the serving model"""
+
     endpoint_url: Optional[str] = None
     """Endpoint invocation url if route optimization is enabled for endpoint"""
 
@@ -4067,6 +4078,8 @@ class ServingEndpointDetailed:
             body["creator"] = self.creator
         if self.data_plane_info:
             body["data_plane_info"] = self.data_plane_info.as_dict()
+        if self.description is not None:
+            body["description"] = self.description
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -4104,6 +4117,8 @@ class ServingEndpointDetailed:
             body["creator"] = self.creator
         if self.data_plane_info:
             body["data_plane_info"] = self.data_plane_info
+        if self.description is not None:
+            body["description"] = self.description
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -4136,6 +4151,7 @@ class ServingEndpointDetailed:
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             data_plane_info=_from_dict(d, "data_plane_info", ModelDataPlaneInfo),
+            description=d.get("description", None),
             endpoint_url=d.get("endpoint_url", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
@@ -4489,9 +4505,7 @@ class ServingEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
-        """Get build logs for a served model.
-
-        Retrieves the build logs associated with the provided served model.
+        """Retrieves the build logs associated with the provided served model.
 
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
@@ -4672,9 +4686,7 @@ class ServingEndpointsAPI:
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 
     def export_metrics(self, name: str) -> ExportMetricsResponse:
-        """Get metrics of a serving endpoint.
-
-        Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
+        """Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
 
         :param name: str
@@ -4691,9 +4703,7 @@ class ServingEndpointsAPI:
         return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
-        """Get a single serving endpoint.
-
-        Retrieves the details for a single serving endpoint.
+        """Retrieves the details for a single serving endpoint.
 
         :param name: str
           The name of the serving endpoint. This field is required.
@@ -4709,9 +4719,7 @@ class ServingEndpointsAPI:
         return ServingEndpointDetailed.from_dict(res)
 
     def get_open_api(self, name: str) -> GetOpenApiResponse:
-        """Get the schema for a serving endpoint.
-
-        Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
+        """Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
         the supported paths, input and output format and datatypes.
 
         :param name: str
@@ -4728,9 +4736,7 @@ class ServingEndpointsAPI:
         return GetOpenApiResponse.from_dict(res)
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
-        """Get serving endpoint permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
@@ -4748,9 +4754,7 @@ class ServingEndpointsAPI:
         return GetServingEndpointPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
-        """Get serving endpoint permissions.
-
-        Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
+        """Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
         object.
 
         :param serving_endpoint_id: str
@@ -4830,9 +4834,7 @@ class ServingEndpointsAPI:
         return parsed if parsed is not None else []
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
-        """Get the latest logs for a served model.
-
-        Retrieves the service logs associated with the provided served model.
+        """Retrieves the service logs associated with the provided served model.
 
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
@@ -4854,9 +4856,7 @@ class ServingEndpointsAPI:
     def patch(
         self, name: str, *, add_tags: Optional[List[EndpointTag]] = None, delete_tags: Optional[List[str]] = None
     ) -> EndpointTags:
-        """Update tags of a serving endpoint.
-
-        Used to batch add and delete tags from a serving endpoint with a single API call.
+        """Used to batch add and delete tags from a serving endpoint with a single API call.
 
         :param name: str
           The name of the serving endpoint who's tags to patch. This field is required.
@@ -4881,9 +4881,7 @@ class ServingEndpointsAPI:
         return EndpointTags.from_dict(res)
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
-        """Update rate limits of a serving endpoint.
-
-        Deprecated: Please use AI Gateway to manage rate limits instead.
+        """Deprecated: Please use AI Gateway to manage rate limits instead.
 
         :param name: str
           The name of the serving endpoint whose rate limits are being updated. This field is required.
@@ -4913,9 +4911,7 @@ class ServingEndpointsAPI:
         rate_limits: Optional[List[AiGatewayRateLimit]] = None,
         usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None,
     ) -> PutAiGatewayResponse:
-        """Update AI Gateway of a serving endpoint.
-
-        Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
+        """Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
         pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
 
         :param name: str
@@ -5070,9 +5066,7 @@ class ServingEndpointsAPI:
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
     ) -> ServingEndpointPermissions:
-        """Set serving endpoint permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param serving_endpoint_id: str
@@ -5103,9 +5097,7 @@ class ServingEndpointsAPI:
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
     ) -> Wait[ServingEndpointDetailed]:
-        """Update config of a serving endpoint.
-
-        Updates any combination of the serving endpoint's served entities, the compute configuration of those
+        """Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
 
@@ -5173,9 +5165,7 @@ class ServingEndpointsAPI:
         *,
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None,
     ) -> ServingEndpointPermissions:
-        """Update serving endpoint permissions.
-
-        Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
+        """Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
         root object.
 
         :param serving_endpoint_id: str
@@ -5200,9 +5190,7 @@ class ServingEndpointsAPI:
     def update_provisioned_throughput_endpoint_config(
         self, name: str, config: PtEndpointCoreConfig
     ) -> Wait[ServingEndpointDetailed]:
-        """Update config of a PT serving endpoint.
-
-        Updates any combination of the pt endpoint's served entities, the compute configuration of those
+        """Updates any combination of the pt endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
         updated instantly
 

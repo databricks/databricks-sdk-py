@@ -8,8 +8,6 @@
 
     .. py:method:: create( [, policy: Optional[BudgetPolicy], request_id: Optional[str]]) -> BudgetPolicy
 
-        Create a budget policy.
-
         Creates a new policy.
 
         :param policy: :class:`BudgetPolicy` (optional)
@@ -25,8 +23,6 @@
 
     .. py:method:: delete(policy_id: str)
 
-        Delete a budget policy.
-
         Deletes a policy
 
         :param policy_id: str
@@ -37,8 +33,6 @@
 
     .. py:method:: get(policy_id: str) -> BudgetPolicy
 
-        Get a budget policy.
-
         Retrieves a policy by it's ID.
 
         :param policy_id: str
@@ -48,8 +42,6 @@
         
 
     .. py:method:: list( [, filter_by: Optional[Filter], page_size: Optional[int], page_token: Optional[str], sort_spec: Optional[SortSpec]]) -> Iterator[BudgetPolicy]
-
-        List policies.
 
         Lists all policies. Policies are returned in the alphabetically ascending order of their names.
 
@@ -71,8 +63,6 @@
         
 
     .. py:method:: update(policy_id: str, policy: BudgetPolicy [, limit_config: Optional[LimitConfig]]) -> BudgetPolicy
-
-        Update a budget policy.
 
         Updates a policy
 

@@ -19,8 +19,6 @@
 
     .. py:method:: generate_temporary_table_credentials( [, operation: Optional[TableOperation], table_id: Optional[str]]) -> GenerateTemporaryTableCredentialResponse
 
-        Generate a temporary table credential.
-
         Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
         must have external_access_enabled flag set to true (default false). The caller must have
         EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog

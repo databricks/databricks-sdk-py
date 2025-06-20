@@ -8,16 +8,12 @@
 
     .. py:method:: get_enable_results_downloading() -> EnableResultsDownloading
 
-        Get the Notebook results download setting.
-
         Gets the Notebook results download setting.
 
         :returns: :class:`EnableResultsDownloading`
         
 
     .. py:method:: patch_enable_results_downloading(allow_missing: bool, setting: EnableResultsDownloading, field_mask: str) -> EnableResultsDownloading
-
-        Update the Notebook results download setting.
 
         Updates the Notebook results download setting. The model follows eventual consistency, which means the
         get after the update operation might receive stale values for some time.

@@ -26,8 +26,6 @@
 
     .. py:method:: create(recipient_name: str, policy: FederationPolicy) -> FederationPolicy
 
-        Create recipient federation policy.
-
         Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
         non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from
         Databricks to non-Databricks clients, you can define a federation policy to authenticate
@@ -59,8 +57,6 @@
 
     .. py:method:: delete(recipient_name: str, name: str)
 
-        Delete recipient federation policy.
-
         Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner
         of the recipient.
 
@@ -73,8 +69,6 @@
         
 
     .. py:method:: get_federation_policy(recipient_name: str, name: str) -> FederationPolicy
-
-        Get recipient federation policy.
 
         Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
         to non-Databricks recipients. The caller must have read access to the recipient.
@@ -89,8 +83,6 @@
 
     .. py:method:: list(recipient_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[FederationPolicy]
 
-        List recipient federation policies.
-
         Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
         non-Databricks recipients. The caller must have read access to the recipient.
 
@@ -103,8 +95,6 @@
         
 
     .. py:method:: update(recipient_name: str, name: str, policy: FederationPolicy [, update_mask: Optional[str]]) -> FederationPolicy
-
-        Update recipient federation policy.
 
         Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
         recipient.

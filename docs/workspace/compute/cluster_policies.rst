@@ -49,8 +49,6 @@
             # cleanup
             w.cluster_policies.delete(policy_id=created.policy_id)
 
-        Create a new policy.
-
         Creates a new policy with prescribed settings.
 
         :param definition: str (optional)
@@ -87,8 +85,6 @@
         
 
     .. py:method:: delete(policy_id: str)
-
-        Delete a cluster policy.
 
         Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
 
@@ -138,8 +134,6 @@
             
             # cleanup
             w.cluster_policies.delete(policy_id=created.policy_id)
-
-        Update a cluster policy.
 
         Update an existing policy for cluster. This operation may make some clusters governed by the previous
         policy invalid.
@@ -208,8 +202,6 @@
             # cleanup
             w.cluster_policies.delete(policy_id=created.policy_id)
 
-        Get a cluster policy.
-
         Get a cluster policy entity. Creation and editing is available to admins only.
 
         :param policy_id: str
@@ -220,8 +212,6 @@
 
     .. py:method:: get_permission_levels(cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse
 
-        Get cluster policy permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param cluster_policy_id: str
@@ -231,8 +221,6 @@
         
 
     .. py:method:: get_permissions(cluster_policy_id: str) -> ClusterPolicyPermissions
-
-        Get cluster policy permissions.
 
         Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
         object.
@@ -257,8 +245,6 @@
             
             all = w.cluster_policies.list(compute.ListClusterPoliciesRequest())
 
-        List cluster policies.
-
         Returns a list of policies accessible by the requesting user.
 
         :param sort_column: :class:`ListSortColumn` (optional)
@@ -273,8 +259,6 @@
 
     .. py:method:: set_permissions(cluster_policy_id: str [, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]]]) -> ClusterPolicyPermissions
 
-        Set cluster policy permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -286,8 +270,6 @@
         
 
     .. py:method:: update_permissions(cluster_policy_id: str [, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]]]) -> ClusterPolicyPermissions
-
-        Update cluster policy permissions.
 
         Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
         object.

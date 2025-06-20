@@ -47,7 +47,7 @@
 
     .. py:method:: create(service_principal_id: int, policy: FederationPolicy [, policy_id: Optional[str]]) -> FederationPolicy
 
-        Create service principal federation policy.
+        Create account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -61,7 +61,7 @@
 
     .. py:method:: delete(service_principal_id: int, policy_id: str)
 
-        Delete service principal federation policy.
+        Delete account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -73,7 +73,7 @@
 
     .. py:method:: get(service_principal_id: int, policy_id: str) -> FederationPolicy
 
-        Get service principal federation policy.
+        Get account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -85,7 +85,7 @@
 
     .. py:method:: list(service_principal_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[FederationPolicy]
 
-        List service principal federation policies.
+        List account federation policies.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -97,7 +97,7 @@
 
     .. py:method:: update(service_principal_id: int, policy_id: str, policy: FederationPolicy [, update_mask: Optional[str]]) -> FederationPolicy
 
-        Update service principal federation policy.
+        Update account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.

@@ -246,7 +246,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 31
+   Next Id: 33
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -1567,7 +1567,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ValidationResultOperation
 
-   The operation tested.
+   A enum represents the file operation performed on the external location with the storage credential
 
    .. py:attribute:: DELETE
       :value: "DELETE"
@@ -1586,7 +1586,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ValidationResultResult
 
-   The results of the tested operation.
+   A enum represents the result of the file operation
 
    .. py:attribute:: FAIL
       :value: "FAIL"

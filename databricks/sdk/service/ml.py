@@ -1503,6 +1503,24 @@ class DeleteModelVersionTagResponse:
 
 
 @dataclass
+class DeleteOnlineStoreResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteOnlineStoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteOnlineStoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteOnlineStoreResponse:
+        """Deserializes the DeleteOnlineStoreResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteRun:
     run_id: str
     """ID of the run to delete."""
@@ -2872,6 +2890,41 @@ class ListModelsResponse:
         return cls(
             next_page_token=d.get("next_page_token", None),
             registered_models=_repeated_dict(d, "registered_models", Model),
+        )
+
+
+@dataclass
+class ListOnlineStoresResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    online_stores: Optional[List[OnlineStore]] = None
+    """List of online stores."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListOnlineStoresResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.online_stores:
+            body["online_stores"] = [v.as_dict() for v in self.online_stores]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListOnlineStoresResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.online_stores:
+            body["online_stores"] = self.online_stores
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListOnlineStoresResponse:
+        """Deserializes the ListOnlineStoresResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            online_stores=_repeated_dict(d, "online_stores", OnlineStore),
         )
 
 
@@ -4325,6 +4378,77 @@ class ModelVersionTag:
 
 
 @dataclass
+class OnlineStore:
+    """An OnlineStore is a logical database instance that stores and serves features online."""
+
+    name: str
+    """The name of the online store. This is the unique identifier for the online store."""
+
+    capacity: Optional[str] = None
+    """The capacity of the online store. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
+
+    creation_time: Optional[str] = None
+    """The timestamp when the online store was created."""
+
+    creator: Optional[str] = None
+    """The email of the creator of the online store."""
+
+    state: Optional[OnlineStoreState] = None
+    """The current state of the online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStore:
+        """Deserializes the OnlineStore from a dictionary."""
+        return cls(
+            capacity=d.get("capacity", None),
+            creation_time=d.get("creation_time", None),
+            creator=d.get("creator", None),
+            name=d.get("name", None),
+            state=_enum(d, "state", OnlineStoreState),
+        )
+
+
+class OnlineStoreState(Enum):
+
+    AVAILABLE = "AVAILABLE"
+    DELETING = "DELETING"
+    FAILING_OVER = "FAILING_OVER"
+    STARTING = "STARTING"
+    STOPPED = "STOPPED"
+    UPDATING = "UPDATING"
+
+
+@dataclass
 class Param:
     """Param associated with a run."""
 
@@ -4367,6 +4491,124 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = "CAN_MANAGE_PRODUCTION_VERSIONS"
     CAN_MANAGE_STAGING_VERSIONS = "CAN_MANAGE_STAGING_VERSIONS"
     CAN_READ = "CAN_READ"
+
+
+@dataclass
+class PublishSpec:
+    online_store: str
+    """The name of the target online store."""
+
+    online_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the online table. Auto-generated if not
+    specified."""
+
+    publish_mode: Optional[PublishSpecPublishMode] = None
+    """The publish mode of the pipeline that syncs the online table with the source table. Defaults to
+    TRIGGERED if not specified. All publish modes require the source table to have Change Data Feed
+    (CDF) enabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.online_store is not None:
+            body["online_store"] = self.online_store
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.publish_mode is not None:
+            body["publish_mode"] = self.publish_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.online_store is not None:
+            body["online_store"] = self.online_store
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.publish_mode is not None:
+            body["publish_mode"] = self.publish_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
+        """Deserializes the PublishSpec from a dictionary."""
+        return cls(
+            online_store=d.get("online_store", None),
+            online_table_name=d.get("online_table_name", None),
+            publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
+        )
+
+
+class PublishSpecPublishMode(Enum):
+
+    CONTINUOUS = "CONTINUOUS"
+    TRIGGERED = "TRIGGERED"
+
+
+@dataclass
+class PublishTableRequest:
+    publish_spec: PublishSpec
+    """The specification for publishing the online table from the source table."""
+
+    source_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the source table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishTableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.publish_spec:
+            body["publish_spec"] = self.publish_spec.as_dict()
+        if self.source_table_name is not None:
+            body["source_table_name"] = self.source_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishTableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.publish_spec:
+            body["publish_spec"] = self.publish_spec
+        if self.source_table_name is not None:
+            body["source_table_name"] = self.source_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishTableRequest:
+        """Deserializes the PublishTableRequest from a dictionary."""
+        return cls(
+            publish_spec=_from_dict(d, "publish_spec", PublishSpec), source_table_name=d.get("source_table_name", None)
+        )
+
+
+@dataclass
+class PublishTableResponse:
+    online_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the online table."""
+
+    pipeline_id: Optional[str] = None
+    """The ID of the pipeline that syncs the online table with the source table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishTableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishTableResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishTableResponse:
+        """Deserializes the PublishTableResponse from a dictionary."""
+        return cls(online_table_name=d.get("online_table_name", None), pipeline_id=d.get("pipeline_id", None))
 
 
 @dataclass
@@ -6869,9 +7111,7 @@ class ExperimentsAPI:
     def create_experiment(
         self, name: str, *, artifact_location: Optional[str] = None, tags: Optional[List[ExperimentTag]] = None
     ) -> CreateExperimentResponse:
-        """Create experiment.
-
-        Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
+        """Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
@@ -6962,9 +7202,7 @@ class ExperimentsAPI:
         tags: Optional[List[RunTag]] = None,
         user_id: Optional[str] = None,
     ) -> CreateRunResponse:
-        """Create a run.
-
-        Creates a new run within an experiment. A run is usually a single execution of a machine learning or
+        """Creates a new run within an experiment. A run is usually a single execution of a machine learning or
         data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
         associated with a single execution.
 
@@ -7002,9 +7240,7 @@ class ExperimentsAPI:
         return CreateRunResponse.from_dict(res)
 
     def delete_experiment(self, experiment_id: str):
-        """Delete an experiment.
-
-        Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
+        """Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
         experiment uses FileStore, artifacts associated with the experiment are also deleted.
 
         :param experiment_id: str
@@ -7055,9 +7291,7 @@ class ExperimentsAPI:
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
 
     def delete_run(self, run_id: str):
-        """Delete a run.
-
-        Marks a run for deletion.
+        """Marks a run for deletion.
 
         :param run_id: str
           ID of the run to delete.
@@ -7077,9 +7311,7 @@ class ExperimentsAPI:
     def delete_runs(
         self, experiment_id: str, max_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> DeleteRunsResponse:
-        """Delete runs by creation time.
-
-        Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
+        """Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
         most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on
 
@@ -7110,9 +7342,7 @@ class ExperimentsAPI:
         return DeleteRunsResponse.from_dict(res)
 
     def delete_tag(self, run_id: str, key: str):
-        """Delete a tag on a run.
-
-        Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
+        """Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
         completes.
 
         :param run_id: str
@@ -7157,9 +7387,7 @@ class ExperimentsAPI:
         return FinalizeLoggedModelResponse.from_dict(res)
 
     def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
-        """Get an experiment by name.
-
-        Gets metadata for an experiment.
+        """Gets metadata for an experiment.
 
         This endpoint will return deleted experiments, but prefers the active experiment if an active and
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
@@ -7184,9 +7412,7 @@ class ExperimentsAPI:
         return GetExperimentByNameResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
-        """Get an experiment.
-
-        Gets metadata for an experiment. This method works on deleted experiments.
+        """Gets metadata for an experiment. This method works on deleted experiments.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -7213,9 +7439,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[Metric]:
-        """Get metric history for a run.
-
-        Gets a list of all values for the specified metric for a given run.
+        """Gets a list of all values for the specified metric for a given run.
 
         :param metric_key: str
           Name of the metric.
@@ -7274,9 +7498,7 @@ class ExperimentsAPI:
         return GetLoggedModelResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
-        """Get experiment permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -7292,9 +7514,7 @@ class ExperimentsAPI:
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
-        """Get experiment permissions.
-
-        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        """Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -7310,9 +7530,7 @@ class ExperimentsAPI:
         return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
-        """Get a run.
-
-        Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
+        """Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
 
         If there are multiple values with the latest timestamp, return the maximum of these values.
@@ -7346,9 +7564,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[FileInfo]:
-        """List artifacts.
-
-        List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        """List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
         UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
         which supports pagination. See [List directory contents | Files
@@ -7400,9 +7616,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
-        """List experiments.
-
-        Gets a list of all experiments.
+        """Gets a list of all experiments.
 
         :param max_results: int (optional)
           Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
@@ -7444,9 +7658,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         tags: Optional[List[RunTag]] = None,
     ):
-        """Log a batch of metrics/params/tags for a run.
-
-        Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
+        """Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
         will respond with an error (non-200 status code).
 
         In case of error (due to internal server error or an invalid request), partial data may be written.
@@ -7520,11 +7732,7 @@ class ExperimentsAPI:
     def log_inputs(
         self, run_id: str, *, datasets: Optional[List[DatasetInput]] = None, models: Optional[List[ModelInput]] = None
     ):
-        """Log inputs to a run.
-
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
-
-        Logs inputs, such as datasets and models, to an MLflow Run.
+        """Logs inputs, such as datasets and models, to an MLflow Run.
 
         :param run_id: str
           ID of the run to log under
@@ -7550,9 +7758,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
     def log_logged_model_params(self, model_id: str, *, params: Optional[List[LoggedModelParameter]] = None):
-        """Log params for a logged model.
-
-        Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
+        """Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
         include hyperparameters used for ML model training. A param can be logged only once for a logged
         model, and attempting to overwrite an existing param with a different value will result in an error
 
@@ -7586,9 +7792,7 @@ class ExperimentsAPI:
         run_uuid: Optional[str] = None,
         step: Optional[int] = None,
     ):
-        """Log a metric for a run.
-
-        Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
+        """Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
         logged multiple times.
 
@@ -7643,9 +7847,10 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
-        """Log a model.
+        """**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this
+        endpoint.
 
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        Log a model to an MLflow Run.
 
         :param model_json: str (optional)
           MLmodel file in json format.
@@ -7667,11 +7872,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
     def log_outputs(self, run_id: str, *, models: Optional[List[ModelOutput]] = None):
-        """Log outputs from a run.
-
-        **NOTE**: Experimental: This API may change or be removed in a future release without warning.
-
-        Logs outputs, such as models, from an MLflow Run.
+        """Logs outputs, such as models, from an MLflow Run.
 
         :param run_id: str
           The ID of the Run from which to log outputs.
@@ -7693,9 +7894,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
 
     def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Log a param for a run.
-
-        Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
+        """Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
         param can be logged only once for a run.
 
@@ -7728,9 +7927,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
-        """Restore an experiment.
-
-        Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
+        """Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
@@ -7752,9 +7949,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
-        """Restore a run.
-
-        Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
+        """Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
 
@@ -7776,9 +7971,7 @@ class ExperimentsAPI:
     def restore_runs(
         self, experiment_id: str, min_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> RestoreRunsResponse:
-        """Restore runs by deletion time.
-
-        Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
+        """Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
         at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on
 
@@ -7817,9 +8010,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
-        """Search experiments.
-
-        Searches for experiments that satisfy specified search criteria.
+        """Searches for experiments that satisfy specified search criteria.
 
         :param filter: str (optional)
           String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
@@ -7871,9 +8062,7 @@ class ExperimentsAPI:
         order_by: Optional[List[SearchLoggedModelsOrderBy]] = None,
         page_token: Optional[str] = None,
     ) -> SearchLoggedModelsResponse:
-        """Search logged models.
-
-        Search for Logged Models that satisfy specified search criteria.
+        """Search for Logged Models that satisfy specified search criteria.
 
         :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
           List of datasets on which to apply the metrics filter clauses. For example, a filter with
@@ -7928,9 +8117,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         run_view_type: Optional[ViewType] = None,
     ) -> Iterator[Run]:
-        """Search for runs.
-
-        Searches for runs that satisfy expressions.
+        """Searches for runs that satisfy expressions.
 
         Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 
@@ -7990,9 +8177,7 @@ class ExperimentsAPI:
             body["page_token"] = json["next_page_token"]
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
-        """Set a tag for an experiment.
-
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
+        """Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
@@ -8018,7 +8203,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
     def set_logged_model_tags(self, model_id: str, *, tags: Optional[List[LoggedModelTag]] = None):
-        """Set a tag for a logged model.
+        """Set tags for a logged model.
 
         :param model_id: str
           The ID of the logged model to set the tags on.
@@ -8040,9 +8225,7 @@ class ExperimentsAPI:
     def set_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
-        """Set experiment permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param experiment_id: str
@@ -8063,9 +8246,7 @@ class ExperimentsAPI:
         return ExperimentPermissions.from_dict(res)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Set a tag for a run.
-
-        Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
+        """Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
 
         :param key: str
           Name of the tag. Keys up to 250 bytes in size are supported.
@@ -8096,9 +8277,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
-        """Update an experiment.
-
-        Updates experiment metadata.
+        """Updates experiment metadata.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -8122,9 +8301,7 @@ class ExperimentsAPI:
     def update_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
-        """Update experiment permissions.
-
-        Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
+        """Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -8152,9 +8329,7 @@ class ExperimentsAPI:
         run_uuid: Optional[str] = None,
         status: Optional[UpdateRunStatus] = None,
     ) -> UpdateRunResponse:
-        """Update a run.
-
-        Updates run metadata.
+        """Updates run metadata.
 
         :param end_time: int (optional)
           Unix timestamp in milliseconds of when the run ended.
@@ -8188,6 +8363,146 @@ class ExperimentsAPI:
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
+
+
+class FeatureStoreAPI:
+    """A feature store is a centralized repository that enables data scientists to find and share features. Using
+    a feature store also ensures that the code used to compute feature values is the same during model
+    training and when the model is used for inference.
+
+    An online store is a low-latency database used for feature lookup during real-time model inference or
+    serve feature for real-time applications."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_online_store(self, online_store: OnlineStore) -> OnlineStore:
+        """Create an Online Feature Store.
+
+        :param online_store: :class:`OnlineStore`
+          An OnlineStore is a logical database instance that stores and serves features online.
+
+        :returns: :class:`OnlineStore`
+        """
+        body = online_store.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/feature-store/online-stores", body=body, headers=headers)
+        return OnlineStore.from_dict(res)
+
+    def delete_online_store(self, name: str):
+        """Delete an Online Feature Store.
+
+        :param name: str
+          Name of the online store to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+
+    def get_online_store(self, name: str) -> OnlineStore:
+        """Get an Online Feature Store.
+
+        :param name: str
+          Name of the online store to get.
+
+        :returns: :class:`OnlineStore`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+        return OnlineStore.from_dict(res)
+
+    def list_online_stores(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[OnlineStore]:
+        """List Online Feature Stores.
+
+        :param page_size: int (optional)
+          The maximum number of results to return. Defaults to 100 if not specified.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`OnlineStore`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/feature-store/online-stores", query=query, headers=headers)
+            if "online_stores" in json:
+                for v in json["online_stores"]:
+                    yield OnlineStore.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def publish_table(self, source_table_name: str, publish_spec: PublishSpec) -> PublishTableResponse:
+        """Publish features.
+
+        :param source_table_name: str
+          The full three-part (catalog, schema, table) name of the source table.
+        :param publish_spec: :class:`PublishSpec`
+          The specification for publishing the online table from the source table.
+
+        :returns: :class:`PublishTableResponse`
+        """
+        body = {}
+        if publish_spec is not None:
+            body["publish_spec"] = publish_spec.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/feature-store/tables/{source_table_name}/publish", body=body, headers=headers
+        )
+        return PublishTableResponse.from_dict(res)
+
+    def update_online_store(self, name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore:
+        """Update an Online Feature Store.
+
+        :param name: str
+          The name of the online store. This is the unique identifier for the online store.
+        :param online_store: :class:`OnlineStore`
+          An OnlineStore is a logical database instance that stores and serves features online.
+        :param update_mask: str
+          The list of fields to update.
+
+        :returns: :class:`OnlineStore`
+        """
+        body = online_store.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/feature-store/online-stores/{name}", query=query, body=body, headers=headers
+        )
+        return OnlineStore.from_dict(res)
 
 
 class ForecastingAPI:
@@ -8252,9 +8567,7 @@ class ForecastingAPI:
         timeseries_identifier_columns: Optional[List[str]] = None,
         training_frameworks: Optional[List[str]] = None,
     ) -> Wait[ForecastingExperiment]:
-        """Create a forecasting experiment.
-
-        Creates a serverless forecasting experiment. Returns the experiment ID.
+        """Creates a serverless forecasting experiment. Returns the experiment ID.
 
         :param train_data_path: str
           The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
@@ -8399,9 +8712,7 @@ class ForecastingAPI:
         ).result(timeout=timeout)
 
     def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
-        """Get a forecasting experiment.
-
-        Public RPC to get forecasting experiment
+        """Public RPC to get forecasting experiment
 
         :param experiment_id: str
           The unique ID of a forecasting experiment
@@ -8432,9 +8743,7 @@ class ModelRegistryAPI:
     def approve_transition_request(
         self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> ApproveTransitionRequestResponse:
-        """Approve transition request.
-
-        Approves a model version stage transition request.
+        """Approves a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -8477,9 +8786,7 @@ class ModelRegistryAPI:
         return ApproveTransitionRequestResponse.from_dict(res)
 
     def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
-        """Post a comment.
-
-        Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
+        """Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
         display relevant information about the model. For example, test results or deployment errors.
 
         :param name: str
@@ -8509,9 +8816,7 @@ class ModelRegistryAPI:
     def create_model(
         self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
-        """Create a model.
-
-        Creates a new registered model with the name specified in the request body.
+        """Creates a new registered model with the name specified in the request body.
 
         Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
 
@@ -8549,9 +8854,7 @@ class ModelRegistryAPI:
         run_link: Optional[str] = None,
         tags: Optional[List[ModelVersionTag]] = None,
     ) -> CreateModelVersionResponse:
-        """Create a model version.
-
-        Creates a model version.
+        """Creates a model version.
 
         :param name: str
           Register model under this name
@@ -8594,9 +8897,7 @@ class ModelRegistryAPI:
     def create_transition_request(
         self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> CreateTransitionRequestResponse:
-        """Make a transition request.
-
-        Creates a model version stage transition request.
+        """Creates a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -8644,9 +8945,7 @@ class ModelRegistryAPI:
         model_name: Optional[str] = None,
         status: Optional[RegistryWebhookStatus] = None,
     ) -> CreateWebhookResponse:
-        """Create a webhook.
-
-        **NOTE**: This endpoint is in Public Preview.
+        """**NOTE**: This endpoint is in Public Preview.
 
         Creates a registry webhook.
 
@@ -8719,9 +9018,7 @@ class ModelRegistryAPI:
         return CreateWebhookResponse.from_dict(res)
 
     def delete_comment(self, id: str):
-        """Delete a comment.
-
-        Deletes a comment on a model version.
+        """Deletes a comment on a model version.
 
         :param id: str
           Unique identifier of an activity
@@ -8739,9 +9036,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
     def delete_model(self, name: str):
-        """Delete a model.
-
-        Deletes a registered model.
+        """Deletes a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -8759,9 +9054,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
     def delete_model_tag(self, name: str, key: str):
-        """Delete a model tag.
-
-        Deletes the tag for a registered model.
+        """Deletes the tag for a registered model.
 
         :param name: str
           Name of the registered model that the tag was logged under.
@@ -8784,9 +9077,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
-        """Delete a model version.
-
-        Deletes a model version.
+        """Deletes a model version.
 
         :param name: str
           Name of the registered model
@@ -8808,9 +9099,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
-        """Delete a model version tag.
-
-        Deletes a model version tag.
+        """Deletes a model version tag.
 
         :param name: str
           Name of the registered model that the tag was logged under.
@@ -8845,9 +9134,7 @@ class ModelRegistryAPI:
         *,
         comment: Optional[str] = None,
     ):
-        """Delete a transition request.
-
-        Cancels a model version stage transition request.
+        """Cancels a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -8890,9 +9177,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
 
     def delete_webhook(self, *, id: Optional[str] = None):
-        """Delete a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Deletes a registry webhook.
 
@@ -8912,9 +9197,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
-        """Get the latest version.
-
-        Gets the latest version of a registered model.
+        """Gets the latest version of a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -8938,9 +9221,7 @@ class ModelRegistryAPI:
         return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
-        """Get model.
-
-        Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
+        """Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
         returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
 
@@ -8965,8 +9246,6 @@ class ModelRegistryAPI:
     def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
         """Get a model version.
 
-        Get a model version.
-
         :param name: str
           Name of the registered model
         :param version: str
@@ -8988,9 +9267,7 @@ class ModelRegistryAPI:
         return GetModelVersionResponse.from_dict(res)
 
     def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
-        """Get a model version URI.
-
-        Gets a URI to download the model version.
+        """Gets a URI to download the model version.
 
         :param name: str
           Name of the registered model
@@ -9013,9 +9290,7 @@ class ModelRegistryAPI:
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
     def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
-        """Get registered model permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
@@ -9033,9 +9308,7 @@ class ModelRegistryAPI:
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
-        """Get registered model permissions.
-
-        Gets the permissions of a registered model. Registered models can inherit permissions from their root
+        """Gets the permissions of a registered model. Registered models can inherit permissions from their root
         object.
 
         :param registered_model_id: str
@@ -9052,9 +9325,7 @@ class ModelRegistryAPI:
         return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
-        """List models.
-
-        Lists all available registered models, up to the limit specified in __max_results__.
+        """Lists all available registered models, up to the limit specified in __max_results__.
 
         :param max_results: int (optional)
           Maximum number of registered models desired. Max threshold is 1000.
@@ -9083,9 +9354,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_transition_requests(self, name: str, version: str) -> Iterator[Activity]:
-        """List transition requests.
-
-        Gets a list of all open stage transition requests for the model version.
+        """Gets a list of all open stage transition requests for the model version.
 
         :param name: str
           Name of the model.
@@ -9115,9 +9384,7 @@ class ModelRegistryAPI:
         model_name: Optional[str] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[RegistryWebhook]:
-        """List registry webhooks.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Lists all registry webhooks.
 
@@ -9156,9 +9423,7 @@ class ModelRegistryAPI:
     def reject_transition_request(
         self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> RejectTransitionRequestResponse:
-        """Reject a transition request.
-
-        Rejects a model version stage transition request.
+        """Rejects a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -9197,9 +9462,7 @@ class ModelRegistryAPI:
         return RejectTransitionRequestResponse.from_dict(res)
 
     def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
-        """Rename a model.
-
-        Renames a registered model.
+        """Renames a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -9229,9 +9492,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersion]:
-        """Searches model versions.
-
-        Searches for specific model versions based on the supplied __filter__.
+        """Searches for specific model versions based on the supplied __filter__.
 
         :param filter: str (optional)
           String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
@@ -9278,9 +9539,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[Model]:
-        """Search models.
-
-        Search for registered models based on the specified __filter__.
+        """Search for registered models based on the specified __filter__.
 
         :param filter: str (optional)
           String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
@@ -9321,9 +9580,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def set_model_tag(self, name: str, key: str, value: str):
-        """Set a tag.
-
-        Sets a tag on a registered model.
+        """Sets a tag on a registered model.
 
         :param name: str
           Unique name of the model.
@@ -9352,9 +9609,7 @@ class ModelRegistryAPI:
         self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
-        """Set a version tag.
-
-        Sets a model version tag.
+        """Sets a model version tag.
 
         :param name: str
           Unique name of the model.
@@ -9392,9 +9647,7 @@ class ModelRegistryAPI:
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
     ) -> RegisteredModelPermissions:
-        """Set registered model permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param registered_model_id: str
@@ -9419,9 +9672,7 @@ class ModelRegistryAPI:
     def test_registry_webhook(
         self, id: str, *, event: Optional[RegistryWebhookEvent] = None
     ) -> TestRegistryWebhookResponse:
-        """Test a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Tests a registry webhook.
 
@@ -9449,9 +9700,7 @@ class ModelRegistryAPI:
     def transition_stage(
         self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
-        """Transition a stage.
-
-        Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
+        """Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
@@ -9499,9 +9748,7 @@ class ModelRegistryAPI:
         return TransitionStageResponse.from_dict(res)
 
     def update_comment(self, id: str, comment: str) -> UpdateCommentResponse:
-        """Update a comment.
-
-        Post an edit to a comment on a model version.
+        """Post an edit to a comment on a model version.
 
         :param id: str
           Unique identifier of an activity
@@ -9524,9 +9771,7 @@ class ModelRegistryAPI:
         return UpdateCommentResponse.from_dict(res)
 
     def update_model(self, name: str, *, description: Optional[str] = None):
-        """Update model.
-
-        Updates a registered model.
+        """Updates a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -9548,9 +9793,7 @@ class ModelRegistryAPI:
         self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
-        """Update model version.
-
-        Updates the model version.
+        """Updates the model version.
 
         :param name: str
           Name of the registered model
@@ -9581,9 +9824,7 @@ class ModelRegistryAPI:
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
     ) -> RegisteredModelPermissions:
-        """Update registered model permissions.
-
-        Updates the permissions on a registered model. Registered models can inherit permissions from their
+        """Updates the permissions on a registered model. Registered models can inherit permissions from their
         root object.
 
         :param registered_model_id: str
@@ -9615,9 +9856,7 @@ class ModelRegistryAPI:
         job_spec: Optional[JobSpec] = None,
         status: Optional[RegistryWebhookStatus] = None,
     ):
-        """Update a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Updates a registry webhook.
 

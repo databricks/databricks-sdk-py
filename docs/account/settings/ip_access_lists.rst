@@ -25,8 +25,6 @@
 
     .. py:method:: create(label: str, list_type: ListType [, ip_addresses: Optional[List[str]]]) -> CreateIpAccessListResponse
 
-        Create access list.
-
         Creates an IP access list for the account.
 
         A list can be an allow list or a block list. See the top of this file for a description of how the
@@ -55,8 +53,6 @@
 
     .. py:method:: delete(ip_access_list_id: str)
 
-        Delete access list.
-
         Deletes an IP access list, specified by its list ID.
 
         :param ip_access_list_id: str
@@ -66,8 +62,6 @@
         
 
     .. py:method:: get(ip_access_list_id: str) -> GetIpAccessListResponse
-
-        Get IP access list.
 
         Gets an IP access list, specified by its list ID.
 
@@ -79,16 +73,12 @@
 
     .. py:method:: list() -> Iterator[IpAccessListInfo]
 
-        Get access lists.
-
         Gets all IP access lists for the specified account.
 
         :returns: Iterator over :class:`IpAccessListInfo`
         
 
     .. py:method:: replace(ip_access_list_id: str, label: str, list_type: ListType, enabled: bool [, ip_addresses: Optional[List[str]]])
-
-        Replace access list.
 
         Replaces an IP access list, specified by its ID.
 
@@ -117,8 +107,6 @@
         
 
     .. py:method:: update(ip_access_list_id: str [, enabled: Optional[bool], ip_addresses: Optional[List[str]], label: Optional[str], list_type: Optional[ListType]])
-
-        Update access list.
 
         Updates an existing IP access list, specified by its ID.
 

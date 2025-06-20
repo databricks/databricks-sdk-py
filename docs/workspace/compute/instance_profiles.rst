@@ -30,8 +30,6 @@
                 iam_role_arn="arn:aws:iam::000000000000:role/bcd",
             )
 
-        Register an instance profile.
-
         Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
         this instance profile when launching clusters.
 
@@ -80,8 +78,6 @@
                 iam_role_arn="arn:aws:iam::000000000000:role/bcdf",
             )
 
-        Edit an instance profile.
-
         The only supported field to change is the optional IAM role ARN associated with the instance profile.
         It is required to specify the IAM role ARN if both of the following are true:
 
@@ -127,8 +123,6 @@
             
             all = w.instance_profiles.list()
 
-        List available instance profiles.
-
         List the instance profiles that the calling user can use to launch a cluster.
 
         This API is available to all users.
@@ -137,8 +131,6 @@
         
 
     .. py:method:: remove(instance_profile_arn: str)
-
-        Remove the instance profile.
 
         Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
         continue to function.

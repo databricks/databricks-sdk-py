@@ -56,8 +56,6 @@
             # cleanup
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
-        Create new budget.
-
         Create a new budget configuration for an account. For full details, see
         https://docs.databricks.com/en/admin/account-settings/budgets.html.
 
@@ -68,8 +66,6 @@
         
 
     .. py:method:: delete(budget_id: str)
-
-        Delete budget.
 
         Deletes a budget configuration for an account. Both account and budget configuration are specified by
         ID. This cannot be undone.
@@ -130,8 +126,6 @@
             # cleanup
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
-        Get budget.
-
         Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
 
         :param budget_id: str
@@ -153,8 +147,6 @@
             a = AccountClient()
             
             all = a.budgets.list(billing.ListBudgetConfigurationsRequest())
-
-        Get all budgets.
 
         Gets all budgets associated with this account.
 
@@ -241,8 +233,6 @@
             
             # cleanup
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
-
-        Modify budget.
 
         Updates a budget configuration for an account. Both account and budget configuration are specified by
         ID.

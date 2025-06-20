@@ -8,7 +8,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CancelResponse
+.. autoclass:: CancelOptimizeResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateCustomLlmRequest
    :members:
    :undoc-members:
 
@@ -17,6 +21,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Dataset
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteCustomLlmResponse
    :members:
    :undoc-members:
 

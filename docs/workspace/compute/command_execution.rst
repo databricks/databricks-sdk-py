@@ -9,8 +9,6 @@
 
     .. py:method:: cancel( [, cluster_id: Optional[str], command_id: Optional[str], context_id: Optional[str]]) -> Wait[CommandStatusResponse]
 
-        Cancel a command.
-
         Cancels a currently running command within an execution context.
 
         The command ID is obtained from a prior successful call to __execute__.
@@ -29,8 +27,6 @@
 
     .. py:method:: command_status(cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse
 
-        Get command info.
-
         Gets the status of and, if available, the results from a currently executing command.
 
         The command ID is obtained from a prior successful call to __execute__.
@@ -43,8 +39,6 @@
         
 
     .. py:method:: context_status(cluster_id: str, context_id: str) -> ContextStatusResponse
-
-        Get status.
 
         Gets the status for an execution context.
 
@@ -75,8 +69,6 @@
             # cleanup
             w.command_execution.destroy(cluster_id=cluster_id, context_id=context.id)
 
-        Create an execution context.
-
         Creates an execution context for running cluster commands.
 
         If successful, this method returns the ID of the new execution context.
@@ -94,8 +86,6 @@
 
 
     .. py:method:: destroy(cluster_id: str, context_id: str)
-
-        Delete an execution context.
 
         Deletes an execution context.
 
@@ -132,8 +122,6 @@
             
             # cleanup
             w.command_execution.destroy(cluster_id=cluster_id, context_id=context.id)
-
-        Run a command.
 
         Runs a cluster command in the given execution context, using the provided language.
 
