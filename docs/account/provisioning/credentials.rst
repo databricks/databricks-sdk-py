@@ -115,5 +115,6 @@
 
         Gets all Databricks credential configurations associated with an account specified by ID.
 
+
         :returns: Iterator over :class:`Credential`
         

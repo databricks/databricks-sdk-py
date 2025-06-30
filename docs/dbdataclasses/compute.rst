@@ -825,6 +825,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PYTHON
       :value: "PYTHON"
 
+   .. py:attribute:: R
+      :value: "R"
+
    .. py:attribute:: SCALA
       :value: "SCALA"
 

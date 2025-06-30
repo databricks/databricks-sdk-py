@@ -11,6 +11,7 @@
 
         Gets the Results Table Clipboard features setting.
 
+
         :returns: :class:`EnableNotebookTableClipboard`
         
 

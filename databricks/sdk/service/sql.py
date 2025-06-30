@@ -3419,7 +3419,8 @@ class EnumValue:
 @dataclass
 class ExecuteStatementRequest:
     statement: str
-    """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`."""
+    """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
+    The maximum query text size is 16 MiB."""
 
     warehouse_id: str
     """Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
@@ -8914,6 +8915,7 @@ class AlertsLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
+
         :returns: Iterator over :class:`LegacyAlert`
         """
 
@@ -9406,6 +9408,7 @@ class DataSourcesAPI:
         instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+
 
         :returns: Iterator over :class:`DataSource`
         """
@@ -10261,6 +10264,7 @@ class RedashConfigAPI:
     def get_config(self) -> ClientConfig:
         """Read workspace configuration for Redash-v2.
 
+
         :returns: :class:`ClientConfig`
         """
 
@@ -10394,7 +10398,8 @@ class StatementExecutionAPI:
         """Execute a SQL statement
 
         :param statement: str
-          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
+          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The
+          maximum query text size is 16 MiB.
         :param warehouse_id: str
           Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
 
@@ -11017,6 +11022,7 @@ class WarehousesAPI:
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
         """Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+
 
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         """

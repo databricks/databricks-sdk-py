@@ -19,7 +19,7 @@
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
-    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]]]) -> CreateInstancePoolResponse
+    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
 
 
         Usage:
@@ -87,6 +87,12 @@
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the :method:clusters/sparkVersions API call.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
         :returns: :class:`CreateInstancePoolResponse`
         
@@ -101,7 +107,7 @@
 
         
 
-    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int]])
+    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
 
 
         Usage:
@@ -156,6 +162,12 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
 
         
@@ -225,6 +237,7 @@
             all = w.instance_pools.list()
 
         Gets a list of instance pools with their statistics.
+
 
         :returns: Iterator over :class:`InstancePoolAndStats`
         

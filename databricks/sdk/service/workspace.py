@@ -2443,6 +2443,7 @@ class GitCredentialsAPI:
     def list(self) -> Iterator[CredentialInfo]:
         """Lists the calling user's Git credentials. One credential per user is supported.
 
+
         :returns: Iterator over :class:`CredentialInfo`
         """
 
@@ -2942,6 +2943,7 @@ class SecretsAPI:
         """Lists all secret scopes available in the workspace.
 
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+
 
         :returns: Iterator over :class:`SecretScope`
         """

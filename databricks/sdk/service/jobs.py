@@ -260,9 +260,10 @@ class BaseRun:
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
-    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
-    restart a continuous job run."""
+    Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is
+    triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *
+    `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
+    * `MODEL`: Indicates a run that is triggered by a model update."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -5333,9 +5334,10 @@ class Run:
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
-    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
-    restart a continuous job run."""
+    Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is
+    triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *
+    `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
+    * `MODEL`: Indicates a run that is triggered by a model update."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -9154,10 +9156,13 @@ class TriggerType(Enum):
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
-    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
-    restart a continuous job run."""
+    Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is
+    triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *
+    `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
+    * `MODEL`: Indicates a run that is triggered by a model update."""
 
+    CONTINUOUS = "CONTINUOUS"
+    CONTINUOUS_RESTART = "CONTINUOUS_RESTART"
     FILE_ARRIVAL = "FILE_ARRIVAL"
     ONE_TIME = "ONE_TIME"
     PERIODIC = "PERIODIC"

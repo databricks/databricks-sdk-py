@@ -3264,6 +3264,7 @@ class CurrentUserAPI:
     def me(self) -> User:
         """Get details about the current method caller's identity.
 
+
         :returns: :class:`User`
         """
 
@@ -4147,6 +4148,7 @@ class UsersAPI:
     def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
 
+
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         """
 
@@ -4159,6 +4161,7 @@ class UsersAPI:
 
     def get_permissions(self) -> PasswordPermissions:
         """Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
+
 
         :returns: :class:`PasswordPermissions`
         """
