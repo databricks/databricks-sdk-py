@@ -47,7 +47,6 @@ dev = [
     "ipywidgets",
     "requests-mock",
     "pyfakefs",
-    "databricks-connect",
     "pytest-rerunfailures",
     "openai",
     'langchain-openai; python_version > "3.7"',
