@@ -141,6 +141,7 @@
 
         Gets a list of all private access settings objects for an account, specified by ID.
 
+
         :returns: Iterator over :class:`PrivateAccessSettings`
         
 

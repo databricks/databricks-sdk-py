@@ -77,6 +77,7 @@
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
+
         :returns: Iterator over :class:`LegacyAlert`
         
 

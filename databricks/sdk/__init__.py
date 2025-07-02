@@ -1038,7 +1038,7 @@ class AccountClient:
 
     @property
     def log_delivery(self) -> pkg_billing.LogDeliveryAPI:
-        """These APIs manage Log delivery configurations for this account."""
+        """These APIs manage log delivery configurations for this account."""
         return self._log_delivery
 
     @property

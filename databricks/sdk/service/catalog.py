@@ -10655,6 +10655,7 @@ class AccountMetastoresAPI:
     def list(self) -> Iterator[MetastoreInfo]:
         """Gets all Unity Catalog metastores associated with an account specified by ID.
 
+
         :returns: Iterator over :class:`MetastoreInfo`
         """
 
@@ -12302,6 +12303,7 @@ class MetastoresAPI:
     def current(self) -> MetastoreAssignment:
         """Gets the metastore assignment for the workspace being accessed.
 
+
         :returns: :class:`MetastoreAssignment`
         """
 
@@ -12388,6 +12390,7 @@ class MetastoresAPI:
     def summary(self) -> GetMetastoreSummaryResponse:
         """Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
+
 
         :returns: :class:`GetMetastoreSummaryResponse`
         """

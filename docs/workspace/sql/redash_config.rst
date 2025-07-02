@@ -10,5 +10,6 @@
 
         Read workspace configuration for Redash-v2.
 
+
         :returns: :class:`ClientConfig`
         

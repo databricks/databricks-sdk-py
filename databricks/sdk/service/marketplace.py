@@ -4687,6 +4687,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
         """Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
         Lakeview dashboard id.
 
+
         :returns: :class:`ProviderAnalyticsDashboard`
         """
 
@@ -4700,6 +4701,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
     def get(self) -> ListProviderAnalyticsDashboardResponse:
         """Get provider analytics dashboard.
 
+
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         """
 
@@ -4712,6 +4714,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
 
     def get_latest_version(self) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Get latest version of provider analytics dashboard.
+
 
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         """

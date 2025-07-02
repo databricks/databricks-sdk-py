@@ -6827,6 +6827,7 @@ class AccountIpAccessListsAPI:
     def list(self) -> Iterator[IpAccessListInfo]:
         """Gets all IP access lists for the specified account.
 
+
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
@@ -8007,6 +8008,7 @@ class EnableExportNotebookAPI:
     def get_enable_export_notebook(self) -> EnableExportNotebook:
         """Gets the Notebook and File exporting setting.
 
+
         :returns: :class:`EnableExportNotebook`
         """
 
@@ -8170,6 +8172,7 @@ class EnableNotebookTableClipboardAPI:
     def get_enable_notebook_table_clipboard(self) -> EnableNotebookTableClipboard:
         """Gets the Results Table Clipboard features setting.
 
+
         :returns: :class:`EnableNotebookTableClipboard`
         """
 
@@ -8230,6 +8233,7 @@ class EnableResultsDownloadingAPI:
 
     def get_enable_results_downloading(self) -> EnableResultsDownloading:
         """Gets the Notebook results download setting.
+
 
         :returns: :class:`EnableResultsDownloading`
         """
@@ -8534,6 +8538,7 @@ class IpAccessListsAPI:
 
     def list(self) -> Iterator[IpAccessListInfo]:
         """Gets all IP access lists for the specified workspace.
+
 
         :returns: Iterator over :class:`IpAccessListInfo`
         """
@@ -9896,6 +9901,7 @@ class TokenManagementAPI:
     def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
 
+
         :returns: :class:`GetTokenPermissionLevelsResponse`
         """
 
@@ -9908,6 +9914,7 @@ class TokenManagementAPI:
 
     def get_permissions(self) -> TokenPermissions:
         """Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
+
 
         :returns: :class:`TokenPermissions`
         """
@@ -10043,6 +10050,7 @@ class TokensAPI:
 
     def list(self) -> Iterator[PublicTokenInfo]:
         """Lists all the valid tokens for a user-workspace pair.
+
 
         :returns: Iterator over :class:`PublicTokenInfo`
         """

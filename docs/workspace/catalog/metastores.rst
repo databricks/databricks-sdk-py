@@ -109,6 +109,7 @@
 
         Gets the metastore assignment for the workspace being accessed.
 
+
         :returns: :class:`MetastoreAssignment`
         
 
@@ -202,6 +203,7 @@
 
         Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
+
 
         :returns: :class:`GetMetastoreSummaryResponse`
         

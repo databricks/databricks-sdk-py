@@ -42,6 +42,7 @@
 
         Gets all Unity Catalog metastores associated with an account specified by ID.
 
+
         :returns: Iterator over :class:`MetastoreInfo`
         
 

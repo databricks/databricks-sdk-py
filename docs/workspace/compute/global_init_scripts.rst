@@ -119,6 +119,7 @@
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
         script](:method:globalinitscripts/get) operation.
 
+
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         
 

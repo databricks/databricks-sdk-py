@@ -130,6 +130,7 @@
 
         Gets all IP access lists for the specified workspace.
 
+
         :returns: Iterator over :class:`IpAccessListInfo`
         
 

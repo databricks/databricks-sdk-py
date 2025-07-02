@@ -105,5 +105,6 @@
 
         Gets a list of all Databricks storage configurations for your account, specified by ID.
 
+
         :returns: Iterator over :class:`StorageConfiguration`
         

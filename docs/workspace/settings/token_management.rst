@@ -97,12 +97,14 @@
 
         Gets the permission levels that a user can have on an object.
 
+
         :returns: :class:`GetTokenPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions() -> TokenPermissions
 
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
+
 
         :returns: :class:`TokenPermissions`
         

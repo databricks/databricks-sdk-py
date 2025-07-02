@@ -4822,6 +4822,7 @@ class ServingEndpointsAPI:
     def list(self) -> Iterator[ServingEndpoint]:
         """Get all serving endpoints.
 
+
         :returns: Iterator over :class:`ServingEndpoint`
         """
 

@@ -100,6 +100,7 @@
 
         Lists the calling user's Git credentials. One credential per user is supported.
 
+
         :returns: Iterator over :class:`CredentialInfo`
         
 

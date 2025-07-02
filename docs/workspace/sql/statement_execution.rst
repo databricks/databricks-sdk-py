@@ -106,7 +106,8 @@
         Execute a SQL statement
 
         :param statement: str
-          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
+          The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The
+          maximum query text size is 16 MiB.
         :param warehouse_id: str
           Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
 

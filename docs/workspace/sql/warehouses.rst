@@ -274,6 +274,7 @@
 
         Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
+
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         
 
