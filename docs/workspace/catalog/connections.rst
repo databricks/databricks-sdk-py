@@ -41,8 +41,6 @@
             # cleanup
             w.connections.delete(name=conn_create.name)
 
-        Create a connection.
-
         Creates a new connection
 
         Creates a new connection to an external data source. It allows users to specify connection details and
@@ -57,7 +55,7 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param properties: Dict[str,str] (optional)
-          An object containing map of key-value properties attached to the connection.
+          A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
 
@@ -65,8 +63,6 @@
         
 
     .. py:method:: delete(name: str)
-
-        Delete a connection.
 
         Deletes the connection that matches the supplied name.
 
@@ -115,8 +111,6 @@
             # cleanup
             w.connections.delete(name=conn_create.name)
 
-        Get a connection.
-
         Gets a connection from it's name.
 
         :param name: str
@@ -138,8 +132,6 @@
             w = WorkspaceClient()
             
             conn_list = w.connections.list(catalog.ListConnectionsRequest())
-
-        List connections.
 
         List all connections.
 
@@ -190,8 +182,6 @@
             
             # cleanup
             w.connections.delete(name=conn_create.name)
-
-        Update a connection.
 
         Updates the connection that matches the supplied name.
 

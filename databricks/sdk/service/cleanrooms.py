@@ -138,6 +138,10 @@ class CleanRoomAsset:
     asset_type: Optional[CleanRoomAssetAssetType] = None
     """The type of the asset."""
 
+    clean_room_name: Optional[str] = None
+    """The name of the clean room this asset belongs to. This is an output-only field to ensure proper
+    resource identification."""
+
     foreign_table: Optional[CleanRoomAssetForeignTable] = None
     """Foreign table details available to all collaborators of the clean room. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
@@ -192,6 +196,8 @@ class CleanRoomAsset:
             body["added_at"] = self.added_at
         if self.asset_type is not None:
             body["asset_type"] = self.asset_type.value
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
         if self.foreign_table:
             body["foreign_table"] = self.foreign_table.as_dict()
         if self.foreign_table_local_details:
@@ -223,6 +229,8 @@ class CleanRoomAsset:
             body["added_at"] = self.added_at
         if self.asset_type is not None:
             body["asset_type"] = self.asset_type
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
         if self.foreign_table:
             body["foreign_table"] = self.foreign_table
         if self.foreign_table_local_details:
@@ -253,6 +261,7 @@ class CleanRoomAsset:
         return cls(
             added_at=d.get("added_at", None),
             asset_type=_enum(d, "asset_type", CleanRoomAssetAssetType),
+            clean_room_name=d.get("clean_room_name", None),
             foreign_table=_from_dict(d, "foreign_table", CleanRoomAssetForeignTable),
             foreign_table_local_details=_from_dict(
                 d, "foreign_table_local_details", CleanRoomAssetForeignTableLocalDetails
@@ -338,6 +347,15 @@ class CleanRoomAssetNotebook:
     """Base 64 representation of the notebook contents. This is the same format as returned by
     :method:workspace/export with the format of **HTML**."""
 
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """top-level status derived from all reviews"""
+
+    reviews: Optional[List[CleanRoomNotebookReview]] = None
+    """All existing approvals or rejections"""
+
+    runner_collaborator_aliases: Optional[List[str]] = None
+    """collaborators that can run the notebook"""
+
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -345,6 +363,12 @@ class CleanRoomAssetNotebook:
             body["etag"] = self.etag
         if self.notebook_content is not None:
             body["notebook_content"] = self.notebook_content
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.reviews:
+            body["reviews"] = [v.as_dict() for v in self.reviews]
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = [v for v in self.runner_collaborator_aliases]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -354,12 +378,24 @@ class CleanRoomAssetNotebook:
             body["etag"] = self.etag
         if self.notebook_content is not None:
             body["notebook_content"] = self.notebook_content
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.reviews:
+            body["reviews"] = self.reviews
+        if self.runner_collaborator_aliases:
+            body["runner_collaborator_aliases"] = self.runner_collaborator_aliases
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
-        return cls(etag=d.get("etag", None), notebook_content=d.get("notebook_content", None))
+        return cls(
+            etag=d.get("etag", None),
+            notebook_content=d.get("notebook_content", None),
+            review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
+            reviews=_repeated_dict(d, "reviews", CleanRoomNotebookReview),
+            runner_collaborator_aliases=d.get("runner_collaborator_aliases", None),
+        )
 
 
 class CleanRoomAssetStatusEnum(Enum):
@@ -586,6 +622,78 @@ class CleanRoomCollaborator:
 
 
 @dataclass
+class CleanRoomNotebookReview:
+    comment: Optional[str] = None
+    """review comment"""
+
+    created_at_millis: Optional[int] = None
+    """timestamp of when the review was submitted"""
+
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """review outcome"""
+
+    review_sub_reason: Optional[CleanRoomNotebookReviewNotebookReviewSubReason] = None
+    """specified when the review was not explicitly made by a user"""
+
+    reviewer_collaborator_alias: Optional[str] = None
+    """collaborator alias of the reviewer"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason.value
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at_millis is not None:
+            body["created_at_millis"] = self.created_at_millis
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        if self.review_sub_reason is not None:
+            body["review_sub_reason"] = self.review_sub_reason
+        if self.reviewer_collaborator_alias is not None:
+            body["reviewer_collaborator_alias"] = self.reviewer_collaborator_alias
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomNotebookReview:
+        """Deserializes the CleanRoomNotebookReview from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            created_at_millis=d.get("created_at_millis", None),
+            review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
+            review_sub_reason=_enum(d, "review_sub_reason", CleanRoomNotebookReviewNotebookReviewSubReason),
+            reviewer_collaborator_alias=d.get("reviewer_collaborator_alias", None),
+        )
+
+
+class CleanRoomNotebookReviewNotebookReviewState(Enum):
+
+    APPROVED = "APPROVED"
+    PENDING = "PENDING"
+    REJECTED = "REJECTED"
+
+
+class CleanRoomNotebookReviewNotebookReviewSubReason(Enum):
+
+    AUTO_APPROVED = "AUTO_APPROVED"
+    BACKFILLED = "BACKFILLED"
+
+
+@dataclass
 class CleanRoomNotebookTaskRun:
     """Stores information about a single task run."""
 
@@ -594,11 +702,17 @@ class CleanRoomNotebookTaskRun:
     LIST API. if the task was run within the same workspace the API is being called. If the task run
     was in a different workspace under the same metastore, only the workspace_id is included."""
 
+    notebook_etag: Optional[str] = None
+    """Etag of the notebook executed in this task run, used to identify the notebook version."""
+
     notebook_job_run_state: Optional[jobs.CleanRoomTaskRunState] = None
     """State of the task run."""
 
     notebook_name: Optional[str] = None
     """Asset name of the notebook executed in this task run."""
+
+    notebook_updated_at: Optional[int] = None
+    """The timestamp of when the notebook was last updated."""
 
     output_schema_expiration_time: Optional[int] = None
     """Expiration time of the output schema of the task run (if any), in epoch milliseconds."""
@@ -617,10 +731,14 @@ class CleanRoomNotebookTaskRun:
         body = {}
         if self.collaborator_job_run_info:
             body["collaborator_job_run_info"] = self.collaborator_job_run_info.as_dict()
+        if self.notebook_etag is not None:
+            body["notebook_etag"] = self.notebook_etag
         if self.notebook_job_run_state:
             body["notebook_job_run_state"] = self.notebook_job_run_state.as_dict()
         if self.notebook_name is not None:
             body["notebook_name"] = self.notebook_name
+        if self.notebook_updated_at is not None:
+            body["notebook_updated_at"] = self.notebook_updated_at
         if self.output_schema_expiration_time is not None:
             body["output_schema_expiration_time"] = self.output_schema_expiration_time
         if self.output_schema_name is not None:
@@ -636,10 +754,14 @@ class CleanRoomNotebookTaskRun:
         body = {}
         if self.collaborator_job_run_info:
             body["collaborator_job_run_info"] = self.collaborator_job_run_info
+        if self.notebook_etag is not None:
+            body["notebook_etag"] = self.notebook_etag
         if self.notebook_job_run_state:
             body["notebook_job_run_state"] = self.notebook_job_run_state
         if self.notebook_name is not None:
             body["notebook_name"] = self.notebook_name
+        if self.notebook_updated_at is not None:
+            body["notebook_updated_at"] = self.notebook_updated_at
         if self.output_schema_expiration_time is not None:
             body["output_schema_expiration_time"] = self.output_schema_expiration_time
         if self.output_schema_name is not None:
@@ -655,8 +777,10 @@ class CleanRoomNotebookTaskRun:
         """Deserializes the CleanRoomNotebookTaskRun from a dictionary."""
         return cls(
             collaborator_job_run_info=_from_dict(d, "collaborator_job_run_info", CollaboratorJobRunInfo),
+            notebook_etag=d.get("notebook_etag", None),
             notebook_job_run_state=_from_dict(d, "notebook_job_run_state", jobs.CleanRoomTaskRunState),
             notebook_name=d.get("notebook_name", None),
+            notebook_updated_at=d.get("notebook_updated_at", None),
             output_schema_expiration_time=d.get("output_schema_expiration_time", None),
             output_schema_name=d.get("output_schema_name", None),
             run_duration=d.get("run_duration", None),
@@ -1098,9 +1222,7 @@ class CleanRoomAssetsAPI:
         self._api = api_client
 
     def create(self, clean_room_name: str, asset: CleanRoomAsset) -> CleanRoomAsset:
-        """Create an asset.
-
-        Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
+        """Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
         asset that is added through this method, the clean room owner must also have enough privilege on the
         asset to consume it. The privilege must be maintained indefinitely for the clean room to be able to
         access the asset. Typically, you should use a group as the clean room owner.
@@ -1121,16 +1243,14 @@ class CleanRoomAssetsAPI:
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
 
-    def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str):
-        """Delete an asset.
-
-        Delete a clean room asset - unshare/remove the asset from the clean room
+    def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str):
+        """Delete a clean room asset - unshare/remove the asset from the clean room
 
         :param clean_room_name: str
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
 
@@ -1141,21 +1261,17 @@ class CleanRoomAssetsAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{asset_full_name}",
-            headers=headers,
+            "DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
         )
 
-    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset:
-        """Get an asset.
-
-        Get the details of a clean room asset by its type and full name.
+    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str) -> CleanRoomAsset:
+        """Get the details of a clean room asset by its type and full name.
 
         :param clean_room_name: str
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
         :returns: :class:`CleanRoomAsset`
@@ -1166,9 +1282,7 @@ class CleanRoomAssetsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{asset_full_name}",
-            headers=headers,
+            "GET", f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}", headers=headers
         )
         return CleanRoomAsset.from_dict(res)
 
@@ -1202,9 +1316,7 @@ class CleanRoomAssetsAPI:
     def update(
         self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, asset: CleanRoomAsset
     ) -> CleanRoomAsset:
-        """Update an asset.
-
-        Update a clean room asset. For example, updating the content of a notebook; changing the shared
+        """Update a clean room asset. For example, updating the content of a notebook; changing the shared
         partitions of a table; etc.
 
         :param clean_room_name: str
@@ -1253,9 +1365,7 @@ class CleanRoomTaskRunsAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[CleanRoomNotebookTaskRun]:
-        """List notebook task runs.
-
-        List all the historical notebook task runs in a clean room.
+        """List all the historical notebook task runs in a clean room.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1299,9 +1409,7 @@ class CleanRoomsAPI:
         self._api = api_client
 
     def create(self, clean_room: CleanRoom) -> CleanRoom:
-        """Create a clean room.
-
-        Create a new clean room with the specified collaborators. This method is asynchronous; the returned
+        """Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
         :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
         state, with only name, owner, comment, created_at and status populated. The clean room will be usable
@@ -1325,9 +1433,7 @@ class CleanRoomsAPI:
     def create_output_catalog(
         self, clean_room_name: str, output_catalog: CleanRoomOutputCatalog
     ) -> CreateCleanRoomOutputCatalogResponse:
-        """Create an output catalog.
-
-        Create the output catalog of the clean room.
+        """Create the output catalog of the clean room.
 
         :param clean_room_name: str
           Name of the clean room.
@@ -1347,9 +1453,7 @@ class CleanRoomsAPI:
         return CreateCleanRoomOutputCatalogResponse.from_dict(res)
 
     def delete(self, name: str):
-        """Delete a clean room.
-
-        Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
+        """Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
         collaborators have not deleted the clean room, they will still have the clean room in their metastore,
         but it will be in a DELETED state and no operations other than deletion can be performed on it.
 
@@ -1366,9 +1470,7 @@ class CleanRoomsAPI:
         self._api.do("DELETE", f"/api/2.0/clean-rooms/{name}", headers=headers)
 
     def get(self, name: str) -> CleanRoom:
-        """Get a clean room.
-
-        Get the details of a clean room given its name.
+        """Get the details of a clean room given its name.
 
         :param name: str
 
@@ -1383,9 +1485,7 @@ class CleanRoomsAPI:
         return CleanRoom.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[CleanRoom]:
-        """List clean rooms.
-
-        Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
+        """Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
         returned.
 
         :param page_size: int (optional)
@@ -1415,9 +1515,7 @@ class CleanRoomsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, name: str, *, clean_room: Optional[CleanRoom] = None) -> CleanRoom:
-        """Update a clean room.
-
-        Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
+        """Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
         privilege, or be metastore admin.
 
         When the caller is a metastore admin, only the __owner__ field can be updated.

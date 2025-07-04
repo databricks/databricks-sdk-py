@@ -385,7 +385,10 @@ class GrantRule:
     """Role that is assigned to the list of principals."""
 
     principals: Optional[List[str]] = None
-    """Principals this grant rule applies to."""
+    """Principals this grant rule applies to. A principal can be a user (for end users), a service
+    principal (for applications and compute workloads), or an account group. Each principal has its
+    own identifier format: * users/<USERNAME> * groups/<GROUP_NAME> *
+    servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>"""
 
     def as_dict(self) -> dict:
         """Serializes the GrantRule into a dictionary suitable for use as a JSON request body."""
@@ -1327,6 +1330,7 @@ class PermissionLevel(Enum):
 
     CAN_ATTACH_TO = "CAN_ATTACH_TO"
     CAN_BIND = "CAN_BIND"
+    CAN_CREATE = "CAN_CREATE"
     CAN_EDIT = "CAN_EDIT"
     CAN_EDIT_METADATA = "CAN_EDIT_METADATA"
     CAN_MANAGE = "CAN_MANAGE"
@@ -1334,6 +1338,7 @@ class PermissionLevel(Enum):
     CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
     CAN_MANAGE_STAGING_VERSIONS = "CAN_MANAGE_STAGING_VERSIONS"
     CAN_MONITOR = "CAN_MONITOR"
+    CAN_MONITOR_ONLY = "CAN_MONITOR_ONLY"
     CAN_QUERY = "CAN_QUERY"
     CAN_READ = "CAN_READ"
     CAN_RESTART = "CAN_RESTART"
@@ -1407,50 +1412,6 @@ class PermissionsDescription:
         """Deserializes the PermissionsDescription from a dictionary."""
         return cls(
             description=d.get("description", None), permission_level=_enum(d, "permission_level", PermissionLevel)
-        )
-
-
-@dataclass
-class PermissionsRequest:
-    access_control_list: Optional[List[AccessControlRequest]] = None
-
-    request_object_id: Optional[str] = None
-    """The id of the request object."""
-
-    request_object_type: Optional[str] = None
-    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
-    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PermissionsRequest:
-        """Deserializes the PermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
         )
 
 
@@ -1619,13 +1580,19 @@ class Role:
 
 @dataclass
 class RuleSetResponse:
-    etag: Optional[str] = None
-    """Identifies the version of the rule set returned."""
+    name: str
+    """Name of the rule set."""
+
+    etag: str
+    """Identifies the version of the rule set returned. Etag used for versioning. The response is at
+    least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to
+    help prevent simultaneous updates of a rule set from overwriting each other. It is strongly
+    suggested that systems make use of the etag in the read -> modify -> write pattern to perform
+    rule set updates in order to avoid race conditions that is get an etag from a GET rule set
+    request, and pass it with the PUT update request to identify the rule set version you are
+    updating."""
 
     grant_rules: Optional[List[GrantRule]] = None
-
-    name: Optional[str] = None
-    """Name of the rule set."""
 
     def as_dict(self) -> dict:
         """Serializes the RuleSetResponse into a dictionary suitable for use as a JSON request body."""
@@ -1663,8 +1630,13 @@ class RuleSetUpdateRequest:
     """Name of the rule set."""
 
     etag: str
-    """The expected etag of the rule set to update. The update will fail if the value does not match
-    the value that is stored in account access control service."""
+    """Identifies the version of the rule set returned. Etag used for versioning. The response is at
+    least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to
+    help prevent simultaneous updates of a rule set from overwriting each other. It is strongly
+    suggested that systems make use of the etag in the read -> modify -> write pattern to perform
+    rule set updates in order to avoid race conditions that is get an etag from a GET rule set
+    request, and pass it with the PUT update request to identify the rule set version you are
+    updating."""
 
     grant_rules: Optional[List[GrantRule]] = None
 
@@ -1793,6 +1765,94 @@ class ServicePrincipal:
 class ServicePrincipalSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
+
+
+@dataclass
+class SetObjectPermissions:
+    access_control_list: Optional[List[AccessControlRequest]] = None
+
+    request_object_id: Optional[str] = None
+    """The id of the request object."""
+
+    request_object_type: Optional[str] = None
+    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
+    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SetObjectPermissions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+        if self.request_object_id is not None:
+            body["request_object_id"] = self.request_object_id
+        if self.request_object_type is not None:
+            body["request_object_type"] = self.request_object_type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetObjectPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = self.access_control_list
+        if self.request_object_id is not None:
+            body["request_object_id"] = self.request_object_id
+        if self.request_object_type is not None:
+            body["request_object_type"] = self.request_object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetObjectPermissions:
+        """Deserializes the SetObjectPermissions from a dictionary."""
+        return cls(
+            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
+            request_object_id=d.get("request_object_id", None),
+            request_object_type=d.get("request_object_type", None),
+        )
+
+
+@dataclass
+class UpdateObjectPermissions:
+    access_control_list: Optional[List[AccessControlRequest]] = None
+
+    request_object_id: Optional[str] = None
+    """The id of the request object."""
+
+    request_object_type: Optional[str] = None
+    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
+    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateObjectPermissions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
+        if self.request_object_id is not None:
+            body["request_object_id"] = self.request_object_id
+        if self.request_object_type is not None:
+            body["request_object_type"] = self.request_object_type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateObjectPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list:
+            body["access_control_list"] = self.access_control_list
+        if self.request_object_id is not None:
+            body["request_object_id"] = self.request_object_id
+        if self.request_object_type is not None:
+            body["request_object_type"] = self.request_object_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateObjectPermissions:
+        """Deserializes the UpdateObjectPermissions from a dictionary."""
+        return cls(
+            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
+            request_object_id=d.get("request_object_id", None),
+            request_object_type=d.get("request_object_type", None),
+        )
 
 
 @dataclass
@@ -2103,13 +2163,16 @@ class AccountAccessControlAPI:
         self._api = api_client
 
     def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
-        """Get assignable roles for a resource.
-
-        Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
+        """Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
         set on the resource can contain an access rule of the role.
 
         :param resource: str
           The resource name for which assignable roles will be listed.
+
+          Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.
+          `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.
+          `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service
+          principal.
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
@@ -2130,13 +2193,17 @@ class AccountAccessControlAPI:
         return GetAssignableRolesForResourceResponse.from_dict(res)
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
-        """Get a rule set.
-
-        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        """Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported.
 
         :param name: str
           The ruleset name associated with the request.
+
+          Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set
+          on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule
+          set on the group.
+          `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |
+          A name for a rule set on the service principal.
         :param etag: str
           Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
           optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
@@ -2144,6 +2211,10 @@ class AccountAccessControlAPI:
           modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
+
+          Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no
+          freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+          etag encoded a specific version of the rule set to get or to be updated.
 
         :returns: :class:`RuleSetResponse`
         """
@@ -2166,9 +2237,7 @@ class AccountAccessControlAPI:
         return RuleSetResponse.from_dict(res)
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
-        """Update a rule set.
-
-        Replace the rules of a rule set. First, use get to read the current version of the rule set before
+        """Replace the rules of a rule set. First, use get to read the current version of the rule set before
         modifying it. This pattern helps prevent conflicts between concurrent updates.
 
         :param name: str
@@ -2199,19 +2268,22 @@ class AccountAccessControlAPI:
 class AccountAccessControlProxyAPI:
     """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
     grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
-    called a rule set. A workspace must belong to an account for these APIs to work."""
+    called a rule set. A workspace must belong to an account for these APIs to work"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
-        """Get assignable roles for a resource.
-
-        Gets all the roles that can be granted on an account-level resource. A role is grantable if the rule
+        """Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
         set on the resource can contain an access rule of the role.
 
         :param resource: str
           The resource name for which assignable roles will be listed.
+
+          Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.
+          `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.
+          `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service
+          principal.
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
@@ -2229,13 +2301,17 @@ class AccountAccessControlProxyAPI:
         return GetAssignableRolesForResourceResponse.from_dict(res)
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
-        """Get a rule set.
-
-        Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
+        """Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported.
 
         :param name: str
           The ruleset name associated with the request.
+
+          Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set
+          on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule
+          set on the group.
+          `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |
+          A name for a rule set on the service principal.
         :param etag: str
           Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for
           optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from
@@ -2243,6 +2319,10 @@ class AccountAccessControlProxyAPI:
           modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
+
+          Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no
+          freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+          etag encoded a specific version of the rule set to get or to be updated.
 
         :returns: :class:`RuleSetResponse`
         """
@@ -2260,10 +2340,8 @@ class AccountAccessControlProxyAPI:
         return RuleSetResponse.from_dict(res)
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
-        """Update a rule set.
-
-        Replace the rules of a rule set. First, use a GET rule set request to read the current version of the
-        rule set before modifying it. This pattern helps prevent conflicts between concurrent updates.
+        """Replace the rules of a rule set. First, use get to read the current version of the rule set before
+        modifying it. This pattern helps prevent conflicts between concurrent updates.
 
         :param name: str
           Name of the rule set.
@@ -2309,9 +2387,7 @@ class AccountGroupsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[GroupSchema]] = None,
     ) -> Group:
-        """Create a new group.
-
-        Creates a group in the Databricks account with a unique name, using the supplied group details.
+        """Creates a group in the Databricks account with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
           String that represents a human-readable group name
@@ -2364,9 +2440,7 @@ class AccountGroupsAPI:
         return Group.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a group.
-
-        Deletes a group from the Databricks account.
+        """Deletes a group from the Databricks account.
 
         :param id: str
           Unique ID for a group in the Databricks account.
@@ -2379,9 +2453,7 @@ class AccountGroupsAPI:
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> Group:
-        """Get group details.
-
-        Gets the information for a specific group in the Databricks account.
+        """Gets the information for a specific group in the Databricks account.
 
         :param id: str
           Unique ID for a group in the Databricks account.
@@ -2407,9 +2479,7 @@ class AccountGroupsAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[Group]:
-        """List group details.
-
-        Gets all details of the groups associated with the Databricks account.
+        """Gets all details of the groups associated with the Databricks account.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -2457,7 +2527,7 @@ class AccountGroupsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", query=query, headers=headers
@@ -2474,9 +2544,7 @@ class AccountGroupsAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update group details.
-
-        Partially updates the details of a group.
+        """Partially updates the details of a group.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -2512,9 +2580,7 @@ class AccountGroupsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[GroupSchema]] = None,
     ):
-        """Replace a group.
-
-        Updates the details of a group by replacing the entire group entity.
+        """Updates the details of a group by replacing the entire group entity.
 
         :param id: str
           Databricks group ID
@@ -2584,9 +2650,7 @@ class AccountServicePrincipalsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ) -> ServicePrincipal:
-        """Create a service principal.
-
-        Creates a new service principal in the Databricks account.
+        """Creates a new service principal in the Databricks account.
 
         :param active: bool (optional)
           If this user is active
@@ -2640,9 +2704,7 @@ class AccountServicePrincipalsAPI:
         return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a service principal.
-
-        Delete a single service principal in the Databricks account.
+        """Delete a single service principal in the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -2657,9 +2719,7 @@ class AccountServicePrincipalsAPI:
         )
 
     def get(self, id: str) -> ServicePrincipal:
-        """Get service principal details.
-
-        Gets the details for a single service principal define in the Databricks account.
+        """Gets the details for a single service principal define in the Databricks account.
 
         :param id: str
           Unique ID for a service principal in the Databricks account.
@@ -2687,9 +2747,7 @@ class AccountServicePrincipalsAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[ServicePrincipal]:
-        """List service principals.
-
-        Gets the set of service principals associated with a Databricks account.
+        """Gets the set of service principals associated with a Databricks account.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -2737,7 +2795,7 @@ class AccountServicePrincipalsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET",
@@ -2757,9 +2815,7 @@ class AccountServicePrincipalsAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update service principal details.
-
-        Partially updates the details of a single service principal in the Databricks account.
+        """Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -2798,9 +2854,7 @@ class AccountServicePrincipalsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ):
-        """Replace service principal.
-
-        Updates the details of a single service principal.
+        """Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name.
 
@@ -2884,9 +2938,7 @@ class AccountUsersAPI:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ) -> User:
-        """Create a new user.
-
-        Creates a new user in the Databricks account. This new user will also be added to the Databricks
+        """Creates a new user in the Databricks account. This new user will also be added to the Databricks
         account.
 
         :param active: bool (optional)
@@ -2952,9 +3004,7 @@ class AccountUsersAPI:
         return User.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a user.
-
-        Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
+        """Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
         user.
 
         :param id: str
@@ -2979,9 +3029,7 @@ class AccountUsersAPI:
         sort_order: Optional[GetSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> User:
-        """Get user details.
-
-        Gets information for a specific user in Databricks account.
+        """Gets information for a specific user in Databricks account.
 
         :param id: str
           Unique ID for a user in the Databricks account.
@@ -3044,9 +3092,7 @@ class AccountUsersAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[User]:
-        """List users.
-
-        Gets details for all the users associated with a Databricks account.
+        """Gets details for all the users associated with a Databricks account.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3095,7 +3141,7 @@ class AccountUsersAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", query=query, headers=headers
@@ -3112,9 +3158,7 @@ class AccountUsersAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update user details.
-
-        Partially updates a user resource by applying the supplied operations on specific user attributes.
+        """Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -3152,9 +3196,7 @@ class AccountUsersAPI:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ):
-        """Replace a user.
-
-        Replaces a user's information with the data supplied in request.
+        """Replaces a user's information with the data supplied in request.
 
         :param id: str
           Databricks user ID.
@@ -3220,9 +3262,8 @@ class CurrentUserAPI:
         self._api = api_client
 
     def me(self) -> User:
-        """Get current user info.
+        """Get details about the current method caller's identity.
 
-        Get details about the current method caller's identity.
 
         :returns: :class:`User`
         """
@@ -3259,9 +3300,7 @@ class GroupsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[GroupSchema]] = None,
     ) -> Group:
-        """Create a new group.
-
-        Creates a group in the Databricks workspace with a unique name, using the supplied group details.
+        """Creates a group in the Databricks workspace with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
           String that represents a human-readable group name
@@ -3312,9 +3351,7 @@ class GroupsAPI:
         return Group.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a group.
-
-        Deletes a group from the Databricks workspace.
+        """Deletes a group from the Databricks workspace.
 
         :param id: str
           Unique ID for a group in the Databricks workspace.
@@ -3327,9 +3364,7 @@ class GroupsAPI:
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> Group:
-        """Get group details.
-
-        Gets the information for a specific group in the Databricks workspace.
+        """Gets the information for a specific group in the Databricks workspace.
 
         :param id: str
           Unique ID for a group in the Databricks workspace.
@@ -3355,9 +3390,7 @@ class GroupsAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[Group]:
-        """List group details.
-
-        Gets all details of the groups associated with the Databricks workspace.
+        """Gets all details of the groups associated with the Databricks workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3405,7 +3438,7 @@ class GroupsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query, headers=headers)
             if "Resources" in json:
@@ -3420,9 +3453,7 @@ class GroupsAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update group details.
-
-        Partially updates the details of a group.
+        """Partially updates the details of a group.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -3456,9 +3487,7 @@ class GroupsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[GroupSchema]] = None,
     ):
-        """Replace a group.
-
-        Updates the details of a group by replacing the entire group entity.
+        """Updates the details of a group by replacing the entire group entity.
 
         :param id: str
           Databricks group ID
@@ -3552,51 +3581,24 @@ class PermissionMigrationAPI:
 
 class PermissionsAPI:
     """Permissions API are used to create read, write, edit, update and manage access for various users on
-    different objects and endpoints.
-
-    * **[Apps permissions](:service:apps)** — Manage which users can manage or use apps.
-
-    * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
-    clusters.
-
-    * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users can use cluster
-    policies.
-
-    * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage which users can view,
-    manage, run, cancel, or own a Delta Live Tables pipeline.
-
-    * **[Job permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a
-    job.
-
-    * **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or
-    manage MLflow experiments.
-
-    * **[MLflow registered model permissions](:service:modelregistry)** — Manage which users can read, edit,
-    or manage MLflow registered models.
-
-    * **[Password permissions](:service:users)** — Manage which users can use password login when SSO is
-    enabled.
-
-    * **[Instance Pool permissions](:service:instancepools)** — Manage which users can manage or attach to
-    pools.
-
-    * **[Repo permissions](repos)** — Manage which users can read, run, edit, or manage a repo.
-
-    * **[Serving endpoint permissions](:service:servingendpoints)** — Manage which users can view, query, or
-    manage a serving endpoint.
-
-    * **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage SQL
-    warehouses.
-
-    * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
-
-    * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
-    manage alerts, dbsql-dashboards, directories, files, notebooks and queries.
-
-    For the mapping of the required permissions for specific actions or abilities and other important
-    information, see [Access Control].
-
-    Note that to manage access control on service principals, use **[Account Access Control
+    different objects and endpoints. * **[Apps permissions](:service:apps)** — Manage which users can manage
+    or use apps. * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or
+    attach to clusters. * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users
+    can use cluster policies. * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage
+    which users can view, manage, run, cancel, or own a Delta Live Tables pipeline. * **[Job
+    permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a job. *
+    **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or manage
+    MLflow experiments. * **[MLflow registered model permissions](:service:modelregistry)** — Manage which
+    users can read, edit, or manage MLflow registered models. * **[Instance Pool
+    permissions](:service:instancepools)** — Manage which users can manage or attach to pools. * **[Repo
+    permissions](repos)** — Manage which users can read, run, edit, or manage a repo. * **[Serving endpoint
+    permissions](:service:servingendpoints)** — Manage which users can view, query, or manage a serving
+    endpoint. * **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage
+    SQL warehouses. * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or
+    use tokens. * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run,
+    edit, or manage alerts, dbsql-dashboards, directories, files, notebooks and queries. For the mapping of
+    the required permissions for specific actions or abilities and other important information, see [Access
+    Control]. Note that to manage access control on service principals, use **[Account Access Control
     Proxy](:service:accountaccesscontrolproxy)**.
 
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
@@ -3605,9 +3607,7 @@ class PermissionsAPI:
         self._api = api_client
 
     def get(self, request_object_type: str, request_object_id: str) -> ObjectPermissions:
-        """Get object permissions.
-
-        Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
+        """Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
         object.
 
         :param request_object_type: str
@@ -3628,14 +3628,13 @@ class PermissionsAPI:
         return ObjectPermissions.from_dict(res)
 
     def get_permission_levels(self, request_object_type: str, request_object_id: str) -> GetPermissionLevelsResponse:
-        """Get object permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: alerts, authorization, clusters,
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
-          <needs content>
 
         :returns: :class:`GetPermissionLevelsResponse`
         """
@@ -3656,9 +3655,7 @@ class PermissionsAPI:
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
     ) -> ObjectPermissions:
-        """Set object permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
 
@@ -3692,9 +3689,7 @@ class PermissionsAPI:
         *,
         access_control_list: Optional[List[AccessControlRequest]] = None,
     ) -> ObjectPermissions:
-        """Update object permissions.
-
-        Updates the permissions on an object. Objects can inherit permissions from their parent objects or
+        """Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
 
         :param request_object_type: str
@@ -3744,9 +3739,7 @@ class ServicePrincipalsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ) -> ServicePrincipal:
-        """Create a service principal.
-
-        Creates a new service principal in the Databricks workspace.
+        """Creates a new service principal in the Databricks workspace.
 
         :param active: bool (optional)
           If this user is active
@@ -3798,9 +3791,7 @@ class ServicePrincipalsAPI:
         return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a service principal.
-
-        Delete a single service principal in the Databricks workspace.
+        """Delete a single service principal in the Databricks workspace.
 
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
@@ -3813,9 +3804,7 @@ class ServicePrincipalsAPI:
         self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
     def get(self, id: str) -> ServicePrincipal:
-        """Get service principal details.
-
-        Gets the details for a single service principal define in the Databricks workspace.
+        """Gets the details for a single service principal define in the Databricks workspace.
 
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
@@ -3841,9 +3830,7 @@ class ServicePrincipalsAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[ServicePrincipal]:
-        """List service principals.
-
-        Gets the set of service principals associated with a Databricks workspace.
+        """Gets the set of service principals associated with a Databricks workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -3891,7 +3878,7 @@ class ServicePrincipalsAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, headers=headers)
             if "Resources" in json:
@@ -3906,9 +3893,7 @@ class ServicePrincipalsAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update service principal details.
-
-        Partially updates the details of a single service principal in the Databricks workspace.
+        """Partially updates the details of a single service principal in the Databricks workspace.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -3942,9 +3927,7 @@ class ServicePrincipalsAPI:
         roles: Optional[List[ComplexValue]] = None,
         schemas: Optional[List[ServicePrincipalSchema]] = None,
     ):
-        """Replace service principal.
-
-        Updates the details of a single service principal.
+        """Updates the details of a single service principal.
 
         This action replaces the existing service principal with the same name.
 
@@ -4023,9 +4006,7 @@ class UsersAPI:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ) -> User:
-        """Create a new user.
-
-        Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
+        """Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
         account.
 
         :param active: bool (optional)
@@ -4089,9 +4070,7 @@ class UsersAPI:
         return User.from_dict(res)
 
     def delete(self, id: str):
-        """Delete a user.
-
-        Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
+        """Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user.
 
         :param id: str
@@ -4116,9 +4095,7 @@ class UsersAPI:
         sort_order: Optional[GetSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> User:
-        """Get user details.
-
-        Gets information for a specific user in Databricks workspace.
+        """Gets information for a specific user in Databricks workspace.
 
         :param id: str
           Unique ID for a user in the Databricks workspace.
@@ -4169,9 +4146,8 @@ class UsersAPI:
         return User.from_dict(res)
 
     def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
-        """Get password permission levels.
+        """Gets the permission levels that a user can have on an object.
 
-        Gets the permission levels that a user can have on an object.
 
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         """
@@ -4184,9 +4160,8 @@ class UsersAPI:
         return GetPasswordPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self) -> PasswordPermissions:
-        """Get password permissions.
+        """Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
 
-        Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
 
         :returns: :class:`PasswordPermissions`
         """
@@ -4209,9 +4184,7 @@ class UsersAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[User]:
-        """List users.
-
-        Gets details for all the users associated with a Databricks workspace.
+        """Gets details for all the users associated with a Databricks workspace.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
@@ -4260,7 +4233,7 @@ class UsersAPI:
         seen = set()
         query["startIndex"] = 1
         if "count" not in query:
-            query["count"] = 100
+            query["count"] = 10000
         while True:
             json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query, headers=headers)
             if "Resources" in json:
@@ -4275,9 +4248,7 @@ class UsersAPI:
             query["startIndex"] += len(json["Resources"])
 
     def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
-        """Update user details.
-
-        Partially updates a user resource by applying the supplied operations on specific user attributes.
+        """Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
           Unique ID in the Databricks workspace.
@@ -4301,9 +4272,7 @@ class UsersAPI:
     def set_permissions(
         self, *, access_control_list: Optional[List[PasswordAccessControlRequest]] = None
     ) -> PasswordPermissions:
-        """Set password permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
@@ -4336,9 +4305,7 @@ class UsersAPI:
         schemas: Optional[List[UserSchema]] = None,
         user_name: Optional[str] = None,
     ):
-        """Replace a user.
-
-        Replaces a user's information with the data supplied in request.
+        """Replaces a user's information with the data supplied in request.
 
         :param id: str
           Databricks user ID.
@@ -4399,9 +4366,7 @@ class UsersAPI:
     def update_permissions(
         self, *, access_control_list: Optional[List[PasswordAccessControlRequest]] = None
     ) -> PasswordPermissions:
-        """Update password permissions.
-
-        Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
+        """Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
 
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
 
@@ -4427,9 +4392,7 @@ class WorkspaceAssignmentAPI:
         self._api = api_client
 
     def delete(self, workspace_id: int, principal_id: int):
-        """Delete permissions assignment.
-
-        Deletes the workspace permissions assignment in a given account and workspace for the specified
+        """Deletes the workspace permissions assignment in a given account and workspace for the specified
         principal.
 
         :param workspace_id: int
@@ -4451,9 +4414,7 @@ class WorkspaceAssignmentAPI:
         )
 
     def get(self, workspace_id: int) -> WorkspacePermissions:
-        """List workspace permissions.
-
-        Get an array of workspace permissions for the specified account and workspace.
+        """Get an array of workspace permissions for the specified account and workspace.
 
         :param workspace_id: int
           The workspace ID.
@@ -4473,9 +4434,7 @@ class WorkspaceAssignmentAPI:
         return WorkspacePermissions.from_dict(res)
 
     def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
-        """Get permission assignments.
-
-        Get the permission assignments for the specified Databricks account and Databricks workspace.
+        """Get the permission assignments for the specified Databricks account and Databricks workspace.
 
         :param workspace_id: int
           The workspace ID for the account.
@@ -4498,9 +4457,7 @@ class WorkspaceAssignmentAPI:
     def update(
         self, workspace_id: int, principal_id: int, *, permissions: Optional[List[WorkspacePermission]] = None
     ) -> PermissionAssignment:
-        """Create or update permissions assignment.
-
-        Creates or updates the workspace permissions assignment in a given account and workspace for the
+        """Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
 
         :param workspace_id: int

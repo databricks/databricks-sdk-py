@@ -32,6 +32,13 @@
     
         This settings can NOT be disabled once it is enabled.
 
+    .. py:property:: dashboard_email_subscriptions
+        :type: DashboardEmailSubscriptionsAPI
+
+        Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send
+        subscription emails containing PDFs and/or images of the dashboard. By default, this setting is enabled
+        (set to `true`)
+
     .. py:property:: default_namespace
         :type: DefaultNamespaceAPI
 
@@ -58,8 +65,14 @@
     .. py:property:: disable_legacy_dbfs
         :type: DisableLegacyDbfsAPI
 
-        When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
-        mounts). When the setting is off, all DBFS functionality is enabled
+        Disabling legacy DBFS has the following implications:
+    
+        1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
+        Databricks Runtime versions prior to 13.3LTS.
+    
+        When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
+        Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
+        all-purpose compute clusters and SQL warehouses.
 
     .. py:property:: enable_export_notebook
         :type: EnableExportNotebookAPI
@@ -88,6 +101,11 @@
         If the compliance security profile is disabled, you can enable or disable this setting and it is not
         permanent.
 
+    .. py:property:: llm_proxy_partner_powered_workspace
+        :type: LlmProxyPartnerPoweredWorkspaceAPI
+
+        Determines if partner powered models are enabled or not for a specific workspace
+
     .. py:property:: restrict_workspace_admins
         :type: RestrictWorkspaceAdminsAPI
 
@@ -100,3 +118,9 @@
         service principals they have the Service Principal User role on. They can also only change a job owner to
         themselves. And they can change the job run_as setting to themselves or to a service principal on which
         they have the Service Principal User role.
+
+    .. py:property:: sql_results_download
+        :type: SqlResultsDownloadAPI
+
+        Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI
+        Dashboards UIs. By default, this setting is enabled (set to `true`)

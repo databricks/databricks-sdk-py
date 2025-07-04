@@ -32,8 +32,6 @@
             # cleanup
             w.providers.delete(name=created.name)
 
-        Create an auth provider.
-
         Creates a new authentication provider minimally based on a name and authentication type. The caller
         must be an admin on the metastore.
 
@@ -51,8 +49,6 @@
         
 
     .. py:method:: delete(name: str)
-
-        Delete a provider.
 
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
         provider.
@@ -90,8 +86,6 @@
             # cleanup
             w.providers.delete(name=created.name)
 
-        Get a provider.
-
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
         either be a metastore admin or the owner of the provider.
 
@@ -108,27 +102,12 @@
 
         .. code-block::
 
-            import time
-            
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sharing
             
             w = WorkspaceClient()
             
-            public_share_recipient = """{
-                    "shareCredentialsVersion":1,
-                    "bearerToken":"dapiabcdefghijklmonpqrstuvwxyz",
-                    "endpoint":"https://sharing.delta.io/delta-sharing/"
-                }
-            """
-            
-            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
-            
-            shares = w.providers.list_shares(name=created.name)
-            
-            # cleanup
-            w.providers.delete(name=created.name)
-
-        List providers.
+            all = w.providers.list(sharing.ListProvidersRequest())
 
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
@@ -152,8 +131,6 @@
         
 
     .. py:method:: list_provider_share_assets(provider_name: str, share_name: str [, function_max_results: Optional[int], notebook_max_results: Optional[int], table_max_results: Optional[int], volume_max_results: Optional[int]]) -> ListProviderShareAssetsResponse
-
-        List assets by provider share.
 
         Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
         share.
@@ -201,8 +178,6 @@
             # cleanup
             w.providers.delete(name=created.name)
 
-        List shares by Provider.
-
         Gets an array of a specified provider's shares within the metastore where:
 
         * the caller is a metastore admin, or * the caller is the owner.
@@ -249,8 +224,6 @@
             
             # cleanup
             w.providers.delete(name=created.name)
-
-        Update a provider.
 
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore

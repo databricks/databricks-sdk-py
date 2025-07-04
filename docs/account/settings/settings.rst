@@ -38,6 +38,17 @@
         new workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
         creation, account admins can enable enhanced security monitoring individually for each workspace.
 
+    .. py:property:: llm_proxy_partner_powered_account
+        :type: LlmProxyPartnerPoweredAccountAPI
+
+        Determines if partner powered models are enabled or not for a specific account
+
+    .. py:property:: llm_proxy_partner_powered_enforce
+        :type: LlmProxyPartnerPoweredEnforceAPI
+
+        Determines if the account-level partner-powered setting value is enforced upon the workspace-level
+        partner-powered setting
+
     .. py:property:: personal_compute
         :type: PersonalComputeAPI
 

@@ -50,8 +50,6 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Create an alert.
-
         Creates an alert.
 
         :param alert: :class:`CreateAlertRequestAlert` (optional)
@@ -63,8 +61,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete an alert.
 
         Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
         can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
@@ -118,8 +114,6 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Get an alert.
-
         Gets an alert.
 
         :param id: str
@@ -141,8 +135,6 @@
             
             all = w.alerts.list(sql.ListAlertsRequest())
 
-        List alerts.
-
         Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
         concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
 
@@ -152,7 +144,7 @@
         :returns: Iterator over :class:`ListAlertsResponseAlert`
         
 
-    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert]]) -> Alert
+    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert], auto_resolve_display_name: Optional[bool]]) -> Alert
 
 
         Usage:
@@ -199,8 +191,6 @@
             w.queries.delete(id=query.id)
             w.alerts.delete(id=alert.id)
 
-        Update an alert.
-
         Updates an alert.
 
         :param id: str
@@ -215,6 +205,9 @@
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        :param auto_resolve_display_name: bool (optional)
+          If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
+          alert's display name conflicts with an existing alert's display name.
 
         :returns: :class:`Alert`
         

@@ -27,8 +27,6 @@
                 security_group_ids=[hex(time.time_ns())[2:]],
             )
 
-        Create network configuration.
-
         Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
         used for new Databricks clusters. This requires a pre-existing VPC and subnets.
 
@@ -56,8 +54,6 @@
         
 
     .. py:method:: delete(network_id: str)
-
-        Delete a network configuration.
 
         Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
@@ -92,8 +88,6 @@
             
             by_id = a.networks.get(network_id=netw.network_id)
 
-        Get a network configuration.
-
         Gets a Databricks network configuration, which represents a cloud VPC and its resources.
 
         :param network_id: str
@@ -115,11 +109,10 @@
             
             configs = a.networks.list()
 
-        Get all network configurations.
-
         Gets a list of all Databricks network configurations for an account, specified by ID.
 
         This operation is available only if your account is on the E2 version of the platform.
+
 
         :returns: Iterator over :class:`Network`
         

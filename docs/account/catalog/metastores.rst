@@ -9,8 +9,6 @@
 
     .. py:method:: create( [, metastore_info: Optional[CreateMetastore]]) -> AccountsMetastoreInfo
 
-        Create metastore.
-
         Creates a Unity Catalog metastore.
 
         :param metastore_info: :class:`CreateMetastore` (optional)
@@ -19,8 +17,6 @@
         
 
     .. py:method:: delete(metastore_id: str [, force: Optional[bool]])
-
-        Delete a metastore.
 
         Deletes a Unity Catalog metastore for an account, both specified by ID.
 
@@ -34,8 +30,6 @@
 
     .. py:method:: get(metastore_id: str) -> AccountsMetastoreInfo
 
-        Get a metastore.
-
         Gets a Unity Catalog metastore from an account, both specified by ID.
 
         :param metastore_id: str
@@ -46,16 +40,13 @@
 
     .. py:method:: list() -> Iterator[MetastoreInfo]
 
-        Get all metastores associated with an account.
-
         Gets all Unity Catalog metastores associated with an account specified by ID.
+
 
         :returns: Iterator over :class:`MetastoreInfo`
         
 
     .. py:method:: update(metastore_id: str [, metastore_info: Optional[UpdateMetastore]]) -> AccountsMetastoreInfo
-
-        Update a metastore.
 
         Updates an existing Unity Catalog metastore.
 

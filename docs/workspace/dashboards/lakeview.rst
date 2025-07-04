@@ -9,8 +9,6 @@
 
     .. py:method:: create(dashboard: Dashboard) -> Dashboard
 
-        Create dashboard.
-
         Create a draft dashboard.
 
         :param dashboard: :class:`Dashboard`
@@ -76,8 +74,6 @@
 
     .. py:method:: get(dashboard_id: str) -> Dashboard
 
-        Get dashboard.
-
         Get a draft dashboard.
 
         :param dashboard_id: str
@@ -87,8 +83,6 @@
         
 
     .. py:method:: get_published(dashboard_id: str) -> PublishedDashboard
-
-        Get published dashboard.
 
         Get the current published dashboard.
 
@@ -176,8 +170,6 @@
 
     .. py:method:: migrate(source_dashboard_id: str [, display_name: Optional[str], parent_path: Optional[str], update_parameter_syntax: Optional[bool]]) -> Dashboard
 
-        Migrate dashboard.
-
         Migrates a classic SQL dashboard to Lakeview.
 
         :param source_dashboard_id: str
@@ -195,8 +187,6 @@
 
     .. py:method:: publish(dashboard_id: str [, embed_credentials: Optional[bool], warehouse_id: Optional[str]]) -> PublishedDashboard
 
-        Publish dashboard.
-
         Publish the current draft dashboard.
 
         :param dashboard_id: str
@@ -212,8 +202,6 @@
 
     .. py:method:: trash(dashboard_id: str)
 
-        Trash dashboard.
-
         Trash a dashboard.
 
         :param dashboard_id: str
@@ -224,8 +212,6 @@
 
     .. py:method:: unpublish(dashboard_id: str)
 
-        Unpublish dashboard.
-
         Unpublish the dashboard.
 
         :param dashboard_id: str
@@ -235,8 +221,6 @@
         
 
     .. py:method:: update(dashboard_id: str, dashboard: Dashboard) -> Dashboard
-
-        Update dashboard.
 
         Update a draft dashboard.
 

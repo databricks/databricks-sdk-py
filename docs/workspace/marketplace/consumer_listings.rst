@@ -9,8 +9,6 @@
 
     .. py:method:: batch_get( [, ids: Optional[List[str]]]) -> BatchGetListingsResponse
 
-        Get one batch of listings. One may specify up to 50 IDs per request.
-
         Batch get a published listing in the Databricks Marketplace that the consumer has access to.
 
         :param ids: List[str] (optional)
@@ -20,8 +18,6 @@
 
     .. py:method:: get(id: str) -> GetListingResponse
 
-        Get listing.
-
         Get a published listing in the Databricks Marketplace that the consumer has access to.
 
         :param id: str
@@ -30,8 +26,6 @@
         
 
     .. py:method:: list( [, assets: Optional[List[AssetType]], categories: Optional[List[Category]], is_free: Optional[bool], is_private_exchange: Optional[bool], is_staff_pick: Optional[bool], page_size: Optional[int], page_token: Optional[str], provider_ids: Optional[List[str]], tags: Optional[List[ListingTag]]]) -> Iterator[Listing]
-
-        List listings.
 
         List all published listings in the Databricks Marketplace that the consumer has access to.
 
@@ -56,8 +50,6 @@
         
 
     .. py:method:: search(query: str [, assets: Optional[List[AssetType]], categories: Optional[List[Category]], is_free: Optional[bool], is_private_exchange: Optional[bool], page_size: Optional[int], page_token: Optional[str], provider_ids: Optional[List[str]]]) -> Iterator[Listing]
-
-        Search listings.
 
         Search published listings in the Databricks Marketplace that the consumer has access to. This query
         supports a variety of different search parameters and performs fuzzy matching.

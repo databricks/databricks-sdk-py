@@ -729,7 +729,8 @@ class ClusterAttributes:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -831,6 +832,10 @@ class ClusterAttributes:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -865,6 +870,10 @@ class ClusterAttributes:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -916,6 +925,8 @@ class ClusterAttributes:
             body["node_type_id"] = self.node_type_id
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -928,6 +939,8 @@ class ClusterAttributes:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -975,6 +988,8 @@ class ClusterAttributes:
             body["node_type_id"] = self.node_type_id
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -987,6 +1002,8 @@ class ClusterAttributes:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1016,12 +1033,14 @@ class ClusterAttributes:
             kind=_enum(d, "kind", Kind),
             node_type_id=d.get("node_type_id", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -1118,7 +1137,8 @@ class ClusterDetails:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     cluster_source: Optional[ClusterSource] = None
     """Determines whether the cluster was created by a user through the UI, created by the Databricks
@@ -1268,6 +1288,10 @@ class ClusterDetails:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -1333,6 +1357,10 @@ class ClusterDetails:
     termination_reason: Optional[TerminationReason] = None
     """Information about why the cluster was terminated. This field only appears when the cluster is in
     a `TERMINATING` or `TERMINATED` state."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -1412,6 +1440,8 @@ class ClusterDetails:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -1438,6 +1468,8 @@ class ClusterDetails:
             body["terminated_time"] = self.terminated_time
         if self.termination_reason:
             body["termination_reason"] = self.termination_reason.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1513,6 +1545,8 @@ class ClusterDetails:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -1539,6 +1573,8 @@ class ClusterDetails:
             body["terminated_time"] = self.terminated_time
         if self.termination_reason:
             body["termination_reason"] = self.termination_reason
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -1582,6 +1618,7 @@ class ClusterDetails:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
@@ -1595,6 +1632,7 @@ class ClusterDetails:
             state_message=d.get("state_message", None),
             terminated_time=d.get("terminated_time", None),
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -2300,7 +2338,8 @@ class ClusterSpec:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2412,6 +2451,10 @@ class ClusterSpec:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -2450,6 +2493,10 @@ class ClusterSpec:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -2507,6 +2554,8 @@ class ClusterSpec:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -2519,6 +2568,8 @@ class ClusterSpec:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -2572,6 +2623,8 @@ class ClusterSpec:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -2584,6 +2637,8 @@ class ClusterSpec:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -2616,12 +2671,14 @@ class ClusterSpec:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -2803,7 +2860,8 @@ class CreateCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -2915,6 +2973,10 @@ class CreateCluster:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -2949,6 +3011,10 @@ class CreateCluster:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -3008,6 +3074,8 @@ class CreateCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -3020,6 +3088,8 @@ class CreateCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -3075,6 +3145,8 @@ class CreateCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -3087,6 +3159,8 @@ class CreateCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -3120,12 +3194,14 @@ class CreateCluster:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -3248,6 +3324,14 @@ class CreateInstancePool:
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateInstancePool into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3277,6 +3361,10 @@ class CreateInstancePool:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3308,6 +3396,10 @@ class CreateInstancePool:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -3327,6 +3419,8 @@ class CreateInstancePool:
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -3524,16 +3618,10 @@ class CustomPolicyTag:
     key: str
     """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
     “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
-    tags are preserved.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+    tags are preserved."""
 
     value: Optional[str] = None
-    """The value of the tag.
-    
-    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
-    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+    """The value of the tag."""
 
     def as_dict(self) -> dict:
         """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
@@ -4117,7 +4205,8 @@ class EditCluster:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -4229,6 +4318,10 @@ class EditCluster:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -4263,6 +4356,10 @@ class EditCluster:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -4322,6 +4419,8 @@ class EditCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -4334,6 +4433,8 @@ class EditCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -4389,6 +4490,8 @@ class EditCluster:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -4401,6 +4504,8 @@ class EditCluster:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -4434,12 +4539,14 @@ class EditCluster:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -4499,9 +4606,13 @@ class EditInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
 
     def as_dict(self) -> dict:
         """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
@@ -4518,10 +4629,12 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4539,10 +4652,12 @@ class EditInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -4555,8 +4670,9 @@ class EditInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -4782,23 +4898,22 @@ class EnforceClusterComplianceResponse:
 @dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. (Note: DLT uses a
-    copied version of the Environment proto below, at
-    //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In this minimal
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
-    client: str
-    """Client version used by the environment The client is the user-facing environment of the runtime.
-    Each client comes with a specific set of pre-installed libraries. The version is a string,
-    consisting of the major client version."""
+    client: Optional[str] = None
+    """Use `environment_version` instead."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
-    dependency is a pip requirement file line
-    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
-    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
-    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
-    /Workspace/test/requirements.txt"]"""
+    dependency is a valid pip requirements file line per
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/. Allowed dependencies include
+    a requirement specifier, an archive URL, a local project path (such as WSFS or UC Volumes in
+    Databricks), or a VCS project URL."""
+
+    environment_version: Optional[str] = None
+    """Required. Environment version used by the environment. Each version comes with a specific Python
+    version and a set of Python packages. The version is a string, consisting of an integer."""
 
     jar_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
@@ -4811,6 +4926,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = [v for v in self.dependencies]
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
         return body
@@ -4822,6 +4939,8 @@ class Environment:
             body["client"] = self.client
         if self.dependencies:
             body["dependencies"] = self.dependencies
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
         return body
@@ -4832,6 +4951,7 @@ class Environment:
         return cls(
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
+            environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
         )
 
@@ -5032,6 +5152,7 @@ class EventType(Enum):
     AUTOSCALING_BACKOFF = "AUTOSCALING_BACKOFF"
     AUTOSCALING_FAILED = "AUTOSCALING_FAILED"
     AUTOSCALING_STATS_REPORT = "AUTOSCALING_STATS_REPORT"
+    CLUSTER_MIGRATED = "CLUSTER_MIGRATED"
     CREATING = "CREATING"
     DBFS_DOWN = "DBFS_DOWN"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
@@ -5497,10 +5618,6 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
-
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -5515,6 +5632,10 @@ class GetInstancePool:
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
+
     state: Optional[InstancePoolState] = None
     """Current state of the instance pool."""
 
@@ -5523,6 +5644,10 @@ class GetInstancePool:
 
     status: Optional[InstancePoolStatus] = None
     """Status of failed pending instances in the pool."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
 
     def as_dict(self) -> dict:
         """Serializes the GetInstancePool into a dictionary suitable for use as a JSON request body."""
@@ -5551,20 +5676,22 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state.value
         if self.stats:
             body["stats"] = self.stats.as_dict()
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5594,20 +5721,22 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state
         if self.stats:
             body["stats"] = self.stats
         if self.status:
             body["status"] = self.status
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -5626,13 +5755,14 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             state=_enum(d, "state", InstancePoolState),
             stats=_from_dict(d, "stats", InstancePoolStats),
             status=_from_dict(d, "status", InstancePoolStatus),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -6461,10 +6591,6 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
-    node_type_flexibility: Optional[NodeTypeFlexibility] = None
-    """For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-    when attempting to launch a cluster if the node type id is not available."""
-
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -6479,6 +6605,10 @@ class InstancePoolAndStats:
     started with the preloaded Spark version will start faster. A list of available Spark versions
     can be retrieved by using the :method:clusters/sparkVersions API call."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
+
     state: Optional[InstancePoolState] = None
     """Current state of the instance pool."""
 
@@ -6487,6 +6617,10 @@ class InstancePoolAndStats:
 
     status: Optional[InstancePoolStatus] = None
     """Status of failed pending instances in the pool."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED types."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolAndStats into a dictionary suitable for use as a JSON request body."""
@@ -6515,20 +6649,22 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state.value
         if self.stats:
             body["stats"] = self.stats.as_dict()
         if self.status:
             body["status"] = self.status.as_dict()
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6558,20 +6694,22 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_flexibility:
-            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
             body["preloaded_docker_images"] = self.preloaded_docker_images
         if self.preloaded_spark_versions:
             body["preloaded_spark_versions"] = self.preloaded_spark_versions
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.state is not None:
             body["state"] = self.state
         if self.stats:
             body["stats"] = self.stats
         if self.status:
             body["status"] = self.status
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         return body
 
     @classmethod
@@ -6590,13 +6728,14 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
-            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             state=_enum(d, "state", InstancePoolState),
             stats=_from_dict(d, "stats", InstancePoolStats),
             status=_from_dict(d, "status", InstancePoolStatus),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
         )
 
 
@@ -7089,6 +7228,7 @@ class Kind(Enum):
 class Language(Enum):
 
     PYTHON = "python"
+    R = "r"
     SCALA = "scala"
     SQL = "sql"
 
@@ -8051,28 +8191,6 @@ class NodeType:
             support_ebs_volumes=d.get("support_ebs_volumes", None),
             support_port_forwarding=d.get("support_port_forwarding", None),
         )
-
-
-@dataclass
-class NodeTypeFlexibility:
-    """For Fleet-V2 using classic clusters, this object contains the information about the alternate
-    node type ids to use when attempting to launch a cluster. It can be used with both the driver
-    and worker node types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
-        """Deserializes the NodeTypeFlexibility from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -9116,6 +9234,7 @@ class TerminationReasonCode(Enum):
     DRIVER_OUT_OF_MEMORY = "DRIVER_OUT_OF_MEMORY"
     DRIVER_POD_CREATION_FAILURE = "DRIVER_POD_CREATION_FAILURE"
     DRIVER_UNEXPECTED_FAILURE = "DRIVER_UNEXPECTED_FAILURE"
+    DRIVER_UNHEALTHY = "DRIVER_UNHEALTHY"
     DRIVER_UNREACHABLE = "DRIVER_UNREACHABLE"
     DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE"
     DYNAMIC_SPARK_CONF_SIZE_EXCEEDED = "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
@@ -9404,7 +9523,8 @@ class UpdateClusterResource:
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string."""
+    creation, the cluster name will be an empty string. For job clusters, the cluster name is
+    automatically set based on the job and job run IDs."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -9516,6 +9636,10 @@ class UpdateClusterResource:
     policy_id: Optional[str] = None
     """The ID of the cluster policy used to create the cluster if applicable."""
 
+    remote_disk_throughput: Optional[int] = None
+    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
+
     runtime_engine: Optional[RuntimeEngine] = None
     """Determines the cluster's runtime engine, either standard or Photon.
     
@@ -9554,6 +9678,10 @@ class UpdateClusterResource:
     """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
+
+    total_initial_remote_disk_size: Optional[int] = None
+    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+    supported for GCP HYPERDISK_BALANCED disks."""
 
     use_ml_runtime: Optional[bool] = None
     """This field can only be used when `kind = CLASSIC_PREVIEW`.
@@ -9609,6 +9737,8 @@ class UpdateClusterResource:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine.value
         if self.single_user_name is not None:
@@ -9621,6 +9751,8 @@ class UpdateClusterResource:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -9672,6 +9804,8 @@ class UpdateClusterResource:
             body["num_workers"] = self.num_workers
         if self.policy_id is not None:
             body["policy_id"] = self.policy_id
+        if self.remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = self.remote_disk_throughput
         if self.runtime_engine is not None:
             body["runtime_engine"] = self.runtime_engine
         if self.single_user_name is not None:
@@ -9684,6 +9818,8 @@ class UpdateClusterResource:
             body["spark_version"] = self.spark_version
         if self.ssh_public_keys:
             body["ssh_public_keys"] = self.ssh_public_keys
+        if self.total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
         if self.workload_type:
@@ -9715,12 +9851,14 @@ class UpdateClusterResource:
             node_type_id=d.get("node_type_id", None),
             num_workers=d.get("num_workers", None),
             policy_id=d.get("policy_id", None),
+            remote_disk_throughput=d.get("remote_disk_throughput", None),
             runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
             single_user_name=d.get("single_user_name", None),
             spark_conf=d.get("spark_conf", None),
             spark_env_vars=d.get("spark_env_vars", None),
             spark_version=d.get("spark_version", None),
             ssh_public_keys=d.get("ssh_public_keys", None),
+            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
@@ -9877,9 +10015,7 @@ class ClusterPoliciesAPI:
         policy_family_definition_overrides: Optional[str] = None,
         policy_family_id: Optional[str] = None,
     ) -> CreatePolicyResponse:
-        """Create a new policy.
-
-        Creates a new policy with prescribed settings.
+        """Creates a new policy with prescribed settings.
 
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
@@ -9937,9 +10073,7 @@ class ClusterPoliciesAPI:
         return CreatePolicyResponse.from_dict(res)
 
     def delete(self, policy_id: str):
-        """Delete a cluster policy.
-
-        Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
+        """Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
 
         :param policy_id: str
           The ID of the policy to delete.
@@ -9968,9 +10102,7 @@ class ClusterPoliciesAPI:
         policy_family_definition_overrides: Optional[str] = None,
         policy_family_id: Optional[str] = None,
     ):
-        """Update a cluster policy.
-
-        Update an existing policy for cluster. This operation may make some clusters governed by the previous
+        """Update an existing policy for cluster. This operation may make some clusters governed by the previous
         policy invalid.
 
         :param policy_id: str
@@ -10032,9 +10164,7 @@ class ClusterPoliciesAPI:
         self._api.do("POST", "/api/2.0/policies/clusters/edit", body=body, headers=headers)
 
     def get(self, policy_id: str) -> Policy:
-        """Get a cluster policy.
-
-        Get a cluster policy entity. Creation and editing is available to admins only.
+        """Get a cluster policy entity. Creation and editing is available to admins only.
 
         :param policy_id: str
           Canonical unique identifier for the Cluster Policy.
@@ -10053,9 +10183,7 @@ class ClusterPoliciesAPI:
         return Policy.from_dict(res)
 
     def get_permission_levels(self, cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse:
-        """Get cluster policy permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param cluster_policy_id: str
           The cluster policy for which to get or manage permissions.
@@ -10073,9 +10201,7 @@ class ClusterPoliciesAPI:
         return GetClusterPolicyPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, cluster_policy_id: str) -> ClusterPolicyPermissions:
-        """Get cluster policy permissions.
-
-        Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
+        """Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root
         object.
 
         :param cluster_policy_id: str
@@ -10094,9 +10220,7 @@ class ClusterPoliciesAPI:
     def list(
         self, *, sort_column: Optional[ListSortColumn] = None, sort_order: Optional[ListSortOrder] = None
     ) -> Iterator[Policy]:
-        """List cluster policies.
-
-        Returns a list of policies accessible by the requesting user.
+        """Returns a list of policies accessible by the requesting user.
 
         :param sort_column: :class:`ListSortColumn` (optional)
           The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy
@@ -10124,9 +10248,7 @@ class ClusterPoliciesAPI:
     def set_permissions(
         self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
     ) -> ClusterPolicyPermissions:
-        """Set cluster policy permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param cluster_policy_id: str
@@ -10151,9 +10273,7 @@ class ClusterPoliciesAPI:
     def update_permissions(
         self, cluster_policy_id: str, *, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
     ) -> ClusterPolicyPermissions:
-        """Update cluster policy permissions.
-
-        Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
+        """Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root
         object.
 
         :param cluster_policy_id: str
@@ -10269,9 +10389,7 @@ class ClustersAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def change_owner(self, cluster_id: str, owner_username: str):
-        """Change cluster owner.
-
-        Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
+        """Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
         this operation. The service principal application ID can be supplied as an argument to
         `owner_username`.
 
@@ -10320,17 +10438,17 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
-        """Create new cluster.
-
-        Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
+        """Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
         necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
         status. When this method returns, the cluster will be in a ``PENDING`` state. The cluster will be
         usable once it enters a ``RUNNING`` state. Note: Databricks may not be able to acquire some of the
@@ -10374,7 +10492,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10469,6 +10588,9 @@ class ClustersAPI:
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -10499,6 +10621,9 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -10558,6 +10683,8 @@ class ClustersAPI:
             body["num_workers"] = num_workers
         if policy_id is not None:
             body["policy_id"] = policy_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
         if runtime_engine is not None:
             body["runtime_engine"] = runtime_engine.value
         if single_user_name is not None:
@@ -10570,6 +10697,8 @@ class ClustersAPI:
             body["spark_version"] = spark_version
         if ssh_public_keys is not None:
             body["ssh_public_keys"] = [v for v in ssh_public_keys]
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
         if workload_type is not None:
@@ -10613,11 +10742,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
@@ -10646,20 +10777,20 @@ class ClustersAPI:
             node_type_id=node_type_id,
             num_workers=num_workers,
             policy_id=policy_id,
+            remote_disk_throughput=remote_disk_throughput,
             runtime_engine=runtime_engine,
             single_user_name=single_user_name,
             spark_conf=spark_conf,
             spark_env_vars=spark_env_vars,
             spark_version=spark_version,
             ssh_public_keys=ssh_public_keys,
+            total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
             workload_type=workload_type,
         ).result(timeout=timeout)
 
     def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
-        """Terminate cluster.
-
-        Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
+        """Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
         termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen.
 
@@ -10715,17 +10846,17 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
-        """Update cluster configuration.
-
-        Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
+        """Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
         updated if it is in a `RUNNING` or `TERMINATED` state.
 
         If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
@@ -10766,7 +10897,8 @@ class ClustersAPI:
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -10861,6 +10993,9 @@ class ClustersAPI:
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -10891,6 +11026,9 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -10950,6 +11088,8 @@ class ClustersAPI:
             body["num_workers"] = num_workers
         if policy_id is not None:
             body["policy_id"] = policy_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
         if runtime_engine is not None:
             body["runtime_engine"] = runtime_engine.value
         if single_user_name is not None:
@@ -10962,6 +11102,8 @@ class ClustersAPI:
             body["spark_version"] = spark_version
         if ssh_public_keys is not None:
             body["ssh_public_keys"] = [v for v in ssh_public_keys]
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
         if workload_type is not None:
@@ -11003,11 +11145,13 @@ class ClustersAPI:
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
+        remote_disk_throughput: Optional[int] = None,
         runtime_engine: Optional[RuntimeEngine] = None,
         single_user_name: Optional[str] = None,
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
@@ -11036,12 +11180,14 @@ class ClustersAPI:
             node_type_id=node_type_id,
             num_workers=num_workers,
             policy_id=policy_id,
+            remote_disk_throughput=remote_disk_throughput,
             runtime_engine=runtime_engine,
             single_user_name=single_user_name,
             spark_conf=spark_conf,
             spark_env_vars=spark_env_vars,
             spark_version=spark_version,
             ssh_public_keys=ssh_public_keys,
+            total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
             workload_type=workload_type,
         ).result(timeout=timeout)
@@ -11059,9 +11205,7 @@ class ClustersAPI:
         page_token: Optional[str] = None,
         start_time: Optional[int] = None,
     ) -> Iterator[ClusterEvent]:
-        """List cluster activity events.
-
-        Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
+        """Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
         events to read, the response includes all the parameters necessary to request the next page of events.
 
         :param cluster_id: str
@@ -11129,9 +11273,7 @@ class ClustersAPI:
             body = json["next_page"]
 
     def get(self, cluster_id: str) -> ClusterDetails:
-        """Get cluster info.
-
-        Retrieves the information for a cluster given its identifier. Clusters can be described while they are
+        """Retrieves the information for a cluster given its identifier. Clusters can be described while they are
         running, or up to 60 days after they are terminated.
 
         :param cluster_id: str
@@ -11151,9 +11293,7 @@ class ClustersAPI:
         return ClusterDetails.from_dict(res)
 
     def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
-        """Get cluster permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param cluster_id: str
           The cluster for which to get or manage permissions.
@@ -11169,9 +11309,7 @@ class ClustersAPI:
         return GetClusterPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, cluster_id: str) -> ClusterPermissions:
-        """Get cluster permissions.
-
-        Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
+        """Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
 
         :param cluster_id: str
           The cluster for which to get or manage permissions.
@@ -11194,9 +11332,7 @@ class ClustersAPI:
         page_token: Optional[str] = None,
         sort_by: Optional[ListClustersSortBy] = None,
     ) -> Iterator[ClusterDetails]:
-        """List clusters.
-
-        Return information about all pinned and active clusters, and all clusters terminated within the last
+        """Return information about all pinned and active clusters, and all clusters terminated within the last
         30 days. Clusters terminated prior to this period are not included.
 
         :param filter_by: :class:`ListClustersFilterBy` (optional)
@@ -11236,9 +11372,8 @@ class ClustersAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_node_types(self) -> ListNodeTypesResponse:
-        """List node types.
+        """Returns a list of supported Spark node types. These node types can be used to launch a cluster.
 
-        Returns a list of supported Spark node types. These node types can be used to launch a cluster.
 
         :returns: :class:`ListNodeTypesResponse`
         """
@@ -11251,10 +11386,9 @@ class ClustersAPI:
         return ListNodeTypesResponse.from_dict(res)
 
     def list_zones(self) -> ListAvailableZonesResponse:
-        """List availability zones.
-
-        Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
+        """Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
         zones can be used to launch a cluster.
+
 
         :returns: :class:`ListAvailableZonesResponse`
         """
@@ -11267,9 +11401,7 @@ class ClustersAPI:
         return ListAvailableZonesResponse.from_dict(res)
 
     def permanent_delete(self, cluster_id: str):
-        """Permanently delete cluster.
-
-        Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously
+        """Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously
         removed.
 
         In addition, users will no longer see permanently deleted clusters in the cluster list, and API users
@@ -11291,9 +11423,7 @@ class ClustersAPI:
         self._api.do("POST", "/api/2.1/clusters/permanent-delete", body=body, headers=headers)
 
     def pin(self, cluster_id: str):
-        """Pin cluster.
-
-        Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
+        """Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
         cluster that is already pinned will have no effect. This API can only be called by workspace admins.
 
         :param cluster_id: str
@@ -11313,9 +11443,7 @@ class ClustersAPI:
     def resize(
         self, cluster_id: str, *, autoscale: Optional[AutoScale] = None, num_workers: Optional[int] = None
     ) -> Wait[ClusterDetails]:
-        """Resize cluster.
-
-        Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
+        """Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
         `RUNNING` state.
 
         :param cluster_id: str
@@ -11365,9 +11493,7 @@ class ClustersAPI:
         return self.resize(autoscale=autoscale, cluster_id=cluster_id, num_workers=num_workers).result(timeout=timeout)
 
     def restart(self, cluster_id: str, *, restart_user: Optional[str] = None) -> Wait[ClusterDetails]:
-        """Restart cluster.
-
-        Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
+        """Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
         nothing will happen.
 
         :param cluster_id: str
@@ -11401,9 +11527,7 @@ class ClustersAPI:
     def set_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
     ) -> ClusterPermissions:
-        """Set cluster permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param cluster_id: str
@@ -11424,9 +11548,8 @@ class ClustersAPI:
         return ClusterPermissions.from_dict(res)
 
     def spark_versions(self) -> GetSparkVersionsResponse:
-        """List available Spark versions.
+        """Returns the list of available Spark versions. These versions can be used to launch a cluster.
 
-        Returns the list of available Spark versions. These versions can be used to launch a cluster.
 
         :returns: :class:`GetSparkVersionsResponse`
         """
@@ -11439,9 +11562,7 @@ class ClustersAPI:
         return GetSparkVersionsResponse.from_dict(res)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
-        """Start terminated cluster.
-
-        Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
+        """Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
         - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
         cluster size. - If the previous cluster was an autoscaling cluster, the current cluster starts with
         the minimum number of nodes. - If the cluster is not currently in a ``TERMINATED`` state, nothing will
@@ -11471,9 +11592,7 @@ class ClustersAPI:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
 
     def unpin(self, cluster_id: str):
-        """Unpin cluster.
-
-        Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
+        """Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
         Unpinning a cluster that is not pinned will have no effect. This API can only be called by workspace
         admins.
 
@@ -11494,9 +11613,7 @@ class ClustersAPI:
     def update(
         self, cluster_id: str, update_mask: str, *, cluster: Optional[UpdateClusterResource] = None
     ) -> Wait[ClusterDetails]:
-        """Update cluster configuration (partial).
-
-        Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
+        """Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
         fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
         in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
         restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
@@ -11557,9 +11674,7 @@ class ClustersAPI:
     def update_permissions(
         self, cluster_id: str, *, access_control_list: Optional[List[ClusterAccessControlRequest]] = None
     ) -> ClusterPermissions:
-        """Update cluster permissions.
-
-        Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
+        """Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
 
         :param cluster_id: str
           The cluster for which to get or manage permissions.
@@ -11698,9 +11813,7 @@ class CommandExecutionAPI:
     def cancel(
         self, *, cluster_id: Optional[str] = None, command_id: Optional[str] = None, context_id: Optional[str] = None
     ) -> Wait[CommandStatusResponse]:
-        """Cancel a command.
-
-        Cancels a currently running command within an execution context.
+        """Cancels a currently running command within an execution context.
 
         The command ID is obtained from a prior successful call to __execute__.
 
@@ -11744,9 +11857,7 @@ class CommandExecutionAPI:
         return self.cancel(cluster_id=cluster_id, command_id=command_id, context_id=context_id).result(timeout=timeout)
 
     def command_status(self, cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse:
-        """Get command info.
-
-        Gets the status of and, if available, the results from a currently executing command.
+        """Gets the status of and, if available, the results from a currently executing command.
 
         The command ID is obtained from a prior successful call to __execute__.
 
@@ -11772,9 +11883,7 @@ class CommandExecutionAPI:
         return CommandStatusResponse.from_dict(res)
 
     def context_status(self, cluster_id: str, context_id: str) -> ContextStatusResponse:
-        """Get status.
-
-        Gets the status for an execution context.
+        """Gets the status for an execution context.
 
         :param cluster_id: str
         :param context_id: str
@@ -11797,9 +11906,7 @@ class CommandExecutionAPI:
     def create(
         self, *, cluster_id: Optional[str] = None, language: Optional[Language] = None
     ) -> Wait[ContextStatusResponse]:
-        """Create an execution context.
-
-        Creates an execution context for running cluster commands.
+        """Creates an execution context for running cluster commands.
 
         If successful, this method returns the ID of the new execution context.
 
@@ -11835,9 +11942,7 @@ class CommandExecutionAPI:
         return self.create(cluster_id=cluster_id, language=language).result(timeout=timeout)
 
     def destroy(self, cluster_id: str, context_id: str):
-        """Delete an execution context.
-
-        Deletes an execution context.
+        """Deletes an execution context.
 
         :param cluster_id: str
         :param context_id: str
@@ -11864,9 +11969,7 @@ class CommandExecutionAPI:
         context_id: Optional[str] = None,
         language: Optional[Language] = None,
     ) -> Wait[CommandStatusResponse]:
-        """Run a command.
-
-        Runs a cluster command in the given execution context, using the provided language.
+        """Runs a cluster command in the given execution context, using the provided language.
 
         If successful, it returns an ID for tracking the status of the command's execution.
 
@@ -11934,9 +12037,7 @@ class GlobalInitScriptsAPI:
     def create(
         self, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
     ) -> CreateResponse:
-        """Create init script.
-
-        Creates a new global init script in this workspace.
+        """Creates a new global init script in this workspace.
 
         :param name: str
           The name of the script
@@ -11975,9 +12076,7 @@ class GlobalInitScriptsAPI:
         return CreateResponse.from_dict(res)
 
     def delete(self, script_id: str):
-        """Delete init script.
-
-        Deletes a global init script.
+        """Deletes a global init script.
 
         :param script_id: str
           The ID of the global init script.
@@ -11992,9 +12091,7 @@ class GlobalInitScriptsAPI:
         self._api.do("DELETE", f"/api/2.0/global-init-scripts/{script_id}", headers=headers)
 
     def get(self, script_id: str) -> GlobalInitScriptDetailsWithContent:
-        """Get an init script.
-
-        Gets all the details of a script, including its Base64-encoded contents.
+        """Gets all the details of a script, including its Base64-encoded contents.
 
         :param script_id: str
           The ID of the global init script.
@@ -12010,11 +12107,10 @@ class GlobalInitScriptsAPI:
         return GlobalInitScriptDetailsWithContent.from_dict(res)
 
     def list(self) -> Iterator[GlobalInitScriptDetails]:
-        """Get init scripts.
-
-        Get a list of all global init scripts for this workspace. This returns all properties for each script
+        """Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
         script](:method:globalinitscripts/get) operation.
+
 
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         """
@@ -12030,9 +12126,7 @@ class GlobalInitScriptsAPI:
     def update(
         self, script_id: str, name: str, script: str, *, enabled: Optional[bool] = None, position: Optional[int] = None
     ):
-        """Update init script.
-
-        Updates a global init script, specifying only the fields to change. All fields are optional.
+        """Updates a global init script, specifying only the fields to change. All fields are optional.
         Unspecified fields retain their current value.
 
         :param script_id: str
@@ -12108,10 +12202,10 @@ class InstancePoolsAPI:
         min_idle_instances: Optional[int] = None,
         preloaded_docker_images: Optional[List[DockerImage]] = None,
         preloaded_spark_versions: Optional[List[str]] = None,
+        remote_disk_throughput: Optional[int] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
     ) -> CreateInstancePoolResponse:
-        """Create a new instance pool.
-
-        Creates a new instance pool using idle and ready-to-use cloud instances.
+        """Creates a new instance pool using idle and ready-to-use cloud instances.
 
         :param instance_pool_name: str
           Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
@@ -12159,6 +12253,12 @@ class InstancePoolsAPI:
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the :method:clusters/sparkVersions API call.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
         :returns: :class:`CreateInstancePoolResponse`
         """
@@ -12189,6 +12289,10 @@ class InstancePoolsAPI:
             body["preloaded_docker_images"] = [v.as_dict() for v in preloaded_docker_images]
         if preloaded_spark_versions is not None:
             body["preloaded_spark_versions"] = [v for v in preloaded_spark_versions]
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12198,9 +12302,7 @@ class InstancePoolsAPI:
         return CreateInstancePoolResponse.from_dict(res)
 
     def delete(self, instance_pool_id: str):
-        """Delete an instance pool.
-
-        Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
+        """Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
 
         :param instance_pool_id: str
           The instance pool to be terminated.
@@ -12227,11 +12329,10 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
-        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
+        remote_disk_throughput: Optional[int] = None,
+        total_initial_remote_disk_size: Optional[int] = None,
     ):
-        """Edit an existing instance pool.
-
-        Modifies the configuration of an existing instance pool.
+        """Modifies the configuration of an existing instance pool.
 
         :param instance_pool_id: str
           Instance pool ID
@@ -12260,9 +12361,12 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
-          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-          when attempting to launch a cluster if the node type id is not available.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
 
         """
@@ -12279,10 +12383,12 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
-        if node_type_flexibility is not None:
-            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
+        if remote_disk_throughput is not None:
+            body["remote_disk_throughput"] = remote_disk_throughput
+        if total_initial_remote_disk_size is not None:
+            body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12291,9 +12397,7 @@ class InstancePoolsAPI:
         self._api.do("POST", "/api/2.0/instance-pools/edit", body=body, headers=headers)
 
     def get(self, instance_pool_id: str) -> GetInstancePool:
-        """Get instance pool information.
-
-        Retrieve the information for an instance pool based on its identifier.
+        """Retrieve the information for an instance pool based on its identifier.
 
         :param instance_pool_id: str
           The canonical unique identifier for the instance pool.
@@ -12312,9 +12416,7 @@ class InstancePoolsAPI:
         return GetInstancePool.from_dict(res)
 
     def get_permission_levels(self, instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse:
-        """Get instance pool permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
@@ -12332,9 +12434,7 @@ class InstancePoolsAPI:
         return GetInstancePoolPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, instance_pool_id: str) -> InstancePoolPermissions:
-        """Get instance pool permissions.
-
-        Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
+        """Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
         object.
 
         :param instance_pool_id: str
@@ -12351,9 +12451,8 @@ class InstancePoolsAPI:
         return InstancePoolPermissions.from_dict(res)
 
     def list(self) -> Iterator[InstancePoolAndStats]:
-        """List instance pool info.
+        """Gets a list of instance pools with their statistics.
 
-        Gets a list of instance pools with their statistics.
 
         :returns: Iterator over :class:`InstancePoolAndStats`
         """
@@ -12369,9 +12468,7 @@ class InstancePoolsAPI:
     def set_permissions(
         self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
     ) -> InstancePoolPermissions:
-        """Set instance pool permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param instance_pool_id: str
@@ -12394,9 +12491,7 @@ class InstancePoolsAPI:
     def update_permissions(
         self, instance_pool_id: str, *, access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
     ) -> InstancePoolPermissions:
-        """Update instance pool permissions.
-
-        Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
+        """Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
         object.
 
         :param instance_pool_id: str
@@ -12438,10 +12533,10 @@ class InstanceProfilesAPI:
         is_meta_instance_profile: Optional[bool] = None,
         skip_validation: Optional[bool] = None,
     ):
-        """Register an instance profile.
+        """Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
+        this instance profile when launching clusters.
 
-        In the UI, you can select the instance profile when launching clusters. This API is only available to
-        admin users.
+        This API is only available to admin users.
 
         :param instance_profile_arn: str
           The AWS ARN of the instance profile to register with Databricks. This field is required.
@@ -12490,9 +12585,7 @@ class InstanceProfilesAPI:
         iam_role_arn: Optional[str] = None,
         is_meta_instance_profile: Optional[bool] = None,
     ):
-        """Edit an instance profile.
-
-        The only supported field to change is the optional IAM role ARN associated with the instance profile.
+        """The only supported field to change is the optional IAM role ARN associated with the instance profile.
         It is required to specify the IAM role ARN if both of the following are true:
 
         * Your role name and instance profile name do not match. The name is the part after the last slash in
@@ -12538,11 +12631,10 @@ class InstanceProfilesAPI:
         self._api.do("POST", "/api/2.0/instance-profiles/edit", body=body, headers=headers)
 
     def list(self) -> Iterator[InstanceProfile]:
-        """List available instance profiles.
-
-        List the instance profiles that the calling user can use to launch a cluster.
+        """List the instance profiles that the calling user can use to launch a cluster.
 
         This API is available to all users.
+
 
         :returns: Iterator over :class:`InstanceProfile`
         """
@@ -12556,9 +12648,7 @@ class InstanceProfilesAPI:
         return parsed if parsed is not None else []
 
     def remove(self, instance_profile_arn: str):
-        """Remove the instance profile.
-
-        Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
+        """Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
         continue to function.
 
         This API is only accessible to admin users.
@@ -12598,10 +12688,9 @@ class LibrariesAPI:
         self._api = api_client
 
     def all_cluster_statuses(self) -> Iterator[ClusterLibraryStatuses]:
-        """Get all statuses.
-
-        Get the status of all libraries on all clusters. A status is returned for all libraries installed on
+        """Get the status of all libraries on all clusters. A status is returned for all libraries installed on
         this cluster via the API or the libraries UI.
+
 
         :returns: Iterator over :class:`ClusterLibraryStatuses`
         """
@@ -12615,9 +12704,7 @@ class LibrariesAPI:
         return parsed if parsed is not None else []
 
     def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
-        """Get status.
-
-        Get the status of libraries on a cluster. A status is returned for all libraries installed on this
+        """Get the status of libraries on a cluster. A status is returned for all libraries installed on this
         cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
         set to be installed on this cluster, in the order that the libraries were added to the cluster, are
         returned first. 2. Libraries that were previously requested to be installed on this cluster or, but
@@ -12641,9 +12728,7 @@ class LibrariesAPI:
         return parsed if parsed is not None else []
 
     def install(self, cluster_id: str, libraries: List[Library]):
-        """Add a library.
-
-        Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
+        """Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
         after the completion of this request.
 
         :param cluster_id: str
@@ -12666,9 +12751,7 @@ class LibrariesAPI:
         self._api.do("POST", "/api/2.0/libraries/install", body=body, headers=headers)
 
     def uninstall(self, cluster_id: str, libraries: List[Library]):
-        """Uninstall libraries.
-
-        Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
+        """Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
         restarted. A request to uninstall a library that is not currently installed is ignored.
 
         :param cluster_id: str
@@ -12707,9 +12790,7 @@ class PolicyComplianceForClustersAPI:
     def enforce_compliance(
         self, cluster_id: str, *, validate_only: Optional[bool] = None
     ) -> EnforceClusterComplianceResponse:
-        """Enforce cluster policy compliance.
-
-        Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
+        """Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
         it is in a `RUNNING` or `TERMINATED` state.
 
         If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
@@ -12743,9 +12824,7 @@ class PolicyComplianceForClustersAPI:
         return EnforceClusterComplianceResponse.from_dict(res)
 
     def get_compliance(self, cluster_id: str) -> GetClusterComplianceResponse:
-        """Get cluster policy compliance.
-
-        Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy
+        """Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy
         was updated after the cluster was last edited.
 
         :param cluster_id: str
@@ -12767,9 +12846,7 @@ class PolicyComplianceForClustersAPI:
     def list_compliance(
         self, policy_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ClusterCompliance]:
-        """List cluster policy compliance.
-
-        Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of
+        """Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of
         compliance if their policy was updated after the cluster was last edited.
 
         :param policy_id: str
@@ -12820,9 +12897,7 @@ class PolicyFamiliesAPI:
         self._api = api_client
 
     def get(self, policy_family_id: str, *, version: Optional[int] = None) -> PolicyFamily:
-        """Get policy family information.
-
-        Retrieve the information for an policy family based on its identifier and version
+        """Retrieve the information for an policy family based on its identifier and version
 
         :param policy_family_id: str
           The family ID about which to retrieve information.
@@ -12843,9 +12918,7 @@ class PolicyFamiliesAPI:
         return PolicyFamily.from_dict(res)
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
-        """List policy families.
-
-        Returns the list of policy definition types available to use at their latest version. This API is
+        """Returns the list of policy definition types available to use at their latest version. This API is
         paginated.
 
         :param max_results: int (optional)

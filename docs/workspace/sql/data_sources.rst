@@ -29,8 +29,6 @@
             
             srcs = w.data_sources.list()
 
-        Get a list of SQL warehouses.
-
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
@@ -39,6 +37,7 @@
         instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
+
 
         :returns: Iterator over :class:`DataSource`
         

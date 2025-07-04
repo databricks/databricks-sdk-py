@@ -59,8 +59,6 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Cancel all runs of a job.
-
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
 
@@ -114,8 +112,6 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Cancel a run.
-
         Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
         this request completes.
 
@@ -166,8 +162,6 @@
             
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
-
-        Create a new job.
 
         Create a new job.
 
@@ -271,8 +265,6 @@
 
     .. py:method:: delete(job_id: int)
 
-        Delete a job.
-
         Deletes a job.
 
         :param job_id: int
@@ -282,8 +274,6 @@
         
 
     .. py:method:: delete_run(run_id: int)
-
-        Delete a job run.
 
         Deletes a non-active run. Returns an error if the run is active.
 
@@ -333,8 +323,6 @@
             
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
-
-        Export and retrieve a job run.
 
         Export and retrieve the job run task.
 
@@ -399,8 +387,6 @@
 
     .. py:method:: get_permission_levels(job_id: str) -> GetJobPermissionLevelsResponse
 
-        Get job permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param job_id: str
@@ -410,8 +396,6 @@
         
 
     .. py:method:: get_permissions(job_id: str) -> JobPermissions
-
-        Get job permissions.
 
         Gets the permissions of a job. Jobs can inherit permissions from their root object.
 
@@ -511,8 +495,6 @@
             
             # cleanup
             w.jobs.delete_run(run_id=run.run_id)
-
-        Get the output for a single run.
 
         Retrieve the output and metadata of a single task run. When a notebook task returns a value through
         the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks
@@ -714,8 +696,6 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Repair a job run.
-
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
         and task settings, and can be viewed in the history for the original job run.
 
@@ -862,8 +842,6 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Update all job settings (reset).
-
         Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
         job settings partially.
 
@@ -916,8 +894,6 @@
             
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
-
-        Trigger a new job run.
 
         Run a job and return the `run_id` of the triggered run.
 
@@ -1028,8 +1004,6 @@
 
     .. py:method:: set_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions
 
-        Set job permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -1074,8 +1048,6 @@
             
             # cleanup
             w.jobs.delete_run(run_id=run.run_id)
-
-        Create and trigger a one-time run.
 
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
@@ -1182,8 +1154,6 @@
             # cleanup
             w.jobs.delete(job_id=created_job.job_id)
 
-        Update job settings partially.
-
         Add, update, or remove specific settings of an existing job. Use the [_Reset_
         endpoint](:method:jobs/reset) to overwrite all job settings.
 
@@ -1208,8 +1178,6 @@
         
 
     .. py:method:: update_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions
-
-        Update job permissions.
 
         Updates the permissions on a job. Jobs can inherit permissions from their root object.
 

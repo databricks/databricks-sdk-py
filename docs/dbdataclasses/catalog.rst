@@ -81,6 +81,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AwsSqsQueue
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzureActiveDirectoryToken
    :members:
    :undoc-members:
@@ -94,6 +98,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: AzureManagedIdentityResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureQueueStorage
    :members:
    :undoc-members:
 
@@ -115,8 +123,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CatalogIsolationMode
 
-   Whether the current securable is accessible from all workspaces or a specific set of workspaces.
-
    .. py:attribute:: ISOLATED
       :value: "ISOLATED"
 
@@ -133,11 +139,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FOREIGN_CATALOG
       :value: "FOREIGN_CATALOG"
 
+   .. py:attribute:: INTERNAL_CATALOG
+      :value: "INTERNAL_CATALOG"
+
    .. py:attribute:: MANAGED_CATALOG
       :value: "MANAGED_CATALOG"
 
+   .. py:attribute:: MANAGED_ONLINE_CATALOG
+      :value: "MANAGED_ONLINE_CATALOG"
+
    .. py:attribute:: SYSTEM_CATALOG
       :value: "SYSTEM_CATALOG"
+
+   .. py:attribute:: UNKNOWN_CATALOG_TYPE
+      :value: "UNKNOWN_CATALOG_TYPE"
 
 .. autoclass:: CloudflareApiToken
    :members:
@@ -231,13 +246,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   The type of connection.
+   Next Id: 33
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
+
+   .. py:attribute:: GA4_RAW_DATA
+      :value: "GA4_RAW_DATA"
 
    .. py:attribute:: GLUE
       :value: "GLUE"
@@ -257,8 +275,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
+   .. py:attribute:: POWER_BI
+      :value: "POWER_BI"
+
    .. py:attribute:: REDSHIFT
       :value: "REDSHIFT"
+
+   .. py:attribute:: SALESFORCE
+      :value: "SALESFORCE"
+
+   .. py:attribute:: SALESFORCE_DATA_CLOUD
+      :value: "SALESFORCE_DATA_CLOUD"
+
+   .. py:attribute:: SERVICENOW
+      :value: "SERVICENOW"
 
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
@@ -271,6 +301,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
+
+   .. py:attribute:: UNKNOWN_CONNECTION_TYPE
+      :value: "UNKNOWN_CONNECTION_TYPE"
+
+   .. py:attribute:: WORKDAY_RAAS
+      :value: "WORKDAY_RAAS"
 
 .. autoclass:: ContinuousUpdateStatus
    :members:
@@ -387,19 +423,45 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   The type of credential.
+   Next Id: 12
 
    .. py:attribute:: BEARER_TOKEN
       :value: "BEARER_TOKEN"
+
+   .. py:attribute:: OAUTH_ACCESS_TOKEN
+      :value: "OAUTH_ACCESS_TOKEN"
+
+   .. py:attribute:: OAUTH_M2M
+      :value: "OAUTH_M2M"
+
+   .. py:attribute:: OAUTH_REFRESH_TOKEN
+      :value: "OAUTH_REFRESH_TOKEN"
+
+   .. py:attribute:: OAUTH_RESOURCE_OWNER_PASSWORD
+      :value: "OAUTH_RESOURCE_OWNER_PASSWORD"
+
+   .. py:attribute:: OAUTH_U2M
+      :value: "OAUTH_U2M"
+
+   .. py:attribute:: OAUTH_U2M_MAPPING
+      :value: "OAUTH_U2M_MAPPING"
+
+   .. py:attribute:: OIDC_TOKEN
+      :value: "OIDC_TOKEN"
+
+   .. py:attribute:: PEM_PRIVATE_KEY
+      :value: "PEM_PRIVATE_KEY"
+
+   .. py:attribute:: SERVICE_CREDENTIAL
+      :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
+      :value: "UNKNOWN_CREDENTIAL_TYPE"
 
    .. py:attribute:: USERNAME_PASSWORD
       :value: "USERNAME_PASSWORD"
 
 .. autoclass:: CredentialValidationResult
-   :members:
-   :undoc-members:
-
-.. autoclass:: CurrentWorkspaceBindings
    :members:
    :undoc-members:
 
@@ -504,6 +566,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DeltaSharingScopeEnum
+
+   .. py:attribute:: INTERNAL
+      :value: "INTERNAL"
+
+   .. py:attribute:: INTERNAL_AND_EXTERNAL
+      :value: "INTERNAL_AND_EXTERNAL"
+
 .. autoclass:: Dependency
    :members:
    :undoc-members:
@@ -544,8 +614,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EnablePredictiveOptimization
 
-   Whether predictive optimization should be enabled for this object and objects under it.
-
    .. py:attribute:: DISABLE
       :value: "DISABLE"
 
@@ -554,6 +622,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: INHERIT
       :value: "INHERIT"
+
+.. autoclass:: EnableRequest
+   :members:
+   :undoc-members:
 
 .. autoclass:: EnableResponse
    :members:
@@ -568,6 +640,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FailedStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: FileEventQueue
    :members:
    :undoc-members:
 
@@ -649,6 +725,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpPubsub
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
    :members:
    :undoc-members:
@@ -669,35 +749,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: GetBindingsSecurableType
-
-   .. py:attribute:: CATALOG
-      :value: "CATALOG"
-
-   .. py:attribute:: CREDENTIAL
-      :value: "CREDENTIAL"
-
-   .. py:attribute:: EXTERNAL_LOCATION
-      :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: STORAGE_CREDENTIAL
-      :value: "STORAGE_CREDENTIAL"
+.. autoclass:: GetCatalogWorkspaceBindingsResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: GetMetastoreSummaryResponse
    :members:
    :undoc-members:
 
-.. py:class:: GetMetastoreSummaryResponseDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
+.. autoclass:: GetPermissionsResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: GetQuotaResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetWorkspaceBindingsResponse
    :members:
    :undoc-members:
 
@@ -791,16 +859,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: MetastoreInfo
    :members:
    :undoc-members:
-
-.. py:class:: MetastoreInfoDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
 
 .. autoclass:: ModelVersionInfo
    :members:
@@ -1006,10 +1064,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PermissionsChange
-   :members:
-   :undoc-members:
-
-.. autoclass:: PermissionsList
    :members:
    :undoc-members:
 
@@ -1232,7 +1286,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableType
 
-   The type of Unity Catalog securable
+   The type of Unity Catalog securable.
 
    .. py:attribute:: CATALOG
       :value: "CATALOG"
@@ -1248,6 +1302,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: EXTERNAL_METADATA
+      :value: "EXTERNAL_METADATA"
 
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"
@@ -1270,11 +1327,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SHARE
       :value: "SHARE"
 
+   .. py:attribute:: STAGING_TABLE
+      :value: "STAGING_TABLE"
+
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
 
    .. py:attribute:: TABLE
       :value: "TABLE"
+
+   .. py:attribute:: UNKNOWN_SECURABLE_TYPE
+      :value: "UNKNOWN_SECURABLE_TYPE"
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"
@@ -1293,8 +1356,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SseEncryptionDetailsAlgorithm
 
-   The type of key encryption to use (affects headers from s3 client).
-
    .. py:attribute:: AWS_SSE_KMS
       :value: "AWS_SSE_KMS"
 
@@ -1308,25 +1369,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SystemSchemaInfo
    :members:
    :undoc-members:
-
-.. py:class:: SystemSchemaInfoState
-
-   The current state of enablement for the system schema. An empty string means the system schema is available and ready for opt-in.
-
-   .. py:attribute:: AVAILABLE
-      :value: "AVAILABLE"
-
-   .. py:attribute:: DISABLE_INITIALIZED
-      :value: "DISABLE_INITIALIZED"
-
-   .. py:attribute:: ENABLE_COMPLETED
-      :value: "ENABLE_COMPLETED"
-
-   .. py:attribute:: ENABLE_INITIALIZED
-      :value: "ENABLE_INITIALIZED"
-
-   .. py:attribute:: UNAVAILABLE
-      :value: "UNAVAILABLE"
 
 .. autoclass:: TableConstraint
    :members:
@@ -1406,21 +1448,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: UpdateBindingsSecurableType
-
-   .. py:attribute:: CATALOG
-      :value: "CATALOG"
-
-   .. py:attribute:: CREDENTIAL
-      :value: "CREDENTIAL"
-
-   .. py:attribute:: EXTERNAL_LOCATION
-      :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: STORAGE_CREDENTIAL
-      :value: "STORAGE_CREDENTIAL"
-
 .. autoclass:: UpdateCatalog
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCatalogWorkspaceBindingsResponse
    :members:
    :undoc-members:
 
@@ -1448,16 +1480,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: UpdateMetastoreDeltaSharingScope
-
-   The scope of Delta Sharing enabled for the metastore.
-
-   .. py:attribute:: INTERNAL
-      :value: "INTERNAL"
-
-   .. py:attribute:: INTERNAL_AND_EXTERNAL
-      :value: "INTERNAL_AND_EXTERNAL"
-
 .. autoclass:: UpdateModelVersionRequest
    :members:
    :undoc-members:
@@ -1467,6 +1489,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdatePermissions
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdatePermissionsResponse
    :members:
    :undoc-members:
 
@@ -1486,6 +1512,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateTableRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateVolumeRequestContent
    :members:
    :undoc-members:
@@ -1495,6 +1525,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateWorkspaceBindingsParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateWorkspaceBindingsResponse
    :members:
    :undoc-members:
 
@@ -1533,7 +1567,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ValidationResultOperation
 
-   The operation tested.
+   A enum represents the file operation performed on the external location with the storage credential
 
    .. py:attribute:: DELETE
       :value: "DELETE"
@@ -1552,7 +1586,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ValidationResultResult
 
-   The results of the tested operation.
+   A enum represents the result of the file operation
 
    .. py:attribute:: FAIL
       :value: "FAIL"
@@ -1584,12 +1618,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceBindingBindingType
 
+   Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation` enum in `credentials_common.proto`.
+
    .. py:attribute:: BINDING_TYPE_READ_ONLY
       :value: "BINDING_TYPE_READ_ONLY"
 
    .. py:attribute:: BINDING_TYPE_READ_WRITE
       :value: "BINDING_TYPE_READ_WRITE"
-
-.. autoclass:: WorkspaceBindingsResponse
-   :members:
-   :undoc-members:

@@ -14,8 +14,6 @@
 
     .. py:method:: approve_transition_request(name: str, version: str, stage: Stage, archive_existing_versions: bool [, comment: Optional[str]]) -> ApproveTransitionRequestResponse
 
-        Approve transition request.
-
         Approves a model version stage transition request.
 
         :param name: str
@@ -66,8 +64,6 @@
             # cleanup
             w.model_registry.delete_comment(id=created.comment.id)
 
-        Post a comment.
-
         Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
         display relevant information about the model. For example, test results or deployment errors.
 
@@ -95,8 +91,6 @@
             w = WorkspaceClient()
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
-
-        Create a model.
 
         Creates a new registered model with the name specified in the request body.
 
@@ -127,9 +121,7 @@
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
             
-            created = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
-
-        Create a model version.
+            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
 
         Creates a model version.
 
@@ -152,8 +144,6 @@
         
 
     .. py:method:: create_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> CreateTransitionRequestResponse
-
-        Make a transition request.
 
         Creates a model version stage transition request.
 
@@ -200,8 +190,6 @@
             # cleanup
             w.model_registry.delete_webhook(id=created.webhook.id)
 
-        Create a webhook.
-
         **NOTE**: This endpoint is in Public Preview.
 
         Creates a registry webhook.
@@ -240,7 +228,8 @@
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param model_name: str (optional)
-          Name of the model whose events would trigger this webhook.
+          If model name is not specified, a registry-wide webhook is created that listens for the specified
+          events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
@@ -255,18 +244,15 @@
 
     .. py:method:: delete_comment(id: str)
 
-        Delete a comment.
-
         Deletes a comment on a model version.
 
         :param id: str
+          Unique identifier of an activity
 
 
         
 
     .. py:method:: delete_model(name: str)
-
-        Delete a model.
 
         Deletes a registered model.
 
@@ -277,8 +263,6 @@
         
 
     .. py:method:: delete_model_tag(name: str, key: str)
-
-        Delete a model tag.
 
         Deletes the tag for a registered model.
 
@@ -293,8 +277,6 @@
 
     .. py:method:: delete_model_version(name: str, version: str)
 
-        Delete a model version.
-
         Deletes a model version.
 
         :param name: str
@@ -306,8 +288,6 @@
         
 
     .. py:method:: delete_model_version_tag(name: str, version: str, key: str)
-
-        Delete a model version tag.
 
         Deletes a model version tag.
 
@@ -323,8 +303,6 @@
         
 
     .. py:method:: delete_transition_request(name: str, version: str, stage: DeleteTransitionRequestStage, creator: str [, comment: Optional[str]])
-
-        Delete a transition request.
 
         Cancels a model version stage transition request.
 
@@ -353,8 +331,6 @@
 
     .. py:method:: delete_webhook( [, id: Optional[str]])
 
-        Delete a webhook.
-
         **NOTE:** This endpoint is in Public Preview.
 
         Deletes a registry webhook.
@@ -366,8 +342,6 @@
         
 
     .. py:method:: get_latest_versions(name: str [, stages: Optional[List[str]]]) -> Iterator[ModelVersion]
-
-        Get the latest version.
 
         Gets the latest version of a registered model.
 
@@ -396,8 +370,6 @@
             
             model = w.model_registry.get_model(name=created.registered_model.name)
 
-        Get model.
-
         Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
         returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
@@ -414,8 +386,6 @@
 
         Get a model version.
 
-        Get a model version.
-
         :param name: str
           Name of the registered model
         :param version: str
@@ -425,8 +395,6 @@
         
 
     .. py:method:: get_model_version_download_uri(name: str, version: str) -> GetModelVersionDownloadUriResponse
-
-        Get a model version URI.
 
         Gets a URI to download the model version.
 
@@ -440,8 +408,6 @@
 
     .. py:method:: get_permission_levels(registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse
 
-        Get registered model permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param registered_model_id: str
@@ -451,8 +417,6 @@
         
 
     .. py:method:: get_permissions(registered_model_id: str) -> RegisteredModelPermissions
-
-        Get registered model permissions.
 
         Gets the permissions of a registered model. Registered models can inherit permissions from their root
         object.
@@ -477,8 +441,6 @@
             
             all = w.model_registry.list_models(ml.ListModelsRequest())
 
-        List models.
-
         Lists all available registered models, up to the limit specified in __max_results__.
 
         :param max_results: int (optional)
@@ -490,8 +452,6 @@
         
 
     .. py:method:: list_transition_requests(name: str, version: str) -> Iterator[Activity]
-
-        List transition requests.
 
         Gets a list of all open stage transition requests for the model version.
 
@@ -517,8 +477,6 @@
             
             all = w.model_registry.list_webhooks(ml.ListWebhooksRequest())
 
-        List registry webhooks.
-
         **NOTE:** This endpoint is in Public Preview.
 
         Lists all registry webhooks.
@@ -536,8 +494,6 @@
         
 
     .. py:method:: reject_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> RejectTransitionRequestResponse
-
-        Reject a transition request.
 
         Rejects a model version stage transition request.
 
@@ -563,8 +519,6 @@
 
     .. py:method:: rename_model(name: str [, new_name: Optional[str]]) -> RenameModelResponse
 
-        Rename a model.
-
         Renames a registered model.
 
         :param name: str
@@ -576,8 +530,6 @@
         
 
     .. py:method:: search_model_versions( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[ModelVersion]
-
-        Searches model versions.
 
         Searches for specific model versions based on the supplied __filter__.
 
@@ -597,8 +549,6 @@
         
 
     .. py:method:: search_models( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[Model]
-
-        Search models.
 
         Search for registered models based on the specified __filter__.
 
@@ -620,8 +570,6 @@
 
     .. py:method:: set_model_tag(name: str, key: str, value: str)
 
-        Set a tag.
-
         Sets a tag on a registered model.
 
         :param name: str
@@ -638,8 +586,6 @@
         
 
     .. py:method:: set_model_version_tag(name: str, version: str, key: str, value: str)
-
-        Set a version tag.
 
         Sets a model version tag.
 
@@ -660,8 +606,6 @@
 
     .. py:method:: set_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
 
-        Set registered model permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -673,8 +617,6 @@
         
 
     .. py:method:: test_registry_webhook(id: str [, event: Optional[RegistryWebhookEvent]]) -> TestRegistryWebhookResponse
-
-        Test a webhook.
 
         **NOTE:** This endpoint is in Public Preview.
 
@@ -690,8 +632,6 @@
         
 
     .. py:method:: transition_stage(name: str, version: str, stage: Stage, archive_existing_versions: bool [, comment: Optional[str]]) -> TransitionStageResponse
-
-        Transition a stage.
 
         Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
@@ -748,8 +688,6 @@
             # cleanup
             w.model_registry.delete_comment(id=created.comment.id)
 
-        Update a comment.
-
         Post an edit to a comment on a model version.
 
         :param id: str
@@ -773,16 +711,15 @@
             
             w = WorkspaceClient()
             
-            created = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
+            model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
             
-            model = w.model_registry.get_model(name=created.registered_model.name)
+            created = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
             
-            w.model_registry.update_model(
-                name=model.registered_model_databricks.name,
+            w.model_registry.update_model_version(
                 description=f"sdk-{time.time_ns()}",
+                name=created.model_version.name,
+                version=created.model_version.version,
             )
-
-        Update model.
 
         Updates a registered model.
 
@@ -817,8 +754,6 @@
                 version=created.model_version.version,
             )
 
-        Update model version.
-
         Updates the model version.
 
         :param name: str
@@ -832,8 +767,6 @@
         
 
     .. py:method:: update_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
-
-        Update registered model permissions.
 
         Updates the permissions on a registered model. Registered models can inherit permissions from their
         root object.
@@ -869,8 +802,6 @@
             
             # cleanup
             w.model_registry.delete_webhook(id=created.webhook.id)
-
-        Update a webhook.
 
         **NOTE:** This endpoint is in Public Preview.
 

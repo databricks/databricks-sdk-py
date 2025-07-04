@@ -9,8 +9,6 @@
 
     .. py:method:: add_block(handle: int, data: str)
 
-        Append data block.
-
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
         this call will throw an exception with ``RESOURCE_DOES_NOT_EXIST``.
 
@@ -26,8 +24,6 @@
 
     .. py:method:: close(handle: int)
 
-        Close the stream.
-
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
         exception with ``RESOURCE_DOES_NOT_EXIST``.
 
@@ -42,8 +38,6 @@
         Copy files between DBFS and local filesystems
 
     .. py:method:: create(path: str [, overwrite: Optional[bool]]) -> CreateResponse
-
-        Open a stream.
 
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
         timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
@@ -97,8 +91,6 @@
 
     .. py:method:: get_status(path: str) -> FileInfo
 
-        Get the information of a file or directory.
-
         Gets the file information for a file or directory. If the file or directory does not exist, this call
         throws an exception with `RESOURCE_DOES_NOT_EXIST`.
 
@@ -129,8 +121,6 @@
 
     .. py:method:: move(source_path: str, destination_path: str)
 
-        Move a file.
-
         Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
@@ -152,8 +142,6 @@
 
 
     .. py:method:: put(path: str [, contents: Optional[str], overwrite: Optional[bool]])
-
-        Upload a file.
 
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
         can also be used as a convenient single call for data upload.
@@ -177,8 +165,6 @@
         
 
     .. py:method:: read(path: str [, length: Optional[int], offset: Optional[int]]) -> ReadResponse
-
-        Get the contents of a file.
 
         Returns the contents of a file. If the file does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset

@@ -9,8 +9,6 @@
 
     .. py:method:: create(clean_room_name: str, asset: CleanRoomAsset) -> CleanRoomAsset
 
-        Create an asset.
-
         Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC
         asset that is added through this method, the clean room owner must also have enough privilege on the
         asset to consume it. The privilege must be maintained indefinitely for the clean room to be able to
@@ -24,9 +22,7 @@
         :returns: :class:`CleanRoomAsset`
         
 
-    .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str)
-
-        Delete an asset.
+    .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str)
 
         Delete a clean room asset - unshare/remove the asset from the clean room
 
@@ -34,15 +30,13 @@
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
 
         
 
-    .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset
-
-        Get an asset.
+    .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str) -> CleanRoomAsset
 
         Get the details of a clean room asset by its type and full name.
 
@@ -50,7 +44,7 @@
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
           The type of the asset.
-        :param asset_full_name: str
+        :param name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
 
         :returns: :class:`CleanRoomAsset`
@@ -69,8 +63,6 @@
         
 
     .. py:method:: update(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, asset: CleanRoomAsset) -> CleanRoomAsset
-
-        Update an asset.
 
         Update a clean room asset. For example, updating the content of a notebook; changing the shared
         partitions of a table; etc.

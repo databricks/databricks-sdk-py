@@ -15,7 +15,7 @@
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -51,8 +51,6 @@
             # cleanup
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
-        Create a pipeline.
-
         Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
 
@@ -79,6 +77,8 @@
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
@@ -100,6 +100,10 @@
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -112,6 +116,9 @@
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -124,9 +131,8 @@
 
     .. py:method:: delete(pipeline_id: str)
 
-        Delete a pipeline.
-
-        Deletes a pipeline.
+        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        its tables. You cannot undo this action.
 
         :param pipeline_id: str
 
@@ -180,8 +186,6 @@
 
     .. py:method:: get_permission_levels(pipeline_id: str) -> GetPipelinePermissionLevelsResponse
 
-        Get pipeline permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param pipeline_id: str
@@ -192,8 +196,6 @@
 
     .. py:method:: get_permissions(pipeline_id: str) -> PipelinePermissions
 
-        Get pipeline permissions.
-
         Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
 
         :param pipeline_id: str
@@ -203,8 +205,6 @@
         
 
     .. py:method:: get_update(pipeline_id: str, update_id: str) -> GetUpdateResponse
-
-        Get a pipeline update.
 
         Gets an update from an active pipeline.
 
@@ -254,11 +254,10 @@
             # cleanup
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
-        List pipeline events.
-
         Retrieves events for a pipeline.
 
         :param pipeline_id: str
+          The pipeline to return events for.
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
           are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
@@ -295,8 +294,6 @@
             
             all = w.pipelines.list_pipelines(pipelines.ListPipelinesRequest())
 
-        List pipelines.
-
         Lists pipelines defined in the Delta Live Tables system.
 
         :param filter: str (optional)
@@ -323,8 +320,6 @@
 
     .. py:method:: list_updates(pipeline_id: str [, max_results: Optional[int], page_token: Optional[str], until_update_id: Optional[str]]) -> ListUpdatesResponse
 
-        List pipeline updates.
-
         List updates for an active pipeline.
 
         :param pipeline_id: str
@@ -341,8 +336,6 @@
 
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
-        Set pipeline permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -355,13 +348,12 @@
 
     .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], validate_only: Optional[bool]]) -> StartUpdateResponse
 
-        Start a pipeline.
-
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
+          What triggered this update.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)
@@ -381,8 +373,6 @@
 
     .. py:method:: stop(pipeline_id: str) -> Wait[GetPipelineResponse]
 
-        Stop a pipeline.
-
         Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
         request is a no-op.
 
@@ -396,7 +386,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger]])
 
 
         Usage:
@@ -448,8 +438,6 @@
             # cleanup
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
-        Edit a pipeline.
-
         Updates a pipeline with the supplied configuration.
 
         :param pipeline_id: str
@@ -476,6 +464,8 @@
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
@@ -500,6 +490,10 @@
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -512,6 +506,9 @@
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -523,8 +520,6 @@
         
 
     .. py:method:: update_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
-
-        Update pipeline permissions.
 
         Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
 

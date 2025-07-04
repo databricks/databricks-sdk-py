@@ -13,8 +13,6 @@
 
     .. py:method:: delete(full_name: str, version: int)
 
-        Delete a Model Version.
-
         Deletes a model version from the specified registered model. Any aliases assigned to the model version
         will also be deleted.
 
@@ -31,8 +29,6 @@
         
 
     .. py:method:: get(full_name: str, version: int [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> ModelVersionInfo
-
-        Get a Model Version.
 
         Get a model version.
 
@@ -55,8 +51,6 @@
 
     .. py:method:: get_by_alias(full_name: str, alias: str [, include_aliases: Optional[bool]]) -> ModelVersionInfo
 
-        Get Model Version By Alias.
-
         Get a model version by alias.
 
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
@@ -74,8 +68,6 @@
         
 
     .. py:method:: list(full_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ModelVersionInfo]
-
-        List Model Versions.
 
         List model versions. You can list model versions under a particular schema, or list all model versions
         in the current metastore.
@@ -107,8 +99,6 @@
         
 
     .. py:method:: update(full_name: str, version: int [, comment: Optional[str]]) -> ModelVersionInfo
-
-        Update a Model Version.
 
         Updates the specified model version.
 

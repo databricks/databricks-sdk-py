@@ -6,14 +6,12 @@
 
     The Forecasting API allows you to create and get serverless forecasting experiments
 
-    .. py:method:: create_experiment(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], holiday_regions: Optional[List[str]], include_features: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]]]) -> Wait[ForecastingExperiment]
-
-        Create a forecasting experiment.
+    .. py:method:: create_experiment(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], future_feature_data_path: Optional[str], holiday_regions: Optional[List[str]], include_features: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]]]) -> Wait[ForecastingExperiment]
 
         Creates a serverless forecasting experiment. Returns the experiment ID.
 
         :param train_data_path: str
-          The fully qualified name of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
           used as training data for the forecasting model.
         :param target_column: str
           The column in the input training table used as the prediction target for model training. The values
@@ -31,6 +29,9 @@
           The column in the training table used to customize weights for each time series.
         :param experiment_path: str (optional)
           The path in the workspace to store the created experiment.
+        :param future_feature_data_path: str (optional)
+          The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
+          used to store future feature data for predictions.
         :param holiday_regions: List[str] (optional)
           The region code(s) to automatically add holiday features. Currently supports only one region.
         :param include_features: List[str] (optional)
@@ -63,12 +64,10 @@
           See :method:wait_get_experiment_forecasting_succeeded for more details.
         
 
-    .. py:method:: create_experiment_and_wait(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], holiday_regions: Optional[List[str]], include_features: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]], timeout: datetime.timedelta = 2:00:00]) -> ForecastingExperiment
+    .. py:method:: create_experiment_and_wait(train_data_path: str, target_column: str, time_column: str, forecast_granularity: str, forecast_horizon: int [, custom_weights_column: Optional[str], experiment_path: Optional[str], future_feature_data_path: Optional[str], holiday_regions: Optional[List[str]], include_features: Optional[List[str]], max_runtime: Optional[int], prediction_data_path: Optional[str], primary_metric: Optional[str], register_to: Optional[str], split_column: Optional[str], timeseries_identifier_columns: Optional[List[str]], training_frameworks: Optional[List[str]], timeout: datetime.timedelta = 2:00:00]) -> ForecastingExperiment
 
 
     .. py:method:: get_experiment(experiment_id: str) -> ForecastingExperiment
-
-        Get a forecasting experiment.
 
         Public RPC to get forecasting experiment
 

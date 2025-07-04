@@ -11,8 +11,6 @@
 
     .. py:method:: delete(path: str [, recursive: Optional[bool]])
 
-        Delete a workspace object.
-
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
         non-empty directory and `recursive` is set to `false`, this call returns an error
@@ -83,8 +81,6 @@
             
             export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
 
-        Export a workspace object.
-
         Exports an object or the contents of an entire directory.
 
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
@@ -112,8 +108,6 @@
 
     .. py:method:: get_permission_levels(workspace_object_type: str, workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse
 
-        Get workspace object permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
@@ -125,8 +119,6 @@
         
 
     .. py:method:: get_permissions(workspace_object_type: str, workspace_object_id: str) -> WorkspaceObjectPermissions
-
-        Get workspace object permissions.
 
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
@@ -156,8 +148,6 @@
             
             obj = w.workspace.get_status(path=notebook_path)
 
-        Get status.
-
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`.
 
@@ -185,21 +175,12 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                path=notebook_path,
-                overwrite=True,
+                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.PYTHON,
-                content=base64.b64encode(
-                    (
-                        """import time
-            time.sleep(10)
-            dbutils.notebook.exit('hello')
-            """
-                    ).encode()
-                ).decode(),
+                language=workspace.Language.SQL,
+                overwrite=True,
+                path=notebook_path,
             )
-
-        Import a workspace object.
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
@@ -261,8 +242,6 @@
 
     .. py:method:: mkdirs(path: str)
 
-        Create a directory.
-
         Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
@@ -279,8 +258,6 @@
 
     .. py:method:: set_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions
 
-        Set workspace object permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
@@ -295,8 +272,6 @@
         
 
     .. py:method:: update_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions
-
-        Update workspace object permissions.
 
         Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.

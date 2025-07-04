@@ -29,8 +29,6 @@
             # cleanup
             a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
-        Create VPC endpoint configuration.
-
         Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
         communicate privately with Databricks over [AWS PrivateLink].
 
@@ -57,8 +55,6 @@
         
 
     .. py:method:: delete(vpc_endpoint_id: str)
-
-        Delete VPC endpoint configuration.
 
         Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
         privately with Databricks over [AWS PrivateLink].
@@ -100,8 +96,6 @@
             # cleanup
             a.vpc_endpoints.delete(vpc_endpoint_id=created.vpc_endpoint_id)
 
-        Get a VPC endpoint configuration.
-
         Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
         privately with Databricks over [AWS PrivateLink].
 
@@ -127,13 +121,12 @@
             
             all = a.vpc_endpoints.list()
 
-        Get all VPC endpoint configurations.
-
         Gets a list of all VPC endpoints for an account, specified by ID.
 
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
 
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+
 
         :returns: Iterator over :class:`VpcEndpoint`
         

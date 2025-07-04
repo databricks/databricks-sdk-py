@@ -27,12 +27,10 @@
             
             w = WorkspaceClient()
             
-            other_owner = w.users.create(user_name=f"sdk-{time.time_ns()}@example.com")
-            
-            # cleanup
-            w.users.delete(id=other_owner.id)
-
-        Create a new user.
+            user = w.users.create(
+                display_name=f"sdk-{time.time_ns()}",
+                user_name=f"sdk-{time.time_ns()}@example.com",
+            )
 
         Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
         account.
@@ -80,14 +78,9 @@
             
             w = WorkspaceClient()
             
-            user = w.users.create(
-                display_name=f"sdk-{time.time_ns()}",
-                user_name=f"sdk-{time.time_ns()}@example.com",
-            )
+            other_owner = w.users.create(user_name=f"sdk-{time.time_ns()}@example.com")
             
-            w.users.delete(id=user.id)
-
-        Delete a user.
+            w.users.delete(id=other_owner.id)
 
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user.
@@ -117,8 +110,6 @@
             )
             
             fetch = w.users.get(id=user.id)
-
-        Get user details.
 
         Gets information for a specific user in Databricks workspace.
 
@@ -150,18 +141,16 @@
 
     .. py:method:: get_permission_levels() -> GetPasswordPermissionLevelsResponse
 
-        Get password permission levels.
-
         Gets the permission levels that a user can have on an object.
+
 
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions() -> PasswordPermissions
 
-        Get password permissions.
-
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
+
 
         :returns: :class:`PasswordPermissions`
         
@@ -183,8 +172,6 @@
                 sort_by="userName",
                 sort_order=iam.ListSortOrder.DESCENDING,
             )
-
-        List users.
 
         Gets details for all the users associated with a Databricks workspace.
 
@@ -237,8 +224,6 @@
                 schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP],
             )
 
-        Update user details.
-
         Partially updates a user resource by applying the supplied operations on specific user attributes.
 
         :param id: str
@@ -251,8 +236,6 @@
         
 
     .. py:method:: set_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions
-
-        Set password permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
@@ -281,8 +264,6 @@
             )
             
             w.users.update(id=user.id, user_name=user.user_name, active=True)
-
-        Replace a user.
 
         Replaces a user's information with the data supplied in request.
 
@@ -317,8 +298,6 @@
         
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions
-
-        Update password permissions.
 
         Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
 

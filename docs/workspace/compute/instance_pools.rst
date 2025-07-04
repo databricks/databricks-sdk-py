@@ -19,7 +19,7 @@
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
-    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]]]) -> CreateInstancePoolResponse
+    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
 
 
         Usage:
@@ -38,8 +38,6 @@
             
             # cleanup
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
-
-        Create a new instance pool.
 
         Creates a new instance pool using idle and ready-to-use cloud instances.
 
@@ -89,13 +87,17 @@
           A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
           started with the preloaded Spark version will start faster. A list of available Spark versions can
           be retrieved by using the :method:clusters/sparkVersions API call.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
         :returns: :class:`CreateInstancePoolResponse`
         
 
     .. py:method:: delete(instance_pool_id: str)
-
-        Delete an instance pool.
 
         Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.
 
@@ -105,7 +107,7 @@
 
         
 
-    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility]])
+    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
 
 
         Usage:
@@ -130,8 +132,6 @@
             
             # cleanup
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
-
-        Edit an existing instance pool.
 
         Modifies the configuration of an existing instance pool.
 
@@ -162,9 +162,12 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
-        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
-          For Fleet-pool V2, this object contains the information about the alternate node type ids to use
-          when attempting to launch a cluster if the node type id is not available.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED types.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED types.
 
 
         
@@ -191,8 +194,6 @@
             # cleanup
             w.instance_pools.delete(instance_pool_id=created.instance_pool_id)
 
-        Get instance pool information.
-
         Retrieve the information for an instance pool based on its identifier.
 
         :param instance_pool_id: str
@@ -203,8 +204,6 @@
 
     .. py:method:: get_permission_levels(instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse
 
-        Get instance pool permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param instance_pool_id: str
@@ -214,8 +213,6 @@
         
 
     .. py:method:: get_permissions(instance_pool_id: str) -> InstancePoolPermissions
-
-        Get instance pool permissions.
 
         Gets the permissions of an instance pool. Instance pools can inherit permissions from their root
         object.
@@ -239,16 +236,13 @@
             
             all = w.instance_pools.list()
 
-        List instance pool info.
-
         Gets a list of instance pools with their statistics.
+
 
         :returns: Iterator over :class:`InstancePoolAndStats`
         
 
     .. py:method:: set_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
-
-        Set instance pool permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
@@ -261,8 +255,6 @@
         
 
     .. py:method:: update_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
-
-        Update instance pool permissions.
 
         Updates the permissions on an instance pool. Instance pools can inherit permissions from their root
         object.

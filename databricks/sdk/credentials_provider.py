@@ -20,10 +20,7 @@ from google.auth import impersonated_credentials  # type: ignore
 from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
-from .azure import add_sp_management_token, add_workspace_id_header
-from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
-                    TokenCache, TokenSource)
-from .oidc_token_supplier import GitHubOIDCTokenSupplier
+from . import azure, oauth, oidc, oidc_token_supplier
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -36,7 +33,7 @@ class OAuthCredentialsProvider:
     def __init__(
         self,
         credentials_provider: CredentialsProvider,
-        token_provider: Callable[[], Token],
+        token_provider: Callable[[], oauth.Token],
     ):
         self._credentials_provider = credentials_provider
         self._token_provider = token_provider
@@ -44,7 +41,7 @@ class OAuthCredentialsProvider:
     def __call__(self) -> Dict[str, str]:
         return self._credentials_provider()
 
-    def oauth_token(self) -> Token:
+    def oauth_token(self) -> oauth.Token:
         return self._token_provider()
 
 
@@ -77,7 +74,7 @@ class OauthCredentialsStrategy(CredentialsStrategy):
     def __call__(self, cfg: "Config") -> OAuthCredentialsProvider:
         return self._headers_provider(cfg)
 
-    def oauth_token(self, cfg: "Config") -> Token:
+    def oauth_token(self, cfg: "Config") -> oauth.Token:
         return self._headers_provider(cfg).oauth_token()
 
 
@@ -89,7 +86,6 @@ def credentials_strategy(name: str, require: List[str]):
     def inner(
         func: Callable[["Config"], CredentialsProvider],
     ) -> CredentialsStrategy:
-
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
             for attr in require:
@@ -112,7 +108,6 @@ def oauth_credentials_strategy(name: str, require: List[str]):
     def inner(
         func: Callable[["Config"], OAuthCredentialsProvider],
     ) -> OauthCredentialsStrategy:
-
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
             for attr in require:
@@ -186,7 +181,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     if oidc is None:
         return None
 
-    token_source = ClientCredentials(
+    token_source = oauth.ClientCredentials(
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
         token_url=oidc.token_endpoint,
@@ -199,7 +194,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         token = token_source.token()
         return {"Authorization": f"{token.token_type} {token.access_token}"}
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         return token_source.token()
 
     return OAuthCredentialsProvider(inner, token)
@@ -224,7 +219,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
     redirect_url = "http://localhost:8020"
-    token_cache = TokenCache(
+    token_cache = oauth.TokenCache(
         host=cfg.host,
         oidc_endpoints=oidc_endpoints,
         client_id=client_id,
@@ -243,7 +238,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         except Exception as e:
             logger.warning(f"Failed to refresh cached token: {e}. Initiating new OAuth login flow")
 
-    oauth_client = OAuthClient(
+    oauth_client = oauth.OAuthClient(
         oidc_endpoints=oidc_endpoints,
         client_id=client_id,
         redirect_url=redirect_url,
@@ -258,7 +253,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     return credentials(cfg)
 
 
-def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], TokenSource]):
+def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], oauth.TokenSource]):
     """Resolves Azure Databricks workspace URL from ARM Resource ID"""
     if cfg.host:
         return
@@ -284,9 +279,9 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     to every request, while automatically resolving different Azure environment endpoints.
     """
 
-    def token_source_for(resource: str) -> TokenSource:
+    def token_source_for(resource: str) -> oauth.TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
-        return ClientCredentials(
+        return oauth.ClientCredentials(
             client_id=cfg.azure_client_id,
             client_secret=cfg.azure_client_secret,
             token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
@@ -305,18 +300,63 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
         headers = {
             "Authorization": f"Bearer {inner.token().access_token}",
         }
-        add_workspace_id_header(cfg, headers)
-        add_sp_management_token(cloud, headers)
+        azure.add_workspace_id_header(cfg, headers)
+        azure.add_sp_management_token(cloud, headers)
         return headers
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         return inner.token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
+@credentials_strategy("env-oidc", ["host"])
+def env_oidc(cfg) -> Optional[CredentialsProvider]:
+    # Search for an OIDC ID token in DATABRICKS_OIDC_TOKEN environment variable
+    # by default. This can be overridden by setting DATABRICKS_OIDC_TOKEN_ENV
+    # to the name of an environment variable that contains the OIDC ID token.
+    env_var = "DATABRICKS_OIDC_TOKEN"
+    if cfg.oidc_token_env:
+        env_var = cfg.oidc_token_env
+
+    return _oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
+
+
+@credentials_strategy("file-oidc", ["host", "oidc_token_filepath"])
+def file_oidc(cfg) -> Optional[CredentialsProvider]:
+    return _oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
+
+
+# This function is a helper function to create an OIDC CredentialsProvider
+# that provides a Databricks token from an IdTokenSource.
+def _oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optional[CredentialsProvider]:
+    try:
+        id_token = id_token_source.id_token()
+    except Exception as e:
+        logger.debug(f"Failed to get OIDC token: {e}")
+        return None
+
+    token_source = oidc.DatabricksOidcTokenSource(
+        host=cfg.host,
+        token_endpoint=cfg.oidc_endpoints.token_endpoint,
+        client_id=cfg.client_id,
+        account_id=cfg.account_id,
+        id_token=id_token,
+        disable_async=cfg.disable_async_token_refresh,
+    )
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = token_source.token()
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
+
+    def token() -> oauth.Token:
+        return token_source.token()
+
+    return OAuthCredentialsProvider(refreshed_headers, token)
+
+
 @oauth_credentials_strategy("github-oidc", ["host", "client_id"])
-def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
+def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
     DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
     it for a Databricks Token.
@@ -324,7 +364,7 @@ def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
     Supported suppliers:
     - GitHub OIDC
     """
-    supplier = GitHubOIDCTokenSupplier()
+    supplier = oidc_token_supplier.GitHubOIDCTokenSupplier()
 
     audience = cfg.token_audience
     if audience is None and cfg.is_account_client:
@@ -337,21 +377,21 @@ def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
     if not id_token:
         return None
 
-    def token_source_for(audience: str) -> TokenSource:
+    def token_source_for(audience: str) -> oauth.TokenSource:
         id_token = supplier.get_oidc_token(audience)
         if not id_token:
             # Should not happen, since we checked it above.
             raise Exception("Cannot get OIDC token")
-        params = {
-            "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-            "subject_token": id_token,
-            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-        }
-        return ClientCredentials(
+
+        return oauth.ClientCredentials(
             client_id=cfg.client_id,
             client_secret="",  # we have no (rotatable) secrets in OIDC flow
             token_url=cfg.oidc_endpoints.token_endpoint,
-            endpoint_params=params,
+            endpoint_params={
+                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+                "subject_token": id_token,
+                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+            },
             scopes=["all-apis"],
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
@@ -361,7 +401,7 @@ def databricks_wif(cfg: "Config") -> Optional[CredentialsProvider]:
         token = token_source_for(audience).token()
         return {"Authorization": f"{token.token_type} {token.access_token}"}
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
@@ -378,7 +418,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if not cfg.is_azure:
         return None
 
-    token = GitHubOIDCTokenSupplier().get_oidc_token("api://AzureADTokenExchange")
+    token = oidc_token_supplier.GitHubOIDCTokenSupplier().get_oidc_token("api://AzureADTokenExchange")
     if not token:
         return None
 
@@ -386,21 +426,22 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         "Configured AAD token for GitHub Actions OIDC (%s)",
         cfg.azure_client_id,
     )
-    params = {
-        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-        "resource": cfg.effective_azure_login_app_id,
-        "client_assertion": token,
-    }
+
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
         token_endpoint = cfg.oidc_endpoints.token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, "").split("/")[0]
-    inner = ClientCredentials(
+
+    inner = oauth.ClientCredentials(
         client_id=cfg.azure_client_id,
         client_secret="",  # we have no (rotatable) secrets in OIDC flow
         token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
-        endpoint_params=params,
+        endpoint_params={
+            "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            "resource": cfg.effective_azure_login_app_id,
+            "client_assertion": token,
+        },
         use_params=True,
         disable_async=cfg.disable_async_token_refresh,
     )
@@ -409,7 +450,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         token = inner.token()
         return {"Authorization": f"{token.token_type} {token.access_token}"}
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         return inner.token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
@@ -442,7 +483,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
 
     gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info, scopes=GcpScopes)
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         credentials.refresh(request)
         return credentials.token
 
@@ -483,7 +524,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
 
     request = Request()
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         id_creds.refresh(request)
         return id_creds.token
 
@@ -498,8 +539,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-class CliTokenSource(Refreshable):
-
+class CliTokenSource(oauth.Refreshable):
     def __init__(
         self,
         cmd: List[str],
@@ -525,12 +565,12 @@ class CliTokenSource(Refreshable):
         if last_e:
             raise last_e
 
-    def refresh(self) -> Token:
+    def refresh(self) -> oauth.Token:
         try:
             out = _run_subprocess(self._cmd, capture_output=True, check=True)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
-            return Token(
+            return oauth.Token(
                 access_token=it[self._access_token_field],
                 token_type=it[self._token_type_field],
                 expiry=expires_on,
@@ -558,7 +598,7 @@ def _run_subprocess(
     kwargs["shell"] = sys.platform.startswith("win")
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
-    logging.debug(f'Running command: {" ".join(popenargs)}')
+    logging.debug(f"Running command: {' '.join(popenargs)}")
     return subprocess.run(
         popenargs,
         input=input,
@@ -689,7 +729,7 @@ def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
             mgmt_token_source = AzureCliTokenSource.for_resource(cfg, management_endpoint)
         except Exception as e:
             logger.debug(
-                f"Not including service management token in headers",
+                "Not including service management token in headers",
                 exc_info=e,
             )
             mgmt_token_source = None
@@ -700,9 +740,9 @@ def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     def inner() -> Dict[str, str]:
         token = token_source.token()
         headers = {"Authorization": f"{token.token_type} {token.access_token}"}
-        add_workspace_id_header(cfg, headers)
+        azure.add_workspace_id_header(cfg, headers)
         if mgmt_token_source:
-            add_sp_management_token(mgmt_token_source, headers)
+            azure.add_sp_management_token(mgmt_token_source, headers)
         return headers
 
     return inner
@@ -784,13 +824,13 @@ def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
         token = token_source.token()
         return {"Authorization": f"{token.token_type} {token.access_token}"}
 
-    def token() -> Token:
+    def token() -> oauth.Token:
         return token_source.token()
 
     return OAuthCredentialsProvider(inner, token)
 
 
-class MetadataServiceTokenSource(Refreshable):
+class MetadataServiceTokenSource(oauth.Refreshable):
     """Obtain the token granted by Databricks Metadata Service"""
 
     METADATA_SERVICE_VERSION = "1"
@@ -803,7 +843,7 @@ class MetadataServiceTokenSource(Refreshable):
         self.url = cfg.metadata_service_url
         self.host = cfg.host
 
-    def refresh(self) -> Token:
+    def refresh(self) -> oauth.Token:
         resp = requests.get(
             self.url,
             timeout=self._metadata_service_timeout,
@@ -831,7 +871,7 @@ class MetadataServiceTokenSource(Refreshable):
         except:
             raise ValueError("Metadata Service returned invalid expiry")
 
-        return Token(access_token=access_token, token_type=token_type, expiry=expiry)
+        return oauth.Token(access_token=access_token, token_type=token_type, expiry=expiry)
 
 
 @credentials_strategy("metadata-service", ["host", "metadata_service_url"])
@@ -972,7 +1012,9 @@ class DefaultCredentials:
             basic_auth,
             metadata_service,
             oauth_service_principal,
-            databricks_wif,
+            env_oidc,
+            file_oidc,
+            github_oidc,
             azure_service_principal,
             github_oidc_azure,
             azure_cli,
@@ -987,7 +1029,7 @@ class DefaultCredentials:
     def auth_type(self) -> str:
         return self._auth_type
 
-    def oauth_token(self, cfg: "Config") -> Token:
+    def oauth_token(self, cfg: "Config") -> oauth.Token:
         for provider in self._auth_providers:
             auth_type = provider.auth_type()
             if auth_type != self._auth_type:
@@ -1004,9 +1046,13 @@ class DefaultCredentials:
                 continue
             logger.debug(f"Attempting to configure auth: {auth_type}")
             try:
+                # The header factory might be None if the provider cannot be
+                # configured for the current environment. For example, if the
+                # provider requires some missing environment variables.
                 header_factory = provider(cfg)
                 if not header_factory:
                     continue
+
                 self._auth_type = auth_type
                 return header_factory
             except Exception as e:

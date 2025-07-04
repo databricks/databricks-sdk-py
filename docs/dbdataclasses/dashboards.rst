@@ -12,14 +12,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CancelQueryExecutionResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CancelQueryExecutionResponseStatus
-   :members:
-   :undoc-members:
-
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -38,18 +30,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteSubscriptionResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: Empty
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExecutePublishedDashboardQueryRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExecuteQueryResponse
    :members:
    :undoc-members:
 
@@ -77,6 +57,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieListSpacesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieMessage
    :members:
    :undoc-members:
@@ -98,10 +82,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieStartConversationResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetPublishedDashboardEmbeddedResponse
    :members:
    :undoc-members:
 
@@ -162,6 +142,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEPLOYMENT_NOT_FOUND_EXCEPTION
       :value: "DEPLOYMENT_NOT_FOUND_EXCEPTION"
 
+   .. py:attribute:: DESCRIBE_QUERY_INVALID_SQL_ERROR
+      :value: "DESCRIBE_QUERY_INVALID_SQL_ERROR"
+
+   .. py:attribute:: DESCRIBE_QUERY_TIMEOUT
+      :value: "DESCRIBE_QUERY_TIMEOUT"
+
+   .. py:attribute:: DESCRIBE_QUERY_UNEXPECTED_FAILURE
+      :value: "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
+
    .. py:attribute:: FUNCTIONS_NOT_AVAILABLE_EXCEPTION
       :value: "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
 
@@ -198,6 +187,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
 
+   .. py:attribute:: INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
+      :value: "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
+
    .. py:attribute:: INVALID_CHAT_COMPLETION_JSON_EXCEPTION
       :value: "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
 
@@ -206,6 +198,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: INVALID_FUNCTION_CALL_EXCEPTION
       :value: "INVALID_FUNCTION_CALL_EXCEPTION"
+
+   .. py:attribute:: INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION
+      :value: "INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION"
+
+   .. py:attribute:: INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION
+      :value: "INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION"
+
+   .. py:attribute:: INVALID_SQL_UNKNOWN_TABLE_EXCEPTION
+      :value: "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION"
 
    .. py:attribute:: INVALID_TABLE_IDENTIFIER_EXCEPTION
       :value: "INVALID_TABLE_IDENTIFIER_EXCEPTION"
@@ -311,27 +312,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PendingStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: PollQueryStatusResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: PollQueryStatusResponseData
-   :members:
-   :undoc-members:
-
 .. autoclass:: PublishRequest
    :members:
    :undoc-members:
 
 .. autoclass:: PublishedDashboard
-   :members:
-   :undoc-members:
-
-.. autoclass:: QueryResponseStatus
    :members:
    :undoc-members:
 
@@ -364,10 +349,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SubscriptionSubscriberUser
-   :members:
-   :undoc-members:
-
-.. autoclass:: SuccessStatus
    :members:
    :undoc-members:
 

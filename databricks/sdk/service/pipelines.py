@@ -58,6 +58,9 @@ class CreatePipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -89,6 +92,11 @@ class CreatePipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     run_as: Optional[RunAs] = None
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -105,6 +113,11 @@ class CreatePipeline:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -139,6 +152,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.filters:
@@ -159,6 +174,8 @@ class CreatePipeline:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as.as_dict()
         if self.schema is not None:
@@ -167,6 +184,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -198,6 +217,8 @@ class CreatePipeline:
             body["dry_run"] = self.dry_run
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.filters:
@@ -218,6 +239,8 @@ class CreatePipeline:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as
         if self.schema is not None:
@@ -226,6 +249,8 @@ class CreatePipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -247,6 +272,7 @@ class CreatePipeline:
             development=d.get("development", None),
             dry_run=d.get("dry_run", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -257,10 +283,12 @@ class CreatePipeline:
             notifications=_repeated_dict(d, "notifications", Notifications),
             photon=d.get("photon", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             run_as=_from_dict(d, "run_as", RunAs),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -435,6 +463,9 @@ class EditPipeline:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -473,6 +504,11 @@ class EditPipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     run_as: Optional[RunAs] = None
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -489,6 +525,11 @@ class EditPipeline:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -521,6 +562,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.expected_last_modified is not None:
@@ -545,6 +588,8 @@ class EditPipeline:
             body["pipeline_id"] = self.pipeline_id
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as.as_dict()
         if self.schema is not None:
@@ -553,6 +598,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -582,6 +629,8 @@ class EditPipeline:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.expected_last_modified is not None:
@@ -606,6 +655,8 @@ class EditPipeline:
             body["pipeline_id"] = self.pipeline_id
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.run_as:
             body["run_as"] = self.run_as
         if self.schema is not None:
@@ -614,6 +665,8 @@ class EditPipeline:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -634,6 +687,7 @@ class EditPipeline:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             expected_last_modified=d.get("expected_last_modified", None),
             filters=_from_dict(d, "filters", Filters),
@@ -646,10 +700,12 @@ class EditPipeline:
             photon=d.get("photon", None),
             pipeline_id=d.get("pipeline_id", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             run_as=_from_dict(d, "run_as", RunAs),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -1103,6 +1159,10 @@ class IngestionPipelineDefinition:
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
 
+    source_type: Optional[IngestionSourceType] = None
+    """The type of the foreign source. The source type will be inferred from the source connection or
+    ingestion gateway. This field is output only and will be ignored if provided."""
+
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings are applied to all
     tables in the pipeline."""
@@ -1116,6 +1176,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = [v.as_dict() for v in self.objects]
+        if self.source_type is not None:
+            body["source_type"] = self.source_type.value
         if self.table_configuration:
             body["table_configuration"] = self.table_configuration.as_dict()
         return body
@@ -1129,6 +1191,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = self.objects
+        if self.source_type is not None:
+            body["source_type"] = self.source_type
         if self.table_configuration:
             body["table_configuration"] = self.table_configuration
         return body
@@ -1140,8 +1204,26 @@ class IngestionPipelineDefinition:
             connection_name=d.get("connection_name", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
+            source_type=_enum(d, "source_type", IngestionSourceType),
             table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
+
+
+class IngestionSourceType(Enum):
+
+    DYNAMICS365 = "DYNAMICS365"
+    GA4_RAW_DATA = "GA4_RAW_DATA"
+    MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    MYSQL = "MYSQL"
+    NETSUITE = "NETSUITE"
+    ORACLE = "ORACLE"
+    POSTGRESQL = "POSTGRESQL"
+    SALESFORCE = "SALESFORCE"
+    SERVICENOW = "SERVICENOW"
+    SHAREPOINT = "SHAREPOINT"
+    SQLSERVER = "SQLSERVER"
+    TERADATA = "TERADATA"
+    WORKDAY_RAAS = "WORKDAY_RAAS"
 
 
 @dataclass
@@ -1506,6 +1588,31 @@ class Origin:
             uc_resource_id=d.get("uc_resource_id", None),
             update_id=d.get("update_id", None),
         )
+
+
+@dataclass
+class PathPattern:
+    include: Optional[str] = None
+    """The source code to include for pipelines"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PathPattern into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.include is not None:
+            body["include"] = self.include
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PathPattern into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.include is not None:
+            body["include"] = self.include
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PathPattern:
+        """Deserializes the PathPattern from a dictionary."""
+        return cls(include=d.get("include", None))
 
 
 @dataclass
@@ -2018,6 +2125,10 @@ class PipelineLibrary:
     file: Optional[FileLibrary] = None
     """The path to a file that defines a pipeline and is stored in the Databricks Repos."""
 
+    glob: Optional[PathPattern] = None
+    """The unified field to include source codes. Each entry can be a notebook path, a file path, or a
+    folder path that ends `/**`. This field cannot be used together with `notebook` or `file`."""
+
     jar: Optional[str] = None
     """URI of the jar to be installed. Currently only DBFS is supported."""
 
@@ -2035,6 +2146,8 @@ class PipelineLibrary:
         body = {}
         if self.file:
             body["file"] = self.file.as_dict()
+        if self.glob:
+            body["glob"] = self.glob.as_dict()
         if self.jar is not None:
             body["jar"] = self.jar
         if self.maven:
@@ -2050,6 +2163,8 @@ class PipelineLibrary:
         body = {}
         if self.file:
             body["file"] = self.file
+        if self.glob:
+            body["glob"] = self.glob
         if self.jar is not None:
             body["jar"] = self.jar
         if self.maven:
@@ -2065,6 +2180,7 @@ class PipelineLibrary:
         """Deserializes the PipelineLibrary from a dictionary."""
         return cls(
             file=_from_dict(d, "file", FileLibrary),
+            glob=_from_dict(d, "glob", PathPattern),
             jar=d.get("jar", None),
             maven=_from_dict(d, "maven", compute.MavenLibrary),
             notebook=_from_dict(d, "notebook", NotebookLibrary),
@@ -2262,6 +2378,9 @@ class PipelineSpec:
     edition: Optional[str] = None
     """Pipeline product edition."""
 
+    environment: Optional[PipelinesEnvironment] = None
+    """Environment specification for this pipeline used to install dependencies."""
+
     event_log: Optional[EventLogSpec] = None
     """Event log configuration for this pipeline"""
 
@@ -2293,6 +2412,11 @@ class PipelineSpec:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    root_path: Optional[str] = None
+    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+    Databricks user interface and it is added to sys.path when executing Python sources during
+    pipeline execution."""
+
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to."""
 
@@ -2301,6 +2425,11 @@ class PipelineSpec:
 
     storage: Optional[str] = None
     """DBFS root directory for storing checkpoints and tables."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
+    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
+    pipeline."""
 
     target: Optional[str] = None
     """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
@@ -2331,6 +2460,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment.as_dict()
         if self.event_log:
             body["event_log"] = self.event_log.as_dict()
         if self.filters:
@@ -2351,12 +2482,16 @@ class PipelineSpec:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window.as_dict()
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.schema is not None:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2384,6 +2519,8 @@ class PipelineSpec:
             body["development"] = self.development
         if self.edition is not None:
             body["edition"] = self.edition
+        if self.environment:
+            body["environment"] = self.environment
         if self.event_log:
             body["event_log"] = self.event_log
         if self.filters:
@@ -2404,12 +2541,16 @@ class PipelineSpec:
             body["photon"] = self.photon
         if self.restart_window:
             body["restart_window"] = self.restart_window
+        if self.root_path is not None:
+            body["root_path"] = self.root_path
         if self.schema is not None:
             body["schema"] = self.schema
         if self.serverless is not None:
             body["serverless"] = self.serverless
         if self.storage is not None:
             body["storage"] = self.storage
+        if self.tags:
+            body["tags"] = self.tags
         if self.target is not None:
             body["target"] = self.target
         if self.trigger:
@@ -2429,6 +2570,7 @@ class PipelineSpec:
             deployment=_from_dict(d, "deployment", PipelineDeployment),
             development=d.get("development", None),
             edition=d.get("edition", None),
+            environment=_from_dict(d, "environment", PipelinesEnvironment),
             event_log=_from_dict(d, "event_log", EventLogSpec),
             filters=_from_dict(d, "filters", Filters),
             gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
@@ -2439,9 +2581,11 @@ class PipelineSpec:
             notifications=_repeated_dict(d, "notifications", Notifications),
             photon=d.get("photon", None),
             restart_window=_from_dict(d, "restart_window", RestartWindow),
+            root_path=d.get("root_path", None),
             schema=d.get("schema", None),
             serverless=d.get("serverless", None),
             storage=d.get("storage", None),
+            tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
         )
@@ -2580,6 +2724,39 @@ class PipelineTrigger:
     def from_dict(cls, d: Dict[str, Any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
         return cls(cron=_from_dict(d, "cron", CronTrigger), manual=_from_dict(d, "manual", ManualTrigger))
+
+
+@dataclass
+class PipelinesEnvironment:
+    """The environment entity used to preserve serverless environment side panel, jobs' environment for
+    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+    environment spec, only pip dependencies are supported."""
+
+    dependencies: Optional[List[str]] = None
+    """List of pip dependencies, as supported by the version of pip in this environment. Each
+    dependency is a pip requirement file line
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
+    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
+    Databricks), <vcs project url>"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelinesEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = [v for v in self.dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelinesEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dependencies:
+            body["dependencies"] = self.dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinesEnvironment:
+        """Deserializes the PipelinesEnvironment from a dictionary."""
+        return cls(dependencies=d.get("dependencies", None))
 
 
 @dataclass
@@ -2795,7 +2972,7 @@ class SchemaSpec:
 @dataclass
 class Sequencing:
     control_plane_seq_no: Optional[int] = None
-    """A sequence number, unique and increasing within the control plane."""
+    """A sequence number, unique and increasing per pipeline."""
 
     data_plane_id: Optional[DataPlaneId] = None
     """the ID assigned by the data plane."""
@@ -2996,6 +3173,7 @@ class StartUpdateCause(Enum):
     """What triggered this update."""
 
     API_CALL = "API_CALL"
+    INFRASTRUCTURE_MAINTENANCE = "INFRASTRUCTURE_MAINTENANCE"
     JOB_TASK = "JOB_TASK"
     RETRY_ON_FAILURE = "RETRY_ON_FAILURE"
     SCHEMA_CHANGE = "SCHEMA_CHANGE"
@@ -3321,6 +3499,7 @@ class UpdateInfoCause(Enum):
     """What triggered this update."""
 
     API_CALL = "API_CALL"
+    INFRASTRUCTURE_MAINTENANCE = "INFRASTRUCTURE_MAINTENANCE"
     JOB_TASK = "JOB_TASK"
     RETRY_ON_FAILURE = "RETRY_ON_FAILURE"
     SCHEMA_CHANGE = "SCHEMA_CHANGE"
@@ -3462,6 +3641,7 @@ class PipelinesAPI:
         development: Optional[bool] = None,
         dry_run: Optional[bool] = None,
         edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
         event_log: Optional[EventLogSpec] = None,
         filters: Optional[Filters] = None,
         gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
@@ -3472,16 +3652,16 @@ class PipelinesAPI:
         notifications: Optional[List[Notifications]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ) -> CreatePipelineResponse:
-        """Create a pipeline.
-
-        Creates a new data processing pipeline based on the requested configuration. If successful, this
+        """Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
 
         :param allow_duplicate_names: bool (optional)
@@ -3507,6 +3687,8 @@ class PipelinesAPI:
         :param dry_run: bool (optional)
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param filters: :class:`Filters` (optional)
@@ -3528,6 +3710,10 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -3540,6 +3726,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -3572,6 +3761,8 @@ class PipelinesAPI:
             body["dry_run"] = dry_run
         if edition is not None:
             body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
         if event_log is not None:
             body["event_log"] = event_log.as_dict()
         if filters is not None:
@@ -3592,6 +3783,8 @@ class PipelinesAPI:
             body["photon"] = photon
         if restart_window is not None:
             body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
         if run_as is not None:
             body["run_as"] = run_as.as_dict()
         if schema is not None:
@@ -3600,6 +3793,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:
@@ -3613,9 +3808,8 @@ class PipelinesAPI:
         return CreatePipelineResponse.from_dict(res)
 
     def delete(self, pipeline_id: str):
-        """Delete a pipeline.
-
-        Deletes a pipeline.
+        """Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
+        its tables. You cannot undo this action.
 
         :param pipeline_id: str
 
@@ -3644,9 +3838,7 @@ class PipelinesAPI:
         return GetPipelineResponse.from_dict(res)
 
     def get_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
-        """Get pipeline permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
@@ -3662,9 +3854,7 @@ class PipelinesAPI:
         return GetPipelinePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
-        """Get pipeline permissions.
-
-        Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
+        """Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
@@ -3680,9 +3870,7 @@ class PipelinesAPI:
         return PipelinePermissions.from_dict(res)
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
-        """Get a pipeline update.
-
-        Gets an update from an active pipeline.
+        """Gets an update from an active pipeline.
 
         :param pipeline_id: str
           The ID of the pipeline.
@@ -3708,9 +3896,7 @@ class PipelinesAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[PipelineEvent]:
-        """List pipeline events.
-
-        Retrieves events for a pipeline.
+        """Retrieves events for a pipeline.
 
         :param pipeline_id: str
           The pipeline to return events for.
@@ -3766,9 +3952,7 @@ class PipelinesAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[PipelineStateInfo]:
-        """List pipelines.
-
-        Lists pipelines defined in the Delta Live Tables system.
+        """Lists pipelines defined in the Delta Live Tables system.
 
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
@@ -3822,9 +4006,7 @@ class PipelinesAPI:
         page_token: Optional[str] = None,
         until_update_id: Optional[str] = None,
     ) -> ListUpdatesResponse:
-        """List pipeline updates.
-
-        List updates for an active pipeline.
+        """List updates for an active pipeline.
 
         :param pipeline_id: str
           The pipeline to return updates for.
@@ -3855,9 +4037,7 @@ class PipelinesAPI:
     def set_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
-        """Set pipeline permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param pipeline_id: str
@@ -3887,9 +4067,7 @@ class PipelinesAPI:
         refresh_selection: Optional[List[str]] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
-        """Start a pipeline.
-
-        Starts a new update for the pipeline. If there is already an active update for the pipeline, the
+        """Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
 
         :param pipeline_id: str
@@ -3931,9 +4109,7 @@ class PipelinesAPI:
         return StartUpdateResponse.from_dict(res)
 
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
-        """Stop a pipeline.
-
-        Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
+        """Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
         request is a no-op.
 
         :param pipeline_id: str
@@ -3969,6 +4145,7 @@ class PipelinesAPI:
         deployment: Optional[PipelineDeployment] = None,
         development: Optional[bool] = None,
         edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
         event_log: Optional[EventLogSpec] = None,
         expected_last_modified: Optional[int] = None,
         filters: Optional[Filters] = None,
@@ -3980,16 +4157,16 @@ class PipelinesAPI:
         notifications: Optional[List[Notifications]] = None,
         photon: Optional[bool] = None,
         restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
         run_as: Optional[RunAs] = None,
         schema: Optional[str] = None,
         serverless: Optional[bool] = None,
         storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
     ):
-        """Edit a pipeline.
-
-        Updates a pipeline with the supplied configuration.
+        """Updates a pipeline with the supplied configuration.
 
         :param pipeline_id: str
           Unique identifier for this pipeline.
@@ -4015,6 +4192,8 @@ class PipelinesAPI:
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
           Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
         :param event_log: :class:`EventLogSpec` (optional)
           Event log configuration for this pipeline
         :param expected_last_modified: int (optional)
@@ -4039,6 +4218,10 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
         :param run_as: :class:`RunAs` (optional)
           Write-only setting, available only in Create/Update calls. Specifies the user or service principal
           that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
@@ -4051,6 +4234,9 @@ class PipelinesAPI:
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
           DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
         :param target: str (optional)
           Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
           be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
@@ -4081,6 +4267,8 @@ class PipelinesAPI:
             body["development"] = development
         if edition is not None:
             body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
         if event_log is not None:
             body["event_log"] = event_log.as_dict()
         if expected_last_modified is not None:
@@ -4103,6 +4291,8 @@ class PipelinesAPI:
             body["photon"] = photon
         if restart_window is not None:
             body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
         if run_as is not None:
             body["run_as"] = run_as.as_dict()
         if schema is not None:
@@ -4111,6 +4301,8 @@ class PipelinesAPI:
             body["serverless"] = serverless
         if storage is not None:
             body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
         if target is not None:
             body["target"] = target
         if trigger is not None:
@@ -4125,9 +4317,7 @@ class PipelinesAPI:
     def update_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
-        """Update pipeline permissions.
-
-        Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        """Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
 
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.

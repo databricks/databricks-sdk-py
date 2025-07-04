@@ -37,8 +37,6 @@
             w.secrets.delete_secret(scope=scope_name, key=key_name)
             w.secrets.delete_scope(scope=scope_name)
 
-        Create a new secret scope.
-
         The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
         exceed 128 characters.
 
@@ -56,8 +54,6 @@
 
     .. py:method:: delete_acl(scope: str, principal: str)
 
-        Delete an ACL.
-
         Deletes the given ACL on the given scope.
 
         Users must have the `MANAGE` permission to invoke this API. Throws `RESOURCE_DOES_NOT_EXIST` if no
@@ -74,8 +70,6 @@
 
     .. py:method:: delete_scope(scope: str)
 
-        Delete a secret scope.
-
         Deletes a secret scope.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws `PERMISSION_DENIED` if the user
@@ -88,8 +82,6 @@
         
 
     .. py:method:: delete_secret(scope: str, key: str)
-
-        Delete a secret.
 
         Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
         secret scope.
@@ -107,8 +99,6 @@
 
     .. py:method:: get_acl(scope: str, principal: str) -> AclItem
 
-        Get secret ACL details.
-
         Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
         permission to invoke this API.
 
@@ -124,8 +114,6 @@
         
 
     .. py:method:: get_secret(scope: str, key: str) -> GetSecretResponse
-
-        Get a secret.
 
         Gets the bytes representation of a secret value for the specified scope and key.
 
@@ -170,8 +158,6 @@
             w.secrets.delete_secret(scope=scope_name, key=key_name)
             w.secrets.delete_scope(scope=scope_name)
 
-        Lists ACLs.
-
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
@@ -196,11 +182,10 @@
             
             scopes = w.secrets.list_scopes()
 
-        List all scopes.
-
         Lists all secret scopes available in the workspace.
 
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+
 
         :returns: Iterator over :class:`SecretScope`
         
@@ -229,8 +214,6 @@
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
             w.secrets.delete_scope(scope=scope_name)
-
-        List secret keys.
 
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
@@ -277,8 +260,6 @@
             w.groups.delete(id=group.id)
             w.secrets.delete_secret(scope=scope_name, key=key_name)
             w.secrets.delete_scope(scope=scope_name)
-
-        Create/update an ACL.
 
         Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
         group) on the specified scope point.
@@ -339,8 +320,6 @@
             # cleanup
             w.secrets.delete_secret(scope=scope_name, key=key_name)
             w.secrets.delete_scope(scope=scope_name)
-
-        Add a secret.
 
         Inserts a secret under the provided scope with the given name. If a secret already exists with the
         same name, this command overwrites the existing secret's value. The server encrypts the secret using

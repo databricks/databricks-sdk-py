@@ -13,8 +13,6 @@
 
     .. py:method:: cancel_refresh(table_name: str, refresh_id: str)
 
-        Cancel refresh.
-
         Cancel an active monitor refresh for the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -33,8 +31,6 @@
         
 
     .. py:method:: create(table_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries], warehouse_id: Optional[str]]) -> MonitorInfo
-
-        Create a table monitor.
 
         Creates a new monitor for the specified table.
 
@@ -85,8 +81,6 @@
 
     .. py:method:: delete(table_name: str)
 
-        Delete a table monitor.
-
         Deletes a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -107,8 +101,6 @@
 
     .. py:method:: get(table_name: str) -> MonitorInfo
 
-        Get a table monitor.
-
         Gets a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -127,8 +119,6 @@
         
 
     .. py:method:: get_refresh(table_name: str, refresh_id: str) -> MonitorRefreshInfo
-
-        Get refresh.
 
         Gets info about a specific monitor refresh using the given refresh ID.
 
@@ -149,8 +139,6 @@
 
     .. py:method:: list_refreshes(table_name: str) -> MonitorRefreshListResponse
 
-        List refreshes.
-
         Gets an array containing the history of the most recent refreshes (up to 25) for this table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -167,8 +155,6 @@
         
 
     .. py:method:: regenerate_dashboard(table_name: str [, warehouse_id: Optional[str]]) -> RegenerateDashboardResponse
-
-        Regenerate a monitoring dashboard.
 
         Regenerates the monitoring dashboard for the specified table.
 
@@ -191,8 +177,6 @@
 
     .. py:method:: run_refresh(table_name: str) -> MonitorRefreshInfo
 
-        Queue a metric refresh for a monitor.
-
         Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
         background.
 
@@ -210,8 +194,6 @@
         
 
     .. py:method:: update(table_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], dashboard_id: Optional[str], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries]]) -> MonitorInfo
-
-        Update a table monitor.
 
         Updates a monitor for the specified table.
 

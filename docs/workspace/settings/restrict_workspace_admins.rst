@@ -16,8 +16,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteRestrictWorkspaceAdminsSettingResponse
 
-        Delete the restrict workspace admins setting.
-
         Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
         provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
         request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
@@ -35,8 +33,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> RestrictWorkspaceAdminsSetting
 
-        Get the restrict workspace admins setting.
-
         Gets the restrict workspace admins setting.
 
         :param etag: str (optional)
@@ -50,8 +46,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str) -> RestrictWorkspaceAdminsSetting
-
-        Update the restrict workspace admins setting.
 
         Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
         `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request

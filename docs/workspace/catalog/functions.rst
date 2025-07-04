@@ -12,8 +12,6 @@
 
     .. py:method:: create(function_info: CreateFunction) -> FunctionInfo
 
-        Create a function.
-
         **WARNING: This API is experimental and will change in future versions**
 
         Creates a new function
@@ -29,8 +27,6 @@
         
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
-
-        Delete a function.
 
         Deletes the function that matches the supplied name. For the deletion to succeed, the user must
         satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
@@ -48,8 +44,6 @@
         
 
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> FunctionInfo
-
-        Get a function.
 
         Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
         satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
@@ -69,8 +63,6 @@
         
 
     .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[FunctionInfo]
-
-        List functions.
 
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
@@ -97,8 +89,6 @@
         
 
     .. py:method:: update(name: str [, owner: Optional[str]]) -> FunctionInfo
-
-        Update a function.
 
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function

@@ -13,8 +13,6 @@
 
     .. py:method:: create( [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], id: Optional[str], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]]) -> Group
 
-        Create a new group.
-
         Creates a group in the Databricks account with a unique name, using the supplied group details.
 
         :param display_name: str (optional)
@@ -41,8 +39,6 @@
 
     .. py:method:: delete(id: str)
 
-        Delete a group.
-
         Deletes a group from the Databricks account.
 
         :param id: str
@@ -53,8 +49,6 @@
 
     .. py:method:: get(id: str) -> Group
 
-        Get group details.
-
         Gets the information for a specific group in the Databricks account.
 
         :param id: str
@@ -64,8 +58,6 @@
         
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[Group]
-
-        List group details.
 
         Gets all details of the groups associated with the Databricks account.
 
@@ -94,8 +86,6 @@
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
-        Update group details.
-
         Partially updates the details of a group.
 
         :param id: str
@@ -108,8 +98,6 @@
         
 
     .. py:method:: update(id: str [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]])
-
-        Replace a group.
 
         Updates the details of a group by replacing the entire group entity.
 

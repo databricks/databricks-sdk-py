@@ -271,109 +271,6 @@ class ApproveTransitionRequestResponse:
         return cls(activity=_from_dict(d, "activity", Activity))
 
 
-@dataclass
-class ArtifactCredentialInfo:
-    headers: Optional[List[ArtifactCredentialInfoHttpHeader]] = None
-    """A collection of HTTP headers that should be specified when uploading to or downloading from the
-    specified `signed_uri`."""
-
-    path: Optional[str] = None
-    """The path, relative to the Run's artifact root location, of the artifact that can be accessed
-    with the credential."""
-
-    run_id: Optional[str] = None
-    """The ID of the MLflow Run containing the artifact that can be accessed with the credential."""
-
-    signed_uri: Optional[str] = None
-    """The signed URI credential that provides access to the artifact."""
-
-    type: Optional[ArtifactCredentialType] = None
-    """The type of the signed credential URI (e.g., an AWS presigned URL or an Azure Shared Access
-    Signature URI)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.headers:
-            body["headers"] = [v.as_dict() for v in self.headers]
-        if self.path is not None:
-            body["path"] = self.path
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        if self.signed_uri is not None:
-            body["signed_uri"] = self.signed_uri
-        if self.type is not None:
-            body["type"] = self.type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.headers:
-            body["headers"] = self.headers
-        if self.path is not None:
-            body["path"] = self.path
-        if self.run_id is not None:
-            body["run_id"] = self.run_id
-        if self.signed_uri is not None:
-            body["signed_uri"] = self.signed_uri
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfo:
-        """Deserializes the ArtifactCredentialInfo from a dictionary."""
-        return cls(
-            headers=_repeated_dict(d, "headers", ArtifactCredentialInfoHttpHeader),
-            path=d.get("path", None),
-            run_id=d.get("run_id", None),
-            signed_uri=d.get("signed_uri", None),
-            type=_enum(d, "type", ArtifactCredentialType),
-        )
-
-
-@dataclass
-class ArtifactCredentialInfoHttpHeader:
-    name: Optional[str] = None
-    """The HTTP header name."""
-
-    value: Optional[str] = None
-    """The HTTP header value."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfoHttpHeader into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ArtifactCredentialInfoHttpHeader into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ArtifactCredentialInfoHttpHeader:
-        """Deserializes the ArtifactCredentialInfoHttpHeader from a dictionary."""
-        return cls(name=d.get("name", None), value=d.get("value", None))
-
-
-class ArtifactCredentialType(Enum):
-    """The type of a given artifact access credential"""
-
-    AWS_PRESIGNED_URL = "AWS_PRESIGNED_URL"
-    AZURE_ADLS_GEN2_SAS_URI = "AZURE_ADLS_GEN2_SAS_URI"
-    AZURE_SAS_URI = "AZURE_SAS_URI"
-    GCP_SIGNED_URL = "GCP_SIGNED_URL"
-
-
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
     `EDIT_COMMENT`: Edit the comment
@@ -786,6 +683,98 @@ class CreateForecastingExperimentResponse:
 
 
 @dataclass
+class CreateLoggedModelRequest:
+    experiment_id: str
+    """The ID of the experiment that owns the model."""
+
+    model_type: Optional[str] = None
+    """The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``."""
+
+    name: Optional[str] = None
+    """The name of the model (optional). If not specified one will be generated."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Parameters attached to the model."""
+
+    source_run_id: Optional[str] = None
+    """The ID of the run that created the model."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """Tags attached to the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateLoggedModelRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateLoggedModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.params:
+            body["params"] = self.params
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateLoggedModelRequest:
+        """Deserializes the CreateLoggedModelRequest from a dictionary."""
+        return cls(
+            experiment_id=d.get("experiment_id", None),
+            model_type=d.get("model_type", None),
+            name=d.get("name", None),
+            params=_repeated_dict(d, "params", LoggedModelParameter),
+            source_run_id=d.get("source_run_id", None),
+            tags=_repeated_dict(d, "tags", LoggedModelTag),
+        )
+
+
+@dataclass
+class CreateLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The newly created logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateLoggedModelResponse:
+        """Deserializes the CreateLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
 class CreateModelRequest:
     name: str
     """Register models under this name"""
@@ -984,7 +973,8 @@ class CreateRegistryWebhook:
     job_spec: Optional[JobSpec] = None
 
     model_name: Optional[str] = None
-    """Name of the model whose events would trigger this webhook."""
+    """If model name is not specified, a registry-wide webhook is created that listens for the
+    specified events across all versions of all registered models."""
 
     status: Optional[RegistryWebhookStatus] = None
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
@@ -1405,6 +1395,42 @@ class DeleteExperimentResponse:
 
 
 @dataclass
+class DeleteLoggedModelResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteLoggedModelResponse:
+        """Deserializes the DeleteLoggedModelResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteLoggedModelTagResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteLoggedModelTagResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteLoggedModelTagResponse:
+        """Deserializes the DeleteLoggedModelTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteModelResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteModelResponse into a dictionary suitable for use as a JSON request body."""
@@ -1473,6 +1499,24 @@ class DeleteModelVersionTagResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionTagResponse:
         """Deserializes the DeleteModelVersionTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteOnlineStoreResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteOnlineStoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteOnlineStoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteOnlineStoreResponse:
+        """Deserializes the DeleteOnlineStoreResponse from a dictionary."""
         return cls()
 
 
@@ -2104,6 +2148,64 @@ class FileInfo:
 
 
 @dataclass
+class FinalizeLoggedModelRequest:
+    status: LoggedModelStatus
+    """Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that
+    something went wrong when logging the model weights / agent code."""
+
+    model_id: Optional[str] = None
+    """The ID of the logged model to finalize."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FinalizeLoggedModelRequest:
+        """Deserializes the FinalizeLoggedModelRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), status=_enum(d, "status", LoggedModelStatus))
+
+
+@dataclass
+class FinalizeLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The updated logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FinalizeLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FinalizeLoggedModelResponse:
+        """Deserializes the FinalizeLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
 class ForecastingExperiment:
     """Represents a forecasting experiment with its unique identifier, URL, and state."""
 
@@ -2155,56 +2257,6 @@ class ForecastingExperimentState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCEEDED = "SUCCEEDED"
-
-
-@dataclass
-class GetCredentialsForTraceDataDownloadResponse:
-    credential_info: Optional[ArtifactCredentialInfo] = None
-    """The artifact download credentials for the specified trace data."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataDownloadResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataDownloadResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataDownloadResponse:
-        """Deserializes the GetCredentialsForTraceDataDownloadResponse from a dictionary."""
-        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
-
-
-@dataclass
-class GetCredentialsForTraceDataUploadResponse:
-    credential_info: Optional[ArtifactCredentialInfo] = None
-    """The artifact upload credentials for the specified trace data."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataUploadResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetCredentialsForTraceDataUploadResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsForTraceDataUploadResponse:
-        """Deserializes the GetCredentialsForTraceDataUploadResponse from a dictionary."""
-        return cls(credential_info=_from_dict(d, "credential_info", ArtifactCredentialInfo))
 
 
 @dataclass
@@ -2338,6 +2390,31 @@ class GetLatestVersionsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsResponse:
         """Deserializes the GetLatestVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, "model_versions", ModelVersion))
+
+
+@dataclass
+class GetLoggedModelResponse:
+    model: Optional[LoggedModel] = None
+    """The retrieved logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model:
+            body["model"] = self.model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model:
+            body["model"] = self.model
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
+        """Deserializes the GetLoggedModelResponse from a dictionary."""
+        return cls(model=_from_dict(d, "model", LoggedModel))
 
 
 @dataclass
@@ -2817,6 +2894,41 @@ class ListModelsResponse:
 
 
 @dataclass
+class ListOnlineStoresResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    online_stores: Optional[List[OnlineStore]] = None
+    """List of online stores."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListOnlineStoresResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.online_stores:
+            body["online_stores"] = [v.as_dict() for v in self.online_stores]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListOnlineStoresResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.online_stores:
+            body["online_stores"] = self.online_stores
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListOnlineStoresResponse:
+        """Deserializes the ListOnlineStoresResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            online_stores=_repeated_dict(d, "online_stores", OnlineStore),
+        )
+
+
+@dataclass
 class ListRegistryWebhooks:
     next_page_token: Optional[str] = None
     """Token that can be used to retrieve the next page of artifact results"""
@@ -3009,6 +3121,56 @@ class LogInputsResponse:
 
 
 @dataclass
+class LogLoggedModelParamsRequest:
+    model_id: Optional[str] = None
+    """The ID of the logged model to log params for."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Parameters to attach to the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.params:
+            body["params"] = self.params
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogLoggedModelParamsRequest:
+        """Deserializes the LogLoggedModelParamsRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), params=_repeated_dict(d, "params", LoggedModelParameter))
+
+
+@dataclass
+class LogLoggedModelParamsRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogLoggedModelParamsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogLoggedModelParamsRequestResponse:
+        """Deserializes the LogLoggedModelParamsRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogMetric:
     key: str
     """Name of the metric."""
@@ -3171,6 +3333,56 @@ class LogModelResponse:
 
 
 @dataclass
+class LogOutputsRequest:
+    run_id: str
+    """The ID of the Run from which to log outputs."""
+
+    models: Optional[List[ModelOutput]] = None
+    """The model outputs from the Run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LogOutputsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogOutputsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        if self.run_id is not None:
+            body["run_id"] = self.run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogOutputsRequest:
+        """Deserializes the LogOutputsRequest from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", ModelOutput), run_id=d.get("run_id", None))
+
+
+@dataclass
+class LogOutputsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the LogOutputsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogOutputsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LogOutputsResponse:
+        """Deserializes the LogOutputsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogParam:
     key: str
     """Name of the param. Maximum size is 255 bytes."""
@@ -3238,6 +3450,270 @@ class LogParamResponse:
     def from_dict(cls, d: Dict[str, Any]) -> LogParamResponse:
         """Deserializes the LogParamResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class LoggedModel:
+    """A logged model message includes logged model attributes, tags, registration info, params, and
+    linked run metrics."""
+
+    data: Optional[LoggedModelData] = None
+    """The params and metrics attached to the logged model."""
+
+    info: Optional[LoggedModelInfo] = None
+    """The logged model attributes such as model ID, status, tags, etc."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data:
+            body["data"] = self.data.as_dict()
+        if self.info:
+            body["info"] = self.info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data:
+            body["data"] = self.data
+        if self.info:
+            body["info"] = self.info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModel:
+        """Deserializes the LoggedModel from a dictionary."""
+        return cls(data=_from_dict(d, "data", LoggedModelData), info=_from_dict(d, "info", LoggedModelInfo))
+
+
+@dataclass
+class LoggedModelData:
+    """A LoggedModelData message includes logged model params and linked metrics."""
+
+    metrics: Optional[List[Metric]] = None
+    """Performance metrics linked to the model."""
+
+    params: Optional[List[LoggedModelParameter]] = None
+    """Immutable string key-value pairs of the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = [v.as_dict() for v in self.metrics]
+        if self.params:
+            body["params"] = [v.as_dict() for v in self.params]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics:
+            body["metrics"] = self.metrics
+        if self.params:
+            body["params"] = self.params
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelData:
+        """Deserializes the LoggedModelData from a dictionary."""
+        return cls(
+            metrics=_repeated_dict(d, "metrics", Metric), params=_repeated_dict(d, "params", LoggedModelParameter)
+        )
+
+
+@dataclass
+class LoggedModelInfo:
+    """A LoggedModelInfo includes logged model attributes, tags, and registration info."""
+
+    artifact_uri: Optional[str] = None
+    """The URI of the directory where model artifacts are stored."""
+
+    creation_timestamp_ms: Optional[int] = None
+    """The timestamp when the model was created in milliseconds since the UNIX epoch."""
+
+    creator_id: Optional[int] = None
+    """The ID of the user or principal that created the model."""
+
+    experiment_id: Optional[str] = None
+    """The ID of the experiment that owns the model."""
+
+    last_updated_timestamp_ms: Optional[int] = None
+    """The timestamp when the model was last updated in milliseconds since the UNIX epoch."""
+
+    model_id: Optional[str] = None
+    """The unique identifier for the logged model."""
+
+    model_type: Optional[str] = None
+    """The type of model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``."""
+
+    name: Optional[str] = None
+    """The name of the model."""
+
+    source_run_id: Optional[str] = None
+    """The ID of the run that created the model."""
+
+    status: Optional[LoggedModelStatus] = None
+    """The status of whether or not the model is ready for use."""
+
+    status_message: Optional[str] = None
+    """Details on the current model status."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """Mutable string key-value pairs set on the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.artifact_uri is not None:
+            body["artifact_uri"] = self.artifact_uri
+        if self.creation_timestamp_ms is not None:
+            body["creation_timestamp_ms"] = self.creation_timestamp_ms
+        if self.creator_id is not None:
+            body["creator_id"] = self.creator_id
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.last_updated_timestamp_ms is not None:
+            body["last_updated_timestamp_ms"] = self.last_updated_timestamp_ms
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.status_message is not None:
+            body["status_message"] = self.status_message
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.artifact_uri is not None:
+            body["artifact_uri"] = self.artifact_uri
+        if self.creation_timestamp_ms is not None:
+            body["creation_timestamp_ms"] = self.creation_timestamp_ms
+        if self.creator_id is not None:
+            body["creator_id"] = self.creator_id
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.last_updated_timestamp_ms is not None:
+            body["last_updated_timestamp_ms"] = self.last_updated_timestamp_ms
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.model_type is not None:
+            body["model_type"] = self.model_type
+        if self.name is not None:
+            body["name"] = self.name
+        if self.source_run_id is not None:
+            body["source_run_id"] = self.source_run_id
+        if self.status is not None:
+            body["status"] = self.status
+        if self.status_message is not None:
+            body["status_message"] = self.status_message
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelInfo:
+        """Deserializes the LoggedModelInfo from a dictionary."""
+        return cls(
+            artifact_uri=d.get("artifact_uri", None),
+            creation_timestamp_ms=d.get("creation_timestamp_ms", None),
+            creator_id=d.get("creator_id", None),
+            experiment_id=d.get("experiment_id", None),
+            last_updated_timestamp_ms=d.get("last_updated_timestamp_ms", None),
+            model_id=d.get("model_id", None),
+            model_type=d.get("model_type", None),
+            name=d.get("name", None),
+            source_run_id=d.get("source_run_id", None),
+            status=_enum(d, "status", LoggedModelStatus),
+            status_message=d.get("status_message", None),
+            tags=_repeated_dict(d, "tags", LoggedModelTag),
+        )
+
+
+@dataclass
+class LoggedModelParameter:
+    """Parameter associated with a LoggedModel."""
+
+    key: Optional[str] = None
+    """The key identifying this param."""
+
+    value: Optional[str] = None
+    """The value of this param."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelParameter:
+        """Deserializes the LoggedModelParameter from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+class LoggedModelStatus(Enum):
+    """A LoggedModelStatus enum value represents the status of a logged model."""
+
+    LOGGED_MODEL_PENDING = "LOGGED_MODEL_PENDING"
+    LOGGED_MODEL_READY = "LOGGED_MODEL_READY"
+    LOGGED_MODEL_UPLOAD_FAILED = "LOGGED_MODEL_UPLOAD_FAILED"
+
+
+@dataclass
+class LoggedModelTag:
+    """Tag for a LoggedModel."""
+
+    key: Optional[str] = None
+    """The tag key."""
+
+    value: Optional[str] = None
+    """The tag value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LoggedModelTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LoggedModelTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
+        """Deserializes the LoggedModelTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -3521,6 +3997,40 @@ class ModelInput:
     def from_dict(cls, d: Dict[str, Any]) -> ModelInput:
         """Deserializes the ModelInput from a dictionary."""
         return cls(model_id=d.get("model_id", None))
+
+
+@dataclass
+class ModelOutput:
+    """Represents a LoggedModel output of a Run."""
+
+    model_id: str
+    """The unique identifier of the model."""
+
+    step: int
+    """The step at which the model was produced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.step is not None:
+            body["step"] = self.step
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.step is not None:
+            body["step"] = self.step
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelOutput:
+        """Deserializes the ModelOutput from a dictionary."""
+        return cls(model_id=d.get("model_id", None), step=d.get("step", None))
 
 
 @dataclass
@@ -3868,6 +4378,77 @@ class ModelVersionTag:
 
 
 @dataclass
+class OnlineStore:
+    """An OnlineStore is a logical database instance that stores and serves features online."""
+
+    name: str
+    """The name of the online store. This is the unique identifier for the online store."""
+
+    capacity: Optional[str] = None
+    """The capacity of the online store. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
+
+    creation_time: Optional[str] = None
+    """The timestamp when the online store was created."""
+
+    creator: Optional[str] = None
+    """The email of the creator of the online store."""
+
+    state: Optional[OnlineStoreState] = None
+    """The current state of the online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.capacity is not None:
+            body["capacity"] = self.capacity
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.name is not None:
+            body["name"] = self.name
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStore:
+        """Deserializes the OnlineStore from a dictionary."""
+        return cls(
+            capacity=d.get("capacity", None),
+            creation_time=d.get("creation_time", None),
+            creator=d.get("creator", None),
+            name=d.get("name", None),
+            state=_enum(d, "state", OnlineStoreState),
+        )
+
+
+class OnlineStoreState(Enum):
+
+    AVAILABLE = "AVAILABLE"
+    DELETING = "DELETING"
+    FAILING_OVER = "FAILING_OVER"
+    STARTING = "STARTING"
+    STOPPED = "STOPPED"
+    UPDATING = "UPDATING"
+
+
+@dataclass
 class Param:
     """Param associated with a run."""
 
@@ -3910,6 +4491,124 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = "CAN_MANAGE_PRODUCTION_VERSIONS"
     CAN_MANAGE_STAGING_VERSIONS = "CAN_MANAGE_STAGING_VERSIONS"
     CAN_READ = "CAN_READ"
+
+
+@dataclass
+class PublishSpec:
+    online_store: str
+    """The name of the target online store."""
+
+    online_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the online table. Auto-generated if not
+    specified."""
+
+    publish_mode: Optional[PublishSpecPublishMode] = None
+    """The publish mode of the pipeline that syncs the online table with the source table. Defaults to
+    TRIGGERED if not specified. All publish modes require the source table to have Change Data Feed
+    (CDF) enabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.online_store is not None:
+            body["online_store"] = self.online_store
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.publish_mode is not None:
+            body["publish_mode"] = self.publish_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.online_store is not None:
+            body["online_store"] = self.online_store
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.publish_mode is not None:
+            body["publish_mode"] = self.publish_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishSpec:
+        """Deserializes the PublishSpec from a dictionary."""
+        return cls(
+            online_store=d.get("online_store", None),
+            online_table_name=d.get("online_table_name", None),
+            publish_mode=_enum(d, "publish_mode", PublishSpecPublishMode),
+        )
+
+
+class PublishSpecPublishMode(Enum):
+
+    CONTINUOUS = "CONTINUOUS"
+    TRIGGERED = "TRIGGERED"
+
+
+@dataclass
+class PublishTableRequest:
+    publish_spec: PublishSpec
+    """The specification for publishing the online table from the source table."""
+
+    source_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the source table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishTableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.publish_spec:
+            body["publish_spec"] = self.publish_spec.as_dict()
+        if self.source_table_name is not None:
+            body["source_table_name"] = self.source_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishTableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.publish_spec:
+            body["publish_spec"] = self.publish_spec
+        if self.source_table_name is not None:
+            body["source_table_name"] = self.source_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishTableRequest:
+        """Deserializes the PublishTableRequest from a dictionary."""
+        return cls(
+            publish_spec=_from_dict(d, "publish_spec", PublishSpec), source_table_name=d.get("source_table_name", None)
+        )
+
+
+@dataclass
+class PublishTableResponse:
+    online_table_name: Optional[str] = None
+    """The full three-part (catalog, schema, table) name of the online table."""
+
+    pipeline_id: Optional[str] = None
+    """The ID of the pipeline that syncs the online table with the source table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishTableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishTableResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.online_table_name is not None:
+            body["online_table_name"] = self.online_table_name
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PublishTableResponse:
+        """Deserializes the PublishTableResponse from a dictionary."""
+        return cls(online_table_name=d.get("online_table_name", None), pipeline_id=d.get("pipeline_id", None))
 
 
 @dataclass
@@ -4842,10 +5541,7 @@ class RunInputs:
     """Run metrics."""
 
     model_inputs: Optional[List[ModelInput]] = None
-    """**NOTE**: Experimental: This API field may change or be removed in a future release without
-    warning.
-    
-    Model inputs to the Run."""
+    """Model inputs to the Run."""
 
     def as_dict(self) -> dict:
         """Serializes the RunInputs into a dictionary suitable for use as a JSON request body."""
@@ -5003,6 +5699,199 @@ class SearchExperimentsResponse:
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
         )
+
+
+@dataclass
+class SearchLoggedModelsDataset:
+    dataset_name: str
+    """The name of the dataset."""
+
+    dataset_digest: Optional[str] = None
+    """The digest of the dataset."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsDataset into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsDataset into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsDataset:
+        """Deserializes the SearchLoggedModelsDataset from a dictionary."""
+        return cls(dataset_digest=d.get("dataset_digest", None), dataset_name=d.get("dataset_name", None))
+
+
+@dataclass
+class SearchLoggedModelsOrderBy:
+    field_name: str
+    """The name of the field to order by, e.g. "metrics.accuracy"."""
+
+    ascending: Optional[bool] = None
+    """Whether the search results order is ascending or not."""
+
+    dataset_digest: Optional[str] = None
+    """If ``field_name`` refers to a metric, this field specifies the digest of the dataset associated
+    with the metric. Only metrics associated with the specified dataset name and digest will be
+    considered for ordering. This field may only be set if ``dataset_name`` is also set."""
+
+    dataset_name: Optional[str] = None
+    """If ``field_name`` refers to a metric, this field specifies the name of the dataset associated
+    with the metric. Only metrics associated with the specified dataset name will be considered for
+    ordering. This field may only be set if ``field_name`` refers to a metric."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsOrderBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.ascending is not None:
+            body["ascending"] = self.ascending
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsOrderBy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ascending is not None:
+            body["ascending"] = self.ascending
+        if self.dataset_digest is not None:
+            body["dataset_digest"] = self.dataset_digest
+        if self.dataset_name is not None:
+            body["dataset_name"] = self.dataset_name
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsOrderBy:
+        """Deserializes the SearchLoggedModelsOrderBy from a dictionary."""
+        return cls(
+            ascending=d.get("ascending", None),
+            dataset_digest=d.get("dataset_digest", None),
+            dataset_name=d.get("dataset_name", None),
+            field_name=d.get("field_name", None),
+        )
+
+
+@dataclass
+class SearchLoggedModelsRequest:
+    datasets: Optional[List[SearchLoggedModelsDataset]] = None
+    """List of datasets on which to apply the metrics filter clauses. For example, a filter with
+    `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all
+    logged models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching
+    the criteria are considered. If no datasets are specified, then metrics across all datasets are
+    considered in the filter."""
+
+    experiment_ids: Optional[List[str]] = None
+    """The IDs of the experiments in which to search for logged models."""
+
+    filter: Optional[str] = None
+    """A filter expression over logged model info and data that allows returning a subset of logged
+    models. The syntax is a subset of SQL that supports AND'ing together binary operations.
+    
+    Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``."""
+
+    max_results: Optional[int] = None
+    """The maximum number of Logged Models to return. The maximum limit is 50."""
+
+    order_by: Optional[List[SearchLoggedModelsOrderBy]] = None
+    """The list of columns for ordering the results, with additional fields for sorting criteria."""
+
+    page_token: Optional[str] = None
+    """The token indicating the page of logged models to fetch."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.experiment_ids:
+            body["experiment_ids"] = [v for v in self.experiment_ids]
+        if self.filter is not None:
+            body["filter"] = self.filter
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.order_by:
+            body["order_by"] = [v.as_dict() for v in self.order_by]
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = self.datasets
+        if self.experiment_ids:
+            body["experiment_ids"] = self.experiment_ids
+        if self.filter is not None:
+            body["filter"] = self.filter
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.order_by:
+            body["order_by"] = self.order_by
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsRequest:
+        """Deserializes the SearchLoggedModelsRequest from a dictionary."""
+        return cls(
+            datasets=_repeated_dict(d, "datasets", SearchLoggedModelsDataset),
+            experiment_ids=d.get("experiment_ids", None),
+            filter=d.get("filter", None),
+            max_results=d.get("max_results", None),
+            order_by=_repeated_dict(d, "order_by", SearchLoggedModelsOrderBy),
+            page_token=d.get("page_token", None),
+        )
+
+
+@dataclass
+class SearchLoggedModelsResponse:
+    models: Optional[List[LoggedModel]] = None
+    """Logged models that match the search criteria."""
+
+    next_page_token: Optional[str] = None
+    """The token that can be used to retrieve the next page of logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchLoggedModelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SearchLoggedModelsResponse:
+        """Deserializes the SearchLoggedModelsResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -5241,6 +6130,56 @@ class SetExperimentTagResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTagResponse:
         """Deserializes the SetExperimentTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class SetLoggedModelTagsRequest:
+    model_id: Optional[str] = None
+    """The ID of the logged model to set the tags on."""
+
+    tags: Optional[List[LoggedModelTag]] = None
+    """The tags to set on the logged model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_id is not None:
+            body["model_id"] = self.model_id
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetLoggedModelTagsRequest:
+        """Deserializes the SetLoggedModelTagsRequest from a dictionary."""
+        return cls(model_id=d.get("model_id", None), tags=_repeated_dict(d, "tags", LoggedModelTag))
+
+
+@dataclass
+class SetLoggedModelTagsResponse:
+    def as_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetLoggedModelTagsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SetLoggedModelTagsResponse:
+        """Deserializes the SetLoggedModelTagsResponse from a dictionary."""
         return cls()
 
 
@@ -6172,9 +7111,7 @@ class ExperimentsAPI:
     def create_experiment(
         self, name: str, *, artifact_location: Optional[str] = None, tags: Optional[List[ExperimentTag]] = None
     ) -> CreateExperimentResponse:
-        """Create experiment.
-
-        Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
+        """Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
 
@@ -6208,6 +7145,54 @@ class ExperimentsAPI:
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
+    def create_logged_model(
+        self,
+        experiment_id: str,
+        *,
+        model_type: Optional[str] = None,
+        name: Optional[str] = None,
+        params: Optional[List[LoggedModelParameter]] = None,
+        source_run_id: Optional[str] = None,
+        tags: Optional[List[LoggedModelTag]] = None,
+    ) -> CreateLoggedModelResponse:
+        """Create a logged model.
+
+        :param experiment_id: str
+          The ID of the experiment that owns the model.
+        :param model_type: str (optional)
+          The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+        :param name: str (optional)
+          The name of the model (optional). If not specified one will be generated.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters attached to the model.
+        :param source_run_id: str (optional)
+          The ID of the run that created the model.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          Tags attached to the model.
+
+        :returns: :class:`CreateLoggedModelResponse`
+        """
+        body = {}
+        if experiment_id is not None:
+            body["experiment_id"] = experiment_id
+        if model_type is not None:
+            body["model_type"] = model_type
+        if name is not None:
+            body["name"] = name
+        if params is not None:
+            body["params"] = [v.as_dict() for v in params]
+        if source_run_id is not None:
+            body["source_run_id"] = source_run_id
+        if tags is not None:
+            body["tags"] = [v.as_dict() for v in tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/mlflow/logged-models", body=body, headers=headers)
+        return CreateLoggedModelResponse.from_dict(res)
+
     def create_run(
         self,
         *,
@@ -6217,9 +7202,7 @@ class ExperimentsAPI:
         tags: Optional[List[RunTag]] = None,
         user_id: Optional[str] = None,
     ) -> CreateRunResponse:
-        """Create a run.
-
-        Creates a new run within an experiment. A run is usually a single execution of a machine learning or
+        """Creates a new run within an experiment. A run is usually a single execution of a machine learning or
         data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`
         associated with a single execution.
 
@@ -6257,9 +7240,7 @@ class ExperimentsAPI:
         return CreateRunResponse.from_dict(res)
 
     def delete_experiment(self, experiment_id: str):
-        """Delete an experiment.
-
-        Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
+        """Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
         experiment uses FileStore, artifacts associated with the experiment are also deleted.
 
         :param experiment_id: str
@@ -6277,10 +7258,40 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
 
-    def delete_run(self, run_id: str):
-        """Delete a run.
+    def delete_logged_model(self, model_id: str):
+        """Delete a logged model.
 
-        Marks a run for deletion.
+        :param model_id: str
+          The ID of the logged model to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
+
+    def delete_logged_model_tag(self, model_id: str, tag_key: str):
+        """Delete a tag on a logged model.
+
+        :param model_id: str
+          The ID of the logged model to delete the tag from.
+        :param tag_key: str
+          The tag key.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
+
+    def delete_run(self, run_id: str):
+        """Marks a run for deletion.
 
         :param run_id: str
           ID of the run to delete.
@@ -6300,9 +7311,7 @@ class ExperimentsAPI:
     def delete_runs(
         self, experiment_id: str, max_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> DeleteRunsResponse:
-        """Delete runs by creation time.
-
-        Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
+        """Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
         most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on
 
@@ -6333,9 +7342,7 @@ class ExperimentsAPI:
         return DeleteRunsResponse.from_dict(res)
 
     def delete_tag(self, run_id: str, key: str):
-        """Delete a tag on a run.
-
-        Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
+        """Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
         completes.
 
         :param run_id: str
@@ -6357,10 +7364,30 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
-    def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
-        """Get an experiment by name.
+    def finalize_logged_model(self, model_id: str, status: LoggedModelStatus) -> FinalizeLoggedModelResponse:
+        """Finalize a logged model.
 
-        Gets metadata for an experiment.
+        :param model_id: str
+          The ID of the logged model to finalize.
+        :param status: :class:`LoggedModelStatus`
+          Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something
+          went wrong when logging the model weights / agent code.
+
+        :returns: :class:`FinalizeLoggedModelResponse`
+        """
+        body = {}
+        if status is not None:
+            body["status"] = status.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}", body=body, headers=headers)
+        return FinalizeLoggedModelResponse.from_dict(res)
+
+    def get_by_name(self, experiment_name: str) -> GetExperimentByNameResponse:
+        """Gets metadata for an experiment.
 
         This endpoint will return deleted experiments, but prefers the active experiment if an active and
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
@@ -6384,42 +7411,8 @@ class ExperimentsAPI:
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
 
-    def get_credentials_for_trace_data_download(self, request_id: str) -> GetCredentialsForTraceDataDownloadResponse:
-        """Get credentials to download trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact download credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataDownloadResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-download", headers=headers)
-        return GetCredentialsForTraceDataDownloadResponse.from_dict(res)
-
-    def get_credentials_for_trace_data_upload(self, request_id: str) -> GetCredentialsForTraceDataUploadResponse:
-        """Get credentials to upload trace data.
-
-        :param request_id: str
-          The ID of the trace to fetch artifact upload credentials for.
-
-        :returns: :class:`GetCredentialsForTraceDataUploadResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/mlflow/traces/{request_id}/credentials-for-data-upload", headers=headers)
-        return GetCredentialsForTraceDataUploadResponse.from_dict(res)
-
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
-        """Get an experiment.
-
-        Gets metadata for an experiment. This method works on deleted experiments.
+        """Gets metadata for an experiment. This method works on deleted experiments.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -6446,9 +7439,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[Metric]:
-        """Get metric history for a run.
-
-        Gets a list of all values for the specified metric for a given run.
+        """Gets a list of all values for the specified metric for a given run.
 
         :param metric_key: str
           Name of the metric.
@@ -6490,10 +7481,24 @@ class ExperimentsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
-        """Get experiment permission levels.
+    def get_logged_model(self, model_id: str) -> GetLoggedModelResponse:
+        """Get a logged model.
 
-        Gets the permission levels that a user can have on an object.
+        :param model_id: str
+          The ID of the logged model to retrieve.
+
+        :returns: :class:`GetLoggedModelResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
+        return GetLoggedModelResponse.from_dict(res)
+
+    def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
+        """Gets the permission levels that a user can have on an object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -6509,9 +7514,7 @@ class ExperimentsAPI:
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
-        """Get experiment permissions.
-
-        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        """Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -6527,9 +7530,7 @@ class ExperimentsAPI:
         return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
-        """Get a run.
-
-        Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
+        """Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
 
         If there are multiple values with the latest timestamp, return the maximum of these values.
@@ -6563,9 +7564,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         run_uuid: Optional[str] = None,
     ) -> Iterator[FileInfo]:
-        """List artifacts.
-
-        List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
+        """List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response
         contains only artifacts with the specified prefix. A maximum of 1000 artifacts will be retrieved for
         UC Volumes. Please call `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes,
         which supports pagination. See [List directory contents | Files
@@ -6617,9 +7616,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
-        """List experiments.
-
-        Gets a list of all experiments.
+        """Gets a list of all experiments.
 
         :param max_results: int (optional)
           Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
@@ -6661,9 +7658,7 @@ class ExperimentsAPI:
         run_id: Optional[str] = None,
         tags: Optional[List[RunTag]] = None,
     ):
-        """Log a batch of metrics/params/tags for a run.
-
-        Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
+        """Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
         will respond with an error (non-200 status code).
 
         In case of error (due to internal server error or an invalid request), partial data may be written.
@@ -6737,11 +7732,7 @@ class ExperimentsAPI:
     def log_inputs(
         self, run_id: str, *, datasets: Optional[List[DatasetInput]] = None, models: Optional[List[ModelInput]] = None
     ):
-        """Log inputs to a run.
-
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
-
-        Logs inputs, such as datasets and models, to an MLflow Run.
+        """Logs inputs, such as datasets and models, to an MLflow Run.
 
         :param run_id: str
           ID of the run to log under
@@ -6766,6 +7757,28 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
+    def log_logged_model_params(self, model_id: str, *, params: Optional[List[LoggedModelParameter]] = None):
+        """Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
+        include hyperparameters used for ML model training. A param can be logged only once for a logged
+        model, and attempting to overwrite an existing param with a different value will result in an error
+
+        :param model_id: str
+          The ID of the logged model to log params for.
+        :param params: List[:class:`LoggedModelParameter`] (optional)
+          Parameters to attach to the model.
+
+
+        """
+        body = {}
+        if params is not None:
+            body["params"] = [v.as_dict() for v in params]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("POST", f"/api/2.0/mlflow/logged-models/{model_id}/params", body=body, headers=headers)
+
     def log_metric(
         self,
         key: str,
@@ -6779,9 +7792,7 @@ class ExperimentsAPI:
         run_uuid: Optional[str] = None,
         step: Optional[int] = None,
     ):
-        """Log a metric for a run.
-
-        Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
+        """Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
         logged multiple times.
 
@@ -6836,9 +7847,10 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
-        """Log a model.
+        """**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this
+        endpoint.
 
-        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        Log a model to an MLflow Run.
 
         :param model_json: str (optional)
           MLmodel file in json format.
@@ -6859,10 +7871,30 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
-    def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Log a param for a run.
+    def log_outputs(self, run_id: str, *, models: Optional[List[ModelOutput]] = None):
+        """Logs outputs, such as models, from an MLflow Run.
 
-        Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
+        :param run_id: str
+          The ID of the Run from which to log outputs.
+        :param models: List[:class:`ModelOutput`] (optional)
+          The model outputs from the Run.
+
+
+        """
+        body = {}
+        if models is not None:
+            body["models"] = [v.as_dict() for v in models]
+        if run_id is not None:
+            body["run_id"] = run_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
+
+    def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
+        """Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
         param can be logged only once for a run.
 
@@ -6895,9 +7927,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
-        """Restore an experiment.
-
-        Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
+        """Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
 
@@ -6919,9 +7949,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
-        """Restore a run.
-
-        Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
+        """Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
         Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.
 
@@ -6943,9 +7971,7 @@ class ExperimentsAPI:
     def restore_runs(
         self, experiment_id: str, min_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> RestoreRunsResponse:
-        """Restore runs by deletion time.
-
-        Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
+        """Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
         at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on
 
@@ -6984,9 +8010,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         view_type: Optional[ViewType] = None,
     ) -> Iterator[Experiment]:
-        """Search experiments.
-
-        Searches for experiments that satisfy specified search criteria.
+        """Searches for experiments that satisfy specified search criteria.
 
         :param filter: str (optional)
           String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
@@ -7028,6 +8052,61 @@ class ExperimentsAPI:
                 return
             body["page_token"] = json["next_page_token"]
 
+    def search_logged_models(
+        self,
+        *,
+        datasets: Optional[List[SearchLoggedModelsDataset]] = None,
+        experiment_ids: Optional[List[str]] = None,
+        filter: Optional[str] = None,
+        max_results: Optional[int] = None,
+        order_by: Optional[List[SearchLoggedModelsOrderBy]] = None,
+        page_token: Optional[str] = None,
+    ) -> SearchLoggedModelsResponse:
+        """Search for Logged Models that satisfy specified search criteria.
+
+        :param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)
+          List of datasets on which to apply the metrics filter clauses. For example, a filter with
+          `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged
+          models with accuracy > 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria
+          are considered. If no datasets are specified, then metrics across all datasets are considered in the
+          filter.
+        :param experiment_ids: List[str] (optional)
+          The IDs of the experiments in which to search for logged models.
+        :param filter: str (optional)
+          A filter expression over logged model info and data that allows returning a subset of logged models.
+          The syntax is a subset of SQL that supports AND'ing together binary operations.
+
+          Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``.
+        :param max_results: int (optional)
+          The maximum number of Logged Models to return. The maximum limit is 50.
+        :param order_by: List[:class:`SearchLoggedModelsOrderBy`] (optional)
+          The list of columns for ordering the results, with additional fields for sorting criteria.
+        :param page_token: str (optional)
+          The token indicating the page of logged models to fetch.
+
+        :returns: :class:`SearchLoggedModelsResponse`
+        """
+        body = {}
+        if datasets is not None:
+            body["datasets"] = [v.as_dict() for v in datasets]
+        if experiment_ids is not None:
+            body["experiment_ids"] = [v for v in experiment_ids]
+        if filter is not None:
+            body["filter"] = filter
+        if max_results is not None:
+            body["max_results"] = max_results
+        if order_by is not None:
+            body["order_by"] = [v.as_dict() for v in order_by]
+        if page_token is not None:
+            body["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/mlflow/logged-models/search", body=body, headers=headers)
+        return SearchLoggedModelsResponse.from_dict(res)
+
     def search_runs(
         self,
         *,
@@ -7038,9 +8117,7 @@ class ExperimentsAPI:
         page_token: Optional[str] = None,
         run_view_type: Optional[ViewType] = None,
     ) -> Iterator[Run]:
-        """Search for runs.
-
-        Searches for runs that satisfy expressions.
+        """Searches for runs that satisfy expressions.
 
         Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 
@@ -7100,9 +8177,7 @@ class ExperimentsAPI:
             body["page_token"] = json["next_page_token"]
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
-        """Set a tag for an experiment.
-
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
+        """Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
@@ -7127,12 +8202,30 @@ class ExperimentsAPI:
 
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
+    def set_logged_model_tags(self, model_id: str, *, tags: Optional[List[LoggedModelTag]] = None):
+        """Set tags for a logged model.
+
+        :param model_id: str
+          The ID of the logged model to set the tags on.
+        :param tags: List[:class:`LoggedModelTag`] (optional)
+          The tags to set on the logged model.
+
+
+        """
+        body = {}
+        if tags is not None:
+            body["tags"] = [v.as_dict() for v in tags]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
+
     def set_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
-        """Set experiment permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param experiment_id: str
@@ -7153,9 +8246,7 @@ class ExperimentsAPI:
         return ExperimentPermissions.from_dict(res)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
-        """Set a tag for a run.
-
-        Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
+        """Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
 
         :param key: str
           Name of the tag. Keys up to 250 bytes in size are supported.
@@ -7186,9 +8277,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
-        """Update an experiment.
-
-        Updates experiment metadata.
+        """Updates experiment metadata.
 
         :param experiment_id: str
           ID of the associated experiment.
@@ -7212,9 +8301,7 @@ class ExperimentsAPI:
     def update_permissions(
         self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
-        """Update experiment permissions.
-
-        Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
+        """Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
 
         :param experiment_id: str
           The experiment for which to get or manage permissions.
@@ -7242,9 +8329,7 @@ class ExperimentsAPI:
         run_uuid: Optional[str] = None,
         status: Optional[UpdateRunStatus] = None,
     ) -> UpdateRunResponse:
-        """Update a run.
-
-        Updates run metadata.
+        """Updates run metadata.
 
         :param end_time: int (optional)
           Unix timestamp in milliseconds of when the run ended.
@@ -7278,6 +8363,146 @@ class ExperimentsAPI:
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
+
+
+class FeatureStoreAPI:
+    """A feature store is a centralized repository that enables data scientists to find and share features. Using
+    a feature store also ensures that the code used to compute feature values is the same during model
+    training and when the model is used for inference.
+
+    An online store is a low-latency database used for feature lookup during real-time model inference or
+    serve feature for real-time applications."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_online_store(self, online_store: OnlineStore) -> OnlineStore:
+        """Create an Online Feature Store.
+
+        :param online_store: :class:`OnlineStore`
+          An OnlineStore is a logical database instance that stores and serves features online.
+
+        :returns: :class:`OnlineStore`
+        """
+        body = online_store.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/feature-store/online-stores", body=body, headers=headers)
+        return OnlineStore.from_dict(res)
+
+    def delete_online_store(self, name: str):
+        """Delete an Online Feature Store.
+
+        :param name: str
+          Name of the online store to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+
+    def get_online_store(self, name: str) -> OnlineStore:
+        """Get an Online Feature Store.
+
+        :param name: str
+          Name of the online store to get.
+
+        :returns: :class:`OnlineStore`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+        return OnlineStore.from_dict(res)
+
+    def list_online_stores(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[OnlineStore]:
+        """List Online Feature Stores.
+
+        :param page_size: int (optional)
+          The maximum number of results to return. Defaults to 100 if not specified.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`OnlineStore`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/feature-store/online-stores", query=query, headers=headers)
+            if "online_stores" in json:
+                for v in json["online_stores"]:
+                    yield OnlineStore.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def publish_table(self, source_table_name: str, publish_spec: PublishSpec) -> PublishTableResponse:
+        """Publish features.
+
+        :param source_table_name: str
+          The full three-part (catalog, schema, table) name of the source table.
+        :param publish_spec: :class:`PublishSpec`
+          The specification for publishing the online table from the source table.
+
+        :returns: :class:`PublishTableResponse`
+        """
+        body = {}
+        if publish_spec is not None:
+            body["publish_spec"] = publish_spec.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/feature-store/tables/{source_table_name}/publish", body=body, headers=headers
+        )
+        return PublishTableResponse.from_dict(res)
+
+    def update_online_store(self, name: str, online_store: OnlineStore, update_mask: str) -> OnlineStore:
+        """Update an Online Feature Store.
+
+        :param name: str
+          The name of the online store. This is the unique identifier for the online store.
+        :param online_store: :class:`OnlineStore`
+          An OnlineStore is a logical database instance that stores and serves features online.
+        :param update_mask: str
+          The list of fields to update.
+
+        :returns: :class:`OnlineStore`
+        """
+        body = online_store.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/feature-store/online-stores/{name}", query=query, body=body, headers=headers
+        )
+        return OnlineStore.from_dict(res)
 
 
 class ForecastingAPI:
@@ -7342,9 +8567,7 @@ class ForecastingAPI:
         timeseries_identifier_columns: Optional[List[str]] = None,
         training_frameworks: Optional[List[str]] = None,
     ) -> Wait[ForecastingExperiment]:
-        """Create a forecasting experiment.
-
-        Creates a serverless forecasting experiment. Returns the experiment ID.
+        """Creates a serverless forecasting experiment. Returns the experiment ID.
 
         :param train_data_path: str
           The fully qualified path of a Unity Catalog table, formatted as catalog_name.schema_name.table_name,
@@ -7489,9 +8712,7 @@ class ForecastingAPI:
         ).result(timeout=timeout)
 
     def get_experiment(self, experiment_id: str) -> ForecastingExperiment:
-        """Get a forecasting experiment.
-
-        Public RPC to get forecasting experiment
+        """Public RPC to get forecasting experiment
 
         :param experiment_id: str
           The unique ID of a forecasting experiment
@@ -7522,9 +8743,7 @@ class ModelRegistryAPI:
     def approve_transition_request(
         self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> ApproveTransitionRequestResponse:
-        """Approve transition request.
-
-        Approves a model version stage transition request.
+        """Approves a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -7567,9 +8786,7 @@ class ModelRegistryAPI:
         return ApproveTransitionRequestResponse.from_dict(res)
 
     def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
-        """Post a comment.
-
-        Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
+        """Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
         display relevant information about the model. For example, test results or deployment errors.
 
         :param name: str
@@ -7599,9 +8816,7 @@ class ModelRegistryAPI:
     def create_model(
         self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
-        """Create a model.
-
-        Creates a new registered model with the name specified in the request body.
+        """Creates a new registered model with the name specified in the request body.
 
         Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
 
@@ -7639,9 +8854,7 @@ class ModelRegistryAPI:
         run_link: Optional[str] = None,
         tags: Optional[List[ModelVersionTag]] = None,
     ) -> CreateModelVersionResponse:
-        """Create a model version.
-
-        Creates a model version.
+        """Creates a model version.
 
         :param name: str
           Register model under this name
@@ -7684,9 +8897,7 @@ class ModelRegistryAPI:
     def create_transition_request(
         self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> CreateTransitionRequestResponse:
-        """Make a transition request.
-
-        Creates a model version stage transition request.
+        """Creates a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -7734,9 +8945,7 @@ class ModelRegistryAPI:
         model_name: Optional[str] = None,
         status: Optional[RegistryWebhookStatus] = None,
     ) -> CreateWebhookResponse:
-        """Create a webhook.
-
-        **NOTE**: This endpoint is in Public Preview.
+        """**NOTE**: This endpoint is in Public Preview.
 
         Creates a registry webhook.
 
@@ -7774,7 +8983,8 @@ class ModelRegistryAPI:
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param model_name: str (optional)
-          Name of the model whose events would trigger this webhook.
+          If model name is not specified, a registry-wide webhook is created that listens for the specified
+          events across all versions of all registered models.
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
@@ -7808,11 +9018,10 @@ class ModelRegistryAPI:
         return CreateWebhookResponse.from_dict(res)
 
     def delete_comment(self, id: str):
-        """Delete a comment.
-
-        Deletes a comment on a model version.
+        """Deletes a comment on a model version.
 
         :param id: str
+          Unique identifier of an activity
 
 
         """
@@ -7827,9 +9036,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
     def delete_model(self, name: str):
-        """Delete a model.
-
-        Deletes a registered model.
+        """Deletes a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -7847,9 +9054,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
     def delete_model_tag(self, name: str, key: str):
-        """Delete a model tag.
-
-        Deletes the tag for a registered model.
+        """Deletes the tag for a registered model.
 
         :param name: str
           Name of the registered model that the tag was logged under.
@@ -7872,9 +9077,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
-        """Delete a model version.
-
-        Deletes a model version.
+        """Deletes a model version.
 
         :param name: str
           Name of the registered model
@@ -7896,9 +9099,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
-        """Delete a model version tag.
-
-        Deletes a model version tag.
+        """Deletes a model version tag.
 
         :param name: str
           Name of the registered model that the tag was logged under.
@@ -7933,9 +9134,7 @@ class ModelRegistryAPI:
         *,
         comment: Optional[str] = None,
     ):
-        """Delete a transition request.
-
-        Cancels a model version stage transition request.
+        """Cancels a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -7978,9 +9177,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
 
     def delete_webhook(self, *, id: Optional[str] = None):
-        """Delete a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Deletes a registry webhook.
 
@@ -8000,9 +9197,7 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
-        """Get the latest version.
-
-        Gets the latest version of a registered model.
+        """Gets the latest version of a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -8026,9 +9221,7 @@ class ModelRegistryAPI:
         return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
-        """Get model.
-
-        Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
+        """Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
         returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
 
@@ -8053,8 +9246,6 @@ class ModelRegistryAPI:
     def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
         """Get a model version.
 
-        Get a model version.
-
         :param name: str
           Name of the registered model
         :param version: str
@@ -8076,9 +9267,7 @@ class ModelRegistryAPI:
         return GetModelVersionResponse.from_dict(res)
 
     def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
-        """Get a model version URI.
-
-        Gets a URI to download the model version.
+        """Gets a URI to download the model version.
 
         :param name: str
           Name of the registered model
@@ -8101,9 +9290,7 @@ class ModelRegistryAPI:
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
     def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
-        """Get registered model permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
@@ -8121,9 +9308,7 @@ class ModelRegistryAPI:
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
-        """Get registered model permissions.
-
-        Gets the permissions of a registered model. Registered models can inherit permissions from their root
+        """Gets the permissions of a registered model. Registered models can inherit permissions from their root
         object.
 
         :param registered_model_id: str
@@ -8140,9 +9325,7 @@ class ModelRegistryAPI:
         return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
-        """List models.
-
-        Lists all available registered models, up to the limit specified in __max_results__.
+        """Lists all available registered models, up to the limit specified in __max_results__.
 
         :param max_results: int (optional)
           Maximum number of registered models desired. Max threshold is 1000.
@@ -8171,9 +9354,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_transition_requests(self, name: str, version: str) -> Iterator[Activity]:
-        """List transition requests.
-
-        Gets a list of all open stage transition requests for the model version.
+        """Gets a list of all open stage transition requests for the model version.
 
         :param name: str
           Name of the model.
@@ -8203,9 +9384,7 @@ class ModelRegistryAPI:
         model_name: Optional[str] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[RegistryWebhook]:
-        """List registry webhooks.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Lists all registry webhooks.
 
@@ -8244,9 +9423,7 @@ class ModelRegistryAPI:
     def reject_transition_request(
         self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> RejectTransitionRequestResponse:
-        """Reject a transition request.
-
-        Rejects a model version stage transition request.
+        """Rejects a model version stage transition request.
 
         :param name: str
           Name of the model.
@@ -8285,9 +9462,7 @@ class ModelRegistryAPI:
         return RejectTransitionRequestResponse.from_dict(res)
 
     def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
-        """Rename a model.
-
-        Renames a registered model.
+        """Renames a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -8317,9 +9492,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ModelVersion]:
-        """Searches model versions.
-
-        Searches for specific model versions based on the supplied __filter__.
+        """Searches for specific model versions based on the supplied __filter__.
 
         :param filter: str (optional)
           String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
@@ -8366,9 +9539,7 @@ class ModelRegistryAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[Model]:
-        """Search models.
-
-        Search for registered models based on the specified __filter__.
+        """Search for registered models based on the specified __filter__.
 
         :param filter: str (optional)
           String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
@@ -8409,9 +9580,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def set_model_tag(self, name: str, key: str, value: str):
-        """Set a tag.
-
-        Sets a tag on a registered model.
+        """Sets a tag on a registered model.
 
         :param name: str
           Unique name of the model.
@@ -8440,9 +9609,7 @@ class ModelRegistryAPI:
         self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
-        """Set a version tag.
-
-        Sets a model version tag.
+        """Sets a model version tag.
 
         :param name: str
           Unique name of the model.
@@ -8480,9 +9647,7 @@ class ModelRegistryAPI:
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
     ) -> RegisteredModelPermissions:
-        """Set registered model permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param registered_model_id: str
@@ -8507,9 +9672,7 @@ class ModelRegistryAPI:
     def test_registry_webhook(
         self, id: str, *, event: Optional[RegistryWebhookEvent] = None
     ) -> TestRegistryWebhookResponse:
-        """Test a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Tests a registry webhook.
 
@@ -8537,9 +9700,7 @@ class ModelRegistryAPI:
     def transition_stage(
         self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
-        """Transition a stage.
-
-        Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
+        """Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
@@ -8587,9 +9748,7 @@ class ModelRegistryAPI:
         return TransitionStageResponse.from_dict(res)
 
     def update_comment(self, id: str, comment: str) -> UpdateCommentResponse:
-        """Update a comment.
-
-        Post an edit to a comment on a model version.
+        """Post an edit to a comment on a model version.
 
         :param id: str
           Unique identifier of an activity
@@ -8612,9 +9771,7 @@ class ModelRegistryAPI:
         return UpdateCommentResponse.from_dict(res)
 
     def update_model(self, name: str, *, description: Optional[str] = None):
-        """Update model.
-
-        Updates a registered model.
+        """Updates a registered model.
 
         :param name: str
           Registered model unique name identifier.
@@ -8636,9 +9793,7 @@ class ModelRegistryAPI:
         self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
-        """Update model version.
-
-        Updates the model version.
+        """Updates the model version.
 
         :param name: str
           Name of the registered model
@@ -8669,9 +9824,7 @@ class ModelRegistryAPI:
         *,
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None,
     ) -> RegisteredModelPermissions:
-        """Update registered model permissions.
-
-        Updates the permissions on a registered model. Registered models can inherit permissions from their
+        """Updates the permissions on a registered model. Registered models can inherit permissions from their
         root object.
 
         :param registered_model_id: str
@@ -8703,9 +9856,7 @@ class ModelRegistryAPI:
         job_spec: Optional[JobSpec] = None,
         status: Optional[RegistryWebhookStatus] = None,
     ):
-        """Update a webhook.
-
-        **NOTE:** This endpoint is in Public Preview.
+        """**NOTE:** This endpoint is in Public Preview.
 
         Updates a registry webhook.
 

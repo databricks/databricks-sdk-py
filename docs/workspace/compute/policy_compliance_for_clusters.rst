@@ -15,8 +15,6 @@
 
     .. py:method:: enforce_compliance(cluster_id: str [, validate_only: Optional[bool]]) -> EnforceClusterComplianceResponse
 
-        Enforce cluster policy compliance.
-
         Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
         it is in a `RUNNING` or `TERMINATED` state.
 
@@ -40,8 +38,6 @@
 
     .. py:method:: get_compliance(cluster_id: str) -> GetClusterComplianceResponse
 
-        Get cluster policy compliance.
-
         Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy
         was updated after the cluster was last edited.
 
@@ -52,8 +48,6 @@
         
 
     .. py:method:: list_compliance(policy_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ClusterCompliance]
-
-        List cluster policy compliance.
 
         Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of
         compliance if their policy was updated after the cluster was last edited.

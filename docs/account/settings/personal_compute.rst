@@ -14,8 +14,6 @@
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeletePersonalComputeSettingResponse
 
-        Delete Personal Compute setting.
-
         Reverts back the Personal Compute setting value to default (ON)
 
         :param etag: str (optional)
@@ -30,8 +28,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> PersonalComputeSetting
 
-        Get Personal Compute setting.
-
         Gets the value of the Personal Compute setting.
 
         :param etag: str (optional)
@@ -45,8 +41,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: PersonalComputeSetting, field_mask: str) -> PersonalComputeSetting
-
-        Update Personal Compute setting.
 
         Updates the value of the Personal Compute setting.
 

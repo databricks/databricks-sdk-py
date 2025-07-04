@@ -4,12 +4,16 @@
 
 .. py:class:: DisableLegacyDbfsAPI
 
-    When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
-    mounts). When the setting is off, all DBFS functionality is enabled
+    Disabling legacy DBFS has the following implications:
+
+    1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation of new mounts). 2. Disables
+    Databricks Runtime versions prior to 13.3LTS.
+
+    When the setting is off, all DBFS functionality is enabled and no restrictions are imposed on Databricks
+    Runtime versions. This setting can take up to 20 minutes to take effect and requires a manual restart of
+    all-purpose compute clusters and SQL warehouses.
 
     .. py:method:: delete( [, etag: Optional[str]]) -> DeleteDisableLegacyDbfsResponse
-
-        Delete the disable legacy DBFS setting.
 
         Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.
 
@@ -25,8 +29,6 @@
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyDbfs
 
-        Get the disable legacy DBFS setting.
-
         Gets the disable legacy DBFS setting.
 
         :param etag: str (optional)
@@ -40,8 +42,6 @@
         
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs
-
-        Update the disable legacy DBFS setting.
 
         Updates the disable legacy DBFS setting for the workspace.
 

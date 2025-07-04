@@ -29,8 +29,6 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Create a catalog.
-
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
 
@@ -57,8 +55,6 @@
         
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
-
-        Delete a catalog.
 
         Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
         of the catalog.
@@ -91,8 +87,6 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Get a catalog.
-
         Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
         catalog, or a user that has the **USE_CATALOG** privilege set for their account.
 
@@ -118,8 +112,6 @@
             w = WorkspaceClient()
             
             all = w.catalogs.list(catalog.ListCatalogsRequest())
-
-        List catalogs.
 
         Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
         retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the
@@ -162,8 +154,6 @@
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
-
-        Update a catalog.
 
         Updates the catalog that matches the supplied name. The caller must be either the owner of the
         catalog, or a metastore admin (when changing the owner field of the catalog).

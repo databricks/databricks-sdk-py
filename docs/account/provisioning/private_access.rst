@@ -28,8 +28,6 @@
             # cleanup
             a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
 
-        Create private access settings.
-
         Creates a private access settings object, which specifies how your workspace is accessed over [AWS
         PrivateLink]. To use AWS PrivateLink, a workspace must have a private access settings object
         referenced by ID in the workspace's `private_access_settings_id` property.
@@ -76,8 +74,6 @@
 
     .. py:method:: delete(private_access_settings_id: str)
 
-        Delete a private access settings object.
-
         Deletes a private access settings object, which determines how your workspace is accessed over [AWS
         PrivateLink].
 
@@ -116,8 +112,6 @@
             # cleanup
             a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
 
-        Get a private access settings object.
-
         Gets a private access settings object, which specifies how your workspace is accessed over [AWS
         PrivateLink].
 
@@ -145,9 +139,8 @@
             
             all = a.private_access.list()
 
-        Get all private access settings objects.
-
         Gets a list of all private access settings objects for an account, specified by ID.
+
 
         :returns: Iterator over :class:`PrivateAccessSettings`
         
@@ -179,8 +172,6 @@
             
             # cleanup
             a.private_access.delete(private_access_settings_id=created.private_access_settings_id)
-
-        Replace private access settings.
 
         Updates an existing private access settings object, which specifies how your workspace is accessed
         over [AWS PrivateLink]. To use AWS PrivateLink, a workspace must have a private access settings object

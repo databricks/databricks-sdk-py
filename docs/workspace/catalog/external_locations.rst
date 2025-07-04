@@ -15,7 +15,7 @@
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name: str, url: str, credential_name: str [, access_point: Optional[str], comment: Optional[str], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
+    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -47,8 +47,6 @@
             w.storage_credentials.delete(name=storage_credential.name)
             w.external_locations.delete(name=external_location.name)
 
-        Create an external location.
-
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
         credential.
@@ -59,16 +57,18 @@
           Path URL of the external location.
         :param credential_name: str
           Name of the storage credential used with this location.
-        :param access_point: str (optional)
-          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_file_events: bool (optional)
+          [Create:OPT Update:OPT] Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
+        :param file_event_queue: :class:`FileEventQueue` (optional)
+          [Create:OPT Update:OPT] File event queue settings.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -78,8 +78,6 @@
         
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
-
-        Delete an external location.
 
         Deletes the specified external location from the metastore. The caller must be the owner of the
         external location.
@@ -124,8 +122,6 @@
             w.storage_credentials.delete(delete=credential.name)
             w.external_locations.delete(delete=created.name)
 
-        Get an external location.
-
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
 
@@ -152,8 +148,6 @@
             
             all = w.external_locations.list(catalog.ListExternalLocationsRequest())
 
-        List external locations.
-
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
@@ -172,7 +166,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -208,26 +202,26 @@
             w.storage_credentials.delete(name=credential.name)
             w.external_locations.delete(name=created.name)
 
-        Update an external location.
-
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
         location.
 
         :param name: str
           Name of the external location.
-        :param access_point: str (optional)
-          The AWS access point to use when accesing s3 for this external location.
         :param comment: str (optional)
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param enable_file_events: bool (optional)
+          [Create:OPT Update:OPT] Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
+        :param file_event_queue: :class:`FileEventQueue` (optional)
+          [Create:OPT Update:OPT] File event queue settings.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

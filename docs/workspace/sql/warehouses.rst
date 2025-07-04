@@ -34,8 +34,6 @@
             # cleanup
             w.warehouses.delete(id=created.id)
 
-        Create a warehouse.
-
         Creates a new SQL warehouse.
 
         :param auto_stop_mins: int (optional)
@@ -104,8 +102,6 @@
 
     .. py:method:: delete(id: str)
 
-        Delete a warehouse.
-
         Deletes a SQL warehouse.
 
         :param id: str
@@ -148,8 +144,6 @@
             
             # cleanup
             w.warehouses.delete(id=created.id)
-
-        Update a warehouse.
 
         Updates the configuration for a SQL warehouse.
 
@@ -247,8 +241,6 @@
             # cleanup
             w.warehouses.delete(id=created.id)
 
-        Get warehouse info.
-
         Gets the information for a single SQL warehouse.
 
         :param id: str
@@ -259,8 +251,6 @@
 
     .. py:method:: get_permission_levels(warehouse_id: str) -> GetWarehousePermissionLevelsResponse
 
-        Get SQL warehouse permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param warehouse_id: str
@@ -270,8 +260,6 @@
         
 
     .. py:method:: get_permissions(warehouse_id: str) -> WarehousePermissions
-
-        Get SQL warehouse permissions.
 
         Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
@@ -284,9 +272,8 @@
 
     .. py:method:: get_workspace_warehouse_config() -> GetWorkspaceWarehouseConfigResponse
 
-        Get the workspace configuration.
-
         Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
+
 
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         
@@ -305,8 +292,6 @@
             
             all = w.warehouses.list(sql.ListWarehousesRequest())
 
-        List warehouses.
-
         Lists all SQL warehouses that a user has manager permissions on.
 
         :param run_as_user_id: int (optional)
@@ -317,8 +302,6 @@
         
 
     .. py:method:: set_permissions(warehouse_id: str [, access_control_list: Optional[List[WarehouseAccessControlRequest]]]) -> WarehousePermissions
-
-        Set SQL warehouse permissions.
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
@@ -331,8 +314,6 @@
         
 
     .. py:method:: set_workspace_warehouse_config( [, channel: Optional[Channel], config_param: Optional[RepeatedEndpointConfPairs], data_access_config: Optional[List[EndpointConfPair]], enabled_warehouse_types: Optional[List[WarehouseTypePair]], global_param: Optional[RepeatedEndpointConfPairs], google_service_account: Optional[str], instance_profile_arn: Optional[str], security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy], sql_configuration_parameters: Optional[RepeatedEndpointConfPairs]])
-
-        Set the workspace configuration.
 
         Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
@@ -364,8 +345,6 @@
 
     .. py:method:: start(id: str) -> Wait[GetWarehouseResponse]
 
-        Start a warehouse.
-
         Starts a SQL warehouse.
 
         :param id: str
@@ -381,8 +360,6 @@
 
     .. py:method:: stop(id: str) -> Wait[GetWarehouseResponse]
 
-        Stop a warehouse.
-
         Stops a SQL warehouse.
 
         :param id: str
@@ -397,8 +374,6 @@
 
 
     .. py:method:: update_permissions(warehouse_id: str [, access_control_list: Optional[List[WarehouseAccessControlRequest]]]) -> WarehousePermissions
-
-        Update SQL warehouse permissions.
 
         Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.

@@ -17,9 +17,9 @@
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
 
-    Securable types that support binding: - catalog - storage_credential - external_location
+    Securable types that support binding: - catalog - storage_credential - credential - external_location
 
-    .. py:method:: get(name: str) -> CurrentWorkspaceBindings
+    .. py:method:: get(name: str) -> GetCatalogWorkspaceBindingsResponse
 
 
         Usage:
@@ -39,26 +39,23 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Get catalog workspace bindings.
-
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
         :param name: str
           The name of the catalog.
 
-        :returns: :class:`CurrentWorkspaceBindings`
+        :returns: :class:`GetCatalogWorkspaceBindingsResponse`
         
 
-    .. py:method:: get_bindings(securable_type: GetBindingsSecurableType, securable_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceBinding]
-
-        Get securable workspace bindings.
+    .. py:method:: get_bindings(securable_type: str, securable_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceBinding]
 
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
-        :param securable_type: :class:`GetBindingsSecurableType`
-          The type of the securable to bind to a workspace.
+        :param securable_type: str
+          The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
+          external_location).
         :param securable_name: str
           The name of the securable.
         :param max_results: int (optional)
@@ -72,7 +69,7 @@
         :returns: Iterator over :class:`WorkspaceBinding`
         
 
-    .. py:method:: update(name: str [, assign_workspaces: Optional[List[int]], unassign_workspaces: Optional[List[int]]]) -> CurrentWorkspaceBindings
+    .. py:method:: update(name: str [, assign_workspaces: Optional[List[int]], unassign_workspaces: Optional[List[int]]]) -> UpdateCatalogWorkspaceBindingsResponse
 
 
         Usage:
@@ -95,8 +92,6 @@
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
 
-        Update catalog workspace bindings.
-
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
 
@@ -107,24 +102,23 @@
         :param unassign_workspaces: List[int] (optional)
           A list of workspace IDs.
 
-        :returns: :class:`CurrentWorkspaceBindings`
+        :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         
 
-    .. py:method:: update_bindings(securable_type: UpdateBindingsSecurableType, securable_name: str [, add: Optional[List[WorkspaceBinding]], remove: Optional[List[WorkspaceBinding]]]) -> WorkspaceBindingsResponse
-
-        Update securable workspace bindings.
+    .. py:method:: update_bindings(securable_type: str, securable_name: str [, add: Optional[List[WorkspaceBinding]], remove: Optional[List[WorkspaceBinding]]]) -> UpdateWorkspaceBindingsResponse
 
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
-        :param securable_type: :class:`UpdateBindingsSecurableType`
-          The type of the securable to bind to a workspace.
+        :param securable_type: str
+          The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
+          external_location).
         :param securable_name: str
           The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings
+          List of workspace bindings.
         :param remove: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings
+          List of workspace bindings.
 
-        :returns: :class:`WorkspaceBindingsResponse`
+        :returns: :class:`UpdateWorkspaceBindingsResponse`
         

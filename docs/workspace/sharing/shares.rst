@@ -27,8 +27,6 @@
             # cleanup
             w.shares.delete(name=created_share.name)
 
-        Create a share.
-
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -43,8 +41,6 @@
         
 
     .. py:method:: delete(name: str)
-
-        Delete a share.
 
         Deletes a data object share from the metastore. The caller must be an owner of the share.
 
@@ -74,8 +70,6 @@
             # cleanup
             w.shares.delete(name=created_share.name)
 
-        Get a share.
-
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
         share.
 
@@ -101,8 +95,6 @@
             
             all = w.shares.list(sharing.ListSharesRequest())
 
-        List shares.
-
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -121,8 +113,6 @@
         
 
     .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> GetSharePermissionsResponse
-
-        Get permissions.
 
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
         owner of the share.
@@ -195,15 +185,13 @@
             w.tables.delete(full_name=table_full_name)
             w.shares.delete(name=created_share.name)
 
-        Update a share.
-
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
 
         When the caller is a metastore admin, only the __owner__ field can be updated.
 
-        In the case that the share name is changed, **updateShare** requires that the caller is both the share
-        owner and a metastore admin.
+        In the case the share name is changed, **updateShare** requires that the caller is the owner of the
+        share and has the CREATE_SHARE privilege.
 
         If there are notebook files in the share, the __storage_root__ field cannot be updated.
 
@@ -229,9 +217,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: update_permissions(name: str [, changes: Optional[List[PermissionsChange]]]) -> UpdateSharePermissionsResponse
-
-        Update permissions.
+    .. py:method:: update_permissions(name: str [, changes: Optional[List[PermissionsChange]], omit_permissions_list: Optional[bool]]) -> UpdateSharePermissionsResponse
 
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
@@ -242,7 +228,9 @@
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
-          Array of permission changes.
+          Array of permissions change objects.
+        :param omit_permissions_list: bool (optional)
+          Optional. Whether to return the latest permissions list of the share in the response.
 
         :returns: :class:`UpdateSharePermissionsResponse`
         

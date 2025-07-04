@@ -368,6 +368,13 @@ class FederationPolicy:
     oidc_policy: Optional[OidcFederationPolicy] = None
     """Specifies the policy to use for validating OIDC claims in your federated tokens."""
 
+    policy_id: Optional[str] = None
+    """The ID of the federation policy."""
+
+    service_principal_id: Optional[int] = None
+    """The service principal ID that this federation policy applies to. Only set for service principal
+    federation policies."""
+
     uid: Optional[str] = None
     """Unique, immutable id of the federation policy."""
 
@@ -385,6 +392,10 @@ class FederationPolicy:
             body["name"] = self.name
         if self.oidc_policy:
             body["oidc_policy"] = self.oidc_policy.as_dict()
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -402,6 +413,10 @@ class FederationPolicy:
             body["name"] = self.name
         if self.oidc_policy:
             body["oidc_policy"] = self.oidc_policy
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -416,6 +431,8 @@ class FederationPolicy:
             description=d.get("description", None),
             name=d.get("name", None),
             oidc_policy=_from_dict(d, "oidc_policy", OidcFederationPolicy),
+            policy_id=d.get("policy_id", None),
+            service_principal_id=d.get("service_principal_id", None),
             uid=d.get("uid", None),
             update_time=d.get("update_time", None),
         )
@@ -1338,8 +1355,6 @@ class CustomAppIntegrationAPI:
     ) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
 
-        Create Custom OAuth App Integration.
-
         You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.
 
         :param confidential: bool (optional)
@@ -1386,9 +1401,7 @@ class CustomAppIntegrationAPI:
         return CreateCustomAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
-        """Delete Custom OAuth App Integration.
-
-        Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
+        """Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
         :method:CustomAppIntegration/get.
 
         :param integration_id: str
@@ -1407,9 +1420,7 @@ class CustomAppIntegrationAPI:
         )
 
     def get(self, integration_id: str) -> GetCustomAppIntegrationOutput:
-        """Get OAuth Custom App Integration.
-
-        Gets the Custom OAuth App Integration for the given integration id.
+        """Gets the Custom OAuth App Integration for the given integration id.
 
         :param integration_id: str
           The OAuth app integration ID.
@@ -1435,9 +1446,7 @@ class CustomAppIntegrationAPI:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[GetCustomAppIntegrationOutput]:
-        """Get custom oauth app integrations.
-
-        Get the list of custom OAuth app integrations for the specified Databricks account
+        """Get the list of custom OAuth app integrations for the specified Databricks account
 
         :param include_creator_username: bool (optional)
         :param page_size: int (optional)
@@ -1480,9 +1489,7 @@ class CustomAppIntegrationAPI:
         token_access_policy: Optional[TokenAccessPolicy] = None,
         user_authorized_scopes: Optional[List[str]] = None,
     ):
-        """Updates Custom OAuth App Integration.
-
-        Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
+        """Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
         via :method:CustomAppIntegration/get.
 
         :param integration_id: str
@@ -1532,9 +1539,7 @@ class OAuthPublishedAppsAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PublishedAppOutput]:
-        """Get all the published OAuth apps.
-
-        Get all the available published OAuth apps in Databricks.
+        """Get all the available published OAuth apps in Databricks.
 
         :param page_size: int (optional)
           The max number of OAuth published apps to return in one page.
@@ -1577,8 +1582,6 @@ class PublishedAppIntegrationAPI:
     ) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
 
-        Create Published OAuth App Integration.
-
         You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
 
         :param app_id: str (optional)
@@ -1607,9 +1610,7 @@ class PublishedAppIntegrationAPI:
         return CreatePublishedAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
-        """Delete Published OAuth App Integration.
-
-        Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
+        """Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
 
         :param integration_id: str
@@ -1628,9 +1629,7 @@ class PublishedAppIntegrationAPI:
         )
 
     def get(self, integration_id: str) -> GetPublishedAppIntegrationOutput:
-        """Get OAuth Published App Integration.
-
-        Gets the Published OAuth App Integration for the given integration id.
+        """Gets the Published OAuth App Integration for the given integration id.
 
         :param integration_id: str
 
@@ -1651,9 +1650,7 @@ class PublishedAppIntegrationAPI:
     def list(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[GetPublishedAppIntegrationOutput]:
-        """Get published oauth app integrations.
-
-        Get the list of published OAuth app integrations for the specified Databricks account
+        """Get the list of published OAuth app integrations for the specified Databricks account
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -1685,9 +1682,7 @@ class PublishedAppIntegrationAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
-        """Updates Published OAuth App Integration.
-
-        Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
+        """Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
 
         :param integration_id: str
@@ -1760,7 +1755,7 @@ class ServicePrincipalFederationPolicyAPI:
     def create(
         self, service_principal_id: int, policy: FederationPolicy, *, policy_id: Optional[str] = None
     ) -> FederationPolicy:
-        """Create service principal federation policy.
+        """Create account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -1790,7 +1785,7 @@ class ServicePrincipalFederationPolicyAPI:
         return FederationPolicy.from_dict(res)
 
     def delete(self, service_principal_id: int, policy_id: str):
-        """Delete service principal federation policy.
+        """Delete account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -1811,7 +1806,7 @@ class ServicePrincipalFederationPolicyAPI:
         )
 
     def get(self, service_principal_id: int, policy_id: str) -> FederationPolicy:
-        """Get service principal federation policy.
+        """Get account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -1835,7 +1830,7 @@ class ServicePrincipalFederationPolicyAPI:
     def list(
         self, service_principal_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FederationPolicy]:
-        """List service principal federation policies.
+        """List account federation policies.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -1871,7 +1866,7 @@ class ServicePrincipalFederationPolicyAPI:
     def update(
         self, service_principal_id: int, policy_id: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
     ) -> FederationPolicy:
-        """Update service principal federation policy.
+        """Update account federation policy.
 
         :param service_principal_id: int
           The service principal id for the federation policy.
@@ -1926,9 +1921,7 @@ class ServicePrincipalSecretsAPI:
     def create(
         self, service_principal_id: int, *, lifetime: Optional[str] = None
     ) -> CreateServicePrincipalSecretResponse:
-        """Create service principal secret.
-
-        Create a secret for the given service principal.
+        """Create a secret for the given service principal.
 
         :param service_principal_id: int
           The service principal ID.
@@ -1955,9 +1948,7 @@ class ServicePrincipalSecretsAPI:
         return CreateServicePrincipalSecretResponse.from_dict(res)
 
     def delete(self, service_principal_id: int, secret_id: str):
-        """Delete service principal secret.
-
-        Delete a secret from the given service principal.
+        """Delete a secret from the given service principal.
 
         :param service_principal_id: int
           The service principal ID.
@@ -1976,9 +1967,7 @@ class ServicePrincipalSecretsAPI:
         )
 
     def list(self, service_principal_id: int, *, page_token: Optional[str] = None) -> Iterator[SecretInfo]:
-        """List service principal secrets.
-
-        List all secrets associated with the given service principal. This operation only returns information
+        """List all secrets associated with the given service principal. This operation only returns information
         about the secrets themselves and does not include the secret values.
 
         :param service_principal_id: int

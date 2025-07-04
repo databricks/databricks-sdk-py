@@ -15,6 +15,7 @@ Manage security settings for Accounts and Workspaces
    aibi_dashboard_embedding_approved_domains
    automatic_cluster_update
    compliance_security_profile
+   dashboard_email_subscriptions
    default_namespace
    disable_legacy_access
    disable_legacy_dbfs
@@ -22,7 +23,9 @@ Manage security settings for Accounts and Workspaces
    enable_notebook_table_clipboard
    enable_results_downloading
    enhanced_security_monitoring
+   llm_proxy_partner_powered_workspace
    restrict_workspace_admins
+   sql_results_download
    token_management
    tokens
    workspace_conf

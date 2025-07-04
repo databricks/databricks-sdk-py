@@ -26,8 +26,6 @@
             # cleanup
             w.git_credentials.delete(credential_id=cr.credential_id)
 
-        Create a credential entry.
-
         Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
         existing credentials, or the DELETE endpoint to delete existing credentials.
@@ -52,8 +50,6 @@
         
 
     .. py:method:: delete(credential_id: int)
-
-        Delete a credential.
 
         Deletes the specified Git credential.
 
@@ -81,8 +77,6 @@
             # cleanup
             w.git_credentials.delete(credential_id=cr.credential_id)
 
-        Get a credential entry.
-
         Gets the Git credential with the specified credential ID.
 
         :param credential_id: int
@@ -104,9 +98,8 @@
             
             list = w.git_credentials.list()
 
-        Get Git credentials.
-
         Lists the calling user's Git credentials. One credential per user is supported.
+
 
         :returns: Iterator over :class:`CredentialInfo`
         
@@ -135,8 +128,6 @@
             
             # cleanup
             w.git_credentials.delete(credential_id=cr.credential_id)
-
-        Update a credential.
 
         Updates the specified Git credential.
 

@@ -42,8 +42,6 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Create an assignment.
-
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
@@ -53,7 +51,7 @@
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
 
 
@@ -81,8 +79,6 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Create a metastore.
-
         Creates a new metastore based on a provided name and optional storage root path. By default (if the
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
@@ -91,9 +87,7 @@
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
-          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
-          the region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
           The storage root URL for metastore
 
@@ -113,16 +107,13 @@
             
             current_metastore = w.metastores.current()
 
-        Get metastore assignment for workspace.
-
         Gets the metastore assignment for the workspace being accessed.
+
 
         :returns: :class:`MetastoreAssignment`
         
 
     .. py:method:: delete(id: str [, force: Optional[bool]])
-
-        Delete a metastore.
 
         Deletes a metastore. The caller must be a metastore admin.
 
@@ -158,8 +149,6 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Get a metastore.
-
         Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
         info.
 
@@ -169,7 +158,7 @@
         :returns: :class:`MetastoreInfo`
         
 
-    .. py:method:: list() -> Iterator[MetastoreInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[MetastoreInfo]
 
 
         Usage:
@@ -182,10 +171,19 @@
             
             all = w.metastores.list()
 
-        List metastores.
-
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
+
+        :param max_results: int (optional)
+          Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
+          minimum of this value and a server configured value; - when set to 0, the page length is set to a
+          server configured value (recommended); - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of
+          returned metastores might be less than the specified max_results size, even zero. The only
+          definitive indication that no further metastores can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`MetastoreInfo`
         
@@ -203,10 +201,9 @@
             
             summary = w.metastores.summary()
 
-        Get a metastore summary.
-
         Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
+
 
         :returns: :class:`GetMetastoreSummaryResponse`
         
@@ -237,8 +234,6 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Delete an assignment.
-
         Deletes a metastore assignment. The caller must be an account administrator.
 
         :param workspace_id: int
@@ -249,7 +244,7 @@
 
         
 
-    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
+    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
 
         Usage:
@@ -273,8 +268,6 @@
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
 
-        Update a metastore.
-
         Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
         field is set to the empty string (**""**), the ownership is updated to the System User.
 
@@ -285,7 +278,7 @@
           Sharing as the official name.
         :param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)
           The lifetime of delta sharing recipient token in seconds.
-        :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
+        :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
         :param new_name: str (optional)
           New name for the metastore.
@@ -301,8 +294,6 @@
 
     .. py:method:: update_assignment(workspace_id: int [, default_catalog_name: Optional[str], metastore_id: Optional[str]])
 
-        Update an assignment.
-
         Updates a metastore assignment. This operation can be used to update __metastore_id__ or
         __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
@@ -311,7 +302,7 @@
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.

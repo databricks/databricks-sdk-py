@@ -17,8 +17,6 @@
 
     .. py:method:: build_logs(name: str, served_model_name: str) -> BuildLogsResponse
 
-        Get build logs for a served model.
-
         Retrieves the build logs associated with the provided served model.
 
         :param name: str
@@ -60,6 +58,30 @@
     .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
+    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+
+        Create a new PT serving endpoint.
+
+        :param name: str
+          The name of the serving endpoint. This field is required and must be unique across a Databricks
+          workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
+        :param config: :class:`PtEndpointCoreConfig`
+          The core config of the serving endpoint.
+        :param ai_gateway: :class:`AiGatewayConfig` (optional)
+          The AI Gateway configuration for the serving endpoint.
+        :param budget_policy_id: str (optional)
+          The budget policy associated with the endpoint.
+        :param tags: List[:class:`EndpointTag`] (optional)
+          Tags to be attached to the serving endpoint and automatically propagated to billing logs.
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        
+
+    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+
+
     .. py:method:: delete(name: str)
 
         Delete a serving endpoint.
@@ -71,8 +93,6 @@
 
     .. py:method:: export_metrics(name: str) -> ExportMetricsResponse
 
-        Get metrics of a serving endpoint.
-
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
 
@@ -83,8 +103,6 @@
         
 
     .. py:method:: get(name: str) -> ServingEndpointDetailed
-
-        Get a single serving endpoint.
 
         Retrieves the details for a single serving endpoint.
 
@@ -102,8 +120,6 @@
 
     .. py:method:: get_open_api(name: str) -> GetOpenApiResponse
 
-        Get the schema for a serving endpoint.
-
         Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
         the supported paths, input and output format and datatypes.
 
@@ -115,8 +131,6 @@
 
     .. py:method:: get_permission_levels(serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse
 
-        Get serving endpoint permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param serving_endpoint_id: str
@@ -126,8 +140,6 @@
         
 
     .. py:method:: get_permissions(serving_endpoint_id: str) -> ServingEndpointPermissions
-
-        Get serving endpoint permissions.
 
         Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
         object.
@@ -162,12 +174,11 @@
 
         Get all serving endpoints.
 
+
         :returns: Iterator over :class:`ServingEndpoint`
         
 
     .. py:method:: logs(name: str, served_model_name: str) -> ServerLogsResponse
-
-        Get the latest logs for a served model.
 
         Retrieves the service logs associated with the provided served model.
 
@@ -180,8 +191,6 @@
         
 
     .. py:method:: patch(name: str [, add_tags: Optional[List[EndpointTag]], delete_tags: Optional[List[str]]]) -> EndpointTags
-
-        Update tags of a serving endpoint.
 
         Used to batch add and delete tags from a serving endpoint with a single API call.
 
@@ -197,8 +206,6 @@
 
     .. py:method:: put(name: str [, rate_limits: Optional[List[RateLimit]]]) -> PutResponse
 
-        Update rate limits of a serving endpoint.
-
         Deprecated: Please use AI Gateway to manage rate limits instead.
 
         :param name: str
@@ -210,8 +217,6 @@
         
 
     .. py:method:: put_ai_gateway(name: str [, fallback_config: Optional[FallbackConfig], guardrails: Optional[AiGatewayGuardrails], inference_table_config: Optional[AiGatewayInferenceTableConfig], rate_limits: Optional[List[AiGatewayRateLimit]], usage_tracking_config: Optional[AiGatewayUsageTrackingConfig]]) -> PutAiGatewayResponse
-
-        Update AI Gateway of a serving endpoint.
 
         Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and
         pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.
@@ -288,8 +293,6 @@
 
     .. py:method:: set_permissions(serving_endpoint_id: str [, access_control_list: Optional[List[ServingEndpointAccessControlRequest]]]) -> ServingEndpointPermissions
 
-        Set serving endpoint permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -301,8 +304,6 @@
         
 
     .. py:method:: update_config(name: str [, auto_capture_config: Optional[AutoCaptureConfigInput], served_entities: Optional[List[ServedEntityInput]], served_models: Optional[List[ServedModelInput]], traffic_config: Optional[TrafficConfig]]) -> Wait[ServingEndpointDetailed]
-
-        Update config of a serving endpoint.
 
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
@@ -333,8 +334,6 @@
 
     .. py:method:: update_permissions(serving_endpoint_id: str [, access_control_list: Optional[List[ServingEndpointAccessControlRequest]]]) -> ServingEndpointPermissions
 
-        Update serving endpoint permissions.
-
         Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
         root object.
 
@@ -344,5 +343,23 @@
 
         :returns: :class:`ServingEndpointPermissions`
         
+
+    .. py:method:: update_provisioned_throughput_endpoint_config(name: str, config: PtEndpointCoreConfig) -> Wait[ServingEndpointDetailed]
+
+        Updates any combination of the pt endpoint's served entities, the compute configuration of those
+        served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be
+        updated instantly
+
+        :param name: str
+          The name of the pt endpoint to update. This field is required.
+        :param config: :class:`PtEndpointCoreConfig`
+
+        :returns:
+          Long-running operation waiter for :class:`ServingEndpointDetailed`.
+          See :method:wait_get_serving_endpoint_not_updating for more details.
+        
+
+    .. py:method:: update_provisioned_throughput_endpoint_config_and_wait(name: str, config: PtEndpointCoreConfig, timeout: datetime.timedelta = 0:20:00) -> ServingEndpointDetailed
+
 
     .. py:method:: wait_get_serving_endpoint_not_updating(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[ServingEndpointDetailed], None]]) -> ServingEndpointDetailed

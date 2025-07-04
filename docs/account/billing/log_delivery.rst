@@ -11,21 +11,26 @@
     Log delivery works with all account types. However, if your account is on the E2 version of the platform
     or on a select custom plan that allows multiple workspaces per account, you can optionally configure
     different storage destinations for each workspace. Log delivery status is also provided to know the latest
-    status of log delivery attempts. The high-level flow of billable usage delivery:
+    status of log delivery attempts.
+
+    The high-level flow of billable usage delivery:
 
     1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a specific bucket policy. Using
     Databricks APIs, call the Account API to create a [storage configuration object](:method:Storage/Create)
-    that uses the bucket name. 2. **Create credentials**: In AWS, create the appropriate AWS IAM role. For
-    full details, including the required IAM role policies and trust relationship, see [Billable usage log
-    delivery]. Using Databricks APIs, call the Account API to create a [credential configuration
-    object](:method:Credentials/Create) that uses the IAM role"s ARN. 3. **Create log delivery
-    configuration**: Using Databricks APIs, call the Account API to [create a log delivery
-    configuration](:method:LogDelivery/Create) that uses the credential and storage configuration objects from
-    previous steps. You can specify if the logs should include all events of that log type in your account
-    (_Account level_ delivery) or only events for a specific set of workspaces (_workspace level_ delivery).
-    Account level log delivery applies to all current and future workspaces plus account level logs, while
-    workspace level log delivery solely delivers logs related to the specified workspaces. You can create
-    multiple types of delivery configurations per account.
+    that uses the bucket name.
+
+    2. **Create credentials**: In AWS, create the appropriate AWS IAM role. For full details, including the
+    required IAM role policies and trust relationship, see [Billable usage log delivery]. Using Databricks
+    APIs, call the Account API to create a [credential configuration object](:method:Credentials/Create) that
+    uses the IAM role's ARN.
+
+    3. **Create log delivery configuration**: Using Databricks APIs, call the Account API to [create a log
+    delivery configuration](:method:LogDelivery/Create) that uses the credential and storage configuration
+    objects from previous steps. You can specify if the logs should include all events of that log type in
+    your account (_Account level_ delivery) or only events for a specific set of workspaces (_workspace level_
+    delivery). Account level log delivery applies to all current and future workspaces plus account level
+    logs, while workspace level log delivery solely delivers logs related to the specified workspaces. You can
+    create multiple types of delivery configurations per account.
 
     For billable usage delivery: * For more information about billable usage logs, see [Billable usage log
     delivery]. For the CSV schema, see the [Usage page]. * The delivery location is
@@ -51,7 +56,7 @@
     [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
     [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 
-    .. py:method:: create( [, log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams]]) -> WrappedLogDeliveryConfiguration
+    .. py:method:: create(log_delivery_configuration: CreateLogDeliveryConfigurationParams) -> WrappedLogDeliveryConfiguration
 
 
         Usage:
@@ -96,8 +101,6 @@
                 status=billing.LogDeliveryConfigStatus.DISABLED,
             )
 
-        Create a new log delivery configuration.
-
         Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
         to your storage location. This requires that you already created a [credential
         object](:method:Credentials/Create) (which encapsulates a cross-account service IAM role) and a
@@ -119,12 +122,13 @@
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 
-        :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams` (optional)
+        :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams`
+          * Log Delivery Configuration
 
         :returns: :class:`WrappedLogDeliveryConfiguration`
         
 
-    .. py:method:: get(log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration
+    .. py:method:: get(log_delivery_configuration_id: str) -> GetLogDeliveryConfigurationResponse
 
 
         Usage:
@@ -171,17 +175,15 @@
                 status=billing.LogDeliveryConfigStatus.DISABLED,
             )
 
-        Get log delivery configuration.
-
         Gets a Databricks log delivery configuration object for an account, both specified by ID.
 
         :param log_delivery_configuration_id: str
-          Databricks log delivery configuration ID
+          The log delivery configuration id of customer
 
-        :returns: :class:`WrappedLogDeliveryConfiguration`
+        :returns: :class:`GetLogDeliveryConfigurationResponse`
         
 
-    .. py:method:: list( [, credentials_id: Optional[str], status: Optional[LogDeliveryConfigStatus], storage_configuration_id: Optional[str]]) -> Iterator[LogDeliveryConfiguration]
+    .. py:method:: list( [, credentials_id: Optional[str], page_token: Optional[str], status: Optional[LogDeliveryConfigStatus], storage_configuration_id: Optional[str]]) -> Iterator[LogDeliveryConfiguration]
 
 
         Usage:
@@ -195,23 +197,22 @@
             
             all = a.log_delivery.list(billing.ListLogDeliveryRequest())
 
-        Get all log delivery configurations.
-
         Gets all Databricks log delivery configurations associated with an account specified by ID.
 
         :param credentials_id: str (optional)
-          Filter by credential configuration ID.
+          The Credentials id to filter the search results with
+        :param page_token: str (optional)
+          A page token received from a previous get all budget configurations call. This token can be used to
+          retrieve the subsequent page. Requests first page if absent.
         :param status: :class:`LogDeliveryConfigStatus` (optional)
-          Filter by status `ENABLED` or `DISABLED`.
+          The log delivery status to filter the search results with
         :param storage_configuration_id: str (optional)
-          Filter by storage configuration ID.
+          The Storage Configuration id to filter the search results with
 
         :returns: Iterator over :class:`LogDeliveryConfiguration`
         
 
     .. py:method:: patch_status(log_delivery_configuration_id: str, status: LogDeliveryConfigStatus)
-
-        Enable or disable log delivery configuration.
 
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't
@@ -219,7 +220,7 @@
         under [Create log delivery](:method:LogDelivery/Create).
 
         :param log_delivery_configuration_id: str
-          Databricks log delivery configuration ID
+          The log delivery configuration id of customer
         :param status: :class:`LogDeliveryConfigStatus`
           Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
           to `ENABLED`. You can [enable or disable the

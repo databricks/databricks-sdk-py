@@ -61,30 +61,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ArtifactCredentialInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: ArtifactCredentialInfoHttpHeader
-   :members:
-   :undoc-members:
-
-.. py:class:: ArtifactCredentialType
-
-   The type of a given artifact access credential
-
-   .. py:attribute:: AWS_PRESIGNED_URL
-      :value: "AWS_PRESIGNED_URL"
-
-   .. py:attribute:: AZURE_ADLS_GEN2_SAS_URI
-      :value: "AZURE_ADLS_GEN2_SAS_URI"
-
-   .. py:attribute:: AZURE_SAS_URI
-      :value: "AZURE_SAS_URI"
-
-   .. py:attribute:: GCP_SIGNED_URL
-      :value: "GCP_SIGNED_URL"
-
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on a comment. Valid values are: * `EDIT_COMMENT`: Edit the comment
@@ -121,6 +97,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateForecastingExperimentResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateLoggedModelRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateLoggedModelResponse
    :members:
    :undoc-members:
 
@@ -184,6 +168,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteLoggedModelResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteLoggedModelTagResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteModelResponse
    :members:
    :undoc-members:
@@ -197,6 +189,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteModelVersionTagResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteOnlineStoreResponse
    :members:
    :undoc-members:
 
@@ -295,6 +291,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: FinalizeLoggedModelRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: FinalizeLoggedModelResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ForecastingExperiment
    :members:
    :undoc-members:
@@ -316,14 +320,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
 
-.. autoclass:: GetCredentialsForTraceDataDownloadResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetCredentialsForTraceDataUploadResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: GetExperimentByNameResponse
    :members:
    :undoc-members:
@@ -341,6 +337,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetLatestVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetLoggedModelResponse
    :members:
    :undoc-members:
 
@@ -400,6 +400,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListOnlineStoresResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListRegistryWebhooks
    :members:
    :undoc-members:
@@ -424,6 +428,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LogLoggedModelParamsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogLoggedModelParamsRequestResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogMetric
    :members:
    :undoc-members:
@@ -440,11 +452,52 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LogOutputsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogOutputsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogParam
    :members:
    :undoc-members:
 
 .. autoclass:: LogParamResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: LoggedModel
+   :members:
+   :undoc-members:
+
+.. autoclass:: LoggedModelData
+   :members:
+   :undoc-members:
+
+.. autoclass:: LoggedModelInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: LoggedModelParameter
+   :members:
+   :undoc-members:
+
+.. py:class:: LoggedModelStatus
+
+   A LoggedModelStatus enum value represents the status of a logged model.
+
+   .. py:attribute:: LOGGED_MODEL_PENDING
+      :value: "LOGGED_MODEL_PENDING"
+
+   .. py:attribute:: LOGGED_MODEL_READY
+      :value: "LOGGED_MODEL_READY"
+
+   .. py:attribute:: LOGGED_MODEL_UPLOAD_FAILED
+      :value: "LOGGED_MODEL_UPLOAD_FAILED"
+
+.. autoclass:: LoggedModelTag
    :members:
    :undoc-members:
 
@@ -461,6 +514,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ModelInput
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelOutput
    :members:
    :undoc-members:
 
@@ -493,6 +550,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OnlineStore
+   :members:
+   :undoc-members:
+
+.. py:class:: OnlineStoreState
+
+   .. py:attribute:: AVAILABLE
+      :value: "AVAILABLE"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: FAILING_OVER
+      :value: "FAILING_OVER"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
 .. autoclass:: Param
    :members:
    :undoc-members:
@@ -515,6 +596,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
+
+.. autoclass:: PublishSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: PublishSpecPublishMode
+
+   .. py:attribute:: CONTINUOUS
+      :value: "CONTINUOUS"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+.. autoclass:: PublishTableRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: PublishTableResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: RegisteredModelAccessControlRequest
    :members:
@@ -703,6 +804,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SearchLoggedModelsDataset
+   :members:
+   :undoc-members:
+
+.. autoclass:: SearchLoggedModelsOrderBy
+   :members:
+   :undoc-members:
+
+.. autoclass:: SearchLoggedModelsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: SearchLoggedModelsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: SearchModelVersionsResponse
    :members:
    :undoc-members:
@@ -724,6 +841,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SetExperimentTagResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SetLoggedModelTagsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: SetLoggedModelTagsResponse
    :members:
    :undoc-members:
 

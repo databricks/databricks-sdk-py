@@ -28,8 +28,6 @@
             # cleanup
             a.service_principals.delete(id=sp_create.id)
 
-        Create a service principal.
-
         Creates a new service principal in the Databricks account.
 
         :param active: bool (optional)
@@ -56,8 +54,6 @@
         
 
     .. py:method:: delete(id: str)
-
-        Delete a service principal.
 
         Delete a single service principal in the Databricks account.
 
@@ -86,8 +82,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        Get service principal details.
 
         Gets the details for a single service principal define in the Databricks account.
 
@@ -118,8 +112,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        List service principals.
 
         Gets the set of service principals associated with a Databricks account.
 
@@ -173,8 +165,6 @@
             # cleanup
             a.service_principals.delete(id=sp_create.id)
 
-        Update service principal details.
-
         Partially updates the details of a single service principal in the Databricks account.
 
         :param id: str
@@ -207,8 +197,6 @@
             
             # cleanup
             a.service_principals.delete(id=sp_create.id)
-
-        Replace service principal.
 
         Updates the details of a single service principal.
 

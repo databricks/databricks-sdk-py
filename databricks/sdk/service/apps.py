@@ -655,6 +655,8 @@ class AppResource:
 
     sql_warehouse: Optional[AppResourceSqlWarehouse] = None
 
+    uc_securable: Optional[AppResourceUcSecurable] = None
+
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -670,6 +672,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint.as_dict()
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse.as_dict()
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -687,6 +691,8 @@ class AppResource:
             body["serving_endpoint"] = self.serving_endpoint
         if self.sql_warehouse:
             body["sql_warehouse"] = self.sql_warehouse
+        if self.uc_securable:
+            body["uc_securable"] = self.uc_securable
         return body
 
     @classmethod
@@ -699,6 +705,7 @@ class AppResource:
             secret=_from_dict(d, "secret", AppResourceSecret),
             serving_endpoint=_from_dict(d, "serving_endpoint", AppResourceServingEndpoint),
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
+            uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
 
 
@@ -878,6 +885,57 @@ class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
     CAN_MANAGE = "CAN_MANAGE"
     CAN_USE = "CAN_USE"
     IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppResourceUcSecurable:
+    securable_full_name: str
+
+    securable_type: AppResourceUcSecurableUcSecurableType
+
+    permission: AppResourceUcSecurableUcSecurablePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceUcSecurable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.securable_full_name is not None:
+            body["securable_full_name"] = self.securable_full_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceUcSecurable:
+        """Deserializes the AppResourceUcSecurable from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", AppResourceUcSecurableUcSecurablePermission),
+            securable_full_name=d.get("securable_full_name", None),
+            securable_type=_enum(d, "securable_type", AppResourceUcSecurableUcSecurableType),
+        )
+
+
+class AppResourceUcSecurableUcSecurablePermission(Enum):
+
+    READ_VOLUME = "READ_VOLUME"
+    WRITE_VOLUME = "WRITE_VOLUME"
+
+
+class AppResourceUcSecurableUcSecurableType(Enum):
+
+    VOLUME = "VOLUME"
 
 
 class ApplicationState(Enum):
@@ -1174,9 +1232,7 @@ class AppsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create(self, app: App, *, no_compute: Optional[bool] = None) -> Wait[App]:
-        """Create an app.
-
-        Creates a new app.
+        """Creates a new app.
 
         :param app: :class:`App`
         :param no_compute: bool (optional)
@@ -1202,9 +1258,7 @@ class AppsAPI:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
-        """Delete an app.
-
-        Deletes an app.
+        """Deletes an app.
 
         :param name: str
           The name of the app.
@@ -1220,9 +1274,7 @@ class AppsAPI:
         return App.from_dict(res)
 
     def deploy(self, app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]:
-        """Create an app deployment.
-
-        Creates an app deployment for the app with the supplied name.
+        """Creates an app deployment for the app with the supplied name.
 
         :param app_name: str
           The name of the app.
@@ -1252,9 +1304,7 @@ class AppsAPI:
         return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
     def get(self, name: str) -> App:
-        """Get an app.
-
-        Retrieves information for the app with the supplied name.
+        """Retrieves information for the app with the supplied name.
 
         :param name: str
           The name of the app.
@@ -1270,9 +1320,7 @@ class AppsAPI:
         return App.from_dict(res)
 
     def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
-        """Get an app deployment.
-
-        Retrieves information for the app deployment with the supplied name and deployment id.
+        """Retrieves information for the app deployment with the supplied name and deployment id.
 
         :param app_name: str
           The name of the app.
@@ -1290,9 +1338,7 @@ class AppsAPI:
         return AppDeployment.from_dict(res)
 
     def get_permission_levels(self, app_name: str) -> GetAppPermissionLevelsResponse:
-        """Get app permission levels.
-
-        Gets the permission levels that a user can have on an object.
+        """Gets the permission levels that a user can have on an object.
 
         :param app_name: str
           The app for which to get or manage permissions.
@@ -1308,9 +1354,7 @@ class AppsAPI:
         return GetAppPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, app_name: str) -> AppPermissions:
-        """Get app permissions.
-
-        Gets the permissions of an app. Apps can inherit permissions from their root object.
+        """Gets the permissions of an app. Apps can inherit permissions from their root object.
 
         :param app_name: str
           The app for which to get or manage permissions.
@@ -1326,9 +1370,7 @@ class AppsAPI:
         return AppPermissions.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
-        """List apps.
-
-        Lists all apps in the workspace.
+        """Lists all apps in the workspace.
 
         :param page_size: int (optional)
           Upper bound for items returned.
@@ -1359,9 +1401,7 @@ class AppsAPI:
     def list_deployments(
         self, app_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[AppDeployment]:
-        """List app deployments.
-
-        Lists all app deployments for the app with the supplied name.
+        """Lists all app deployments for the app with the supplied name.
 
         :param app_name: str
           The name of the app.
@@ -1394,9 +1434,7 @@ class AppsAPI:
     def set_permissions(
         self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
     ) -> AppPermissions:
-        """Set app permissions.
-
-        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        """Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param app_name: str
@@ -1417,9 +1455,7 @@ class AppsAPI:
         return AppPermissions.from_dict(res)
 
     def start(self, name: str) -> Wait[App]:
-        """Start an app.
-
-        Start the last active deployment of the app in the workspace.
+        """Start the last active deployment of the app in the workspace.
 
         :param name: str
           The name of the app.
@@ -1441,9 +1477,7 @@ class AppsAPI:
         return self.start(name=name).result(timeout=timeout)
 
     def stop(self, name: str) -> Wait[App]:
-        """Stop an app.
-
-        Stops the active deployment of the app in the workspace.
+        """Stops the active deployment of the app in the workspace.
 
         :param name: str
           The name of the app.
@@ -1465,9 +1499,7 @@ class AppsAPI:
         return self.stop(name=name).result(timeout=timeout)
 
     def update(self, name: str, app: App) -> App:
-        """Update an app.
-
-        Updates the app with the supplied name.
+        """Updates the app with the supplied name.
 
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
@@ -1488,9 +1520,7 @@ class AppsAPI:
     def update_permissions(
         self, app_name: str, *, access_control_list: Optional[List[AppAccessControlRequest]] = None
     ) -> AppPermissions:
-        """Update app permissions.
-
-        Updates the permissions on an app. Apps can inherit permissions from their root object.
+        """Updates the permissions on an app. Apps can inherit permissions from their root object.
 
         :param app_name: str
           The app for which to get or manage permissions.

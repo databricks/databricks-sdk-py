@@ -59,8 +59,6 @@
             w.users.delete(id=other_owner.id)
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Change cluster owner.
-
         Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
         this operation. The service principal application ID can be supplied as an argument to
         `owner_username`.
@@ -72,7 +70,7 @@
 
         
 
-    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -100,8 +98,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Create new cluster.
 
         Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
         necessary. This method is asynchronous; the returned ``cluster_id`` can be used to poll the cluster
@@ -147,7 +143,8 @@
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -242,6 +239,9 @@
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -272,6 +272,9 @@
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -285,7 +288,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: delete(cluster_id: str) -> Wait[ClusterDetails]
@@ -319,8 +322,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Terminate cluster.
-
         Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the
         termination has completed, the cluster will be in a `TERMINATED` state. If the cluster is already in a
         `TERMINATING` or `TERMINATED` state, nothing will happen.
@@ -336,7 +337,7 @@
     .. py:method:: delete_and_wait(cluster_id: str, timeout: datetime.timedelta = 0:20:00) -> ClusterDetails
 
 
-    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -373,8 +374,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Update cluster configuration.
 
         Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
         updated if it is in a `RUNNING` or `TERMINATED` state.
@@ -417,7 +416,8 @@
           of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
-          the cluster name will be an empty string.
+          the cluster name will be an empty string. For job clusters, the cluster name is automatically set
+          based on the job and job run IDs.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -512,6 +512,9 @@
           provisioned.
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
+        :param remote_disk_throughput: int (optional)
+          If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
+          for GCP HYPERDISK_BALANCED disks.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
           Determines the cluster's runtime engine, either standard or Photon.
 
@@ -542,6 +545,9 @@
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param total_initial_remote_disk_size: int (optional)
+          If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
+          supported for GCP HYPERDISK_BALANCED disks.
         :param use_ml_runtime: bool (optional)
           This field can only be used when `kind = CLASSIC_PREVIEW`.
 
@@ -555,7 +561,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: ensure_cluster_is_running(cluster_id: str)
@@ -613,8 +619,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        List cluster activity events.
 
         Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more
         events to read, the response includes all the parameters necessary to request the next page of events.
@@ -682,8 +686,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Get cluster info.
-
         Retrieves the information for a cluster given its identifier. Clusters can be described while they are
         running, or up to 60 days after they are terminated.
 
@@ -695,8 +697,6 @@
 
     .. py:method:: get_permission_levels(cluster_id: str) -> GetClusterPermissionLevelsResponse
 
-        Get cluster permission levels.
-
         Gets the permission levels that a user can have on an object.
 
         :param cluster_id: str
@@ -706,8 +706,6 @@
         
 
     .. py:method:: get_permissions(cluster_id: str) -> ClusterPermissions
-
-        Get cluster permissions.
 
         Gets the permissions of a cluster. Clusters can inherit permissions from their root object.
 
@@ -730,8 +728,6 @@
             w = WorkspaceClient()
             
             all = w.clusters.list(compute.ListClustersRequest())
-
-        List clusters.
 
         Return information about all pinned and active clusters, and all clusters terminated within the last
         30 days. Clusters terminated prior to this period are not included.
@@ -763,26 +759,22 @@
             
             nodes = w.clusters.list_node_types()
 
-        List node types.
-
         Returns a list of supported Spark node types. These node types can be used to launch a cluster.
+
 
         :returns: :class:`ListNodeTypesResponse`
         
 
     .. py:method:: list_zones() -> ListAvailableZonesResponse
 
-        List availability zones.
-
         Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
         zones can be used to launch a cluster.
+
 
         :returns: :class:`ListAvailableZonesResponse`
         
 
     .. py:method:: permanent_delete(cluster_id: str)
-
-        Permanently delete cluster.
 
         Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously
         removed.
@@ -827,8 +819,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Pin cluster.
-
         Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a
         cluster that is already pinned will have no effect. This API can only be called by workspace admins.
 
@@ -867,8 +857,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Resize cluster.
 
         Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a
         `RUNNING` state.
@@ -926,8 +914,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Restart cluster.
 
         Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,
         nothing will happen.
@@ -1007,8 +993,6 @@
 
     .. py:method:: set_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
 
-        Set cluster permissions.
-
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
 
@@ -1021,9 +1005,8 @@
 
     .. py:method:: spark_versions() -> GetSparkVersionsResponse
 
-        List available Spark versions.
-
         Returns the list of available Spark versions. These versions can be used to launch a cluster.
+
 
         :returns: :class:`GetSparkVersionsResponse`
         
@@ -1058,8 +1041,6 @@
             
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
-
-        Start terminated cluster.
 
         Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:
         - The previous cluster id and attributes are preserved. - The cluster starts with the last specified
@@ -1109,8 +1090,6 @@
             # cleanup
             w.clusters.permanent_delete(cluster_id=clstr.cluster_id)
 
-        Unpin cluster.
-
         Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.
         Unpinning a cluster that is not pinned will have no effect. This API can only be called by workspace
         admins.
@@ -1121,8 +1100,6 @@
         
 
     .. py:method:: update(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource]]) -> Wait[ClusterDetails]
-
-        Update cluster configuration (partial).
 
         Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
         fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
@@ -1160,8 +1137,6 @@
 
 
     .. py:method:: update_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
-
-        Update cluster permissions.
 
         Updates the permissions on a cluster. Clusters can inherit permissions from their root object.
 
