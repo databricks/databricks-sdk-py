@@ -11,7 +11,7 @@
         Create a new Online Table.
 
         :param table: :class:`OnlineTable`
-          Online Table information.
+          Specification of the online table to be created.
 
         :returns:
           Long-running operation waiter for :class:`OnlineTable`.

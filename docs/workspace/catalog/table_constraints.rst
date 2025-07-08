@@ -29,8 +29,6 @@
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
         :param constraint: :class:`TableConstraint`
-          A table constraint, as defined by *one* of the following fields being set:
-          __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
 
         :returns: :class:`TableConstraint`
         

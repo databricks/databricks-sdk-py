@@ -61,7 +61,6 @@ class CreateProvider:
     """The name of the Provider."""
 
     authentication_type: AuthenticationType
-    """The delta sharing authentication type."""
 
     comment: Optional[str] = None
     """Description about the provider."""
@@ -113,7 +112,6 @@ class CreateRecipient:
     """Name of Recipient."""
 
     authentication_type: AuthenticationType
-    """The delta sharing authentication type."""
 
     comment: Optional[str] = None
     """Description about the recipient."""
@@ -265,10 +263,8 @@ class DeltaSharingDependency:
     """Represents a UC dependency."""
 
     function: Optional[DeltaSharingFunctionDependency] = None
-    """A Function in UC as a dependency."""
 
     table: Optional[DeltaSharingTableDependency] = None
-    """A Table in UC as a dependency."""
 
     def as_dict(self) -> dict:
         """Serializes the DeltaSharingDependency into a dictionary suitable for use as a JSON request body."""
@@ -1405,7 +1401,8 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name)."""
+    """The principal (user email address or group name). For deleted principals, `principal` is empty
+    while `principal_id` is populated."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -1437,7 +1434,6 @@ class PrivilegeAssignment:
 @dataclass
 class ProviderInfo:
     authentication_type: Optional[AuthenticationType] = None
-    """The delta sharing authentication type."""
 
     cloud: Optional[str] = None
     """Cloud vendor of the provider's UC metastore. This field is only present when the
@@ -1607,7 +1603,6 @@ class RecipientInfo:
     retrieved."""
 
     authentication_type: Optional[AuthenticationType] = None
-    """The delta sharing authentication type."""
 
     cloud: Optional[str] = None
     """Cloud vendor of the recipient's Unity Catalog Metastore. This field is only present when the
@@ -2968,7 +2963,6 @@ class ProvidersAPI:
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
-          The delta sharing authentication type.
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)
@@ -3308,6 +3302,7 @@ class RecipientFederationPoliciesAPI:
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policy is being created.
         :param policy: :class:`FederationPolicy`
+          Name of the policy. This is the name of the policy to be created.
 
         :returns: :class:`FederationPolicy`
         """
@@ -3476,7 +3471,6 @@ class RecipientsAPI:
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
-          The delta sharing authentication type.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)

@@ -151,9 +151,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SYSTEM_CATALOG
       :value: "SYSTEM_CATALOG"
 
-   .. py:attribute:: UNKNOWN_CATALOG_TYPE
-      :value: "UNKNOWN_CATALOG_TYPE"
-
 .. autoclass:: CloudflareApiToken
    :members:
    :undoc-members:
@@ -163,6 +160,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ColumnMask
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnRelationship
    :members:
    :undoc-members:
 
@@ -240,13 +241,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VARIANT
       :value: "VARIANT"
 
+.. autoclass:: ConnectionDependency
+   :members:
+   :undoc-members:
+
 .. autoclass:: ConnectionInfo
    :members:
    :undoc-members:
 
 .. py:class:: ConnectionType
 
-   Next Id: 33
+   Next Id: 36
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -389,6 +394,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateRequestExternalLineage
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateResponse
    :members:
    :undoc-members:
@@ -409,6 +418,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CredentialDependency
+   :members:
+   :undoc-members:
+
 .. autoclass:: CredentialInfo
    :members:
    :undoc-members:
@@ -423,7 +436,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 12
+   Next Id: 13
+
+   .. py:attribute:: ANY_STATIC_CREDENTIAL
+      :value: "ANY_STATIC_CREDENTIAL"
 
    .. py:attribute:: BEARER_TOKEN
       :value: "BEARER_TOKEN"
@@ -481,26 +497,41 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATABRICKS_FORMAT
       :value: "DATABRICKS_FORMAT"
 
+   .. py:attribute:: DATABRICKS_ROW_STORE_FORMAT
+      :value: "DATABRICKS_ROW_STORE_FORMAT"
+
    .. py:attribute:: DELTA
       :value: "DELTA"
 
    .. py:attribute:: DELTASHARING
       :value: "DELTASHARING"
 
-   .. py:attribute:: HIVE_CUSTOM
-      :value: "HIVE_CUSTOM"
+   .. py:attribute:: DELTA_UNIFORM_HUDI
+      :value: "DELTA_UNIFORM_HUDI"
 
-   .. py:attribute:: HIVE_SERDE
-      :value: "HIVE_SERDE"
+   .. py:attribute:: DELTA_UNIFORM_ICEBERG
+      :value: "DELTA_UNIFORM_ICEBERG"
+
+   .. py:attribute:: HIVE
+      :value: "HIVE"
+
+   .. py:attribute:: ICEBERG
+      :value: "ICEBERG"
 
    .. py:attribute:: JSON
       :value: "JSON"
+
+   .. py:attribute:: MONGODB_FORMAT
+      :value: "MONGODB_FORMAT"
 
    .. py:attribute:: MYSQL_FORMAT
       :value: "MYSQL_FORMAT"
 
    .. py:attribute:: NETSUITE_FORMAT
       :value: "NETSUITE_FORMAT"
+
+   .. py:attribute:: ORACLE_FORMAT
+      :value: "ORACLE_FORMAT"
 
    .. py:attribute:: ORC
       :value: "ORC"
@@ -514,6 +545,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REDSHIFT_FORMAT
       :value: "REDSHIFT_FORMAT"
 
+   .. py:attribute:: SALESFORCE_DATA_CLOUD_FORMAT
+      :value: "SALESFORCE_DATA_CLOUD_FORMAT"
+
    .. py:attribute:: SALESFORCE_FORMAT
       :value: "SALESFORCE_FORMAT"
 
@@ -525,6 +559,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SQLSERVER_FORMAT
       :value: "SQLSERVER_FORMAT"
+
+   .. py:attribute:: TERADATA_FORMAT
+      :value: "TERADATA_FORMAT"
 
    .. py:attribute:: TEXT
       :value: "TEXT"
@@ -555,6 +592,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteCredentialResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteRequestExternalLineage
    :members:
    :undoc-members:
 
@@ -635,7 +676,59 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ExternalLineageExternalMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageExternalMetadataInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageFileInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageModelVersion
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageModelVersionInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageObject
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineagePath
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageRelationship
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageRelationshipInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalLineageTableInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExternalLocationInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExternalMetadata
    :members:
    :undoc-members:
 
@@ -777,6 +870,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ISOLATION_MODE_OPEN
       :value: "ISOLATION_MODE_OPEN"
 
+.. py:class:: LineageDirection
+
+   .. py:attribute:: DOWNSTREAM
+      :value: "DOWNSTREAM"
+
+   .. py:attribute:: UPSTREAM
+      :value: "UPSTREAM"
+
 .. autoclass:: ListAccountMetastoreAssignmentsResponse
    :members:
    :undoc-members:
@@ -797,7 +898,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListExternalLineageRelationshipsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListExternalLocationsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListExternalMetadataResponse
    :members:
    :undoc-members:
 
@@ -1063,6 +1172,45 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OptionSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: OptionSpecOauthStage
+
+   During the OAuth flow, specifies which stage the option should be displayed in the UI. OAUTH_STAGE_UNSPECIFIED is the default value for options unrelated to the OAuth flow. BEFORE_AUTHORIZATION_CODE corresponds to options necessary to initiate the OAuth process. BEFORE_ACCESS_TOKEN corresponds to options that are necessary to create a foreign connection, but that should be displayed after the authorization code has already been received.
+
+   .. py:attribute:: BEFORE_ACCESS_TOKEN
+      :value: "BEFORE_ACCESS_TOKEN"
+
+   .. py:attribute:: BEFORE_AUTHORIZATION_CODE
+      :value: "BEFORE_AUTHORIZATION_CODE"
+
+.. py:class:: OptionSpecOptionType
+
+   Type of the option, we purposely follow JavaScript types so that the UI can map the options to JS types. https://www.w3schools.com/js/js_datatypes.asp Enum is a special case that it's just string with selections.
+
+   .. py:attribute:: OPTION_BIGINT
+      :value: "OPTION_BIGINT"
+
+   .. py:attribute:: OPTION_BOOLEAN
+      :value: "OPTION_BOOLEAN"
+
+   .. py:attribute:: OPTION_ENUM
+      :value: "OPTION_ENUM"
+
+   .. py:attribute:: OPTION_MULTILINE_STRING
+      :value: "OPTION_MULTILINE_STRING"
+
+   .. py:attribute:: OPTION_NUMBER
+      :value: "OPTION_NUMBER"
+
+   .. py:attribute:: OPTION_SERVICE_CREDENTIAL
+      :value: "OPTION_SERVICE_CREDENTIAL"
+
+   .. py:attribute:: OPTION_STRING
+      :value: "OPTION_STRING"
+
 .. autoclass:: PermissionsChange
    :members:
    :undoc-members:
@@ -1284,6 +1432,194 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SecurableKind
+
+   Latest kind: TABLE_DELTA_ICEBERG_DELTASHARING = 252; Next id:253
+
+   .. py:attribute:: TABLE_DB_STORAGE
+      :value: "TABLE_DB_STORAGE"
+
+   .. py:attribute:: TABLE_DELTA
+      :value: "TABLE_DELTA"
+
+   .. py:attribute:: TABLE_DELTASHARING
+      :value: "TABLE_DELTASHARING"
+
+   .. py:attribute:: TABLE_DELTASHARING_MUTABLE
+      :value: "TABLE_DELTASHARING_MUTABLE"
+
+   .. py:attribute:: TABLE_DELTA_EXTERNAL
+      :value: "TABLE_DELTA_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_ICEBERG_DELTASHARING
+      :value: "TABLE_DELTA_ICEBERG_DELTASHARING"
+
+   .. py:attribute:: TABLE_DELTA_ICEBERG_MANAGED
+      :value: "TABLE_DELTA_ICEBERG_MANAGED"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_HUDI_EXTERNAL
+      :value: "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE"
+
+   .. py:attribute:: TABLE_EXTERNAL
+      :value: "TABLE_EXTERNAL"
+
+   .. py:attribute:: TABLE_FEATURE_STORE
+      :value: "TABLE_FEATURE_STORE"
+
+   .. py:attribute:: TABLE_FEATURE_STORE_EXTERNAL
+      :value: "TABLE_FEATURE_STORE_EXTERNAL"
+
+   .. py:attribute:: TABLE_FOREIGN_BIGQUERY
+      :value: "TABLE_FOREIGN_BIGQUERY"
+
+   .. py:attribute:: TABLE_FOREIGN_DATABRICKS
+      :value: "TABLE_FOREIGN_DATABRICKS"
+
+   .. py:attribute:: TABLE_FOREIGN_DELTASHARING
+      :value: "TABLE_FOREIGN_DELTASHARING"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE
+      :value: "TABLE_FOREIGN_HIVE_METASTORE"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_MANAGED
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_MANAGED"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED"
+
+   .. py:attribute:: TABLE_FOREIGN_HIVE_METASTORE_VIEW
+      :value: "TABLE_FOREIGN_HIVE_METASTORE_VIEW"
+
+   .. py:attribute:: TABLE_FOREIGN_MONGODB
+      :value: "TABLE_FOREIGN_MONGODB"
+
+   .. py:attribute:: TABLE_FOREIGN_MYSQL
+      :value: "TABLE_FOREIGN_MYSQL"
+
+   .. py:attribute:: TABLE_FOREIGN_NETSUITE
+      :value: "TABLE_FOREIGN_NETSUITE"
+
+   .. py:attribute:: TABLE_FOREIGN_ORACLE
+      :value: "TABLE_FOREIGN_ORACLE"
+
+   .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
+      :value: "TABLE_FOREIGN_POSTGRESQL"
+
+   .. py:attribute:: TABLE_FOREIGN_REDSHIFT
+      :value: "TABLE_FOREIGN_REDSHIFT"
+
+   .. py:attribute:: TABLE_FOREIGN_SALESFORCE
+      :value: "TABLE_FOREIGN_SALESFORCE"
+
+   .. py:attribute:: TABLE_FOREIGN_SALESFORCE_DATA_CLOUD
+      :value: "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD"
+
+   .. py:attribute:: TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING
+      :value: "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING"
+
+   .. py:attribute:: TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW
+      :value: "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW"
+
+   .. py:attribute:: TABLE_FOREIGN_SNOWFLAKE
+      :value: "TABLE_FOREIGN_SNOWFLAKE"
+
+   .. py:attribute:: TABLE_FOREIGN_SQLDW
+      :value: "TABLE_FOREIGN_SQLDW"
+
+   .. py:attribute:: TABLE_FOREIGN_SQLSERVER
+      :value: "TABLE_FOREIGN_SQLSERVER"
+
+   .. py:attribute:: TABLE_FOREIGN_TERADATA
+      :value: "TABLE_FOREIGN_TERADATA"
+
+   .. py:attribute:: TABLE_FOREIGN_WORKDAY_RAAS
+      :value: "TABLE_FOREIGN_WORKDAY_RAAS"
+
+   .. py:attribute:: TABLE_ICEBERG_UNIFORM_MANAGED
+      :value: "TABLE_ICEBERG_UNIFORM_MANAGED"
+
+   .. py:attribute:: TABLE_INTERNAL
+      :value: "TABLE_INTERNAL"
+
+   .. py:attribute:: TABLE_MANAGED_POSTGRESQL
+      :value: "TABLE_MANAGED_POSTGRESQL"
+
+   .. py:attribute:: TABLE_MATERIALIZED_VIEW
+      :value: "TABLE_MATERIALIZED_VIEW"
+
+   .. py:attribute:: TABLE_MATERIALIZED_VIEW_DELTASHARING
+      :value: "TABLE_MATERIALIZED_VIEW_DELTASHARING"
+
+   .. py:attribute:: TABLE_METRIC_VIEW
+      :value: "TABLE_METRIC_VIEW"
+
+   .. py:attribute:: TABLE_ONLINE_VECTOR_INDEX_DIRECT
+      :value: "TABLE_ONLINE_VECTOR_INDEX_DIRECT"
+
+   .. py:attribute:: TABLE_ONLINE_VECTOR_INDEX_REPLICA
+      :value: "TABLE_ONLINE_VECTOR_INDEX_REPLICA"
+
+   .. py:attribute:: TABLE_ONLINE_VIEW
+      :value: "TABLE_ONLINE_VIEW"
+
+   .. py:attribute:: TABLE_STANDARD
+      :value: "TABLE_STANDARD"
+
+   .. py:attribute:: TABLE_STREAMING_LIVE_TABLE
+      :value: "TABLE_STREAMING_LIVE_TABLE"
+
+   .. py:attribute:: TABLE_STREAMING_LIVE_TABLE_DELTASHARING
+      :value: "TABLE_STREAMING_LIVE_TABLE_DELTASHARING"
+
+   .. py:attribute:: TABLE_SYSTEM
+      :value: "TABLE_SYSTEM"
+
+   .. py:attribute:: TABLE_SYSTEM_DELTASHARING
+      :value: "TABLE_SYSTEM_DELTASHARING"
+
+   .. py:attribute:: TABLE_VIEW
+      :value: "TABLE_VIEW"
+
+   .. py:attribute:: TABLE_VIEW_DELTASHARING
+      :value: "TABLE_VIEW_DELTASHARING"
+
+.. autoclass:: SecurableKindManifest
+   :members:
+   :undoc-members:
+
 .. py:class:: SecurableType
 
    The type of Unity Catalog securable.
@@ -1336,9 +1672,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE
       :value: "TABLE"
 
-   .. py:attribute:: UNKNOWN_SECURABLE_TYPE
-      :value: "UNKNOWN_SECURABLE_TYPE"
-
    .. py:attribute:: VOLUME
       :value: "VOLUME"
 
@@ -1369,6 +1702,71 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SystemSchemaInfo
    :members:
    :undoc-members:
+
+.. py:class:: SystemType
+
+   .. py:attribute:: AMAZON_REDSHIFT
+      :value: "AMAZON_REDSHIFT"
+
+   .. py:attribute:: AZURE_SYNAPSE
+      :value: "AZURE_SYNAPSE"
+
+   .. py:attribute:: CONFLUENT
+      :value: "CONFLUENT"
+
+   .. py:attribute:: GOOGLE_BIGQUERY
+      :value: "GOOGLE_BIGQUERY"
+
+   .. py:attribute:: KAFKA
+      :value: "KAFKA"
+
+   .. py:attribute:: LOOKER
+      :value: "LOOKER"
+
+   .. py:attribute:: MICROSOFT_FABRIC
+      :value: "MICROSOFT_FABRIC"
+
+   .. py:attribute:: MICROSOFT_SQL_SERVER
+      :value: "MICROSOFT_SQL_SERVER"
+
+   .. py:attribute:: MONGODB
+      :value: "MONGODB"
+
+   .. py:attribute:: MYSQL
+      :value: "MYSQL"
+
+   .. py:attribute:: ORACLE
+      :value: "ORACLE"
+
+   .. py:attribute:: OTHER
+      :value: "OTHER"
+
+   .. py:attribute:: POSTGRESQL
+      :value: "POSTGRESQL"
+
+   .. py:attribute:: POWER_BI
+      :value: "POWER_BI"
+
+   .. py:attribute:: SALESFORCE
+      :value: "SALESFORCE"
+
+   .. py:attribute:: SAP
+      :value: "SAP"
+
+   .. py:attribute:: SERVICENOW
+      :value: "SERVICENOW"
+
+   .. py:attribute:: SNOWFLAKE
+      :value: "SNOWFLAKE"
+
+   .. py:attribute:: TABLEAU
+      :value: "TABLEAU"
+
+   .. py:attribute:: TERADATA
+      :value: "TERADATA"
+
+   .. py:attribute:: WORKDAY
+      :value: "WORKDAY"
 
 .. autoclass:: TableConstraint
    :members:
@@ -1421,6 +1819,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MATERIALIZED_VIEW
       :value: "MATERIALIZED_VIEW"
+
+   .. py:attribute:: METRIC_VIEW
+      :value: "METRIC_VIEW"
 
    .. py:attribute:: STREAMING_TABLE
       :value: "STREAMING_TABLE"
@@ -1497,6 +1898,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRegisteredModelRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateRequestExternalLineage
    :members:
    :undoc-members:
 

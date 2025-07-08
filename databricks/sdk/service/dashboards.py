@@ -254,42 +254,6 @@ class DashboardView(Enum):
 
 
 @dataclass
-class DeleteScheduleResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteScheduleResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteScheduleResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteScheduleResponse:
-        """Deserializes the DeleteScheduleResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteSubscriptionResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteSubscriptionResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteSubscriptionResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteSubscriptionResponse:
-        """Deserializes the DeleteSubscriptionResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class GenieAttachment:
     """Genie AI Response"""
 
@@ -410,6 +374,46 @@ class GenieConversation:
 
 
 @dataclass
+class GenieConversationSummary:
+    conversation_id: str
+
+    title: str
+
+    created_timestamp: int
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieConversationSummary into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.conversation_id is not None:
+            body["conversation_id"] = self.conversation_id
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieConversationSummary into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.conversation_id is not None:
+            body["conversation_id"] = self.conversation_id
+        if self.created_timestamp is not None:
+            body["created_timestamp"] = self.created_timestamp
+        if self.title is not None:
+            body["title"] = self.title
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieConversationSummary:
+        """Deserializes the GenieConversationSummary from a dictionary."""
+        return cls(
+            conversation_id=d.get("conversation_id", None),
+            created_timestamp=d.get("created_timestamp", None),
+            title=d.get("title", None),
+        )
+
+
+@dataclass
 class GenieCreateConversationMessageRequest:
     content: str
     """User message content."""
@@ -453,57 +457,6 @@ class GenieCreateConversationMessageRequest:
 
 
 @dataclass
-class GenieGenerateDownloadFullQueryResultResponse:
-    download_id: Optional[str] = None
-    """Download ID. Use this ID to track the download request in subsequent polling calls"""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.download_id is not None:
-            body["download_id"] = self.download_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.download_id is not None:
-            body["download_id"] = self.download_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
-        """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
-        return cls(download_id=d.get("download_id", None))
-
-
-@dataclass
-class GenieGetDownloadFullQueryResultResponse:
-    statement_response: Optional[sql.StatementResponse] = None
-    """SQL Statement Execution response. See [Get status, manifest, and result first
-    chunk](:method:statementexecution/getstatement) for more details."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.statement_response:
-            body["statement_response"] = self.statement_response.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieGetDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.statement_response:
-            body["statement_response"] = self.statement_response
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
-        """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
-        return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
-
-
-@dataclass
 class GenieGetMessageQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
     """SQL Statement Execution response. See [Get status, manifest, and result first
@@ -527,6 +480,41 @@ class GenieGetMessageQueryResultResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetMessageQueryResultResponse:
         """Deserializes the GenieGetMessageQueryResultResponse from a dictionary."""
         return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
+
+
+@dataclass
+class GenieListConversationsResponse:
+    conversations: Optional[List[GenieConversationSummary]] = None
+    """List of conversations in the Genie space"""
+
+    next_page_token: Optional[str] = None
+    """Token to get the next page of results"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieListConversationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.conversations:
+            body["conversations"] = [v.as_dict() for v in self.conversations]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieListConversationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.conversations:
+            body["conversations"] = self.conversations
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieListConversationsResponse:
+        """Deserializes the GenieListConversationsResponse from a dictionary."""
+        return cls(
+            conversations=_repeated_dict(d, "conversations", GenieConversationSummary),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -595,20 +583,6 @@ class GenieMessage:
     `query_result_metadata` in `GenieQueryAttachment` instead."""
 
     status: Optional[MessageStatus] = None
-    """MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
-    sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the user's question. * `PENDING_WAREHOUSE`:
-    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing a
-    generated SQL query. Get the SQL query result by calling
-    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
-    `FAILED`: The response generation or query execution failed. See `error` field. * `COMPLETED`:
-    Message processing is completed. Results are in the `attachments` field. Get the SQL query
-    result by calling
-    [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult) API. *
-    `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available
-    anymore. The user needs to rerun the query. Rerun the SQL query result by calling
-    [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery) API. * `CANCELLED`:
-    Message has been cancelled."""
 
     user_id: Optional[int] = None
     """ID of the user who created the message"""
@@ -1801,6 +1775,23 @@ class GenieAPI:
             timeout=timeout
         )
 
+    def delete_conversation(self, space_id: str, conversation_id: str):
+        """Delete a conversation.
+
+        :param space_id: str
+          The ID associated with the Genie space where the conversation is located.
+        :param conversation_id: str
+          The ID of the conversation to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}", headers=headers)
+
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
@@ -1855,75 +1846,6 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
-
-    def generate_download_full_query_result(
-        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
-    ) -> GenieGenerateDownloadFullQueryResultResponse:
-        """Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
-        the download. The query result is stored in an external link and can be retrieved using the [Get
-        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
-        See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        :param space_id: str
-          Genie space ID
-        :param conversation_id: str
-          Conversation ID
-        :param message_id: str
-          Message ID
-        :param attachment_id: str
-          Attachment ID
-
-        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads",
-            headers=headers,
-        )
-        return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
-
-    def get_download_full_query_result(
-        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str
-    ) -> GenieGetDownloadFullQueryResultResponse:
-        """After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
-        successfully receiving a `download_id`, use this API to poll the download progress. When the download
-        is complete, the API returns one or more external links to the query result files. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
-        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
-        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
-        Statement](:method:statementexecution/executestatement) for more details.
-
-        :param space_id: str
-          Genie space ID
-        :param conversation_id: str
-          Conversation ID
-        :param message_id: str
-          Message ID
-        :param attachment_id: str
-          Attachment ID
-        :param download_id: str
-          Download ID. This ID is provided by the [Generate Download
-          endpoint](:method:genie/generateDownloadFullQueryResult)
-
-        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}",
-            headers=headers,
-        )
-        return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
         """Get message from conversation.
@@ -2050,6 +1972,33 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
+    def list_conversations(
+        self, space_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> GenieListConversationsResponse:
+        """Get a list of conversations in a Genie Space.
+
+        :param space_id: str
+          The ID of the Genie space to retrieve conversations from.
+        :param page_size: int (optional)
+          Maximum number of conversations to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListConversationsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}/conversations", query=query, headers=headers)
+        return GenieListConversationsResponse.from_dict(res)
+
     def list_spaces(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> GenieListSpacesResponse:
@@ -2109,6 +2058,21 @@ class GenieAPI:
     def start_conversation_and_wait(self, space_id: str, content: str, timeout=timedelta(minutes=20)) -> GenieMessage:
         return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
+    def trash_space(self, space_id: str):
+        """Move a Genie Space to the trash.
+
+        :param space_id: str
+          The ID associated with the Genie space to be sent to the trash.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
+
 
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
@@ -2139,6 +2103,7 @@ class LakeviewAPI:
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
+          The schedule to create. A dashboard is limited to 10 schedules.
 
         :returns: :class:`Schedule`
         """
@@ -2159,6 +2124,7 @@ class LakeviewAPI:
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
         :param subscription: :class:`Subscription`
+          The subscription to create. A schedule is limited to 100 subscriptions.
 
         :returns: :class:`Subscription`
         """
@@ -2558,6 +2524,7 @@ class LakeviewAPI:
         :param schedule_id: str
           UUID identifying the schedule.
         :param schedule: :class:`Schedule`
+          The schedule to update.
 
         :returns: :class:`Schedule`
         """

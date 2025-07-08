@@ -105,11 +105,6 @@
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
-          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
-          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
-
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -353,7 +348,6 @@
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
-          What triggered this update.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)
@@ -495,11 +489,6 @@
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
-          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
-          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
-
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)

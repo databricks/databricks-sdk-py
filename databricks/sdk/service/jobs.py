@@ -219,11 +219,6 @@ class BaseRun:
     """The URL to the detail page of the run."""
 
     run_type: Optional[RunType] = None
-    """The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
-    `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit
-    run. A run created with :method:jobs/submit.
-    
-    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     schedule: Optional[CronSchedule] = None
     """The cron schedule that triggered this run if it was triggered by the periodic scheduler."""
@@ -244,7 +239,6 @@ class BaseRun:
     """Deprecated. Please use the `status` field instead."""
 
     status: Optional[RunStatus] = None
-    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -253,20 +247,8 @@ class BaseRun:
     root to determine if more results are available."""
 
     trigger: Optional[TriggerType] = None
-    """The type of trigger that fired this run.
-    
-    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
-    One time triggers that fire a single run. This occurs you triggered a single run on demand
-    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
-    previously failed run. This occurs when you request to re-run the job in case of failures. *
-    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
-    Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is
-    triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *
-    `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
-    * `MODEL`: Indicates a run that is triggered by a model update."""
 
     trigger_info: Optional[TriggerInfo] = None
-    """Additional details about what triggered the run"""
 
     def as_dict(self) -> dict:
         """Serializes the BaseRun into a dictionary suitable for use as a JSON request body."""
@@ -1005,7 +987,6 @@ class CreateJob:
     are used, `git_source` must be defined on the job."""
 
     health: Optional[JobsHealthRules] = None
-    """An optional set of health rules that can be defined for this job."""
 
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
@@ -1044,10 +1025,6 @@ class CreateJob:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting. Specifies the user or service principal that the job runs as. If not
-    specified, the job runs as the user who created the job.
-    
-    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -2558,8 +2535,6 @@ class GitSource:
     with git_branch or git_tag."""
 
     git_snapshot: Optional[GitSnapshot] = None
-    """Read-only state of the remote repository at the time the job was run. This field is only
-    included on job runs."""
 
     git_tag: Optional[str] = None
     """Name of the tag to be checked out and used by this job. This field cannot be specified in
@@ -2732,7 +2707,6 @@ class JobAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[JobPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -3055,9 +3029,6 @@ class JobEnvironment:
     """The key of an environment. It has to be unique within a job."""
 
     spec: Optional[compute.Environment] = None
-    """The environment entity used to preserve serverless environment side panel, jobs' environment for
-    non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
-    environment spec, only pip dependencies are supported."""
 
     def as_dict(self) -> dict:
         """Serializes the JobEnvironment into a dictionary suitable for use as a JSON request body."""
@@ -3198,7 +3169,6 @@ class JobPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[JobPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the JobPermission into a dictionary suitable for use as a JSON request body."""
@@ -3286,7 +3256,6 @@ class JobPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[JobPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the JobPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -3436,7 +3405,6 @@ class JobSettings:
     are used, `git_source` must be defined on the job."""
 
     health: Optional[JobsHealthRules] = None
-    """An optional set of health rules that can be defined for this job."""
 
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
@@ -3475,10 +3443,6 @@ class JobSettings:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting. Specifies the user or service principal that the job runs as. If not
-    specified, the job runs as the user who created the job.
-    
-    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -3737,18 +3701,8 @@ class JobsHealthOperator(Enum):
 @dataclass
 class JobsHealthRule:
     metric: JobsHealthMetric
-    """Specifies the health metric that is being evaluated for a particular health rule.
-    
-    * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
-    An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
-    is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
-    across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate
-    of the maximum consumer delay across all streams. This metric is in Public Preview. *
-    `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all
-    streams. This metric is in Public Preview."""
 
     op: JobsHealthOperator
-    """Specifies the operator used to compare the health metric value with the specified threshold."""
 
     value: int
     """Specifies the threshold value that the health metric should obey to satisfy the health rule."""
@@ -4454,11 +4408,6 @@ class PythonWheelTask:
 @dataclass
 class QueueDetails:
     code: Optional[QueueDetailsCodeCode] = None
-    """The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to
-    reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was
-    queued due to reaching the per-job limit of concurrent job runs. *
-    `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of
-    active run job tasks."""
 
     message: Optional[str] = None
     """A descriptive message with the queuing details. This field is unstructured, and its exact format
@@ -4549,7 +4498,6 @@ class RepairHistoryItem:
     """Deprecated. Please use the `status` field instead."""
 
     status: Optional[RunStatus] = None
-    """The current status of the run"""
 
     task_run_ids: Optional[List[int]] = None
     """The run IDs of the task runs that ran as part of this repair history item."""
@@ -5293,11 +5241,6 @@ class Run:
     """The URL to the detail page of the run."""
 
     run_type: Optional[RunType] = None
-    """The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *
-    `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit
-    run. A run created with :method:jobs/submit.
-    
-    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     schedule: Optional[CronSchedule] = None
     """The cron schedule that triggered this run if it was triggered by the periodic scheduler."""
@@ -5318,7 +5261,6 @@ class Run:
     """Deprecated. Please use the `status` field instead."""
 
     status: Optional[RunStatus] = None
-    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -5327,20 +5269,8 @@ class Run:
     root to determine if more results are available."""
 
     trigger: Optional[TriggerType] = None
-    """The type of trigger that fired this run.
-    
-    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
-    One time triggers that fire a single run. This occurs you triggered a single run on demand
-    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
-    previously failed run. This occurs when you request to re-run the job in case of failures. *
-    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
-    Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is
-    triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *
-    `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
-    * `MODEL`: Indicates a run that is triggered by a model update."""
 
     trigger_info: Optional[TriggerInfo] = None
-    """Additional details about what triggered the run"""
 
     def as_dict(self) -> dict:
         """Serializes the Run into a dictionary suitable for use as a JSON request body."""
@@ -6484,7 +6414,6 @@ class RunStatus:
     """If the run was queued, details about the reason for queuing the run."""
 
     state: Optional[RunLifecycleStateV2State] = None
-    """The current state of the run."""
 
     termination_details: Optional[TerminationDetails] = None
     """If the run is in a TERMINATING or TERMINATED state, details about the reason for terminating the
@@ -6721,7 +6650,6 @@ class RunTask:
     """Deprecated. Please use the `status` field instead."""
 
     status: Optional[RunStatus] = None
-    """The current status of the run"""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
@@ -7156,10 +7084,6 @@ class SparkSubmitTask:
 @dataclass
 class SqlAlertOutput:
     alert_state: Optional[SqlAlertState] = None
-    """The state of the SQL alert.
-    
-    * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger
-    conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"""
 
     output_link: Optional[str] = None
     """The link to find the output results."""
@@ -7792,7 +7716,6 @@ class SubmitRun:
     are used, `git_source` must be defined on the job."""
 
     health: Optional[JobsHealthRules] = None
-    """An optional set of health rules that can be defined for this job."""
 
     idempotency_token: Optional[str] = None
     """An optional token that can be used to guarantee the idempotency of job run requests. If a run
@@ -8001,7 +7924,6 @@ class SubmitTask:
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
 
     health: Optional[JobsHealthRules] = None
-    """An optional set of health rules that can be defined for this job."""
 
     libraries: Optional[List[compute.Library]] = None
     """An optional list of libraries to be installed on the cluster. The default value is an empty
@@ -8430,7 +8352,6 @@ class Task:
     gen_ai_compute_task: Optional[GenAiComputeTask] = None
 
     health: Optional[JobsHealthRules] = None
-    """An optional set of health rules that can be defined for this job."""
 
     job_cluster_key: Optional[str] = None
     """If job_cluster_key, this task is executed reusing the cluster specified in
@@ -8942,55 +8863,12 @@ class TerminationCodeCode(Enum):
 @dataclass
 class TerminationDetails:
     code: Optional[TerminationCodeCode] = None
-    """The code indicates why the run was terminated. Additional codes might be introduced in future
-    releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run
-    was completed successfully but some child runs failed. * `USER_CANCELED`: The run was
-    successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
-    execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
-    `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
-    type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The
-    run encountered an unexpected error. Refer to the state message for further details. *
-    `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *
-    `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further
-    details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when
-    communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because
-    it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
-    workspace has reached the quota for the maximum number of concurrent active runs. Consider
-    scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it
-    tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
-    number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.
-    Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
-    failed due to an error when accessing the customer blob storage. Refer to the state message for
-    further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
-    details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to
-    a permission issue while accessing a resource. Refer to the state message for further details. *
-    `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer
-    to the state message for further details. The causes might include, but are not limited to: The
-    provided library is invalid, there are insufficient permissions to install the library, and so
-    forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum
-    concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a
-    cluster that has already reached the maximum number of contexts it is configured to create. See:
-    [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to
-    the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an
-    invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
-    run failed due to a cloud provider issue. Refer to the state message for further details. *
-    `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
-    limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
-    
-    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
     message: Optional[str] = None
     """A descriptive message with the termination details. This field is unstructured and the format
     might change."""
 
     type: Optional[TerminationTypeType] = None
-    """* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the
-    Databricks platform. Please look at the [status page] or contact support if the issue persists.
-    * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job
-    configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
-    provider.
-    
-    [status page]: https://status.databricks.com/"""
 
     def as_dict(self) -> dict:
         """Serializes the TerminationDetails into a dictionary suitable for use as a JSON request body."""
@@ -9592,7 +9470,6 @@ class JobsAPI:
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -9622,10 +9499,6 @@ class JobsAPI:
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user or service principal that the job runs as. If not specified,
-          the job runs as the user who created the job.
-
-          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -10520,7 +10393,6 @@ class JobsAPI:
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the

@@ -16,7 +16,7 @@
         Create an Online Feature Store.
 
         :param online_store: :class:`OnlineStore`
-          An OnlineStore is a logical database instance that stores and serves features online.
+          Online store to create.
 
         :returns: :class:`OnlineStore`
         
@@ -72,7 +72,7 @@
         :param name: str
           The name of the online store. This is the unique identifier for the online store.
         :param online_store: :class:`OnlineStore`
-          An OnlineStore is a logical database instance that stores and serves features online.
+          Online store to update.
         :param update_mask: str
           The list of fields to update.
 

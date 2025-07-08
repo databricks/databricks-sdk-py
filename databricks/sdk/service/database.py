@@ -113,11 +113,34 @@ class DatabaseInstance:
     capacity: Optional[str] = None
     """The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
 
+    child_instance_refs: Optional[List[DatabaseInstanceRef]] = None
+    """The refs of the child instances. This is only available if the instance is parent instance."""
+
     creation_time: Optional[str] = None
     """The timestamp when the instance was created."""
 
     creator: Optional[str] = None
     """The email of the creator of the instance."""
+
+    effective_enable_readable_secondaries: Optional[bool] = None
+    """xref AIP-129. `enable_readable_secondaries` is owned by the client, while
+    `effective_enable_readable_secondaries` is owned by the server. `enable_readable_secondaries`
+    will only be set in Create/Update response messages if and only if the user provides the field
+    via the request. `effective_enable_readable_secondaries` on the other hand will always bet set
+    in all response messages (Create/Update/Get/List)."""
+
+    effective_node_count: Optional[int] = None
+    """xref AIP-129. `node_count` is owned by the client, while `effective_node_count` is owned by the
+    server. `node_count` will only be set in Create/Update response messages if and only if the user
+    provides the field via the request. `effective_node_count` on the other hand will always bet set
+    in all response messages (Create/Update/Get/List)."""
+
+    effective_retention_window_in_days: Optional[int] = None
+    """xref AIP-129. `retention_window_in_days` is owned by the client, while
+    `effective_retention_window_in_days` is owned by the server. `retention_window_in_days` will
+    only be set in Create/Update response messages if and only if the user provides the field via
+    the request. `effective_retention_window_in_days` on the other hand will always bet set in all
+    response messages (Create/Update/Get/List)."""
 
     effective_stopped: Optional[bool] = None
     """xref AIP-129. `stopped` is owned by the client, while `effective_stopped` is owned by the
@@ -125,11 +148,31 @@ class DatabaseInstance:
     provides the field via the request. `effective_stopped` on the other hand will always bet set in
     all response messages (Create/Update/Get/List)."""
 
+    enable_readable_secondaries: Optional[bool] = None
+    """Whether to enable secondaries to serve read-only traffic. Defaults to false."""
+
+    node_count: Optional[int] = None
+    """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
+    to 1 primary and 0 secondaries."""
+
+    parent_instance_ref: Optional[DatabaseInstanceRef] = None
+    """The ref of the parent instance. This is only available if the instance is child instance. Input:
+    For specifying the parent instance to create a child instance. Optional. Output: Only populated
+    if provided as input to create a child instance."""
+
     pg_version: Optional[str] = None
     """The version of Postgres running on the instance."""
 
+    read_only_dns: Optional[str] = None
+    """The DNS endpoint to connect to the instance for read only access. This is only available if
+    enable_readable_secondaries is true."""
+
     read_write_dns: Optional[str] = None
     """The DNS endpoint to connect to the instance for read+write access."""
+
+    retention_window_in_days: Optional[int] = None
+    """The retention window for the instance. This is the time window in days for which the historical
+    data is retained. The default value is 7 days. Valid values are 2 to 35 days."""
 
     state: Optional[DatabaseInstanceState] = None
     """The current state of the instance."""
@@ -145,18 +188,36 @@ class DatabaseInstance:
         body = {}
         if self.capacity is not None:
             body["capacity"] = self.capacity
+        if self.child_instance_refs:
+            body["child_instance_refs"] = [v.as_dict() for v in self.child_instance_refs]
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_enable_readable_secondaries is not None:
+            body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
+        if self.effective_node_count is not None:
+            body["effective_node_count"] = self.effective_node_count
+        if self.effective_retention_window_in_days is not None:
+            body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
             body["name"] = self.name
+        if self.node_count is not None:
+            body["node_count"] = self.node_count
+        if self.parent_instance_ref:
+            body["parent_instance_ref"] = self.parent_instance_ref.as_dict()
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.read_only_dns is not None:
+            body["read_only_dns"] = self.read_only_dns
         if self.read_write_dns is not None:
             body["read_write_dns"] = self.read_write_dns
+        if self.retention_window_in_days is not None:
+            body["retention_window_in_days"] = self.retention_window_in_days
         if self.state is not None:
             body["state"] = self.state.value
         if self.stopped is not None:
@@ -170,18 +231,36 @@ class DatabaseInstance:
         body = {}
         if self.capacity is not None:
             body["capacity"] = self.capacity
+        if self.child_instance_refs:
+            body["child_instance_refs"] = self.child_instance_refs
         if self.creation_time is not None:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_enable_readable_secondaries is not None:
+            body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
+        if self.effective_node_count is not None:
+            body["effective_node_count"] = self.effective_node_count
+        if self.effective_retention_window_in_days is not None:
+            body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
             body["name"] = self.name
+        if self.node_count is not None:
+            body["node_count"] = self.node_count
+        if self.parent_instance_ref:
+            body["parent_instance_ref"] = self.parent_instance_ref
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
+        if self.read_only_dns is not None:
+            body["read_only_dns"] = self.read_only_dns
         if self.read_write_dns is not None:
             body["read_write_dns"] = self.read_write_dns
+        if self.retention_window_in_days is not None:
+            body["retention_window_in_days"] = self.retention_window_in_days
         if self.state is not None:
             body["state"] = self.state
         if self.stopped is not None:
@@ -195,16 +274,214 @@ class DatabaseInstance:
         """Deserializes the DatabaseInstance from a dictionary."""
         return cls(
             capacity=d.get("capacity", None),
+            child_instance_refs=_repeated_dict(d, "child_instance_refs", DatabaseInstanceRef),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
+            effective_enable_readable_secondaries=d.get("effective_enable_readable_secondaries", None),
+            effective_node_count=d.get("effective_node_count", None),
+            effective_retention_window_in_days=d.get("effective_retention_window_in_days", None),
             effective_stopped=d.get("effective_stopped", None),
+            enable_readable_secondaries=d.get("enable_readable_secondaries", None),
             name=d.get("name", None),
+            node_count=d.get("node_count", None),
+            parent_instance_ref=_from_dict(d, "parent_instance_ref", DatabaseInstanceRef),
             pg_version=d.get("pg_version", None),
+            read_only_dns=d.get("read_only_dns", None),
             read_write_dns=d.get("read_write_dns", None),
+            retention_window_in_days=d.get("retention_window_in_days", None),
             state=_enum(d, "state", DatabaseInstanceState),
             stopped=d.get("stopped", None),
             uid=d.get("uid", None),
         )
+
+
+@dataclass
+class DatabaseInstanceRef:
+    """DatabaseInstanceRef is a reference to a database instance. It is used in the DatabaseInstance
+    object to refer to the parent instance of an instance and to refer the child instances of an
+    instance. To specify as a parent instance during creation of an instance, the lsn and
+    branch_time fields are optional. If not specified, the child instance will be created from the
+    latest lsn of the parent. If both lsn and branch_time are specified, the lsn will be used to
+    create the child instance."""
+
+    branch_time: Optional[str] = None
+    """Branch time of the ref database instance. For a parent ref instance, this is the point in time
+    on the parent instance from which the instance was created. For a child ref instance, this is
+    the point in time on the instance from which the child instance was created. Input: For
+    specifying the point in time to create a child instance. Optional. Output: Only populated if
+    provided as input to create a child instance."""
+
+    effective_lsn: Optional[str] = None
+    """xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is owned by the server. `lsn`
+    will only be set in Create/Update response messages if and only if the user provides the field
+    via the request. `effective_lsn` on the other hand will always bet set in all response messages
+    (Create/Update/Get/List). For a parent ref instance, this is the LSN on the parent instance from
+    which the instance was created. For a child ref instance, this is the LSN on the instance from
+    which the child instance was created."""
+
+    lsn: Optional[str] = None
+    """User-specified WAL LSN of the ref database instance.
+    
+    Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated
+    if provided as input to create a child instance."""
+
+    name: Optional[str] = None
+    """Name of the ref database instance."""
+
+    uid: Optional[str] = None
+    """Id of the ref database instance."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRef into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch_time is not None:
+            body["branch_time"] = self.branch_time
+        if self.effective_lsn is not None:
+            body["effective_lsn"] = self.effective_lsn
+        if self.lsn is not None:
+            body["lsn"] = self.lsn
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRef into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch_time is not None:
+            body["branch_time"] = self.branch_time
+        if self.effective_lsn is not None:
+            body["effective_lsn"] = self.effective_lsn
+        if self.lsn is not None:
+            body["lsn"] = self.lsn
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstanceRef:
+        """Deserializes the DatabaseInstanceRef from a dictionary."""
+        return cls(
+            branch_time=d.get("branch_time", None),
+            effective_lsn=d.get("effective_lsn", None),
+            lsn=d.get("lsn", None),
+            name=d.get("name", None),
+            uid=d.get("uid", None),
+        )
+
+
+@dataclass
+class DatabaseInstanceRole:
+    """A DatabaseInstanceRole represents a Postgres role in a database instance."""
+
+    attributes: Optional[DatabaseInstanceRoleAttributes] = None
+    """API-exposed Postgres role attributes"""
+
+    identity_type: Optional[DatabaseInstanceRoleIdentityType] = None
+    """The type of the role."""
+
+    membership_role: Optional[DatabaseInstanceRoleMembershipRole] = None
+    """An enum value for a standard role that this role is a member of."""
+
+    name: Optional[str] = None
+    """The name of the role. This is the unique identifier for the role in an instance."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRole into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes.as_dict()
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type.value
+        if self.membership_role is not None:
+            body["membership_role"] = self.membership_role.value
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRole into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes
+        if self.identity_type is not None:
+            body["identity_type"] = self.identity_type
+        if self.membership_role is not None:
+            body["membership_role"] = self.membership_role
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstanceRole:
+        """Deserializes the DatabaseInstanceRole from a dictionary."""
+        return cls(
+            attributes=_from_dict(d, "attributes", DatabaseInstanceRoleAttributes),
+            identity_type=_enum(d, "identity_type", DatabaseInstanceRoleIdentityType),
+            membership_role=_enum(d, "membership_role", DatabaseInstanceRoleMembershipRole),
+            name=d.get("name", None),
+        )
+
+
+@dataclass
+class DatabaseInstanceRoleAttributes:
+    """Attributes that can be granted to a Postgres role. We are only implementing a subset for now,
+    see xref: https://www.postgresql.org/docs/16/sql-createrole.html The values follow Postgres
+    keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they don't include typical
+    underscores between words. We were requested to make this a nested object/struct representation
+    since these are knobs from an external spec."""
+
+    bypassrls: Optional[bool] = None
+
+    createdb: Optional[bool] = None
+
+    createrole: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRoleAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bypassrls is not None:
+            body["bypassrls"] = self.bypassrls
+        if self.createdb is not None:
+            body["createdb"] = self.createdb
+        if self.createrole is not None:
+            body["createrole"] = self.createrole
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseInstanceRoleAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bypassrls is not None:
+            body["bypassrls"] = self.bypassrls
+        if self.createdb is not None:
+            body["createdb"] = self.createdb
+        if self.createrole is not None:
+            body["createrole"] = self.createrole
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstanceRoleAttributes:
+        """Deserializes the DatabaseInstanceRoleAttributes from a dictionary."""
+        return cls(
+            bypassrls=d.get("bypassrls", None), createdb=d.get("createdb", None), createrole=d.get("createrole", None)
+        )
+
+
+class DatabaseInstanceRoleIdentityType(Enum):
+
+    GROUP = "GROUP"
+    PG_ONLY = "PG_ONLY"
+    SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
+    USER = "USER"
+
+
+class DatabaseInstanceRoleMembershipRole(Enum):
+    """Roles that the DatabaseInstanceRole can be a member of."""
+
+    DATABRICKS_SUPERUSER = "DATABRICKS_SUPERUSER"
 
 
 class DatabaseInstanceState(Enum):
@@ -231,18 +508,15 @@ class DatabaseTable:
     MUST match that of the registered catalog (or the request will be rejected)."""
 
     logical_database_name: Optional[str] = None
-    """Target Postgres database object (logical database) name for this table. This field is optional
-    in all scenarios.
+    """Target Postgres database object (logical database) name for this table.
     
     When creating a table in a registered Postgres catalog, the target Postgres database name is
     inferred to be that of the registered catalog. If this field is specified in this scenario, the
     Postgres database name MUST match that of the registered catalog (or the request will be
     rejected).
     
-    When creating a table in a standard catalog, the target database name is inferred to be that of
-    the standard catalog. In this scenario, specifying this field will allow targeting an arbitrary
-    postgres database. Note that this has implications for the `create_database_objects_is_missing`
-    field in `spec`."""
+    When creating a table in a standard catalog, this field is required. In this scenario,
+    specifying this field will allow targeting an arbitrary postgres database."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
@@ -277,80 +551,48 @@ class DatabaseTable:
 
 
 @dataclass
-class DeleteDatabaseCatalogResponse:
+class DeltaTableSyncInfo:
+    delta_commit_timestamp: Optional[str] = None
+    """The timestamp when the above Delta version was committed in the source Delta table. Note: This
+    is the Delta commit time, not the time the data was written to the synced table."""
+
+    delta_commit_version: Optional[int] = None
+    """The Delta Lake commit version that was last successfully synced."""
+
     def as_dict(self) -> dict:
-        """Serializes the DeleteDatabaseCatalogResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the DeltaTableSyncInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.delta_commit_timestamp is not None:
+            body["delta_commit_timestamp"] = self.delta_commit_timestamp
+        if self.delta_commit_version is not None:
+            body["delta_commit_version"] = self.delta_commit_version
         return body
 
     def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDatabaseCatalogResponse into a shallow dictionary of its immediate attributes."""
+        """Serializes the DeltaTableSyncInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.delta_commit_timestamp is not None:
+            body["delta_commit_timestamp"] = self.delta_commit_timestamp
+        if self.delta_commit_version is not None:
+            body["delta_commit_version"] = self.delta_commit_version
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseCatalogResponse:
-        """Deserializes the DeleteDatabaseCatalogResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteDatabaseInstanceResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDatabaseInstanceResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDatabaseInstanceResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseInstanceResponse:
-        """Deserializes the DeleteDatabaseInstanceResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteDatabaseTableResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDatabaseTableResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDatabaseTableResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDatabaseTableResponse:
-        """Deserializes the DeleteDatabaseTableResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteSyncedDatabaseTableResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteSyncedDatabaseTableResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteSyncedDatabaseTableResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteSyncedDatabaseTableResponse:
-        """Deserializes the DeleteSyncedDatabaseTableResponse from a dictionary."""
-        return cls()
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSyncInfo:
+        """Deserializes the DeltaTableSyncInfo from a dictionary."""
+        return cls(
+            delta_commit_timestamp=d.get("delta_commit_timestamp", None),
+            delta_commit_version=d.get("delta_commit_version", None),
+        )
 
 
 @dataclass
 class GenerateDatabaseCredentialRequest:
     """Generates a credential that can be used to access database instances"""
+
+    claims: Optional[List[RequestedClaims]] = None
+    """The returned token will be scoped to the union of instance_names and instances containing the
+    specified UC tables, so instance_names is allowed to be empty."""
 
     instance_names: Optional[List[str]] = None
     """Instances to which the token will be scoped."""
@@ -360,6 +602,8 @@ class GenerateDatabaseCredentialRequest:
     def as_dict(self) -> dict:
         """Serializes the GenerateDatabaseCredentialRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.claims:
+            body["claims"] = [v.as_dict() for v in self.claims]
         if self.instance_names:
             body["instance_names"] = [v for v in self.instance_names]
         if self.request_id is not None:
@@ -369,6 +613,8 @@ class GenerateDatabaseCredentialRequest:
     def as_shallow_dict(self) -> dict:
         """Serializes the GenerateDatabaseCredentialRequest into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.claims:
+            body["claims"] = self.claims
         if self.instance_names:
             body["instance_names"] = self.instance_names
         if self.request_id is not None:
@@ -378,7 +624,46 @@ class GenerateDatabaseCredentialRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenerateDatabaseCredentialRequest:
         """Deserializes the GenerateDatabaseCredentialRequest from a dictionary."""
-        return cls(instance_names=d.get("instance_names", None), request_id=d.get("request_id", None))
+        return cls(
+            claims=_repeated_dict(d, "claims", RequestedClaims),
+            instance_names=d.get("instance_names", None),
+            request_id=d.get("request_id", None),
+        )
+
+
+@dataclass
+class ListDatabaseInstanceRolesResponse:
+    database_instance_roles: Optional[List[DatabaseInstanceRole]] = None
+    """List of database instance roles."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of instances."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseInstanceRolesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_instance_roles:
+            body["database_instance_roles"] = [v.as_dict() for v in self.database_instance_roles]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseInstanceRolesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_instance_roles:
+            body["database_instance_roles"] = self.database_instance_roles
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseInstanceRolesResponse:
+        """Deserializes the ListDatabaseInstanceRolesResponse from a dictionary."""
+        return cls(
+            database_instance_roles=_repeated_dict(d, "database_instance_roles", DatabaseInstanceRole),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -464,6 +749,77 @@ class ProvisioningInfoState(Enum):
 
 
 @dataclass
+class RequestedClaims:
+    permission_set: Optional[RequestedClaimsPermissionSet] = None
+
+    resources: Optional[List[RequestedResource]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestedClaims into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set.value
+        if self.resources:
+            body["resources"] = [v.as_dict() for v in self.resources]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestedClaims into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        if self.resources:
+            body["resources"] = self.resources
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestedClaims:
+        """Deserializes the RequestedClaims from a dictionary."""
+        return cls(
+            permission_set=_enum(d, "permission_set", RequestedClaimsPermissionSet),
+            resources=_repeated_dict(d, "resources", RequestedResource),
+        )
+
+
+class RequestedClaimsPermissionSet(Enum):
+    """Might add WRITE in the future"""
+
+    READ_ONLY = "READ_ONLY"
+
+
+@dataclass
+class RequestedResource:
+    table_name: Optional[str] = None
+
+    unspecified_resource_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestedResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        if self.unspecified_resource_name is not None:
+            body["unspecified_resource_name"] = self.unspecified_resource_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestedResource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        if self.unspecified_resource_name is not None:
+            body["unspecified_resource_name"] = self.unspecified_resource_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestedResource:
+        """Deserializes the RequestedResource from a dictionary."""
+        return cls(
+            table_name=d.get("table_name", None), unspecified_resource_name=d.get("unspecified_resource_name", None)
+        )
+
+
+@dataclass
 class SyncedDatabaseTable:
     """Next field marker: 12"""
 
@@ -481,20 +837,18 @@ class SyncedDatabaseTable:
     rejected)."""
 
     logical_database_name: Optional[str] = None
-    """Target Postgres database object (logical database) name for this table. This field is optional
-    in all scenarios.
+    """Target Postgres database object (logical database) name for this table.
     
     When creating a synced table in a registered Postgres catalog, the target Postgres database name
     is inferred to be that of the registered catalog. If this field is specified in this scenario,
     the Postgres database name MUST match that of the registered catalog (or the request will be
     rejected).
     
-    When creating a synced table in a standard catalog, the target database name is inferred to be
-    that of the standard catalog. In this scenario, specifying this field will allow targeting an
-    arbitrary postgres database."""
+    When creating a synced table in a standard catalog, this field is required. In this scenario,
+    specifying this field will allow targeting an arbitrary postgres database. Note that this has
+    implications for the `create_database_objects_is_missing` field in `spec`."""
 
     spec: Optional[SyncedTableSpec] = None
-    """Specification of a synced database table."""
 
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
@@ -557,12 +911,11 @@ class SyncedTableContinuousUpdateStatus:
     """Progress of the initial data synchronization."""
 
     last_processed_commit_version: Optional[int] = None
-    """The last source table Delta version that was synced to the synced table. Note that this Delta
-    version may not be completely synced to the synced table yet."""
+    """The last source table Delta version that was successfully synced to the synced table."""
 
     timestamp: Optional[str] = None
-    """The timestamp of the last time any data was synchronized from the source table to the synced
-    table."""
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
+    table. This is when the data is available in the synced table."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTableContinuousUpdateStatus into a dictionary suitable for use as a JSON request body."""
@@ -602,12 +955,12 @@ class SyncedTableFailedStatus:
     SYNCED_PIPELINE_FAILED state."""
 
     last_processed_commit_version: Optional[int] = None
-    """The last source table Delta version that was synced to the synced table. Note that this Delta
-    version may only be partially synced to the synced table. Only populated if the table is still
-    synced and available for serving."""
+    """The last source table Delta version that was successfully synced to the synced table. The last
+    source table Delta version that was synced to the synced table. Only populated if the table is
+    still synced and available for serving."""
 
     timestamp: Optional[str] = None
-    """The timestamp of the last time any data was synchronized from the source table to the synced
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
     table. Only populated if the table is still synced and available for serving."""
 
     def as_dict(self) -> dict:
@@ -696,6 +1049,51 @@ class SyncedTablePipelineProgress:
             sync_progress_completion=d.get("sync_progress_completion", None),
             synced_row_count=d.get("synced_row_count", None),
             total_row_count=d.get("total_row_count", None),
+        )
+
+
+@dataclass
+class SyncedTablePosition:
+    delta_table_sync_info: Optional[DeltaTableSyncInfo] = None
+
+    sync_end_timestamp: Optional[str] = None
+    """The end timestamp of the most recent successful synchronization. This is the time when the data
+    is available in the synced table."""
+
+    sync_start_timestamp: Optional[str] = None
+    """The starting timestamp of the most recent successful synchronization from the source table to
+    the destination (synced) table. Note this is the starting timestamp of the sync operation, not
+    the end time. E.g., for a batch, this is the time when the sync operation started."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncedTablePosition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_sync_info:
+            body["delta_table_sync_info"] = self.delta_table_sync_info.as_dict()
+        if self.sync_end_timestamp is not None:
+            body["sync_end_timestamp"] = self.sync_end_timestamp
+        if self.sync_start_timestamp is not None:
+            body["sync_start_timestamp"] = self.sync_start_timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncedTablePosition into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_sync_info:
+            body["delta_table_sync_info"] = self.delta_table_sync_info
+        if self.sync_end_timestamp is not None:
+            body["sync_end_timestamp"] = self.sync_end_timestamp
+        if self.sync_start_timestamp is not None:
+            body["sync_start_timestamp"] = self.sync_start_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncedTablePosition:
+        """Deserializes the SyncedTablePosition from a dictionary."""
+        return cls(
+            delta_table_sync_info=_from_dict(d, "delta_table_sync_info", DeltaTableSyncInfo),
+            sync_end_timestamp=d.get("sync_end_timestamp", None),
+            sync_start_timestamp=d.get("sync_start_timestamp", None),
         )
 
 
@@ -839,15 +1237,24 @@ class SyncedTableStatus:
     """Status of a synced table."""
 
     continuous_update_status: Optional[SyncedTableContinuousUpdateStatus] = None
-    """Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE
-    or the SYNCED_UPDATING_PIPELINE_RESOURCES state."""
 
     detailed_state: Optional[SyncedTableState] = None
     """The state of the synced table."""
 
     failed_status: Optional[SyncedTableFailedStatus] = None
-    """Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the
-    SYNCED_PIPELINE_FAILED state."""
+
+    last_sync: Optional[SyncedTablePosition] = None
+    """Summary of the last successful synchronization from source to destination.
+    
+    Will always be present if there has been a successful sync. Even if the most recent syncs have
+    failed.
+    
+    Limitation: The only exception is if the synced table is doing a FULL REFRESH, then the last
+    sync information will not be available until the full refresh is complete. This limitation will
+    be addressed in a future version.
+    
+    This top-level field is a convenience for consumers who want easy access to last sync
+    information without having to traverse detailed_status."""
 
     message: Optional[str] = None
     """A text description of the current state of the synced table."""
@@ -857,12 +1264,8 @@ class SyncedTableStatus:
     of bin packing), or generated by the server (when creating a new pipeline)."""
 
     provisioning_status: Optional[SyncedTableProvisioningStatus] = None
-    """Detailed status of a synced table. Shown if the synced table is in the
-    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
 
     triggered_update_status: Optional[SyncedTableTriggeredUpdateStatus] = None
-    """Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE
-    or the SYNCED_NO_PENDING_UPDATE state."""
 
     def as_dict(self) -> dict:
         """Serializes the SyncedTableStatus into a dictionary suitable for use as a JSON request body."""
@@ -873,6 +1276,8 @@ class SyncedTableStatus:
             body["detailed_state"] = self.detailed_state.value
         if self.failed_status:
             body["failed_status"] = self.failed_status.as_dict()
+        if self.last_sync:
+            body["last_sync"] = self.last_sync.as_dict()
         if self.message is not None:
             body["message"] = self.message
         if self.pipeline_id is not None:
@@ -892,6 +1297,8 @@ class SyncedTableStatus:
             body["detailed_state"] = self.detailed_state
         if self.failed_status:
             body["failed_status"] = self.failed_status
+        if self.last_sync:
+            body["last_sync"] = self.last_sync
         if self.message is not None:
             body["message"] = self.message
         if self.pipeline_id is not None:
@@ -909,6 +1316,7 @@ class SyncedTableStatus:
             continuous_update_status=_from_dict(d, "continuous_update_status", SyncedTableContinuousUpdateStatus),
             detailed_state=_enum(d, "detailed_state", SyncedTableState),
             failed_status=_from_dict(d, "failed_status", SyncedTableFailedStatus),
+            last_sync=_from_dict(d, "last_sync", SyncedTablePosition),
             message=d.get("message", None),
             pipeline_id=d.get("pipeline_id", None),
             provisioning_status=_from_dict(d, "provisioning_status", SyncedTableProvisioningStatus),
@@ -922,12 +1330,11 @@ class SyncedTableTriggeredUpdateStatus:
     or the SYNCED_NO_PENDING_UPDATE state."""
 
     last_processed_commit_version: Optional[int] = None
-    """The last source table Delta version that was synced to the synced table. Note that this Delta
-    version may not be completely synced to the synced table yet."""
+    """The last source table Delta version that was successfully synced to the synced table."""
 
     timestamp: Optional[str] = None
-    """The timestamp of the last time any data was synchronized from the source table to the synced
-    table."""
+    """The end timestamp of the last time any data was synchronized from the source table to the synced
+    table. This is when the data is available in the synced table."""
 
     triggered_update_progress: Optional[SyncedTablePipelineProgress] = None
     """Progress of the active data synchronization pipeline."""
@@ -990,7 +1397,7 @@ class DatabaseAPI:
         """Create a Database Instance.
 
         :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
+          Instance to create.
 
         :returns: :class:`DatabaseInstance`
         """
@@ -1003,11 +1410,30 @@ class DatabaseAPI:
         res = self._api.do("POST", "/api/2.0/database/instances", body=body, headers=headers)
         return DatabaseInstance.from_dict(res)
 
+    def create_database_instance_role(
+        self, instance_name: str, database_instance_role: DatabaseInstanceRole
+    ) -> DatabaseInstanceRole:
+        """Create a role for a Database Instance.
+
+        :param instance_name: str
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+
+        :returns: :class:`DatabaseInstanceRole`
+        """
+        body = database_instance_role.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/instances/{instance_name}/roles", body=body, headers=headers)
+        return DatabaseInstanceRole.from_dict(res)
+
     def create_database_table(self, table: DatabaseTable) -> DatabaseTable:
-        """Create a Database Table.
+        """Create a Database Table. Useful for registering pre-existing PG tables in UC. See
+        CreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.
 
         :param table: :class:`DatabaseTable`
-          Next field marker: 13
 
         :returns: :class:`DatabaseTable`
         """
@@ -1024,7 +1450,6 @@ class DatabaseAPI:
         """Create a Synced Database Table.
 
         :param synced_table: :class:`SyncedDatabaseTable`
-          Next field marker: 12
 
         :returns: :class:`SyncedDatabaseTable`
         """
@@ -1081,6 +1506,38 @@ class DatabaseAPI:
 
         self._api.do("DELETE", f"/api/2.0/database/instances/{name}", query=query, headers=headers)
 
+    def delete_database_instance_role(
+        self,
+        instance_name: str,
+        name: str,
+        *,
+        allow_missing: Optional[bool] = None,
+        reassign_owned_to: Optional[str] = None,
+    ):
+        """Deletes a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+        :param allow_missing: bool (optional)
+          This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option
+        :param reassign_owned_to: str (optional)
+
+
+        """
+
+        query = {}
+        if allow_missing is not None:
+            query["allow_missing"] = allow_missing
+        if reassign_owned_to is not None:
+            query["reassign_owned_to"] = reassign_owned_to
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/database/instances/{instance_name}/roles/{name}", query=query, headers=headers
+        )
+
     def delete_database_table(self, name: str):
         """Delete a Database Table.
 
@@ -1129,10 +1586,17 @@ class DatabaseAPI:
         return DatabaseInstance.from_dict(res)
 
     def generate_database_credential(
-        self, *, instance_names: Optional[List[str]] = None, request_id: Optional[str] = None
+        self,
+        *,
+        claims: Optional[List[RequestedClaims]] = None,
+        instance_names: Optional[List[str]] = None,
+        request_id: Optional[str] = None,
     ) -> DatabaseCredential:
         """Generates a credential that can be used to access database instances.
 
+        :param claims: List[:class:`RequestedClaims`] (optional)
+          The returned token will be scoped to the union of instance_names and instances containing the
+          specified UC tables, so instance_names is allowed to be empty.
         :param instance_names: List[str] (optional)
           Instances to which the token will be scoped.
         :param request_id: str (optional)
@@ -1140,6 +1604,8 @@ class DatabaseAPI:
         :returns: :class:`DatabaseCredential`
         """
         body = {}
+        if claims is not None:
+            body["claims"] = [v.as_dict() for v in claims]
         if instance_names is not None:
             body["instance_names"] = [v for v in instance_names]
         if request_id is not None:
@@ -1183,6 +1649,22 @@ class DatabaseAPI:
         res = self._api.do("GET", f"/api/2.0/database/instances/{name}", headers=headers)
         return DatabaseInstance.from_dict(res)
 
+    def get_database_instance_role(self, instance_name: str, name: str) -> DatabaseInstanceRole:
+        """Gets a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+
+        :returns: :class:`DatabaseInstanceRole`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/instances/{instance_name}/roles/{name}", headers=headers)
+        return DatabaseInstanceRole.from_dict(res)
+
     def get_database_table(self, name: str) -> DatabaseTable:
         """Get a Database Table.
 
@@ -1212,6 +1694,40 @@ class DatabaseAPI:
 
         res = self._api.do("GET", f"/api/2.0/database/synced_tables/{name}", headers=headers)
         return SyncedDatabaseTable.from_dict(res)
+
+    def list_database_instance_roles(
+        self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseInstanceRole]:
+        """START OF PG ROLE APIs Section
+
+        :param instance_name: str
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Instances. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseInstanceRole`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/instances/{instance_name}/roles", query=query, headers=headers
+            )
+            if "database_instance_roles" in json:
+                for v in json["database_instance_roles"]:
+                    yield DatabaseInstanceRole.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def list_database_instances(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -1252,7 +1768,6 @@ class DatabaseAPI:
         :param name: str
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
         :param update_mask: str
           The list of fields to update.
 

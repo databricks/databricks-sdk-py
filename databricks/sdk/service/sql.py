@@ -665,7 +665,10 @@ class AlertV2:
     """Text of the query to be run."""
 
     run_as_user_name: Optional[str] = None
-    """The run as username. This field is set to "Unavailable" if the user has been deleted."""
+    """The run as username or application ID of service principal. This field is set to "Unavailable"
+    if the user has been deleted. On Create and Update, this field can be set to application ID of
+    an active service principal. Setting this field requires the servicePrincipal/user role. If not
+    specified it'll default to be request user."""
 
     schedule: Optional[CronSchedule] = None
 
@@ -1700,15 +1703,15 @@ class CreateQueryRequestQuery:
 class CreateQueryVisualizationsLegacyRequest:
     """Add visualization to a query"""
 
+    options: Any
+    """The options object varies widely from one visualization type to the next and is unsupported.
+    Databricks does not recommend modifying visualization settings in JSON."""
+
     query_id: str
     """The identifier returned by :method:queries/create"""
 
     type: str
     """The type of visualization: chart, table, pivot table, and so on."""
-
-    options: Any
-    """The options object varies widely from one visualization type to the next and is unsupported.
-    Databricks does not recommend modifying visualization settings in JSON."""
 
     description: Optional[str] = None
     """A short description of this visualization. This is not displayed in the UI."""
@@ -1902,7 +1905,6 @@ class CreateWarehouseRequest:
     Supported values: - Must be unique within an org. - Must be less than 100 characters."""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the warehouse should use spot instances."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -1911,8 +1913,6 @@ class CreateWarehouseRequest:
     Supported values: - Number of tags < 45."""
 
     warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateWarehouseRequest into a dictionary suitable for use as a JSON request body."""
@@ -2040,9 +2040,6 @@ class CreateWidget:
     width: int
     """Width of a widget"""
 
-    id: Optional[str] = None
-    """Widget ID returned by :method:dashboardwidgets/create"""
-
     text: Optional[str] = None
     """If this is a textbox widget, the application displays this text. This field is ignored if the
     widget contains a visualization in the `visualization` field."""
@@ -2055,8 +2052,6 @@ class CreateWidget:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
-        if self.id is not None:
-            body["id"] = self.id
         if self.options:
             body["options"] = self.options.as_dict()
         if self.text is not None:
@@ -2072,8 +2067,6 @@ class CreateWidget:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
-        if self.id is not None:
-            body["id"] = self.id
         if self.options:
             body["options"] = self.options
         if self.text is not None:
@@ -2089,7 +2082,6 @@ class CreateWidget:
         """Deserializes the CreateWidget from a dictionary."""
         return cls(
             dashboard_id=d.get("dashboard_id", None),
-            id=d.get("id", None),
             options=_from_dict(d, "options", WidgetOptions),
             text=d.get("text", None),
             visualization_id=d.get("visualization_id", None),
@@ -2865,7 +2857,6 @@ class EditWarehouseRequest:
     Supported values: - Must be unique within an org. - Must be less than 100 characters."""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the warehouse should use spot instances."""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -2874,8 +2865,6 @@ class EditWarehouseRequest:
     Supported values: - Number of tags < 45."""
 
     warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     def as_dict(self) -> dict:
         """Serializes the EditWarehouseRequest into a dictionary suitable for use as a JSON request body."""
@@ -3055,7 +3044,6 @@ class EndpointHealth:
     """Deprecated. split into summary and details for security"""
 
     status: Optional[Status] = None
-    """Health status of the warehouse."""
 
     summary: Optional[str] = None
     """A short summary of the health status in case of degraded/failed warehouses."""
@@ -3178,10 +3166,8 @@ class EndpointInfo:
     """ODBC parameters for the SQL warehouse"""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the warehouse should use spot instances."""
 
     state: Optional[State] = None
-    """State of the warehouse"""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -3984,10 +3970,8 @@ class GetWarehouseResponse:
     """ODBC parameters for the SQL warehouse"""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
-    """Configurations whether the warehouse should use spot instances."""
 
     state: Optional[State] = None
-    """State of the warehouse"""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -3996,8 +3980,6 @@ class GetWarehouseResponse:
     Supported values: - Number of tags < 45."""
 
     warehouse_type: Optional[GetWarehouseResponseWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWarehouseResponse into a dictionary suitable for use as a JSON request body."""
@@ -4337,8 +4319,6 @@ class LegacyAlert:
 
 
 class LegacyAlertState(Enum):
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
     OK = "ok"
     TRIGGERED = "triggered"
@@ -5318,7 +5298,6 @@ class OdbcParams:
 
 
 class OwnableObjectType(Enum):
-    """The singular form of the type of object which can be owned."""
 
     ALERT = "alert"
     DASHBOARD = "dashboard"
@@ -5403,7 +5382,6 @@ class Parameter:
 
 
 class ParameterType(Enum):
-    """Parameters can have several different types."""
 
     DATETIME = "datetime"
     ENUM = "enum"
@@ -6673,7 +6651,6 @@ class ResultManifest:
     format: Optional[Format] = None
 
     schema: Optional[ResultSchema] = None
-    """The schema is an ordered list of column descriptions."""
 
     total_byte_count: Optional[int] = None
     """The total number of bytes in the result set. This field is not available when using `INLINE`
@@ -6779,8 +6756,6 @@ class RunAsMode(Enum):
 
 
 class RunAsRole(Enum):
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
     OWNER = "owner"
     VIEWER = "viewer"
@@ -7133,7 +7108,6 @@ class StatementParameterListItem:
 @dataclass
 class StatementResponse:
     manifest: Optional[ResultManifest] = None
-    """The result manifest provides schema and metadata for the result set."""
 
     result: Optional[ResultData] = None
 
@@ -7142,7 +7116,6 @@ class StatementResponse:
     reference for all subsequent calls."""
 
     status: Optional[StatementStatus] = None
-    """The status response includes execution state and if relevant, error information."""
 
     def as_dict(self) -> dict:
         """Serializes the StatementResponse into a dictionary suitable for use as a JSON request body."""
@@ -7203,11 +7176,6 @@ class StatementStatus:
     error: Optional[ServiceError] = None
 
     state: Optional[StatementState] = None
-    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
-    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
-    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
-    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
-    execution successful, and statement closed; result no longer available for fetch"""
 
     def as_dict(self) -> dict:
         """Serializes the StatementStatus into a dictionary suitable for use as a JSON request body."""
@@ -7565,8 +7533,6 @@ class TransferOwnershipObjectId:
 
 @dataclass
 class TransferOwnershipRequest:
-    """Transfer object ownership"""
-
     new_owner: Optional[str] = None
     """Email address for the new owner, who must exist in the workspace."""
 
@@ -8040,6 +8006,73 @@ class UpdateVisualizationRequestVisualization:
 
 
 @dataclass
+class UpdateWidgetRequest:
+    dashboard_id: str
+    """Dashboard ID returned by :method:dashboards/create."""
+
+    options: WidgetOptions
+
+    width: int
+    """Width of a widget"""
+
+    id: Optional[str] = None
+    """Widget ID returned by :method:dashboardwidgets/create"""
+
+    text: Optional[str] = None
+    """If this is a textbox widget, the application displays this text. This field is ignored if the
+    widget contains a visualization in the `visualization` field."""
+
+    visualization_id: Optional[str] = None
+    """Query Vizualization ID returned by :method:queryvisualizations/create."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateWidgetRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.id is not None:
+            body["id"] = self.id
+        if self.options:
+            body["options"] = self.options.as_dict()
+        if self.text is not None:
+            body["text"] = self.text
+        if self.visualization_id is not None:
+            body["visualization_id"] = self.visualization_id
+        if self.width is not None:
+            body["width"] = self.width
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateWidgetRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.id is not None:
+            body["id"] = self.id
+        if self.options:
+            body["options"] = self.options
+        if self.text is not None:
+            body["text"] = self.text
+        if self.visualization_id is not None:
+            body["visualization_id"] = self.visualization_id
+        if self.width is not None:
+            body["width"] = self.width
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWidgetRequest:
+        """Deserializes the UpdateWidgetRequest from a dictionary."""
+        return cls(
+            dashboard_id=d.get("dashboard_id", None),
+            id=d.get("id", None),
+            options=_from_dict(d, "options", WidgetOptions),
+            text=d.get("text", None),
+            visualization_id=d.get("visualization_id", None),
+            width=d.get("width", None),
+        )
+
+
+@dataclass
 class User:
     email: Optional[str] = None
 
@@ -8166,7 +8199,6 @@ class WarehouseAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[WarehousePermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -8277,7 +8309,6 @@ class WarehousePermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[WarehousePermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the WarehousePermission into a dictionary suitable for use as a JSON request body."""
@@ -8366,7 +8397,6 @@ class WarehousePermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[WarehousePermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the WarehousePermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -9092,7 +9122,7 @@ class DashboardWidgetsAPI:
         text: Optional[str] = None,
         visualization_id: Optional[str] = None,
     ) -> Widget:
-        """Add widget to a dashboard
+        """Adds a widget to a dashboard
 
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
@@ -9127,7 +9157,7 @@ class DashboardWidgetsAPI:
         return Widget.from_dict(res)
 
     def delete(self, id: str):
-        """Remove widget
+        """Removes a widget from a dashboard
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
@@ -9151,7 +9181,7 @@ class DashboardWidgetsAPI:
         text: Optional[str] = None,
         visualization_id: Optional[str] = None,
     ) -> Widget:
-        """Update existing widget
+        """Updates an existing widget
 
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
@@ -9208,7 +9238,9 @@ class DashboardsAPI:
         run_as_role: Optional[RunAsRole] = None,
         tags: Optional[List[str]] = None,
     ) -> Dashboard:
-        """Create a dashboard object.
+        """Creates a new dashboard object. Only the name parameter is required in the POST request JSON body.
+        Other fields can be included when duplicating dashboards with this API. Databricks does not recommend
+        designing dashboards exclusively using this API.',
 
         :param name: str
           The title of this dashboard that appears in list views and at the top of the dashboard page.
@@ -9314,17 +9346,11 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
-        # deduplicate items that may have been added during iteration
-        seen = set()
         query["page"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
-                    i = v["id"]
-                    if i in seen:
-                        continue
-                    seen.add(i)
                     yield Dashboard.from_dict(v)
             if "results" not in json or not json["results"]:
                 return
@@ -9888,17 +9914,11 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
         }
 
-        # deduplicate items that may have been added during iteration
-        seen = set()
         query["page"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query, headers=headers)
             if "results" in json:
                 for v in json["results"]:
-                    i = v["id"]
-                    if i in seen:
-                        continue
-                    seen.add(i)
                     yield LegacyQuery.from_dict(v)
             if "results" not in json or not json["results"]:
                 return
@@ -10133,7 +10153,7 @@ class QueryVisualizationsLegacyAPI:
         self._api = api_client
 
     def create(
-        self, query_id: str, type: str, options: Any, *, description: Optional[str] = None, name: Optional[str] = None
+        self, options: Any, query_id: str, type: str, *, description: Optional[str] = None, name: Optional[str] = None
     ) -> LegacyVisualization:
         """Creates visualization in the query.
 
@@ -10142,13 +10162,13 @@ class QueryVisualizationsLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
+        :param options: Any
+          The options object varies widely from one visualization type to the next and is unsupported.
+          Databricks does not recommend modifying visualization settings in JSON.
         :param query_id: str
           The identifier returned by :method:queries/create
         :param type: str
           The type of visualization: chart, table, pivot table, and so on.
-        :param options: Any
-          The options object varies widely from one visualization type to the next and is unsupported.
-          Databricks does not recommend modifying visualization settings in JSON.
         :param description: str (optional)
           A short description of this visualization. This is not displayed in the UI.
         :param name: str (optional)
@@ -10184,7 +10204,7 @@ class QueryVisualizationsLegacyAPI:
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
         :param id: str
-          Widget ID returned by :method:queryvizualisations/create
+          Widget ID returned by :method:queryvisualizations/create
 
 
         """
@@ -10717,15 +10737,12 @@ class WarehousesAPI:
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the warehouse should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -10886,15 +10903,12 @@ class WarehousesAPI:
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the warehouse should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.

@@ -133,7 +133,6 @@ class CloudResourceContainer:
     """The general workspace configurations that are specific to cloud providers."""
 
     gcp: Optional[CustomerFacingGcpCloudResourceContainer] = None
-    """The general workspace configurations that are specific to Google Cloud."""
 
     def as_dict(self) -> dict:
         """Serializes the CloudResourceContainer into a dictionary suitable for use as a JSON request body."""
@@ -356,8 +355,6 @@ class CreateNetworkRequest:
     """The human-readable name of the network configuration."""
 
     gcp_network_info: Optional[GcpNetworkInfo] = None
-    """The Google Cloud specific information for this network (for example, the VPC ID, subnet ID, and
-    secondary IP ranges)."""
 
     security_group_ids: Optional[List[str]] = None
     """IDs of one to five security groups associated with this network. Security group IDs **cannot**
@@ -368,10 +365,6 @@ class CreateNetworkRequest:
     multiple network configurations."""
 
     vpc_endpoints: Optional[NetworkVpcEndpoints] = None
-    """If specified, contains the VPC endpoints used to allow cluster communication from this VPC over
-    [AWS PrivateLink].
-    
-    [AWS PrivateLink]: https://aws.amazon.com/privatelink/"""
 
     vpc_id: Optional[str] = None
     """The ID of the VPC associated with this network. VPC IDs can be used in multiple network
@@ -430,7 +423,6 @@ class CreateStorageConfigurationRequest:
     """The human-readable name of the storage configuration."""
 
     root_bucket_info: RootBucketInfo
-    """Root S3 bucket information."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateStorageConfigurationRequest into a dictionary suitable for use as a JSON request body."""
@@ -468,7 +460,6 @@ class CreateVpcEndpointRequest:
     """The ID of the VPC endpoint object in AWS."""
 
     gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None
-    """The Google Cloud specific information for this Private Service Connect endpoint."""
 
     region: Optional[str] = None
     """The AWS region in which this VPC endpoint object exists."""
@@ -523,7 +514,6 @@ class CreateWorkspaceRequest:
     to `gcp`."""
 
     cloud_resource_container: Optional[CloudResourceContainer] = None
-    """The general workspace configurations that are specific to cloud providers."""
 
     credentials_id: Optional[str] = None
     """ID of the workspace's credential configuration object."""
@@ -559,27 +549,8 @@ class CreateWorkspaceRequest:
     with the pattern `dbc-xxxxxxxx-xxxx`."""
 
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
-    """The network settings for the workspace. The configurations are only for Databricks-managed VPCs.
-    It is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP
-    range configurations must be mutually exclusive. An attempt to create a workspace fails if
-    Databricks detects an IP range overlap.
-    
-    Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and
-    all IP addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
-    `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
-    
-    The sizes of these IP ranges affect the maximum number of nodes for the workspace.
-    
-    **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
-    workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
-    your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
-    determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
-    Excel spreadsheet. See [calculate subnet sizes for a new workspace].
-    
-    [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
 
     gke_config: Optional[GkeConfig] = None
-    """The configurations for the GKE cluster of a Databricks workspace."""
 
     is_no_public_ip_enabled: Optional[bool] = None
     """Whether no public IP is enabled for the workspace."""
@@ -597,9 +568,6 @@ class CreateWorkspaceRequest:
     network_id: Optional[str] = None
 
     pricing_tier: Optional[PricingTier] = None
-    """The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-    
-    [AWS Pricing]: https://databricks.com/product/aws-pricing"""
 
     private_access_settings_id: Optional[str] = None
     """ID of the workspace's private access settings object. Only used for PrivateLink. This ID must be
@@ -1259,8 +1227,6 @@ class Network:
     """Array of error messages about the network configuration."""
 
     gcp_network_info: Optional[GcpNetworkInfo] = None
-    """The Google Cloud specific information for this network (for example, the VPC ID, subnet ID, and
-    secondary IP ranges)."""
 
     network_id: Optional[str] = None
     """The Databricks network configuration ID."""
@@ -1273,18 +1239,12 @@ class Network:
     subnet_ids: Optional[List[str]] = None
 
     vpc_endpoints: Optional[NetworkVpcEndpoints] = None
-    """If specified, contains the VPC endpoints used to allow cluster communication from this VPC over
-    [AWS PrivateLink].
-    
-    [AWS PrivateLink]: https://aws.amazon.com/privatelink/"""
 
     vpc_id: Optional[str] = None
     """The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple
     networks."""
 
     vpc_status: Optional[VpcStatus] = None
-    """The status of this network configuration object in terms of its use in a workspace: *
-    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned."""
 
     warning_messages: Optional[List[NetworkWarning]] = None
     """Array of warning messages about the network configuration."""
@@ -1380,8 +1340,6 @@ class NetworkHealth:
     """Details of the error."""
 
     error_type: Optional[ErrorType] = None
-    """The AWS resource associated with this error: credentials, VPC, subnet, security group, or
-    network ACL."""
 
     def as_dict(self) -> dict:
         """Serializes the NetworkHealth into a dictionary suitable for use as a JSON request body."""
@@ -1451,7 +1409,6 @@ class NetworkWarning:
     """Details of the warning."""
 
     warning_type: Optional[WarningType] = None
-    """The AWS resource associated with this warning: a subnet or a security group."""
 
     def as_dict(self) -> dict:
         """Serializes the NetworkWarning into a dictionary suitable for use as a JSON request body."""
@@ -1510,11 +1467,6 @@ class PrivateAccessSettings:
     """An array of Databricks VPC endpoint IDs."""
 
     private_access_level: Optional[PrivateAccessLevel] = None
-    """The private access level controls which VPC endpoints can connect to the UI or API of any
-    workspace that attaches this private access settings object. * `ACCOUNT` level access (the
-    default) allows only VPC endpoints that are registered in your Databricks account connect to
-    your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your
-    workspace. For details, see `allowed_vpc_endpoint_ids`."""
 
     private_access_settings_id: Optional[str] = None
     """Databricks private access settings ID."""
@@ -1637,7 +1589,6 @@ class StorageConfiguration:
     """Time in epoch milliseconds when the storage configuration was created."""
 
     root_bucket_info: Optional[RootBucketInfo] = None
-    """Root S3 bucket information."""
 
     storage_configuration_id: Optional[str] = None
     """Databricks storage configuration ID."""
@@ -1869,11 +1820,6 @@ class UpsertPrivateAccessSettingsRequest:
     [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html"""
 
     private_access_level: Optional[PrivateAccessLevel] = None
-    """The private access level controls which VPC endpoints can connect to the UI or API of any
-    workspace that attaches this private access settings object. * `ACCOUNT` level access (the
-    default) allows only VPC endpoints that are registered in your Databricks account connect to
-    your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your
-    workspace. For details, see `allowed_vpc_endpoint_ids`."""
 
     private_access_settings_id: Optional[str] = None
     """Databricks Account API private access settings ID."""
@@ -1951,7 +1897,6 @@ class VpcEndpoint:
     """The ID of the VPC endpoint object in AWS."""
 
     gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo] = None
-    """The Google Cloud specific information for this Private Service Connect endpoint."""
 
     region: Optional[str] = None
     """The AWS region in which this VPC endpoint object exists."""
@@ -1963,10 +1908,6 @@ class VpcEndpoint:
     [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html"""
 
     use_case: Optional[EndpointUseCase] = None
-    """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
-    creating this VPC endpoint.
-    
-    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html"""
 
     vpc_endpoint_id: Optional[str] = None
     """Databricks VPC endpoint ID. This is the Databricks-specific name of the VPC endpoint. Do not
@@ -2073,7 +2014,6 @@ class Workspace:
     """The cloud name. This field always has the value `gcp`."""
 
     cloud_resource_container: Optional[CloudResourceContainer] = None
-    """The general workspace configurations that are specific to cloud providers."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when the workspace was created."""
@@ -2097,27 +2037,8 @@ class Workspace:
     workspace is not for a external customer, then external_customer_info is empty."""
 
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
-    """The network settings for the workspace. The configurations are only for Databricks-managed VPCs.
-    It is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP
-    range configurations must be mutually exclusive. An attempt to create a workspace fails if
-    Databricks detects an IP range overlap.
-    
-    Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and
-    all IP addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
-    `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
-    
-    The sizes of these IP ranges affect the maximum number of nodes for the workspace.
-    
-    **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
-    workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
-    your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
-    determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
-    Excel spreadsheet. See [calculate subnet sizes for a new workspace].
-    
-    [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html"""
 
     gke_config: Optional[GkeConfig] = None
-    """The configurations for the GKE cluster of a Databricks workspace."""
 
     is_no_public_ip_enabled: Optional[bool] = None
     """Whether no public IP is enabled for the workspace."""
@@ -2134,9 +2055,6 @@ class Workspace:
     the network is a customer-managed network."""
 
     pricing_tier: Optional[PricingTier] = None
-    """The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-    
-    [AWS Pricing]: https://databricks.com/product/aws-pricing"""
 
     private_access_settings_id: Optional[str] = None
     """ID of the workspace's private access settings object. Only used for PrivateLink. You must
@@ -2161,8 +2079,6 @@ class Workspace:
     """The human-readable name of the workspace."""
 
     workspace_status: Optional[WorkspaceStatus] = None
-    """The status of the workspace. For workspace creation, usually it is set to `PROVISIONING`
-    initially. Continue to check the status until the status is `RUNNING`."""
 
     workspace_status_message: Optional[str] = None
     """Message describing the current workspace status."""
@@ -2570,8 +2486,6 @@ class NetworksAPI:
         :param network_name: str
           The human-readable name of the network configuration.
         :param gcp_network_info: :class:`GcpNetworkInfo` (optional)
-          The Google Cloud specific information for this network (for example, the VPC ID, subnet ID, and
-          secondary IP ranges).
         :param security_group_ids: List[str] (optional)
           IDs of one to five security groups associated with this network. Security group IDs **cannot** be
           used in multiple network configurations.
@@ -2579,10 +2493,6 @@ class NetworksAPI:
           IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple
           network configurations.
         :param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)
-          If specified, contains the VPC endpoints used to allow cluster communication from this VPC over [AWS
-          PrivateLink].
-
-          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
         :param vpc_id: str (optional)
           The ID of the VPC associated with this network. VPC IDs can be used in multiple network
           configurations.
@@ -2707,11 +2617,6 @@ class PrivateAccessAPI:
 
           [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
         :param private_access_level: :class:`PrivateAccessLevel` (optional)
-          The private access level controls which VPC endpoints can connect to the UI or API of any workspace
-          that attaches this private access settings object. * `ACCOUNT` level access (the default) allows
-          only VPC endpoints that are registered in your Databricks account connect to your workspace. *
-          `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
-          see `allowed_vpc_endpoint_ids`.
         :param public_access_enabled: bool (optional)
           Determines if the workspace can be accessed over public internet. For fully private workspaces, you
           can optionally specify `false`, but only if you implement both the front-end and the back-end
@@ -2853,11 +2758,6 @@ class PrivateAccessAPI:
 
           [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
         :param private_access_level: :class:`PrivateAccessLevel` (optional)
-          The private access level controls which VPC endpoints can connect to the UI or API of any workspace
-          that attaches this private access settings object. * `ACCOUNT` level access (the default) allows
-          only VPC endpoints that are registered in your Databricks account connect to your workspace. *
-          `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details,
-          see `allowed_vpc_endpoint_ids`.
         :param public_access_enabled: bool (optional)
           Determines if the workspace can be accessed over public internet. For fully private workspaces, you
           can optionally specify `false`, but only if you implement both the front-end and the back-end
@@ -2912,7 +2812,6 @@ class StorageAPI:
         :param storage_configuration_name: str
           The human-readable name of the storage configuration.
         :param root_bucket_info: :class:`RootBucketInfo`
-          Root S3 bucket information.
 
         :returns: :class:`StorageConfiguration`
         """
@@ -3018,7 +2917,6 @@ class VpcEndpointsAPI:
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
         :param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)
-          The Google Cloud specific information for this Private Service Connect endpoint.
         :param region: str (optional)
           The AWS region in which this VPC endpoint object exists.
 
@@ -3189,7 +3087,6 @@ class WorkspacesAPI:
           The cloud provider which the workspace uses. For Google Cloud workspaces, always set this field to
           `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
-          The general workspace configurations that are specific to cloud providers.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
         :param custom_tags: Dict[str,str] (optional)
@@ -3221,26 +3118,7 @@ class WorkspacesAPI:
           If a new workspace omits this property, the server generates a unique deployment name for you with
           the pattern `dbc-xxxxxxxx-xxxx`.
         :param gcp_managed_network_config: :class:`GcpManagedNetworkConfig` (optional)
-          The network settings for the workspace. The configurations are only for Databricks-managed VPCs. It
-          is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP range
-          configurations must be mutually exclusive. An attempt to create a workspace fails if Databricks
-          detects an IP range overlap.
-
-          Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and all IP
-          addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
-          `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
-
-          The sizes of these IP ranges affect the maximum number of nodes for the workspace.
-
-          **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
-          workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
-          your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
-          determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
-          Excel spreadsheet. See [calculate subnet sizes for a new workspace].
-
-          [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
         :param gke_config: :class:`GkeConfig` (optional)
-          The configurations for the GKE cluster of a Databricks workspace.
         :param is_no_public_ip_enabled: bool (optional)
           Whether no public IP is enabled for the workspace.
         :param location: str (optional)
@@ -3251,9 +3129,6 @@ class WorkspacesAPI:
           history. The provided key configuration object property `use_cases` must contain `MANAGED_SERVICES`.
         :param network_id: str (optional)
         :param pricing_tier: :class:`PricingTier` (optional)
-          The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-
-          [AWS Pricing]: https://databricks.com/product/aws-pricing
         :param private_access_settings_id: str (optional)
           ID of the workspace's private access settings object. Only used for PrivateLink. This ID must be
           specified for customers using [AWS PrivateLink] for either front-end (user-to-workspace connection),

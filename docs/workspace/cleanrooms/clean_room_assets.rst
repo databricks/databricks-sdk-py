@@ -17,7 +17,6 @@
         :param clean_room_name: str
           Name of the clean room.
         :param asset: :class:`CleanRoomAsset`
-          Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`
         
@@ -80,7 +79,8 @@
 
           For notebooks, the name is the notebook file name.
         :param asset: :class:`CleanRoomAsset`
-          Metadata of the clean room asset
+          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
+          update.
 
         :returns: :class:`CleanRoomAsset`
         

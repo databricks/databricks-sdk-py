@@ -38,7 +38,6 @@
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
-          The delta sharing authentication type.
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)

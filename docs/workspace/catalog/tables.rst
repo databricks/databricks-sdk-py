@@ -91,16 +91,16 @@
           Full name of the table.
         :param include_browse: bool (optional)
           Whether to include tables in the response for which the principal can only access selective metadata
-          for
+          for.
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
 
         :returns: :class:`TableInfo`
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], omit_username: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], omit_username: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
 
 
         Usage:
@@ -135,11 +135,9 @@
           Parent schema of tables.
         :param include_browse: bool (optional)
           Whether to include tables in the response for which the principal can only access selective metadata
-          for
-        :param include_delta_metadata: bool (optional)
-          Whether delta metadata should be included in the response.
+          for.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -195,7 +193,7 @@
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
@@ -222,6 +220,7 @@
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
+          Username of current owner of table.
 
 
         

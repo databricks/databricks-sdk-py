@@ -11,7 +11,9 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
    catalogs
    connections
    credentials
+   external_lineage
    external_locations
+   external_metadata
    functions
    grants
    metastores
