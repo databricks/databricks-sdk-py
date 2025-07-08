@@ -174,6 +174,7 @@
 
         Get all serving endpoints.
 
+
         :returns: Iterator over :class:`ServingEndpoint`
         
 

@@ -10,6 +10,7 @@
 
         Gets the Notebook results download setting.
 
+
         :returns: :class:`EnableResultsDownloading`
         
 

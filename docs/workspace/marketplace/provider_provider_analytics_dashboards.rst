@@ -11,6 +11,7 @@
         Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
         Lakeview dashboard id.
 
+
         :returns: :class:`ProviderAnalyticsDashboard`
         
 
@@ -18,12 +19,14 @@
 
         Get provider analytics dashboard.
 
+
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         
 
     .. py:method:: get_latest_version() -> GetLatestVersionProviderAnalyticsDashboardResponse
 
         Get latest version of provider analytics dashboard.
+
 
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         

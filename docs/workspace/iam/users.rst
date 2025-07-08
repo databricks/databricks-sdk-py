@@ -78,12 +78,9 @@
             
             w = WorkspaceClient()
             
-            user = w.users.create(
-                display_name=f"sdk-{time.time_ns()}",
-                user_name=f"sdk-{time.time_ns()}@example.com",
-            )
+            other_owner = w.users.create(user_name=f"sdk-{time.time_ns()}@example.com")
             
-            w.users.delete(id=user.id)
+            w.users.delete(id=other_owner.id)
 
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user.
@@ -146,12 +143,14 @@
 
         Gets the permission levels that a user can have on an object.
 
+
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions() -> PasswordPermissions
 
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
+
 
         :returns: :class:`PasswordPermissions`
         

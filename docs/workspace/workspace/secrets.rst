@@ -186,6 +186,7 @@
 
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
 
+
         :returns: Iterator over :class:`SecretScope`
         
 

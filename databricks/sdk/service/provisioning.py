@@ -2397,6 +2397,7 @@ class CredentialsAPI:
     def list(self) -> Iterator[Credential]:
         """Gets all Databricks credential configurations associated with an account specified by ID.
 
+
         :returns: Iterator over :class:`Credential`
         """
 
@@ -2534,6 +2535,7 @@ class EncryptionKeysAPI:
 
         This operation is available only if your account is on the E2 version of the platform.
 
+
         :returns: Iterator over :class:`CustomerManagedKey`
         """
 
@@ -2646,6 +2648,7 @@ class NetworksAPI:
         """Gets a list of all Databricks network configurations for an account, specified by ID.
 
         This operation is available only if your account is on the E2 version of the platform.
+
 
         :returns: Iterator over :class:`Network`
         """
@@ -2790,6 +2793,7 @@ class PrivateAccessAPI:
 
     def list(self) -> Iterator[PrivateAccessSettings]:
         """Gets a list of all private access settings objects for an account, specified by ID.
+
 
         :returns: Iterator over :class:`PrivateAccessSettings`
         """
@@ -2970,6 +2974,7 @@ class StorageAPI:
     def list(self) -> Iterator[StorageConfiguration]:
         """Gets a list of all Databricks storage configurations for your account, specified by ID.
 
+
         :returns: Iterator over :class:`StorageConfiguration`
         """
 
@@ -3090,6 +3095,7 @@ class VpcEndpointsAPI:
         Before configuring PrivateLink, read the [Databricks article about PrivateLink].
 
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+
 
         :returns: Iterator over :class:`VpcEndpoint`
         """
@@ -3413,6 +3419,7 @@ class WorkspacesAPI:
 
         This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
+
 
         :returns: Iterator over :class:`Workspace`
         """

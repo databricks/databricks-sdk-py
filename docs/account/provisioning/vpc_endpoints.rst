@@ -127,5 +127,6 @@
 
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 
+
         :returns: Iterator over :class:`VpcEndpoint`
         

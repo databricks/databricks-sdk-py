@@ -113,5 +113,6 @@
 
         This operation is available only if your account is on the E2 version of the platform.
 
+
         :returns: Iterator over :class:`Network`
         
