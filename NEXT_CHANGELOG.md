@@ -11,6 +11,10 @@
 ### Internal Changes
 
 ### API Changes
+* Added `submit_message_feedback` method for `databricks.sdk.service.dashboards.GenieAPI`.
+* Added `submit_comment` method for `databricks.sdk.service.dashboards.GenieAPI`.
+* Added `update_message_review_request` method for `databricks.sdk.service.dashboards.GenieAPI`.
+* Added `FeedbackRating` enum for `databricks.sdk.service.dashboards`.
 * Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterAttributes`.
 * Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterDetails`.
 * Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterSpec`.
