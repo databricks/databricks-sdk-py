@@ -2205,6 +2205,40 @@ class GenieAPI:
         )
         return GenieFeedbackResponse.from_dict(res)
 
+    def submit_comment(
+        self, space_id: str, conversation_id: str, message_id: str, content: str, comment_type: str
+    ) -> None:
+        """Submit a comment on a Genie message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param content: str
+          The content of the comment.
+        :param comment_type: str
+          The type of the comment (e.g., REQUEST_COMMENT, THUMBS_DOWN_COMMENT).
+        """
+        body = {
+            "comment": {
+                "content": content,
+                "comment_type": comment_type
+            }
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        self._api.do(
+            "POST",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}/comments",
+            body=body,
+            headers=headers,
+        )
+        return True
+
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete)."""
