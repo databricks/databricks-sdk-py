@@ -2207,7 +2207,7 @@ class GenieAPI:
 
     def submit_comment(
         self, space_id: str, conversation_id: str, message_id: str, content: str, comment_type: str
-    ) -> None:
+    ) -> bool:
         """Submit a comment on a Genie message.
 
         :param space_id: str
@@ -2220,6 +2220,8 @@ class GenieAPI:
           The content of the comment.
         :param comment_type: str
           The type of the comment (e.g., REQUEST_COMMENT, THUMBS_DOWN_COMMENT).
+
+        :returns: bool
         """
         body = {
             "comment": {
