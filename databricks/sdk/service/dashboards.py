@@ -2241,6 +2241,43 @@ class GenieAPI:
         )
         return True
 
+    def update_message_review_request(
+        self, space_id: str, conversation_id: str, message_id: str, review_request_status: str = "REQUESTED"
+    ) -> bool:
+        """Update message review request status.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param review_request_status: str
+          The review request status (defaults to REQUESTED).
+
+        :returns: bool
+        """
+        body = {
+            "updated_message": {
+                "data_room_id": space_id,
+                "conversation_id": conversation_id,
+                "id": message_id,
+                "review_request_status": review_request_status
+            },
+            "update_mask": ["REVIEW_REQUEST"]
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        self._api.do(
+            "PATCH",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}",
+            body=body,
+            headers=headers,
+        )
+        return True
+
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete)."""
