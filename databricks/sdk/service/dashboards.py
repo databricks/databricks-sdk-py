@@ -2704,6 +2704,6 @@ class LakeviewEmbeddedAPI:
         }
 
         res = self._api.do(
-            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/token-info", query=query, headers=headers
+            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers
         )
         return GetPublishedDashboardTokenInfoResponse.from_dict(res)
