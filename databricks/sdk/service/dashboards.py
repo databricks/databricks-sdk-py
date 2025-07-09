@@ -289,6 +289,12 @@ class DeleteSubscriptionResponse:
         return cls()
 
 
+class FeedbackRating(Enum):
+
+    THUMBS_UP = "THUMBS_UP"
+    THUMBS_DOWN = "THUMBS_DOWN"
+
+
 @dataclass
 class GenieAttachment:
     """Genie AI Response"""
@@ -450,6 +456,59 @@ class GenieCreateConversationMessageRequest:
             conversation_id=d.get("conversation_id", None),
             space_id=d.get("space_id", None),
         )
+
+
+@dataclass
+class GenieFeedbackRequest:
+    feedback_rating: FeedbackRating
+    """The feedback rating for the message."""
+
+    feedback_categories: Optional[List[str]] = None
+    """Optional list of feedback categories."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedbackRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feedback_rating is not None:
+            body["feedback_rating"] = self.feedback_rating.value
+        if self.feedback_categories is not None:
+            body["feedback_categories"] = self.feedback_categories
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedbackRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feedback_rating is not None:
+            body["feedback_rating"] = self.feedback_rating
+        if self.feedback_categories is not None:
+            body["feedback_categories"] = self.feedback_categories
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedbackRequest:
+        """Deserializes the GenieFeedbackRequest from a dictionary."""
+        return cls(
+            feedback_rating=_enum(d, "feedback_rating", FeedbackRating),
+            feedback_categories=d.get("feedback_categories", None),
+        )
+
+
+@dataclass
+class GenieFeedbackResponse:
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedbackResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedbackResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedbackResponse:
+        """Deserializes the GenieFeedbackResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2109,6 +2168,42 @@ class GenieAPI:
     def start_conversation_and_wait(self, space_id: str, content: str, timeout=timedelta(minutes=20)) -> GenieMessage:
         return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
+    def submit_message_feedback(
+        self, space_id: str, conversation_id: str, message_id: str, feedback_rating: FeedbackRating, 
+        feedback_categories: Optional[List[str]] = None
+    ) -> GenieFeedbackResponse:
+        """Submit feedback (thumbs up/down) for a Genie message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param feedback_rating: :class:`FeedbackRating`
+          The feedback rating (THUMBS_UP or THUMBS_DOWN).
+        :param feedback_categories: List[str] (optional)
+          Optional list of feedback categories.
+
+        :returns: :class:`GenieFeedbackResponse`
+        """
+        body = {}
+        if feedback_rating is not None:
+            body["feedback_rating"] = feedback_rating.value
+        if feedback_categories is not None:
+            body["feedback_categories"] = feedback_categories
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback",
+            body=body,
+            headers=headers,
+        )
+        return GenieFeedbackResponse.from_dict(res)
 
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
@@ -2609,6 +2704,6 @@ class LakeviewEmbeddedAPI:
         }
 
         res = self._api.do(
-            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers
+            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/token-info", query=query, headers=headers
         )
         return GetPublishedDashboardTokenInfoResponse.from_dict(res)
