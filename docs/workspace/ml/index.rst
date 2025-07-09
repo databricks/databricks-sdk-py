@@ -10,4 +10,5 @@ Create and manage experiments, features, and other machine learning artifacts
    experiments
    feature_store
    forecasting
+   materialized_features
    model_registry

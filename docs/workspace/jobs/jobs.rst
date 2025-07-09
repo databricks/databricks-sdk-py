@@ -204,7 +204,6 @@
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -234,10 +233,6 @@
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user or service principal that the job runs as. If not specified,
-          the job runs as the user who created the job.
-
-          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -1072,7 +1067,6 @@
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the

@@ -29,6 +29,7 @@
         :param workspace_id: int
           The workspace ID.
         :param workspace_network_option: :class:`WorkspaceNetworkOption`
+          The network option details for the workspace.
 
         :returns: :class:`WorkspaceNetworkOption`
         

@@ -45,8 +45,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ENDPOINT
       :value: "ENDPOINT"
 
+   .. py:attribute:: SERVICE_PRINCIPAL
+      :value: "SERVICE_PRINCIPAL"
+
    .. py:attribute:: USER
       :value: "USER"
+
+   .. py:attribute:: USER_GROUP
+      :value: "USER_GROUP"
 
 .. py:class:: AiGatewayRateLimitRenewalPeriod
 

@@ -20,17 +20,27 @@
         Create a Database Instance.
 
         :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
+          Instance to create.
 
         :returns: :class:`DatabaseInstance`
         
 
+    .. py:method:: create_database_instance_role(instance_name: str, database_instance_role: DatabaseInstanceRole) -> DatabaseInstanceRole
+
+        Create a role for a Database Instance.
+
+        :param instance_name: str
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+
+        :returns: :class:`DatabaseInstanceRole`
+        
+
     .. py:method:: create_database_table(table: DatabaseTable) -> DatabaseTable
 
-        Create a Database Table.
+        Create a Database Table. Useful for registering pre-existing PG tables in UC. See
+        CreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.
 
         :param table: :class:`DatabaseTable`
-          Next field marker: 13
 
         :returns: :class:`DatabaseTable`
         
@@ -40,7 +50,6 @@
         Create a Synced Database Table.
 
         :param synced_table: :class:`SyncedDatabaseTable`
-          Next field marker: 12
 
         :returns: :class:`SyncedDatabaseTable`
         
@@ -74,6 +83,19 @@
 
         
 
+    .. py:method:: delete_database_instance_role(instance_name: str, name: str [, allow_missing: Optional[bool], reassign_owned_to: Optional[str]])
+
+        Deletes a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+        :param allow_missing: bool (optional)
+          This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option
+        :param reassign_owned_to: str (optional)
+
+
+        
+
     .. py:method:: delete_database_table(name: str)
 
         Delete a Database Table.
@@ -102,10 +124,13 @@
         :returns: :class:`DatabaseInstance`
         
 
-    .. py:method:: generate_database_credential( [, instance_names: Optional[List[str]], request_id: Optional[str]]) -> DatabaseCredential
+    .. py:method:: generate_database_credential( [, claims: Optional[List[RequestedClaims]], instance_names: Optional[List[str]], request_id: Optional[str]]) -> DatabaseCredential
 
         Generates a credential that can be used to access database instances.
 
+        :param claims: List[:class:`RequestedClaims`] (optional)
+          The returned token will be scoped to the union of instance_names and instances containing the
+          specified UC tables, so instance_names is allowed to be empty.
         :param instance_names: List[str] (optional)
           Instances to which the token will be scoped.
         :param request_id: str (optional)
@@ -132,6 +157,16 @@
         :returns: :class:`DatabaseInstance`
         
 
+    .. py:method:: get_database_instance_role(instance_name: str, name: str) -> DatabaseInstanceRole
+
+        Gets a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+
+        :returns: :class:`DatabaseInstanceRole`
+        
+
     .. py:method:: get_database_table(name: str) -> DatabaseTable
 
         Get a Database Table.
@@ -148,6 +183,19 @@
         :param name: str
 
         :returns: :class:`SyncedDatabaseTable`
+        
+
+    .. py:method:: list_database_instance_roles(instance_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DatabaseInstanceRole]
+
+        START OF PG ROLE APIs Section
+
+        :param instance_name: str
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Instances. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseInstanceRole`
         
 
     .. py:method:: list_database_instances( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DatabaseInstance]
@@ -169,7 +217,6 @@
         :param name: str
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
-          A DatabaseInstance represents a logical Postgres instance, comprised of both compute and storage.
         :param update_mask: str
           The list of fields to update.
 

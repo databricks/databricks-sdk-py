@@ -366,7 +366,6 @@ class FederationPolicy:
     the request URL."""
 
     oidc_policy: Optional[OidcFederationPolicy] = None
-    """Specifies the policy to use for validating OIDC claims in your federated tokens."""
 
     policy_id: Optional[str] = None
     """The ID of the federation policy."""

@@ -6,7 +6,7 @@
 
     A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting
     environment where multiple parties can work together on sensitive enterprise data without direct access to
-    each other’s data.
+    each other's data.
 
     .. py:method:: create(clean_room: CleanRoom) -> CleanRoom
 

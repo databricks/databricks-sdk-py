@@ -614,8 +614,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: LegacyAlertState
 
-   State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
-
    .. py:attribute:: OK
       :value: "OK"
 
@@ -731,8 +729,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: OwnableObjectType
 
-   The singular form of the type of object which can be owned.
-
    .. py:attribute:: ALERT
       :value: "ALERT"
 
@@ -747,8 +743,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ParameterType
-
-   Parameters can have several different types.
 
    .. py:attribute:: DATETIME
       :value: "DATETIME"
@@ -968,8 +962,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "VIEWER"
 
 .. py:class:: RunAsRole
-
-   Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
 
    .. py:attribute:: OWNER
       :value: "OWNER"
@@ -1474,6 +1466,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateVisualizationRequestVisualization
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateWidgetRequest
    :members:
    :undoc-members:
 

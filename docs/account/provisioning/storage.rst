@@ -45,7 +45,6 @@
         :param storage_configuration_name: str
           The human-readable name of the storage configuration.
         :param root_bucket_info: :class:`RootBucketInfo`
-          Root S3 bucket information.
 
         :returns: :class:`StorageConfiguration`
         

@@ -598,7 +598,7 @@ class AwsSqsQueue:
 
     queue_url: Optional[str] = None
     """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}
-    REQUIRED for provided_sqs."""
+    Required for provided_sqs."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
@@ -803,15 +803,15 @@ class AzureQueueStorage:
 
     queue_url: Optional[str] = None
     """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
-    REQUIRED for provided_aqs."""
+    Required for provided_aqs."""
 
     resource_group: Optional[str] = None
     """The resource group for the queue, event grid subscription, and external location storage
-    account. ONLY REQUIRED for locations with a service principal storage credential"""
+    account. Only required for locations with a service principal storage credential"""
 
     subscription_id: Optional[str] = None
-    """OPTIONAL: The subscription id for the queue, event grid subscription, and external location
-    storage account. REQUIRED for locations with a service principal storage credential"""
+    """Optional subscription id for the queue, event grid subscription, and external location storage
+    account. Required for locations with a service principal storage credential"""
 
     def as_dict(self) -> dict:
         """Serializes the AzureQueueStorage into a dictionary suitable for use as a JSON request body."""
@@ -948,7 +948,6 @@ class CatalogInfo:
     through the BROWSE privilege when include_browse is enabled in the request."""
 
     catalog_type: Optional[CatalogType] = None
-    """The type of the catalog."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -994,10 +993,8 @@ class CatalogInfo:
     A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
-    """Status of an asynchronously provisioned resource."""
 
     securable_type: Optional[SecurableType] = None
-    """The type of Unity Catalog securable."""
 
     share_name: Optional[str] = None
     """The name of the share under the share provider."""
@@ -1163,7 +1160,6 @@ class CatalogType(Enum):
     MANAGED_CATALOG = "MANAGED_CATALOG"
     MANAGED_ONLINE_CATALOG = "MANAGED_ONLINE_CATALOG"
     SYSTEM_CATALOG = "SYSTEM_CATALOG"
-    UNKNOWN_CATALOG_TYPE = "UNKNOWN_CATALOG_TYPE"
 
 
 @dataclass
@@ -1359,6 +1355,36 @@ class ColumnMask:
         return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
 
 
+@dataclass
+class ColumnRelationship:
+    source: Optional[str] = None
+
+    target: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnRelationship into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source is not None:
+            body["source"] = self.source
+        if self.target is not None:
+            body["target"] = self.target
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnRelationship into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.source is not None:
+            body["source"] = self.source
+        if self.target is not None:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnRelationship:
+        """Deserializes the ColumnRelationship from a dictionary."""
+        return cls(source=d.get("source", None), target=d.get("target", None))
+
+
 class ColumnTypeName(Enum):
 
     ARRAY = "ARRAY"
@@ -1385,6 +1411,33 @@ class ColumnTypeName(Enum):
     TIMESTAMP_NTZ = "TIMESTAMP_NTZ"
     USER_DEFINED_TYPE = "USER_DEFINED_TYPE"
     VARIANT = "VARIANT"
+
+
+@dataclass
+class ConnectionDependency:
+    """A connection that is dependent on a SQL object."""
+
+    connection_name: Optional[str] = None
+    """Full name of the dependent connection, in the form of __connection_name__."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectionDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectionDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_name is not None:
+            body["connection_name"] = self.connection_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionDependency:
+        """Deserializes the ConnectionDependency from a dictionary."""
+        return cls(connection_name=d.get("connection_name", None))
 
 
 @dataclass
@@ -1426,13 +1479,11 @@ class ConnectionInfo:
     """A map of key-value properties attached to the securable."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
-    """Status of an asynchronously provisioned resource."""
 
     read_only: Optional[bool] = None
     """If the connection is read only."""
 
     securable_type: Optional[SecurableType] = None
-    """The type of Unity Catalog securable."""
 
     updated_at: Optional[int] = None
     """Time at which this connection was updated, in epoch milliseconds."""
@@ -1551,7 +1602,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 33"""
+    """Next Id: 36"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1883,10 +1934,9 @@ class CreateExternalLocation:
     """User-provided free-form text description."""
 
     enable_file_events: Optional[bool] = None
-    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location."""
 
     encryption_details: Optional[EncryptionDetails] = None
-    """Encryption options that apply to clients connecting to cloud storage."""
 
     fallback: Optional[bool] = None
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -1894,7 +1944,7 @@ class CreateExternalLocation:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """[Create:OPT Update:OPT] File event queue settings."""
+    """File event queue settings."""
 
     read_only: Optional[bool] = None
     """Indicates whether the external location is read-only."""
@@ -2493,6 +2543,65 @@ class CreateRegisteredModelRequest:
 
 
 @dataclass
+class CreateRequestExternalLineage:
+    source: ExternalLineageObject
+    """Source object of the external lineage relationship."""
+
+    target: ExternalLineageObject
+    """Target object of the external lineage relationship."""
+
+    columns: Optional[List[ColumnRelationship]] = None
+    """List of column relationships between source and target objects."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external lineage relationship."""
+
+    properties: Optional[Dict[str, str]] = None
+    """Key-value properties associated with the external lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateRequestExternalLineage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateRequestExternalLineage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRequestExternalLineage:
+        """Deserializes the CreateRequestExternalLineage from a dictionary."""
+        return cls(
+            columns=_repeated_dict(d, "columns", ColumnRelationship),
+            id=d.get("id", None),
+            properties=d.get("properties", None),
+            source=_from_dict(d, "source", ExternalLineageObject),
+            target=_from_dict(d, "target", ExternalLineageObject),
+        )
+
+
+@dataclass
 class CreateResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
@@ -2670,8 +2779,6 @@ class CreateTableConstraint:
     """The full name of the table referenced by the constraint."""
 
     constraint: TableConstraint
-    """A table constraint, as defined by *one* of the following fields being set:
-    __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateTableConstraint into a dictionary suitable for use as a JSON request body."""
@@ -2709,11 +2816,6 @@ class CreateVolumeRequestContent:
     """The name of the volume"""
 
     volume_type: VolumeType
-    """The type of the volume. An external volume is located in the specified external location. A
-    managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     comment: Optional[str] = None
     """The comment attached to the volume"""
@@ -2766,6 +2868,33 @@ class CreateVolumeRequestContent:
             storage_location=d.get("storage_location", None),
             volume_type=_enum(d, "volume_type", VolumeType),
         )
+
+
+@dataclass
+class CredentialDependency:
+    """A credential that is dependent on a SQL object."""
+
+    credential_name: Optional[str] = None
+    """Full name of the dependent credential, in the form of __credential_name__."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CredentialDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_name is not None:
+            body["credential_name"] = self.credential_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CredentialDependency into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_name is not None:
+            body["credential_name"] = self.credential_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CredentialDependency:
+        """Deserializes the CredentialDependency from a dictionary."""
+        return cls(credential_name=d.get("credential_name", None))
 
 
 @dataclass
@@ -2941,8 +3070,9 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 12"""
+    """Next Id: 13"""
 
+    ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
     OAUTH_M2M = "OAUTH_M2M"
@@ -2996,21 +3126,28 @@ class DataSourceFormat(Enum):
     BIGQUERY_FORMAT = "BIGQUERY_FORMAT"
     CSV = "CSV"
     DATABRICKS_FORMAT = "DATABRICKS_FORMAT"
+    DATABRICKS_ROW_STORE_FORMAT = "DATABRICKS_ROW_STORE_FORMAT"
     DELTA = "DELTA"
     DELTASHARING = "DELTASHARING"
-    HIVE_CUSTOM = "HIVE_CUSTOM"
-    HIVE_SERDE = "HIVE_SERDE"
+    DELTA_UNIFORM_HUDI = "DELTA_UNIFORM_HUDI"
+    DELTA_UNIFORM_ICEBERG = "DELTA_UNIFORM_ICEBERG"
+    HIVE = "HIVE"
+    ICEBERG = "ICEBERG"
     JSON = "JSON"
+    MONGODB_FORMAT = "MONGODB_FORMAT"
     MYSQL_FORMAT = "MYSQL_FORMAT"
     NETSUITE_FORMAT = "NETSUITE_FORMAT"
+    ORACLE_FORMAT = "ORACLE_FORMAT"
     ORC = "ORC"
     PARQUET = "PARQUET"
     POSTGRESQL_FORMAT = "POSTGRESQL_FORMAT"
     REDSHIFT_FORMAT = "REDSHIFT_FORMAT"
+    SALESFORCE_DATA_CLOUD_FORMAT = "SALESFORCE_DATA_CLOUD_FORMAT"
     SALESFORCE_FORMAT = "SALESFORCE_FORMAT"
     SNOWFLAKE_FORMAT = "SNOWFLAKE_FORMAT"
     SQLDW_FORMAT = "SQLDW_FORMAT"
     SQLSERVER_FORMAT = "SQLSERVER_FORMAT"
+    TERADATA_FORMAT = "TERADATA_FORMAT"
     TEXT = "TEXT"
     UNITY_CATALOG = "UNITY_CATALOG"
     VECTOR_INDEX_FORMAT = "VECTOR_INDEX_FORMAT"
@@ -3153,6 +3290,49 @@ class DeleteCredentialResponse:
 
 
 @dataclass
+class DeleteRequestExternalLineage:
+    source: ExternalLineageObject
+    """Source object of the external lineage relationship."""
+
+    target: ExternalLineageObject
+    """Target object of the external lineage relationship."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRequestExternalLineage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None:
+            body["id"] = self.id
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRequestExternalLineage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None:
+            body["id"] = self.id
+        if self.source:
+            body["source"] = self.source
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRequestExternalLineage:
+        """Deserializes the DeleteRequestExternalLineage from a dictionary."""
+        return cls(
+            id=d.get("id", None),
+            source=_from_dict(d, "source", ExternalLineageObject),
+            target=_from_dict(d, "target", ExternalLineageObject),
+        )
+
+
+@dataclass
 class DeleteResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
@@ -3206,18 +3386,24 @@ class DeltaSharingScopeEnum(Enum):
 
 @dataclass
 class Dependency:
-    """A dependency of a SQL object. Either the __table__ field or the __function__ field must be
-    defined."""
+    """A dependency of a SQL object. One of the following fields must be defined: __table__,
+    __function__, __connection__, or __credential__."""
+
+    connection: Optional[ConnectionDependency] = None
+
+    credential: Optional[CredentialDependency] = None
 
     function: Optional[FunctionDependency] = None
-    """A function that is dependent on a SQL object."""
 
     table: Optional[TableDependency] = None
-    """A table that is dependent on a SQL object."""
 
     def as_dict(self) -> dict:
         """Serializes the Dependency into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.connection:
+            body["connection"] = self.connection.as_dict()
+        if self.credential:
+            body["credential"] = self.credential.as_dict()
         if self.function:
             body["function"] = self.function.as_dict()
         if self.table:
@@ -3227,6 +3413,10 @@ class Dependency:
     def as_shallow_dict(self) -> dict:
         """Serializes the Dependency into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.connection:
+            body["connection"] = self.connection
+        if self.credential:
+            body["credential"] = self.credential
         if self.function:
             body["function"] = self.function
         if self.table:
@@ -3237,7 +3427,10 @@ class Dependency:
     def from_dict(cls, d: Dict[str, Any]) -> Dependency:
         """Deserializes the Dependency from a dictionary."""
         return cls(
-            function=_from_dict(d, "function", FunctionDependency), table=_from_dict(d, "table", TableDependency)
+            connection=_from_dict(d, "connection", ConnectionDependency),
+            credential=_from_dict(d, "credential", CredentialDependency),
+            function=_from_dict(d, "function", FunctionDependency),
+            table=_from_dict(d, "table", TableDependency),
         )
 
 
@@ -3548,6 +3741,544 @@ class EncryptionDetails:
 
 
 @dataclass
+class ExternalLineageExternalMetadata:
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageExternalMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageExternalMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageExternalMetadata:
+        """Deserializes the ExternalLineageExternalMetadata from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class ExternalLineageExternalMetadataInfo:
+    """Represents the external metadata object in the lineage event."""
+
+    entity_type: Optional[str] = None
+    """Type of entity represented by the external metadata object."""
+
+    event_time: Optional[str] = None
+    """Timestamp of the lineage event."""
+
+    name: Optional[str] = None
+    """Name of the external metadata object."""
+
+    system_type: Optional[SystemType] = None
+    """Type of external system."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageExternalMetadataInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.system_type is not None:
+            body["system_type"] = self.system_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageExternalMetadataInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.system_type is not None:
+            body["system_type"] = self.system_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageExternalMetadataInfo:
+        """Deserializes the ExternalLineageExternalMetadataInfo from a dictionary."""
+        return cls(
+            entity_type=d.get("entity_type", None),
+            event_time=d.get("event_time", None),
+            name=d.get("name", None),
+            system_type=_enum(d, "system_type", SystemType),
+        )
+
+
+@dataclass
+class ExternalLineageFileInfo:
+    """Represents the path information in the lineage event."""
+
+    event_time: Optional[str] = None
+    """Timestamp of the lineage event."""
+
+    path: Optional[str] = None
+    """URL of the path."""
+
+    securable_name: Optional[str] = None
+    """The full name of the securable on the path."""
+
+    securable_type: Optional[str] = None
+    """The securable type of the securable on the path."""
+
+    storage_location: Optional[str] = None
+    """The storage location associated with securable on the path."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageFileInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.path is not None:
+            body["path"] = self.path
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageFileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.path is not None:
+            body["path"] = self.path
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageFileInfo:
+        """Deserializes the ExternalLineageFileInfo from a dictionary."""
+        return cls(
+            event_time=d.get("event_time", None),
+            path=d.get("path", None),
+            securable_name=d.get("securable_name", None),
+            securable_type=d.get("securable_type", None),
+            storage_location=d.get("storage_location", None),
+        )
+
+
+@dataclass
+class ExternalLineageInfo:
+    """Lineage response containing lineage information of a data asset."""
+
+    external_lineage_info: Optional[ExternalLineageRelationshipInfo] = None
+    """Information about the edge metadata of the external lineage relationship."""
+
+    external_metadata_info: Optional[ExternalLineageExternalMetadataInfo] = None
+    """Information about external metadata involved in the lineage relationship."""
+
+    file_info: Optional[ExternalLineageFileInfo] = None
+    """Information about the file involved in the lineage relationship."""
+
+    model_info: Optional[ExternalLineageModelVersionInfo] = None
+    """Information about the model version involved in the lineage relationship."""
+
+    table_info: Optional[ExternalLineageTableInfo] = None
+    """Information about the table involved in the lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.external_lineage_info:
+            body["external_lineage_info"] = self.external_lineage_info.as_dict()
+        if self.external_metadata_info:
+            body["external_metadata_info"] = self.external_metadata_info.as_dict()
+        if self.file_info:
+            body["file_info"] = self.file_info.as_dict()
+        if self.model_info:
+            body["model_info"] = self.model_info.as_dict()
+        if self.table_info:
+            body["table_info"] = self.table_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_lineage_info:
+            body["external_lineage_info"] = self.external_lineage_info
+        if self.external_metadata_info:
+            body["external_metadata_info"] = self.external_metadata_info
+        if self.file_info:
+            body["file_info"] = self.file_info
+        if self.model_info:
+            body["model_info"] = self.model_info
+        if self.table_info:
+            body["table_info"] = self.table_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageInfo:
+        """Deserializes the ExternalLineageInfo from a dictionary."""
+        return cls(
+            external_lineage_info=_from_dict(d, "external_lineage_info", ExternalLineageRelationshipInfo),
+            external_metadata_info=_from_dict(d, "external_metadata_info", ExternalLineageExternalMetadataInfo),
+            file_info=_from_dict(d, "file_info", ExternalLineageFileInfo),
+            model_info=_from_dict(d, "model_info", ExternalLineageModelVersionInfo),
+            table_info=_from_dict(d, "table_info", ExternalLineageTableInfo),
+        )
+
+
+@dataclass
+class ExternalLineageModelVersion:
+    name: Optional[str] = None
+
+    version: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageModelVersion into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageModelVersion into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageModelVersion:
+        """Deserializes the ExternalLineageModelVersion from a dictionary."""
+        return cls(name=d.get("name", None), version=d.get("version", None))
+
+
+@dataclass
+class ExternalLineageModelVersionInfo:
+    """Represents the model version information in the lineage event."""
+
+    event_time: Optional[str] = None
+    """Timestamp of the lineage event."""
+
+    model_name: Optional[str] = None
+    """Name of the model."""
+
+    version: Optional[int] = None
+    """Version number of the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageModelVersionInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageModelVersionInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageModelVersionInfo:
+        """Deserializes the ExternalLineageModelVersionInfo from a dictionary."""
+        return cls(
+            event_time=d.get("event_time", None), model_name=d.get("model_name", None), version=d.get("version", None)
+        )
+
+
+@dataclass
+class ExternalLineageObject:
+    external_metadata: Optional[ExternalLineageExternalMetadata] = None
+
+    model_version: Optional[ExternalLineageModelVersion] = None
+
+    path: Optional[ExternalLineagePath] = None
+
+    table: Optional[ExternalLineageTable] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageObject into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.external_metadata:
+            body["external_metadata"] = self.external_metadata.as_dict()
+        if self.model_version:
+            body["model_version"] = self.model_version.as_dict()
+        if self.path:
+            body["path"] = self.path.as_dict()
+        if self.table:
+            body["table"] = self.table.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageObject into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_metadata:
+            body["external_metadata"] = self.external_metadata
+        if self.model_version:
+            body["model_version"] = self.model_version
+        if self.path:
+            body["path"] = self.path
+        if self.table:
+            body["table"] = self.table
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageObject:
+        """Deserializes the ExternalLineageObject from a dictionary."""
+        return cls(
+            external_metadata=_from_dict(d, "external_metadata", ExternalLineageExternalMetadata),
+            model_version=_from_dict(d, "model_version", ExternalLineageModelVersion),
+            path=_from_dict(d, "path", ExternalLineagePath),
+            table=_from_dict(d, "table", ExternalLineageTable),
+        )
+
+
+@dataclass
+class ExternalLineagePath:
+    url: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineagePath into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineagePath into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineagePath:
+        """Deserializes the ExternalLineagePath from a dictionary."""
+        return cls(url=d.get("url", None))
+
+
+@dataclass
+class ExternalLineageRelationship:
+    source: ExternalLineageObject
+    """Source object of the external lineage relationship."""
+
+    target: ExternalLineageObject
+    """Target object of the external lineage relationship."""
+
+    columns: Optional[List[ColumnRelationship]] = None
+    """List of column relationships between source and target objects."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external lineage relationship."""
+
+    properties: Optional[Dict[str, str]] = None
+    """Key-value properties associated with the external lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageRelationship into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageRelationship into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageRelationship:
+        """Deserializes the ExternalLineageRelationship from a dictionary."""
+        return cls(
+            columns=_repeated_dict(d, "columns", ColumnRelationship),
+            id=d.get("id", None),
+            properties=d.get("properties", None),
+            source=_from_dict(d, "source", ExternalLineageObject),
+            target=_from_dict(d, "target", ExternalLineageObject),
+        )
+
+
+@dataclass
+class ExternalLineageRelationshipInfo:
+    source: ExternalLineageObject
+    """Source object of the external lineage relationship."""
+
+    target: ExternalLineageObject
+    """Target object of the external lineage relationship."""
+
+    columns: Optional[List[ColumnRelationship]] = None
+    """List of column relationships between source and target objects."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external lineage relationship."""
+
+    properties: Optional[Dict[str, str]] = None
+    """Key-value properties associated with the external lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageRelationshipInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageRelationshipInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageRelationshipInfo:
+        """Deserializes the ExternalLineageRelationshipInfo from a dictionary."""
+        return cls(
+            columns=_repeated_dict(d, "columns", ColumnRelationship),
+            id=d.get("id", None),
+            properties=d.get("properties", None),
+            source=_from_dict(d, "source", ExternalLineageObject),
+            target=_from_dict(d, "target", ExternalLineageObject),
+        )
+
+
+@dataclass
+class ExternalLineageTable:
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageTable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageTable:
+        """Deserializes the ExternalLineageTable from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class ExternalLineageTableInfo:
+    """Represents the table information in the lineage event."""
+
+    catalog_name: Optional[str] = None
+    """Name of Catalog."""
+
+    event_time: Optional[str] = None
+    """Timestamp of the lineage event."""
+
+    name: Optional[str] = None
+    """Name of Table."""
+
+    schema_name: Optional[str] = None
+    """Name of Schema."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalLineageTableInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalLineageTableInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.event_time is not None:
+            body["event_time"] = self.event_time
+        if self.name is not None:
+            body["name"] = self.name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLineageTableInfo:
+        """Deserializes the ExternalLineageTableInfo from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            event_time=d.get("event_time", None),
+            name=d.get("name", None),
+            schema_name=d.get("schema_name", None),
+        )
+
+
+@dataclass
 class ExternalLocationInfo:
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -3569,10 +4300,9 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     enable_file_events: Optional[bool] = None
-    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location."""
 
     encryption_details: Optional[EncryptionDetails] = None
-    """Encryption options that apply to clients connecting to cloud storage."""
 
     fallback: Optional[bool] = None
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -3580,7 +4310,7 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """[Create:OPT Update:OPT] File event queue settings."""
+    """File event queue settings."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -3713,6 +4443,137 @@ class ExternalLocationInfo:
 
 
 @dataclass
+class ExternalMetadata:
+    name: str
+    """Name of the external metadata object."""
+
+    system_type: SystemType
+    """Type of external system."""
+
+    entity_type: str
+    """Type of entity within the external system."""
+
+    columns: Optional[List[str]] = None
+    """List of columns associated with the external metadata object."""
+
+    create_time: Optional[str] = None
+    """Time at which this external metadata object was created."""
+
+    created_by: Optional[str] = None
+    """Username of external metadata object creator."""
+
+    description: Optional[str] = None
+    """User-provided free-form text description."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external metadata object."""
+
+    metastore_id: Optional[str] = None
+    """Unique identifier of parent metastore."""
+
+    owner: Optional[str] = None
+    """Owner of the external metadata object."""
+
+    properties: Optional[Dict[str, str]] = None
+    """A map of key-value properties attached to the external metadata object."""
+
+    update_time: Optional[str] = None
+    """Time at which this external metadata object was last modified."""
+
+    updated_by: Optional[str] = None
+    """Username of user who last modified external metadata object."""
+
+    url: Optional[str] = None
+    """URL associated with the external metadata object."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v for v in self.columns]
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties:
+            body["properties"] = self.properties
+        if self.system_type is not None:
+            body["system_type"] = self.system_type.value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.description is not None:
+            body["description"] = self.description
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties:
+            body["properties"] = self.properties
+        if self.system_type is not None:
+            body["system_type"] = self.system_type
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalMetadata:
+        """Deserializes the ExternalMetadata from a dictionary."""
+        return cls(
+            columns=d.get("columns", None),
+            create_time=d.get("create_time", None),
+            created_by=d.get("created_by", None),
+            description=d.get("description", None),
+            entity_type=d.get("entity_type", None),
+            id=d.get("id", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            properties=d.get("properties", None),
+            system_type=_enum(d, "system_type", SystemType),
+            update_time=d.get("update_time", None),
+            updated_by=d.get("updated_by", None),
+            url=d.get("url", None),
+        )
+
+
+@dataclass
 class FailedStatus:
     """Detailed status of an online table. Shown if the online table is in the OFFLINE_FAILED or the
     ONLINE_PIPELINE_FAILED state."""
@@ -3828,6 +4689,9 @@ class ForeignKeyConstraint:
     parent_columns: List[str]
     """Column names for this constraint."""
 
+    rely: Optional[bool] = None
+    """True if the constraint is RELY, false or unset if NORELY."""
+
     def as_dict(self) -> dict:
         """Serializes the ForeignKeyConstraint into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3839,6 +4703,8 @@ class ForeignKeyConstraint:
             body["parent_columns"] = [v for v in self.parent_columns]
         if self.parent_table is not None:
             body["parent_table"] = self.parent_table
+        if self.rely is not None:
+            body["rely"] = self.rely
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3852,6 +4718,8 @@ class ForeignKeyConstraint:
             body["parent_columns"] = self.parent_columns
         if self.parent_table is not None:
             body["parent_table"] = self.parent_table
+        if self.rely is not None:
+            body["rely"] = self.rely
         return body
 
     @classmethod
@@ -3862,6 +4730,7 @@ class ForeignKeyConstraint:
             name=d.get("name", None),
             parent_columns=d.get("parent_columns", None),
             parent_table=d.get("parent_table", None),
+            rely=d.get("rely", None),
         )
 
 
@@ -4205,10 +5074,8 @@ class FunctionParameterInfo:
     """Default value of the parameter."""
 
     parameter_mode: Optional[FunctionParameterMode] = None
-    """The mode of the function parameter."""
 
     parameter_type: Optional[FunctionParameterType] = None
-    """The type of function parameter."""
 
     type_interval_type: Optional[str] = None
     """Format of IntervalType."""
@@ -4371,7 +5238,7 @@ class GcpPubsub:
 
     subscription_name: Optional[str] = None
     """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}
-    REQUIRED for provided_pubsub."""
+    Required for provided_pubsub."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
@@ -4463,10 +5330,8 @@ class GenerateTemporaryServiceCredentialRequest:
     """The name of the service credential used to generate a temporary credential"""
 
     azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None
-    """The Azure cloud options to customize the requested temporary credential"""
 
     gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions] = None
-    """The GCP cloud options to customize the requested temporary credential"""
 
     def as_dict(self) -> dict:
         """Serializes the GenerateTemporaryServiceCredentialRequest into a dictionary suitable for use as a JSON request body."""
@@ -4537,29 +5402,18 @@ class GenerateTemporaryTableCredentialRequest:
 @dataclass
 class GenerateTemporaryTableCredentialResponse:
     aws_temp_credentials: Optional[AwsCredentials] = None
-    """AWS temporary credentials for API authentication. Read more at
-    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
-    """Azure Active Directory token, essentially the Oauth token for Azure Service Principal or Managed
-    Identity. Read more at
-    https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token"""
 
     azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
-    """Azure temporary credentials for API authentication. Read more at
-    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
-    """GCP temporary credentials for API authentication. Read more at
-    https://developers.google.com/identity/protocols/oauth2/service-account"""
 
     r2_temp_credentials: Optional[R2Credentials] = None
-    """R2 temporary credentials for API authentication. Read more at
-    https://developers.cloudflare.com/r2/api/s3/tokens/."""
 
     url: Optional[str] = None
     """The URL of the storage path accessible by the temporary credential."""
@@ -4921,6 +5775,12 @@ class IsolationMode(Enum):
     ISOLATION_MODE_OPEN = "ISOLATION_MODE_OPEN"
 
 
+class LineageDirection(Enum):
+
+    DOWNSTREAM = "DOWNSTREAM"
+    UPSTREAM = "UPSTREAM"
+
+
 @dataclass
 class ListAccountMetastoreAssignmentsResponse:
     """The list of workspaces to which the given metastore is assigned."""
@@ -5075,6 +5935,39 @@ class ListCredentialsResponse:
 
 
 @dataclass
+class ListExternalLineageRelationshipsResponse:
+    external_lineage_relationships: Optional[List[ExternalLineageInfo]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListExternalLineageRelationshipsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.external_lineage_relationships:
+            body["external_lineage_relationships"] = [v.as_dict() for v in self.external_lineage_relationships]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListExternalLineageRelationshipsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_lineage_relationships:
+            body["external_lineage_relationships"] = self.external_lineage_relationships
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListExternalLineageRelationshipsResponse:
+        """Deserializes the ListExternalLineageRelationshipsResponse from a dictionary."""
+        return cls(
+            external_lineage_relationships=_repeated_dict(d, "external_lineage_relationships", ExternalLineageInfo),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListExternalLocationsResponse:
     external_locations: Optional[List[ExternalLocationInfo]] = None
     """An array of external locations."""
@@ -5106,6 +5999,39 @@ class ListExternalLocationsResponse:
         """Deserializes the ListExternalLocationsResponse from a dictionary."""
         return cls(
             external_locations=_repeated_dict(d, "external_locations", ExternalLocationInfo),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class ListExternalMetadataResponse:
+    external_metadata: Optional[List[ExternalMetadata]] = None
+
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListExternalMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.external_metadata:
+            body["external_metadata"] = [v.as_dict() for v in self.external_metadata]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListExternalMetadataResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_metadata:
+            body["external_metadata"] = self.external_metadata
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListExternalMetadataResponse:
+        """Deserializes the ListExternalMetadataResponse from a dictionary."""
+        return cls(
+            external_metadata=_repeated_dict(d, "external_metadata", ExternalMetadata),
             next_page_token=d.get("next_page_token", None),
         )
 
@@ -6098,7 +7024,6 @@ class MonitorInfo:
     """The full name of the table to monitor. Format: __catalog_name__.__schema_name__.__table_name__."""
 
     status: MonitorInfoStatus
-    """The status of the monitor."""
 
     monitor_version: str
     """The version of the monitor config (e.g. 1,2,3). If negative, the monitor may be corrupted."""
@@ -6784,26 +7709,18 @@ class OnlineTableStatus:
     """Status of an online table."""
 
     continuous_update_status: Optional[ContinuousUpdateStatus] = None
-    """Detailed status of an online table. Shown if the online table is in the ONLINE_CONTINUOUS_UPDATE
-    or the ONLINE_UPDATING_PIPELINE_RESOURCES state."""
 
     detailed_state: Optional[OnlineTableState] = None
     """The state of the online table."""
 
     failed_status: Optional[FailedStatus] = None
-    """Detailed status of an online table. Shown if the online table is in the OFFLINE_FAILED or the
-    ONLINE_PIPELINE_FAILED state."""
 
     message: Optional[str] = None
     """A text description of the current state of the online table."""
 
     provisioning_status: Optional[ProvisioningStatus] = None
-    """Detailed status of an online table. Shown if the online table is in the
-    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
 
     triggered_update_status: Optional[TriggeredUpdateStatus] = None
-    """Detailed status of an online table. Shown if the online table is in the ONLINE_TRIGGERED_UPDATE
-    or the ONLINE_NO_PENDING_UPDATE state."""
 
     def as_dict(self) -> dict:
         """Serializes the OnlineTableStatus into a dictionary suitable for use as a JSON request body."""
@@ -6850,6 +7767,169 @@ class OnlineTableStatus:
             provisioning_status=_from_dict(d, "provisioning_status", ProvisioningStatus),
             triggered_update_status=_from_dict(d, "triggered_update_status", TriggeredUpdateStatus),
         )
+
+
+@dataclass
+class OptionSpec:
+    """Spec of an allowed option on a securable kind and its attributes. This is mostly used by UI to
+    provide user friendly hints and descriptions in order to facilitate the securable creation
+    process."""
+
+    allowed_values: Optional[List[str]] = None
+    """For drop down / radio button selections, UI will want to know the possible input values, it can
+    also be used by other option types to limit input selections."""
+
+    default_value: Optional[str] = None
+    """The default value of the option, for example, value '443' for 'port' option."""
+
+    description: Optional[str] = None
+    """A concise user facing description of what the input value of this option should look like."""
+
+    hint: Optional[str] = None
+    """The hint is used on the UI to suggest what the input value can possibly be like, for example:
+    example.com for 'host' option. Unlike default value, it will not be applied automatically
+    without user input."""
+
+    is_copiable: Optional[bool] = None
+    """Indicates whether an option should be displayed with copy button on the UI."""
+
+    is_creatable: Optional[bool] = None
+    """Indicates whether an option can be provided by users in the create/update path of an entity."""
+
+    is_hidden: Optional[bool] = None
+    """Is the option value not user settable and is thus not shown on the UI."""
+
+    is_loggable: Optional[bool] = None
+    """Specifies whether this option is safe to log, i.e. no sensitive information."""
+
+    is_required: Optional[bool] = None
+    """Is the option required."""
+
+    is_secret: Optional[bool] = None
+    """Is the option value considered secret and thus redacted on the UI."""
+
+    is_updatable: Optional[bool] = None
+    """Is the option updatable by users."""
+
+    name: Optional[str] = None
+    """The unique name of the option."""
+
+    oauth_stage: Optional[OptionSpecOauthStage] = None
+    """Specifies when the option value is displayed on the UI within the OAuth flow."""
+
+    type: Optional[OptionSpecOptionType] = None
+    """The type of the option."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OptionSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_values:
+            body["allowed_values"] = [v for v in self.allowed_values]
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        if self.description is not None:
+            body["description"] = self.description
+        if self.hint is not None:
+            body["hint"] = self.hint
+        if self.is_copiable is not None:
+            body["is_copiable"] = self.is_copiable
+        if self.is_creatable is not None:
+            body["is_creatable"] = self.is_creatable
+        if self.is_hidden is not None:
+            body["is_hidden"] = self.is_hidden
+        if self.is_loggable is not None:
+            body["is_loggable"] = self.is_loggable
+        if self.is_required is not None:
+            body["is_required"] = self.is_required
+        if self.is_secret is not None:
+            body["is_secret"] = self.is_secret
+        if self.is_updatable is not None:
+            body["is_updatable"] = self.is_updatable
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oauth_stage is not None:
+            body["oauth_stage"] = self.oauth_stage.value
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OptionSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_values:
+            body["allowed_values"] = self.allowed_values
+        if self.default_value is not None:
+            body["default_value"] = self.default_value
+        if self.description is not None:
+            body["description"] = self.description
+        if self.hint is not None:
+            body["hint"] = self.hint
+        if self.is_copiable is not None:
+            body["is_copiable"] = self.is_copiable
+        if self.is_creatable is not None:
+            body["is_creatable"] = self.is_creatable
+        if self.is_hidden is not None:
+            body["is_hidden"] = self.is_hidden
+        if self.is_loggable is not None:
+            body["is_loggable"] = self.is_loggable
+        if self.is_required is not None:
+            body["is_required"] = self.is_required
+        if self.is_secret is not None:
+            body["is_secret"] = self.is_secret
+        if self.is_updatable is not None:
+            body["is_updatable"] = self.is_updatable
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oauth_stage is not None:
+            body["oauth_stage"] = self.oauth_stage
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OptionSpec:
+        """Deserializes the OptionSpec from a dictionary."""
+        return cls(
+            allowed_values=d.get("allowed_values", None),
+            default_value=d.get("default_value", None),
+            description=d.get("description", None),
+            hint=d.get("hint", None),
+            is_copiable=d.get("is_copiable", None),
+            is_creatable=d.get("is_creatable", None),
+            is_hidden=d.get("is_hidden", None),
+            is_loggable=d.get("is_loggable", None),
+            is_required=d.get("is_required", None),
+            is_secret=d.get("is_secret", None),
+            is_updatable=d.get("is_updatable", None),
+            name=d.get("name", None),
+            oauth_stage=_enum(d, "oauth_stage", OptionSpecOauthStage),
+            type=_enum(d, "type", OptionSpecOptionType),
+        )
+
+
+class OptionSpecOauthStage(Enum):
+    """During the OAuth flow, specifies which stage the option should be displayed in the UI.
+    OAUTH_STAGE_UNSPECIFIED is the default value for options unrelated to the OAuth flow.
+    BEFORE_AUTHORIZATION_CODE corresponds to options necessary to initiate the OAuth process.
+    BEFORE_ACCESS_TOKEN corresponds to options that are necessary to create a foreign connection,
+    but that should be displayed after the authorization code has already been received."""
+
+    BEFORE_ACCESS_TOKEN = "BEFORE_ACCESS_TOKEN"
+    BEFORE_AUTHORIZATION_CODE = "BEFORE_AUTHORIZATION_CODE"
+
+
+class OptionSpecOptionType(Enum):
+    """Type of the option, we purposely follow JavaScript types so that the UI can map the options to
+    JS types. https://www.w3schools.com/js/js_datatypes.asp Enum is a special case that it's just
+    string with selections."""
+
+    OPTION_BIGINT = "OPTION_BIGINT"
+    OPTION_BOOLEAN = "OPTION_BOOLEAN"
+    OPTION_ENUM = "OPTION_ENUM"
+    OPTION_MULTILINE_STRING = "OPTION_MULTILINE_STRING"
+    OPTION_NUMBER = "OPTION_NUMBER"
+    OPTION_SERVICE_CREDENTIAL = "OPTION_SERVICE_CREDENTIAL"
+    OPTION_STRING = "OPTION_STRING"
 
 
 @dataclass
@@ -6965,6 +8045,9 @@ class PrimaryKeyConstraint:
     child_columns: List[str]
     """Column names for this constraint."""
 
+    rely: Optional[bool] = None
+    """True if the constraint is RELY, false or unset if NORELY."""
+
     timeseries_columns: Optional[List[str]] = None
     """Column names that represent a timeseries."""
 
@@ -6975,6 +8058,8 @@ class PrimaryKeyConstraint:
             body["child_columns"] = [v for v in self.child_columns]
         if self.name is not None:
             body["name"] = self.name
+        if self.rely is not None:
+            body["rely"] = self.rely
         if self.timeseries_columns:
             body["timeseries_columns"] = [v for v in self.timeseries_columns]
         return body
@@ -6986,6 +8071,8 @@ class PrimaryKeyConstraint:
             body["child_columns"] = self.child_columns
         if self.name is not None:
             body["name"] = self.name
+        if self.rely is not None:
+            body["rely"] = self.rely
         if self.timeseries_columns:
             body["timeseries_columns"] = self.timeseries_columns
         return body
@@ -6996,6 +8083,7 @@ class PrimaryKeyConstraint:
         return cls(
             child_columns=d.get("child_columns", None),
             name=d.get("name", None),
+            rely=d.get("rely", None),
             timeseries_columns=d.get("timeseries_columns", None),
         )
 
@@ -7056,7 +8144,8 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    """The principal (user email address or group name)."""
+    """The principal (user email address or group name). For deleted principals, `principal` is empty
+    while `principal_id` is populated."""
 
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
@@ -7662,6 +8751,138 @@ class SchemaInfo:
         )
 
 
+class SecurableKind(Enum):
+    """Latest kind: TABLE_DELTA_ICEBERG_DELTASHARING = 252; Next id:253"""
+
+    TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
+    TABLE_DELTA = "TABLE_DELTA"
+    TABLE_DELTASHARING = "TABLE_DELTASHARING"
+    TABLE_DELTASHARING_MUTABLE = "TABLE_DELTASHARING_MUTABLE"
+    TABLE_DELTA_EXTERNAL = "TABLE_DELTA_EXTERNAL"
+    TABLE_DELTA_ICEBERG_DELTASHARING = "TABLE_DELTA_ICEBERG_DELTASHARING"
+    TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
+    TABLE_DELTA_UNIFORM_HUDI_EXTERNAL = "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL"
+    TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL = "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+    TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL = (
+        "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
+    )
+    TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED = (
+        "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED"
+    )
+    TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE = "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE"
+    TABLE_EXTERNAL = "TABLE_EXTERNAL"
+    TABLE_FEATURE_STORE = "TABLE_FEATURE_STORE"
+    TABLE_FEATURE_STORE_EXTERNAL = "TABLE_FEATURE_STORE_EXTERNAL"
+    TABLE_FOREIGN_BIGQUERY = "TABLE_FOREIGN_BIGQUERY"
+    TABLE_FOREIGN_DATABRICKS = "TABLE_FOREIGN_DATABRICKS"
+    TABLE_FOREIGN_DELTASHARING = "TABLE_FOREIGN_DELTASHARING"
+    TABLE_FOREIGN_HIVE_METASTORE = "TABLE_FOREIGN_HIVE_METASTORE"
+    TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL"
+    TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED"
+    TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL = (
+        "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL"
+    )
+    TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED"
+    TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW = "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW"
+    TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL"
+    TABLE_FOREIGN_HIVE_METASTORE_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_MANAGED"
+    TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL"
+    TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED = "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED"
+    TABLE_FOREIGN_HIVE_METASTORE_VIEW = "TABLE_FOREIGN_HIVE_METASTORE_VIEW"
+    TABLE_FOREIGN_MONGODB = "TABLE_FOREIGN_MONGODB"
+    TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
+    TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
+    TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
+    TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
+    TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
+    TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
+    TABLE_FOREIGN_SALESFORCE_DATA_CLOUD = "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD"
+    TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING = "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING"
+    TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW = "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW"
+    TABLE_FOREIGN_SNOWFLAKE = "TABLE_FOREIGN_SNOWFLAKE"
+    TABLE_FOREIGN_SQLDW = "TABLE_FOREIGN_SQLDW"
+    TABLE_FOREIGN_SQLSERVER = "TABLE_FOREIGN_SQLSERVER"
+    TABLE_FOREIGN_TERADATA = "TABLE_FOREIGN_TERADATA"
+    TABLE_FOREIGN_WORKDAY_RAAS = "TABLE_FOREIGN_WORKDAY_RAAS"
+    TABLE_ICEBERG_UNIFORM_MANAGED = "TABLE_ICEBERG_UNIFORM_MANAGED"
+    TABLE_INTERNAL = "TABLE_INTERNAL"
+    TABLE_MANAGED_POSTGRESQL = "TABLE_MANAGED_POSTGRESQL"
+    TABLE_MATERIALIZED_VIEW = "TABLE_MATERIALIZED_VIEW"
+    TABLE_MATERIALIZED_VIEW_DELTASHARING = "TABLE_MATERIALIZED_VIEW_DELTASHARING"
+    TABLE_METRIC_VIEW = "TABLE_METRIC_VIEW"
+    TABLE_ONLINE_VECTOR_INDEX_DIRECT = "TABLE_ONLINE_VECTOR_INDEX_DIRECT"
+    TABLE_ONLINE_VECTOR_INDEX_REPLICA = "TABLE_ONLINE_VECTOR_INDEX_REPLICA"
+    TABLE_ONLINE_VIEW = "TABLE_ONLINE_VIEW"
+    TABLE_STANDARD = "TABLE_STANDARD"
+    TABLE_STREAMING_LIVE_TABLE = "TABLE_STREAMING_LIVE_TABLE"
+    TABLE_STREAMING_LIVE_TABLE_DELTASHARING = "TABLE_STREAMING_LIVE_TABLE_DELTASHARING"
+    TABLE_SYSTEM = "TABLE_SYSTEM"
+    TABLE_SYSTEM_DELTASHARING = "TABLE_SYSTEM_DELTASHARING"
+    TABLE_VIEW = "TABLE_VIEW"
+    TABLE_VIEW_DELTASHARING = "TABLE_VIEW_DELTASHARING"
+
+
+@dataclass
+class SecurableKindManifest:
+    """Manifest of a specific securable kind."""
+
+    assignable_privileges: Optional[List[str]] = None
+    """Privileges that can be assigned to the securable."""
+
+    capabilities: Optional[List[str]] = None
+    """A list of capabilities in the securable kind."""
+
+    options: Optional[List[OptionSpec]] = None
+    """Detailed specs of allowed options."""
+
+    securable_kind: Optional[SecurableKind] = None
+    """Securable kind to get manifest of."""
+
+    securable_type: Optional[SecurableType] = None
+    """Securable Type of the kind."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecurableKindManifest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assignable_privileges:
+            body["assignable_privileges"] = [v for v in self.assignable_privileges]
+        if self.capabilities:
+            body["capabilities"] = [v for v in self.capabilities]
+        if self.options:
+            body["options"] = [v.as_dict() for v in self.options]
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind.value
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecurableKindManifest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assignable_privileges:
+            body["assignable_privileges"] = self.assignable_privileges
+        if self.capabilities:
+            body["capabilities"] = self.capabilities
+        if self.options:
+            body["options"] = self.options
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecurableKindManifest:
+        """Deserializes the SecurableKindManifest from a dictionary."""
+        return cls(
+            assignable_privileges=d.get("assignable_privileges", None),
+            capabilities=d.get("capabilities", None),
+            options=_repeated_dict(d, "options", OptionSpec),
+            securable_kind=_enum(d, "securable_kind", SecurableKind),
+            securable_type=_enum(d, "securable_type", SecurableType),
+        )
+
+
 class SecurableType(Enum):
     """The type of Unity Catalog securable."""
 
@@ -7681,7 +8902,6 @@ class SecurableType(Enum):
     STAGING_TABLE = "STAGING_TABLE"
     STORAGE_CREDENTIAL = "STORAGE_CREDENTIAL"
     TABLE = "TABLE"
-    UNKNOWN_SECURABLE_TYPE = "UNKNOWN_SECURABLE_TYPE"
     VOLUME = "VOLUME"
 
 
@@ -8031,6 +9251,31 @@ class SystemSchemaInfo:
         return cls(schema=d.get("schema", None), state=d.get("state", None))
 
 
+class SystemType(Enum):
+
+    AMAZON_REDSHIFT = "AMAZON_REDSHIFT"
+    AZURE_SYNAPSE = "AZURE_SYNAPSE"
+    CONFLUENT = "CONFLUENT"
+    GOOGLE_BIGQUERY = "GOOGLE_BIGQUERY"
+    KAFKA = "KAFKA"
+    LOOKER = "LOOKER"
+    MICROSOFT_FABRIC = "MICROSOFT_FABRIC"
+    MICROSOFT_SQL_SERVER = "MICROSOFT_SQL_SERVER"
+    MONGODB = "MONGODB"
+    MYSQL = "MYSQL"
+    ORACLE = "ORACLE"
+    OTHER = "OTHER"
+    POSTGRESQL = "POSTGRESQL"
+    POWER_BI = "POWER_BI"
+    SALESFORCE = "SALESFORCE"
+    SAP = "SAP"
+    SERVICENOW = "SERVICENOW"
+    SNOWFLAKE = "SNOWFLAKE"
+    TABLEAU = "TABLEAU"
+    TERADATA = "TERADATA"
+    WORKDAY = "WORKDAY"
+
+
 @dataclass
 class TableConstraint:
     """A table constraint, as defined by *one* of the following fields being set:
@@ -8155,7 +9400,6 @@ class TableInfo:
     """Unique ID of the Data Access Configuration to use with the table data."""
 
     data_source_format: Optional[DataSourceFormat] = None
-    """Data source format"""
 
     deleted_at: Optional[int] = None
     """Time at which this table was deleted, in epoch milliseconds. Field is omitted if table is not
@@ -8169,7 +9413,6 @@ class TableInfo:
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
 
     encryption_details: Optional[EncryptionDetails] = None
-    """Encryption options that apply to clients connecting to cloud storage."""
 
     full_name: Optional[str] = None
     """Full name of table, in form of __catalog_name__.__schema_name__.__table_name__"""
@@ -8195,6 +9438,9 @@ class TableInfo:
     schema_name: Optional[str] = None
     """Name of parent schema relative to its parent catalog."""
 
+    securable_kind_manifest: Optional[SecurableKindManifest] = None
+    """SecurableKindManifest of table, including capabilities the table has."""
+
     sql_path: Optional[str] = None
     """List of schemes whose objects can be referenced without qualification."""
 
@@ -8202,7 +9448,7 @@ class TableInfo:
     """Name of the storage credential, when a storage credential is configured for use with this table."""
 
     storage_location: Optional[str] = None
-    """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)"""
+    """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)."""
 
     table_constraints: Optional[List[TableConstraint]] = None
     """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
@@ -8275,6 +9521,8 @@ class TableInfo:
             body["row_filter"] = self.row_filter.as_dict()
         if self.schema_name is not None:
             body["schema_name"] = self.schema_name
+        if self.securable_kind_manifest:
+            body["securable_kind_manifest"] = self.securable_kind_manifest.as_dict()
         if self.sql_path is not None:
             body["sql_path"] = self.sql_path
         if self.storage_credential_name is not None:
@@ -8344,6 +9592,8 @@ class TableInfo:
             body["row_filter"] = self.row_filter
         if self.schema_name is not None:
             body["schema_name"] = self.schema_name
+        if self.securable_kind_manifest:
+            body["securable_kind_manifest"] = self.securable_kind_manifest
         if self.sql_path is not None:
             body["sql_path"] = self.sql_path
         if self.storage_credential_name is not None:
@@ -8396,6 +9646,7 @@ class TableInfo:
             properties=d.get("properties", None),
             row_filter=_from_dict(d, "row_filter", TableRowFilter),
             schema_name=d.get("schema_name", None),
+            securable_kind_manifest=_from_dict(d, "securable_kind_manifest", SecurableKindManifest),
             sql_path=d.get("sql_path", None),
             storage_credential_name=d.get("storage_credential_name", None),
             storage_location=d.get("storage_location", None),
@@ -8453,6 +9704,9 @@ class TableSummary:
     full_name: Optional[str] = None
     """The full name of the table."""
 
+    securable_kind_manifest: Optional[SecurableKindManifest] = None
+    """SecurableKindManifest of table, including capabilities the table has."""
+
     table_type: Optional[TableType] = None
 
     def as_dict(self) -> dict:
@@ -8460,6 +9714,8 @@ class TableSummary:
         body = {}
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.securable_kind_manifest:
+            body["securable_kind_manifest"] = self.securable_kind_manifest.as_dict()
         if self.table_type is not None:
             body["table_type"] = self.table_type.value
         return body
@@ -8469,6 +9725,8 @@ class TableSummary:
         body = {}
         if self.full_name is not None:
             body["full_name"] = self.full_name
+        if self.securable_kind_manifest:
+            body["securable_kind_manifest"] = self.securable_kind_manifest
         if self.table_type is not None:
             body["table_type"] = self.table_type
         return body
@@ -8476,7 +9734,11 @@ class TableSummary:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableSummary:
         """Deserializes the TableSummary from a dictionary."""
-        return cls(full_name=d.get("full_name", None), table_type=_enum(d, "table_type", TableType))
+        return cls(
+            full_name=d.get("full_name", None),
+            securable_kind_manifest=_from_dict(d, "securable_kind_manifest", SecurableKindManifest),
+            table_type=_enum(d, "table_type", TableType),
+        )
 
 
 class TableType(Enum):
@@ -8487,6 +9749,7 @@ class TableType(Enum):
     MANAGED = "MANAGED"
     MANAGED_SHALLOW_CLONE = "MANAGED_SHALLOW_CLONE"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
+    METRIC_VIEW = "METRIC_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
 
@@ -8526,21 +9789,14 @@ class TagKeyValue:
 @dataclass
 class TemporaryCredentials:
     aws_temp_credentials: Optional[AwsCredentials] = None
-    """AWS temporary credentials for API authentication. Read more at
-    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
 
     azure_aad: Optional[AzureActiveDirectoryToken] = None
-    """Azure Active Directory token, essentially the Oauth token for Azure Service Principal or Managed
-    Identity. Read more at
-    https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token"""
 
     expiration_time: Optional[int] = None
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
-    """GCP temporary credentials for API authentication. Read more at
-    https://developers.google.com/identity/protocols/oauth2/service-account"""
 
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
@@ -8948,10 +10204,9 @@ class UpdateExternalLocation:
     """Name of the storage credential used with this location."""
 
     enable_file_events: Optional[bool] = None
-    """[Create:OPT Update:OPT] Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location."""
 
     encryption_details: Optional[EncryptionDetails] = None
-    """Encryption options that apply to clients connecting to cloud storage."""
 
     fallback: Optional[bool] = None
     """Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -8959,7 +10214,7 @@ class UpdateExternalLocation:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """[Create:OPT Update:OPT] File event queue settings."""
+    """File event queue settings."""
 
     force: Optional[bool] = None
     """Force update even if changing url invalidates dependent external tables or mounts."""
@@ -9518,6 +10773,65 @@ class UpdateRegisteredModelRequest:
 
 
 @dataclass
+class UpdateRequestExternalLineage:
+    source: ExternalLineageObject
+    """Source object of the external lineage relationship."""
+
+    target: ExternalLineageObject
+    """Target object of the external lineage relationship."""
+
+    columns: Optional[List[ColumnRelationship]] = None
+    """List of column relationships between source and target objects."""
+
+    id: Optional[str] = None
+    """Unique identifier of the external lineage relationship."""
+
+    properties: Optional[Dict[str, str]] = None
+    """Key-value properties associated with the external lineage relationship."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateRequestExternalLineage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns:
+            body["columns"] = [v.as_dict() for v in self.columns]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source.as_dict()
+        if self.target:
+            body["target"] = self.target.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateRequestExternalLineage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns:
+            body["columns"] = self.columns
+        if self.id is not None:
+            body["id"] = self.id
+        if self.properties:
+            body["properties"] = self.properties
+        if self.source:
+            body["source"] = self.source
+        if self.target:
+            body["target"] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRequestExternalLineage:
+        """Deserializes the UpdateRequestExternalLineage from a dictionary."""
+        return cls(
+            columns=_repeated_dict(d, "columns", ColumnRelationship),
+            id=d.get("id", None),
+            properties=d.get("properties", None),
+            source=_from_dict(d, "source", ExternalLineageObject),
+            target=_from_dict(d, "target", ExternalLineageObject),
+        )
+
+
+@dataclass
 class UpdateResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
@@ -9730,12 +11044,11 @@ class UpdateStorageCredential:
 
 @dataclass
 class UpdateTableRequest:
-    """Update a table owner."""
-
     full_name: Optional[str] = None
     """Full name of the table."""
 
     owner: Optional[str] = None
+    """Username of current owner of table."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateTableRequest into a dictionary suitable for use as a JSON request body."""
@@ -9939,16 +11252,13 @@ class ValidateCredentialRequest:
     """Next ID: 17"""
 
     aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration"""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
-    """The Azure managed identity configuration."""
 
     credential_name: Optional[str] = None
     """Required. The name of an existing credential or long-lived cloud credential to validate."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """GCP long-lived credential. Databricks-created Google Cloud Storage service account."""
 
     external_location_name: Optional[str] = None
     """The name of an existing external location to validate. Only applicable for storage credentials
@@ -10270,7 +11580,6 @@ class VolumeInfo:
     """The identifier of the user who created the volume"""
 
     encryption_details: Optional[EncryptionDetails] = None
-    """Encryption options that apply to clients connecting to cloud storage."""
 
     full_name: Optional[str] = None
     """The three-level (fully qualified) name of the volume"""
@@ -10299,11 +11608,6 @@ class VolumeInfo:
     """The unique identifier of the volume"""
 
     volume_type: Optional[VolumeType] = None
-    """The type of the volume. An external volume is located in the specified external location. A
-    managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -11404,9 +12708,7 @@ class CredentialsAPI:
         :param credential_name: str
           The name of the service credential used to generate a temporary credential
         :param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)
-          The Azure cloud options to customize the requested temporary credential
         :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
-          The GCP cloud options to customize the requested temporary credential
 
         :returns: :class:`TemporaryCredentials`
         """
@@ -11596,13 +12898,10 @@ class CredentialsAPI:
         metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
 
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
-          The Azure managed identity configuration.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
         :param external_location_name: str (optional)
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)
@@ -11640,6 +12939,132 @@ class CredentialsAPI:
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
         return ValidateCredentialResponse.from_dict(res)
+
+
+class ExternalLineageAPI:
+    """External Lineage APIs enable defining and managing lineage relationships between Databricks objects and
+    external systems. These APIs allow users to capture data flows connecting Databricks tables, models, and
+    file paths with external metadata objects.
+
+    With these APIs, users can create, update, delete, and list lineage relationships with support for
+    column-level mappings and custom properties."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_external_lineage_relationship(
+        self, external_lineage_relationship: CreateRequestExternalLineage
+    ) -> ExternalLineageRelationship:
+        """Creates an external lineage relationship between a Databricks or external metadata object and another
+        external metadata object.
+
+        :param external_lineage_relationship: :class:`CreateRequestExternalLineage`
+
+        :returns: :class:`ExternalLineageRelationship`
+        """
+        body = external_lineage_relationship.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/lineage-tracking/external-lineage", body=body, headers=headers)
+        return ExternalLineageRelationship.from_dict(res)
+
+    def delete_external_lineage_relationship(self, external_lineage_relationship: DeleteRequestExternalLineage):
+        """Deletes an external lineage relationship between a Databricks or external metadata object and another
+        external metadata object.
+
+        :param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
+
+
+        """
+
+        query = {}
+        if external_lineage_relationship is not None:
+            query["external_lineage_relationship"] = external_lineage_relationship.as_dict()
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
+
+    def list_external_lineage_relationships(
+        self,
+        object_info: ExternalLineageObject,
+        lineage_direction: LineageDirection,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[ExternalLineageInfo]:
+        """Lists external lineage relationships of a Databricks object or external metadata given a supplied
+        direction.
+
+        :param object_info: :class:`ExternalLineageObject`
+          The object to query external lineage relationship on.
+        :param lineage_direction: :class:`LineageDirection`
+          The lineage direction to filter on.
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`ExternalLineageInfo`
+        """
+
+        query = {}
+        if lineage_direction is not None:
+            query["lineage_direction"] = lineage_direction.value
+        if object_info is not None:
+            query["object_info"] = object_info.as_dict()
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
+            if "external_lineage_relationships" in json:
+                for v in json["external_lineage_relationships"]:
+                    yield ExternalLineageInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_external_lineage_relationship(
+        self, external_lineage_relationship: UpdateRequestExternalLineage, update_mask: str
+    ) -> ExternalLineageRelationship:
+        """Updates an external lineage relationship between a Databricks or external metadata object and another
+        external metadata object.
+
+        :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`ExternalLineageRelationship`
+        """
+        body = external_lineage_relationship.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/lineage-tracking/external-lineage", query=query, body=body, headers=headers
+        )
+        return ExternalLineageRelationship.from_dict(res)
 
 
 class ExternalLocationsAPI:
@@ -11684,15 +13109,14 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          [Create:OPT Update:OPT] Whether to enable file events on this external location.
+          Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
-          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          [Create:OPT Update:OPT] File event queue settings.
+          File event queue settings.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -11847,15 +13271,14 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          [Create:OPT Update:OPT] Whether to enable file events on this external location.
+          Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
-          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          [Create:OPT Update:OPT] File event queue settings.
+          File event queue settings.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -11906,6 +13329,137 @@ class ExternalLocationsAPI:
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
+
+
+class ExternalMetadataAPI:
+    """External Metadata objects enable customers to register and manage metadata about external systems within
+    Unity Catalog.
+
+    These APIs provide a standardized way to create, update, retrieve, list, and delete external metadata
+    objects. Fine-grained authorization ensures that only users with appropriate permissions can view and
+    manage external metadata objects."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_external_metadata(self, external_metadata: ExternalMetadata) -> ExternalMetadata:
+        """Creates a new external metadata object in the parent metastore if the caller is a metastore admin or
+        has the **CREATE_EXTERNAL_METADATA** privilege. Grants **BROWSE** to all account users upon creation
+        by default.
+
+        :param external_metadata: :class:`ExternalMetadata`
+
+        :returns: :class:`ExternalMetadata`
+        """
+        body = external_metadata.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/lineage-tracking/external-metadata", body=body, headers=headers)
+        return ExternalMetadata.from_dict(res)
+
+    def delete_external_metadata(self, name: str):
+        """Deletes the external metadata object that matches the supplied name. The caller must be a metastore
+        admin, the owner of the external metadata object, or a user that has the **MANAGE** privilege.
+
+        :param name: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
+
+    def get_external_metadata(self, name: str) -> ExternalMetadata:
+        """Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the
+        owner of the external metadata object, or a user that has the **BROWSE** privilege.
+
+        :param name: str
+
+        :returns: :class:`ExternalMetadata`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
+        return ExternalMetadata.from_dict(res)
+
+    def list_external_metadata(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ExternalMetadata]:
+        """Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all
+        external metadata objects will be retrieved. Otherwise, only external metadata objects that the caller
+        has **BROWSE** on will be retrieved. There is no guarantee of a specific ordering of the elements in
+        the array.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`ExternalMetadata`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/lineage-tracking/external-metadata", query=query, headers=headers)
+            if "external_metadata" in json:
+                for v in json["external_metadata"]:
+                    yield ExternalMetadata.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_external_metadata(
+        self, name: str, external_metadata: ExternalMetadata, update_mask: str
+    ) -> ExternalMetadata:
+        """Updates the external metadata object that matches the supplied name. The caller can only update either
+        the owner or other metadata fields in one request. The caller must be a metastore admin, the owner of
+        the external metadata object, or a user that has the **MODIFY** privilege. If the caller is updating
+        the owner, they must also have the **MANAGE** privilege.
+
+        :param name: str
+          Name of the external metadata object.
+        :param external_metadata: :class:`ExternalMetadata`
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`ExternalMetadata`
+        """
+        body = external_metadata.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/lineage-tracking/external-metadata/{name}", query=query, body=body, headers=headers
+        )
+        return ExternalMetadata.from_dict(res)
 
 
 class FunctionsAPI:
@@ -12746,7 +14300,7 @@ class OnlineTablesAPI:
         """Create a new Online Table.
 
         :param table: :class:`OnlineTable`
-          Online Table information.
+          Specification of the online table to be created.
 
         :returns:
           Long-running operation waiter for :class:`OnlineTable`.
@@ -14186,8 +15740,6 @@ class TableConstraintsAPI:
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
         :param constraint: :class:`TableConstraint`
-          A table constraint, as defined by *one* of the following fields being set:
-          __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
 
         :returns: :class:`TableConstraint`
         """
@@ -14307,11 +15859,11 @@ class TablesAPI:
           Full name of the table.
         :param include_browse: bool (optional)
           Whether to include tables in the response for which the principal can only access selective metadata
-          for
+          for.
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
 
         :returns: :class:`TableInfo`
         """
@@ -14336,7 +15888,6 @@ class TablesAPI:
         schema_name: str,
         *,
         include_browse: Optional[bool] = None,
-        include_delta_metadata: Optional[bool] = None,
         include_manifest_capabilities: Optional[bool] = None,
         max_results: Optional[int] = None,
         omit_columns: Optional[bool] = None,
@@ -14356,11 +15907,9 @@ class TablesAPI:
           Parent schema of tables.
         :param include_browse: bool (optional)
           Whether to include tables in the response for which the principal can only access selective metadata
-          for
-        :param include_delta_metadata: bool (optional)
-          Whether delta metadata should be included in the response.
+          for.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -14384,8 +15933,6 @@ class TablesAPI:
             query["catalog_name"] = catalog_name
         if include_browse is not None:
             query["include_browse"] = include_browse
-        if include_delta_metadata is not None:
-            query["include_delta_metadata"] = include_delta_metadata
         if include_manifest_capabilities is not None:
             query["include_manifest_capabilities"] = include_manifest_capabilities
         if max_results is not None:
@@ -14404,8 +15951,6 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/tables", query=query, headers=headers)
             if "tables" in json:
@@ -14439,7 +15984,7 @@ class TablesAPI:
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param include_manifest_capabilities: bool (optional)
-          Whether to include a manifest containing capabilities the table has.
+          Whether to include a manifest containing table capabilities in the response.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
@@ -14473,8 +16018,6 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
-        if "max_results" not in query:
-            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/table-summaries", query=query, headers=headers)
             if "tables" in json:
@@ -14493,6 +16036,7 @@ class TablesAPI:
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
+          Username of current owner of table.
 
 
         """
@@ -14598,11 +16142,6 @@ class VolumesAPI:
         :param name: str
           The name of the volume
         :param volume_type: :class:`VolumeType`
-          The type of the volume. An external volume is located in the specified external location. A managed
-          volume is located in the default location which is specified by the parent schema, or the parent
-          catalog, or the Metastore. [Learn more]
-
-          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)

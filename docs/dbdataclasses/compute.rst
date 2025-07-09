@@ -1550,6 +1550,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
 
+   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
+      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
+
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
 

@@ -352,11 +352,6 @@ class ClusterAutoRestartMessage:
     enabled: Optional[bool] = None
 
     enablement_details: Optional[ClusterAutoRestartMessageEnablementDetails] = None
-    """Contains an information about the enablement status judging (e.g. whether the enterprise tier is
-    enabled) This is only additional information that MUST NOT be used to decide whether the setting
-    is enabled or not. This is intended to use only for purposes like showing an error message to
-    the customer with the additional details. For example, using these details we can check why
-    exactly the feature is disabled for this customer."""
 
     maintenance_window: Optional[ClusterAutoRestartMessageMaintenanceWindow] = None
 
@@ -615,7 +610,6 @@ class ComplianceSecurityProfile:
 @dataclass
 class ComplianceSecurityProfileSetting:
     compliance_security_profile_workspace: ComplianceSecurityProfile
-    """SHIELD feature: CSP"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -745,10 +739,6 @@ class CreateIpAccessList:
     """Label for the IP access list. This **cannot** be empty."""
 
     list_type: ListType
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     ip_addresses: Optional[List[str]] = None
 
@@ -789,7 +779,6 @@ class CreateIpAccessListResponse:
     """An IP access list was successfully created."""
 
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -1138,7 +1127,6 @@ class CspEnablementAccount:
 @dataclass
 class CspEnablementAccountSetting:
     csp_enablement_account: CspEnablementAccount
-    """Account level policy for CSP"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -1746,42 +1734,6 @@ class DeleteLlmProxyPartnerPoweredWorkspaceResponse:
 
 
 @dataclass
-class DeleteNetworkConnectivityConfigurationResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkConnectivityConfigurationResponse:
-        """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteNetworkPolicyRpcResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteNetworkPolicyRpcResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteNetworkPolicyRpcResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkPolicyRpcResponse:
-        """Deserializes the DeleteNetworkPolicyRpcResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeletePersonalComputeSettingResponse:
     """The etag is returned."""
 
@@ -2093,11 +2045,6 @@ class EgressNetworkPolicyInternetAccessPolicy:
     """Optional. If not specified, assume the policy is enforced for all workloads."""
 
     restriction_mode: Optional[EgressNetworkPolicyInternetAccessPolicyRestrictionMode] = None
-    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
-    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
-    only access explicitly allowed internet and storage destinations, as well as UC connections and
-    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
-    private link."""
 
     def as_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyInternetAccessPolicy into a dictionary suitable for use as a JSON request body."""
@@ -2151,10 +2098,6 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
     protocol: Optional[
         EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
     ] = None
-    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
-    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
-    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
-    filtering (i.e. SNI based filtering, filtering by FQDN)."""
 
     type: Optional[EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType] = None
 
@@ -2785,7 +2728,6 @@ class EnhancedSecurityMonitoring:
 @dataclass
 class EnhancedSecurityMonitoringSetting:
     enhanced_security_monitoring_workspace: EnhancedSecurityMonitoring
-    """SHIELD feature: ESM"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -2864,7 +2806,6 @@ class EsmEnablementAccount:
 @dataclass
 class EsmEnablementAccountSetting:
     esm_enablement_account: EsmEnablementAccount
-    """Account level policy for ESM"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -3049,7 +2990,6 @@ class FetchIpAccessListResponse:
     """An IP access list was successfully returned."""
 
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the FetchIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -3141,7 +3081,6 @@ class GenericWebhookConfig:
 @dataclass
 class GetIpAccessListResponse:
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the GetIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -3265,10 +3204,6 @@ class IpAccessListInfo:
     """Universally unique identifier (UUID) of the IP access list."""
 
     list_type: Optional[ListType] = None
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     updated_at: Optional[int] = None
     """Update timestamp in milliseconds."""
@@ -4052,12 +3987,8 @@ class NccEgressDefaultRules:
     """Default rules don't have specific targets."""
 
     aws_stable_ip_rule: Optional[NccAwsStableIpRule] = None
-    """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
-    allow traffic from your Databricks workspace."""
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
-    """The stable Azure service endpoints. You can configure the firewall of your Azure resources to
-    allow traffic from your Databricks serverless compute resources."""
 
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
@@ -4533,11 +4464,6 @@ class PartitionId:
 @dataclass
 class PersonalComputeMessage:
     value: PersonalComputeMessageEnum
-    """ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing
-    all users to create single-machine compute resources. DELEGATE: Moves access control for the
-    Personal Compute default policy to individual workspaces and requires a workspace’s users or
-    groups to be added to the ACLs of that workspace’s Personal Compute default policy before they
-    will be able to create compute resources through that policy."""
 
     def as_dict(self) -> dict:
         """Serializes the PersonalComputeMessage into a dictionary suitable for use as a JSON request body."""
@@ -4679,10 +4605,6 @@ class ReplaceIpAccessList:
     """Label for the IP access list. This **cannot** be empty."""
 
     list_type: ListType
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     enabled: bool
     """Specifies whether this IP access list is enabled."""
@@ -5006,7 +4928,6 @@ class TokenAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -5208,7 +5129,6 @@ class TokenPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the TokenPermission into a dictionary suitable for use as a JSON request body."""
@@ -5293,7 +5213,6 @@ class TokenPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the TokenPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -5729,13 +5648,6 @@ class UpdateDefaultNamespaceSettingRequest:
     """This should always be set to true for Settings API. Added for AIP compliance."""
 
     setting: DefaultNamespaceSetting
-    """This represents the setting configuration for the default namespace in the Databricks workspace.
-    Setting the default catalog for the workspace determines the catalog that is used when queries
-    do not reference a fully qualified 3 level name. For example, if the default catalog is set to
-    'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-    restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-    applies when using Unity Catalog-enabled compute."""
 
     field_mask: str
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
@@ -6212,10 +6124,6 @@ class UpdateIpAccessList:
     """Label for the IP access list. This **cannot** be empty."""
 
     list_type: Optional[ListType] = None
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateIpAccessList into a dictionary suitable for use as a JSON request body."""
@@ -6766,10 +6674,6 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
 
         :returns: :class:`CreateIpAccessListResponse`
@@ -6863,10 +6767,6 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -6924,10 +6824,6 @@ class AccountIpAccessListsAPI:
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
 
 
         """
@@ -7657,13 +7553,6 @@ class DefaultNamespaceAPI:
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -8484,10 +8373,6 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
 
         :returns: :class:`CreateIpAccessListResponse`
@@ -8576,10 +8461,6 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -8633,10 +8514,6 @@ class IpAccessListsAPI:
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
 
 
         """
@@ -8933,7 +8810,6 @@ class NetworkConnectivityAPI:
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
-          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
@@ -8964,8 +8840,6 @@ class NetworkConnectivityAPI:
         :param network_connectivity_config_id: str
           Your Network Connectivity Configuration ID.
         :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
 
         :returns: :class:`NccPrivateEndpointRule`
         """
@@ -9157,8 +9031,6 @@ class NetworkConnectivityAPI:
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -9203,6 +9075,7 @@ class NetworkPoliciesAPI:
         environment.
 
         :param network_policy: :class:`AccountNetworkPolicy`
+          Network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         """
@@ -9287,6 +9160,7 @@ class NetworkPoliciesAPI:
         :param network_policy_id: str
           The unique identifier for the network policy.
         :param network_policy: :class:`AccountNetworkPolicy`
+          Updated network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         """
@@ -10136,6 +10010,7 @@ class WorkspaceNetworkConfigurationAPI:
         :param workspace_id: int
           The workspace ID.
         :param workspace_network_option: :class:`WorkspaceNetworkOption`
+          The network option details for the workspace.
 
         :returns: :class:`WorkspaceNetworkOption`
         """

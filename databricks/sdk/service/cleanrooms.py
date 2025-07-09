@@ -851,7 +851,6 @@ class CleanRoomRemoteDetail:
     2. Its invite_recipient_email is empty."""
 
     compliance_security_profile: Optional[ComplianceSecurityProfile] = None
-    """The compliance security profile used to process regulated data following compliance standards."""
 
     creator: Optional[CleanRoomCollaborator] = None
     """Collaborator who creates the clean room."""
@@ -1064,24 +1063,6 @@ class DeleteCleanRoomAssetResponse:
 
 
 @dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class ListCleanRoomAssetsResponse:
     assets: Optional[List[CleanRoomAsset]] = None
     """Assets in the clean room."""
@@ -1230,7 +1211,6 @@ class CleanRoomAssetsAPI:
         :param clean_room_name: str
           Name of the clean room.
         :param asset: :class:`CleanRoomAsset`
-          Metadata of the clean room asset
 
         :returns: :class:`CleanRoomAsset`
         """
@@ -1332,7 +1312,8 @@ class CleanRoomAssetsAPI:
 
           For notebooks, the name is the notebook file name.
         :param asset: :class:`CleanRoomAsset`
-          Metadata of the clean room asset
+          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
+          update.
 
         :returns: :class:`CleanRoomAsset`
         """
@@ -1403,7 +1384,7 @@ class CleanRoomTaskRunsAPI:
 class CleanRoomsAPI:
     """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting
     environment where multiple parties can work together on sensitive enterprise data without direct access to
-    each other’s data."""
+    each other's data."""
 
     def __init__(self, api_client):
         self._api = api_client

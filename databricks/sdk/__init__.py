@@ -46,7 +46,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountStorageCredentialsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI, CredentialsAPI,
-                                            ExternalLocationsAPI, FunctionsAPI,
+                                            ExternalLineageAPI,
+                                            ExternalLocationsAPI,
+                                            ExternalMetadataAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             QualityMonitorsAPI,
@@ -88,7 +90,8 @@ from databricks.sdk.service.marketplace import (
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
 from databricks.sdk.service.ml import (ExperimentsAPI, FeatureStoreAPI,
-                                       ForecastingAPI, ModelRegistryAPI)
+                                       ForecastingAPI, MaterializedFeaturesAPI,
+                                       ModelRegistryAPI)
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
@@ -264,7 +267,9 @@ class WorkspaceClient:
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
+        self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
+        self._external_metadata = pkg_catalog.ExternalMetadataAPI(self._api_client)
         self._feature_store = pkg_ml.FeatureStoreAPI(self._api_client)
         self._files = _make_files_client(self._api_client, self._config)
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
@@ -280,6 +285,7 @@ class WorkspaceClient:
         self._lakeview = pkg_dashboards.LakeviewAPI(self._api_client)
         self._lakeview_embedded = pkg_dashboards.LakeviewEmbeddedAPI(self._api_client)
         self._libraries = pkg_compute.LibrariesAPI(self._api_client)
+        self._materialized_features = pkg_ml.MaterializedFeaturesAPI(self._api_client)
         self._metastores = pkg_catalog.MetastoresAPI(self._api_client)
         self._model_registry = pkg_ml.ModelRegistryAPI(self._api_client)
         self._model_versions = pkg_catalog.ModelVersionsAPI(self._api_client)
@@ -414,7 +420,7 @@ class WorkspaceClient:
 
     @property
     def clean_rooms(self) -> pkg_cleanrooms.CleanRoomsAPI:
-        """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data."""
+        """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other's data."""
         return self._clean_rooms
 
     @property
@@ -513,9 +519,19 @@ class WorkspaceClient:
         return self._experiments
 
     @property
+    def external_lineage(self) -> pkg_catalog.ExternalLineageAPI:
+        """External Lineage APIs enable defining and managing lineage relationships between Databricks objects and external systems."""
+        return self._external_lineage
+
+    @property
     def external_locations(self) -> pkg_catalog.ExternalLocationsAPI:
         """An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path."""
         return self._external_locations
+
+    @property
+    def external_metadata(self) -> pkg_catalog.ExternalMetadataAPI:
+        """External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog."""
+        return self._external_metadata
 
     @property
     def feature_store(self) -> pkg_ml.FeatureStoreAPI:
@@ -591,6 +607,11 @@ class WorkspaceClient:
     def libraries(self) -> pkg_compute.LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
+
+    @property
+    def materialized_features(self) -> pkg_ml.MaterializedFeaturesAPI:
+        """Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models."""
+        return self._materialized_features
 
     @property
     def metastores(self) -> pkg_catalog.MetastoresAPI:

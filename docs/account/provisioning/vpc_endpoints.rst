@@ -47,7 +47,6 @@
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
         :param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)
-          The Google Cloud specific information for this Private Service Connect endpoint.
         :param region: str (optional)
           The AWS region in which this VPC endpoint object exists.
 

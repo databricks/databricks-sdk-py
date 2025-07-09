@@ -2282,7 +2282,6 @@ class ListingSummary:
     share: Optional[ShareInfo] = None
 
     status: Optional[ListingStatus] = None
-    """Enums"""
 
     subtitle: Optional[str] = None
 
@@ -2462,7 +2461,6 @@ class PersonalizationRequest:
     comment: Optional[str] = None
 
     contact_info: Optional[ContactInfo] = None
-    """contact info for the consumer requesting data or performing a listing installation"""
 
     created_at: Optional[int] = None
 

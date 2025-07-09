@@ -17,6 +17,7 @@
         environment.
 
         :param network_policy: :class:`AccountNetworkPolicy`
+          Network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         
@@ -58,6 +59,7 @@
         :param network_policy_id: str
           The unique identifier for the network policy.
         :param network_policy: :class:`AccountNetworkPolicy`
+          Updated network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         

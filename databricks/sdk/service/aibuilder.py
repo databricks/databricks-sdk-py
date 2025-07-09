@@ -21,24 +21,6 @@ class CancelCustomLlmOptimizationRunRequest:
 
 
 @dataclass
-class CancelOptimizeResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelOptimizeResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelOptimizeResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelOptimizeResponse:
-        """Deserializes the CancelOptimizeResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CreateCustomLlmRequest:
     name: str
     """Name of the custom LLM. Only alphanumeric characters and dashes allowed."""
@@ -219,24 +201,6 @@ class Dataset:
     def from_dict(cls, d: Dict[str, Any]) -> Dataset:
         """Deserializes the Dataset from a dictionary."""
         return cls(table=_from_dict(d, "table", Table))
-
-
-@dataclass
-class DeleteCustomLlmResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteCustomLlmResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteCustomLlmResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteCustomLlmResponse:
-        """Deserializes the DeleteCustomLlmResponse from a dictionary."""
-        return cls()
 
 
 @dataclass

@@ -64,24 +64,6 @@ class AnomalyDetectionRunStatus(Enum):
 
 
 @dataclass
-class DeleteQualityMonitorResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteQualityMonitorResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteQualityMonitorResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteQualityMonitorResponse:
-        """Deserializes the DeleteQualityMonitorResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class ListQualityMonitorResponse:
     next_page_token: Optional[str] = None
 

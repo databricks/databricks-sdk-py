@@ -82,15 +82,12 @@
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the warehouse should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -194,15 +191,12 @@
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
-          Configurations whether the warehouse should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
-          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.

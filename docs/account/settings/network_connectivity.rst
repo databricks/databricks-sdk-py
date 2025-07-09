@@ -28,7 +28,6 @@
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
-          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         
@@ -48,8 +47,6 @@
         :param network_connectivity_config_id: str
           Your Network Connectivity Configuration ID.
         :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
 
         :returns: :class:`NccPrivateEndpointRule`
         
@@ -134,8 +131,6 @@
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,

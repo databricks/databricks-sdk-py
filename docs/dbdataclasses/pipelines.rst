@@ -132,6 +132,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IngestionSourceType
 
+   .. py:attribute:: BIGQUERY
+      :value: "BIGQUERY"
+
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
 
@@ -419,6 +422,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: TableSpecificConfigScdType
 
    The SCD type to use to ingest the table.
+
+   .. py:attribute:: APPEND_ONLY
+      :value: "APPEND_ONLY"
 
    .. py:attribute:: SCD_TYPE_1
       :value: "SCD_TYPE_1"

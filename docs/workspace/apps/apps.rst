@@ -40,6 +40,7 @@
         :param app_name: str
           The name of the app.
         :param app_deployment: :class:`AppDeployment`
+          The app deployment configuration.
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
