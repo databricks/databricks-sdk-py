@@ -254,6 +254,48 @@ class DashboardView(Enum):
 
 
 @dataclass
+class DeleteScheduleResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteScheduleResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteScheduleResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScheduleResponse:
+        """Deserializes the DeleteScheduleResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteSubscriptionResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteSubscriptionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteSubscriptionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSubscriptionResponse:
+        """Deserializes the DeleteSubscriptionResponse from a dictionary."""
+        return cls()
+
+
+class FeedbackRating(Enum):
+
+    THUMBS_UP = "THUMBS_UP"
+    THUMBS_DOWN = "THUMBS_DOWN"
+
+
+@dataclass
 class GenieAttachment:
     """Genie AI Response"""
 
@@ -454,6 +496,84 @@ class GenieCreateConversationMessageRequest:
             conversation_id=d.get("conversation_id", None),
             space_id=d.get("space_id", None),
         )
+
+
+@dataclass
+class GenieFeedbackRequest:
+    feedback_rating: FeedbackRating
+    """The feedback rating for the message."""
+
+    feedback_categories: Optional[List[str]] = None
+    """Optional list of feedback categories."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedbackRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feedback_rating is not None:
+            body["feedback_rating"] = self.feedback_rating.value
+        if self.feedback_categories is not None:
+            body["feedback_categories"] = self.feedback_categories
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedbackRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feedback_rating is not None:
+            body["feedback_rating"] = self.feedback_rating
+        if self.feedback_categories is not None:
+            body["feedback_categories"] = self.feedback_categories
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedbackRequest:
+        """Deserializes the GenieFeedbackRequest from a dictionary."""
+        return cls(
+            feedback_rating=_enum(d, "feedback_rating", FeedbackRating),
+            feedback_categories=d.get("feedback_categories", None),
+        )
+
+
+@dataclass
+class GenieFeedbackResponse:
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedbackResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedbackResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedbackResponse:
+        """Deserializes the GenieFeedbackResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class GenieGenerateDownloadFullQueryResultResponse:
+    download_id: Optional[str] = None
+    """Download ID. Use this ID to track the download request in subsequent polling calls"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
+        return cls(download_id=d.get("download_id", None))
 
 
 @dataclass
@@ -2058,6 +2178,116 @@ class GenieAPI:
     def start_conversation_and_wait(self, space_id: str, content: str, timeout=timedelta(minutes=20)) -> GenieMessage:
         return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
+    def submit_message_feedback(
+        self, space_id: str, conversation_id: str, message_id: str, feedback_rating: FeedbackRating, 
+        feedback_categories: Optional[List[str]] = None
+    ) -> GenieFeedbackResponse:
+        """Submit feedback (thumbs up/down) for a Genie message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param feedback_rating: :class:`FeedbackRating`
+          The feedback rating (THUMBS_UP or THUMBS_DOWN).
+        :param feedback_categories: List[str] (optional)
+          Optional list of feedback categories.
+
+        :returns: :class:`GenieFeedbackResponse`
+        """
+        body = {}
+        if feedback_rating is not None:
+            body["feedback_rating"] = feedback_rating.value
+        if feedback_categories is not None:
+            body["feedback_categories"] = feedback_categories
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback",
+            body=body,
+            headers=headers,
+        )
+        return GenieFeedbackResponse.from_dict(res)
+
+    def submit_comment(
+        self, space_id: str, conversation_id: str, message_id: str, content: str, comment_type: str
+    ) -> bool:
+        """Submit a comment on a Genie message.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param content: str
+          The content of the comment.
+        :param comment_type: str
+          The type of the comment (e.g., REQUEST_COMMENT, THUMBS_DOWN_COMMENT).
+
+        :returns: bool
+        """
+        body = {
+            "comment": {
+                "content": content,
+                "comment_type": comment_type
+            }
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        self._api.do(
+            "POST",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}/comments",
+            body=body,
+            headers=headers,
+        )
+        return True
+
+    def update_message_review_request(
+        self, space_id: str, conversation_id: str, message_id: str, review_request_status: str = "REQUESTED"
+    ) -> bool:
+        """Update message review request status.
+
+        :param space_id: str
+          The ID associated with the Genie space.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message.
+        :param review_request_status: str
+          The review request status (defaults to REQUESTED).
+
+        :returns: bool
+        """
+        body = {
+            "updated_message": {
+                "data_room_id": space_id,
+                "conversation_id": conversation_id,
+                "id": message_id,
+                "review_request_status": review_request_status
+            },
+            "update_mask": ["REVIEW_REQUEST"]
+        }
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        self._api.do(
+            "PATCH",
+            f"/api/2.0/data-rooms/{space_id}/conversations/{conversation_id}/messages/{message_id}",
+            body=body,
+            headers=headers,
+        )
+        return True
+
     def trash_space(self, space_id: str):
         """Move a Genie Space to the trash.
 
@@ -2072,7 +2302,7 @@ class GenieAPI:
         }
 
         self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
-
+        
 
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
