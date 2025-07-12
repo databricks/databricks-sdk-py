@@ -21,7 +21,6 @@ class AccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[PermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -1220,7 +1219,6 @@ class Permission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[PermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the Permission into a dictionary suitable for use as a JSON request body."""
@@ -1387,7 +1385,6 @@ class PermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[PermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsDescription into a dictionary suitable for use as a JSON request body."""

@@ -51,6 +51,7 @@
         :param recipient_name: str
           Name of the recipient. This is the name of the recipient for which the policy is being created.
         :param policy: :class:`FederationPolicy`
+          Name of the policy. This is the name of the policy to be created.
 
         :returns: :class:`FederationPolicy`
         

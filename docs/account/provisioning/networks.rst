@@ -33,8 +33,6 @@
         :param network_name: str
           The human-readable name of the network configuration.
         :param gcp_network_info: :class:`GcpNetworkInfo` (optional)
-          The Google Cloud specific information for this network (for example, the VPC ID, subnet ID, and
-          secondary IP ranges).
         :param security_group_ids: List[str] (optional)
           IDs of one to five security groups associated with this network. Security group IDs **cannot** be
           used in multiple network configurations.
@@ -42,10 +40,6 @@
           IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple
           network configurations.
         :param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)
-          If specified, contains the VPC endpoints used to allow cluster communication from this VPC over [AWS
-          PrivateLink].
-
-          [AWS PrivateLink]: https://aws.amazon.com/privatelink/
         :param vpc_id: str (optional)
           The ID of the VPC associated with this network. VPC IDs can be used in multiple network
           configurations.

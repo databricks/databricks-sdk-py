@@ -123,7 +123,6 @@
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 
         :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams`
-          * Log Delivery Configuration
 
         :returns: :class:`WrappedLogDeliveryConfiguration`
         

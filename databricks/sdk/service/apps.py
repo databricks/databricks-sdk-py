@@ -222,7 +222,6 @@ class AppAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -491,7 +490,6 @@ class AppPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the AppPermission into a dictionary suitable for use as a JSON request body."""
@@ -577,7 +575,6 @@ class AppPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the AppPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -1279,6 +1276,7 @@ class AppsAPI:
         :param app_name: str
           The name of the app.
         :param app_deployment: :class:`AppDeployment`
+          The app deployment configuration.
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.

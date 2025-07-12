@@ -98,12 +98,6 @@ class CreatePipeline:
     pipeline execution."""
 
     run_as: Optional[RunAs] = None
-    """Write-only setting, available only in Create/Update calls. Specifies the user or service
-    principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
-    the pipeline.
-    
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
 
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to."""
@@ -510,12 +504,6 @@ class EditPipeline:
     pipeline execution."""
 
     run_as: Optional[RunAs] = None
-    """Write-only setting, available only in Create/Update calls. Specifies the user or service
-    principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
-    the pipeline.
-    
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
 
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to."""
@@ -922,6 +910,11 @@ class GetPipelineResponse:
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
+    run_as: Optional[RunAs] = None
+    """The user or service principal that the pipeline runs as, if specified in the request. This field
+    indicates the explicit configuration of `run_as` for the pipeline. To find the value in all
+    cases, explicit or implicit, use `run_as_user_name`."""
+
     run_as_user_name: Optional[str] = None
     """Username of the user that the pipeline will run on behalf of."""
 
@@ -952,6 +945,8 @@ class GetPipelineResponse:
             body["name"] = self.name
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.run_as:
+            body["run_as"] = self.run_as.as_dict()
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.spec:
@@ -981,6 +976,8 @@ class GetPipelineResponse:
             body["name"] = self.name
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
+        if self.run_as:
+            body["run_as"] = self.run_as
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.spec:
@@ -1002,6 +999,7 @@ class GetPipelineResponse:
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
             name=d.get("name", None),
             pipeline_id=d.get("pipeline_id", None),
+            run_as=_from_dict(d, "run_as", RunAs),
             run_as_user_name=d.get("run_as_user_name", None),
             spec=_from_dict(d, "spec", PipelineSpec),
             state=_enum(d, "state", PipelineState),
@@ -1211,6 +1209,7 @@ class IngestionPipelineDefinition:
 
 class IngestionSourceType(Enum):
 
+    BIGQUERY = "BIGQUERY"
     DYNAMICS365 = "DYNAMICS365"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
@@ -1621,7 +1620,6 @@ class PipelineAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[PipelinePermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -2195,7 +2193,6 @@ class PipelinePermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[PipelinePermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the PipelinePermission into a dictionary suitable for use as a JSON request body."""
@@ -2283,7 +2280,6 @@ class PipelinePermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[PipelinePermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the PipelinePermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -2630,7 +2626,6 @@ class PipelineStateInfo:
     owner."""
 
     state: Optional[PipelineState] = None
-    """The pipeline state."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineStateInfo into a dictionary suitable for use as a JSON request body."""
@@ -3101,7 +3096,6 @@ class StackFrame:
 @dataclass
 class StartUpdate:
     cause: Optional[StartUpdateCause] = None
-    """What triggered this update."""
 
     full_refresh: Optional[bool] = None
     """If true, this update will reset all tables before running."""
@@ -3378,6 +3372,7 @@ class TableSpecificConfig:
 class TableSpecificConfigScdType(Enum):
     """The SCD type to use to ingest the table."""
 
+    APPEND_ONLY = "APPEND_ONLY"
     SCD_TYPE_1 = "SCD_TYPE_1"
     SCD_TYPE_2 = "SCD_TYPE_2"
 
@@ -3528,7 +3523,6 @@ class UpdateStateInfo:
     creation_time: Optional[str] = None
 
     state: Optional[UpdateStateInfoState] = None
-    """The update state."""
 
     update_id: Optional[str] = None
 
@@ -3715,11 +3709,6 @@ class PipelinesAPI:
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
-          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
-          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
-
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)
@@ -4072,7 +4061,6 @@ class PipelinesAPI:
 
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
-          What triggered this update.
         :param full_refresh: bool (optional)
           If true, this update will reset all tables before running.
         :param full_refresh_selection: List[str] (optional)
@@ -4223,11 +4211,6 @@ class PipelinesAPI:
           Databricks user interface and it is added to sys.path when executing Python sources during pipeline
           execution.
         :param run_as: :class:`RunAs` (optional)
-          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
-          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
-
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to.
         :param serverless: bool (optional)

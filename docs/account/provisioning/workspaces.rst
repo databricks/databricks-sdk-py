@@ -67,7 +67,6 @@
           The cloud provider which the workspace uses. For Google Cloud workspaces, always set this field to
           `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
-          The general workspace configurations that are specific to cloud providers.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
         :param custom_tags: Dict[str,str] (optional)
@@ -99,26 +98,7 @@
           If a new workspace omits this property, the server generates a unique deployment name for you with
           the pattern `dbc-xxxxxxxx-xxxx`.
         :param gcp_managed_network_config: :class:`GcpManagedNetworkConfig` (optional)
-          The network settings for the workspace. The configurations are only for Databricks-managed VPCs. It
-          is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP range
-          configurations must be mutually exclusive. An attempt to create a workspace fails if Databricks
-          detects an IP range overlap.
-
-          Specify custom IP ranges in CIDR format. The IP ranges for these fields must not overlap, and all IP
-          addresses must be entirely within the following ranges: `10.0.0.0/8`, `100.64.0.0/10`,
-          `172.16.0.0/12`, `192.168.0.0/16`, and `240.0.0.0/4`.
-
-          The sizes of these IP ranges affect the maximum number of nodes for the workspace.
-
-          **Important**: Confirm the IP ranges used by your Databricks workspace before creating the
-          workspace. You cannot change them after your workspace is deployed. If the IP address ranges for
-          your Databricks are too small, IP exhaustion can occur, causing your Databricks jobs to fail. To
-          determine the address range sizes that you need, Databricks provides a calculator as a Microsoft
-          Excel spreadsheet. See [calculate subnet sizes for a new workspace].
-
-          [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
         :param gke_config: :class:`GkeConfig` (optional)
-          The configurations for the GKE cluster of a Databricks workspace.
         :param is_no_public_ip_enabled: bool (optional)
           Whether no public IP is enabled for the workspace.
         :param location: str (optional)
@@ -129,9 +109,6 @@
           history. The provided key configuration object property `use_cases` must contain `MANAGED_SERVICES`.
         :param network_id: str (optional)
         :param pricing_tier: :class:`PricingTier` (optional)
-          The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-
-          [AWS Pricing]: https://databricks.com/product/aws-pricing
         :param private_access_settings_id: str (optional)
           ID of the workspace's private access settings object. Only used for PrivateLink. This ID must be
           specified for customers using [AWS PrivateLink] for either front-end (user-to-workspace connection),

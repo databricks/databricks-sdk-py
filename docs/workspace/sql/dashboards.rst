@@ -28,7 +28,9 @@
             # cleanup
             w.dashboards.delete(dashboard_id=created.id)
 
-        Create a dashboard object.
+        Creates a new dashboard object. Only the name parameter is required in the POST request JSON body.
+        Other fields can be included when duplicating dashboards with this API. Databricks does not recommend
+        designing dashboards exclusively using this API.',
 
         :param name: str
           The title of this dashboard that appears in list views and at the top of the dashboard page.

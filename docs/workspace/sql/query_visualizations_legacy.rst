@@ -12,7 +12,7 @@
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-    .. py:method:: create(query_id: str, type: str, options: Any [, description: Optional[str], name: Optional[str]]) -> LegacyVisualization
+    .. py:method:: create(options: Any, query_id: str, type: str [, description: Optional[str], name: Optional[str]]) -> LegacyVisualization
 
         Creates visualization in the query.
 
@@ -21,13 +21,13 @@
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
+        :param options: Any
+          The options object varies widely from one visualization type to the next and is unsupported.
+          Databricks does not recommend modifying visualization settings in JSON.
         :param query_id: str
           The identifier returned by :method:queries/create
         :param type: str
           The type of visualization: chart, table, pivot table, and so on.
-        :param options: Any
-          The options object varies widely from one visualization type to the next and is unsupported.
-          Databricks does not recommend modifying visualization settings in JSON.
         :param description: str (optional)
           A short description of this visualization. This is not displayed in the UI.
         :param name: str (optional)
@@ -46,7 +46,7 @@
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
         :param id: str
-          Widget ID returned by :method:queryvizualisations/create
+          Widget ID returned by :method:queryvisualizations/create
 
 
         

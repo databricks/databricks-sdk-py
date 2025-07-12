@@ -36,10 +36,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR
       :value: "ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR"
 
-.. autoclass:: DeleteQualityMonitorResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ListQualityMonitorResponse
    :members:
    :undoc-members:

@@ -12,7 +12,7 @@
     The Workspace Model Registry is a centralized model repository and a UI and set of APIs that enable you to
     manage the full lifecycle of MLflow Models.
 
-    .. py:method:: approve_transition_request(name: str, version: str, stage: Stage, archive_existing_versions: bool [, comment: Optional[str]]) -> ApproveTransitionRequestResponse
+    .. py:method:: approve_transition_request(name: str, version: str, stage: str, archive_existing_versions: bool [, comment: Optional[str]]) -> ApproveTransitionRequestResponse
 
         Approves a model version stage transition request.
 
@@ -20,7 +20,7 @@
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -92,9 +92,8 @@
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
 
-        Creates a new registered model with the name specified in the request body.
-
-        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
+        Creates a new registered model with the name specified in the request body. Throws
+        `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
 
         :param name: str
           Register models under this name
@@ -143,7 +142,7 @@
         :returns: :class:`CreateModelVersionResponse`
         
 
-    .. py:method:: create_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> CreateTransitionRequestResponse
+    .. py:method:: create_transition_request(name: str, version: str, stage: str [, comment: Optional[str]]) -> CreateTransitionRequestResponse
 
         Creates a model version stage transition request.
 
@@ -151,7 +150,7 @@
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -190,9 +189,7 @@
             # cleanup
             w.model_registry.delete_webhook(id=created.webhook.id)
 
-        **NOTE**: This endpoint is in Public Preview.
-
-        Creates a registry webhook.
+        **NOTE:** This endpoint is in Public Preview. Creates a registry webhook.
 
         :param events: List[:class:`RegistryWebhookEvent`]
           Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
@@ -226,7 +223,9 @@
         :param description: str (optional)
           User-specified description for the webhook.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
+          External HTTPS URL called on event trigger (by using a POST request).
         :param job_spec: :class:`JobSpec` (optional)
+          ID of the job that the webhook runs.
         :param model_name: str (optional)
           If model name is not specified, a registry-wide webhook is created that listens for the specified
           events across all versions of all registered models.
@@ -302,7 +301,7 @@
 
         
 
-    .. py:method:: delete_transition_request(name: str, version: str, stage: DeleteTransitionRequestStage, creator: str [, comment: Optional[str]])
+    .. py:method:: delete_transition_request(name: str, version: str, stage: str, creator: str [, comment: Optional[str]]) -> DeleteTransitionRequestResponse
 
         Cancels a model version stage transition request.
 
@@ -310,7 +309,7 @@
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`DeleteTransitionRequestStage`
+        :param stage: str
           Target stage of the transition request. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -326,16 +325,14 @@
         :param comment: str (optional)
           User-provided comment on the action.
 
-
+        :returns: :class:`DeleteTransitionRequestResponse`
         
 
-    .. py:method:: delete_webhook( [, id: Optional[str]])
+    .. py:method:: delete_webhook(id: str)
 
-        **NOTE:** This endpoint is in Public Preview.
+        **NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.
 
-        Deletes a registry webhook.
-
-        :param id: str (optional)
+        :param id: str
           Webhook ID required to delete a registry webhook.
 
 
@@ -456,14 +453,14 @@
         Gets a list of all open stage transition requests for the model version.
 
         :param name: str
-          Name of the model.
+          Name of the registered model.
         :param version: str
           Version of the model.
 
         :returns: Iterator over :class:`Activity`
         
 
-    .. py:method:: list_webhooks( [, events: Optional[List[RegistryWebhookEvent]], model_name: Optional[str], page_token: Optional[str]]) -> Iterator[RegistryWebhook]
+    .. py:method:: list_webhooks( [, events: Optional[List[RegistryWebhookEvent]], max_results: Optional[int], model_name: Optional[str], page_token: Optional[str]]) -> Iterator[RegistryWebhook]
 
 
         Usage:
@@ -477,23 +474,51 @@
             
             all = w.model_registry.list_webhooks(ml.ListWebhooksRequest())
 
-        **NOTE:** This endpoint is in Public Preview.
-
-        Lists all registry webhooks.
+        **NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.
 
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
+          Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the
+          associated model.
+
+          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+
+          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+
+          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+
+          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+          specified for a registry-wide webhook, which can be created by not specifying a model name in the
+          create request.
+
+          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+
+          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+          staging.
+
+          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
+          production.
+
+          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+
           If `events` is specified, any webhook with one or more of the specified trigger events is included
           in the output. If `events` is not specified, webhooks of all event types are included in the output.
+        :param max_results: int (optional)
         :param model_name: str (optional)
-          If not specified, all webhooks associated with the specified events are listed, regardless of their
-          associated model.
+          Registered model name If not specified, all webhooks associated with the specified events are
+          listed, regardless of their associated model.
         :param page_token: str (optional)
           Token indicating the page of artifact results to fetch
 
         :returns: Iterator over :class:`RegistryWebhook`
         
 
-    .. py:method:: reject_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> RejectTransitionRequestResponse
+    .. py:method:: reject_transition_request(name: str, version: str, stage: str [, comment: Optional[str]]) -> RejectTransitionRequestResponse
 
         Rejects a model version stage transition request.
 
@@ -501,7 +526,7 @@
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -618,9 +643,7 @@
 
     .. py:method:: test_registry_webhook(id: str [, event: Optional[RegistryWebhookEvent]]) -> TestRegistryWebhookResponse
 
-        **NOTE:** This endpoint is in Public Preview.
-
-        Tests a registry webhook.
+        **NOTE:** This endpoint is in Public Preview. Tests a registry webhook.
 
         :param id: str
           Webhook ID
@@ -631,10 +654,10 @@
         :returns: :class:`TestRegistryWebhookResponse`
         
 
-    .. py:method:: transition_stage(name: str, version: str, stage: Stage, archive_existing_versions: bool [, comment: Optional[str]]) -> TransitionStageResponse
+    .. py:method:: transition_stage(name: str, version: str, stage: str, archive_existing_versions: bool [, comment: Optional[str]]) -> TransitionStageResponse
 
         Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
-        that also accepts a comment associated with the transition to be recorded.",
+        that also accepts a comment associated with the transition to be recorded.
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
 
@@ -642,7 +665,7 @@
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -698,7 +721,7 @@
         :returns: :class:`UpdateCommentResponse`
         
 
-    .. py:method:: update_model(name: str [, description: Optional[str]])
+    .. py:method:: update_model(name: str [, description: Optional[str]]) -> UpdateModelResponse
 
 
         Usage:
@@ -728,10 +751,10 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
 
-
+        :returns: :class:`UpdateModelResponse`
         
 
-    .. py:method:: update_model_version(name: str, version: str [, description: Optional[str]])
+    .. py:method:: update_model_version(name: str, version: str [, description: Optional[str]]) -> UpdateModelVersionResponse
 
 
         Usage:
@@ -763,7 +786,7 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
 
-
+        :returns: :class:`UpdateModelVersionResponse`
         
 
     .. py:method:: update_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
@@ -778,7 +801,7 @@
         :returns: :class:`RegisteredModelPermissions`
         
 
-    .. py:method:: update_webhook(id: str [, description: Optional[str], events: Optional[List[RegistryWebhookEvent]], http_url_spec: Optional[HttpUrlSpec], job_spec: Optional[JobSpec], status: Optional[RegistryWebhookStatus]])
+    .. py:method:: update_webhook(id: str [, description: Optional[str], events: Optional[List[RegistryWebhookEvent]], http_url_spec: Optional[HttpUrlSpec], job_spec: Optional[JobSpec], status: Optional[RegistryWebhookStatus]]) -> UpdateWebhookResponse
 
 
         Usage:
@@ -803,9 +826,7 @@
             # cleanup
             w.model_registry.delete_webhook(id=created.webhook.id)
 
-        **NOTE:** This endpoint is in Public Preview.
-
-        Updates a registry webhook.
+        **NOTE:** This endpoint is in Public Preview. Updates a registry webhook.
 
         :param id: str
           Webhook ID
@@ -843,13 +864,6 @@
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
-          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
 
-          * `DISABLED`: Webhook is not triggered.
-
-          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
-          event.
-
-
+        :returns: :class:`UpdateWebhookResponse`
         

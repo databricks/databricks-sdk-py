@@ -306,8 +306,12 @@ class AiGatewayRateLimit:
     """Renewal period field for a rate limit. Currently, only 'minute' is supported."""
 
     key: Optional[AiGatewayRateLimitKey] = None
-    """Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint'
-    being the default if not specified."""
+    """Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint'
+    are supported, with 'endpoint' being the default if not specified."""
+
+    principal: Optional[str] = None
+    """Principal field for a user, user group, or service principal to apply rate limiting to. Accepts
+    a user email, group name, or service principal application ID."""
 
     def as_dict(self) -> dict:
         """Serializes the AiGatewayRateLimit into a dictionary suitable for use as a JSON request body."""
@@ -316,6 +320,8 @@ class AiGatewayRateLimit:
             body["calls"] = self.calls
         if self.key is not None:
             body["key"] = self.key.value
+        if self.principal is not None:
+            body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period.value
         return body
@@ -327,6 +333,8 @@ class AiGatewayRateLimit:
             body["calls"] = self.calls
         if self.key is not None:
             body["key"] = self.key
+        if self.principal is not None:
+            body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period
         return body
@@ -337,6 +345,7 @@ class AiGatewayRateLimit:
         return cls(
             calls=d.get("calls", None),
             key=_enum(d, "key", AiGatewayRateLimitKey),
+            principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", AiGatewayRateLimitRenewalPeriod),
         )
 
@@ -344,7 +353,9 @@ class AiGatewayRateLimit:
 class AiGatewayRateLimitKey(Enum):
 
     ENDPOINT = "endpoint"
+    SERVICE_PRINCIPAL = "service_principal"
     USER = "user"
+    USER_GROUP = "user_group"
 
 
 class AiGatewayRateLimitRenewalPeriod(Enum):
@@ -919,6 +930,8 @@ class CreateServingEndpoint:
     config: Optional[EndpointCoreConfigInput] = None
     """The core config of the serving endpoint."""
 
+    description: Optional[str] = None
+
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
     Gateway to manage rate limits."""
@@ -938,6 +951,8 @@ class CreateServingEndpoint:
             body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config.as_dict()
+        if self.description is not None:
+            body["description"] = self.description
         if self.name is not None:
             body["name"] = self.name
         if self.rate_limits:
@@ -957,6 +972,8 @@ class CreateServingEndpoint:
             body["budget_policy_id"] = self.budget_policy_id
         if self.config:
             body["config"] = self.config
+        if self.description is not None:
+            body["description"] = self.description
         if self.name is not None:
             body["name"] = self.name
         if self.rate_limits:
@@ -974,6 +991,7 @@ class CreateServingEndpoint:
             ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
             budget_policy_id=d.get("budget_policy_id", None),
             config=_from_dict(d, "config", EndpointCoreConfigInput),
+            description=d.get("description", None),
             name=d.get("name", None),
             rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
             route_optimized=d.get("route_optimized", None),
@@ -2945,16 +2963,20 @@ class RateLimitRenewalPeriod(Enum):
 
 @dataclass
 class Route:
-    served_model_name: str
-    """The name of the served model this route configures traffic for."""
-
     traffic_percentage: int
     """The percentage of endpoint traffic to send to this route. It must be an integer between 0 and
     100 inclusive."""
 
+    served_entity_name: Optional[str] = None
+
+    served_model_name: Optional[str] = None
+    """The name of the served model this route configures traffic for."""
+
     def as_dict(self) -> dict:
         """Serializes the Route into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.served_entity_name is not None:
+            body["served_entity_name"] = self.served_entity_name
         if self.served_model_name is not None:
             body["served_model_name"] = self.served_model_name
         if self.traffic_percentage is not None:
@@ -2964,6 +2986,8 @@ class Route:
     def as_shallow_dict(self) -> dict:
         """Serializes the Route into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.served_entity_name is not None:
+            body["served_entity_name"] = self.served_entity_name
         if self.served_model_name is not None:
             body["served_model_name"] = self.served_model_name
         if self.traffic_percentage is not None:
@@ -2974,7 +2998,9 @@ class Route:
     def from_dict(cls, d: Dict[str, Any]) -> Route:
         """Deserializes the Route from a dictionary."""
         return cls(
-            served_model_name=d.get("served_model_name", None), traffic_percentage=d.get("traffic_percentage", None)
+            served_entity_name=d.get("served_entity_name", None),
+            served_model_name=d.get("served_model_name", None),
+            traffic_percentage=d.get("traffic_percentage", None),
         )
 
 
@@ -3164,8 +3190,6 @@ class ServedEntityOutput:
     external_model later. The task type of all external models within an endpoint must be the same."""
 
     foundation_model: Optional[FoundationModel] = None
-    """All fields are not sensitive as they are hard-coded in the system and made available to
-    customers."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -3331,8 +3355,6 @@ class ServedEntitySpec:
     external_model: Optional[ExternalModel] = None
 
     foundation_model: Optional[FoundationModel] = None
-    """All fields are not sensitive as they are hard-coded in the system and made available to
-    customers."""
 
     name: Optional[str] = None
 
@@ -3903,7 +3925,6 @@ class ServingEndpointAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -4179,7 +4200,6 @@ class ServingEndpointPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointPermission into a dictionary suitable for use as a JSON request body."""
@@ -4266,7 +4286,6 @@ class ServingEndpointPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -4531,6 +4550,7 @@ class ServingEndpointsAPI:
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
+        description: Optional[str] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -4548,6 +4568,7 @@ class ServingEndpointsAPI:
           The budget policy to be applied to the serving endpoint.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
+        :param description: str (optional)
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -4567,6 +4588,8 @@ class ServingEndpointsAPI:
             body["budget_policy_id"] = budget_policy_id
         if config is not None:
             body["config"] = config.as_dict()
+        if description is not None:
+            body["description"] = description
         if name is not None:
             body["name"] = name
         if rate_limits is not None:
@@ -4594,6 +4617,7 @@ class ServingEndpointsAPI:
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
+        description: Optional[str] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -4603,6 +4627,7 @@ class ServingEndpointsAPI:
             ai_gateway=ai_gateway,
             budget_policy_id=budget_policy_id,
             config=config,
+            description=description,
             name=name,
             rate_limits=rate_limits,
             route_optimized=route_optimized,

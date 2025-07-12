@@ -23,6 +23,7 @@
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule: :class:`Schedule`
+          The schedule to create. A dashboard is limited to 10 schedules.
 
         :returns: :class:`Schedule`
         
@@ -36,6 +37,7 @@
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
         :param subscription: :class:`Subscription`
+          The subscription to create. A schedule is limited to 100 subscriptions.
 
         :returns: :class:`Subscription`
         
@@ -240,6 +242,7 @@
         :param schedule_id: str
           UUID identifying the schedule.
         :param schedule: :class:`Schedule`
+          The schedule to update.
 
         :returns: :class:`Schedule`
         

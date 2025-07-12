@@ -21,30 +21,18 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class Activity:
-    """Activity recorded for the action."""
+    """For activities, this contains the activity recorded for the action. For comments, this contains
+    the comment details. For transition requests, this contains the transition request details."""
 
     activity_type: Optional[ActivityType] = None
-    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
-    transition.
-    
-    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-    
-    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-    
-    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-    
-    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-    
-    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
-    versions in a stage."""
 
     comment: Optional[str] = None
-    """User-provided comment associated with the activity."""
+    """User-provided comment associated with the activity, comment, or transition request."""
 
     creation_timestamp: Optional[int] = None
     """Creation time of the object, as a Unix timestamp in milliseconds."""
 
-    from_stage: Optional[Stage] = None
+    from_stage: Optional[str] = None
     """Source stage of the transition (if the activity is stage transition related). Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -66,7 +54,7 @@ class Activity:
     usually describes a side effect, such as a version being archived as part of another version's
     stage transition, and may not be returned for some activity types."""
 
-    to_stage: Optional[Stage] = None
+    to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -90,7 +78,7 @@ class Activity:
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.from_stage is not None:
-            body["from_stage"] = self.from_stage.value
+            body["from_stage"] = self.from_stage
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -98,7 +86,7 @@ class Activity:
         if self.system_comment is not None:
             body["system_comment"] = self.system_comment
         if self.to_stage is not None:
-            body["to_stage"] = self.to_stage.value
+            body["to_stage"] = self.to_stage
         if self.user_id is not None:
             body["user_id"] = self.user_id
         return body
@@ -133,25 +121,32 @@ class Activity:
             activity_type=_enum(d, "activity_type", ActivityType),
             comment=d.get("comment", None),
             creation_timestamp=d.get("creation_timestamp", None),
-            from_stage=_enum(d, "from_stage", Stage),
+            from_stage=d.get("from_stage", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             system_comment=d.get("system_comment", None),
-            to_stage=_enum(d, "to_stage", Stage),
+            to_stage=d.get("to_stage", None),
             user_id=d.get("user_id", None),
         )
 
 
 class ActivityAction(Enum):
-    """An action that a user (with sufficient permissions) could take on an activity. Valid values are:
-    * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    """An action that a user (with sufficient permissions) could take on an activity or comment.
+
+    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
 
     * `REJECT_TRANSITION_REQUEST`: Reject a transition request
 
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request"""
+    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+
+    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
+
+    * `DELETE_COMMENT`: Delete the comment"""
 
     APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
     CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
+    DELETE_COMMENT = "DELETE_COMMENT"
+    EDIT_COMMENT = "EDIT_COMMENT"
     REJECT_TRANSITION_REQUEST = "REJECT_TRANSITION_REQUEST"
 
 
@@ -181,13 +176,15 @@ class ActivityType(Enum):
 
 @dataclass
 class ApproveTransitionRequest:
+    """Details required to identify and approve a model version stage transition request."""
+
     name: str
     """Name of the model."""
 
     version: str
     """Version of the model."""
 
-    stage: Stage
+    stage: str
     """Target stage of the transition. Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -214,7 +211,7 @@ class ApproveTransitionRequest:
         if self.name is not None:
             body["name"] = self.name
         if self.stage is not None:
-            body["stage"] = self.stage.value
+            body["stage"] = self.stage
         if self.version is not None:
             body["version"] = self.version
         return body
@@ -241,7 +238,7 @@ class ApproveTransitionRequest:
             archive_existing_versions=d.get("archive_existing_versions", None),
             comment=d.get("comment", None),
             name=d.get("name", None),
-            stage=_enum(d, "stage", Stage),
+            stage=d.get("stage", None),
             version=d.get("version", None),
         )
 
@@ -249,7 +246,7 @@ class ApproveTransitionRequest:
 @dataclass
 class ApproveTransitionRequestResponse:
     activity: Optional[Activity] = None
-    """Activity recorded for the action."""
+    """New activity generated as a result of this operation."""
 
     def as_dict(self) -> dict:
         """Serializes the ApproveTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
@@ -272,30 +269,41 @@ class ApproveTransitionRequestResponse:
 
 
 class CommentActivityAction(Enum):
-    """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
-    `EDIT_COMMENT`: Edit the comment
+    """An action that a user (with sufficient permissions) could take on an activity or comment.
+
+    For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+
+    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+
+    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+
+    For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
 
     * `DELETE_COMMENT`: Delete the comment"""
 
+    APPROVE_TRANSITION_REQUEST = "APPROVE_TRANSITION_REQUEST"
+    CANCEL_TRANSITION_REQUEST = "CANCEL_TRANSITION_REQUEST"
     DELETE_COMMENT = "DELETE_COMMENT"
     EDIT_COMMENT = "EDIT_COMMENT"
+    REJECT_TRANSITION_REQUEST = "REJECT_TRANSITION_REQUEST"
 
 
 @dataclass
 class CommentObject:
-    """Comment details."""
+    """For activities, this contains the activity recorded for the action. For comments, this contains
+    the comment details. For transition requests, this contains the transition request details."""
 
     available_actions: Optional[List[CommentActivityAction]] = None
     """Array of actions on the activity allowed for the current viewer."""
 
     comment: Optional[str] = None
-    """User-provided comment on the action."""
+    """User-provided comment associated with the activity, comment, or transition request."""
 
     creation_timestamp: Optional[int] = None
     """Creation time of the object, as a Unix timestamp in milliseconds."""
 
     id: Optional[str] = None
-    """Comment ID"""
+    """Unique identifier for the object."""
 
     last_updated_timestamp: Optional[int] = None
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
@@ -352,6 +360,8 @@ class CommentObject:
 
 @dataclass
 class CreateComment:
+    """Details required to create a comment on a model version."""
+
     name: str
     """Name of the model."""
 
@@ -392,7 +402,7 @@ class CreateComment:
 @dataclass
 class CreateCommentResponse:
     comment: Optional[CommentObject] = None
-    """Comment details."""
+    """New comment object"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCommentResponse into a dictionary suitable for use as a JSON request body."""
@@ -935,6 +945,8 @@ class CreateModelVersionResponse:
 
 @dataclass
 class CreateRegistryWebhook:
+    """Details required to create a registry webhook."""
+
     events: List[RegistryWebhookEvent]
     """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
     created for the associated model.
@@ -969,8 +981,10 @@ class CreateRegistryWebhook:
     """User-specified description for the webhook."""
 
     http_url_spec: Optional[HttpUrlSpec] = None
+    """External HTTPS URL called on event trigger (by using a POST request)."""
 
     job_spec: Optional[JobSpec] = None
+    """ID of the job that the webhook runs."""
 
     model_name: Optional[str] = None
     """If model name is not specified, a registry-wide webhook is created that listens for the
@@ -1119,13 +1133,15 @@ class CreateRunResponse:
 
 @dataclass
 class CreateTransitionRequest:
+    """Details required to create a model version stage transition request."""
+
     name: str
     """Name of the model."""
 
     version: str
     """Version of the model."""
 
-    stage: Stage
+    stage: str
     """Target stage of the transition. Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -1147,7 +1163,7 @@ class CreateTransitionRequest:
         if self.name is not None:
             body["name"] = self.name
         if self.stage is not None:
-            body["stage"] = self.stage.value
+            body["stage"] = self.stage
         if self.version is not None:
             body["version"] = self.version
         return body
@@ -1171,7 +1187,7 @@ class CreateTransitionRequest:
         return cls(
             comment=d.get("comment", None),
             name=d.get("name", None),
-            stage=_enum(d, "stage", Stage),
+            stage=d.get("stage", None),
             version=d.get("version", None),
         )
 
@@ -1179,7 +1195,7 @@ class CreateTransitionRequest:
 @dataclass
 class CreateTransitionRequestResponse:
     request: Optional[TransitionRequest] = None
-    """Transition request details."""
+    """New activity generated for stage transition request."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
@@ -1503,24 +1519,6 @@ class DeleteModelVersionTagResponse:
 
 
 @dataclass
-class DeleteOnlineStoreResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteOnlineStoreResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteOnlineStoreResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteOnlineStoreResponse:
-        """Deserializes the DeleteOnlineStoreResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeleteRun:
     run_id: str
     """ID of the run to delete."""
@@ -1685,28 +1683,27 @@ class DeleteTagResponse:
 
 @dataclass
 class DeleteTransitionRequestResponse:
+    activity: Optional[Activity] = None
+    """New activity generated as a result of this operation."""
+
     def as_dict(self) -> dict:
         """Serializes the DeleteTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.activity:
+            body["activity"] = self.activity.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DeleteTransitionRequestResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.activity:
+            body["activity"] = self.activity
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteTransitionRequestResponse:
         """Deserializes the DeleteTransitionRequestResponse from a dictionary."""
-        return cls()
-
-
-class DeleteTransitionRequestStage(Enum):
-
-    ARCHIVED = "Archived"
-    NONE = "None"
-    PRODUCTION = "Production"
-    STAGING = "Staging"
+        return cls(activity=_from_dict(d, "activity", Activity))
 
 
 @dataclass
@@ -1811,7 +1808,6 @@ class ExperimentAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[ExperimentPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -1922,7 +1918,6 @@ class ExperimentPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[ExperimentPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ExperimentPermission into a dictionary suitable for use as a JSON request body."""
@@ -2009,7 +2004,6 @@ class ExperimentPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[ExperimentPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ExperimentPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -2103,6 +2097,241 @@ class ExperimentTag:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ExperimentTag:
         """Deserializes the ExperimentTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class Feature:
+    """Feature for model version."""
+
+    feature_name: Optional[str] = None
+    """Feature name"""
+
+    feature_table_id: Optional[str] = None
+    """Feature table id"""
+
+    feature_table_name: Optional[str] = None
+    """Feature table name"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Feature into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Feature:
+        """Deserializes the Feature from a dictionary."""
+        return cls(
+            feature_name=d.get("feature_name", None),
+            feature_table_id=d.get("feature_table_id", None),
+            feature_table_name=d.get("feature_table_name", None),
+        )
+
+
+@dataclass
+class FeatureLineage:
+    feature_specs: Optional[List[FeatureLineageFeatureSpec]] = None
+    """List of feature specs that contain this feature."""
+
+    models: Optional[List[FeatureLineageModel]] = None
+    """List of Unity Catalog models that were trained on this feature."""
+
+    online_features: Optional[List[FeatureLineageOnlineFeature]] = None
+    """List of online features that use this feature as source."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureLineage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_specs:
+            body["feature_specs"] = [v.as_dict() for v in self.feature_specs]
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        if self.online_features:
+            body["online_features"] = [v.as_dict() for v in self.online_features]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureLineage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_specs:
+            body["feature_specs"] = self.feature_specs
+        if self.models:
+            body["models"] = self.models
+        if self.online_features:
+            body["online_features"] = self.online_features
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureLineage:
+        """Deserializes the FeatureLineage from a dictionary."""
+        return cls(
+            feature_specs=_repeated_dict(d, "feature_specs", FeatureLineageFeatureSpec),
+            models=_repeated_dict(d, "models", FeatureLineageModel),
+            online_features=_repeated_dict(d, "online_features", FeatureLineageOnlineFeature),
+        )
+
+
+@dataclass
+class FeatureLineageFeatureSpec:
+    name: Optional[str] = None
+    """The full name of the feature spec in Unity Catalog."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureLineageFeatureSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureLineageFeatureSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureLineageFeatureSpec:
+        """Deserializes the FeatureLineageFeatureSpec from a dictionary."""
+        return cls(name=d.get("name", None))
+
+
+@dataclass
+class FeatureLineageModel:
+    name: Optional[str] = None
+    """The full name of the model in Unity Catalog."""
+
+    version: Optional[int] = None
+    """The version of the model."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureLineageModel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureLineageModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureLineageModel:
+        """Deserializes the FeatureLineageModel from a dictionary."""
+        return cls(name=d.get("name", None), version=d.get("version", None))
+
+
+@dataclass
+class FeatureLineageOnlineFeature:
+    feature_name: Optional[str] = None
+    """The name of the online feature (column name)."""
+
+    table_name: Optional[str] = None
+    """The full name of the online table in Unity Catalog."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureLineageOnlineFeature into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureLineageOnlineFeature into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureLineageOnlineFeature:
+        """Deserializes the FeatureLineageOnlineFeature from a dictionary."""
+        return cls(feature_name=d.get("feature_name", None), table_name=d.get("table_name", None))
+
+
+@dataclass
+class FeatureList:
+    """Feature list wrap all the features for a model version"""
+
+    features: Optional[List[Feature]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureList into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.features:
+            body["features"] = [v.as_dict() for v in self.features]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.features:
+            body["features"] = self.features
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureList:
+        """Deserializes the FeatureList from a dictionary."""
+        return cls(features=_repeated_dict(d, "features", Feature))
+
+
+@dataclass
+class FeatureTag:
+    """Represents a tag on a feature in a feature table."""
+
+    key: str
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the FeatureTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FeatureTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FeatureTag:
+        """Deserializes the FeatureTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
 
 
@@ -2753,9 +2982,8 @@ class JobSpecWithoutSecret:
     """ID of the job that the webhook runs."""
 
     workspace_url: Optional[str] = None
-    """URL of the workspace containing the job that this webhook runs. Defaults to the workspace URL in
-    which the webhook is created. If not specified, the job’s workspace is assumed to be the same
-    as the webhook’s."""
+    """URL of the workspace containing the job that this webhook runs. If not specified, the job’s
+    workspace URL is assumed to be the same as the workspace where the webhook is created."""
 
     def as_dict(self) -> dict:
         """Serializes the JobSpecWithoutSecret into a dictionary suitable for use as a JSON request body."""
@@ -2856,6 +3084,41 @@ class ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(
             experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
+        )
+
+
+@dataclass
+class ListFeatureTagsResponse:
+    """Response message for ListFeatureTag."""
+
+    feature_tags: Optional[List[FeatureTag]] = None
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListFeatureTagsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_tags:
+            body["feature_tags"] = [v.as_dict() for v in self.feature_tags]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListFeatureTagsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_tags:
+            body["feature_tags"] = self.feature_tags
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListFeatureTagsResponse:
+        """Deserializes the ListFeatureTagsResponse from a dictionary."""
+        return cls(
+            feature_tags=_repeated_dict(d, "feature_tags", FeatureTag), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -3892,7 +4155,7 @@ class ModelDatabricks:
     """Unique identifier for the object."""
 
     last_updated_timestamp: Optional[int] = None
-    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+    """Last update time of the object, as a Unix timestamp in milliseconds."""
 
     latest_versions: Optional[List[ModelVersion]] = None
     """Array of model versions, each the latest version for its stage."""
@@ -3901,8 +4164,7 @@ class ModelDatabricks:
     """Name of the model."""
 
     permission_level: Optional[PermissionLevel] = None
-    """Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..)."""
+    """Permission level granted for the requesting user on this registered model"""
 
     tags: Optional[List[ModelTag]] = None
     """Array of tags associated with the model."""
@@ -4035,6 +4297,8 @@ class ModelOutput:
 
 @dataclass
 class ModelTag:
+    """Tag for a registered model"""
+
     key: Optional[str] = None
     """The tag key."""
 
@@ -4194,19 +4458,17 @@ class ModelVersionDatabricks:
     creation_timestamp: Optional[int] = None
     """Creation time of the object, as a Unix timestamp in milliseconds."""
 
-    current_stage: Optional[Stage] = None
-    """Stage of the model version. Valid values are:
-    
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage."""
+    current_stage: Optional[str] = None
 
     description: Optional[str] = None
     """User-specified description for the object."""
+
+    email_subscription_status: Optional[RegistryEmailSubscriptionType] = None
+    """Email Subscription Status: This is the subscription status of the user to the model version
+    Users get subscribed by interacting with the model version."""
+
+    feature_list: Optional[FeatureList] = None
+    """Feature lineage of `model_version`."""
 
     last_updated_timestamp: Optional[int] = None
     """Time of the object at last update, as a Unix timestamp in milliseconds."""
@@ -4214,9 +4476,11 @@ class ModelVersionDatabricks:
     name: Optional[str] = None
     """Name of the model."""
 
+    open_requests: Optional[List[Activity]] = None
+    """Open requests for this `model_versions`. Gap in sequence number is intentional and is done in
+    order to match field sequence numbers of `ModelVersion` proto message"""
+
     permission_level: Optional[PermissionLevel] = None
-    """Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..)."""
 
     run_id: Optional[str] = None
     """Unique identifier for the MLflow tracking run associated with the source model artifacts."""
@@ -4231,12 +4495,6 @@ class ModelVersionDatabricks:
     model version."""
 
     status: Optional[Status] = None
-    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
-    
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-    
-    * `READY`: Model version is ready for use."""
 
     status_message: Optional[str] = None
     """Details on the current status, for example why registration failed."""
@@ -4256,13 +4514,19 @@ class ModelVersionDatabricks:
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.current_stage is not None:
-            body["current_stage"] = self.current_stage.value
+            body["current_stage"] = self.current_stage
         if self.description is not None:
             body["description"] = self.description
+        if self.email_subscription_status is not None:
+            body["email_subscription_status"] = self.email_subscription_status.value
+        if self.feature_list:
+            body["feature_list"] = self.feature_list.as_dict()
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.name is not None:
             body["name"] = self.name
+        if self.open_requests:
+            body["open_requests"] = [v.as_dict() for v in self.open_requests]
         if self.permission_level is not None:
             body["permission_level"] = self.permission_level.value
         if self.run_id is not None:
@@ -4292,10 +4556,16 @@ class ModelVersionDatabricks:
             body["current_stage"] = self.current_stage
         if self.description is not None:
             body["description"] = self.description
+        if self.email_subscription_status is not None:
+            body["email_subscription_status"] = self.email_subscription_status
+        if self.feature_list:
+            body["feature_list"] = self.feature_list
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
         if self.name is not None:
             body["name"] = self.name
+        if self.open_requests:
+            body["open_requests"] = self.open_requests
         if self.permission_level is not None:
             body["permission_level"] = self.permission_level
         if self.run_id is not None:
@@ -4321,10 +4591,13 @@ class ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(
             creation_timestamp=d.get("creation_timestamp", None),
-            current_stage=_enum(d, "current_stage", Stage),
+            current_stage=d.get("current_stage", None),
             description=d.get("description", None),
+            email_subscription_status=_enum(d, "email_subscription_status", RegistryEmailSubscriptionType),
+            feature_list=_from_dict(d, "feature_list", FeatureList),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             name=d.get("name", None),
+            open_requests=_repeated_dict(d, "open_requests", Activity),
             permission_level=_enum(d, "permission_level", PermissionLevel),
             run_id=d.get("run_id", None),
             run_link=d.get("run_link", None),
@@ -4338,7 +4611,12 @@ class ModelVersionDatabricks:
 
 
 class ModelVersionStatus(Enum):
-    """Current status of `model_version`"""
+    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
+    a new model version is pending as server performs background tasks.
+
+    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+
+    * `READY`: Model version is ready for use."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
@@ -4384,7 +4662,7 @@ class OnlineStore:
     name: str
     """The name of the online store. This is the unique identifier for the online store."""
 
-    capacity: Optional[str] = None
+    capacity: str
     """The capacity of the online store. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
 
     creation_time: Optional[str] = None
@@ -4486,6 +4764,7 @@ class PermissionLevel(Enum):
     """Permission level of the requesting user on the object. For what is allowed at each level, see
     [MLflow Model permissions](..)."""
 
+    CAN_CREATE_REGISTERED_MODEL = "CAN_CREATE_REGISTERED_MODEL"
     CAN_EDIT = "CAN_EDIT"
     CAN_MANAGE = "CAN_MANAGE"
     CAN_MANAGE_PRODUCTION_VERSIONS = "CAN_MANAGE_PRODUCTION_VERSIONS"
@@ -4498,9 +4777,8 @@ class PublishSpec:
     online_store: str
     """The name of the target online store."""
 
-    online_table_name: Optional[str] = None
-    """The full three-part (catalog, schema, table) name of the online table. Auto-generated if not
-    specified."""
+    online_table_name: str
+    """The full three-part (catalog, schema, table) name of the online table."""
 
     publish_mode: Optional[PublishSpecPublishMode] = None
     """The publish mode of the pipeline that syncs the online table with the source table. Defaults to
@@ -4617,7 +4895,6 @@ class RegisteredModelAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[RegisteredModelPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -4728,7 +5005,6 @@ class RegisteredModelPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[RegisteredModelPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the RegisteredModelPermission into a dictionary suitable for use as a JSON request body."""
@@ -4817,7 +5093,6 @@ class RegisteredModelPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[RegisteredModelPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the RegisteredModelPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -4880,6 +5155,18 @@ class RegisteredModelPermissionsRequest:
         )
 
 
+class RegistryEmailSubscriptionType(Enum):
+    """.. note:: Experimental: This entity may change or be removed in a future release without
+    warning. Email subscription types for registry notifications: - `ALL_EVENTS`: Subscribed to all
+    events. - `DEFAULT`: Default subscription type. - `SUBSCRIBED`: Subscribed to notifications. -
+    `UNSUBSCRIBED`: Not subscribed to notifications."""
+
+    ALL_EVENTS = "ALL_EVENTS"
+    DEFAULT = "DEFAULT"
+    SUBSCRIBED = "SUBSCRIBED"
+    UNSUBSCRIBED = "UNSUBSCRIBED"
+
+
 @dataclass
 class RegistryWebhook:
     creation_timestamp: Optional[int] = None
@@ -4932,13 +5219,6 @@ class RegistryWebhook:
     """Name of the model whose events would trigger this webhook."""
 
     status: Optional[RegistryWebhookStatus] = None
-    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
-    * `DISABLED`: Webhook is not triggered.
-    
-    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
-    real event."""
 
     def as_dict(self) -> dict:
         """Serializes the RegistryWebhook into a dictionary suitable for use as a JSON request body."""
@@ -5034,13 +5314,15 @@ class RegistryWebhookStatus(Enum):
 
 @dataclass
 class RejectTransitionRequest:
+    """Details required to identify and reject a model version stage transition request."""
+
     name: str
     """Name of the model."""
 
     version: str
     """Version of the model."""
 
-    stage: Stage
+    stage: str
     """Target stage of the transition. Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -5062,7 +5344,7 @@ class RejectTransitionRequest:
         if self.name is not None:
             body["name"] = self.name
         if self.stage is not None:
-            body["stage"] = self.stage.value
+            body["stage"] = self.stage
         if self.version is not None:
             body["version"] = self.version
         return body
@@ -5086,7 +5368,7 @@ class RejectTransitionRequest:
         return cls(
             comment=d.get("comment", None),
             name=d.get("name", None),
-            stage=_enum(d, "stage", Stage),
+            stage=d.get("stage", None),
             version=d.get("version", None),
         )
 
@@ -5094,7 +5376,7 @@ class RejectTransitionRequest:
 @dataclass
 class RejectTransitionRequestResponse:
     activity: Optional[Activity] = None
-    """Activity recorded for the action."""
+    """New activity generated as a result of this operation."""
 
     def as_dict(self) -> dict:
         """Serializes the RejectTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
@@ -6382,23 +6664,6 @@ class SetTagResponse:
         return cls()
 
 
-class Stage(Enum):
-    """Stage of the model version. Valid values are:
-
-    * `None`: The initial stage of a model version.
-
-    * `Staging`: Staging or pre-production stage.
-
-    * `Production`: Production stage.
-
-    * `Archived`: Archived stage."""
-
-    ARCHIVED = "Archived"
-    NONE = "None"
-    PRODUCTION = "Production"
-    STAGING = "Staging"
-
-
 class Status(Enum):
     """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
     a new model version is pending as server performs background tasks.
@@ -6413,41 +6678,9 @@ class Status(Enum):
 
 
 @dataclass
-class TestRegistryWebhook:
-    """Test webhook response object."""
-
-    body: Optional[str] = None
-    """Body of the response from the webhook URL"""
-
-    status_code: Optional[int] = None
-    """Status code returned by the webhook URL"""
-
-    def as_dict(self) -> dict:
-        """Serializes the TestRegistryWebhook into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.body is not None:
-            body["body"] = self.body
-        if self.status_code is not None:
-            body["status_code"] = self.status_code
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TestRegistryWebhook into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.body is not None:
-            body["body"] = self.body
-        if self.status_code is not None:
-            body["status_code"] = self.status_code
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhook:
-        """Deserializes the TestRegistryWebhook from a dictionary."""
-        return cls(body=d.get("body", None), status_code=d.get("status_code", None))
-
-
-@dataclass
 class TestRegistryWebhookRequest:
+    """Details required to test a registry webhook."""
+
     id: str
     """Webhook ID"""
 
@@ -6481,38 +6714,47 @@ class TestRegistryWebhookRequest:
 
 @dataclass
 class TestRegistryWebhookResponse:
-    webhook: Optional[TestRegistryWebhook] = None
-    """Test webhook response object."""
+    body: Optional[str] = None
+    """Body of the response from the webhook URL"""
+
+    status_code: Optional[int] = None
+    """Status code returned by the webhook URL"""
 
     def as_dict(self) -> dict:
         """Serializes the TestRegistryWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.webhook:
-            body["webhook"] = self.webhook.as_dict()
+        if self.body is not None:
+            body["body"] = self.body
+        if self.status_code is not None:
+            body["status_code"] = self.status_code
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TestRegistryWebhookResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.webhook:
-            body["webhook"] = self.webhook
+        if self.body is not None:
+            body["body"] = self.body
+        if self.status_code is not None:
+            body["status_code"] = self.status_code
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookResponse:
         """Deserializes the TestRegistryWebhookResponse from a dictionary."""
-        return cls(webhook=_from_dict(d, "webhook", TestRegistryWebhook))
+        return cls(body=d.get("body", None), status_code=d.get("status_code", None))
 
 
 @dataclass
 class TransitionModelVersionStageDatabricks:
+    """Details required to transition a model version's stage."""
+
     name: str
     """Name of the model."""
 
     version: str
     """Version of the model."""
 
-    stage: Stage
+    stage: str
     """Target stage of the transition. Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -6539,7 +6781,7 @@ class TransitionModelVersionStageDatabricks:
         if self.name is not None:
             body["name"] = self.name
         if self.stage is not None:
-            body["stage"] = self.stage.value
+            body["stage"] = self.stage
         if self.version is not None:
             body["version"] = self.version
         return body
@@ -6566,25 +6808,26 @@ class TransitionModelVersionStageDatabricks:
             archive_existing_versions=d.get("archive_existing_versions", None),
             comment=d.get("comment", None),
             name=d.get("name", None),
-            stage=_enum(d, "stage", Stage),
+            stage=d.get("stage", None),
             version=d.get("version", None),
         )
 
 
 @dataclass
 class TransitionRequest:
-    """Transition request details."""
+    """For activities, this contains the activity recorded for the action. For comments, this contains
+    the comment details. For transition requests, this contains the transition request details."""
 
     available_actions: Optional[List[ActivityAction]] = None
     """Array of actions on the activity allowed for the current viewer."""
 
     comment: Optional[str] = None
-    """User-provided comment associated with the transition request."""
+    """User-provided comment associated with the activity, comment, or transition request."""
 
     creation_timestamp: Optional[int] = None
     """Creation time of the object, as a Unix timestamp in milliseconds."""
 
-    to_stage: Optional[Stage] = None
+    to_stage: Optional[str] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
     
     * `None`: The initial stage of a model version.
@@ -6608,7 +6851,7 @@ class TransitionRequest:
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.to_stage is not None:
-            body["to_stage"] = self.to_stage.value
+            body["to_stage"] = self.to_stage
         if self.user_id is not None:
             body["user_id"] = self.user_id
         return body
@@ -6635,37 +6878,40 @@ class TransitionRequest:
             available_actions=_repeated_enum(d, "available_actions", ActivityAction),
             comment=d.get("comment", None),
             creation_timestamp=d.get("creation_timestamp", None),
-            to_stage=_enum(d, "to_stage", Stage),
+            to_stage=d.get("to_stage", None),
             user_id=d.get("user_id", None),
         )
 
 
 @dataclass
 class TransitionStageResponse:
-    model_version: Optional[ModelVersionDatabricks] = None
+    model_version_databricks: Optional[ModelVersionDatabricks] = None
+    """Updated model version"""
 
     def as_dict(self) -> dict:
         """Serializes the TransitionStageResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.model_version:
-            body["model_version"] = self.model_version.as_dict()
+        if self.model_version_databricks:
+            body["model_version_databricks"] = self.model_version_databricks.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TransitionStageResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.model_version:
-            body["model_version"] = self.model_version
+        if self.model_version_databricks:
+            body["model_version_databricks"] = self.model_version_databricks
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
-        return cls(model_version=_from_dict(d, "model_version", ModelVersionDatabricks))
+        return cls(model_version_databricks=_from_dict(d, "model_version_databricks", ModelVersionDatabricks))
 
 
 @dataclass
 class UpdateComment:
+    """Details required to edit a comment on a model version."""
+
     id: str
     """Unique identifier of an activity"""
 
@@ -6699,7 +6945,7 @@ class UpdateComment:
 @dataclass
 class UpdateCommentResponse:
     comment: Optional[CommentObject] = None
-    """Comment details."""
+    """Updated comment object"""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCommentResponse into a dictionary suitable for use as a JSON request body."""
@@ -6805,20 +7051,26 @@ class UpdateModelRequest:
 
 @dataclass
 class UpdateModelResponse:
+    registered_model: Optional[Model] = None
+
     def as_dict(self) -> dict:
         """Serializes the UpdateModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.registered_model:
+            body["registered_model"] = self.registered_model.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateModelResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.registered_model:
+            body["registered_model"] = self.registered_model
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateModelResponse:
         """Deserializes the UpdateModelResponse from a dictionary."""
-        return cls()
+        return cls(registered_model=_from_dict(d, "registered_model", Model))
 
 
 @dataclass
@@ -6862,24 +7114,34 @@ class UpdateModelVersionRequest:
 
 @dataclass
 class UpdateModelVersionResponse:
+    model_version: Optional[ModelVersion] = None
+    """Return new version number generated for this model in registry."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.model_version:
+            body["model_version"] = self.model_version.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateModelVersionResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.model_version:
+            body["model_version"] = self.model_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionResponse:
         """Deserializes the UpdateModelVersionResponse from a dictionary."""
-        return cls()
+        return cls(model_version=_from_dict(d, "model_version", ModelVersion))
 
 
 @dataclass
 class UpdateRegistryWebhook:
+    """Details required to update a registry webhook. Only the fields that need to be updated should be
+    specified, and both `http_url_spec` and `job_spec` should not be specified in the same request."""
+
     id: str
     """Webhook ID"""
 
@@ -6921,13 +7183,6 @@ class UpdateRegistryWebhook:
     job_spec: Optional[JobSpec] = None
 
     status: Optional[RegistryWebhookStatus] = None
-    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
-    * `DISABLED`: Webhook is not triggered.
-    
-    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
-    real event."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateRegistryWebhook into a dictionary suitable for use as a JSON request body."""
@@ -7073,20 +7328,26 @@ class UpdateRunStatus(Enum):
 
 @dataclass
 class UpdateWebhookResponse:
+    webhook: Optional[RegistryWebhook] = None
+
     def as_dict(self) -> dict:
         """Serializes the UpdateWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.webhook:
+            body["webhook"] = self.webhook.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateWebhookResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.webhook:
+            body["webhook"] = self.webhook
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> UpdateWebhookResponse:
         """Deserializes the UpdateWebhookResponse from a dictionary."""
-        return cls()
+        return cls(webhook=_from_dict(d, "webhook", RegistryWebhook))
 
 
 class ViewType(Enum):
@@ -8380,7 +8641,7 @@ class FeatureStoreAPI:
         """Create an Online Feature Store.
 
         :param online_store: :class:`OnlineStore`
-          An OnlineStore is a logical database instance that stores and serves features online.
+          Online store to create.
 
         :returns: :class:`OnlineStore`
         """
@@ -8484,7 +8745,7 @@ class FeatureStoreAPI:
         :param name: str
           The name of the online store. This is the unique identifier for the online store.
         :param online_store: :class:`OnlineStore`
-          An OnlineStore is a logical database instance that stores and serves features online.
+          Online store to update.
         :param update_mask: str
           The list of fields to update.
 
@@ -8728,6 +8989,179 @@ class ForecastingAPI:
         return ForecastingExperiment.from_dict(res)
 
 
+class MaterializedFeaturesAPI:
+    """Materialized Features are columns in tables and views that can be directly used as features to train and
+    serve ML models."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_feature_tag(self, table_name: str, feature_name: str, feature_tag: FeatureTag) -> FeatureTag:
+        """Creates a FeatureTag.
+
+        :param table_name: str
+        :param feature_name: str
+        :param feature_tag: :class:`FeatureTag`
+
+        :returns: :class:`FeatureTag`
+        """
+        body = feature_tag.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags",
+            body=body,
+            headers=headers,
+        )
+        return FeatureTag.from_dict(res)
+
+    def delete_feature_tag(self, table_name: str, feature_name: str, key: str):
+        """Deletes a FeatureTag.
+
+        :param table_name: str
+          The name of the feature table.
+        :param feature_name: str
+          The name of the feature within the feature table.
+        :param key: str
+          The key of the tag to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}",
+            headers=headers,
+        )
+
+    def get_feature_lineage(self, table_name: str, feature_name: str) -> FeatureLineage:
+        """Get Feature Lineage.
+
+        :param table_name: str
+          The full name of the feature table in Unity Catalog.
+        :param feature_name: str
+          The name of the feature.
+
+        :returns: :class:`FeatureLineage`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage",
+            headers=headers,
+        )
+        return FeatureLineage.from_dict(res)
+
+    def get_feature_tag(self, table_name: str, feature_name: str, key: str) -> FeatureTag:
+        """Gets a FeatureTag.
+
+        :param table_name: str
+        :param feature_name: str
+        :param key: str
+
+        :returns: :class:`FeatureTag`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}",
+            headers=headers,
+        )
+        return FeatureTag.from_dict(res)
+
+    def list_feature_tags(
+        self, table_name: str, feature_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[FeatureTag]:
+        """Lists FeatureTags.
+
+        :param table_name: str
+        :param feature_name: str
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`FeatureTag`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags",
+                query=query,
+                headers=headers,
+            )
+            if "feature_tags" in json:
+                for v in json["feature_tags"]:
+                    yield FeatureTag.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_feature_tag(
+        self,
+        table_name: str,
+        feature_name: str,
+        key: str,
+        feature_tag: FeatureTag,
+        *,
+        update_mask: Optional[str] = None,
+    ) -> FeatureTag:
+        """Updates a FeatureTag.
+
+        :param table_name: str
+        :param feature_name: str
+        :param key: str
+        :param feature_tag: :class:`FeatureTag`
+        :param update_mask: str (optional)
+          The list of fields to update.
+
+        :returns: :class:`FeatureTag`
+        """
+        body = feature_tag.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return FeatureTag.from_dict(res)
+
+
 class ModelRegistryAPI:
     """Note: This API reference documents APIs for the Workspace Model Registry. Databricks recommends using
     [Models in Unity Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog provides
@@ -8741,7 +9175,7 @@ class ModelRegistryAPI:
         self._api = api_client
 
     def approve_transition_request(
-        self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
+        self, name: str, version: str, stage: str, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> ApproveTransitionRequestResponse:
         """Approves a model version stage transition request.
 
@@ -8749,7 +9183,7 @@ class ModelRegistryAPI:
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -8774,7 +9208,7 @@ class ModelRegistryAPI:
         if name is not None:
             body["name"] = name
         if stage is not None:
-            body["stage"] = stage.value
+            body["stage"] = stage
         if version is not None:
             body["version"] = version
         headers = {
@@ -8816,9 +9250,8 @@ class ModelRegistryAPI:
     def create_model(
         self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
-        """Creates a new registered model with the name specified in the request body.
-
-        Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
+        """Creates a new registered model with the name specified in the request body. Throws
+        `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
 
         :param name: str
           Register models under this name
@@ -8895,7 +9328,7 @@ class ModelRegistryAPI:
         return CreateModelVersionResponse.from_dict(res)
 
     def create_transition_request(
-        self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
+        self, name: str, version: str, stage: str, *, comment: Optional[str] = None
     ) -> CreateTransitionRequestResponse:
         """Creates a model version stage transition request.
 
@@ -8903,7 +9336,7 @@ class ModelRegistryAPI:
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -8924,7 +9357,7 @@ class ModelRegistryAPI:
         if name is not None:
             body["name"] = name
         if stage is not None:
-            body["stage"] = stage.value
+            body["stage"] = stage
         if version is not None:
             body["version"] = version
         headers = {
@@ -8945,9 +9378,7 @@ class ModelRegistryAPI:
         model_name: Optional[str] = None,
         status: Optional[RegistryWebhookStatus] = None,
     ) -> CreateWebhookResponse:
-        """**NOTE**: This endpoint is in Public Preview.
-
-        Creates a registry webhook.
+        """**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.
 
         :param events: List[:class:`RegistryWebhookEvent`]
           Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
@@ -8981,7 +9412,9 @@ class ModelRegistryAPI:
         :param description: str (optional)
           User-specified description for the webhook.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
+          External HTTPS URL called on event trigger (by using a POST request).
         :param job_spec: :class:`JobSpec` (optional)
+          ID of the job that the webhook runs.
         :param model_name: str (optional)
           If model name is not specified, a registry-wide webhook is created that listens for the specified
           events across all versions of all registered models.
@@ -9126,21 +9559,15 @@ class ModelRegistryAPI:
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete-tag", query=query, headers=headers)
 
     def delete_transition_request(
-        self,
-        name: str,
-        version: str,
-        stage: DeleteTransitionRequestStage,
-        creator: str,
-        *,
-        comment: Optional[str] = None,
-    ):
+        self, name: str, version: str, stage: str, creator: str, *, comment: Optional[str] = None
+    ) -> DeleteTransitionRequestResponse:
         """Cancels a model version stage transition request.
 
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`DeleteTransitionRequestStage`
+        :param stage: str
           Target stage of the transition request. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -9156,7 +9583,7 @@ class ModelRegistryAPI:
         :param comment: str (optional)
           User-provided comment on the action.
 
-
+        :returns: :class:`DeleteTransitionRequestResponse`
         """
 
         query = {}
@@ -9167,21 +9594,20 @@ class ModelRegistryAPI:
         if name is not None:
             query["name"] = name
         if stage is not None:
-            query["stage"] = stage.value
+            query["stage"] = stage
         if version is not None:
             query["version"] = version
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
+        res = self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
+        return DeleteTransitionRequestResponse.from_dict(res)
 
-    def delete_webhook(self, *, id: Optional[str] = None):
-        """**NOTE:** This endpoint is in Public Preview.
+    def delete_webhook(self, id: str):
+        """**NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.
 
-        Deletes a registry webhook.
-
-        :param id: str (optional)
+        :param id: str
           Webhook ID required to delete a registry webhook.
 
 
@@ -9357,7 +9783,7 @@ class ModelRegistryAPI:
         """Gets a list of all open stage transition requests for the model version.
 
         :param name: str
-          Name of the model.
+          Name of the registered model.
         :param version: str
           Version of the model.
 
@@ -9381,19 +9807,48 @@ class ModelRegistryAPI:
         self,
         *,
         events: Optional[List[RegistryWebhookEvent]] = None,
+        max_results: Optional[int] = None,
         model_name: Optional[str] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[RegistryWebhook]:
-        """**NOTE:** This endpoint is in Public Preview.
-
-        Lists all registry webhooks.
+        """**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.
 
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
+          Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model version was created for the
+          associated model.
+
+          * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+
+          * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+
+          * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+
+          * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+          specified for a registry-wide webhook, which can be created by not specifying a model name in the
+          create request.
+
+          * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+
+          * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+
+          * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+          staging.
+
+          * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
+          production.
+
+          * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
+
           If `events` is specified, any webhook with one or more of the specified trigger events is included
           in the output. If `events` is not specified, webhooks of all event types are included in the output.
+        :param max_results: int (optional)
         :param model_name: str (optional)
-          If not specified, all webhooks associated with the specified events are listed, regardless of their
-          associated model.
+          Registered model name If not specified, all webhooks associated with the specified events are
+          listed, regardless of their associated model.
         :param page_token: str (optional)
           Token indicating the page of artifact results to fetch
 
@@ -9403,6 +9858,8 @@ class ModelRegistryAPI:
         query = {}
         if events is not None:
             query["events"] = [v.value for v in events]
+        if max_results is not None:
+            query["max_results"] = max_results
         if model_name is not None:
             query["model_name"] = model_name
         if page_token is not None:
@@ -9421,7 +9878,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def reject_transition_request(
-        self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
+        self, name: str, version: str, stage: str, *, comment: Optional[str] = None
     ) -> RejectTransitionRequestResponse:
         """Rejects a model version stage transition request.
 
@@ -9429,7 +9886,7 @@ class ModelRegistryAPI:
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -9450,7 +9907,7 @@ class ModelRegistryAPI:
         if name is not None:
             body["name"] = name
         if stage is not None:
-            body["stage"] = stage.value
+            body["stage"] = stage
         if version is not None:
             body["version"] = version
         headers = {
@@ -9672,9 +10129,7 @@ class ModelRegistryAPI:
     def test_registry_webhook(
         self, id: str, *, event: Optional[RegistryWebhookEvent] = None
     ) -> TestRegistryWebhookResponse:
-        """**NOTE:** This endpoint is in Public Preview.
-
-        Tests a registry webhook.
+        """**NOTE:** This endpoint is in Public Preview. Tests a registry webhook.
 
         :param id: str
           Webhook ID
@@ -9698,10 +10153,10 @@ class ModelRegistryAPI:
         return TestRegistryWebhookResponse.from_dict(res)
 
     def transition_stage(
-        self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
+        self, name: str, version: str, stage: str, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
         """Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
-        that also accepts a comment associated with the transition to be recorded.",
+        that also accepts a comment associated with the transition to be recorded.
 
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
 
@@ -9709,7 +10164,7 @@ class ModelRegistryAPI:
           Name of the model.
         :param version: str
           Version of the model.
-        :param stage: :class:`Stage`
+        :param stage: str
           Target stage of the transition. Valid values are:
 
           * `None`: The initial stage of a model version.
@@ -9734,7 +10189,7 @@ class ModelRegistryAPI:
         if name is not None:
             body["name"] = name
         if stage is not None:
-            body["stage"] = stage.value
+            body["stage"] = stage
         if version is not None:
             body["version"] = version
         headers = {
@@ -9770,7 +10225,7 @@ class ModelRegistryAPI:
         res = self._api.do("PATCH", "/api/2.0/mlflow/comments/update", body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
 
-    def update_model(self, name: str, *, description: Optional[str] = None):
+    def update_model(self, name: str, *, description: Optional[str] = None) -> UpdateModelResponse:
         """Updates a registered model.
 
         :param name: str
@@ -9778,7 +10233,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
 
-
+        :returns: :class:`UpdateModelResponse`
         """
         body = {}
         if description is not None:
@@ -9790,9 +10245,12 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
+        res = self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
+        return UpdateModelResponse.from_dict(res)
 
-    def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
+    def update_model_version(
+        self, name: str, version: str, *, description: Optional[str] = None
+    ) -> UpdateModelVersionResponse:
         """Updates the model version.
 
         :param name: str
@@ -9802,7 +10260,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
 
-
+        :returns: :class:`UpdateModelVersionResponse`
         """
         body = {}
         if description is not None:
@@ -9816,7 +10274,8 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
+        res = self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
+        return UpdateModelVersionResponse.from_dict(res)
 
     def update_permissions(
         self,
@@ -9855,10 +10314,8 @@ class ModelRegistryAPI:
         http_url_spec: Optional[HttpUrlSpec] = None,
         job_spec: Optional[JobSpec] = None,
         status: Optional[RegistryWebhookStatus] = None,
-    ):
-        """**NOTE:** This endpoint is in Public Preview.
-
-        Updates a registry webhook.
+    ) -> UpdateWebhookResponse:
+        """**NOTE:** This endpoint is in Public Preview. Updates a registry webhook.
 
         :param id: str
           Webhook ID
@@ -9896,15 +10353,8 @@ class ModelRegistryAPI:
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
-          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
 
-          * `DISABLED`: Webhook is not triggered.
-
-          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
-          event.
-
-
+        :returns: :class:`UpdateWebhookResponse`
         """
         body = {}
         if description is not None:
@@ -9924,4 +10374,5 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)
+        res = self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)
+        return UpdateWebhookResponse.from_dict(res)

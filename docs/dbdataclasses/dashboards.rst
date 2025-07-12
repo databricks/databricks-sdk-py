@@ -25,14 +25,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
-.. autoclass:: DeleteScheduleResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteSubscriptionResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: GenieAttachment
    :members:
    :undoc-members:
@@ -41,19 +33,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieConversationSummary
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieCreateConversationMessageRequest
    :members:
    :undoc-members:
 
-.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenieGetDownloadFullQueryResultResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: GenieGetMessageQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListConversationsResponse
    :members:
    :undoc-members:
 

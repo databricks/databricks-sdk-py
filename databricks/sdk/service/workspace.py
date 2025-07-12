@@ -1456,7 +1456,6 @@ class RepoAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[RepoPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -1644,7 +1643,6 @@ class RepoPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[RepoPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the RepoPermission into a dictionary suitable for use as a JSON request body."""
@@ -1732,7 +1730,6 @@ class RepoPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[RepoPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the RepoPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -2089,7 +2086,6 @@ class WorkspaceObjectAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -2200,7 +2196,6 @@ class WorkspaceObjectPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermission into a dictionary suitable for use as a JSON request body."""
@@ -2288,7 +2283,6 @@ class WorkspaceObjectPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[WorkspaceObjectPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceObjectPermissionsDescription into a dictionary suitable for use as a JSON request body."""
