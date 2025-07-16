@@ -37,11 +37,16 @@
         direction.
 
         :param object_info: :class:`ExternalLineageObject`
-          The object to query external lineage relationship on.
+          The object to query external lineage relationships for. Since this field is a query parameter,
+          please flatten the nested fields. For example, if the object is a table, the query parameter should
+          look like: `object_info.table.name=main.sales.customers`
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
+          Specifies the maximum number of external lineage relationships to return in a single response. The
+          value must be less than or equal to 1000.
         :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`ExternalLineageInfo`
         

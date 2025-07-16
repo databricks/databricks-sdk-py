@@ -4,23 +4,11 @@ AI Builder
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.aibuilder`` module.
 
 .. py:currentmodule:: databricks.sdk.service.aibuilder
-.. autoclass:: CancelCustomLlmOptimizationRunRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateCustomLlmRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CustomLlm
    :members:
    :undoc-members:
 
 .. autoclass:: Dataset
-   :members:
-   :undoc-members:
-
-.. autoclass:: StartCustomLlmOptimizationRunRequest
    :members:
    :undoc-members:
 
@@ -47,9 +35,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "RUNNING"
 
 .. autoclass:: Table
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateCustomLlmRequest
    :members:
    :undoc-members:

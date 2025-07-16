@@ -665,10 +665,9 @@ class AlertV2:
     """Text of the query to be run."""
 
     run_as_user_name: Optional[str] = None
-    """The run as username or application ID of service principal. This field is set to "Unavailable"
-    if the user has been deleted. On Create and Update, this field can be set to application ID of
-    an active service principal. Setting this field requires the servicePrincipal/user role. If not
-    specified it'll default to be request user."""
+    """The run as username or application ID of service principal. On Create and Update, this field can
+    be set to application ID of an active service principal. Setting this field requires the
+    servicePrincipal/user role."""
 
     schedule: Optional[CronSchedule] = None
 
@@ -1375,101 +1374,6 @@ class ComparisonOperator(Enum):
 
 
 @dataclass
-class CreateAlert:
-    name: str
-    """Name of the alert."""
-
-    options: AlertOptions
-    """Alert configuration options."""
-
-    query_id: str
-    """Query ID."""
-
-    parent: Optional[str] = None
-    """The identifier of the workspace folder containing the object."""
-
-    rearm: Optional[int] = None
-    """Number of seconds after being triggered before the alert rearms itself and can be triggered
-    again. If `null`, alert will never be triggered again."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAlert into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options.as_dict()
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.rearm is not None:
-            body["rearm"] = self.rearm
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateAlert into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.rearm is not None:
-            body["rearm"] = self.rearm
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateAlert:
-        """Deserializes the CreateAlert from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            options=_from_dict(d, "options", AlertOptions),
-            parent=d.get("parent", None),
-            query_id=d.get("query_id", None),
-            rearm=d.get("rearm", None),
-        )
-
-
-@dataclass
-class CreateAlertRequest:
-    alert: Optional[CreateAlertRequestAlert] = None
-
-    auto_resolve_display_name: Optional[bool] = None
-    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
-    alert's display name conflicts with an existing alert's display name."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAlertRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert.as_dict()
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateAlertRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateAlertRequest:
-        """Deserializes the CreateAlertRequest from a dictionary."""
-        return cls(
-            alert=_from_dict(d, "alert", CreateAlertRequestAlert),
-            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
-        )
-
-
-@dataclass
 class CreateAlertRequestAlert:
     condition: Optional[AlertCondition] = None
     """Trigger conditions of the alert."""
@@ -1555,41 +1459,6 @@ class CreateAlertRequestAlert:
             parent_path=d.get("parent_path", None),
             query_id=d.get("query_id", None),
             seconds_to_retrigger=d.get("seconds_to_retrigger", None),
-        )
-
-
-@dataclass
-class CreateQueryRequest:
-    auto_resolve_display_name: Optional[bool] = None
-    """If true, automatically resolve query display name conflicts. Otherwise, fail the request if the
-    query's display name conflicts with an existing query's display name."""
-
-    query: Optional[CreateQueryRequestQuery] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateQueryRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.query:
-            body["query"] = self.query.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateQueryRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.query:
-            body["query"] = self.query
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateQueryRequest:
-        """Deserializes the CreateQueryRequest from a dictionary."""
-        return cls(
-            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
-            query=_from_dict(d, "query", CreateQueryRequestQuery),
         )
 
 
@@ -1700,92 +1569,6 @@ class CreateQueryRequestQuery:
 
 
 @dataclass
-class CreateQueryVisualizationsLegacyRequest:
-    """Add visualization to a query"""
-
-    options: Any
-    """The options object varies widely from one visualization type to the next and is unsupported.
-    Databricks does not recommend modifying visualization settings in JSON."""
-
-    query_id: str
-    """The identifier returned by :method:queries/create"""
-
-    type: str
-    """The type of visualization: chart, table, pivot table, and so on."""
-
-    description: Optional[str] = None
-    """A short description of this visualization. This is not displayed in the UI."""
-
-    name: Optional[str] = None
-    """The name of the visualization that appears on dashboards and the query screen."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateQueryVisualizationsLegacyRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateQueryVisualizationsLegacyRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.type is not None:
-            body["type"] = self.type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateQueryVisualizationsLegacyRequest:
-        """Deserializes the CreateQueryVisualizationsLegacyRequest from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            query_id=d.get("query_id", None),
-            type=d.get("type", None),
-        )
-
-
-@dataclass
-class CreateVisualizationRequest:
-    visualization: Optional[CreateVisualizationRequestVisualization] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.visualization:
-            body["visualization"] = self.visualization.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateVisualizationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.visualization:
-            body["visualization"] = self.visualization
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateVisualizationRequest:
-        """Deserializes the CreateVisualizationRequest from a dictionary."""
-        return cls(visualization=_from_dict(d, "visualization", CreateVisualizationRequestVisualization))
-
-
-@dataclass
 class CreateVisualizationRequestVisualization:
     display_name: Optional[str] = None
     """The display name of the visualization."""
@@ -1846,156 +1629,6 @@ class CreateVisualizationRequestVisualization:
         )
 
 
-@dataclass
-class CreateWarehouseRequest:
-    auto_stop_mins: Optional[int] = None
-    """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
-    before it is automatically stopped.
-    
-    Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
-    non-serverless warehouses - 0 indicates no autostop.
-    
-    Defaults to 120 mins"""
-
-    channel: Optional[Channel] = None
-    """Channel Details"""
-
-    cluster_size: Optional[str] = None
-    """Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows
-    you to run larger queries on it. If you want to increase the number of concurrent queries,
-    please tune max_num_clusters.
-    
-    Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large"""
-
-    creator_name: Optional[str] = None
-    """warehouse creator name"""
-
-    enable_photon: Optional[bool] = None
-    """Configures whether the warehouse should use Photon optimized clusters.
-    
-    Defaults to false."""
-
-    enable_serverless_compute: Optional[bool] = None
-    """Configures whether the warehouse should use serverless compute"""
-
-    instance_profile_arn: Optional[str] = None
-    """Deprecated. Instance profile used to pass IAM role to the cluster"""
-
-    max_num_clusters: Optional[int] = None
-    """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    
-    Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    
-    Defaults to min_clusters if unset."""
-
-    min_num_clusters: Optional[int] = None
-    """Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing
-    this will ensure that a larger number of clusters are always running and therefore may reduce
-    the cold start time for new queries. This is similar to reserved vs. revocable cores in a
-    resource manager.
-    
-    Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    
-    Defaults to 1"""
-
-    name: Optional[str] = None
-    """Logical name for the cluster.
-    
-    Supported values: - Must be unique within an org. - Must be less than 100 characters."""
-
-    spot_instance_policy: Optional[SpotInstancePolicy] = None
-
-    tags: Optional[EndpointTags] = None
-    """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
-    volumes) associated with this SQL warehouse.
-    
-    Supported values: - Number of tags < 45."""
-
-    warehouse_type: Optional[CreateWarehouseRequestWarehouseType] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateWarehouseRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
-        if self.channel:
-            body["channel"] = self.channel.as_dict()
-        if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
-        if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
-        if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
-        if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
-        if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
-        if self.tags:
-            body["tags"] = self.tags.as_dict()
-        if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateWarehouseRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
-        if self.channel:
-            body["channel"] = self.channel
-        if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
-        if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
-        if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
-        if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
-        if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
-        if self.tags:
-            body["tags"] = self.tags
-        if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateWarehouseRequest:
-        """Deserializes the CreateWarehouseRequest from a dictionary."""
-        return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", CreateWarehouseRequestWarehouseType),
-        )
-
-
 class CreateWarehouseRequestWarehouseType(Enum):
     """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
     and also set the field `enable_serverless_compute` to `true`."""
@@ -2028,65 +1661,6 @@ class CreateWarehouseResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateWarehouseResponse:
         """Deserializes the CreateWarehouseResponse from a dictionary."""
         return cls(id=d.get("id", None))
-
-
-@dataclass
-class CreateWidget:
-    dashboard_id: str
-    """Dashboard ID returned by :method:dashboards/create."""
-
-    options: WidgetOptions
-
-    width: int
-    """Width of a widget"""
-
-    text: Optional[str] = None
-    """If this is a textbox widget, the application displays this text. This field is ignored if the
-    widget contains a visualization in the `visualization` field."""
-
-    visualization_id: Optional[str] = None
-    """Query Vizualization ID returned by :method:queryvisualizations/create."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateWidget into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.options:
-            body["options"] = self.options.as_dict()
-        if self.text is not None:
-            body["text"] = self.text
-        if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
-        if self.width is not None:
-            body["width"] = self.width
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateWidget into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.options:
-            body["options"] = self.options
-        if self.text is not None:
-            body["text"] = self.text
-        if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
-        if self.width is not None:
-            body["width"] = self.width
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateWidget:
-        """Deserializes the CreateWidget from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            options=_from_dict(d, "options", WidgetOptions),
-            text=d.get("text", None),
-            visualization_id=d.get("visualization_id", None),
-            width=d.get("width", None),
-        )
 
 
 @dataclass
@@ -2297,56 +1871,6 @@ class Dashboard:
 
 
 @dataclass
-class DashboardEditContent:
-    dashboard_id: Optional[str] = None
-
-    name: Optional[str] = None
-    """The title of this dashboard that appears in list views and at the top of the dashboard page."""
-
-    run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
-
-    tags: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DashboardEditContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
-        if self.tags:
-            body["tags"] = [v for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DashboardEditContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DashboardEditContent:
-        """Deserializes the DashboardEditContent from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            name=d.get("name", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
-        )
-
-
-@dataclass
 class DashboardOptions:
     moved_to_trash_at: Optional[str] = None
     """The timestamp when this dashboard was moved to trash. Only present when the `is_archived`
@@ -2370,73 +1894,6 @@ class DashboardOptions:
     def from_dict(cls, d: Dict[str, Any]) -> DashboardOptions:
         """Deserializes the DashboardOptions from a dictionary."""
         return cls(moved_to_trash_at=d.get("moved_to_trash_at", None))
-
-
-@dataclass
-class DashboardPostContent:
-    name: str
-    """The title of this dashboard that appears in list views and at the top of the dashboard page."""
-
-    dashboard_filters_enabled: Optional[bool] = None
-    """Indicates whether the dashboard filters are enabled"""
-
-    is_favorite: Optional[bool] = None
-    """Indicates whether this dashboard object should appear in the current user's favorites list."""
-
-    parent: Optional[str] = None
-    """The identifier of the workspace folder containing the object."""
-
-    run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
-
-    tags: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DashboardPostContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
-        if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
-        if self.name is not None:
-            body["name"] = self.name
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
-        if self.tags:
-            body["tags"] = [v for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DashboardPostContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = self.dashboard_filters_enabled
-        if self.is_favorite is not None:
-            body["is_favorite"] = self.is_favorite
-        if self.name is not None:
-            body["name"] = self.name
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DashboardPostContent:
-        """Deserializes the DashboardPostContent from a dictionary."""
-        return cls(
-            dashboard_filters_enabled=d.get("dashboard_filters_enabled", None),
-            is_favorite=d.get("is_favorite", None),
-            name=d.get("name", None),
-            parent=d.get("parent", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
-        )
 
 
 @dataclass
@@ -2735,222 +2192,6 @@ class Disposition(Enum):
 
     EXTERNAL_LINKS = "EXTERNAL_LINKS"
     INLINE = "INLINE"
-
-
-@dataclass
-class EditAlert:
-    name: str
-    """Name of the alert."""
-
-    options: AlertOptions
-    """Alert configuration options."""
-
-    query_id: str
-    """Query ID."""
-
-    alert_id: Optional[str] = None
-
-    rearm: Optional[int] = None
-    """Number of seconds after being triggered before the alert rearms itself and can be triggered
-    again. If `null`, alert will never be triggered again."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EditAlert into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options.as_dict()
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.rearm is not None:
-            body["rearm"] = self.rearm
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditAlert into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alert_id is not None:
-            body["alert_id"] = self.alert_id
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.rearm is not None:
-            body["rearm"] = self.rearm
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditAlert:
-        """Deserializes the EditAlert from a dictionary."""
-        return cls(
-            alert_id=d.get("alert_id", None),
-            name=d.get("name", None),
-            options=_from_dict(d, "options", AlertOptions),
-            query_id=d.get("query_id", None),
-            rearm=d.get("rearm", None),
-        )
-
-
-@dataclass
-class EditWarehouseRequest:
-    auto_stop_mins: Optional[int] = None
-    """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
-    before it is automatically stopped.
-    
-    Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-    
-    Defaults to 120 mins"""
-
-    channel: Optional[Channel] = None
-    """Channel Details"""
-
-    cluster_size: Optional[str] = None
-    """Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows
-    you to run larger queries on it. If you want to increase the number of concurrent queries,
-    please tune max_num_clusters.
-    
-    Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large"""
-
-    creator_name: Optional[str] = None
-    """warehouse creator name"""
-
-    enable_photon: Optional[bool] = None
-    """Configures whether the warehouse should use Photon optimized clusters.
-    
-    Defaults to false."""
-
-    enable_serverless_compute: Optional[bool] = None
-    """Configures whether the warehouse should use serverless compute."""
-
-    id: Optional[str] = None
-    """Required. Id of the warehouse to configure."""
-
-    instance_profile_arn: Optional[str] = None
-    """Deprecated. Instance profile used to pass IAM role to the cluster"""
-
-    max_num_clusters: Optional[int] = None
-    """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-    
-    Supported values: - Must be >= min_num_clusters - Must be <= 30.
-    
-    Defaults to min_clusters if unset."""
-
-    min_num_clusters: Optional[int] = None
-    """Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing
-    this will ensure that a larger number of clusters are always running and therefore may reduce
-    the cold start time for new queries. This is similar to reserved vs. revocable cores in a
-    resource manager.
-    
-    Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-    
-    Defaults to 1"""
-
-    name: Optional[str] = None
-    """Logical name for the cluster.
-    
-    Supported values: - Must be unique within an org. - Must be less than 100 characters."""
-
-    spot_instance_policy: Optional[SpotInstancePolicy] = None
-
-    tags: Optional[EndpointTags] = None
-    """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
-    volumes) associated with this SQL warehouse.
-    
-    Supported values: - Number of tags < 45."""
-
-    warehouse_type: Optional[EditWarehouseRequestWarehouseType] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the EditWarehouseRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
-        if self.channel:
-            body["channel"] = self.channel.as_dict()
-        if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
-        if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
-        if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
-        if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
-        if self.id is not None:
-            body["id"] = self.id
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
-        if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy.value
-        if self.tags:
-            body["tags"] = self.tags.as_dict()
-        if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditWarehouseRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.auto_stop_mins is not None:
-            body["auto_stop_mins"] = self.auto_stop_mins
-        if self.channel:
-            body["channel"] = self.channel
-        if self.cluster_size is not None:
-            body["cluster_size"] = self.cluster_size
-        if self.creator_name is not None:
-            body["creator_name"] = self.creator_name
-        if self.enable_photon is not None:
-            body["enable_photon"] = self.enable_photon
-        if self.enable_serverless_compute is not None:
-            body["enable_serverless_compute"] = self.enable_serverless_compute
-        if self.id is not None:
-            body["id"] = self.id
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.max_num_clusters is not None:
-            body["max_num_clusters"] = self.max_num_clusters
-        if self.min_num_clusters is not None:
-            body["min_num_clusters"] = self.min_num_clusters
-        if self.name is not None:
-            body["name"] = self.name
-        if self.spot_instance_policy is not None:
-            body["spot_instance_policy"] = self.spot_instance_policy
-        if self.tags:
-            body["tags"] = self.tags
-        if self.warehouse_type is not None:
-            body["warehouse_type"] = self.warehouse_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditWarehouseRequest:
-        """Deserializes the EditWarehouseRequest from a dictionary."""
-        return cls(
-            auto_stop_mins=d.get("auto_stop_mins", None),
-            channel=_from_dict(d, "channel", Channel),
-            cluster_size=d.get("cluster_size", None),
-            creator_name=d.get("creator_name", None),
-            enable_photon=d.get("enable_photon", None),
-            enable_serverless_compute=d.get("enable_serverless_compute", None),
-            id=d.get("id", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            max_num_clusters=d.get("max_num_clusters", None),
-            min_num_clusters=d.get("min_num_clusters", None),
-            name=d.get("name", None),
-            spot_instance_policy=_enum(d, "spot_instance_policy", SpotInstancePolicy),
-            tags=_from_dict(d, "tags", EndpointTags),
-            warehouse_type=_enum(d, "warehouse_type", EditWarehouseRequestWarehouseType),
-        )
 
 
 class EditWarehouseRequestWarehouseType(Enum):
@@ -3399,196 +2640,6 @@ class EnumValue:
             enum_options=d.get("enum_options", None),
             multi_values_options=_from_dict(d, "multi_values_options", MultiValuesOptions),
             values=d.get("values", None),
-        )
-
-
-@dataclass
-class ExecuteStatementRequest:
-    statement: str
-    """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
-    The maximum query text size is 16 MiB."""
-
-    warehouse_id: str
-    """Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
-    
-    [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html"""
-
-    byte_limit: Optional[int] = None
-    """Applies the given byte limit to the statement's result size. Byte counts are based on internal
-    data representations and might not match the final size in the requested `format`. If the result
-    was truncated due to the byte limit, then `truncated` in the response is set to `true`. When
-    using `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit`
-    is not explcitly set."""
-
-    catalog: Optional[str] = None
-    """Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
-    
-    [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html"""
-
-    disposition: Optional[Disposition] = None
-
-    format: Optional[Format] = None
-    """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
-    `CSV`.
-    
-    Important: The formats `ARROW_STREAM` and `CSV` are supported only with `EXTERNAL_LINKS`
-    disposition. `JSON_ARRAY` is supported in `INLINE` and `EXTERNAL_LINKS` disposition.
-    
-    When specifying `format=JSON_ARRAY`, result data will be formatted as an array of arrays of
-    values, where each value is either the *string representation* of a value, or `null`. For
-    example, the output of `SELECT concat('id-', id) AS strCol, id AS intCol, null AS nullCol FROM
-    range(3)` would look like this:
-    
-    ``` [ [ "id-1", "1", null ], [ "id-2", "2", null ], [ "id-3", "3", null ], ] ```
-    
-    When specifying `format=JSON_ARRAY` and `disposition=EXTERNAL_LINKS`, each chunk in the result
-    contains compact JSON with no indentation or extra whitespace.
-    
-    When specifying `format=ARROW_STREAM` and `disposition=EXTERNAL_LINKS`, each chunk in the result
-    will be formatted as Apache Arrow Stream. See the [Apache Arrow streaming format].
-    
-    When specifying `format=CSV` and `disposition=EXTERNAL_LINKS`, each chunk in the result will be
-    a CSV according to [RFC 4180] standard. All the columns values will have *string representation*
-    similar to the `JSON_ARRAY` format, and `null` values will be encoded as “null”. Only the
-    first chunk in the result would contain a header row with column names. For example, the output
-    of `SELECT concat('id-', id) AS strCol, id AS intCol, null as nullCol FROM range(3)` would look
-    like this:
-    
-    ``` strCol,intCol,nullCol id-1,1,null id-2,2,null id-3,3,null ```
-    
-    [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
-    [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180"""
-
-    on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout] = None
-    """When `wait_timeout > 0s`, the call will block up to the specified time. If the statement
-    execution doesn't finish within this time, `on_wait_timeout` determines whether the execution
-    should continue or be canceled. When set to `CONTINUE`, the statement execution continues
-    asynchronously and the call returns a statement ID which can be used for polling with
-    :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is
-    canceled and the call returns with a `CANCELED` state."""
-
-    parameters: Optional[List[StatementParameterListItem]] = None
-    """A list of parameters to pass into a SQL statement containing parameter markers. A parameter
-    consists of a name, a value, and optionally a type. To represent a NULL value, the `value` field
-    may be omitted or set to `null` explicitly. If the `type` field is omitted, the value is
-    interpreted as a string.
-    
-    If the type is given, parameters will be checked for type correctness according to the given
-    type. A value is correct if the provided string can be converted to the requested type using the
-    `cast` function. The exact semantics are described in the section [`cast` function] of the SQL
-    language reference.
-    
-    For example, the following statement contains two parameters, `my_name` and `my_date`:
-    
-    SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
-    
-    The parameters can be passed in the request body as follows:
-    
-    { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
-    "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-    "2020-01-01", "type": "DATE" } ] }
-    
-    Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL
-    Statement Execution API.
-    
-    Also see the section [Parameter markers] of the SQL language reference.
-    
-    [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
-    [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html"""
-
-    row_limit: Optional[int] = None
-    """Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL,
-    it also sets the `truncated` field in the response to indicate whether the result was trimmed
-    due to the limit or not."""
-
-    schema: Optional[str] = None
-    """Sets default schema for statement execution, similar to [`USE SCHEMA`] in SQL.
-    
-    [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html"""
-
-    wait_timeout: Optional[str] = None
-    """The time in seconds the call will wait for the statement's result set as `Ns`, where `N` can be
-    set to 0 or to a value between 5 and 50.
-    
-    When set to `0s`, the statement will execute in asynchronous mode and the call will not wait for
-    the execution to finish. In this case, the call returns directly with `PENDING` state and a
-    statement ID which can be used for polling with :method:statementexecution/getStatement.
-    
-    When set between 5 and 50 seconds, the call will behave synchronously up to this timeout and
-    wait for the statement execution to finish. If the execution finishes within this time, the call
-    returns immediately with a manifest and result data (or a `FAILED` state in case of an execution
-    error). If the statement takes longer to execute, `on_wait_timeout` determines what should
-    happen after the timeout is reached."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExecuteStatementRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.byte_limit is not None:
-            body["byte_limit"] = self.byte_limit
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.disposition is not None:
-            body["disposition"] = self.disposition.value
-        if self.format is not None:
-            body["format"] = self.format.value
-        if self.on_wait_timeout is not None:
-            body["on_wait_timeout"] = self.on_wait_timeout.value
-        if self.parameters:
-            body["parameters"] = [v.as_dict() for v in self.parameters]
-        if self.row_limit is not None:
-            body["row_limit"] = self.row_limit
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.statement is not None:
-            body["statement"] = self.statement
-        if self.wait_timeout is not None:
-            body["wait_timeout"] = self.wait_timeout
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExecuteStatementRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.byte_limit is not None:
-            body["byte_limit"] = self.byte_limit
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.disposition is not None:
-            body["disposition"] = self.disposition
-        if self.format is not None:
-            body["format"] = self.format
-        if self.on_wait_timeout is not None:
-            body["on_wait_timeout"] = self.on_wait_timeout
-        if self.parameters:
-            body["parameters"] = self.parameters
-        if self.row_limit is not None:
-            body["row_limit"] = self.row_limit
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.statement is not None:
-            body["statement"] = self.statement
-        if self.wait_timeout is not None:
-            body["wait_timeout"] = self.wait_timeout
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExecuteStatementRequest:
-        """Deserializes the ExecuteStatementRequest from a dictionary."""
-        return cls(
-            byte_limit=d.get("byte_limit", None),
-            catalog=d.get("catalog", None),
-            disposition=_enum(d, "disposition", Disposition),
-            format=_enum(d, "format", Format),
-            on_wait_timeout=_enum(d, "on_wait_timeout", ExecuteStatementRequestOnWaitTimeout),
-            parameters=_repeated_dict(d, "parameters", StatementParameterListItem),
-            row_limit=d.get("row_limit", None),
-            schema=d.get("schema", None),
-            statement=d.get("statement", None),
-            wait_timeout=d.get("wait_timeout", None),
-            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -5609,93 +4660,6 @@ class QueryBackedValue:
 
 
 @dataclass
-class QueryEditContent:
-    data_source_id: Optional[str] = None
-    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
-
-    description: Optional[str] = None
-    """General description that conveys additional information about this query such as usage notes."""
-
-    name: Optional[str] = None
-    """The title of this query that appears in list views, widget headings, and on the query page."""
-
-    options: Optional[Any] = None
-    """Exclusively used for storing a list parameter definitions. A parameter is an object with
-    `title`, `name`, `type`, and `value` properties. The `value` field here is the default value. It
-    can be overridden at runtime."""
-
-    query: Optional[str] = None
-    """The text of the query to be run."""
-
-    query_id: Optional[str] = None
-
-    run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
-
-    tags: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the QueryEditContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.query is not None:
-            body["query"] = self.query
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
-        if self.tags:
-            body["tags"] = [v for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QueryEditContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.query is not None:
-            body["query"] = self.query
-        if self.query_id is not None:
-            body["query_id"] = self.query_id
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QueryEditContent:
-        """Deserializes the QueryEditContent from a dictionary."""
-        return cls(
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            query=d.get("query", None),
-            query_id=d.get("query_id", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
-        )
-
-
-@dataclass
 class QueryFilter:
     query_start_time_range: Optional[TimeRange] = None
     """A range filter for query submitted time. The time range must be less than or equal to 30 days."""
@@ -6050,6 +5014,9 @@ class QueryMetrics:
     photon_total_time_ms: Optional[int] = None
     """Total execution time for all individual Photon query engine tasks in the query, in milliseconds."""
 
+    projected_remaining_task_total_time_ms: Optional[int] = None
+    """projected remaining work to be done aggregated across all stages in the query, in milliseconds"""
+
     provisioning_queue_start_timestamp: Optional[int] = None
     """Timestamp of when the query was enqueued waiting for a cluster to be provisioned for the
     warehouse. This field is optional and will not appear if the query skipped the provisioning
@@ -6079,6 +5046,10 @@ class QueryMetrics:
     read_remote_bytes: Optional[int] = None
     """Size of persistent data read from cloud object storage on your cloud tenant, in bytes."""
 
+    remaining_task_count: Optional[int] = None
+    """number of remaining tasks to complete this is based on the current status and could be bigger or
+    smaller in the future based on future updates"""
+
     result_fetch_time_ms: Optional[int] = None
     """Time spent fetching the query results after the execution finished, in milliseconds."""
 
@@ -6090,6 +5061,10 @@ class QueryMetrics:
 
     rows_read_count: Optional[int] = None
     """Total number of rows read by the query."""
+
+    runnable_tasks: Optional[int] = None
+    """number of remaining tasks to complete, calculated by autoscaler StatementAnalysis.scala
+    deprecated: use remaining_task_count instead"""
 
     spill_to_disk_bytes: Optional[int] = None
     """Size of data temporarily written to disk while executing the query, in bytes."""
@@ -6103,6 +5078,11 @@ class QueryMetrics:
 
     total_time_ms: Optional[int] = None
     """Total execution time of the query from the client’s point of view, in milliseconds."""
+
+    work_to_be_done: Optional[int] = None
+    """remaining work to be done across all stages in the query, calculated by autoscaler
+    StatementAnalysis.scala, in milliseconds deprecated: using
+    projected_remaining_task_total_time_ms instead"""
 
     write_remote_bytes: Optional[int] = None
     """Size pf persistent data written to cloud object storage in your cloud tenant, in bytes."""
@@ -6120,6 +5100,8 @@ class QueryMetrics:
             body["overloading_queue_start_timestamp"] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None:
             body["photon_total_time_ms"] = self.photon_total_time_ms
+        if self.projected_remaining_task_total_time_ms is not None:
+            body["projected_remaining_task_total_time_ms"] = self.projected_remaining_task_total_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
@@ -6138,6 +5120,8 @@ class QueryMetrics:
             body["read_partitions_count"] = self.read_partitions_count
         if self.read_remote_bytes is not None:
             body["read_remote_bytes"] = self.read_remote_bytes
+        if self.remaining_task_count is not None:
+            body["remaining_task_count"] = self.remaining_task_count
         if self.result_fetch_time_ms is not None:
             body["result_fetch_time_ms"] = self.result_fetch_time_ms
         if self.result_from_cache is not None:
@@ -6146,6 +5130,8 @@ class QueryMetrics:
             body["rows_produced_count"] = self.rows_produced_count
         if self.rows_read_count is not None:
             body["rows_read_count"] = self.rows_read_count
+        if self.runnable_tasks is not None:
+            body["runnable_tasks"] = self.runnable_tasks
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
         if self.task_time_over_time_range:
@@ -6154,6 +5140,8 @@ class QueryMetrics:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
             body["total_time_ms"] = self.total_time_ms
+        if self.work_to_be_done is not None:
+            body["work_to_be_done"] = self.work_to_be_done
         if self.write_remote_bytes is not None:
             body["write_remote_bytes"] = self.write_remote_bytes
         return body
@@ -6171,6 +5159,8 @@ class QueryMetrics:
             body["overloading_queue_start_timestamp"] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None:
             body["photon_total_time_ms"] = self.photon_total_time_ms
+        if self.projected_remaining_task_total_time_ms is not None:
+            body["projected_remaining_task_total_time_ms"] = self.projected_remaining_task_total_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
@@ -6189,6 +5179,8 @@ class QueryMetrics:
             body["read_partitions_count"] = self.read_partitions_count
         if self.read_remote_bytes is not None:
             body["read_remote_bytes"] = self.read_remote_bytes
+        if self.remaining_task_count is not None:
+            body["remaining_task_count"] = self.remaining_task_count
         if self.result_fetch_time_ms is not None:
             body["result_fetch_time_ms"] = self.result_fetch_time_ms
         if self.result_from_cache is not None:
@@ -6197,6 +5189,8 @@ class QueryMetrics:
             body["rows_produced_count"] = self.rows_produced_count
         if self.rows_read_count is not None:
             body["rows_read_count"] = self.rows_read_count
+        if self.runnable_tasks is not None:
+            body["runnable_tasks"] = self.runnable_tasks
         if self.spill_to_disk_bytes is not None:
             body["spill_to_disk_bytes"] = self.spill_to_disk_bytes
         if self.task_time_over_time_range:
@@ -6205,6 +5199,8 @@ class QueryMetrics:
             body["task_total_time_ms"] = self.task_total_time_ms
         if self.total_time_ms is not None:
             body["total_time_ms"] = self.total_time_ms
+        if self.work_to_be_done is not None:
+            body["work_to_be_done"] = self.work_to_be_done
         if self.write_remote_bytes is not None:
             body["write_remote_bytes"] = self.write_remote_bytes
         return body
@@ -6218,6 +5214,7 @@ class QueryMetrics:
             network_sent_bytes=d.get("network_sent_bytes", None),
             overloading_queue_start_timestamp=d.get("overloading_queue_start_timestamp", None),
             photon_total_time_ms=d.get("photon_total_time_ms", None),
+            projected_remaining_task_total_time_ms=d.get("projected_remaining_task_total_time_ms", None),
             provisioning_queue_start_timestamp=d.get("provisioning_queue_start_timestamp", None),
             pruned_bytes=d.get("pruned_bytes", None),
             pruned_files_count=d.get("pruned_files_count", None),
@@ -6227,14 +5224,17 @@ class QueryMetrics:
             read_files_count=d.get("read_files_count", None),
             read_partitions_count=d.get("read_partitions_count", None),
             read_remote_bytes=d.get("read_remote_bytes", None),
+            remaining_task_count=d.get("remaining_task_count", None),
             result_fetch_time_ms=d.get("result_fetch_time_ms", None),
             result_from_cache=d.get("result_from_cache", None),
             rows_produced_count=d.get("rows_produced_count", None),
             rows_read_count=d.get("rows_read_count", None),
+            runnable_tasks=d.get("runnable_tasks", None),
             spill_to_disk_bytes=d.get("spill_to_disk_bytes", None),
             task_time_over_time_range=_from_dict(d, "task_time_over_time_range", TaskTimeOverRange),
             task_total_time_ms=d.get("task_total_time_ms", None),
             total_time_ms=d.get("total_time_ms", None),
+            work_to_be_done=d.get("work_to_be_done", None),
             write_remote_bytes=d.get("write_remote_bytes", None),
         )
 
@@ -6371,94 +5371,6 @@ class QueryParameter:
             query_backed_value=_from_dict(d, "query_backed_value", QueryBackedValue),
             text_value=_from_dict(d, "text_value", TextValue),
             title=d.get("title", None),
-        )
-
-
-@dataclass
-class QueryPostContent:
-    data_source_id: Optional[str] = None
-    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
-
-    description: Optional[str] = None
-    """General description that conveys additional information about this query such as usage notes."""
-
-    name: Optional[str] = None
-    """The title of this query that appears in list views, widget headings, and on the query page."""
-
-    options: Optional[Any] = None
-    """Exclusively used for storing a list parameter definitions. A parameter is an object with
-    `title`, `name`, `type`, and `value` properties. The `value` field here is the default value. It
-    can be overridden at runtime."""
-
-    parent: Optional[str] = None
-    """The identifier of the workspace folder containing the object."""
-
-    query: Optional[str] = None
-    """The text of the query to be run."""
-
-    run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
-
-    tags: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the QueryPostContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.query is not None:
-            body["query"] = self.query
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role.value
-        if self.tags:
-            body["tags"] = [v for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QueryPostContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.data_source_id is not None:
-            body["data_source_id"] = self.data_source_id
-        if self.description is not None:
-            body["description"] = self.description
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.parent is not None:
-            body["parent"] = self.parent
-        if self.query is not None:
-            body["query"] = self.query
-        if self.run_as_role is not None:
-            body["run_as_role"] = self.run_as_role
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QueryPostContent:
-        """Deserializes the QueryPostContent from a dictionary."""
-        return cls(
-            data_source_id=d.get("data_source_id", None),
-            description=d.get("description", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            parent=d.get("parent", None),
-            query=d.get("query", None),
-            run_as_role=_enum(d, "run_as_role", RunAsRole),
-            tags=d.get("tags", None),
         )
 
 
@@ -6817,50 +5729,6 @@ class ServiceErrorCode(Enum):
 
 
 @dataclass
-class SetRequest:
-    """Set object ACL"""
-
-    access_control_list: Optional[List[AccessControl]] = None
-
-    object_id: Optional[str] = None
-    """Object ID. The ACL for the object with this UUID is overwritten by this request's POST content."""
-
-    object_type: Optional[ObjectTypePlural] = None
-    """The type of object permission to set."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SetRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.object_id is not None:
-            body["objectId"] = self.object_id
-        if self.object_type is not None:
-            body["objectType"] = self.object_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.object_id is not None:
-            body["objectId"] = self.object_id
-        if self.object_type is not None:
-            body["objectType"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetRequest:
-        """Deserializes the SetRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
-            object_id=d.get("objectId", None),
-            object_type=_enum(d, "objectType", ObjectTypePlural),
-        )
-
-
-@dataclass
 class SetResponse:
     access_control_list: Optional[List[AccessControl]] = None
 
@@ -6899,102 +5767,6 @@ class SetResponse:
             access_control_list=_repeated_dict(d, "access_control_list", AccessControl),
             object_id=d.get("object_id", None),
             object_type=_enum(d, "object_type", ObjectType),
-        )
-
-
-@dataclass
-class SetWorkspaceWarehouseConfigRequest:
-    channel: Optional[Channel] = None
-    """Optional: Channel selection details"""
-
-    config_param: Optional[RepeatedEndpointConfPairs] = None
-    """Deprecated: Use sql_configuration_parameters"""
-
-    data_access_config: Optional[List[EndpointConfPair]] = None
-    """Spark confs for external hive metastore configuration JSON serialized size must be less than <=
-    512K"""
-
-    enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None
-    """List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
-    CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
-    specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses
-    to be converted to another type. Used by frontend to save specific type availability in the
-    warehouse create and edit form UI."""
-
-    global_param: Optional[RepeatedEndpointConfPairs] = None
-    """Deprecated: Use sql_configuration_parameters"""
-
-    google_service_account: Optional[str] = None
-    """GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage"""
-
-    instance_profile_arn: Optional[str] = None
-    """AWS Only: Instance profile used to pass IAM role to the cluster"""
-
-    security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy] = None
-    """Security policy for warehouses"""
-
-    sql_configuration_parameters: Optional[RepeatedEndpointConfPairs] = None
-    """SQL configuration parameters"""
-
-    def as_dict(self) -> dict:
-        """Serializes the SetWorkspaceWarehouseConfigRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.channel:
-            body["channel"] = self.channel.as_dict()
-        if self.config_param:
-            body["config_param"] = self.config_param.as_dict()
-        if self.data_access_config:
-            body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
-        if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = [v.as_dict() for v in self.enabled_warehouse_types]
-        if self.global_param:
-            body["global_param"] = self.global_param.as_dict()
-        if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.security_policy is not None:
-            body["security_policy"] = self.security_policy.value
-        if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetWorkspaceWarehouseConfigRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.channel:
-            body["channel"] = self.channel
-        if self.config_param:
-            body["config_param"] = self.config_param
-        if self.data_access_config:
-            body["data_access_config"] = self.data_access_config
-        if self.enabled_warehouse_types:
-            body["enabled_warehouse_types"] = self.enabled_warehouse_types
-        if self.global_param:
-            body["global_param"] = self.global_param
-        if self.google_service_account is not None:
-            body["google_service_account"] = self.google_service_account
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.security_policy is not None:
-            body["security_policy"] = self.security_policy
-        if self.sql_configuration_parameters:
-            body["sql_configuration_parameters"] = self.sql_configuration_parameters
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetWorkspaceWarehouseConfigRequest:
-        """Deserializes the SetWorkspaceWarehouseConfigRequest from a dictionary."""
-        return cls(
-            channel=_from_dict(d, "channel", Channel),
-            config_param=_from_dict(d, "config_param", RepeatedEndpointConfPairs),
-            data_access_config=_repeated_dict(d, "data_access_config", EndpointConfPair),
-            enabled_warehouse_types=_repeated_dict(d, "enabled_warehouse_types", WarehouseTypePair),
-            global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
-            google_service_account=d.get("google_service_account", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            security_policy=_enum(d, "security_policy", SetWorkspaceWarehouseConfigRequestSecurityPolicy),
-            sql_configuration_parameters=_from_dict(d, "sql_configuration_parameters", RepeatedEndpointConfPairs),
         )
 
 
@@ -7532,107 +6304,6 @@ class TransferOwnershipObjectId:
 
 
 @dataclass
-class TransferOwnershipRequest:
-    new_owner: Optional[str] = None
-    """Email address for the new owner, who must exist in the workspace."""
-
-    object_id: Optional[TransferOwnershipObjectId] = None
-    """The ID of the object on which to change ownership."""
-
-    object_type: Optional[OwnableObjectType] = None
-    """The type of object on which to change ownership."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TransferOwnershipRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.new_owner is not None:
-            body["new_owner"] = self.new_owner
-        if self.object_id:
-            body["objectId"] = self.object_id.as_dict()
-        if self.object_type is not None:
-            body["objectType"] = self.object_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TransferOwnershipRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.new_owner is not None:
-            body["new_owner"] = self.new_owner
-        if self.object_id:
-            body["objectId"] = self.object_id
-        if self.object_type is not None:
-            body["objectType"] = self.object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TransferOwnershipRequest:
-        """Deserializes the TransferOwnershipRequest from a dictionary."""
-        return cls(
-            new_owner=d.get("new_owner", None),
-            object_id=_from_dict(d, "objectId", TransferOwnershipObjectId),
-            object_type=_enum(d, "objectType", OwnableObjectType),
-        )
-
-
-@dataclass
-class UpdateAlertRequest:
-    update_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    alert: Optional[UpdateAlertRequestAlert] = None
-
-    auto_resolve_display_name: Optional[bool] = None
-    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
-    alert's display name conflicts with an existing alert's display name."""
-
-    id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAlertRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert.as_dict()
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAlertRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alert:
-            body["alert"] = self.alert
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAlertRequest:
-        """Deserializes the UpdateAlertRequest from a dictionary."""
-        return cls(
-            alert=_from_dict(d, "alert", UpdateAlertRequestAlert),
-            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
-            id=d.get("id", None),
-            update_mask=d.get("update_mask", None),
-        )
-
-
-@dataclass
 class UpdateAlertRequestAlert:
     condition: Optional[AlertCondition] = None
     """Trigger conditions of the alert."""
@@ -7718,64 +6389,6 @@ class UpdateAlertRequestAlert:
             owner_user_name=d.get("owner_user_name", None),
             query_id=d.get("query_id", None),
             seconds_to_retrigger=d.get("seconds_to_retrigger", None),
-        )
-
-
-@dataclass
-class UpdateQueryRequest:
-    update_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    auto_resolve_display_name: Optional[bool] = None
-    """If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the
-    alert's display name conflicts with an existing alert's display name."""
-
-    id: Optional[str] = None
-
-    query: Optional[UpdateQueryRequestQuery] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateQueryRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.id is not None:
-            body["id"] = self.id
-        if self.query:
-            body["query"] = self.query.as_dict()
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateQueryRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.auto_resolve_display_name is not None:
-            body["auto_resolve_display_name"] = self.auto_resolve_display_name
-        if self.id is not None:
-            body["id"] = self.id
-        if self.query:
-            body["query"] = self.query
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateQueryRequest:
-        """Deserializes the UpdateQueryRequest from a dictionary."""
-        return cls(
-            auto_resolve_display_name=d.get("auto_resolve_display_name", None),
-            id=d.get("id", None),
-            query=_from_dict(d, "query", UpdateQueryRequestQuery),
-            update_mask=d.get("update_mask", None),
         )
 
 
@@ -7904,55 +6517,6 @@ class UpdateResponse:
 
 
 @dataclass
-class UpdateVisualizationRequest:
-    update_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    id: Optional[str] = None
-
-    visualization: Optional[UpdateVisualizationRequestVisualization] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        if self.visualization:
-            body["visualization"] = self.visualization.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateVisualizationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        if self.visualization:
-            body["visualization"] = self.visualization
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateVisualizationRequest:
-        """Deserializes the UpdateVisualizationRequest from a dictionary."""
-        return cls(
-            id=d.get("id", None),
-            update_mask=d.get("update_mask", None),
-            visualization=_from_dict(d, "visualization", UpdateVisualizationRequestVisualization),
-        )
-
-
-@dataclass
 class UpdateVisualizationRequestVisualization:
     display_name: Optional[str] = None
     """The display name of the visualization."""
@@ -8002,73 +6566,6 @@ class UpdateVisualizationRequestVisualization:
             serialized_options=d.get("serialized_options", None),
             serialized_query_plan=d.get("serialized_query_plan", None),
             type=d.get("type", None),
-        )
-
-
-@dataclass
-class UpdateWidgetRequest:
-    dashboard_id: str
-    """Dashboard ID returned by :method:dashboards/create."""
-
-    options: WidgetOptions
-
-    width: int
-    """Width of a widget"""
-
-    id: Optional[str] = None
-    """Widget ID returned by :method:dashboardwidgets/create"""
-
-    text: Optional[str] = None
-    """If this is a textbox widget, the application displays this text. This field is ignored if the
-    widget contains a visualization in the `visualization` field."""
-
-    visualization_id: Optional[str] = None
-    """Query Vizualization ID returned by :method:queryvisualizations/create."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateWidgetRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.id is not None:
-            body["id"] = self.id
-        if self.options:
-            body["options"] = self.options.as_dict()
-        if self.text is not None:
-            body["text"] = self.text
-        if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
-        if self.width is not None:
-            body["width"] = self.width
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateWidgetRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.id is not None:
-            body["id"] = self.id
-        if self.options:
-            body["options"] = self.options
-        if self.text is not None:
-            body["text"] = self.text
-        if self.visualization_id is not None:
-            body["visualization_id"] = self.visualization_id
-        if self.width is not None:
-            body["width"] = self.width
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateWidgetRequest:
-        """Deserializes the UpdateWidgetRequest from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            id=d.get("id", None),
-            options=_from_dict(d, "options", WidgetOptions),
-            text=d.get("text", None),
-            visualization_id=d.get("visualization_id", None),
-            width=d.get("width", None),
         )
 
 
@@ -8422,40 +6919,6 @@ class WarehousePermissionsDescription:
         return cls(
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", WarehousePermissionLevel),
-        )
-
-
-@dataclass
-class WarehousePermissionsRequest:
-    access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
-
-    warehouse_id: Optional[str] = None
-    """The SQL warehouse for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WarehousePermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WarehousePermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WarehousePermissionsRequest:
-        """Deserializes the WarehousePermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WarehouseAccessControlRequest),
-            warehouse_id=d.get("warehouse_id", None),
         )
 
 
@@ -9227,56 +7690,6 @@ class DashboardsAPI:
 
     def __init__(self, api_client):
         self._api = api_client
-
-    def create(
-        self,
-        name: str,
-        *,
-        dashboard_filters_enabled: Optional[bool] = None,
-        is_favorite: Optional[bool] = None,
-        parent: Optional[str] = None,
-        run_as_role: Optional[RunAsRole] = None,
-        tags: Optional[List[str]] = None,
-    ) -> Dashboard:
-        """Creates a new dashboard object. Only the name parameter is required in the POST request JSON body.
-        Other fields can be included when duplicating dashboards with this API. Databricks does not recommend
-        designing dashboards exclusively using this API.',
-
-        :param name: str
-          The title of this dashboard that appears in list views and at the top of the dashboard page.
-        :param dashboard_filters_enabled: bool (optional)
-          Indicates whether the dashboard filters are enabled
-        :param is_favorite: bool (optional)
-          Indicates whether this dashboard object should appear in the current user's favorites list.
-        :param parent: str (optional)
-          The identifier of the workspace folder containing the object.
-        :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
-        :param tags: List[str] (optional)
-
-        :returns: :class:`Dashboard`
-        """
-        body = {}
-        if dashboard_filters_enabled is not None:
-            body["dashboard_filters_enabled"] = dashboard_filters_enabled
-        if is_favorite is not None:
-            body["is_favorite"] = is_favorite
-        if name is not None:
-            body["name"] = name
-        if parent is not None:
-            body["parent"] = parent
-        if run_as_role is not None:
-            body["run_as_role"] = run_as_role.value
-        if tags is not None:
-            body["tags"] = [v for v in tags]
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("POST", "/api/2.0/preview/sql/dashboards", body=body, headers=headers)
-        return Dashboard.from_dict(res)
 
     def delete(self, dashboard_id: str):
         """Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot

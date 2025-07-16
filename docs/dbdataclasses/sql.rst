@@ -282,19 +282,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NOT_EQUAL
       :value: "NOT_EQUAL"
 
-.. autoclass:: CreateAlert
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateAlertRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateAlertRequestAlert
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateQueryRequest
    :members:
    :undoc-members:
 
@@ -302,19 +290,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateQueryVisualizationsLegacyRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateVisualizationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateVisualizationRequestVisualization
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateWarehouseRequest
    :members:
    :undoc-members:
 
@@ -335,10 +311,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateWidget
-   :members:
-   :undoc-members:
-
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -347,15 +319,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DashboardEditContent
-   :members:
-   :undoc-members:
-
 .. autoclass:: DashboardOptions
-   :members:
-   :undoc-members:
-
-.. autoclass:: DashboardPostContent
    :members:
    :undoc-members:
 
@@ -463,14 +427,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INLINE
       :value: "INLINE"
 
-.. autoclass:: EditAlert
-   :members:
-   :undoc-members:
-
-.. autoclass:: EditWarehouseRequest
-   :members:
-   :undoc-members:
-
 .. py:class:: EditWarehouseRequestWarehouseType
 
    Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
@@ -526,10 +482,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EnumValue
-   :members:
-   :undoc-members:
-
-.. autoclass:: ExecuteStatementRequest
    :members:
    :undoc-members:
 
@@ -805,10 +757,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: QueryEditContent
-   :members:
-   :undoc-members:
-
 .. autoclass:: QueryFilter
    :members:
    :undoc-members:
@@ -830,10 +778,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: QueryParameter
-   :members:
-   :undoc-members:
-
-.. autoclass:: QueryPostContent
    :members:
    :undoc-members:
 
@@ -1025,15 +969,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKSPACE_TEMPORARILY_UNAVAILABLE
       :value: "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
-.. autoclass:: SetRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: SetResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetWorkspaceWarehouseConfigRequest
    :members:
    :undoc-members:
 
@@ -1437,19 +1373,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: TransferOwnershipRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAlertRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateAlertRequestAlert
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateQueryRequest
    :members:
    :undoc-members:
 
@@ -1461,15 +1385,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateVisualizationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateVisualizationRequestVisualization
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateWidgetRequest
    :members:
    :undoc-members:
 
@@ -1517,10 +1433,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: WarehousePermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: WarehousePermissionsRequest
    :members:
    :undoc-members:
 

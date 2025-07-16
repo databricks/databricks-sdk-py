@@ -1164,37 +1164,6 @@ class ListCleanRoomsResponse:
         )
 
 
-@dataclass
-class UpdateCleanRoomRequest:
-    clean_room: Optional[CleanRoom] = None
-
-    name: Optional[str] = None
-    """Name of the clean room."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCleanRoomRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.clean_room:
-            body["clean_room"] = self.clean_room.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCleanRoomRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.clean_room:
-            body["clean_room"] = self.clean_room
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCleanRoomRequest:
-        """Deserializes the UpdateCleanRoomRequest from a dictionary."""
-        return cls(clean_room=_from_dict(d, "clean_room", CleanRoom), name=d.get("name", None))
-
-
 class CleanRoomAssetsAPI:
     """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the
     clean room."""
@@ -1209,7 +1178,8 @@ class CleanRoomAssetsAPI:
         access the asset. Typically, you should use a group as the clean room owner.
 
         :param clean_room_name: str
-          Name of the clean room.
+          The name of the clean room this asset belongs to. This is an output-only field to ensure proper
+          resource identification.
         :param asset: :class:`CleanRoomAsset`
 
         :returns: :class:`CleanRoomAsset`

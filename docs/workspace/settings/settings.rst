@@ -53,6 +53,12 @@
         This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
         namespace only applies when using Unity Catalog-enabled compute.
 
+    .. py:property:: default_warehouse_id
+        :type: DefaultWarehouseIdAPI
+
+        Warehouse to be selected by default for users in this workspace. Covers SQL workloads only and can be
+        overridden by users.
+
     .. py:property:: disable_legacy_access
         :type: DisableLegacyAccessAPI
 

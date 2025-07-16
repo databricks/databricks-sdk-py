@@ -90,18 +90,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VARIANT
       :value: "VARIANT"
 
-.. autoclass:: CreateProvider
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateRecipient
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateShare
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteResponse
    :members:
    :undoc-members:
@@ -394,10 +382,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RotateRecipientToken
-   :members:
-   :undoc-members:
-
 .. autoclass:: SecurablePropertiesKvPairs
    :members:
    :undoc-members:
@@ -497,6 +481,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: TableInternalAttributesSharedTableType
 
+   .. py:attribute:: DELTA_ICEBERG_TABLE
+      :value: "DELTA_ICEBERG_TABLE"
+
    .. py:attribute:: DIRECTORY_BASED_TABLE
       :value: "DIRECTORY_BASED_TABLE"
 
@@ -514,22 +501,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
-
-.. autoclass:: UpdateProvider
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRecipient
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateShare
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateSharePermissions
-   :members:
-   :undoc-members:
 
 .. autoclass:: UpdateSharePermissionsResponse
    :members:

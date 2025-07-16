@@ -17,6 +17,9 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AclItem:
+    """An item representing an ACL rule applied to the given principal (user or group) on the
+    associated scope point."""
+
     principal: str
     """The principal in which the permission is applied."""
 
@@ -48,6 +51,7 @@ class AclItem:
 
 
 class AclPermission(Enum):
+    """The ACL permission levels for Secret ACLs applied to secret scopes."""
 
     MANAGE = "MANAGE"
     READ = "READ"
@@ -56,6 +60,8 @@ class AclPermission(Enum):
 
 @dataclass
 class AzureKeyVaultSecretScopeMetadata:
+    """The metadata of the Azure KeyVault for a secret scope of type `AZURE_KEYVAULT`"""
+
     resource_id: str
     """The resource id of the azure KeyVault that user wants to associate the scope with."""
 
@@ -87,58 +93,6 @@ class AzureKeyVaultSecretScopeMetadata:
 
 
 @dataclass
-class CreateCredentialsRequest:
-    git_provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
-
-    personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more].
-    
-    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCredentialsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsRequest:
-        """Deserializes the CreateCredentialsRequest from a dictionary."""
-        return cls(
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
-        )
-
-
-@dataclass
 class CreateCredentialsResponse:
     credential_id: int
     """ID of the credential object in the workspace."""
@@ -150,6 +104,12 @@ class CreateCredentialsResponse:
     """The username or email provided with your Git provider account and associated with the
     credential."""
 
+    is_default_for_provider: Optional[bool] = None
+    """if the credential is the default for the given provider"""
+
+    name: Optional[str] = None
+    """the name of the git credential, used for identification and ease of lookup"""
+
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -159,6 +119,10 @@ class CreateCredentialsResponse:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -170,6 +134,10 @@ class CreateCredentialsResponse:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     @classmethod
@@ -179,61 +147,8 @@ class CreateCredentialsResponse:
             credential_id=d.get("credential_id", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
-        )
-
-
-@dataclass
-class CreateRepoRequest:
-    url: str
-    """URL of the Git repository to be linked."""
-
-    provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    path: Optional[str] = None
-    """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
-    repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`."""
-
-    sparse_checkout: Optional[SparseCheckout] = None
-    """If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
-    sparse checkout after the repo is created."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateRepoRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.provider is not None:
-            body["provider"] = self.provider
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateRepoRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.provider is not None:
-            body["provider"] = self.provider
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateRepoRequest:
-        """Deserializes the CreateRepoRequest from a dictionary."""
-        return cls(
-            path=d.get("path", None),
-            provider=d.get("provider", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
-            url=d.get("url", None),
+            is_default_for_provider=d.get("is_default_for_provider", None),
+            name=d.get("name", None),
         )
 
 
@@ -313,57 +228,6 @@ class CreateRepoResponse:
 
 
 @dataclass
-class CreateScope:
-    scope: str
-    """Scope name requested by the user. Scope names are unique."""
-
-    backend_azure_keyvault: Optional[AzureKeyVaultSecretScopeMetadata] = None
-    """The metadata for the secret scope if the type is `AZURE_KEYVAULT`"""
-
-    initial_manage_principal: Optional[str] = None
-    """The principal that is initially granted `MANAGE` permission to the created scope."""
-
-    scope_backend_type: Optional[ScopeBackendType] = None
-    """The backend type the scope will be created with. If not specified, will default to `DATABRICKS`"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateScope into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault.as_dict()
-        if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateScope into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.backend_azure_keyvault:
-            body["backend_azure_keyvault"] = self.backend_azure_keyvault
-        if self.initial_manage_principal is not None:
-            body["initial_manage_principal"] = self.initial_manage_principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.scope_backend_type is not None:
-            body["scope_backend_type"] = self.scope_backend_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateScope:
-        """Deserializes the CreateScope from a dictionary."""
-        return cls(
-            backend_azure_keyvault=_from_dict(d, "backend_azure_keyvault", AzureKeyVaultSecretScopeMetadata),
-            initial_manage_principal=d.get("initial_manage_principal", None),
-            scope=d.get("scope", None),
-            scope_backend_type=_enum(d, "scope_backend_type", ScopeBackendType),
-        )
-
-
-@dataclass
 class CreateScopeResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
@@ -393,6 +257,12 @@ class CredentialInfo:
     """The username or email provided with your Git provider account and associated with the
     credential."""
 
+    is_default_for_provider: Optional[bool] = None
+    """if the credential is the default for the given provider"""
+
+    name: Optional[str] = None
+    """the name of the git credential, used for identification and ease of lookup"""
+
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -402,6 +272,10 @@ class CredentialInfo:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -413,6 +287,10 @@ class CredentialInfo:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     @classmethod
@@ -422,73 +300,9 @@ class CredentialInfo:
             credential_id=d.get("credential_id", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
+            is_default_for_provider=d.get("is_default_for_provider", None),
+            name=d.get("name", None),
         )
-
-
-@dataclass
-class Delete:
-    path: str
-    """The absolute path of the notebook or directory."""
-
-    recursive: Optional[bool] = None
-    """The flag that specifies whether to delete the object recursively. It is `false` by default.
-    Please note this deleting directory is not atomic. If it fails in the middle, some of objects
-    under this directory may be deleted and cannot be undone."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Delete into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Delete:
-        """Deserializes the Delete from a dictionary."""
-        return cls(path=d.get("path", None), recursive=d.get("recursive", None))
-
-
-@dataclass
-class DeleteAcl:
-    scope: str
-    """The name of the scope to remove permissions from."""
-
-    principal: str
-    """The principal to remove an existing ACL from."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAcl into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAcl into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAcl:
-        """Deserializes the DeleteAcl from a dictionary."""
-        return cls(principal=d.get("principal", None), scope=d.get("scope", None))
 
 
 @dataclass
@@ -564,31 +378,6 @@ class DeleteResponse:
 
 
 @dataclass
-class DeleteScope:
-    scope: str
-    """Name of the scope to delete."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteScope into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteScope into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteScope:
-        """Deserializes the DeleteScope from a dictionary."""
-        return cls(scope=d.get("scope", None))
-
-
-@dataclass
 class DeleteScopeResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
@@ -604,38 +393,6 @@ class DeleteScopeResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
         """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DeleteSecret:
-    scope: str
-    """The name of the scope that contains the secret to delete."""
-
-    key: str
-    """Name of the secret to delete."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteSecret into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteSecret into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecret:
-        """Deserializes the DeleteSecret from a dictionary."""
-        return cls(key=d.get("key", None), scope=d.get("scope", None))
 
 
 @dataclass
@@ -716,6 +473,12 @@ class GetCredentialsResponse:
     """The username or email provided with your Git provider account and associated with the
     credential."""
 
+    is_default_for_provider: Optional[bool] = None
+    """if the credential is the default for the given provider"""
+
+    name: Optional[str] = None
+    """the name of the git credential, used for identification and ease of lookup"""
+
     def as_dict(self) -> dict:
         """Serializes the GetCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -725,6 +488,10 @@ class GetCredentialsResponse:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -736,6 +503,10 @@ class GetCredentialsResponse:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
             body["git_username"] = self.git_username
+        if self.is_default_for_provider is not None:
+            body["is_default_for_provider"] = self.is_default_for_provider
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     @classmethod
@@ -745,6 +516,8 @@ class GetCredentialsResponse:
             credential_id=d.get("credential_id", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
+            is_default_for_provider=d.get("is_default_for_provider", None),
+            name=d.get("name", None),
         )
 
 
@@ -903,80 +676,6 @@ class GetWorkspaceObjectPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", WorkspaceObjectPermissionsDescription))
-
-
-@dataclass
-class Import:
-    path: str
-    """The absolute path of the object or directory. Importing a directory is only supported for the
-    `DBC` and `SOURCE` formats."""
-
-    content: Optional[str] = None
-    """The base64-encoded content. This has a limit of 10 MB.
-    
-    If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is
-    thrown. This parameter might be absent, and instead a posted file is used."""
-
-    format: Optional[ImportFormat] = None
-    """This specifies the format of the file to be imported.
-    
-    The value is case sensitive.
-    
-    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
-    content provided in the request. If the item is imported as a notebook, then the item's
-    extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
-    code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
-    as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive
-    format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
-    format."""
-
-    language: Optional[Language] = None
-    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
-
-    overwrite: Optional[bool] = None
-    """The flag that specifies whether to overwrite existing object. It is `false` by default. For
-    `DBC` format, `overwrite` is not supported since it may contain a directory."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Import into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.format is not None:
-            body["format"] = self.format.value
-        if self.language is not None:
-            body["language"] = self.language.value
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Import into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.format is not None:
-            body["format"] = self.format
-        if self.language is not None:
-            body["language"] = self.language
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Import:
-        """Deserializes the Import from a dictionary."""
-        return cls(
-            content=d.get("content", None),
-            format=_enum(d, "format", ImportFormat),
-            language=_enum(d, "language", Language),
-            overwrite=d.get("overwrite", None),
-            path=d.get("path", None),
-        )
 
 
 class ImportFormat(Enum):
@@ -1177,32 +876,6 @@ class ListSecretsResponse:
 
 
 @dataclass
-class Mkdirs:
-    path: str
-    """The absolute path of the directory. If the parent directories do not exist, it will also create
-    them. If the directory already exists, this command will do nothing and succeed."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Mkdirs into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Mkdirs into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Mkdirs:
-        """Deserializes the Mkdirs from a dictionary."""
-        return cls(path=d.get("path", None))
-
-
-@dataclass
 class MkdirsResponse:
     def as_dict(self) -> dict:
         """Serializes the MkdirsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1321,49 +994,6 @@ class ObjectType(Enum):
 
 
 @dataclass
-class PutAcl:
-    scope: str
-    """The name of the scope to apply permissions to."""
-
-    principal: str
-    """The principal in which the permission is applied."""
-
-    permission: AclPermission
-    """The permission level applied to the principal."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutAcl into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permission is not None:
-            body["permission"] = self.permission.value
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutAcl into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permission is not None:
-            body["permission"] = self.permission
-        if self.principal is not None:
-            body["principal"] = self.principal
-        if self.scope is not None:
-            body["scope"] = self.scope
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutAcl:
-        """Deserializes the PutAcl from a dictionary."""
-        return cls(
-            permission=_enum(d, "permission", AclPermission),
-            principal=d.get("principal", None),
-            scope=d.get("scope", None),
-        )
-
-
-@dataclass
 class PutAclResponse:
     def as_dict(self) -> dict:
         """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
@@ -1379,57 +1009,6 @@ class PutAclResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
         """Deserializes the PutAclResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class PutSecret:
-    scope: str
-    """The name of the scope to which the secret will be associated with."""
-
-    key: str
-    """A unique name to identify the secret."""
-
-    bytes_value: Optional[str] = None
-    """If specified, value will be stored as bytes."""
-
-    string_value: Optional[str] = None
-    """If specified, note that the value will be stored in UTF-8 (MB4) form."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutSecret into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.string_value is not None:
-            body["string_value"] = self.string_value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutSecret into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.bytes_value is not None:
-            body["bytes_value"] = self.bytes_value
-        if self.key is not None:
-            body["key"] = self.key
-        if self.scope is not None:
-            body["scope"] = self.scope
-        if self.string_value is not None:
-            body["string_value"] = self.string_value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutSecret:
-        """Deserializes the PutSecret from a dictionary."""
-        return cls(
-            bytes_value=d.get("bytes_value", None),
-            key=d.get("key", None),
-            scope=d.get("scope", None),
-            string_value=d.get("string_value", None),
-        )
 
 
 @dataclass
@@ -1757,41 +1336,9 @@ class RepoPermissionsDescription:
         )
 
 
-@dataclass
-class RepoPermissionsRequest:
-    access_control_list: Optional[List[RepoAccessControlRequest]] = None
-
-    repo_id: Optional[str] = None
-    """The repo for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the RepoPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RepoPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsRequest:
-        """Deserializes the RepoPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", RepoAccessControlRequest),
-            repo_id=d.get("repo_id", None),
-        )
-
-
 class ScopeBackendType(Enum):
+    """The types of secret scope backends in the Secret Manager. Azure KeyVault backed secret scopes
+    will be supported in a later release."""
 
     AZURE_KEYVAULT = "AZURE_KEYVAULT"
     DATABRICKS = "DATABRICKS"
@@ -1799,6 +1346,9 @@ class ScopeBackendType(Enum):
 
 @dataclass
 class SecretMetadata:
+    """The metadata about a secret. Returned when listing secrets. Does not contain the actual secret
+    value."""
+
     key: Optional[str] = None
     """A unique name to identify the secret."""
 
@@ -1831,11 +1381,15 @@ class SecretMetadata:
 
 @dataclass
 class SecretScope:
+    """An organizational resource for storing secrets. Secret scopes can be different types
+    (Databricks-managed, Azure KeyVault backed, etc), and ACLs can be applied to control permissions
+    for all secrets within a scope."""
+
     backend_type: Optional[ScopeBackendType] = None
     """The type of secret scope backend."""
 
     keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None
-    """The metadata for the secret scope if the type is `AZURE_KEYVAULT`"""
+    """The metadata for the secret scope if the type is ``AZURE_KEYVAULT``"""
 
     name: Optional[str] = None
     """A unique name to identify the secret scope."""
@@ -1931,66 +1485,6 @@ class SparseCheckoutUpdate:
 
 
 @dataclass
-class UpdateCredentialsRequest:
-    git_provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
-    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
-    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
-
-    credential_id: Optional[int] = None
-    """The ID for the corresponding credential to access."""
-
-    git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
-
-    personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more].
-    
-    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCredentialsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_id is not None:
-            body["credential_id"] = self.credential_id
-        if self.git_provider is not None:
-            body["git_provider"] = self.git_provider
-        if self.git_username is not None:
-            body["git_username"] = self.git_username
-        if self.personal_access_token is not None:
-            body["personal_access_token"] = self.personal_access_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsRequest:
-        """Deserializes the UpdateCredentialsRequest from a dictionary."""
-        return cls(
-            credential_id=d.get("credential_id", None),
-            git_provider=d.get("git_provider", None),
-            git_username=d.get("git_username", None),
-            personal_access_token=d.get("personal_access_token", None),
-        )
-
-
-@dataclass
 class UpdateCredentialsResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2006,60 +1500,6 @@ class UpdateCredentialsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialsResponse:
         """Deserializes the UpdateCredentialsResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateRepoRequest:
-    branch: Optional[str] = None
-    """Branch that the local version of the repo is checked out to."""
-
-    repo_id: Optional[int] = None
-    """ID of the Git folder (repo) object in the workspace."""
-
-    sparse_checkout: Optional[SparseCheckoutUpdate] = None
-    """If specified, update the sparse checkout settings. The update will fail if sparse checkout is
-    not enabled for the repo."""
-
-    tag: Optional[str] = None
-    """Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the
-    repo in a detached HEAD state. Before committing new changes, you must update the repo to a
-    branch instead of the detached HEAD."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateRepoRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.branch is not None:
-            body["branch"] = self.branch
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout.as_dict()
-        if self.tag is not None:
-            body["tag"] = self.tag
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateRepoRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.branch is not None:
-            body["branch"] = self.branch
-        if self.repo_id is not None:
-            body["repo_id"] = self.repo_id
-        if self.sparse_checkout:
-            body["sparse_checkout"] = self.sparse_checkout
-        if self.tag is not None:
-            body["tag"] = self.tag
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateRepoRequest:
-        """Deserializes the UpdateRepoRequest from a dictionary."""
-        return cls(
-            branch=d.get("branch", None),
-            repo_id=d.get("repo_id", None),
-            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckoutUpdate),
-            tag=d.get("tag", None),
-        )
 
 
 @dataclass
@@ -2311,48 +1751,6 @@ class WorkspaceObjectPermissionsDescription:
         )
 
 
-@dataclass
-class WorkspaceObjectPermissionsRequest:
-    access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
-
-    workspace_object_id: Optional[str] = None
-    """The workspace object for which to get or manage permissions."""
-
-    workspace_object_type: Optional[str] = None
-    """The workspace object type for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
-        if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WorkspaceObjectPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.workspace_object_id is not None:
-            body["workspace_object_id"] = self.workspace_object_id
-        if self.workspace_object_type is not None:
-            body["workspace_object_type"] = self.workspace_object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsRequest:
-        """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", WorkspaceObjectAccessControlRequest),
-            workspace_object_id=d.get("workspace_object_id", None),
-            workspace_object_type=d.get("workspace_object_type", None),
-        )
-
-
 class GitCredentialsAPI:
     """Registers personal access token for Databricks to do operations on behalf of the user.
 
@@ -2364,7 +1762,13 @@ class GitCredentialsAPI:
         self._api = api_client
 
     def create(
-        self, git_provider: str, *, git_username: Optional[str] = None, personal_access_token: Optional[str] = None
+        self,
+        git_provider: str,
+        *,
+        git_username: Optional[str] = None,
+        is_default_for_provider: Optional[bool] = None,
+        name: Optional[str] = None,
+        personal_access_token: Optional[str] = None,
     ) -> CreateCredentialsResponse:
         """Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
@@ -2380,6 +1784,10 @@ class GitCredentialsAPI:
           be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
           BitBucket Server, username must be used. For all other providers please see your provider's Personal
           Access Token authentication documentation to see what is supported.
+        :param is_default_for_provider: bool (optional)
+          if the credential is the default for the given provider
+        :param name: str (optional)
+          the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. [Learn more].
@@ -2393,6 +1801,10 @@ class GitCredentialsAPI:
             body["git_provider"] = git_provider
         if git_username is not None:
             body["git_username"] = git_username
+        if is_default_for_provider is not None:
+            body["is_default_for_provider"] = is_default_for_provider
+        if name is not None:
+            body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
         headers = {
@@ -2455,6 +1867,8 @@ class GitCredentialsAPI:
         git_provider: str,
         *,
         git_username: Optional[str] = None,
+        is_default_for_provider: Optional[bool] = None,
+        name: Optional[str] = None,
         personal_access_token: Optional[str] = None,
     ):
         """Updates the specified Git credential.
@@ -2471,6 +1885,10 @@ class GitCredentialsAPI:
           be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
           BitBucket Server, username must be used. For all other providers please see your provider's Personal
           Access Token authentication documentation to see what is supported.
+        :param is_default_for_provider: bool (optional)
+          if the credential is the default for the given provider
+        :param name: str (optional)
+          the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. [Learn more].
@@ -2484,6 +1902,10 @@ class GitCredentialsAPI:
             body["git_provider"] = git_provider
         if git_username is not None:
             body["git_username"] = git_username
+        if is_default_for_provider is not None:
+            body["is_default_for_provider"] = is_default_for_provider
+        if name is not None:
+            body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
         headers = {
@@ -2749,17 +2171,47 @@ class SecretsAPI:
         initial_manage_principal: Optional[str] = None,
         scope_backend_type: Optional[ScopeBackendType] = None,
     ):
-        """The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
+        """Creates a new secret scope.
+
+        The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
         exceed 128 characters.
+
+        Example request:
+
+        .. code::
+
+        { "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":
+        "databricks|azure_keyvault", # below is only required if scope type is azure_keyvault
+        "backend_azure_keyvault": { "resource_id":
+        "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",
+        "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", } }
+
+        If ``initial_manage_principal`` is specified, the initial ACL applied to the scope is applied to the
+        supplied principal (user or group) with ``MANAGE`` permissions. The only supported principal for this
+        option is the group ``users``, which contains all users in the workspace. If
+        ``initial_manage_principal`` is not specified, the initial ACL with ``MANAGE`` permission applied to
+        the scope is assigned to the API request issuer's user identity.
+
+        If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created with secrets from a given
+        Azure KeyVault. The caller must provide the keyvault_resource_id and the tenant_id for the key vault.
+        If ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret scope is created and
+        stored in Databricks's own storage.
+
+        Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already exists. Throws
+        ``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the workspace is exceeded. Throws
+        ``INVALID_PARAMETER_VALUE`` if the scope name is invalid. Throws ``BAD_REQUEST`` if request violated
+        constraints. Throws ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to create a scope with name
+        reserved for databricks internal usage. Throws ``UNAUTHENTICATED`` if unable to verify user access
+        permission on Azure KeyVault
 
         :param scope: str
           Scope name requested by the user. Scope names are unique.
         :param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
-          The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+          The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
         :param initial_manage_principal: str (optional)
-          The principal that is initially granted `MANAGE` permission to the created scope.
+          The principal that is initially granted ``MANAGE`` permission to the created scope.
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
-          The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
+          The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``
 
 
         """
@@ -2773,7 +2225,6 @@ class SecretsAPI:
         if scope_backend_type is not None:
             body["scope_backend_type"] = scope_backend_type.value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2782,9 +2233,17 @@ class SecretsAPI:
     def delete_acl(self, scope: str, principal: str):
         """Deletes the given ACL on the given scope.
 
-        Users must have the `MANAGE` permission to invoke this API. Throws `RESOURCE_DOES_NOT_EXIST` if no
-        such secret scope, principal, or ACL exists. Throws `PERMISSION_DENIED` if the user does not have
-        permission to make this API call.
+        Users must have the ``MANAGE`` permission to invoke this API.
+
+        Example request:
+
+        .. code::
+
+        { "scope": "my-secret-scope", "principal": "data-scientists" }
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL exists. Throws
+        ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
+        ``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid.
 
         :param scope: str
           The name of the scope to remove permissions from.
@@ -2799,7 +2258,6 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -2808,8 +2266,15 @@ class SecretsAPI:
     def delete_scope(self, scope: str):
         """Deletes a secret scope.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws `PERMISSION_DENIED` if the user
-        does not have permission to make this API call.
+        Example request:
+
+        .. code::
+
+        { "scope": "my-secret-scope" }
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws ``PERMISSION_DENIED`` if the
+        user does not have permission to make this API call. Throws ``BAD_REQUEST`` if system user attempts to
+        delete internal secret scope.
 
         :param scope: str
           Name of the scope to delete.
@@ -2820,18 +2285,25 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
 
     def delete_secret(self, scope: str, key: str):
-        """Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
-        secret scope.
+        """Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on
+        the Secret Scope.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists. Throws `PERMISSION_DENIED`
-        if the user does not have permission to make this API call.
+        Example request:
+
+        .. code::
+
+        { "scope": "my-secret-scope", "key": "my-secret-key" }
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws
+        ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
+        ``BAD_REQUEST`` if system user attempts to delete an internal secret, or request is made against Azure
+        KeyVault backed scope.
 
         :param scope: str
           The name of the scope that contains the secret to delete.
@@ -2853,11 +2325,19 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
-        """Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
-        permission to invoke this API.
+        """Describes the details about the given ACL, such as the group and permission.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
-        user does not have permission to make this API call.
+        Users must have the ``MANAGE`` permission to invoke this API.
+
+        Example response:
+
+        .. code::
+
+        { "principal": "data-scientists", "permission": "READ" }
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
+        user does not have permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if the
+        permission or principal is invalid.
 
         :param scope: str
           The name of the scope to fetch ACL information from.
@@ -2880,20 +2360,35 @@ class SecretsAPI:
         return AclItem.from_dict(res)
 
     def get_secret(self, scope: str, key: str) -> GetSecretResponse:
-        """Gets the bytes representation of a secret value for the specified scope and key.
+        """Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users
+        need the READ permission to make this call.
 
-        Users need the READ permission to make this call.
+        Example response:
+
+        .. code::
+
+        { "key": "my-string-key", "value": <bytes of the secret value> }
 
         Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
         caller in DBUtils and the type the data is decoded into.
 
-        Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
-        ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists. Throws
+        ``PERMISSION_DENIED`` if the user does not have permission to make this API call.
+
+        Note: This is explicitly an undocumented API. It also doesn't need to be supported for the /preview
+        prefix, because it's not a customer-facing API (i.e. only used for DBUtils SecretUtils to fetch
+        secrets).
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws ``BAD_REQUEST`` if
+        normal user calls get secret outside of a notebook. AKV specific errors: Throws
+        ``INVALID_PARAMETER_VALUE`` if secret name is not alphanumeric or too long. Throws
+        ``PERMISSION_DENIED`` if secret manager cannot access AKV with 403 error Throws ``MALFORMED_REQUEST``
+        if secret manager cannot access AKV with any other 4xx error
 
         :param scope: str
-          The name of the scope to fetch secret information from.
+          The name of the scope that contains the secret.
         :param key: str
-          The key to fetch secret for.
+          Name of the secret to fetch value information.
 
         :returns: :class:`GetSecretResponse`
         """
@@ -2911,9 +2406,18 @@ class SecretsAPI:
         return GetSecretResponse.from_dict(res)
 
     def list_acls(self, scope: str) -> Iterator[AclItem]:
-        """List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
+        """Lists the ACLs set on the given scope.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
+        Users must have the ``MANAGE`` permission to invoke this API.
+
+        Example response:
+
+        .. code::
+
+        { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal": "data-scientists",
+        "permission": "READ" }] }
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
         user does not have permission to make this API call.
 
         :param scope: str
@@ -2936,7 +2440,14 @@ class SecretsAPI:
     def list_scopes(self) -> Iterator[SecretScope]:
         """Lists all secret scopes available in the workspace.
 
-        Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
+        Example response:
+
+        .. code::
+
+        { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS" },{ "name": "mount-points",
+        "backend_type": "DATABRICKS" }] }
+
+        Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call.
 
 
         :returns: Iterator over :class:`SecretScope`
@@ -2954,9 +2465,17 @@ class SecretsAPI:
         """Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
 
-        The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws `RESOURCE_DOES_NOT_EXIST` if
-        no such secret scope exists. Throws `PERMISSION_DENIED` if the user does not have permission to make
-        this API call.
+        Example response:
+
+        .. code::
+
+        { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp": "1520467595000" }, { "key":
+        "my-byte-key", "last_updated_timestamp": "1520467595000" }, ] }
+
+        The lastUpdatedTimestamp returned is in milliseconds since epoch.
+
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the
+        user does not have permission to make this API call.
 
         :param scope: str
           The name of the scope to list secrets within.
@@ -2976,14 +2495,12 @@ class SecretsAPI:
         return parsed if parsed is not None else []
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
-        """Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
-        group) on the specified scope point.
+        """Creates or overwrites the ACL associated with the given principal (user or group) on the specified
+        scope point. In general, a user or group will use the most powerful permission available to them, and
+        permissions are ordered as follows:
 
-        In general, a user or group will use the most powerful permission available to them, and permissions
-        are ordered as follows:
-
-        * `MANAGE` - Allowed to change ACLs, and read and write to this secret scope. * `WRITE` - Allowed to
-        read and write to this secret scope. * `READ` - Allowed to read this secret scope and list what
+        * ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed
+        to read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what
         secrets are available.
 
         Note that in general, secret values can only be read from within a command on a cluster (for example,
@@ -2991,15 +2508,21 @@ class SecretsAPI:
         However, the user's permission will be applied based on who is executing the command, and they must
         have at least READ permission.
 
-        Users must have the `MANAGE` permission to invoke this API.
+        Users must have the ``MANAGE`` permission to invoke this API.
+
+        Example request:
+
+        .. code::
+
+        { "scope": "my-secret-scope", "principal": "data-scientists", "permission": "READ" }
 
         The principal is a user or group name corresponding to an existing Databricks principal to be granted
         or revoked access.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_ALREADY_EXISTS` if a
-        permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission or
-        principal is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API
-        call.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_ALREADY_EXISTS``
+        if a permission for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission
+        or principal is invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make
+        this API call.
 
         :param scope: str
           The name of the scope to apply permissions to.
@@ -3018,7 +2541,6 @@ class SecretsAPI:
         if scope is not None:
             body["scope"] = scope
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
@@ -3029,19 +2551,27 @@ class SecretsAPI:
     ):
         """Inserts a secret under the provided scope with the given name. If a secret already exists with the
         same name, this command overwrites the existing secret's value. The server encrypts the secret using
-        the secret scope's encryption settings before storing it.
+        the secret scope's encryption settings before storing it. You must have ``WRITE`` or ``MANAGE``
+        permission on the secret scope.
 
-        You must have `WRITE` or `MANAGE` permission on the secret scope. The secret key must consist of
-        alphanumeric characters, dashes, underscores, and periods, and cannot exceed 128 characters. The
-        maximum allowed secret value size is 128 KB. The maximum number of secrets in a given scope is 1000.
+        The secret key must consist of alphanumeric characters, dashes, underscores, and periods, and cannot
+        exceed 128 characters. The maximum allowed secret value size is 128 KB. The maximum number of secrets
+        in a given scope is 1000.
+
+        Example request:
+
+        .. code::
+
+        { "scope": "my-databricks-scope", "key": "my-string-key", "string_value": "foobar" }
 
         The input fields "string_value" or "bytes_value" specify the type of the secret, which will determine
         the value returned when the secret value is requested. Exactly one must be specified.
 
-        Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_LIMIT_EXCEEDED` if
-        maximum number of secrets in scope is exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or
-        value length is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this
-        API call.
+        Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_LIMIT_EXCEEDED``
+        if maximum number of secrets in scope is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the request
+        parameters are invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make this
+        API call. Throws ``MALFORMED_REQUEST`` if request is incorrectly formatted or conflicting. Throws
+        ``BAD_REQUEST`` if request is made against Azure KeyVault backed scope.
 
         :param scope: str
           The name of the scope to which the secret will be associated with.
@@ -3064,7 +2594,6 @@ class SecretsAPI:
         if string_value is not None:
             body["string_value"] = string_value
         headers = {
-            "Accept": "application/json",
             "Content-Type": "application/json",
         }
 

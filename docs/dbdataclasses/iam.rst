@@ -94,10 +94,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: MigratePermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: MigratePermissionsResponse
    :members:
    :undoc-members:
@@ -107,10 +103,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ObjectPermissions
-   :members:
-   :undoc-members:
-
-.. autoclass:: PartialUpdate
    :members:
    :undoc-members:
 
@@ -138,10 +130,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PasswordPermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: PasswordPermissionsRequest
    :members:
    :undoc-members:
 
@@ -295,23 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL"
 
-.. autoclass:: SetObjectPermissions
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateObjectPermissions
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRuleSetRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateWorkspaceAssignments
    :members:
    :undoc-members:
 

@@ -20,106 +20,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class AccountsCreateMetastore:
-    metastore_info: Optional[CreateMetastore] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsCreateMetastore into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsCreateMetastore into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastore:
-        """Deserializes the AccountsCreateMetastore from a dictionary."""
-        return cls(metastore_info=_from_dict(d, "metastore_info", CreateMetastore))
-
-
-@dataclass
-class AccountsCreateMetastoreAssignment:
-    metastore_assignment: Optional[CreateMetastoreAssignment] = None
-
-    metastore_id: Optional[str] = None
-    """Unity Catalog metastore ID"""
-
-    workspace_id: Optional[int] = None
-    """Workspace ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsCreateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.metastore_assignment:
-            body["metastore_assignment"] = self.metastore_assignment.as_dict()
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsCreateMetastoreAssignment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.metastore_assignment:
-            body["metastore_assignment"] = self.metastore_assignment
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastoreAssignment:
-        """Deserializes the AccountsCreateMetastoreAssignment from a dictionary."""
-        return cls(
-            metastore_assignment=_from_dict(d, "metastore_assignment", CreateMetastoreAssignment),
-            metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
-        )
-
-
-@dataclass
-class AccountsCreateStorageCredential:
-    credential_info: Optional[CreateStorageCredential] = None
-
-    metastore_id: Optional[str] = None
-    """Unity Catalog metastore ID"""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsCreateStorageCredential into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsCreateStorageCredential into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateStorageCredential:
-        """Deserializes the AccountsCreateStorageCredential from a dictionary."""
-        return cls(
-            credential_info=_from_dict(d, "credential_info", CreateStorageCredential),
-            metastore_id=d.get("metastore_id", None),
-        )
-
-
-@dataclass
 class AccountsMetastoreAssignment:
     metastore_assignment: Optional[MetastoreAssignment] = None
 
@@ -189,123 +89,6 @@ class AccountsStorageCredentialInfo:
     def from_dict(cls, d: Dict[str, Any]) -> AccountsStorageCredentialInfo:
         """Deserializes the AccountsStorageCredentialInfo from a dictionary."""
         return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
-
-
-@dataclass
-class AccountsUpdateMetastore:
-    metastore_id: Optional[str] = None
-    """Unity Catalog metastore ID"""
-
-    metastore_info: Optional[UpdateMetastore] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsUpdateMetastore into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsUpdateMetastore into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastore:
-        """Deserializes the AccountsUpdateMetastore from a dictionary."""
-        return cls(
-            metastore_id=d.get("metastore_id", None), metastore_info=_from_dict(d, "metastore_info", UpdateMetastore)
-        )
-
-
-@dataclass
-class AccountsUpdateMetastoreAssignment:
-    metastore_assignment: Optional[UpdateMetastoreAssignment] = None
-
-    metastore_id: Optional[str] = None
-    """Unity Catalog metastore ID"""
-
-    workspace_id: Optional[int] = None
-    """Workspace ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsUpdateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.metastore_assignment:
-            body["metastore_assignment"] = self.metastore_assignment.as_dict()
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsUpdateMetastoreAssignment into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.metastore_assignment:
-            body["metastore_assignment"] = self.metastore_assignment
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastoreAssignment:
-        """Deserializes the AccountsUpdateMetastoreAssignment from a dictionary."""
-        return cls(
-            metastore_assignment=_from_dict(d, "metastore_assignment", UpdateMetastoreAssignment),
-            metastore_id=d.get("metastore_id", None),
-            workspace_id=d.get("workspace_id", None),
-        )
-
-
-@dataclass
-class AccountsUpdateStorageCredential:
-    credential_info: Optional[UpdateStorageCredential] = None
-
-    metastore_id: Optional[str] = None
-    """Unity Catalog metastore ID"""
-
-    storage_credential_name: Optional[str] = None
-    """Name of the storage credential."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsUpdateStorageCredential into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info.as_dict()
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.storage_credential_name is not None:
-            body["storage_credential_name"] = self.storage_credential_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsUpdateStorageCredential into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.credential_info:
-            body["credential_info"] = self.credential_info
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.storage_credential_name is not None:
-            body["storage_credential_name"] = self.storage_credential_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateStorageCredential:
-        """Deserializes the AccountsUpdateStorageCredential from a dictionary."""
-        return cls(
-            credential_info=_from_dict(d, "credential_info", UpdateStorageCredential),
-            metastore_id=d.get("metastore_id", None),
-            storage_credential_name=d.get("storage_credential_name", None),
-        )
 
 
 @dataclass
@@ -1442,6 +1225,8 @@ class ConnectionDependency:
 
 @dataclass
 class ConnectionInfo:
+    """Next ID: 23"""
+
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
@@ -1459,6 +1244,9 @@ class ConnectionInfo:
 
     credential_type: Optional[CredentialType] = None
     """The type of credential."""
+
+    environment_settings: Optional[EnvironmentSettings] = None
+    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
 
     full_name: Optional[str] = None
     """Full name of connection."""
@@ -1509,6 +1297,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type.value
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings.as_dict()
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1550,6 +1340,8 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type
+        if self.environment_settings:
+            body["environment_settings"] = self.environment_settings
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1586,6 +1378,7 @@ class ConnectionInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
+            environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -1602,7 +1395,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 36"""
+    """Next Id: 37"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1671,351 +1464,6 @@ class ContinuousUpdateStatus:
             initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", PipelineProgress),
             last_processed_commit_version=d.get("last_processed_commit_version", None),
             timestamp=d.get("timestamp", None),
-        )
-
-
-@dataclass
-class CreateCatalog:
-    name: str
-    """Name of catalog."""
-
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    connection_name: Optional[str] = None
-    """The name of the connection to an external data source."""
-
-    options: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    provider_name: Optional[str] = None
-    """The name of delta sharing provider.
-    
-    A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server."""
-
-    share_name: Optional[str] = None
-    """The name of the share under the share provider."""
-
-    storage_root: Optional[str] = None
-    """Storage root URL for managed tables within catalog."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCatalog into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.properties:
-            body["properties"] = self.properties
-        if self.provider_name is not None:
-            body["provider_name"] = self.provider_name
-        if self.share_name is not None:
-            body["share_name"] = self.share_name
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCatalog into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.properties:
-            body["properties"] = self.properties
-        if self.provider_name is not None:
-            body["provider_name"] = self.provider_name
-        if self.share_name is not None:
-            body["share_name"] = self.share_name
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCatalog:
-        """Deserializes the CreateCatalog from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            connection_name=d.get("connection_name", None),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            properties=d.get("properties", None),
-            provider_name=d.get("provider_name", None),
-            share_name=d.get("share_name", None),
-            storage_root=d.get("storage_root", None),
-        )
-
-
-@dataclass
-class CreateConnection:
-    name: str
-    """Name of the connection."""
-
-    connection_type: ConnectionType
-    """The type of connection."""
-
-    options: Dict[str, str]
-    """A map of key-value properties attached to the securable."""
-
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    read_only: Optional[bool] = None
-    """If the connection is read only."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateConnection into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.connection_type is not None:
-            body["connection_type"] = self.connection_type.value
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.properties:
-            body["properties"] = self.properties
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateConnection into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.connection_type is not None:
-            body["connection_type"] = self.connection_type
-        if self.name is not None:
-            body["name"] = self.name
-        if self.options:
-            body["options"] = self.options
-        if self.properties:
-            body["properties"] = self.properties
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateConnection:
-        """Deserializes the CreateConnection from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            connection_type=_enum(d, "connection_type", ConnectionType),
-            name=d.get("name", None),
-            options=d.get("options", None),
-            properties=d.get("properties", None),
-            read_only=d.get("read_only", None),
-        )
-
-
-@dataclass
-class CreateCredentialRequest:
-    name: str
-    """The credential name. The name must be unique among storage and service credentials within the
-    metastore."""
-
-    aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration."""
-
-    azure_managed_identity: Optional[AzureManagedIdentity] = None
-    """The Azure managed identity configuration."""
-
-    azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration."""
-
-    comment: Optional[str] = None
-    """Comment associated with the credential."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """The Databricks managed GCP service account configuration."""
-
-    purpose: Optional[CredentialPurpose] = None
-    """Indicates the purpose of the credential."""
-
-    read_only: Optional[bool] = None
-    """Whether the credential is usable only for read operations. Only applicable when purpose is
-    **STORAGE**."""
-
-    skip_validation: Optional[bool] = None
-    """Optional. Supplying true to this argument skips validation of the created set of credentials."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal.as_dict()
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.purpose is not None:
-            body["purpose"] = self.purpose.value
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.name is not None:
-            body["name"] = self.name
-        if self.purpose is not None:
-            body["purpose"] = self.purpose
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialRequest:
-        """Deserializes the CreateCredentialRequest from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
-            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
-            comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
-            name=d.get("name", None),
-            purpose=_enum(d, "purpose", CredentialPurpose),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
-        )
-
-
-@dataclass
-class CreateExternalLocation:
-    name: str
-    """Name of the external location."""
-
-    url: str
-    """Path URL of the external location."""
-
-    credential_name: str
-    """Name of the storage credential used with this location."""
-
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location."""
-
-    encryption_details: Optional[EncryptionDetails] = None
-
-    fallback: Optional[bool] = None
-    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
-    enabled, the access to the location falls back to cluster credentials if UC credentials are not
-    sufficient."""
-
-    file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings."""
-
-    read_only: Optional[bool] = None
-    """Indicates whether the external location is read-only."""
-
-    skip_validation: Optional[bool] = None
-    """Skips validation of the storage credential associated with the external location."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateExternalLocation into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.enable_file_events is not None:
-            body["enable_file_events"] = self.enable_file_events
-        if self.encryption_details:
-            body["encryption_details"] = self.encryption_details.as_dict()
-        if self.fallback is not None:
-            body["fallback"] = self.fallback
-        if self.file_event_queue:
-            body["file_event_queue"] = self.file_event_queue.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateExternalLocation into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.enable_file_events is not None:
-            body["enable_file_events"] = self.enable_file_events
-        if self.encryption_details:
-            body["encryption_details"] = self.encryption_details
-        if self.fallback is not None:
-            body["fallback"] = self.fallback
-        if self.file_event_queue:
-            body["file_event_queue"] = self.file_event_queue
-        if self.name is not None:
-            body["name"] = self.name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateExternalLocation:
-        """Deserializes the CreateExternalLocation from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            credential_name=d.get("credential_name", None),
-            enable_file_events=d.get("enable_file_events", None),
-            encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
-            fallback=d.get("fallback", None),
-            file_event_queue=_from_dict(d, "file_event_queue", FileEventQueue),
-            name=d.get("name", None),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
-            url=d.get("url", None),
         )
 
 
@@ -2214,31 +1662,6 @@ class CreateFunctionParameterStyle(Enum):
     S = "S"
 
 
-@dataclass
-class CreateFunctionRequest:
-    function_info: CreateFunction
-    """Partial __FunctionInfo__ specifying the function to be created."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateFunctionRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.function_info:
-            body["function_info"] = self.function_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateFunctionRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.function_info:
-            body["function_info"] = self.function_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateFunctionRequest:
-        """Deserializes the CreateFunctionRequest from a dictionary."""
-        return cls(function_info=_from_dict(d, "function_info", CreateFunction))
-
-
 class CreateFunctionRoutineBody(Enum):
     """Function language. When **EXTERNAL** is used, the language of the routine function should be
     specified in the __external_language__ field, and the __return_params__ of the function cannot
@@ -2347,202 +1770,6 @@ class CreateMetastoreAssignment:
 
 
 @dataclass
-class CreateMonitor:
-    assets_dir: str
-    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
-
-    output_schema_name: str
-    """Schema where output metric tables are created."""
-
-    baseline_table_name: Optional[str] = None
-    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-    table should also be present in the baseline table."""
-
-    custom_metrics: Optional[List[MonitorMetric]] = None
-    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
-    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
-    time windows)."""
-
-    data_classification_config: Optional[MonitorDataClassificationConfig] = None
-    """The data classification config for the monitor."""
-
-    inference_log: Optional[MonitorInferenceLog] = None
-    """Configuration for monitoring inference logs."""
-
-    notifications: Optional[MonitorNotifications] = None
-    """The notification settings for the monitor."""
-
-    schedule: Optional[MonitorCronSchedule] = None
-    """The schedule for automatically updating and refreshing metric tables."""
-
-    skip_builtin_dashboard: Optional[bool] = None
-    """Whether to skip creating a default dashboard summarizing data quality metrics."""
-
-    slicing_exprs: Optional[List[str]] = None
-    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
-    expression independently, resulting in a separate slice for each predicate and its complements.
-    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
-
-    snapshot: Optional[MonitorSnapshot] = None
-    """Configuration for monitoring snapshot tables."""
-
-    table_name: Optional[str] = None
-    """Full name of the table."""
-
-    time_series: Optional[MonitorTimeSeries] = None
-    """Configuration for monitoring time series tables."""
-
-    warehouse_id: Optional[str] = None
-    """Optional argument to specify the warehouse for dashboard creation. If not specified, the first
-    running warehouse will be used."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateMonitor into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.assets_dir is not None:
-            body["assets_dir"] = self.assets_dir
-        if self.baseline_table_name is not None:
-            body["baseline_table_name"] = self.baseline_table_name
-        if self.custom_metrics:
-            body["custom_metrics"] = [v.as_dict() for v in self.custom_metrics]
-        if self.data_classification_config:
-            body["data_classification_config"] = self.data_classification_config.as_dict()
-        if self.inference_log:
-            body["inference_log"] = self.inference_log.as_dict()
-        if self.notifications:
-            body["notifications"] = self.notifications.as_dict()
-        if self.output_schema_name is not None:
-            body["output_schema_name"] = self.output_schema_name
-        if self.schedule:
-            body["schedule"] = self.schedule.as_dict()
-        if self.skip_builtin_dashboard is not None:
-            body["skip_builtin_dashboard"] = self.skip_builtin_dashboard
-        if self.slicing_exprs:
-            body["slicing_exprs"] = [v for v in self.slicing_exprs]
-        if self.snapshot:
-            body["snapshot"] = self.snapshot.as_dict()
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.time_series:
-            body["time_series"] = self.time_series.as_dict()
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateMonitor into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.assets_dir is not None:
-            body["assets_dir"] = self.assets_dir
-        if self.baseline_table_name is not None:
-            body["baseline_table_name"] = self.baseline_table_name
-        if self.custom_metrics:
-            body["custom_metrics"] = self.custom_metrics
-        if self.data_classification_config:
-            body["data_classification_config"] = self.data_classification_config
-        if self.inference_log:
-            body["inference_log"] = self.inference_log
-        if self.notifications:
-            body["notifications"] = self.notifications
-        if self.output_schema_name is not None:
-            body["output_schema_name"] = self.output_schema_name
-        if self.schedule:
-            body["schedule"] = self.schedule
-        if self.skip_builtin_dashboard is not None:
-            body["skip_builtin_dashboard"] = self.skip_builtin_dashboard
-        if self.slicing_exprs:
-            body["slicing_exprs"] = self.slicing_exprs
-        if self.snapshot:
-            body["snapshot"] = self.snapshot
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.time_series:
-            body["time_series"] = self.time_series
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateMonitor:
-        """Deserializes the CreateMonitor from a dictionary."""
-        return cls(
-            assets_dir=d.get("assets_dir", None),
-            baseline_table_name=d.get("baseline_table_name", None),
-            custom_metrics=_repeated_dict(d, "custom_metrics", MonitorMetric),
-            data_classification_config=_from_dict(d, "data_classification_config", MonitorDataClassificationConfig),
-            inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
-            notifications=_from_dict(d, "notifications", MonitorNotifications),
-            output_schema_name=d.get("output_schema_name", None),
-            schedule=_from_dict(d, "schedule", MonitorCronSchedule),
-            skip_builtin_dashboard=d.get("skip_builtin_dashboard", None),
-            slicing_exprs=d.get("slicing_exprs", None),
-            snapshot=_from_dict(d, "snapshot", MonitorSnapshot),
-            table_name=d.get("table_name", None),
-            time_series=_from_dict(d, "time_series", MonitorTimeSeries),
-            warehouse_id=d.get("warehouse_id", None),
-        )
-
-
-@dataclass
-class CreateRegisteredModelRequest:
-    catalog_name: str
-    """The name of the catalog where the schema and the registered model reside"""
-
-    schema_name: str
-    """The name of the schema where the registered model resides"""
-
-    name: str
-    """The name of the registered model"""
-
-    comment: Optional[str] = None
-    """The comment attached to the registered model"""
-
-    storage_location: Optional[str] = None
-    """The storage location on the cloud under which model version data files are stored"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateRegisteredModelRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateRegisteredModelRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateRegisteredModelRequest:
-        """Deserializes the CreateRegisteredModelRequest from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            schema_name=d.get("schema_name", None),
-            storage_location=d.get("storage_location", None),
-        )
-
-
-@dataclass
 class CreateRequestExternalLineage:
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
@@ -2617,65 +1844,6 @@ class CreateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class CreateSchema:
-    name: str
-    """Name of schema, relative to parent catalog."""
-
-    catalog_name: str
-    """Name of parent catalog."""
-
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    storage_root: Optional[str] = None
-    """Storage root URL for managed tables within schema."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateSchema into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.properties:
-            body["properties"] = self.properties
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateSchema into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.properties:
-            body["properties"] = self.properties
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateSchema:
-        """Deserializes the CreateSchema from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            properties=d.get("properties", None),
-            storage_root=d.get("storage_root", None),
-        )
 
 
 @dataclass
@@ -2770,103 +1938,6 @@ class CreateStorageCredential:
             name=d.get("name", None),
             read_only=d.get("read_only", None),
             skip_validation=d.get("skip_validation", None),
-        )
-
-
-@dataclass
-class CreateTableConstraint:
-    full_name_arg: str
-    """The full name of the table referenced by the constraint."""
-
-    constraint: TableConstraint
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateTableConstraint into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.constraint:
-            body["constraint"] = self.constraint.as_dict()
-        if self.full_name_arg is not None:
-            body["full_name_arg"] = self.full_name_arg
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateTableConstraint into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.constraint:
-            body["constraint"] = self.constraint
-        if self.full_name_arg is not None:
-            body["full_name_arg"] = self.full_name_arg
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateTableConstraint:
-        """Deserializes the CreateTableConstraint from a dictionary."""
-        return cls(constraint=_from_dict(d, "constraint", TableConstraint), full_name_arg=d.get("full_name_arg", None))
-
-
-@dataclass
-class CreateVolumeRequestContent:
-    catalog_name: str
-    """The name of the catalog where the schema and the volume are"""
-
-    schema_name: str
-    """The name of the schema where the volume is"""
-
-    name: str
-    """The name of the volume"""
-
-    volume_type: VolumeType
-
-    comment: Optional[str] = None
-    """The comment attached to the volume"""
-
-    storage_location: Optional[str] = None
-    """The storage location on the cloud"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateVolumeRequestContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.volume_type is not None:
-            body["volume_type"] = self.volume_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateVolumeRequestContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        if self.storage_location is not None:
-            body["storage_location"] = self.storage_location
-        if self.volume_type is not None:
-            body["volume_type"] = self.volume_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateVolumeRequestContent:
-        """Deserializes the CreateVolumeRequestContent from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            schema_name=d.get("schema_name", None),
-            storage_location=d.get("storage_location", None),
-            volume_type=_enum(d, "volume_type", VolumeType),
         )
 
 
@@ -3351,6 +2422,24 @@ class DeleteResponse:
 
 
 @dataclass
+class DeleteTableConstraintResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteTableConstraintResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteTableConstraintResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTableConstraintResponse:
+        """Deserializes the DeleteTableConstraintResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeltaRuntimePropertiesKvPairs:
     """Properties pertaining to the current state of the delta table as given by the commit server.
     This does not contain **delta.*** (input) properties in __TableInfo.properties__."""
@@ -3653,49 +2742,6 @@ class EnablePredictiveOptimization(Enum):
 
 
 @dataclass
-class EnableRequest:
-    catalog_name: Optional[str] = None
-    """the catalog for which the system schema is to enabled in"""
-
-    metastore_id: Optional[str] = None
-    """The metastore ID under which the system schema lives."""
-
-    schema_name: Optional[str] = None
-    """Full name of the system schema."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EnableRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EnableRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        if self.schema_name is not None:
-            body["schema_name"] = self.schema_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EnableRequest:
-        """Deserializes the EnableRequest from a dictionary."""
-        return cls(
-            catalog_name=d.get("catalog_name", None),
-            metastore_id=d.get("metastore_id", None),
-            schema_name=d.get("schema_name", None),
-        )
-
-
-@dataclass
 class EnableResponse:
     def as_dict(self) -> dict:
         """Serializes the EnableResponse into a dictionary suitable for use as a JSON request body."""
@@ -3738,6 +2784,38 @@ class EncryptionDetails:
     def from_dict(cls, d: Dict[str, Any]) -> EncryptionDetails:
         """Deserializes the EncryptionDetails from a dictionary."""
         return cls(sse_encryption_details=_from_dict(d, "sse_encryption_details", SseEncryptionDetails))
+
+
+@dataclass
+class EnvironmentSettings:
+    environment_version: Optional[str] = None
+
+    java_dependencies: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvironmentSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_version is not None:
+            body["environment_version"] = self.environment_version
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSettings:
+        """Deserializes the EnvironmentSettings from a dictionary."""
+        return cls(
+            environment_version=d.get("environment_version", None), java_dependencies=d.get("java_dependencies", None)
+        )
 
 
 @dataclass
@@ -5322,81 +4400,6 @@ class GenerateTemporaryServiceCredentialGcpOptions:
     def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryServiceCredentialGcpOptions:
         """Deserializes the GenerateTemporaryServiceCredentialGcpOptions from a dictionary."""
         return cls(scopes=d.get("scopes", None))
-
-
-@dataclass
-class GenerateTemporaryServiceCredentialRequest:
-    credential_name: str
-    """The name of the service credential used to generate a temporary credential"""
-
-    azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None
-
-    gcp_options: Optional[GenerateTemporaryServiceCredentialGcpOptions] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the GenerateTemporaryServiceCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.azure_options:
-            body["azure_options"] = self.azure_options.as_dict()
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.gcp_options:
-            body["gcp_options"] = self.gcp_options.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenerateTemporaryServiceCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.azure_options:
-            body["azure_options"] = self.azure_options
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.gcp_options:
-            body["gcp_options"] = self.gcp_options
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryServiceCredentialRequest:
-        """Deserializes the GenerateTemporaryServiceCredentialRequest from a dictionary."""
-        return cls(
-            azure_options=_from_dict(d, "azure_options", GenerateTemporaryServiceCredentialAzureOptions),
-            credential_name=d.get("credential_name", None),
-            gcp_options=_from_dict(d, "gcp_options", GenerateTemporaryServiceCredentialGcpOptions),
-        )
-
-
-@dataclass
-class GenerateTemporaryTableCredentialRequest:
-    operation: Optional[TableOperation] = None
-    """The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
-    specified, the credentials returned will have write permissions, otherwise, it will be read
-    only."""
-
-    table_id: Optional[str] = None
-    """UUID of the table to read or write."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenerateTemporaryTableCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.operation is not None:
-            body["operation"] = self.operation.value
-        if self.table_id is not None:
-            body["table_id"] = self.table_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenerateTemporaryTableCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.operation is not None:
-            body["operation"] = self.operation
-        if self.table_id is not None:
-            body["table_id"] = self.table_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryTableCredentialRequest:
-        """Deserializes the GenerateTemporaryTableCredentialRequest from a dictionary."""
-        return cls(operation=_enum(d, "operation", TableOperation), table_id=d.get("table_id", None))
 
 
 @dataclass
@@ -7938,7 +6941,8 @@ class PermissionsChange:
     """The set of privileges to add."""
 
     principal: Optional[str] = None
-    """The principal whose privileges we are changing."""
+    """The principal whose privileges we are changing. Only one of principal or principal_id should be
+    specified, never both at the same time."""
 
     remove: Optional[List[Privilege]] = None
     """The set of privileges to remove."""
@@ -8354,39 +7358,6 @@ class R2Credentials:
 
 
 @dataclass
-class RegenerateDashboardRequest:
-    table_name: Optional[str] = None
-    """Full name of the table."""
-
-    warehouse_id: Optional[str] = None
-    """Optional argument to specify the warehouse for dashboard regeneration. If not specified, the
-    first running warehouse will be used."""
-
-    def as_dict(self) -> dict:
-        """Serializes the RegenerateDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RegenerateDashboardRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RegenerateDashboardRequest:
-        """Deserializes the RegenerateDashboardRequest from a dictionary."""
-        return cls(table_name=d.get("table_name", None), warehouse_id=d.get("warehouse_id", None))
-
-
-@dataclass
 class RegenerateDashboardResponse:
     dashboard_id: Optional[str] = None
     """Id of the regenerated monitoring dashboard."""
@@ -8752,7 +7723,6 @@ class SchemaInfo:
 
 
 class SecurableKind(Enum):
-    """Latest kind: TABLE_DELTA_ICEBERG_DELTASHARING = 252; Next id:253"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8903,106 +7873,6 @@ class SecurableType(Enum):
     STORAGE_CREDENTIAL = "STORAGE_CREDENTIAL"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
-
-
-@dataclass
-class SetArtifactAllowlist:
-    artifact_matchers: List[ArtifactMatcher]
-    """A list of allowed artifact match patterns."""
-
-    artifact_type: Optional[ArtifactType] = None
-    """The artifact type of the allowlist."""
-
-    created_at: Optional[int] = None
-    """Time at which this artifact allowlist was set, in epoch milliseconds."""
-
-    created_by: Optional[str] = None
-    """Username of the user who set the artifact allowlist."""
-
-    metastore_id: Optional[str] = None
-    """Unique identifier of parent metastore."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SetArtifactAllowlist into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.artifact_matchers:
-            body["artifact_matchers"] = [v.as_dict() for v in self.artifact_matchers]
-        if self.artifact_type is not None:
-            body["artifact_type"] = self.artifact_type.value
-        if self.created_at is not None:
-            body["created_at"] = self.created_at
-        if self.created_by is not None:
-            body["created_by"] = self.created_by
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetArtifactAllowlist into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.artifact_matchers:
-            body["artifact_matchers"] = self.artifact_matchers
-        if self.artifact_type is not None:
-            body["artifact_type"] = self.artifact_type
-        if self.created_at is not None:
-            body["created_at"] = self.created_at
-        if self.created_by is not None:
-            body["created_by"] = self.created_by
-        if self.metastore_id is not None:
-            body["metastore_id"] = self.metastore_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetArtifactAllowlist:
-        """Deserializes the SetArtifactAllowlist from a dictionary."""
-        return cls(
-            artifact_matchers=_repeated_dict(d, "artifact_matchers", ArtifactMatcher),
-            artifact_type=_enum(d, "artifact_type", ArtifactType),
-            created_at=d.get("created_at", None),
-            created_by=d.get("created_by", None),
-            metastore_id=d.get("metastore_id", None),
-        )
-
-
-@dataclass
-class SetRegisteredModelAliasRequest:
-    full_name: str
-    """Full name of the registered model"""
-
-    alias: str
-    """The name of the alias"""
-
-    version_num: int
-    """The version number of the model version to which the alias points"""
-
-    def as_dict(self) -> dict:
-        """Serializes the SetRegisteredModelAliasRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alias is not None:
-            body["alias"] = self.alias
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.version_num is not None:
-            body["version_num"] = self.version_num
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetRegisteredModelAliasRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.alias is not None:
-            body["alias"] = self.alias
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.version_num is not None:
-            body["version_num"] = self.version_num
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetRegisteredModelAliasRequest:
-        """Deserializes the SetRegisteredModelAliasRequest from a dictionary."""
-        return cls(
-            alias=d.get("alias", None), full_name=d.get("full_name", None), version_num=d.get("version_num", None)
-        )
 
 
 @dataclass
@@ -9256,6 +8126,7 @@ class SystemType(Enum):
     AMAZON_REDSHIFT = "AMAZON_REDSHIFT"
     AZURE_SYNAPSE = "AZURE_SYNAPSE"
     CONFLUENT = "CONFLUENT"
+    DATABRICKS = "DATABRICKS"
     GOOGLE_BIGQUERY = "GOOGLE_BIGQUERY"
     KAFKA = "KAFKA"
     LOOKER = "LOOKER"
@@ -9920,89 +8791,6 @@ class UpdateAssignmentResponse:
 
 
 @dataclass
-class UpdateCatalog:
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
-
-    isolation_mode: Optional[CatalogIsolationMode] = None
-    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
-
-    name: Optional[str] = None
-    """The name of the catalog."""
-
-    new_name: Optional[str] = None
-    """New name for the catalog."""
-
-    options: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    owner: Optional[str] = None
-    """Username of current owner of catalog."""
-
-    properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCatalog into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.enable_predictive_optimization is not None:
-            body["enable_predictive_optimization"] = self.enable_predictive_optimization.value
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode.value
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.options:
-            body["options"] = self.options
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCatalog into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.enable_predictive_optimization is not None:
-            body["enable_predictive_optimization"] = self.enable_predictive_optimization
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.options:
-            body["options"] = self.options
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalog:
-        """Deserializes the UpdateCatalog from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
-            isolation_mode=_enum(d, "isolation_mode", CatalogIsolationMode),
-            name=d.get("name", None),
-            new_name=d.get("new_name", None),
-            options=d.get("options", None),
-            owner=d.get("owner", None),
-            properties=d.get("properties", None),
-        )
-
-
-@dataclass
 class UpdateCatalogWorkspaceBindingsResponse:
     workspaces: Optional[List[int]] = None
     """A list of workspace IDs"""
@@ -10025,338 +8813,6 @@ class UpdateCatalogWorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalogWorkspaceBindingsResponse:
         """Deserializes the UpdateCatalogWorkspaceBindingsResponse from a dictionary."""
         return cls(workspaces=d.get("workspaces", None))
-
-
-@dataclass
-class UpdateConnection:
-    options: Dict[str, str]
-    """A map of key-value properties attached to the securable."""
-
-    name: Optional[str] = None
-    """Name of the connection."""
-
-    new_name: Optional[str] = None
-    """New name for the connection."""
-
-    owner: Optional[str] = None
-    """Username of current owner of the connection."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateConnection into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.options:
-            body["options"] = self.options
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateConnection into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.options:
-            body["options"] = self.options
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateConnection:
-        """Deserializes the UpdateConnection from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            new_name=d.get("new_name", None),
-            options=d.get("options", None),
-            owner=d.get("owner", None),
-        )
-
-
-@dataclass
-class UpdateCredentialRequest:
-    aws_iam_role: Optional[AwsIamRole] = None
-    """The AWS IAM role configuration."""
-
-    azure_managed_identity: Optional[AzureManagedIdentity] = None
-    """The Azure managed identity configuration."""
-
-    azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration."""
-
-    comment: Optional[str] = None
-    """Comment associated with the credential."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-    """The Databricks managed GCP service account configuration."""
-
-    force: Optional[bool] = None
-    """Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
-    external locations and external tables (when purpose is **STORAGE**)."""
-
-    isolation_mode: Optional[IsolationMode] = None
-    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
-
-    name_arg: Optional[str] = None
-    """Name of the credential."""
-
-    new_name: Optional[str] = None
-    """New name of credential."""
-
-    owner: Optional[str] = None
-    """Username of current owner of credential."""
-
-    read_only: Optional[bool] = None
-    """Whether the credential is usable only for read operations. Only applicable when purpose is
-    **STORAGE**."""
-
-    skip_validation: Optional[bool] = None
-    """Supply true to this argument to skip validation of the updated credential."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal.as_dict()
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode.value
-        if self.name_arg is not None:
-            body["name_arg"] = self.name_arg
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode
-        if self.name_arg is not None:
-            body["name_arg"] = self.name_arg
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentialRequest:
-        """Deserializes the UpdateCredentialRequest from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
-            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
-            comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
-            force=d.get("force", None),
-            isolation_mode=_enum(d, "isolation_mode", IsolationMode),
-            name_arg=d.get("name_arg", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
-        )
-
-
-@dataclass
-class UpdateExternalLocation:
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    credential_name: Optional[str] = None
-    """Name of the storage credential used with this location."""
-
-    enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location."""
-
-    encryption_details: Optional[EncryptionDetails] = None
-
-    fallback: Optional[bool] = None
-    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
-    enabled, the access to the location falls back to cluster credentials if UC credentials are not
-    sufficient."""
-
-    file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings."""
-
-    force: Optional[bool] = None
-    """Force update even if changing url invalidates dependent external tables or mounts."""
-
-    isolation_mode: Optional[IsolationMode] = None
-
-    name: Optional[str] = None
-    """Name of the external location."""
-
-    new_name: Optional[str] = None
-    """New name for the external location."""
-
-    owner: Optional[str] = None
-    """The owner of the external location."""
-
-    read_only: Optional[bool] = None
-    """Indicates whether the external location is read-only."""
-
-    skip_validation: Optional[bool] = None
-    """Skips validation of the storage credential associated with the external location."""
-
-    url: Optional[str] = None
-    """Path URL of the external location."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateExternalLocation into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.enable_file_events is not None:
-            body["enable_file_events"] = self.enable_file_events
-        if self.encryption_details:
-            body["encryption_details"] = self.encryption_details.as_dict()
-        if self.fallback is not None:
-            body["fallback"] = self.fallback
-        if self.file_event_queue:
-            body["file_event_queue"] = self.file_event_queue.as_dict()
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode.value
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateExternalLocation into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.enable_file_events is not None:
-            body["enable_file_events"] = self.enable_file_events
-        if self.encryption_details:
-            body["encryption_details"] = self.encryption_details
-        if self.fallback is not None:
-            body["fallback"] = self.fallback
-        if self.file_event_queue:
-            body["file_event_queue"] = self.file_event_queue
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateExternalLocation:
-        """Deserializes the UpdateExternalLocation from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            credential_name=d.get("credential_name", None),
-            enable_file_events=d.get("enable_file_events", None),
-            encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
-            fallback=d.get("fallback", None),
-            file_event_queue=_from_dict(d, "file_event_queue", FileEventQueue),
-            force=d.get("force", None),
-            isolation_mode=_enum(d, "isolation_mode", IsolationMode),
-            name=d.get("name", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
-            url=d.get("url", None),
-        )
-
-
-@dataclass
-class UpdateFunction:
-    name: Optional[str] = None
-    """The fully-qualified name of the function (of the form
-    __catalog_name__.__schema_name__.__function__name__)."""
-
-    owner: Optional[str] = None
-    """Username of current owner of function."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateFunction into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateFunction into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateFunction:
-        """Deserializes the UpdateFunction from a dictionary."""
-        return cls(name=d.get("name", None), owner=d.get("owner", None))
 
 
 @dataclass
@@ -10494,209 +8950,6 @@ class UpdateMetastoreAssignment:
 
 
 @dataclass
-class UpdateModelVersionRequest:
-    comment: Optional[str] = None
-    """The comment attached to the model version"""
-
-    full_name: Optional[str] = None
-    """The three-level (fully qualified) name of the model version"""
-
-    version: Optional[int] = None
-    """The integer version number of the model version"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateModelVersionRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.version is not None:
-            body["version"] = self.version
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateModelVersionRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.version is not None:
-            body["version"] = self.version
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
-        """Deserializes the UpdateModelVersionRequest from a dictionary."""
-        return cls(comment=d.get("comment", None), full_name=d.get("full_name", None), version=d.get("version", None))
-
-
-@dataclass
-class UpdateMonitor:
-    output_schema_name: str
-    """Schema where output metric tables are created."""
-
-    baseline_table_name: Optional[str] = None
-    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-    table should also be present in the baseline table."""
-
-    custom_metrics: Optional[List[MonitorMetric]] = None
-    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
-    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
-    time windows)."""
-
-    dashboard_id: Optional[str] = None
-    """Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in
-    PENDING state."""
-
-    data_classification_config: Optional[MonitorDataClassificationConfig] = None
-    """The data classification config for the monitor."""
-
-    inference_log: Optional[MonitorInferenceLog] = None
-    """Configuration for monitoring inference logs."""
-
-    notifications: Optional[MonitorNotifications] = None
-    """The notification settings for the monitor."""
-
-    schedule: Optional[MonitorCronSchedule] = None
-    """The schedule for automatically updating and refreshing metric tables."""
-
-    slicing_exprs: Optional[List[str]] = None
-    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
-    expression independently, resulting in a separate slice for each predicate and its complements.
-    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
-
-    snapshot: Optional[MonitorSnapshot] = None
-    """Configuration for monitoring snapshot tables."""
-
-    table_name: Optional[str] = None
-    """Full name of the table."""
-
-    time_series: Optional[MonitorTimeSeries] = None
-    """Configuration for monitoring time series tables."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateMonitor into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.baseline_table_name is not None:
-            body["baseline_table_name"] = self.baseline_table_name
-        if self.custom_metrics:
-            body["custom_metrics"] = [v.as_dict() for v in self.custom_metrics]
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.data_classification_config:
-            body["data_classification_config"] = self.data_classification_config.as_dict()
-        if self.inference_log:
-            body["inference_log"] = self.inference_log.as_dict()
-        if self.notifications:
-            body["notifications"] = self.notifications.as_dict()
-        if self.output_schema_name is not None:
-            body["output_schema_name"] = self.output_schema_name
-        if self.schedule:
-            body["schedule"] = self.schedule.as_dict()
-        if self.slicing_exprs:
-            body["slicing_exprs"] = [v for v in self.slicing_exprs]
-        if self.snapshot:
-            body["snapshot"] = self.snapshot.as_dict()
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.time_series:
-            body["time_series"] = self.time_series.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateMonitor into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.baseline_table_name is not None:
-            body["baseline_table_name"] = self.baseline_table_name
-        if self.custom_metrics:
-            body["custom_metrics"] = self.custom_metrics
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.data_classification_config:
-            body["data_classification_config"] = self.data_classification_config
-        if self.inference_log:
-            body["inference_log"] = self.inference_log
-        if self.notifications:
-            body["notifications"] = self.notifications
-        if self.output_schema_name is not None:
-            body["output_schema_name"] = self.output_schema_name
-        if self.schedule:
-            body["schedule"] = self.schedule
-        if self.slicing_exprs:
-            body["slicing_exprs"] = self.slicing_exprs
-        if self.snapshot:
-            body["snapshot"] = self.snapshot
-        if self.table_name is not None:
-            body["table_name"] = self.table_name
-        if self.time_series:
-            body["time_series"] = self.time_series
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateMonitor:
-        """Deserializes the UpdateMonitor from a dictionary."""
-        return cls(
-            baseline_table_name=d.get("baseline_table_name", None),
-            custom_metrics=_repeated_dict(d, "custom_metrics", MonitorMetric),
-            dashboard_id=d.get("dashboard_id", None),
-            data_classification_config=_from_dict(d, "data_classification_config", MonitorDataClassificationConfig),
-            inference_log=_from_dict(d, "inference_log", MonitorInferenceLog),
-            notifications=_from_dict(d, "notifications", MonitorNotifications),
-            output_schema_name=d.get("output_schema_name", None),
-            schedule=_from_dict(d, "schedule", MonitorCronSchedule),
-            slicing_exprs=d.get("slicing_exprs", None),
-            snapshot=_from_dict(d, "snapshot", MonitorSnapshot),
-            table_name=d.get("table_name", None),
-            time_series=_from_dict(d, "time_series", MonitorTimeSeries),
-        )
-
-
-@dataclass
-class UpdatePermissions:
-    changes: Optional[List[PermissionsChange]] = None
-    """Array of permissions change objects."""
-
-    full_name: Optional[str] = None
-    """Full name of securable."""
-
-    securable_type: Optional[str] = None
-    """Type of securable."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdatePermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.changes:
-            body["changes"] = [v.as_dict() for v in self.changes]
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdatePermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.changes:
-            body["changes"] = self.changes
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissions:
-        """Deserializes the UpdatePermissions from a dictionary."""
-        return cls(
-            changes=_repeated_dict(d, "changes", PermissionsChange),
-            full_name=d.get("full_name", None),
-            securable_type=d.get("securable_type", None),
-        )
-
-
-@dataclass
 class UpdatePermissionsResponse:
     privilege_assignments: Optional[List[PrivilegeAssignment]] = None
     """The privileges assigned to each principal"""
@@ -10719,57 +8972,6 @@ class UpdatePermissionsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissionsResponse:
         """Deserializes the UpdatePermissionsResponse from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment))
-
-
-@dataclass
-class UpdateRegisteredModelRequest:
-    comment: Optional[str] = None
-    """The comment attached to the registered model"""
-
-    full_name: Optional[str] = None
-    """The three-level (fully qualified) name of the registered model"""
-
-    new_name: Optional[str] = None
-    """New name for the registered model."""
-
-    owner: Optional[str] = None
-    """The identifier of the user who owns the registered model"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateRegisteredModelRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateRegisteredModelRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegisteredModelRequest:
-        """Deserializes the UpdateRegisteredModelRequest from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            full_name=d.get("full_name", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-        )
 
 
 @dataclass
@@ -10847,73 +9049,6 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateSchema:
-    comment: Optional[str] = None
-    """User-provided free-form text description."""
-
-    enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
-    """Whether predictive optimization should be enabled for this object and objects under it."""
-
-    full_name: Optional[str] = None
-    """Full name of the schema."""
-
-    new_name: Optional[str] = None
-    """New name for the schema."""
-
-    owner: Optional[str] = None
-    """Username of current owner of schema."""
-
-    properties: Optional[Dict[str, str]] = None
-    """A map of key-value properties attached to the securable."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateSchema into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.enable_predictive_optimization is not None:
-            body["enable_predictive_optimization"] = self.enable_predictive_optimization.value
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateSchema into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.enable_predictive_optimization is not None:
-            body["enable_predictive_optimization"] = self.enable_predictive_optimization
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.properties:
-            body["properties"] = self.properties
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateSchema:
-        """Deserializes the UpdateSchema from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            enable_predictive_optimization=_enum(d, "enable_predictive_optimization", EnablePredictiveOptimization),
-            full_name=d.get("full_name", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-            properties=d.get("properties", None),
-        )
 
 
 @dataclass
@@ -11043,184 +9178,6 @@ class UpdateStorageCredential:
 
 
 @dataclass
-class UpdateTableRequest:
-    full_name: Optional[str] = None
-    """Full name of the table."""
-
-    owner: Optional[str] = None
-    """Username of current owner of table."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateTableRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateTableRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateTableRequest:
-        """Deserializes the UpdateTableRequest from a dictionary."""
-        return cls(full_name=d.get("full_name", None), owner=d.get("owner", None))
-
-
-@dataclass
-class UpdateVolumeRequestContent:
-    comment: Optional[str] = None
-    """The comment attached to the volume"""
-
-    name: Optional[str] = None
-    """The three-level (fully qualified) name of the volume"""
-
-    new_name: Optional[str] = None
-    """New name for the volume."""
-
-    owner: Optional[str] = None
-    """The identifier of the user who owns the volume"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateVolumeRequestContent into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateVolumeRequestContent into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateVolumeRequestContent:
-        """Deserializes the UpdateVolumeRequestContent from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-        )
-
-
-@dataclass
-class UpdateWorkspaceBindings:
-    assign_workspaces: Optional[List[int]] = None
-    """A list of workspace IDs."""
-
-    name: Optional[str] = None
-    """The name of the catalog."""
-
-    unassign_workspaces: Optional[List[int]] = None
-    """A list of workspace IDs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceBindings into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.assign_workspaces:
-            body["assign_workspaces"] = [v for v in self.assign_workspaces]
-        if self.name is not None:
-            body["name"] = self.name
-        if self.unassign_workspaces:
-            body["unassign_workspaces"] = [v for v in self.unassign_workspaces]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceBindings into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.assign_workspaces:
-            body["assign_workspaces"] = self.assign_workspaces
-        if self.name is not None:
-            body["name"] = self.name
-        if self.unassign_workspaces:
-            body["unassign_workspaces"] = self.unassign_workspaces
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindings:
-        """Deserializes the UpdateWorkspaceBindings from a dictionary."""
-        return cls(
-            assign_workspaces=d.get("assign_workspaces", None),
-            name=d.get("name", None),
-            unassign_workspaces=d.get("unassign_workspaces", None),
-        )
-
-
-@dataclass
-class UpdateWorkspaceBindingsParameters:
-    add: Optional[List[WorkspaceBinding]] = None
-    """List of workspace bindings."""
-
-    remove: Optional[List[WorkspaceBinding]] = None
-    """List of workspace bindings."""
-
-    securable_name: Optional[str] = None
-    """The name of the securable."""
-
-    securable_type: Optional[str] = None
-    """The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
-    external_location)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceBindingsParameters into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.add:
-            body["add"] = [v.as_dict() for v in self.add]
-        if self.remove:
-            body["remove"] = [v.as_dict() for v in self.remove]
-        if self.securable_name is not None:
-            body["securable_name"] = self.securable_name
-        if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceBindingsParameters into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.add:
-            body["add"] = self.add
-        if self.remove:
-            body["remove"] = self.remove
-        if self.securable_name is not None:
-            body["securable_name"] = self.securable_name
-        if self.securable_type is not None:
-            body["securable_type"] = self.securable_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsParameters:
-        """Deserializes the UpdateWorkspaceBindingsParameters from a dictionary."""
-        return cls(
-            add=_repeated_dict(d, "add", WorkspaceBinding),
-            remove=_repeated_dict(d, "remove", WorkspaceBinding),
-            securable_name=d.get("securable_name", None),
-            securable_type=d.get("securable_type", None),
-        )
-
-
-@dataclass
 class UpdateWorkspaceBindingsResponse:
     """A list of workspace IDs that are bound to the securable"""
 
@@ -11245,90 +9202,6 @@ class UpdateWorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsResponse:
         """Deserializes the UpdateWorkspaceBindingsResponse from a dictionary."""
         return cls(bindings=_repeated_dict(d, "bindings", WorkspaceBinding))
-
-
-@dataclass
-class ValidateCredentialRequest:
-    """Next ID: 17"""
-
-    aws_iam_role: Optional[AwsIamRole] = None
-
-    azure_managed_identity: Optional[AzureManagedIdentity] = None
-
-    credential_name: Optional[str] = None
-    """Required. The name of an existing credential or long-lived cloud credential to validate."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccount] = None
-
-    external_location_name: Optional[str] = None
-    """The name of an existing external location to validate. Only applicable for storage credentials
-    (purpose is **STORAGE**.)"""
-
-    purpose: Optional[CredentialPurpose] = None
-    """The purpose of the credential. This should only be used when the credential is specified."""
-
-    read_only: Optional[bool] = None
-    """Whether the credential is only usable for read operations. Only applicable for storage
-    credentials (purpose is **STORAGE**.)"""
-
-    url: Optional[str] = None
-    """The external location url to validate. Only applicable when purpose is **STORAGE**."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ValidateCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.external_location_name is not None:
-            body["external_location_name"] = self.external_location_name
-        if self.purpose is not None:
-            body["purpose"] = self.purpose.value
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ValidateCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.credential_name is not None:
-            body["credential_name"] = self.credential_name
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.external_location_name is not None:
-            body["external_location_name"] = self.external_location_name
-        if self.purpose is not None:
-            body["purpose"] = self.purpose
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ValidateCredentialRequest:
-        """Deserializes the ValidateCredentialRequest from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRole),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentity),
-            credential_name=d.get("credential_name", None),
-            databricks_gcp_service_account=_from_dict(d, "databricks_gcp_service_account", DatabricksGcpServiceAccount),
-            external_location_name=d.get("external_location_name", None),
-            purpose=_enum(d, "purpose", CredentialPurpose),
-            read_only=d.get("read_only", None),
-            url=d.get("url", None),
-        )
 
 
 @dataclass
@@ -11370,99 +9243,6 @@ class ValidateCredentialResult(Enum):
     FAIL = "FAIL"
     PASS = "PASS"
     SKIP = "SKIP"
-
-
-@dataclass
-class ValidateStorageCredential:
-    aws_iam_role: Optional[AwsIamRoleRequest] = None
-    """The AWS IAM role configuration."""
-
-    azure_managed_identity: Optional[AzureManagedIdentityRequest] = None
-    """The Azure managed identity configuration."""
-
-    azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration."""
-
-    cloudflare_api_token: Optional[CloudflareApiToken] = None
-    """The Cloudflare API token configuration."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The Databricks created GCP service account configuration."""
-
-    external_location_name: Optional[str] = None
-    """The name of an existing external location to validate."""
-
-    read_only: Optional[bool] = None
-    """Whether the storage credential is only usable for read operations."""
-
-    storage_credential_name: Optional[str] = None
-    """Required. The name of an existing credential or long-lived cloud credential to validate."""
-
-    url: Optional[str] = None
-    """The external location url to validate."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ValidateStorageCredential into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal.as_dict()
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.external_location_name is not None:
-            body["external_location_name"] = self.external_location_name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.storage_credential_name is not None:
-            body["storage_credential_name"] = self.storage_credential_name
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ValidateStorageCredential into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.external_location_name is not None:
-            body["external_location_name"] = self.external_location_name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.storage_credential_name is not None:
-            body["storage_credential_name"] = self.storage_credential_name
-        if self.url is not None:
-            body["url"] = self.url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ValidateStorageCredential:
-        """Deserializes the ValidateStorageCredential from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityRequest),
-            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
-            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
-            databricks_gcp_service_account=_from_dict(
-                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
-            ),
-            external_location_name=d.get("external_location_name", None),
-            read_only=d.get("read_only", None),
-            storage_credential_name=d.get("storage_credential_name", None),
-            url=d.get("url", None),
-        )
 
 
 @dataclass
@@ -12453,6 +10233,7 @@ class ConnectionsAPI:
         options: Dict[str, str],
         *,
         comment: Optional[str] = None,
+        environment_settings: Optional[EnvironmentSettings] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -12469,6 +10250,8 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -12481,6 +10264,8 @@ class ConnectionsAPI:
             body["comment"] = comment
         if connection_type is not None:
             body["connection_type"] = connection_type.value
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -12561,7 +10346,13 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
+        self,
+        name: str,
+        options: Dict[str, str],
+        *,
+        environment_settings: Optional[EnvironmentSettings] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -12569,6 +10360,8 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param environment_settings: :class:`EnvironmentSettings` (optional)
+          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -12577,6 +10370,8 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
         body = {}
+        if environment_settings is not None:
+            body["environment_settings"] = environment_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -13001,11 +10796,16 @@ class ExternalLineageAPI:
         direction.
 
         :param object_info: :class:`ExternalLineageObject`
-          The object to query external lineage relationship on.
+          The object to query external lineage relationships for. Since this field is a query parameter,
+          please flatten the nested fields. For example, if the object is a table, the query parameter should
+          look like: `object_info.table.name=main.sales.customers`
         :param lineage_direction: :class:`LineageDirection`
           The lineage direction to filter on.
         :param page_size: int (optional)
+          Specifies the maximum number of external lineage relationships to return in a single response. The
+          value must be less than or equal to 1000.
         :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`ExternalLineageInfo`
         """
@@ -13400,7 +11200,10 @@ class ExternalMetadataAPI:
         the array.
 
         :param page_size: int (optional)
+          Specifies the maximum number of external metadata objects to return in a single response. The value
+          must be less than or equal to 1000.
         :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`ExternalMetadata`
         """

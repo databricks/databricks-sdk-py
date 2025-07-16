@@ -16,36 +16,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class AddExchangeForListingRequest:
-    listing_id: str
-
-    exchange_id: str
-
-    def as_dict(self) -> dict:
-        """Serializes the AddExchangeForListingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.exchange_id is not None:
-            body["exchange_id"] = self.exchange_id
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AddExchangeForListingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.exchange_id is not None:
-            body["exchange_id"] = self.exchange_id
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AddExchangeForListingRequest:
-        """Deserializes the AddExchangeForListingRequest from a dictionary."""
-        return cls(exchange_id=d.get("exchange_id", None), listing_id=d.get("listing_id", None))
-
-
-@dataclass
 class AddExchangeForListingResponse:
     exchange_for_listing: Optional[ExchangeListing] = None
 
@@ -234,30 +204,6 @@ class Cost(Enum):
 
 
 @dataclass
-class CreateExchangeFilterRequest:
-    filter: ExchangeFilter
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateExchangeFilterRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateExchangeFilterRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeFilterRequest:
-        """Deserializes the CreateExchangeFilterRequest from a dictionary."""
-        return cls(filter=_from_dict(d, "filter", ExchangeFilter))
-
-
-@dataclass
 class CreateExchangeFilterResponse:
     filter_id: Optional[str] = None
 
@@ -282,30 +228,6 @@ class CreateExchangeFilterResponse:
 
 
 @dataclass
-class CreateExchangeRequest:
-    exchange: Exchange
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateExchangeRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.exchange:
-            body["exchange"] = self.exchange.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateExchangeRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.exchange:
-            body["exchange"] = self.exchange
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeRequest:
-        """Deserializes the CreateExchangeRequest from a dictionary."""
-        return cls(exchange=_from_dict(d, "exchange", Exchange))
-
-
-@dataclass
 class CreateExchangeResponse:
     exchange_id: Optional[str] = None
 
@@ -327,53 +249,6 @@ class CreateExchangeResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateExchangeResponse:
         """Deserializes the CreateExchangeResponse from a dictionary."""
         return cls(exchange_id=d.get("exchange_id", None))
-
-
-@dataclass
-class CreateFileRequest:
-    file_parent: FileParent
-
-    marketplace_file_type: MarketplaceFileType
-
-    mime_type: str
-
-    display_name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateFileRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.file_parent:
-            body["file_parent"] = self.file_parent.as_dict()
-        if self.marketplace_file_type is not None:
-            body["marketplace_file_type"] = self.marketplace_file_type.value
-        if self.mime_type is not None:
-            body["mime_type"] = self.mime_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateFileRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.file_parent:
-            body["file_parent"] = self.file_parent
-        if self.marketplace_file_type is not None:
-            body["marketplace_file_type"] = self.marketplace_file_type
-        if self.mime_type is not None:
-            body["mime_type"] = self.mime_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateFileRequest:
-        """Deserializes the CreateFileRequest from a dictionary."""
-        return cls(
-            display_name=d.get("display_name", None),
-            file_parent=_from_dict(d, "file_parent", FileParent),
-            marketplace_file_type=_enum(d, "marketplace_file_type", MarketplaceFileType),
-            mime_type=d.get("mime_type", None),
-        )
 
 
 @dataclass
@@ -408,92 +283,6 @@ class CreateFileResponse:
 
 
 @dataclass
-class CreateInstallationRequest:
-    accepted_consumer_terms: Optional[ConsumerTerms] = None
-
-    catalog_name: Optional[str] = None
-
-    listing_id: Optional[str] = None
-
-    recipient_type: Optional[DeltaSharingRecipientType] = None
-
-    repo_detail: Optional[RepoInstallation] = None
-    """for git repo installations"""
-
-    share_name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateInstallationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.accepted_consumer_terms:
-            body["accepted_consumer_terms"] = self.accepted_consumer_terms.as_dict()
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.recipient_type is not None:
-            body["recipient_type"] = self.recipient_type.value
-        if self.repo_detail:
-            body["repo_detail"] = self.repo_detail.as_dict()
-        if self.share_name is not None:
-            body["share_name"] = self.share_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateInstallationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.accepted_consumer_terms:
-            body["accepted_consumer_terms"] = self.accepted_consumer_terms
-        if self.catalog_name is not None:
-            body["catalog_name"] = self.catalog_name
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.recipient_type is not None:
-            body["recipient_type"] = self.recipient_type
-        if self.repo_detail:
-            body["repo_detail"] = self.repo_detail
-        if self.share_name is not None:
-            body["share_name"] = self.share_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateInstallationRequest:
-        """Deserializes the CreateInstallationRequest from a dictionary."""
-        return cls(
-            accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
-            catalog_name=d.get("catalog_name", None),
-            listing_id=d.get("listing_id", None),
-            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
-            repo_detail=_from_dict(d, "repo_detail", RepoInstallation),
-            share_name=d.get("share_name", None),
-        )
-
-
-@dataclass
-class CreateListingRequest:
-    listing: Listing
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateListingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.listing:
-            body["listing"] = self.listing.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateListingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.listing:
-            body["listing"] = self.listing
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateListingRequest:
-        """Deserializes the CreateListingRequest from a dictionary."""
-        return cls(listing=_from_dict(d, "listing", Listing))
-
-
-@dataclass
 class CreateListingResponse:
     listing_id: Optional[str] = None
 
@@ -518,90 +307,6 @@ class CreateListingResponse:
 
 
 @dataclass
-class CreatePersonalizationRequest:
-    """Data request messages also creates a lead (maybe)"""
-
-    intended_use: str
-
-    accepted_consumer_terms: ConsumerTerms
-
-    comment: Optional[str] = None
-
-    company: Optional[str] = None
-
-    first_name: Optional[str] = None
-
-    is_from_lighthouse: Optional[bool] = None
-
-    last_name: Optional[str] = None
-
-    listing_id: Optional[str] = None
-
-    recipient_type: Optional[DeltaSharingRecipientType] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreatePersonalizationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.accepted_consumer_terms:
-            body["accepted_consumer_terms"] = self.accepted_consumer_terms.as_dict()
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.company is not None:
-            body["company"] = self.company
-        if self.first_name is not None:
-            body["first_name"] = self.first_name
-        if self.intended_use is not None:
-            body["intended_use"] = self.intended_use
-        if self.is_from_lighthouse is not None:
-            body["is_from_lighthouse"] = self.is_from_lighthouse
-        if self.last_name is not None:
-            body["last_name"] = self.last_name
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.recipient_type is not None:
-            body["recipient_type"] = self.recipient_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePersonalizationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.accepted_consumer_terms:
-            body["accepted_consumer_terms"] = self.accepted_consumer_terms
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.company is not None:
-            body["company"] = self.company
-        if self.first_name is not None:
-            body["first_name"] = self.first_name
-        if self.intended_use is not None:
-            body["intended_use"] = self.intended_use
-        if self.is_from_lighthouse is not None:
-            body["is_from_lighthouse"] = self.is_from_lighthouse
-        if self.last_name is not None:
-            body["last_name"] = self.last_name
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.recipient_type is not None:
-            body["recipient_type"] = self.recipient_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequest:
-        """Deserializes the CreatePersonalizationRequest from a dictionary."""
-        return cls(
-            accepted_consumer_terms=_from_dict(d, "accepted_consumer_terms", ConsumerTerms),
-            comment=d.get("comment", None),
-            company=d.get("company", None),
-            first_name=d.get("first_name", None),
-            intended_use=d.get("intended_use", None),
-            is_from_lighthouse=d.get("is_from_lighthouse", None),
-            last_name=d.get("last_name", None),
-            listing_id=d.get("listing_id", None),
-            recipient_type=_enum(d, "recipient_type", DeltaSharingRecipientType),
-        )
-
-
-@dataclass
 class CreatePersonalizationRequestResponse:
     id: Optional[str] = None
 
@@ -623,30 +328,6 @@ class CreatePersonalizationRequestResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreatePersonalizationRequestResponse:
         """Deserializes the CreatePersonalizationRequestResponse from a dictionary."""
         return cls(id=d.get("id", None))
-
-
-@dataclass
-class CreateProviderRequest:
-    provider: ProviderInfo
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateProviderRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.provider:
-            body["provider"] = self.provider.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateProviderRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.provider:
-            body["provider"] = self.provider
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateProviderRequest:
-        """Deserializes the CreateProviderRequest from a dictionary."""
-        return cls(provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass
@@ -3060,36 +2741,6 @@ class TokenInfo:
 
 
 @dataclass
-class UpdateExchangeFilterRequest:
-    filter: ExchangeFilter
-
-    id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateExchangeFilterRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateExchangeFilterRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.filter:
-            body["filter"] = self.filter
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterRequest:
-        """Deserializes the UpdateExchangeFilterRequest from a dictionary."""
-        return cls(filter=_from_dict(d, "filter", ExchangeFilter), id=d.get("id", None))
-
-
-@dataclass
 class UpdateExchangeFilterResponse:
     filter: Optional[ExchangeFilter] = None
 
@@ -3111,36 +2762,6 @@ class UpdateExchangeFilterResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeFilterResponse:
         """Deserializes the UpdateExchangeFilterResponse from a dictionary."""
         return cls(filter=_from_dict(d, "filter", ExchangeFilter))
-
-
-@dataclass
-class UpdateExchangeRequest:
-    exchange: Exchange
-
-    id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateExchangeRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.exchange:
-            body["exchange"] = self.exchange.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateExchangeRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.exchange:
-            body["exchange"] = self.exchange
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateExchangeRequest:
-        """Deserializes the UpdateExchangeRequest from a dictionary."""
-        return cls(exchange=_from_dict(d, "exchange", Exchange), id=d.get("id", None))
 
 
 @dataclass
@@ -3168,53 +2789,6 @@ class UpdateExchangeResponse:
 
 
 @dataclass
-class UpdateInstallationRequest:
-    installation: InstallationDetail
-
-    installation_id: Optional[str] = None
-
-    listing_id: Optional[str] = None
-
-    rotate_token: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateInstallationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.installation:
-            body["installation"] = self.installation.as_dict()
-        if self.installation_id is not None:
-            body["installation_id"] = self.installation_id
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.rotate_token is not None:
-            body["rotate_token"] = self.rotate_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateInstallationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.installation:
-            body["installation"] = self.installation
-        if self.installation_id is not None:
-            body["installation_id"] = self.installation_id
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.rotate_token is not None:
-            body["rotate_token"] = self.rotate_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationRequest:
-        """Deserializes the UpdateInstallationRequest from a dictionary."""
-        return cls(
-            installation=_from_dict(d, "installation", InstallationDetail),
-            installation_id=d.get("installation_id", None),
-            listing_id=d.get("listing_id", None),
-            rotate_token=d.get("rotate_token", None),
-        )
-
-
-@dataclass
 class UpdateInstallationResponse:
     installation: Optional[InstallationDetail] = None
 
@@ -3236,36 +2810,6 @@ class UpdateInstallationResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateInstallationResponse:
         """Deserializes the UpdateInstallationResponse from a dictionary."""
         return cls(installation=_from_dict(d, "installation", InstallationDetail))
-
-
-@dataclass
-class UpdateListingRequest:
-    listing: Listing
-
-    id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateListingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.listing:
-            body["listing"] = self.listing.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateListingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.listing:
-            body["listing"] = self.listing
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateListingRequest:
-        """Deserializes the UpdateListingRequest from a dictionary."""
-        return cls(id=d.get("id", None), listing=_from_dict(d, "listing", Listing))
 
 
 @dataclass
@@ -3293,60 +2837,6 @@ class UpdateListingResponse:
 
 
 @dataclass
-class UpdatePersonalizationRequestRequest:
-    status: PersonalizationRequestStatus
-
-    listing_id: Optional[str] = None
-
-    reason: Optional[str] = None
-
-    request_id: Optional[str] = None
-
-    share: Optional[ShareInfo] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdatePersonalizationRequestRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.reason is not None:
-            body["reason"] = self.reason
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        if self.share:
-            body["share"] = self.share.as_dict()
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdatePersonalizationRequestRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.listing_id is not None:
-            body["listing_id"] = self.listing_id
-        if self.reason is not None:
-            body["reason"] = self.reason
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        if self.share:
-            body["share"] = self.share
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestRequest:
-        """Deserializes the UpdatePersonalizationRequestRequest from a dictionary."""
-        return cls(
-            listing_id=d.get("listing_id", None),
-            reason=d.get("reason", None),
-            request_id=d.get("request_id", None),
-            share=_from_dict(d, "share", ShareInfo),
-            status=_enum(d, "status", PersonalizationRequestStatus),
-        )
-
-
-@dataclass
 class UpdatePersonalizationRequestResponse:
     request: Optional[PersonalizationRequest] = None
 
@@ -3368,39 +2858,6 @@ class UpdatePersonalizationRequestResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalizationRequestResponse:
         """Deserializes the UpdatePersonalizationRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, "request", PersonalizationRequest))
-
-
-@dataclass
-class UpdateProviderAnalyticsDashboardRequest:
-    id: Optional[str] = None
-    """id is immutable property and can't be updated."""
-
-    version: Optional[int] = None
-    """this is the version of the dashboard template we want to update our user to current expectation
-    is that it should be equal to latest version of the dashboard template"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateProviderAnalyticsDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.version is not None:
-            body["version"] = self.version
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateProviderAnalyticsDashboardRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.version is not None:
-            body["version"] = self.version
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardRequest:
-        """Deserializes the UpdateProviderAnalyticsDashboardRequest from a dictionary."""
-        return cls(id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -3439,36 +2896,6 @@ class UpdateProviderAnalyticsDashboardResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderAnalyticsDashboardResponse:
         """Deserializes the UpdateProviderAnalyticsDashboardResponse from a dictionary."""
         return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
-
-
-@dataclass
-class UpdateProviderRequest:
-    provider: ProviderInfo
-
-    id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateProviderRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.provider:
-            body["provider"] = self.provider.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateProviderRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.provider:
-            body["provider"] = self.provider
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateProviderRequest:
-        """Deserializes the UpdateProviderRequest from a dictionary."""
-        return cls(id=d.get("id", None), provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass

@@ -4,23 +4,11 @@ OAuth
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.oauth2`` module.
 
 .. py:currentmodule:: databricks.sdk.service.oauth2
-.. autoclass:: CreateCustomAppIntegration
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateCustomAppIntegrationOutput
    :members:
    :undoc-members:
 
-.. autoclass:: CreatePublishedAppIntegration
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreatePublishedAppIntegrationOutput
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateServicePrincipalSecretRequest
    :members:
    :undoc-members:
 
@@ -88,15 +76,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCustomAppIntegration
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateCustomAppIntegrationOutput
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdatePublishedAppIntegration
    :members:
    :undoc-members:
 

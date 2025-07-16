@@ -61,10 +61,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateBillingUsageDashboardRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateBillingUsageDashboardResponse
    :members:
    :undoc-members:
@@ -81,15 +77,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateBudgetConfigurationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateBudgetConfigurationResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateBudgetPolicyRequest
    :members:
    :undoc-members:
 
@@ -208,15 +196,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateBudgetConfigurationRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateBudgetConfigurationResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateLogDeliveryConfigurationStatusRequest
    :members:
    :undoc-members:
 
@@ -227,10 +207,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USAGE_DASHBOARD_TYPE_WORKSPACE
       :value: "USAGE_DASHBOARD_TYPE_WORKSPACE"
-
-.. autoclass:: WrappedCreateLogDeliveryConfiguration
-   :members:
-   :undoc-members:
 
 .. autoclass:: WrappedLogDeliveryConfiguration
    :members:

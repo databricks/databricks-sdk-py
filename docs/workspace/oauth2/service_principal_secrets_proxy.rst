@@ -1,16 +1,17 @@
-``a.service_principal_secrets``: Service Principal Secrets
-==========================================================
+``w.service_principal_secrets_proxy``: Service Principal Secrets Proxy
+======================================================================
 .. currentmodule:: databricks.sdk.service.oauth2
 
-.. py:class:: ServicePrincipalSecretsAPI
+.. py:class:: ServicePrincipalSecretsProxyAPI
 
-    These APIs enable administrators to manage service principal secrets.
+    These APIs enable administrators to manage service principal secrets at the workspace level. To use these
+    APIs, the service principal must be first added to the current workspace.
 
     You can use the generated secrets to obtain OAuth access tokens for a service principal, which can then be
     used to access Databricks Accounts and Workspace APIs. For more information, see [Authentication using
     OAuth tokens for service principals].
 
-    In addition, the generated secrets can be used to configure the Databricks Terraform Provider to
+    In addition, the generated secrets can be used to configure the Databricks Terraform Providerto
     authenticate with the service principal. For more information, see [Databricks Terraform Provider].
 
     [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html

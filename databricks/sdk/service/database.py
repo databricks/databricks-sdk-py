@@ -587,51 +587,6 @@ class DeltaTableSyncInfo:
 
 
 @dataclass
-class GenerateDatabaseCredentialRequest:
-    """Generates a credential that can be used to access database instances"""
-
-    claims: Optional[List[RequestedClaims]] = None
-    """The returned token will be scoped to the union of instance_names and instances containing the
-    specified UC tables, so instance_names is allowed to be empty."""
-
-    instance_names: Optional[List[str]] = None
-    """Instances to which the token will be scoped."""
-
-    request_id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the GenerateDatabaseCredentialRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.claims:
-            body["claims"] = [v.as_dict() for v in self.claims]
-        if self.instance_names:
-            body["instance_names"] = [v for v in self.instance_names]
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenerateDatabaseCredentialRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.claims:
-            body["claims"] = self.claims
-        if self.instance_names:
-            body["instance_names"] = self.instance_names
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenerateDatabaseCredentialRequest:
-        """Deserializes the GenerateDatabaseCredentialRequest from a dictionary."""
-        return cls(
-            claims=_repeated_dict(d, "claims", RequestedClaims),
-            instance_names=d.get("instance_names", None),
-            request_id=d.get("request_id", None),
-        )
-
-
-@dataclass
 class ListDatabaseInstanceRolesResponse:
     database_instance_roles: Optional[List[DatabaseInstanceRole]] = None
     """List of database instance roles."""
@@ -707,11 +662,15 @@ class NewPipelineSpec:
     fields of pipeline are still inferred by table def internally"""
 
     storage_catalog: Optional[str] = None
-    """UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
+    """This field needs to be specified if the destination catalog is a managed postgres catalog.
+    
+    UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This
     needs to be a standard catalog where the user has permissions to create Delta tables."""
 
     storage_schema: Optional[str] = None
-    """UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs
+    """This field needs to be specified if the destination catalog is a managed postgres catalog.
+    
+    UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs
     to be in the standard catalog where the user has permissions to create Delta tables."""
 
     def as_dict(self) -> dict:
@@ -1144,13 +1103,20 @@ class SyncedTableSpec:
     do not already exist."""
 
     existing_pipeline_id: Optional[str] = None
-    """User-specified ID of a pre-existing pipeline to bin pack. This field is optional, and should be
-    empty if new_pipeline_spec is set. This field will only be set by the server in response
-    messages if it is specified in the request. The SyncedTableStatus message will always contain
-    the effective pipeline ID (either client provided or server generated), however."""
+    """At most one of existing_pipeline_id and new_pipeline_spec should be defined.
+    
+    If existing_pipeline_id is defined, the synced table will be bin packed into the existing
+    pipeline referenced. This avoids creating a new pipeline and allows sharing existing compute. In
+    this case, the scheduling_policy of this synced table must match the scheduling policy of the
+    existing pipeline."""
 
     new_pipeline_spec: Optional[NewPipelineSpec] = None
-    """Spec of new pipeline. Should be empty if pipeline_id / existing_pipeline_id is set"""
+    """At most one of existing_pipeline_id and new_pipeline_spec should be defined.
+    
+    If new_pipeline_spec is defined, a new pipeline is created for this synced table. The location
+    pointed to is used to store intermediate files (checkpoints, event logs etc). The caller must
+    have write permissions to create Delta tables in the specified catalog and schema. Again, note
+    this requires write permissions, whereas the source table only requires read permissions."""
 
     primary_key_columns: Optional[List[str]] = None
     """Primary Key columns to be used for data insert/update in the destination."""

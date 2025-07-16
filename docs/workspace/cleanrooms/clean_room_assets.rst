@@ -15,7 +15,8 @@
         access the asset. Typically, you should use a group as the clean room owner.
 
         :param clean_room_name: str
-          Name of the clean room.
+          The name of the clean room this asset belongs to. This is an output-only field to ensure proper
+          resource identification.
         :param asset: :class:`CleanRoomAsset`
 
         :returns: :class:`CleanRoomAsset`

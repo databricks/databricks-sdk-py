@@ -97,7 +97,8 @@ from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            OAuthPublishedAppsAPI,
                                            PublishedAppIntegrationAPI,
                                            ServicePrincipalFederationPolicyAPI,
-                                           ServicePrincipalSecretsAPI)
+                                           ServicePrincipalSecretsAPI,
+                                           ServicePrincipalSecretsProxyAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
@@ -113,10 +114,11 @@ from databricks.sdk.service.settings import (
     AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
     ComplianceSecurityProfileAPI, CredentialsManagerAPI,
     CspEnablementAccountAPI, DashboardEmailSubscriptionsAPI,
-    DefaultNamespaceAPI, DisableLegacyAccessAPI, DisableLegacyDbfsAPI,
-    DisableLegacyFeaturesAPI, EnableExportNotebookAPI, EnableIpAccessListsAPI,
-    EnableNotebookTableClipboardAPI, EnableResultsDownloadingAPI,
-    EnhancedSecurityMonitoringAPI, EsmEnablementAccountAPI, IpAccessListsAPI,
+    DefaultNamespaceAPI, DefaultWarehouseIdAPI, DisableLegacyAccessAPI,
+    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableExportNotebookAPI,
+    EnableIpAccessListsAPI, EnableNotebookTableClipboardAPI,
+    EnableResultsDownloadingAPI, EnhancedSecurityMonitoringAPI,
+    EsmEnablementAccountAPI, IpAccessListsAPI,
     LlmProxyPartnerPoweredAccountAPI, LlmProxyPartnerPoweredEnforceAPI,
     LlmProxyPartnerPoweredWorkspaceAPI, NetworkConnectivityAPI,
     NetworkPoliciesAPI, NotificationDestinationsAPI, PersonalComputeAPI,
@@ -323,6 +325,7 @@ class WorkspaceClient:
         self._resource_quotas = pkg_catalog.ResourceQuotasAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
+        self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
         self._service_principals = pkg_iam.ServicePrincipalsAPI(self._api_client)
         self._serving_endpoints = serving_endpoints
         serving_endpoints_data_plane_token_source = DataPlaneTokenSource(
@@ -787,6 +790,11 @@ class WorkspaceClient:
     def secrets(self) -> pkg_workspace.SecretsAPI:
         """The Secrets API allows you to manage secrets, secret scopes, and access permissions."""
         return self._secrets
+
+    @property
+    def service_principal_secrets_proxy(self) -> pkg_oauth2.ServicePrincipalSecretsProxyAPI:
+        """These APIs enable administrators to manage service principal secrets at the workspace level."""
+        return self._service_principal_secrets_proxy
 
     @property
     def service_principals(self) -> pkg_iam.ServicePrincipalsAPI:

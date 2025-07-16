@@ -10,7 +10,7 @@
 
     [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 
-    .. py:method:: create(git_provider: str [, git_username: Optional[str], personal_access_token: Optional[str]]) -> CreateCredentialsResponse
+    .. py:method:: create(git_provider: str [, git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]]) -> CreateCredentialsResponse
 
 
         Usage:
@@ -40,6 +40,10 @@
           be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
           BitBucket Server, username must be used. For all other providers please see your provider's Personal
           Access Token authentication documentation to see what is supported.
+        :param is_default_for_provider: bool (optional)
+          if the credential is the default for the given provider
+        :param name: str (optional)
+          the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. [Learn more].
@@ -104,7 +108,7 @@
         :returns: Iterator over :class:`CredentialInfo`
         
 
-    .. py:method:: update(credential_id: int, git_provider: str [, git_username: Optional[str], personal_access_token: Optional[str]])
+    .. py:method:: update(credential_id: int, git_provider: str [, git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]])
 
 
         Usage:
@@ -143,6 +147,10 @@
           be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
           BitBucket Server, username must be used. For all other providers please see your provider's Personal
           Access Token authentication documentation to see what is supported.
+        :param is_default_for_provider: bool (optional)
+          if the credential is the default for the given provider
+        :param name: str (optional)
+          the name of the git credential, used for identification and ease of lookup
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
           providers, support may exist for other types of scoped access tokens. [Learn more].

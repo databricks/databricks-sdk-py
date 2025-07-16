@@ -72,13 +72,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: AppPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: AppResource
    :members:
    :undoc-members:
+
+.. autoclass:: AppResourceDatabase
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceDatabaseDatabasePermission
+
+   .. py:attribute:: CAN_CONNECT_AND_CREATE
+      :value: "CAN_CONNECT_AND_CREATE"
 
 .. autoclass:: AppResourceJob
    :members:
@@ -216,13 +221,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAppsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: StartAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: StopAppRequest
    :members:
    :undoc-members:
