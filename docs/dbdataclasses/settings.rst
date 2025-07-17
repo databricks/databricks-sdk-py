@@ -168,10 +168,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateIpAccessList
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateIpAccessListResponse
    :members:
    :undoc-members:
@@ -180,23 +176,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateNotificationDestinationRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateOboTokenRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateOboTokenResponse
    :members:
    :undoc-members:
 
 .. autoclass:: CreatePrivateEndpointRule
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateTokenRequest
    :members:
    :undoc-members:
 
@@ -241,6 +225,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DefaultWarehouseId
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteAccountIpAccessEnableResponse
    :members:
    :undoc-members:
@@ -258,6 +246,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteDefaultNamespaceSettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDefaultWarehouseIdResponse
    :members:
    :undoc-members:
 
@@ -506,10 +498,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ExchangeTokenRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: ExchangeTokenResponse
    :members:
    :undoc-members:
@@ -708,10 +696,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ReplaceIpAccessList
-   :members:
-   :undoc-members:
-
 .. autoclass:: ReplaceResponse
    :members:
    :undoc-members:
@@ -729,10 +713,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 
 .. autoclass:: RestrictWorkspaceAdminsSetting
-   :members:
-   :undoc-members:
-
-.. autoclass:: RevokeTokenRequest
    :members:
    :undoc-members:
 
@@ -787,10 +767,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: TokenPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. py:class:: TokenType
 
    The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
@@ -810,107 +786,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
-.. autoclass:: UpdateAccountIpAccessEnableRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAibiDashboardEmbeddingAccessPolicySettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAutomaticClusterUpdateSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateComplianceSecurityProfileSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateCspEnablementAccountSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDashboardEmailSubscriptionsRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDefaultNamespaceSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDisableLegacyAccessRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDisableLegacyDbfsRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDisableLegacyFeaturesRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEnableExportNotebookRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEnableNotebookTableClipboardRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEnableResultsDownloadingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEnhancedSecurityMonitoringSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEsmEnablementAccountSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateIpAccessList
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateLlmProxyPartnerPoweredAccountRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateLlmProxyPartnerPoweredEnforceRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateLlmProxyPartnerPoweredWorkspaceRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateNotificationDestinationRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdatePersonalComputeSettingRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdatePrivateEndpointRule
    :members:
    :undoc-members:
 
 .. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRestrictWorkspaceAdminsSettingRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateSqlResultsDownloadRequest
    :members:
    :undoc-members:
 

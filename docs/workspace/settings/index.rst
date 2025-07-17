@@ -17,6 +17,7 @@ Manage security settings for Accounts and Workspaces
    compliance_security_profile
    dashboard_email_subscriptions
    default_namespace
+   default_warehouse_id
    disable_legacy_access
    disable_legacy_dbfs
    enable_export_notebook

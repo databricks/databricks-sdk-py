@@ -10,44 +10,6 @@
     to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
     :method:jobs/create.
 
-    .. py:method:: create(name: str [, dashboard_filters_enabled: Optional[bool], is_favorite: Optional[bool], parent: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Dashboard
-
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            created = w.dashboards.create(name=f"sdk-{time.time_ns()}")
-            
-            # cleanup
-            w.dashboards.delete(dashboard_id=created.id)
-
-        Creates a new dashboard object. Only the name parameter is required in the POST request JSON body.
-        Other fields can be included when duplicating dashboards with this API. Databricks does not recommend
-        designing dashboards exclusively using this API.',
-
-        :param name: str
-          The title of this dashboard that appears in list views and at the top of the dashboard page.
-        :param dashboard_filters_enabled: bool (optional)
-          Indicates whether the dashboard filters are enabled
-        :param is_favorite: bool (optional)
-          Indicates whether this dashboard object should appear in the current user's favorites list.
-        :param parent: str (optional)
-          The identifier of the workspace folder containing the object.
-        :param run_as_role: :class:`RunAsRole` (optional)
-          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
-        :param tags: List[str] (optional)
-
-        :returns: :class:`Dashboard`
-        
-
     .. py:method:: delete(dashboard_id: str)
 
 

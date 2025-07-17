@@ -414,49 +414,6 @@ class GenieConversationSummary:
 
 
 @dataclass
-class GenieCreateConversationMessageRequest:
-    content: str
-    """User message content."""
-
-    conversation_id: Optional[str] = None
-    """The ID associated with the conversation."""
-
-    space_id: Optional[str] = None
-    """The ID associated with the Genie space where the conversation is started."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieCreateConversationMessageRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieCreateConversationMessageRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.conversation_id is not None:
-            body["conversation_id"] = self.conversation_id
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieCreateConversationMessageRequest:
-        """Deserializes the GenieCreateConversationMessageRequest from a dictionary."""
-        return cls(
-            content=d.get("content", None),
-            conversation_id=d.get("conversation_id", None),
-            space_id=d.get("space_id", None),
-        )
-
-
-@dataclass
 class GenieGetMessageQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
     """SQL Statement Execution response. See [Get status, manifest, and result first
@@ -811,38 +768,6 @@ class GenieSpace:
 
 
 @dataclass
-class GenieStartConversationMessageRequest:
-    content: str
-    """The text of the message that starts the conversation."""
-
-    space_id: Optional[str] = None
-    """The ID associated with the Genie space where you want to start a conversation."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GenieStartConversationMessageRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GenieStartConversationMessageRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.content is not None:
-            body["content"] = self.content
-        if self.space_id is not None:
-            body["space_id"] = self.space_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GenieStartConversationMessageRequest:
-        """Deserializes the GenieStartConversationMessageRequest from a dictionary."""
-        return cls(content=d.get("content", None), space_id=d.get("space_id", None))
-
-
-@dataclass
 class GenieStartConversationResponse:
     message_id: str
     """Message ID"""
@@ -1157,102 +1082,6 @@ class MessageStatus(Enum):
     PENDING_WAREHOUSE = "PENDING_WAREHOUSE"
     QUERY_RESULT_EXPIRED = "QUERY_RESULT_EXPIRED"
     SUBMITTED = "SUBMITTED"
-
-
-@dataclass
-class MigrateDashboardRequest:
-    source_dashboard_id: str
-    """UUID of the dashboard to be migrated."""
-
-    display_name: Optional[str] = None
-    """Display name for the new Lakeview dashboard."""
-
-    parent_path: Optional[str] = None
-    """The workspace path of the folder to contain the migrated Lakeview dashboard."""
-
-    update_parameter_syntax: Optional[bool] = None
-    """Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named
-    syntax (:param) when converting datasets in the dashboard."""
-
-    def as_dict(self) -> dict:
-        """Serializes the MigrateDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
-        if self.source_dashboard_id is not None:
-            body["source_dashboard_id"] = self.source_dashboard_id
-        if self.update_parameter_syntax is not None:
-            body["update_parameter_syntax"] = self.update_parameter_syntax
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the MigrateDashboardRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.parent_path is not None:
-            body["parent_path"] = self.parent_path
-        if self.source_dashboard_id is not None:
-            body["source_dashboard_id"] = self.source_dashboard_id
-        if self.update_parameter_syntax is not None:
-            body["update_parameter_syntax"] = self.update_parameter_syntax
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> MigrateDashboardRequest:
-        """Deserializes the MigrateDashboardRequest from a dictionary."""
-        return cls(
-            display_name=d.get("display_name", None),
-            parent_path=d.get("parent_path", None),
-            source_dashboard_id=d.get("source_dashboard_id", None),
-            update_parameter_syntax=d.get("update_parameter_syntax", None),
-        )
-
-
-@dataclass
-class PublishRequest:
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to be published."""
-
-    embed_credentials: Optional[bool] = None
-    """Flag to indicate if the publisher's credentials should be embedded in the published dashboard.
-    These embedded credentials will be used to execute the published dashboard's queries."""
-
-    warehouse_id: Optional[str] = None
-    """The ID of the warehouse that can be used to override the warehouse which was set in the draft."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PublishRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.embed_credentials is not None:
-            body["embed_credentials"] = self.embed_credentials
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PublishRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_id is not None:
-            body["dashboard_id"] = self.dashboard_id
-        if self.embed_credentials is not None:
-            body["embed_credentials"] = self.embed_credentials
-        if self.warehouse_id is not None:
-            body["warehouse_id"] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PublishRequest:
-        """Deserializes the PublishRequest from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            embed_credentials=d.get("embed_credentials", None),
-            warehouse_id=d.get("warehouse_id", None),
-        )
 
 
 @dataclass
@@ -2549,12 +2378,7 @@ class LakeviewEmbeddedAPI:
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
     ) -> GetPublishedDashboardTokenInfoResponse:
-        """Get a required authorization details and scopes of a published dashboard to mint an OAuth token. The
-        `authorization_details` can be enriched to apply additional restriction.
-
-        Example: Adding the following `authorization_details` object to downscope the viewer permission to
-        specific table ``` { type: "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
-        object_full_path: "main.default.testdata" } ```
+        """Get a required authorization details and scopes of a published dashboard to mint an OAuth token.
 
         :param dashboard_id: str
           UUID identifying the published dashboard.

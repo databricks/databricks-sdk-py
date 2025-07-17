@@ -50,7 +50,10 @@
         the array.
 
         :param page_size: int (optional)
+          Specifies the maximum number of external metadata objects to return in a single response. The value
+          must be less than or equal to 1000.
         :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
 
         :returns: Iterator over :class:`ExternalMetadata`
         

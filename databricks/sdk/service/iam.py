@@ -698,57 +698,6 @@ class ListUsersResponse:
 
 
 @dataclass
-class MigratePermissionsRequest:
-    workspace_id: int
-    """WorkspaceId of the associated workspace where the permission migration will occur."""
-
-    from_workspace_group_name: str
-    """The name of the workspace group that permissions will be migrated from."""
-
-    to_account_group_name: str
-    """The name of the account group that permissions will be migrated to."""
-
-    size: Optional[int] = None
-    """The maximum number of permissions that will be migrated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the MigratePermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.from_workspace_group_name is not None:
-            body["from_workspace_group_name"] = self.from_workspace_group_name
-        if self.size is not None:
-            body["size"] = self.size
-        if self.to_account_group_name is not None:
-            body["to_account_group_name"] = self.to_account_group_name
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the MigratePermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.from_workspace_group_name is not None:
-            body["from_workspace_group_name"] = self.from_workspace_group_name
-        if self.size is not None:
-            body["size"] = self.size
-        if self.to_account_group_name is not None:
-            body["to_account_group_name"] = self.to_account_group_name
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> MigratePermissionsRequest:
-        """Deserializes the MigratePermissionsRequest from a dictionary."""
-        return cls(
-            from_workspace_group_name=d.get("from_workspace_group_name", None),
-            size=d.get("size", None),
-            to_account_group_name=d.get("to_account_group_name", None),
-            workspace_id=d.get("workspace_id", None),
-        )
-
-
-@dataclass
 class MigratePermissionsResponse:
     permissions_migrated: Optional[int] = None
     """Number of permissions migrated."""
@@ -842,48 +791,6 @@ class ObjectPermissions:
             access_control_list=_repeated_dict(d, "access_control_list", AccessControlResponse),
             object_id=d.get("object_id", None),
             object_type=d.get("object_type", None),
-        )
-
-
-@dataclass
-class PartialUpdate:
-    id: Optional[str] = None
-    """Unique ID in the Databricks workspace."""
-
-    operations: Optional[List[Patch]] = None
-
-    schemas: Optional[List[PatchSchema]] = None
-    """The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PartialUpdate into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.operations:
-            body["Operations"] = [v.as_dict() for v in self.operations]
-        if self.schemas:
-            body["schemas"] = [v.value for v in self.schemas]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PartialUpdate into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.id is not None:
-            body["id"] = self.id
-        if self.operations:
-            body["Operations"] = self.operations
-        if self.schemas:
-            body["schemas"] = self.schemas
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PartialUpdate:
-        """Deserializes the PartialUpdate from a dictionary."""
-        return cls(
-            id=d.get("id", None),
-            operations=_repeated_dict(d, "Operations", Patch),
-            schemas=_repeated_enum(d, "schemas", PatchSchema),
         )
 
 
@@ -1116,30 +1023,6 @@ class PasswordPermissionsDescription:
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", PasswordPermissionLevel),
         )
-
-
-@dataclass
-class PasswordPermissionsRequest:
-    access_control_list: Optional[List[PasswordAccessControlRequest]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the PasswordPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PasswordPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsRequest:
-        """Deserializes the PasswordPermissionsRequest from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, "access_control_list", PasswordAccessControlRequest))
 
 
 @dataclass
@@ -1765,94 +1648,6 @@ class ServicePrincipalSchema(Enum):
 
 
 @dataclass
-class SetObjectPermissions:
-    access_control_list: Optional[List[AccessControlRequest]] = None
-
-    request_object_id: Optional[str] = None
-    """The id of the request object."""
-
-    request_object_type: Optional[str] = None
-    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
-    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SetObjectPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetObjectPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetObjectPermissions:
-        """Deserializes the SetObjectPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
-        )
-
-
-@dataclass
-class UpdateObjectPermissions:
-    access_control_list: Optional[List[AccessControlRequest]] = None
-
-    request_object_id: Optional[str] = None
-    """The id of the request object."""
-
-    request_object_type: Optional[str] = None
-    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
-    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateObjectPermissions into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateObjectPermissions into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.request_object_id is not None:
-            body["request_object_id"] = self.request_object_id
-        if self.request_object_type is not None:
-            body["request_object_type"] = self.request_object_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateObjectPermissions:
-        """Deserializes the UpdateObjectPermissions from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AccessControlRequest),
-            request_object_id=d.get("request_object_id", None),
-            request_object_type=d.get("request_object_type", None),
-        )
-
-
-@dataclass
 class UpdateResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
@@ -1868,84 +1663,6 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateRuleSetRequest:
-    name: str
-    """Name of the rule set."""
-
-    rule_set: RuleSetUpdateRequest
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateRuleSetRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rule_set:
-            body["rule_set"] = self.rule_set.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateRuleSetRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rule_set:
-            body["rule_set"] = self.rule_set
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateRuleSetRequest:
-        """Deserializes the UpdateRuleSetRequest from a dictionary."""
-        return cls(name=d.get("name", None), rule_set=_from_dict(d, "rule_set", RuleSetUpdateRequest))
-
-
-@dataclass
-class UpdateWorkspaceAssignments:
-    permissions: Optional[List[WorkspacePermission]] = None
-    """Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
-    (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other
-    values will be ignored. Note that excluding this field, or providing unsupported values, will
-    have the same effect as providing an empty list, which will result in the deletion of all
-    permissions for the principal."""
-
-    principal_id: Optional[int] = None
-    """The ID of the user, service principal, or group."""
-
-    workspace_id: Optional[int] = None
-    """The workspace ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permissions:
-            body["permissions"] = [v.value for v in self.permissions]
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateWorkspaceAssignments into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.permissions:
-            body["permissions"] = self.permissions
-        if self.principal_id is not None:
-            body["principal_id"] = self.principal_id
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceAssignments:
-        """Deserializes the UpdateWorkspaceAssignments from a dictionary."""
-        return cls(
-            permissions=_repeated_enum(d, "permissions", WorkspacePermission),
-            principal_id=d.get("principal_id", None),
-            workspace_id=d.get("workspace_id", None),
-        )
 
 
 @dataclass
@@ -3608,9 +3325,10 @@ class PermissionsAPI:
         object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
 
@@ -3628,9 +3346,10 @@ class PermissionsAPI:
         """Gets the permission levels that a user can have on an object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
 
         :returns: :class:`GetPermissionLevelsResponse`
@@ -3657,9 +3376,10 @@ class PermissionsAPI:
         object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -3690,9 +3410,10 @@ class PermissionsAPI:
         root object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

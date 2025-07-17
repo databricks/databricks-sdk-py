@@ -15,38 +15,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class AddBlock:
-    handle: int
-    """The handle on an open stream."""
-
-    data: str
-    """The base64-encoded data to append to the stream. This has a limit of 1 MB."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AddBlock into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.data is not None:
-            body["data"] = self.data
-        if self.handle is not None:
-            body["handle"] = self.handle
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AddBlock into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.data is not None:
-            body["data"] = self.data
-        if self.handle is not None:
-            body["handle"] = self.handle
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AddBlock:
-        """Deserializes the AddBlock from a dictionary."""
-        return cls(data=d.get("data", None), handle=d.get("handle", None))
-
-
-@dataclass
 class AddBlockResponse:
     def as_dict(self) -> dict:
         """Serializes the AddBlockResponse into a dictionary suitable for use as a JSON request body."""
@@ -65,31 +33,6 @@ class AddBlockResponse:
 
 
 @dataclass
-class Close:
-    handle: int
-    """The handle on an open stream."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Close into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.handle is not None:
-            body["handle"] = self.handle
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Close into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.handle is not None:
-            body["handle"] = self.handle
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Close:
-        """Deserializes the Close from a dictionary."""
-        return cls(handle=d.get("handle", None))
-
-
-@dataclass
 class CloseResponse:
     def as_dict(self) -> dict:
         """Serializes the CloseResponse into a dictionary suitable for use as a JSON request body."""
@@ -105,38 +48,6 @@ class CloseResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CloseResponse:
         """Deserializes the CloseResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class Create:
-    path: str
-    """The path of the new file. The path should be the absolute DBFS path."""
-
-    overwrite: Optional[bool] = None
-    """The flag that specifies whether to overwrite existing file/files."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Create into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Create into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Create:
-        """Deserializes the Create from a dictionary."""
-        return cls(overwrite=d.get("overwrite", None), path=d.get("path", None))
 
 
 @dataclass
@@ -181,39 +92,6 @@ class CreateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(handle=d.get("handle", None))
-
-
-@dataclass
-class Delete:
-    path: str
-    """The path of the file or directory to delete. The path should be the absolute DBFS path."""
-
-    recursive: Optional[bool] = None
-    """Whether or not to recursively delete the directory's contents. Deleting empty directories can be
-    done without providing the recursive flag."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Delete into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        if self.recursive is not None:
-            body["recursive"] = self.recursive
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Delete:
-        """Deserializes the Delete from a dictionary."""
-        return cls(path=d.get("path", None), recursive=d.get("recursive", None))
 
 
 @dataclass
@@ -531,31 +409,6 @@ class ListStatusResponse:
 
 
 @dataclass
-class MkDirs:
-    path: str
-    """The path of the new directory. The path should be the absolute DBFS path."""
-
-    def as_dict(self) -> dict:
-        """Serializes the MkDirs into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the MkDirs into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> MkDirs:
-        """Deserializes the MkDirs from a dictionary."""
-        return cls(path=d.get("path", None))
-
-
-@dataclass
 class MkDirsResponse:
     def as_dict(self) -> dict:
         """Serializes the MkDirsResponse into a dictionary suitable for use as a JSON request body."""
@@ -574,38 +427,6 @@ class MkDirsResponse:
 
 
 @dataclass
-class Move:
-    source_path: str
-    """The source path of the file or directory. The path should be the absolute DBFS path."""
-
-    destination_path: str
-    """The destination path of the file or directory. The path should be the absolute DBFS path."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Move into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.destination_path is not None:
-            body["destination_path"] = self.destination_path
-        if self.source_path is not None:
-            body["source_path"] = self.source_path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Move into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.destination_path is not None:
-            body["destination_path"] = self.destination_path
-        if self.source_path is not None:
-            body["source_path"] = self.source_path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Move:
-        """Deserializes the Move from a dictionary."""
-        return cls(destination_path=d.get("destination_path", None), source_path=d.get("source_path", None))
-
-
-@dataclass
 class MoveResponse:
     def as_dict(self) -> dict:
         """Serializes the MoveResponse into a dictionary suitable for use as a JSON request body."""
@@ -621,45 +442,6 @@ class MoveResponse:
     def from_dict(cls, d: Dict[str, Any]) -> MoveResponse:
         """Deserializes the MoveResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class Put:
-    path: str
-    """The path of the new file. The path should be the absolute DBFS path."""
-
-    contents: Optional[str] = None
-    """This parameter might be absent, and instead a posted file will be used."""
-
-    overwrite: Optional[bool] = None
-    """The flag that specifies whether to overwrite existing file/files."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Put into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.contents is not None:
-            body["contents"] = self.contents
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Put into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.contents is not None:
-            body["contents"] = self.contents
-        if self.overwrite is not None:
-            body["overwrite"] = self.overwrite
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Put:
-        """Deserializes the Put from a dictionary."""
-        return cls(contents=d.get("contents", None), overwrite=d.get("overwrite", None), path=d.get("path", None))
 
 
 @dataclass
@@ -1097,6 +879,7 @@ class FilesAPI:
         headers = {
             "Accept": "application/octet-stream",
         }
+
         response_headers = [
             "content-length",
             "content-type",
@@ -1142,6 +925,7 @@ class FilesAPI:
         """
 
         headers = {}
+
         response_headers = [
             "content-length",
             "content-type",

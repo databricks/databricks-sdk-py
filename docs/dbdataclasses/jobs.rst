@@ -20,15 +20,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CancelAllRuns
-   :members:
-   :undoc-members:
-
 .. autoclass:: CancelAllRunsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CancelRun
    :members:
    :undoc-members:
 
@@ -176,10 +168,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateJob
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateResponse
    :members:
    :undoc-members:
@@ -254,15 +242,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteJob
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteRun
    :members:
    :undoc-members:
 
@@ -271,10 +251,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
-   :members:
-   :undoc-members:
-
-.. autoclass:: EnforcePolicyComplianceRequest
    :members:
    :undoc-members:
 
@@ -454,10 +430,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: JobPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: JobRunAs
    :members:
    :undoc-members:
@@ -632,15 +604,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REPAIR
       :value: "REPAIR"
 
-.. autoclass:: RepairRun
-   :members:
-   :undoc-members:
-
 .. autoclass:: RepairRunResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ResetJob
    :members:
    :undoc-members:
 
@@ -778,10 +742,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WAITING
       :value: "WAITING"
-
-.. autoclass:: RunNow
-   :members:
-   :undoc-members:
 
 .. autoclass:: RunNowResponse
    :members:
@@ -972,10 +932,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IMPORT
       :value: "IMPORT"
 
-.. autoclass:: SubmitRun
-   :members:
-   :undoc-members:
-
 .. autoclass:: SubmitRunResponse
    :members:
    :undoc-members:
@@ -1153,10 +1109,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE
       :value: "TABLE"
-
-.. autoclass:: UpdateJob
-   :members:
-   :undoc-members:
 
 .. autoclass:: UpdateResponse
    :members:

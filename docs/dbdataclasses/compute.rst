@@ -4,10 +4,6 @@ Compute
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.compute`` module.
 
 .. py:currentmodule:: databricks.sdk.service.compute
-.. autoclass:: AddInstanceProfile
-   :members:
-   :undoc-members:
-
 .. autoclass:: AddResponse
    :members:
    :undoc-members:
@@ -55,15 +51,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
 
-.. autoclass:: CancelCommand
-   :members:
-   :undoc-members:
-
 .. autoclass:: CancelResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ChangeClusterOwner
    :members:
    :undoc-members:
 
@@ -148,10 +136,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ClusterPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: ClusterPolicyAccessControlRequest
    :members:
    :undoc-members:
@@ -176,10 +160,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ClusterPolicyPermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: ClusterPolicyPermissionsRequest
    :members:
    :undoc-members:
 
@@ -217,10 +197,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "UI"
 
 .. autoclass:: ClusterSpec
-   :members:
-   :undoc-members:
-
-.. autoclass:: Command
    :members:
    :undoc-members:
 
@@ -263,27 +239,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateClusterResponse
    :members:
    :undoc-members:
 
-.. autoclass:: CreateContext
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateInstancePool
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateInstancePoolResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreatePolicy
    :members:
    :undoc-members:
 
@@ -357,23 +317,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteClusterResponse
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteInstancePool
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteInstancePoolResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeletePolicy
    :members:
    :undoc-members:
 
@@ -382,10 +330,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DestroyContext
    :members:
    :undoc-members:
 
@@ -439,23 +383,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: THROUGHPUT_OPTIMIZED_HDD
       :value: "THROUGHPUT_OPTIMIZED_HDD"
 
-.. autoclass:: EditCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: EditClusterResponse
    :members:
    :undoc-members:
 
-.. autoclass:: EditInstancePool
-   :members:
-   :undoc-members:
-
 .. autoclass:: EditInstancePoolResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: EditPolicy
    :members:
    :undoc-members:
 
@@ -464,10 +396,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EditResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: EnforceClusterComplianceRequest
    :members:
    :undoc-members:
 
@@ -652,19 +580,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GlobalInitScriptCreateRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: GlobalInitScriptDetails
    :members:
    :undoc-members:
 
 .. autoclass:: GlobalInitScriptDetailsWithContent
-   :members:
-   :undoc-members:
-
-.. autoclass:: GlobalInitScriptUpdateRequest
    :members:
    :undoc-members:
 
@@ -702,10 +622,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: InitScriptInfoAndExecutionDetails
-   :members:
-   :undoc-members:
-
-.. autoclass:: InstallLibraries
    :members:
    :undoc-members:
 
@@ -776,10 +692,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: InstancePoolPermissionsDescription
-   :members:
-   :undoc-members:
-
-.. autoclass:: InstancePoolPermissionsRequest
    :members:
    :undoc-members:
 
@@ -978,15 +890,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PermanentDeleteCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: PermanentDeleteClusterResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: PinCluster
    :members:
    :undoc-members:
 
@@ -1010,23 +914,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RemoveInstanceProfile
-   :members:
-   :undoc-members:
-
 .. autoclass:: RemoveResponse
    :members:
    :undoc-members:
 
-.. autoclass:: ResizeCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: ResizeClusterResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: RestartCluster
    :members:
    :undoc-members:
 
@@ -1079,10 +971,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SparkVersion
-   :members:
-   :undoc-members:
-
-.. autoclass:: StartCluster
    :members:
    :undoc-members:
 
@@ -1312,6 +1200,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
+
+   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
+      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
 
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
@@ -1662,23 +1553,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. autoclass:: UninstallLibraries
-   :members:
-   :undoc-members:
-
 .. autoclass:: UninstallLibrariesResponse
    :members:
    :undoc-members:
 
-.. autoclass:: UnpinCluster
-   :members:
-   :undoc-members:
-
 .. autoclass:: UnpinClusterResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateCluster
    :members:
    :undoc-members:
 

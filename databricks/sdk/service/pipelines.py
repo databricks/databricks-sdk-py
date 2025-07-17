@@ -22,273 +22,6 @@ from databricks.sdk.service import compute
 
 
 @dataclass
-class CreatePipeline:
-    allow_duplicate_names: Optional[bool] = None
-    """If false, deployment will fail if name conflicts with that of another pipeline."""
-
-    budget_policy_id: Optional[str] = None
-    """Budget policy of this pipeline."""
-
-    catalog: Optional[str] = None
-    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
-    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
-    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
-    Catalog."""
-
-    channel: Optional[str] = None
-    """DLT Release Channel that specifies which version to use."""
-
-    clusters: Optional[List[PipelineCluster]] = None
-    """Cluster settings for this pipeline deployment."""
-
-    configuration: Optional[Dict[str, str]] = None
-    """String-String configuration for this pipeline execution."""
-
-    continuous: Optional[bool] = None
-    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
-
-    deployment: Optional[PipelineDeployment] = None
-    """Deployment type of this pipeline."""
-
-    development: Optional[bool] = None
-    """Whether the pipeline is in Development mode. Defaults to false."""
-
-    dry_run: Optional[bool] = None
-
-    edition: Optional[str] = None
-    """Pipeline product edition."""
-
-    environment: Optional[PipelinesEnvironment] = None
-    """Environment specification for this pipeline used to install dependencies."""
-
-    event_log: Optional[EventLogSpec] = None
-    """Event log configuration for this pipeline"""
-
-    filters: Optional[Filters] = None
-    """Filters on which Pipeline packages to include in the deployed graph."""
-
-    gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None
-    """The definition of a gateway pipeline to support change data capture."""
-
-    id: Optional[str] = None
-    """Unique identifier for this pipeline."""
-
-    ingestion_definition: Optional[IngestionPipelineDefinition] = None
-    """The configuration for a managed ingestion pipeline. These settings cannot be used with the
-    'libraries', 'schema', 'target', or 'catalog' settings."""
-
-    libraries: Optional[List[PipelineLibrary]] = None
-    """Libraries or code needed by this deployment."""
-
-    name: Optional[str] = None
-    """Friendly identifier for this pipeline."""
-
-    notifications: Optional[List[Notifications]] = None
-    """List of notification settings for this pipeline."""
-
-    photon: Optional[bool] = None
-    """Whether Photon is enabled for this pipeline."""
-
-    restart_window: Optional[RestartWindow] = None
-    """Restart window of this pipeline."""
-
-    root_path: Optional[str] = None
-    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-    Databricks user interface and it is added to sys.path when executing Python sources during
-    pipeline execution."""
-
-    run_as: Optional[RunAs] = None
-
-    schema: Optional[str] = None
-    """The default schema (database) where tables are read from or published to."""
-
-    serverless: Optional[bool] = None
-    """Whether serverless compute is enabled for this pipeline."""
-
-    storage: Optional[str] = None
-    """DBFS root directory for storing checkpoints and tables."""
-
-    tags: Optional[Dict[str, str]] = None
-    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
-    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
-    pipeline."""
-
-    target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
-    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
-    deprecated for pipeline creation in favor of the `schema` field."""
-
-    trigger: Optional[PipelineTrigger] = None
-    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreatePipeline into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_duplicate_names is not None:
-            body["allow_duplicate_names"] = self.allow_duplicate_names
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.channel is not None:
-            body["channel"] = self.channel
-        if self.clusters:
-            body["clusters"] = [v.as_dict() for v in self.clusters]
-        if self.configuration:
-            body["configuration"] = self.configuration
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
-        if self.deployment:
-            body["deployment"] = self.deployment.as_dict()
-        if self.development is not None:
-            body["development"] = self.development
-        if self.dry_run is not None:
-            body["dry_run"] = self.dry_run
-        if self.edition is not None:
-            body["edition"] = self.edition
-        if self.environment:
-            body["environment"] = self.environment.as_dict()
-        if self.event_log:
-            body["event_log"] = self.event_log.as_dict()
-        if self.filters:
-            body["filters"] = self.filters.as_dict()
-        if self.gateway_definition:
-            body["gateway_definition"] = self.gateway_definition.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.ingestion_definition:
-            body["ingestion_definition"] = self.ingestion_definition.as_dict()
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        if self.name is not None:
-            body["name"] = self.name
-        if self.notifications:
-            body["notifications"] = [v.as_dict() for v in self.notifications]
-        if self.photon is not None:
-            body["photon"] = self.photon
-        if self.restart_window:
-            body["restart_window"] = self.restart_window.as_dict()
-        if self.root_path is not None:
-            body["root_path"] = self.root_path
-        if self.run_as:
-            body["run_as"] = self.run_as.as_dict()
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.serverless is not None:
-            body["serverless"] = self.serverless
-        if self.storage is not None:
-            body["storage"] = self.storage
-        if self.tags:
-            body["tags"] = self.tags
-        if self.target is not None:
-            body["target"] = self.target
-        if self.trigger:
-            body["trigger"] = self.trigger.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePipeline into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_duplicate_names is not None:
-            body["allow_duplicate_names"] = self.allow_duplicate_names
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.channel is not None:
-            body["channel"] = self.channel
-        if self.clusters:
-            body["clusters"] = self.clusters
-        if self.configuration:
-            body["configuration"] = self.configuration
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
-        if self.deployment:
-            body["deployment"] = self.deployment
-        if self.development is not None:
-            body["development"] = self.development
-        if self.dry_run is not None:
-            body["dry_run"] = self.dry_run
-        if self.edition is not None:
-            body["edition"] = self.edition
-        if self.environment:
-            body["environment"] = self.environment
-        if self.event_log:
-            body["event_log"] = self.event_log
-        if self.filters:
-            body["filters"] = self.filters
-        if self.gateway_definition:
-            body["gateway_definition"] = self.gateway_definition
-        if self.id is not None:
-            body["id"] = self.id
-        if self.ingestion_definition:
-            body["ingestion_definition"] = self.ingestion_definition
-        if self.libraries:
-            body["libraries"] = self.libraries
-        if self.name is not None:
-            body["name"] = self.name
-        if self.notifications:
-            body["notifications"] = self.notifications
-        if self.photon is not None:
-            body["photon"] = self.photon
-        if self.restart_window:
-            body["restart_window"] = self.restart_window
-        if self.root_path is not None:
-            body["root_path"] = self.root_path
-        if self.run_as:
-            body["run_as"] = self.run_as
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.serverless is not None:
-            body["serverless"] = self.serverless
-        if self.storage is not None:
-            body["storage"] = self.storage
-        if self.tags:
-            body["tags"] = self.tags
-        if self.target is not None:
-            body["target"] = self.target
-        if self.trigger:
-            body["trigger"] = self.trigger
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePipeline:
-        """Deserializes the CreatePipeline from a dictionary."""
-        return cls(
-            allow_duplicate_names=d.get("allow_duplicate_names", None),
-            budget_policy_id=d.get("budget_policy_id", None),
-            catalog=d.get("catalog", None),
-            channel=d.get("channel", None),
-            clusters=_repeated_dict(d, "clusters", PipelineCluster),
-            configuration=d.get("configuration", None),
-            continuous=d.get("continuous", None),
-            deployment=_from_dict(d, "deployment", PipelineDeployment),
-            development=d.get("development", None),
-            dry_run=d.get("dry_run", None),
-            edition=d.get("edition", None),
-            environment=_from_dict(d, "environment", PipelinesEnvironment),
-            event_log=_from_dict(d, "event_log", EventLogSpec),
-            filters=_from_dict(d, "filters", Filters),
-            gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
-            id=d.get("id", None),
-            ingestion_definition=_from_dict(d, "ingestion_definition", IngestionPipelineDefinition),
-            libraries=_repeated_dict(d, "libraries", PipelineLibrary),
-            name=d.get("name", None),
-            notifications=_repeated_dict(d, "notifications", Notifications),
-            photon=d.get("photon", None),
-            restart_window=_from_dict(d, "restart_window", RestartWindow),
-            root_path=d.get("root_path", None),
-            run_as=_from_dict(d, "run_as", RunAs),
-            schema=d.get("schema", None),
-            serverless=d.get("serverless", None),
-            storage=d.get("storage", None),
-            tags=d.get("tags", None),
-            target=d.get("target", None),
-            trigger=_from_dict(d, "trigger", PipelineTrigger),
-        )
-
-
-@dataclass
 class CreatePipelineResponse:
     effective_settings: Optional[PipelineSpec] = None
     """Only returned when dry_run is true."""
@@ -420,283 +153,6 @@ class DeploymentKind(Enum):
     Databricks Asset Bundle."""
 
     BUNDLE = "BUNDLE"
-
-
-@dataclass
-class EditPipeline:
-    allow_duplicate_names: Optional[bool] = None
-    """If false, deployment will fail if name has changed and conflicts the name of another pipeline."""
-
-    budget_policy_id: Optional[str] = None
-    """Budget policy of this pipeline."""
-
-    catalog: Optional[str] = None
-    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
-    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
-    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
-    Catalog."""
-
-    channel: Optional[str] = None
-    """DLT Release Channel that specifies which version to use."""
-
-    clusters: Optional[List[PipelineCluster]] = None
-    """Cluster settings for this pipeline deployment."""
-
-    configuration: Optional[Dict[str, str]] = None
-    """String-String configuration for this pipeline execution."""
-
-    continuous: Optional[bool] = None
-    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
-
-    deployment: Optional[PipelineDeployment] = None
-    """Deployment type of this pipeline."""
-
-    development: Optional[bool] = None
-    """Whether the pipeline is in Development mode. Defaults to false."""
-
-    edition: Optional[str] = None
-    """Pipeline product edition."""
-
-    environment: Optional[PipelinesEnvironment] = None
-    """Environment specification for this pipeline used to install dependencies."""
-
-    event_log: Optional[EventLogSpec] = None
-    """Event log configuration for this pipeline"""
-
-    expected_last_modified: Optional[int] = None
-    """If present, the last-modified time of the pipeline settings before the edit. If the settings
-    were modified after that time, then the request will fail with a conflict."""
-
-    filters: Optional[Filters] = None
-    """Filters on which Pipeline packages to include in the deployed graph."""
-
-    gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None
-    """The definition of a gateway pipeline to support change data capture."""
-
-    id: Optional[str] = None
-    """Unique identifier for this pipeline."""
-
-    ingestion_definition: Optional[IngestionPipelineDefinition] = None
-    """The configuration for a managed ingestion pipeline. These settings cannot be used with the
-    'libraries', 'schema', 'target', or 'catalog' settings."""
-
-    libraries: Optional[List[PipelineLibrary]] = None
-    """Libraries or code needed by this deployment."""
-
-    name: Optional[str] = None
-    """Friendly identifier for this pipeline."""
-
-    notifications: Optional[List[Notifications]] = None
-    """List of notification settings for this pipeline."""
-
-    photon: Optional[bool] = None
-    """Whether Photon is enabled for this pipeline."""
-
-    pipeline_id: Optional[str] = None
-    """Unique identifier for this pipeline."""
-
-    restart_window: Optional[RestartWindow] = None
-    """Restart window of this pipeline."""
-
-    root_path: Optional[str] = None
-    """Root path for this pipeline. This is used as the root directory when editing the pipeline in the
-    Databricks user interface and it is added to sys.path when executing Python sources during
-    pipeline execution."""
-
-    run_as: Optional[RunAs] = None
-
-    schema: Optional[str] = None
-    """The default schema (database) where tables are read from or published to."""
-
-    serverless: Optional[bool] = None
-    """Whether serverless compute is enabled for this pipeline."""
-
-    storage: Optional[str] = None
-    """DBFS root directory for storing checkpoints and tables."""
-
-    tags: Optional[Dict[str, str]] = None
-    """A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags,
-    and are therefore subject to the same limitations. A maximum of 25 tags can be added to the
-    pipeline."""
-
-    target: Optional[str] = None
-    """Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target`
-    must be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is
-    deprecated for pipeline creation in favor of the `schema` field."""
-
-    trigger: Optional[PipelineTrigger] = None
-    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EditPipeline into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_duplicate_names is not None:
-            body["allow_duplicate_names"] = self.allow_duplicate_names
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.channel is not None:
-            body["channel"] = self.channel
-        if self.clusters:
-            body["clusters"] = [v.as_dict() for v in self.clusters]
-        if self.configuration:
-            body["configuration"] = self.configuration
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
-        if self.deployment:
-            body["deployment"] = self.deployment.as_dict()
-        if self.development is not None:
-            body["development"] = self.development
-        if self.edition is not None:
-            body["edition"] = self.edition
-        if self.environment:
-            body["environment"] = self.environment.as_dict()
-        if self.event_log:
-            body["event_log"] = self.event_log.as_dict()
-        if self.expected_last_modified is not None:
-            body["expected_last_modified"] = self.expected_last_modified
-        if self.filters:
-            body["filters"] = self.filters.as_dict()
-        if self.gateway_definition:
-            body["gateway_definition"] = self.gateway_definition.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.ingestion_definition:
-            body["ingestion_definition"] = self.ingestion_definition.as_dict()
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        if self.name is not None:
-            body["name"] = self.name
-        if self.notifications:
-            body["notifications"] = [v.as_dict() for v in self.notifications]
-        if self.photon is not None:
-            body["photon"] = self.photon
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.restart_window:
-            body["restart_window"] = self.restart_window.as_dict()
-        if self.root_path is not None:
-            body["root_path"] = self.root_path
-        if self.run_as:
-            body["run_as"] = self.run_as.as_dict()
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.serverless is not None:
-            body["serverless"] = self.serverless
-        if self.storage is not None:
-            body["storage"] = self.storage
-        if self.tags:
-            body["tags"] = self.tags
-        if self.target is not None:
-            body["target"] = self.target
-        if self.trigger:
-            body["trigger"] = self.trigger.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditPipeline into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_duplicate_names is not None:
-            body["allow_duplicate_names"] = self.allow_duplicate_names
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.catalog is not None:
-            body["catalog"] = self.catalog
-        if self.channel is not None:
-            body["channel"] = self.channel
-        if self.clusters:
-            body["clusters"] = self.clusters
-        if self.configuration:
-            body["configuration"] = self.configuration
-        if self.continuous is not None:
-            body["continuous"] = self.continuous
-        if self.deployment:
-            body["deployment"] = self.deployment
-        if self.development is not None:
-            body["development"] = self.development
-        if self.edition is not None:
-            body["edition"] = self.edition
-        if self.environment:
-            body["environment"] = self.environment
-        if self.event_log:
-            body["event_log"] = self.event_log
-        if self.expected_last_modified is not None:
-            body["expected_last_modified"] = self.expected_last_modified
-        if self.filters:
-            body["filters"] = self.filters
-        if self.gateway_definition:
-            body["gateway_definition"] = self.gateway_definition
-        if self.id is not None:
-            body["id"] = self.id
-        if self.ingestion_definition:
-            body["ingestion_definition"] = self.ingestion_definition
-        if self.libraries:
-            body["libraries"] = self.libraries
-        if self.name is not None:
-            body["name"] = self.name
-        if self.notifications:
-            body["notifications"] = self.notifications
-        if self.photon is not None:
-            body["photon"] = self.photon
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.restart_window:
-            body["restart_window"] = self.restart_window
-        if self.root_path is not None:
-            body["root_path"] = self.root_path
-        if self.run_as:
-            body["run_as"] = self.run_as
-        if self.schema is not None:
-            body["schema"] = self.schema
-        if self.serverless is not None:
-            body["serverless"] = self.serverless
-        if self.storage is not None:
-            body["storage"] = self.storage
-        if self.tags:
-            body["tags"] = self.tags
-        if self.target is not None:
-            body["target"] = self.target
-        if self.trigger:
-            body["trigger"] = self.trigger
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditPipeline:
-        """Deserializes the EditPipeline from a dictionary."""
-        return cls(
-            allow_duplicate_names=d.get("allow_duplicate_names", None),
-            budget_policy_id=d.get("budget_policy_id", None),
-            catalog=d.get("catalog", None),
-            channel=d.get("channel", None),
-            clusters=_repeated_dict(d, "clusters", PipelineCluster),
-            configuration=d.get("configuration", None),
-            continuous=d.get("continuous", None),
-            deployment=_from_dict(d, "deployment", PipelineDeployment),
-            development=d.get("development", None),
-            edition=d.get("edition", None),
-            environment=_from_dict(d, "environment", PipelinesEnvironment),
-            event_log=_from_dict(d, "event_log", EventLogSpec),
-            expected_last_modified=d.get("expected_last_modified", None),
-            filters=_from_dict(d, "filters", Filters),
-            gateway_definition=_from_dict(d, "gateway_definition", IngestionGatewayPipelineDefinition),
-            id=d.get("id", None),
-            ingestion_definition=_from_dict(d, "ingestion_definition", IngestionPipelineDefinition),
-            libraries=_repeated_dict(d, "libraries", PipelineLibrary),
-            name=d.get("name", None),
-            notifications=_repeated_dict(d, "notifications", Notifications),
-            photon=d.get("photon", None),
-            pipeline_id=d.get("pipeline_id", None),
-            restart_window=_from_dict(d, "restart_window", RestartWindow),
-            root_path=d.get("root_path", None),
-            run_as=_from_dict(d, "run_as", RunAs),
-            schema=d.get("schema", None),
-            serverless=d.get("serverless", None),
-            storage=d.get("storage", None),
-            tags=d.get("tags", None),
-            target=d.get("target", None),
-            trigger=_from_dict(d, "trigger", PipelineTrigger),
-        )
 
 
 @dataclass
@@ -1207,12 +663,73 @@ class IngestionPipelineDefinition:
         )
 
 
+@dataclass
+class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
+    """Configurations that are only applicable for query-based ingestion connectors."""
+
+    cursor_columns: Optional[List[str]] = None
+    """The names of the monotonically increasing columns in the source table that are used to enable
+    the table to be read and ingested incrementally through structured streaming. The columns are
+    allowed to have repeated values but have to be non-decreasing. If the source data is merged into
+    the destination (e.g., using SCD Type 1 or Type 2), these columns will implicitly define the
+    `sequence_by` behavior. You can still explicitly set `sequence_by` to override this default."""
+
+    deletion_condition: Optional[str] = None
+    """Specifies a SQL WHERE condition that specifies that the source row has been deleted. This is
+    sometimes referred to as "soft-deletes". For example: "Operation = 'DELETE'" or "is_deleted =
+    true". This field is orthogonal to `hard_deletion_sync_interval_in_seconds`, one for
+    soft-deletes and the other for hard-deletes. See also the
+    hard_deletion_sync_min_interval_in_seconds field for handling of "hard deletes" where the source
+    rows are physically removed from the table."""
+
+    hard_deletion_sync_min_interval_in_seconds: Optional[int] = None
+    """Specifies the minimum interval (in seconds) between snapshots on primary keys for detecting and
+    synchronizing hard deletions—i.e., rows that have been physically removed from the source
+    table. This interval acts as a lower bound. If ingestion runs less frequently than this value,
+    hard deletion synchronization will align with the actual ingestion frequency instead of
+    happening more often. If not set, hard deletion synchronization via snapshots is disabled. This
+    field is mutable and can be updated without triggering a full snapshot."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cursor_columns:
+            body["cursor_columns"] = [v for v in self.cursor_columns]
+        if self.deletion_condition is not None:
+            body["deletion_condition"] = self.deletion_condition
+        if self.hard_deletion_sync_min_interval_in_seconds is not None:
+            body["hard_deletion_sync_min_interval_in_seconds"] = self.hard_deletion_sync_min_interval_in_seconds
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cursor_columns:
+            body["cursor_columns"] = self.cursor_columns
+        if self.deletion_condition is not None:
+            body["deletion_condition"] = self.deletion_condition
+        if self.hard_deletion_sync_min_interval_in_seconds is not None:
+            body["hard_deletion_sync_min_interval_in_seconds"] = self.hard_deletion_sync_min_interval_in_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
+        """Deserializes the IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig from a dictionary."""
+        return cls(
+            cursor_columns=d.get("cursor_columns", None),
+            deletion_condition=d.get("deletion_condition", None),
+            hard_deletion_sync_min_interval_in_seconds=d.get("hard_deletion_sync_min_interval_in_seconds", None),
+        )
+
+
 class IngestionSourceType(Enum):
 
     BIGQUERY = "BIGQUERY"
+    CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
+    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
     ORACLE = "ORACLE"
@@ -2309,40 +1826,6 @@ class PipelinePermissionsDescription:
 
 
 @dataclass
-class PipelinePermissionsRequest:
-    access_control_list: Optional[List[PipelineAccessControlRequest]] = None
-
-    pipeline_id: Optional[str] = None
-    """The pipeline for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PipelinePermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PipelinePermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsRequest:
-        """Deserializes the PipelinePermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", PipelineAccessControlRequest),
-            pipeline_id=d.get("pipeline_id", None),
-        )
-
-
-@dataclass
 class PipelineSpec:
     budget_policy_id: Optional[str] = None
     """Budget policy of this pipeline."""
@@ -3093,76 +2576,6 @@ class StackFrame:
         )
 
 
-@dataclass
-class StartUpdate:
-    cause: Optional[StartUpdateCause] = None
-
-    full_refresh: Optional[bool] = None
-    """If true, this update will reset all tables before running."""
-
-    full_refresh_selection: Optional[List[str]] = None
-    """A list of tables to update with fullRefresh. If both refresh_selection and
-    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
-    that the states of the table will be reset before the refresh."""
-
-    pipeline_id: Optional[str] = None
-
-    refresh_selection: Optional[List[str]] = None
-    """A list of tables to update without fullRefresh. If both refresh_selection and
-    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
-    that the states of the table will be reset before the refresh."""
-
-    validate_only: Optional[bool] = None
-    """If true, this update only validates the correctness of pipeline source code but does not
-    materialize or publish any datasets."""
-
-    def as_dict(self) -> dict:
-        """Serializes the StartUpdate into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cause is not None:
-            body["cause"] = self.cause.value
-        if self.full_refresh is not None:
-            body["full_refresh"] = self.full_refresh
-        if self.full_refresh_selection:
-            body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.refresh_selection:
-            body["refresh_selection"] = [v for v in self.refresh_selection]
-        if self.validate_only is not None:
-            body["validate_only"] = self.validate_only
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the StartUpdate into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cause is not None:
-            body["cause"] = self.cause
-        if self.full_refresh is not None:
-            body["full_refresh"] = self.full_refresh
-        if self.full_refresh_selection:
-            body["full_refresh_selection"] = self.full_refresh_selection
-        if self.pipeline_id is not None:
-            body["pipeline_id"] = self.pipeline_id
-        if self.refresh_selection:
-            body["refresh_selection"] = self.refresh_selection
-        if self.validate_only is not None:
-            body["validate_only"] = self.validate_only
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> StartUpdate:
-        """Deserializes the StartUpdate from a dictionary."""
-        return cls(
-            cause=_enum(d, "cause", StartUpdateCause),
-            full_refresh=d.get("full_refresh", None),
-            full_refresh_selection=d.get("full_refresh_selection", None),
-            pipeline_id=d.get("pipeline_id", None),
-            refresh_selection=d.get("refresh_selection", None),
-            validate_only=d.get("validate_only", None),
-        )
-
-
 class StartUpdateCause(Enum):
     """What triggered this update."""
 
@@ -3311,6 +2724,10 @@ class TableSpecificConfig:
     primary_keys: Optional[List[str]] = None
     """The primary key of the table used to apply changes."""
 
+    query_based_connector_config: Optional[IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig] = (
+        None
+    )
+
     salesforce_include_formula_fields: Optional[bool] = None
     """If true, formula fields defined in the table are included in the ingestion. This setting is only
     valid for the Salesforce connector"""
@@ -3331,6 +2748,8 @@ class TableSpecificConfig:
             body["include_columns"] = [v for v in self.include_columns]
         if self.primary_keys:
             body["primary_keys"] = [v for v in self.primary_keys]
+        if self.query_based_connector_config:
+            body["query_based_connector_config"] = self.query_based_connector_config.as_dict()
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3348,6 +2767,8 @@ class TableSpecificConfig:
             body["include_columns"] = self.include_columns
         if self.primary_keys:
             body["primary_keys"] = self.primary_keys
+        if self.query_based_connector_config:
+            body["query_based_connector_config"] = self.query_based_connector_config
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3363,6 +2784,11 @@ class TableSpecificConfig:
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
+            query_based_connector_config=_from_dict(
+                d,
+                "query_based_connector_config",
+                IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig,
+            ),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),

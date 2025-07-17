@@ -417,41 +417,6 @@ class BudgetPolicy:
 
 
 @dataclass
-class CreateBillingUsageDashboardRequest:
-    dashboard_type: Optional[UsageDashboardType] = None
-    """Workspace level usage dashboard shows usage data for the specified workspace ID. Global level
-    usage dashboard shows usage data for all workspaces in the account."""
-
-    workspace_id: Optional[int] = None
-    """The workspace ID of the workspace in which the usage dashboard is created."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateBillingUsageDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_type is not None:
-            body["dashboard_type"] = self.dashboard_type.value
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateBillingUsageDashboardRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dashboard_type is not None:
-            body["dashboard_type"] = self.dashboard_type
-        if self.workspace_id is not None:
-            body["workspace_id"] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateBillingUsageDashboardRequest:
-        """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
-        return cls(
-            dashboard_type=_enum(d, "dashboard_type", UsageDashboardType), workspace_id=d.get("workspace_id", None)
-        )
-
-
-@dataclass
 class CreateBillingUsageDashboardResponse:
     dashboard_id: Optional[str] = None
     """The unique id of the usage dashboard."""
@@ -629,31 +594,6 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
 
 
 @dataclass
-class CreateBudgetConfigurationRequest:
-    budget: CreateBudgetConfigurationBudget
-    """Properties of the new budget configuration."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.budget:
-            body["budget"] = self.budget.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.budget:
-            body["budget"] = self.budget
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationRequest:
-        """Deserializes the CreateBudgetConfigurationRequest from a dictionary."""
-        return cls(budget=_from_dict(d, "budget", CreateBudgetConfigurationBudget))
-
-
-@dataclass
 class CreateBudgetConfigurationResponse:
     budget: Optional[BudgetConfiguration] = None
     """The created budget configuration."""
@@ -676,43 +616,6 @@ class CreateBudgetConfigurationResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetConfigurationResponse:
         """Deserializes the CreateBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
-
-
-@dataclass
-class CreateBudgetPolicyRequest:
-    """A request to create a BudgetPolicy."""
-
-    policy: Optional[BudgetPolicy] = None
-    """The policy to create. `policy_id` needs to be empty as it will be generated `policy_name` must
-    be provided, custom_tags may need to be provided depending on the cloud provider. All other
-    fields are optional."""
-
-    request_id: Optional[str] = None
-    """A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
-    recommended. This request is only idempotent if a `request_id` is provided."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateBudgetPolicyRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.policy:
-            body["policy"] = self.policy.as_dict()
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateBudgetPolicyRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.policy:
-            body["policy"] = self.policy
-        if self.request_id is not None:
-            body["request_id"] = self.request_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateBudgetPolicyRequest:
-        """Deserializes the CreateBudgetPolicyRequest from a dictionary."""
-        return cls(policy=_from_dict(d, "policy", BudgetPolicy), request_id=d.get("request_id", None))
 
 
 @dataclass
@@ -1501,38 +1404,6 @@ class UpdateBudgetConfigurationBudget:
 
 
 @dataclass
-class UpdateBudgetConfigurationRequest:
-    budget: UpdateBudgetConfigurationBudget
-    """The updated budget. This will overwrite the budget specified by the budget ID."""
-
-    budget_id: Optional[str] = None
-    """The Databricks budget configuration ID."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.budget:
-            body["budget"] = self.budget.as_dict()
-        if self.budget_id is not None:
-            body["budget_id"] = self.budget_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.budget:
-            body["budget"] = self.budget
-        if self.budget_id is not None:
-            body["budget_id"] = self.budget_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateBudgetConfigurationRequest:
-        """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
-        return cls(budget=_from_dict(d, "budget", UpdateBudgetConfigurationBudget), budget_id=d.get("budget_id", None))
-
-
-@dataclass
 class UpdateBudgetConfigurationResponse:
     budget: Optional[BudgetConfiguration] = None
     """The updated budget."""
@@ -1557,78 +1428,10 @@ class UpdateBudgetConfigurationResponse:
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
-@dataclass
-class UpdateLogDeliveryConfigurationStatusRequest:
-    """* Update Log Delivery Configuration"""
-
-    status: LogDeliveryConfigStatus
-    """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
-    Defaults to `ENABLED`. You can [enable or disable the
-    configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
-    is not supported, so disable a log delivery configuration that is no longer needed."""
-
-    log_delivery_configuration_id: Optional[str] = None
-    """The log delivery configuration id of customer"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.log_delivery_configuration_id is not None:
-            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.log_delivery_configuration_id is not None:
-            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateLogDeliveryConfigurationStatusRequest:
-        """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
-        return cls(
-            log_delivery_configuration_id=d.get("log_delivery_configuration_id", None),
-            status=_enum(d, "status", LogDeliveryConfigStatus),
-        )
-
-
 class UsageDashboardType(Enum):
 
     USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
     USAGE_DASHBOARD_TYPE_WORKSPACE = "USAGE_DASHBOARD_TYPE_WORKSPACE"
-
-
-@dataclass
-class WrappedCreateLogDeliveryConfiguration:
-    """* Properties of the new log delivery configuration."""
-
-    log_delivery_configuration: CreateLogDeliveryConfigurationParams
-
-    def as_dict(self) -> dict:
-        """Serializes the WrappedCreateLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.log_delivery_configuration:
-            body["log_delivery_configuration"] = self.log_delivery_configuration.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the WrappedCreateLogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.log_delivery_configuration:
-            body["log_delivery_configuration"] = self.log_delivery_configuration
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> WrappedCreateLogDeliveryConfiguration:
-        """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
-        return cls(
-            log_delivery_configuration=_from_dict(d, "log_delivery_configuration", CreateLogDeliveryConfigurationParams)
-        )
 
 
 @dataclass
@@ -1701,16 +1504,22 @@ class BillableUsageAPI:
 
     def download(self, start_month: str, end_month: str, *, personal_data: Optional[bool] = None) -> DownloadResponse:
         """Returns billable usage logs in CSV format for the specified account and date range. For the data
-        schema, see [CSV file schema]. Note that this method might take multiple minutes to complete.
+        schema, see:
+
+        - AWS: [CSV file schema]. - GCP: [CSV file schema].
+
+        Note that this method might take multiple minutes to complete.
 
         **Warning**: Depending on the queried date range, the number of workspaces in the account, the size of
         the response and the internet speed of the caller, this API may hit a timeout after a few minutes. If
         you experience this, try to mitigate by calling the API with narrower date ranges.
 
-        [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
+        [CSV file schema]: https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema
 
         :param start_month: str
-          Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
+          Format specification for month in the format `YYYY-MM`. This is used to specify billable usage
+          `start_month` and `end_month` properties. **Note**: Billable usage logs are unavailable before March
+          2019 (`2019-03`).
         :param end_month: str
           Format: `YYYY-MM`. Last month to return billable usage logs for. This field is required.
         :param personal_data: bool (optional)

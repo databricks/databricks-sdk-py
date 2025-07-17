@@ -16,73 +16,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class CancelCustomLlmOptimizationRunRequest:
-    id: Optional[str] = None
-
-
-@dataclass
-class CreateCustomLlmRequest:
-    name: str
-    """Name of the custom LLM. Only alphanumeric characters and dashes allowed."""
-
-    instructions: str
-    """Instructions for the custom LLM to follow"""
-
-    agent_artifact_path: Optional[str] = None
-    """Optional: UC path for agent artifacts. If you are using a dataset that you only have read
-    permissions, please provide a destination path where you have write permissions. Please provide
-    this in catalog.schema format."""
-
-    datasets: Optional[List[Dataset]] = None
-    """Datasets used for training and evaluating the model, not for inference. Currently, only 1
-    dataset is accepted."""
-
-    guidelines: Optional[List[str]] = None
-    """Guidelines for the custom LLM to adhere to"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCustomLlmRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.agent_artifact_path is not None:
-            body["agent_artifact_path"] = self.agent_artifact_path
-        if self.datasets:
-            body["datasets"] = [v.as_dict() for v in self.datasets]
-        if self.guidelines:
-            body["guidelines"] = [v for v in self.guidelines]
-        if self.instructions is not None:
-            body["instructions"] = self.instructions
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCustomLlmRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.agent_artifact_path is not None:
-            body["agent_artifact_path"] = self.agent_artifact_path
-        if self.datasets:
-            body["datasets"] = self.datasets
-        if self.guidelines:
-            body["guidelines"] = self.guidelines
-        if self.instructions is not None:
-            body["instructions"] = self.instructions
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomLlmRequest:
-        """Deserializes the CreateCustomLlmRequest from a dictionary."""
-        return cls(
-            agent_artifact_path=d.get("agent_artifact_path", None),
-            datasets=_repeated_dict(d, "datasets", Dataset),
-            guidelines=d.get("guidelines", None),
-            instructions=d.get("instructions", None),
-            name=d.get("name", None),
-        )
-
-
-@dataclass
 class CustomLlm:
     name: str
     """Name of the custom LLM"""
@@ -203,12 +136,6 @@ class Dataset:
         return cls(table=_from_dict(d, "table", Table))
 
 
-@dataclass
-class StartCustomLlmOptimizationRunRequest:
-    id: Optional[str] = None
-    """The Id of the tile."""
-
-
 class State(Enum):
     """States of Custom LLM optimization lifecycle."""
 
@@ -260,60 +187,6 @@ class Table:
             request_col=d.get("request_col", None),
             response_col=d.get("response_col", None),
             table_path=d.get("table_path", None),
-        )
-
-
-@dataclass
-class UpdateCustomLlmRequest:
-    custom_llm: CustomLlm
-    """The CustomLlm containing the fields which should be updated."""
-
-    update_mask: str
-    """The list of the CustomLlm fields to update. These should correspond to the values (or lack
-    thereof) present in `custom_llm`.
-    
-    The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    id: Optional[str] = None
-    """The id of the custom llm"""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCustomLlmRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.custom_llm:
-            body["custom_llm"] = self.custom_llm.as_dict()
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCustomLlmRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.custom_llm:
-            body["custom_llm"] = self.custom_llm
-        if self.id is not None:
-            body["id"] = self.id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomLlmRequest:
-        """Deserializes the UpdateCustomLlmRequest from a dictionary."""
-        return cls(
-            custom_llm=_from_dict(d, "custom_llm", CustomLlm),
-            id=d.get("id", None),
-            update_mask=d.get("update_mask", None),
         )
 
 
