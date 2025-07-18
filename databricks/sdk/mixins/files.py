@@ -28,7 +28,6 @@ from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
 from ..config import Config
 from ..errors import AlreadyExists, NotFound
-from ..errors.customizer import _RetryAfterCustomizer
 from ..errors.mapper import _error_mapper
 from ..retries import retried
 from ..service import files
@@ -576,6 +575,7 @@ class _DbfsPath(_Path):
     def __repr__(self) -> str:
         return f"<_DbfsPath {self._path}>"
 
+
 class _RetryableException(Exception):
     """Base class for retryable exceptions in DBFS operations."""
 
@@ -595,6 +595,7 @@ class _RetryableException(Exception):
             message=response.text,
             http_status_code=response.status_code,
         )
+
 
 class DbfsExt(files.DbfsAPI):
     __doc__ = files.DbfsAPI.__doc__
