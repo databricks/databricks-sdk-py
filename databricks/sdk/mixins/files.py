@@ -16,8 +16,7 @@ from collections.abc import Iterator
 from datetime import timedelta
 from io import BytesIO
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
-                    Iterable, Optional, Type, Union)
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator, Iterable, Optional, Type, Union)
 from urllib import parse
 
 import requests
@@ -576,6 +575,7 @@ class _DbfsPath(_Path):
     def __repr__(self) -> str:
         return f"<_DbfsPath {self._path}>"
 
+
 class _RetryableException(Exception):
     """Base class for retryable exceptions in DBFS operations."""
 
@@ -595,6 +595,7 @@ class _RetryableException(Exception):
             message=response.text,
             http_status_code=response.status_code,
         )
+
 
 class DbfsExt(files.DbfsAPI):
     __doc__ = files.DbfsAPI.__doc__

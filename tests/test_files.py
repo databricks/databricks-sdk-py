@@ -20,9 +20,7 @@ from requests import RequestException
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
-from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
-                                            InternalError, PermissionDenied,
-                                            TooManyRequests)
+from databricks.sdk.errors.platform import AlreadyExists, BadRequest, InternalError, PermissionDenied, TooManyRequests
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +55,7 @@ class DownloadTestCase:
         self.expected_requested_offsets = expected_requested_offsets
 
     @staticmethod
-    def to_string(test_case: 'DownloadTestCase') -> str:
+    def to_string(test_case: "DownloadTestCase") -> str:
         return test_case.name
 
     def run(self, config: Config) -> None:
@@ -115,7 +113,7 @@ class MockSession:
         verify=None,
         cert=None,
         json=None,
-    ) -> 'MockResponse':
+    ) -> "MockResponse":
         assert method == "GET"
         assert stream == True
 
@@ -167,7 +165,7 @@ class MockResponse:
         self.ok = True
         self.url = request.url
 
-    def iter_content(self, chunk_size: int, decode_unicode: bool) -> 'MockIterator':
+    def iter_content(self, chunk_size: int, decode_unicode: bool) -> "MockIterator":
         assert decode_unicode == False
         return MockIterator(self, chunk_size)
 
@@ -415,7 +413,7 @@ class FileContent:
         self.checksum = checksum
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> 'FileContent':
+    def from_bytes(cls, data: bytes) -> "FileContent":
         sha256 = hashlib.sha256()
         sha256.update(data)
         return FileContent(len(data), sha256.hexdigest())
@@ -666,14 +664,12 @@ class UploadTestCase:
     def customize_config(self, config: Config) -> None:
         pass
 
-    def create_multipart_upload_server_state(self)\
-            -> Union[MultipartUploadServerState, 'ResumableUploadServerState']:
+    def create_multipart_upload_server_state(self) -> Union[MultipartUploadServerState, "ResumableUploadServerState"]:
         raise NotImplementedError
 
-    def match_request_to_response(self,
-                                  request: requests.Request,
-                                  server_state: Union[MultipartUploadServerState, 'ResumableUploadServerState']
-                                  ) -> Optional[requests.Response]:
+    def match_request_to_response(
+        self, request: requests.Request, server_state: Union[MultipartUploadServerState, "ResumableUploadServerState"]
+    ) -> Optional[requests.Response]:
         raise NotImplementedError
 
     def run(self, config: Config) -> None:
@@ -842,10 +838,9 @@ class MultipartUploadTestCase(UploadTestCase):
     def create_multipart_upload_server_state(self) -> MultipartUploadServerState:
         return MultipartUploadServerState()
 
-    def match_request_to_response(self,
-                                  request: requests.Request,
-                                  server_state: MultipartUploadServerState
-                                  ) -> Optional[requests.Response]:
+    def match_request_to_response(
+        self, request: requests.Request, server_state: MultipartUploadServerState
+    ) -> Optional[requests.Response]:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
@@ -904,8 +899,7 @@ class MultipartUploadTestCase(UploadTestCase):
             return self.custom_response_on_create_multipart_url.generate_response(request, processor)
 
         # multipart upload, uploading part
-        elif request.url.startswith(MultipartUploadServerState.upload_part_url_prefix)\
-                and request.method == "PUT":
+        elif request.url.startswith(MultipartUploadServerState.upload_part_url_prefix) and request.method == "PUT":
 
             assert not UploadTestCase.is_auth_header_present(request)
 
@@ -946,8 +940,7 @@ class MultipartUploadTestCase(UploadTestCase):
             return self.custom_response_on_complete.generate_response(request, processor)
 
         # create abort URL
-        elif request.url == "http://localhost/api/2.0/fs/create-abort-upload-url"\
-                and request.method == "POST":
+        elif request.url == "http://localhost/api/2.0/fs/create-abort-upload-url" and request.method == "POST":
             assert UploadTestCase.is_auth_header_present(request)
             request_json = request.json()
             assert request_json["path"] == self.path
@@ -965,8 +958,7 @@ class MultipartUploadTestCase(UploadTestCase):
             return self.custom_response_on_create_abort_url.generate_response(request, processor)
 
         # abort upload
-        elif request.url.startswith(MultipartUploadServerState.abort_upload_url_prefix)\
-                and request.method == "DELETE":
+        elif request.url.startswith(MultipartUploadServerState.abort_upload_url_prefix) and request.method == "DELETE":
             assert not UploadTestCase.is_auth_header_present(request)
             assert request.url[len(MultipartUploadServerState.abort_upload_url_prefix) :] == self.path
 
@@ -991,7 +983,7 @@ class MultipartUploadTestCase(UploadTestCase):
         return self.name
 
     @staticmethod
-    def to_string(test_case: 'MultipartUploadTestCase') -> str:
+    def to_string(test_case: "MultipartUploadTestCase") -> str:
         return str(test_case)
 
 
@@ -1002,7 +994,7 @@ class MultipartUploadTestCase(UploadTestCase):
         MultipartUploadTestCase(
             "Initiate: 400 response is not retried",
             stream_size=1024 * 1024,
-            multipart_upload_min_stream_size = 1024 * 1024, # still multipart upload is used
+            multipart_upload_min_stream_size=1024 * 1024,  # still multipart upload is used
             custom_response_on_initiate=CustomResponse(code=400, only_invocation=1),
             expected_exception_type=BadRequest,
             expected_multipart_upload_aborted=False,  # upload didn't start
@@ -1157,7 +1149,8 @@ class MultipartUploadTestCase(UploadTestCase):
             "Create upload URL: intermittent retryable exception 3",
             stream_size=1024 * 1024,
             multipart_upload_chunk_size=10 * 1024 * 1024,
-            custom_response_on_create_multipart_url=CustomResponse(code=500,
+            custom_response_on_create_multipart_url=CustomResponse(
+                code=500,
                 first_invocation=4,
                 last_invocation=6,
             ),
@@ -1354,9 +1347,9 @@ class MultipartUploadTestCase(UploadTestCase):
         MultipartUploadTestCase(
             "Small stream, single-shot upload used",
             stream_size=1024 * 1024,
-            multipart_upload_min_stream_size = 1024 * 1024 + 1,
+            multipart_upload_min_stream_size=1024 * 1024 + 1,
             expected_multipart_upload_aborted=False,
-            expected_single_shot_upload=True
+            expected_single_shot_upload=True,
         ),
     ],
     ids=MultipartUploadTestCase.to_string,
@@ -1519,7 +1512,9 @@ class ResumableUploadTestCase(UploadTestCase):
     def create_multipart_upload_server_state(self) -> ResumableUploadServerState:
         return ResumableUploadServerState(self.unconfirmed_delta)
 
-    def match_request_to_response(self, request: requests.Request, server_state: ResumableUploadServerState) -> Optional[requests.Response]:
+    def match_request_to_response(
+        self, request: requests.Request, server_state: ResumableUploadServerState
+    ) -> Optional[requests.Response]:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
 
@@ -1627,7 +1622,7 @@ class ResumableUploadTestCase(UploadTestCase):
         return self.name
 
     @staticmethod
-    def to_string(test_case: 'ResumableUploadTestCase') -> str:
+    def to_string(test_case: "ResumableUploadTestCase") -> str:
         return str(test_case)
 
 
@@ -1827,9 +1822,9 @@ class ResumableUploadTestCase(UploadTestCase):
         ResumableUploadTestCase(
             "Small stream, single-shot upload used",
             stream_size=1024 * 1024,
-            multipart_upload_min_stream_size = 1024 * 1024 + 1,
+            multipart_upload_min_stream_size=1024 * 1024 + 1,
             expected_multipart_upload_aborted=False,
-            expected_single_shot_upload=True
+            expected_single_shot_upload=True,
         ),
     ],
     ids=ResumableUploadTestCase.to_string,
