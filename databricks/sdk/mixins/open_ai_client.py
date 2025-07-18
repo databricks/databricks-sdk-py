@@ -4,6 +4,7 @@ from typing import Dict, Optional
 from requests import Response
 
 from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
+                                            HttpRequestResponse,
                                             ServingEndpointsAPI)
 
 
@@ -88,14 +89,29 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         """
         response = Response()
         response.status_code = 200
-        server_response = super().http_request(
-            connection_name=conn,
-            method=method,
-            path=path,
-            headers=js.dumps(headers) if headers is not None else None,
-            json=js.dumps(json) if json is not None else None,
-            params=js.dumps(params) if params is not None else None,
+
+        # We currently don't call super.http_request because we need to pass in response_headers
+        # This is a temporary fix to get the headers we need for the MCP session id
+        # TODO: Remove this once we have a better way to get back the response headers
+        headers_to_capture = ["mcp-session-id"]
+        res = self._api.do(
+            "POST",
+            "/api/2.0/external-function",
+            body={
+                "connection_name": conn,
+                "method": method.value,
+                "path": path,
+                "headers": js.dumps(headers) if headers is not None else None,
+                "json": js.dumps(json) if json is not None else None,
+                "params": js.dumps(params) if params is not None else None,
+            },
+            headers={"Accept": "text/plain", "Content-Type": "application/json"},
+            raw=True,
+            response_headers=headers_to_capture,
         )
+
+        # Create HttpRequestResponse from the raw response
+        server_response = HttpRequestResponse.from_dict(res)
 
         # Read the content from the HttpRequestResponse object
         if hasattr(server_response, "contents") and hasattr(server_response.contents, "read"):
@@ -108,5 +124,10 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             response._content = raw_content
         else:
             raise ValueError("Contents must be bytes.")
+
+        # Copy headers from raw response to Response
+        for header_name in headers_to_capture:
+            if header_name in res:
+                response.headers[header_name] = res[header_name]
 
         return response
