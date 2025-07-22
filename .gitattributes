@@ -20,6 +20,7 @@ databricks/sdk/service/provisioning.py linguist-generated=true
 databricks/sdk/service/qualitymonitorv2.py linguist-generated=true
 databricks/sdk/service/serving.py linguist-generated=true
 databricks/sdk/service/settings.py linguist-generated=true
+databricks/sdk/service/settingsv2.py linguist-generated=true
 databricks/sdk/service/sharing.py linguist-generated=true
 databricks/sdk/service/sql.py linguist-generated=true
 databricks/sdk/service/vectorsearch.py linguist-generated=true

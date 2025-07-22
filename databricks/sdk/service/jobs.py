@@ -857,11 +857,16 @@ class Continuous:
     pause_status: Optional[PauseStatus] = None
     """Indicate whether the continuous execution of the job is paused or not. Defaults to UNPAUSED."""
 
+    task_retry_mode: Optional[TaskRetryMode] = None
+    """Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER."""
+
     def as_dict(self) -> dict:
         """Serializes the Continuous into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -869,12 +874,17 @@ class Continuous:
         body = {}
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Continuous:
         """Deserializes the Continuous from a dictionary."""
-        return cls(pause_status=_enum(d, "pause_status", PauseStatus))
+        return cls(
+            pause_status=_enum(d, "pause_status", PauseStatus),
+            task_retry_mode=_enum(d, "task_retry_mode", TaskRetryMode),
+        )
 
 
 @dataclass
@@ -3484,6 +3494,78 @@ class ListRunsResponse:
             prev_page_token=d.get("prev_page_token", None),
             runs=_repeated_dict(d, "runs", BaseRun),
         )
+
+
+@dataclass
+class ModelTriggerConfiguration:
+    condition: ModelTriggerConfigurationCondition
+    """The condition based on which to trigger a job run."""
+
+    aliases: Optional[List[str]] = None
+    """Aliases of the model versions to monitor. Can only be used in conjunction with condition
+    MODEL_ALIAS_SET."""
+
+    min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time has passed since the
+    last time the trigger fired. The minimum allowed value is 60 seconds."""
+
+    securable_name: Optional[str] = None
+    """Name of the securable to monitor ("mycatalog.myschema.mymodel" in the case of model-level
+    triggers, "mycatalog.myschema" in the case of schema-level triggers) or empty in the case of
+    metastore-level triggers."""
+
+    wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no model updates have occurred for the specified
+    time and can be used to wait for a series of model updates before triggering a run. The minimum
+    allowed value is 60 seconds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v for v in self.aliases]
+        if self.condition is not None:
+            body["condition"] = self.condition.value
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.condition is not None:
+            body["condition"] = self.condition
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTriggerConfiguration:
+        """Deserializes the ModelTriggerConfiguration from a dictionary."""
+        return cls(
+            aliases=d.get("aliases", None),
+            condition=_enum(d, "condition", ModelTriggerConfigurationCondition),
+            min_time_between_triggers_seconds=d.get("min_time_between_triggers_seconds", None),
+            securable_name=d.get("securable_name", None),
+            wait_after_last_change_seconds=d.get("wait_after_last_change_seconds", None),
+        )
+
+
+class ModelTriggerConfigurationCondition(Enum):
+
+    MODEL_ALIAS_SET = "MODEL_ALIAS_SET"
+    MODEL_CREATED = "MODEL_CREATED"
+    MODEL_VERSION_READY = "MODEL_VERSION_READY"
 
 
 @dataclass
@@ -7782,6 +7864,16 @@ class TaskNotificationSettings:
         )
 
 
+class TaskRetryMode(Enum):
+    """task retry mode of the continuous job * NEVER: The failed task will not be retried. *
+    ON_FAILURE: Retry a failed task if at least one other task in the job is still running its first
+    attempt. When this condition is no longer met or the retry limit is reached, the job run is
+    cancelled and a new run is started."""
+
+    NEVER = "NEVER"
+    ON_FAILURE = "ON_FAILURE"
+
+
 class TerminationCodeCode(Enum):
     """The code indicates why the run was terminated. Additional codes might be introduced in future
     releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run
@@ -7936,6 +8028,8 @@ class TriggerSettings:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger settings."""
 
+    model: Optional[ModelTriggerConfiguration] = None
+
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
@@ -7952,6 +8046,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
@@ -7967,6 +8063,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.periodic:
@@ -7982,6 +8080,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
             table=_from_dict(d, "table", TableUpdateTriggerConfiguration),

@@ -1134,6 +1134,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[str]] = None
     """The set of privileges to remove."""
 
@@ -1144,6 +1153,8 @@ class PermissionsChange:
             body["add"] = [v for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v for v in self.remove]
         return body
@@ -1155,6 +1166,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -1162,7 +1175,12 @@ class PermissionsChange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
-        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
+        return cls(
+            add=d.get("add", None),
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            remove=d.get("remove", None),
+        )
 
 
 class Privilege(Enum):
@@ -1220,6 +1238,10 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, `principal` is empty
     while `principal_id` is populated."""
 
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both `principal` and `principal_id`
+    are present."""
+
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -1228,6 +1250,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -1237,6 +1261,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -1244,7 +1270,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass

@@ -67,11 +67,11 @@ class AccountIpAccessEnable:
 
 @dataclass
 class AccountNetworkPolicy:
+    egress: NetworkPolicyEgress
+    """The network policies applying for egress traffic."""
+
     account_id: Optional[str] = None
     """The associated account ID for this Network Policy object."""
-
-    egress: Optional[NetworkPolicyEgress] = None
-    """The network policies applying for egress traffic."""
 
     network_policy_id: Optional[str] = None
     """The unique identifier for the network policy."""
@@ -4208,7 +4208,7 @@ class NetworkPolicyEgress:
     consistent with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details see
     API-design: https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/"""
 
-    network_access: Optional[EgressNetworkPolicyNetworkAccessPolicy] = None
+    network_access: EgressNetworkPolicyNetworkAccessPolicy
     """The access policy enforced for egress traffic to the internet."""
 
     def as_dict(self) -> dict:

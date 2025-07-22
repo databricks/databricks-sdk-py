@@ -313,6 +313,9 @@ class AiGatewayRateLimit:
     """Principal field for a user, user group, or service principal to apply rate limiting to. Accepts
     a user email, group name, or service principal application ID."""
 
+    tokens: Optional[int] = None
+    """Used to specify how many tokens are allowed for a key within the renewal_period."""
+
     def as_dict(self) -> dict:
         """Serializes the AiGatewayRateLimit into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -324,6 +327,8 @@ class AiGatewayRateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period.value
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -337,6 +342,8 @@ class AiGatewayRateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
         return body
 
     @classmethod
@@ -347,6 +354,7 @@ class AiGatewayRateLimit:
             key=_enum(d, "key", AiGatewayRateLimitKey),
             principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", AiGatewayRateLimitRenewalPeriod),
+            tokens=d.get("tokens", None),
         )
 
 

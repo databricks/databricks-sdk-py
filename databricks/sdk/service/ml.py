@@ -1692,6 +1692,31 @@ class GetLoggedModelResponse:
 
 
 @dataclass
+class GetLoggedModelsRequestResponse:
+    models: Optional[List[LoggedModel]] = None
+    """The retrieved logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
+        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel))
+
+
+@dataclass
 class GetMetricHistoryResponse:
     metrics: Optional[List[Metric]] = None
     """All logged values for this metric if `max_results` is not specified in the request or if the
@@ -5388,6 +5413,25 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
+
+    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
+        """Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        """
+
+        query = {}
+        if model_ids is not None:
+            query["model_ids"] = [v for v in model_ids]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
+        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
