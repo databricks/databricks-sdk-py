@@ -5,7 +5,7 @@ Dataclasses
 .. toctree::
    :maxdepth: 1
    
-   aibuilder
+   agentbricks
    apps
    billing
    catalog

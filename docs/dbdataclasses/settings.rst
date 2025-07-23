@@ -140,6 +140,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FEDRAMP_MODERATE
       :value: "FEDRAMP_MODERATE"
 
+   .. py:attribute:: GERMANY_C5
+      :value: "GERMANY_C5"
+
    .. py:attribute:: HIPAA
       :value: "HIPAA"
 

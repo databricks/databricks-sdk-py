@@ -195,7 +195,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
     def _exchange_id_token(self, id_token: IdToken) -> oauth.Token:
         client = oauth.ClientCredentials(
             client_id=self._client_id,
-            client_secret="",
+            client_secret="",  # there is no (rotatable) secrets in the OIDC flow
             token_url=self._token_endpoint,
             endpoint_params={
                 "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",

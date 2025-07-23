@@ -13,7 +13,7 @@ from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-from databricks.sdk.service import aibuilder as pkg_aibuilder
+from databricks.sdk.service import agentbricks as pkg_agentbricks
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
 from databricks.sdk.service import catalog as pkg_catalog
@@ -36,7 +36,7 @@ from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
-from databricks.sdk.service.aibuilder import AiBuilderAPI
+from databricks.sdk.service.agentbricks import AgentBricksAPI
 from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
@@ -240,7 +240,7 @@ class WorkspaceClient:
         serving_endpoints = ServingEndpointsExt(self._api_client)
         self._access_control = pkg_iam.AccessControlAPI(self._api_client)
         self._account_access_control_proxy = pkg_iam.AccountAccessControlProxyAPI(self._api_client)
-        self._ai_builder = pkg_aibuilder.AiBuilderAPI(self._api_client)
+        self._agent_bricks = pkg_agentbricks.AgentBricksAPI(self._api_client)
         self._alerts = pkg_sql.AlertsAPI(self._api_client)
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
         self._alerts_v2 = pkg_sql.AlertsV2API(self._api_client)
@@ -377,9 +377,9 @@ class WorkspaceClient:
         return self._account_access_control_proxy
 
     @property
-    def ai_builder(self) -> pkg_aibuilder.AiBuilderAPI:
+    def agent_bricks(self) -> pkg_agentbricks.AgentBricksAPI:
         """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
-        return self._ai_builder
+        return self._agent_bricks
 
     @property
     def alerts(self) -> pkg_sql.AlertsAPI:

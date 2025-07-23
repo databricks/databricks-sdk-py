@@ -7723,6 +7723,7 @@ class SchemaInfo:
 
 
 class SecurableKind(Enum):
+    """Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
