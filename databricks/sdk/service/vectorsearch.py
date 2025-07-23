@@ -192,6 +192,9 @@ class DeltaSyncVectorIndexSpecRequest:
     columns from the source table are synced with the index. The primary key column and embedding
     source column or embedding vector column are always synced."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -216,6 +219,8 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -233,6 +238,8 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -250,6 +257,7 @@ class DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
             columns_to_sync=d.get("columns_to_sync", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -260,6 +268,9 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -285,6 +296,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -302,6 +315,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -320,6 +335,7 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -859,6 +875,60 @@ class QueryVectorIndexResponse:
             next_page_token=d.get("next_page_token", None),
             result=_from_dict(d, "result", ResultData),
         )
+
+
+@dataclass
+class RerankerConfig:
+    model: Optional[str] = None
+
+    parameters: Optional[RerankerConfigRerankerParameters] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RerankerConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.parameters:
+            body["parameters"] = self.parameters.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RerankerConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model is not None:
+            body["model"] = self.model
+        if self.parameters:
+            body["parameters"] = self.parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RerankerConfig:
+        """Deserializes the RerankerConfig from a dictionary."""
+        return cls(model=d.get("model", None), parameters=_from_dict(d, "parameters", RerankerConfigRerankerParameters))
+
+
+@dataclass
+class RerankerConfigRerankerParameters:
+    columns_to_rerank: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RerankerConfigRerankerParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = [v for v in self.columns_to_rerank]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RerankerConfigRerankerParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns_to_rerank:
+            body["columns_to_rerank"] = self.columns_to_rerank
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RerankerConfigRerankerParameters:
+        """Deserializes the RerankerConfigRerankerParameters from a dictionary."""
+        return cls(columns_to_rerank=d.get("columns_to_rerank", None))
 
 
 @dataclass
@@ -1597,20 +1667,27 @@ class VectorSearchIndexesAPI:
 
         self._api.do("DELETE", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
 
-    def get_index(self, index_name: str) -> VectorIndex:
+    def get_index(self, index_name: str, *, ensure_reranker_compatible: Optional[bool] = None) -> VectorIndex:
         """Get an index.
 
         :param index_name: str
           Name of the index
+        :param ensure_reranker_compatible: bool (optional)
+          If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently
+          this means we return the CP URL regardless of how the index is being accessed. If not set or set to
+          false, the URL may still be compatible with the reranker depending on what URL we return.
 
         :returns: :class:`VectorIndex`
         """
 
+        query = {}
+        if ensure_reranker_compatible is not None:
+            query["ensure_reranker_compatible"] = ensure_reranker_compatible
         headers = {
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{index_name}", query=query, headers=headers)
         return VectorIndex.from_dict(res)
 
     def list_indexes(self, endpoint_name: str, *, page_token: Optional[str] = None) -> Iterator[MiniVectorIndex]:
@@ -1653,6 +1730,7 @@ class VectorSearchIndexesAPI:
         query_text: Optional[str] = None,
         query_type: Optional[str] = None,
         query_vector: Optional[List[float]] = None,
+        reranker: Optional[RerankerConfig] = None,
         score_threshold: Optional[float] = None,
     ) -> QueryVectorIndexResponse:
         """Query the specified vector index.
@@ -1680,6 +1758,7 @@ class VectorSearchIndexesAPI:
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
+        :param reranker: :class:`RerankerConfig` (optional)
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 
@@ -1700,6 +1779,8 @@ class VectorSearchIndexesAPI:
             body["query_type"] = query_type
         if query_vector is not None:
             body["query_vector"] = [v for v in query_vector]
+        if reranker is not None:
+            body["reranker"] = reranker.as_dict()
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
         headers = {

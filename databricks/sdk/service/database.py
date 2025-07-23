@@ -110,6 +110,11 @@ class DatabaseInstance:
     name: str
     """The name of the instance. This is the unique identifier for the instance."""
 
+    budget_policy_id: Optional[str] = None
+    """The desired budget policy to associate with the instance. This field is only returned on
+    create/update responses, and represents the customer provided budget policy. See
+    effective_budget_policy_id for the policy that is actually applied to the instance."""
+
     capacity: Optional[str] = None
     """The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
 
@@ -121,6 +126,16 @@ class DatabaseInstance:
 
     creator: Optional[str] = None
     """The email of the creator of the instance."""
+
+    effective_budget_policy_id: Optional[str] = None
+    """The policy that is applied to the instance."""
+
+    effective_enable_pg_native_login: Optional[bool] = None
+    """xref AIP-129. `enable_pg_native_login` is owned by the client, while
+    `effective_enable_pg_native_login` is owned by the server. `enable_pg_native_login` will only be
+    set in Create/Update response messages if and only if the user provides the field via the
+    request. `effective_enable_pg_native_login` on the other hand will always bet set in all
+    response messages (Create/Update/Get/List)."""
 
     effective_enable_readable_secondaries: Optional[bool] = None
     """xref AIP-129. `enable_readable_secondaries` is owned by the client, while
@@ -147,6 +162,9 @@ class DatabaseInstance:
     server. `stopped` will only be set in Create/Update response messages if and only if the user
     provides the field via the request. `effective_stopped` on the other hand will always bet set in
     all response messages (Create/Update/Get/List)."""
+
+    enable_pg_native_login: Optional[bool] = None
+    """Whether the instance has PG native password login enabled. Defaults to true."""
 
     enable_readable_secondaries: Optional[bool] = None
     """Whether to enable secondaries to serve read-only traffic. Defaults to false."""
@@ -186,6 +204,8 @@ class DatabaseInstance:
     def as_dict(self) -> dict:
         """Serializes the DatabaseInstance into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.capacity is not None:
             body["capacity"] = self.capacity
         if self.child_instance_refs:
@@ -194,6 +214,10 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_enable_pg_native_login is not None:
+            body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
             body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
         if self.effective_node_count is not None:
@@ -202,6 +226,8 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
             body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
@@ -229,6 +255,8 @@ class DatabaseInstance:
     def as_shallow_dict(self) -> dict:
         """Serializes the DatabaseInstance into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.capacity is not None:
             body["capacity"] = self.capacity
         if self.child_instance_refs:
@@ -237,6 +265,10 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_enable_pg_native_login is not None:
+            body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
             body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
         if self.effective_node_count is not None:
@@ -245,6 +277,8 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
             body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
@@ -273,14 +307,18 @@ class DatabaseInstance:
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstance:
         """Deserializes the DatabaseInstance from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             capacity=d.get("capacity", None),
             child_instance_refs=_repeated_dict(d, "child_instance_refs", DatabaseInstanceRef),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_enable_pg_native_login=d.get("effective_enable_pg_native_login", None),
             effective_enable_readable_secondaries=d.get("effective_enable_readable_secondaries", None),
             effective_node_count=d.get("effective_node_count", None),
             effective_retention_window_in_days=d.get("effective_retention_window_in_days", None),
             effective_stopped=d.get("effective_stopped", None),
+            enable_pg_native_login=d.get("enable_pg_native_login", None),
             enable_readable_secondaries=d.get("enable_readable_secondaries", None),
             name=d.get("name", None),
             node_count=d.get("node_count", None),
@@ -518,6 +556,9 @@ class DatabaseTable:
     When creating a table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database."""
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -527,6 +568,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -538,6 +581,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     @classmethod
@@ -547,6 +592,7 @@ class DatabaseTable:
             database_instance_name=d.get("database_instance_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
+            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -583,6 +629,40 @@ class DeltaTableSyncInfo:
         return cls(
             delta_commit_timestamp=d.get("delta_commit_timestamp", None),
             delta_commit_version=d.get("delta_commit_version", None),
+        )
+
+
+@dataclass
+class ListDatabaseCatalogsResponse:
+    database_catalogs: Optional[List[DatabaseCatalog]] = None
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of database catalogs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseCatalogsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_catalogs:
+            body["database_catalogs"] = [v.as_dict() for v in self.database_catalogs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseCatalogsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_catalogs:
+            body["database_catalogs"] = self.database_catalogs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseCatalogsResponse:
+        """Deserializes the ListDatabaseCatalogsResponse from a dictionary."""
+        return cls(
+            database_catalogs=_repeated_dict(d, "database_catalogs", DatabaseCatalog),
+            next_page_token=d.get("next_page_token", None),
         )
 
 
@@ -657,9 +737,46 @@ class ListDatabaseInstancesResponse:
 
 
 @dataclass
+class ListSyncedDatabaseTablesResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of synced tables."""
+
+    synced_tables: Optional[List[SyncedDatabaseTable]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSyncedDatabaseTablesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.synced_tables:
+            body["synced_tables"] = [v.as_dict() for v in self.synced_tables]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSyncedDatabaseTablesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.synced_tables:
+            body["synced_tables"] = self.synced_tables
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSyncedDatabaseTablesResponse:
+        """Deserializes the ListSyncedDatabaseTablesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            synced_tables=_repeated_dict(d, "synced_tables", SyncedDatabaseTable),
+        )
+
+
+@dataclass
 class NewPipelineSpec:
     """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
     fields of pipeline are still inferred by table def internally"""
+
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
 
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.
@@ -676,6 +793,8 @@ class NewPipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -685,6 +804,8 @@ class NewPipelineSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -694,7 +815,11 @@ class NewPipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 class ProvisioningInfoState(Enum):
@@ -809,6 +934,9 @@ class SyncedDatabaseTable:
 
     spec: Optional[SyncedTableSpec] = None
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
     state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
@@ -827,6 +955,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -844,6 +974,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -857,6 +989,7 @@ class SyncedDatabaseTable:
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 
@@ -1532,6 +1665,28 @@ class DatabaseAPI:
 
         self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
 
+    def failover_database_instance(
+        self, name: str, *, failover_target_database_instance_name: Optional[str] = None
+    ) -> DatabaseInstance:
+        """Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        """
+        body = {}
+        if failover_target_database_instance_name is not None:
+            body["failover_target_database_instance_name"] = failover_target_database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/instances/{name}/failover", body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
+
     def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
         """Find a Database Instance by uid.
 
@@ -1661,6 +1816,41 @@ class DatabaseAPI:
         res = self._api.do("GET", f"/api/2.0/database/synced_tables/{name}", headers=headers)
         return SyncedDatabaseTable.from_dict(res)
 
+    def list_database_catalogs(
+        self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseCatalog]:
+        """List all Database Catalogs within a Database Instance.
+
+        :param instance_name: str
+          Name of the instance to get database catalogs for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseCatalog`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/instances/{instance_name}/catalogs", query=query, headers=headers
+            )
+            if "database_catalogs" in json:
+                for v in json["database_catalogs"]:
+                    yield DatabaseCatalog.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def list_database_instance_roles(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseInstanceRole]:
@@ -1726,6 +1916,67 @@ class DatabaseAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_synced_database_tables(
+        self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SyncedDatabaseTable]:
+        """List all Synced Database Tables within a Database Instance.
+
+        :param instance_name: str
+          Name of the instance to get synced tables for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`SyncedDatabaseTable`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/instances/{instance_name}/synced_tables", query=query, headers=headers
+            )
+            if "synced_tables" in json:
+                for v in json["synced_tables"]:
+                    yield SyncedDatabaseTable.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_database_catalog(
+        self, name: str, database_catalog: DatabaseCatalog, update_mask: str
+    ) -> DatabaseCatalog:
+        """Updated a Database Catalog.
+
+        :param name: str
+          The name of the catalog in UC.
+        :param database_catalog: :class:`DatabaseCatalog`
+          Note that updating a database catalog is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`DatabaseCatalog`
+        """
+        body = database_catalog.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/catalogs/{name}", query=query, body=body, headers=headers)
+        return DatabaseCatalog.from_dict(res)
+
     def update_database_instance(
         self, name: str, database_instance: DatabaseInstance, update_mask: str
     ) -> DatabaseInstance:
@@ -1750,3 +2001,29 @@ class DatabaseAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
         return DatabaseInstance.from_dict(res)
+
+    def update_synced_database_table(
+        self, name: str, synced_table: SyncedDatabaseTable, update_mask: str
+    ) -> SyncedDatabaseTable:
+        """Update a Synced Database Table.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+        :param synced_table: :class:`SyncedDatabaseTable`
+          Note that updating a synced database table is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`SyncedDatabaseTable`
+        """
+        body = synced_table.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/synced_tables/{name}", query=query, body=body, headers=headers)
+        return SyncedDatabaseTable.from_dict(res)

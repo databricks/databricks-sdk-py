@@ -103,6 +103,72 @@ class AuthorizationDetailsGrantRule:
 
 
 @dataclass
+class CancelQueryExecutionResponse:
+    status: Optional[List[CancelQueryExecutionResponseStatus]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status:
+            body["status"] = [v.as_dict() for v in self.status]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponse:
+        """Deserializes the CancelQueryExecutionResponse from a dictionary."""
+        return cls(status=_repeated_dict(d, "status", CancelQueryExecutionResponseStatus))
+
+
+@dataclass
+class CancelQueryExecutionResponseStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    pending: Optional[Empty] = None
+
+    success: Optional[Empty] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponseStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        if self.pending:
+            body["pending"] = self.pending.as_dict()
+        if self.success:
+            body["success"] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        if self.pending:
+            body["pending"] = self.pending
+        if self.success:
+            body["success"] = self.success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CancelQueryExecutionResponseStatus:
+        """Deserializes the CancelQueryExecutionResponseStatus from a dictionary."""
+        return cls(
+            data_token=d.get("data_token", None),
+            pending=_from_dict(d, "pending", Empty),
+            success=_from_dict(d, "success", Empty),
+        )
+
+
+@dataclass
 class CronSchedule:
     quartz_cron_expression: str
     """A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents everyday at 8am. See [Cron
@@ -251,6 +317,45 @@ class Dashboard:
 class DashboardView(Enum):
 
     DASHBOARD_VIEW_BASIC = "DASHBOARD_VIEW_BASIC"
+
+
+@dataclass
+class Empty:
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Empty into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
+        return cls()
+
+
+@dataclass
+class ExecuteQueryResponse:
+    def as_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ExecuteQueryResponse:
+        """Deserializes the ExecuteQueryResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -411,6 +516,57 @@ class GenieConversationSummary:
             created_timestamp=d.get("created_timestamp", None),
             title=d.get("title", None),
         )
+
+
+@dataclass
+class GenieGenerateDownloadFullQueryResultResponse:
+    download_id: Optional[str] = None
+    """Download ID. Use this ID to track the download request in subsequent polling calls"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGenerateDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.download_id is not None:
+            body["download_id"] = self.download_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Deserializes the GenieGenerateDownloadFullQueryResultResponse from a dictionary."""
+        return cls(download_id=d.get("download_id", None))
+
+
+@dataclass
+class GenieGetDownloadFullQueryResultResponse:
+    statement_response: Optional[sql.StatementResponse] = None
+    """SQL Statement Execution response. See [Get status, manifest, and result first
+    chunk](:method:statementexecution/getstatement) for more details."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGetDownloadFullQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statement_response:
+            body["statement_response"] = self.statement_response
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieGetDownloadFullQueryResultResponse:
+        """Deserializes the GenieGetDownloadFullQueryResultResponse from a dictionary."""
+        return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
 
 
 @dataclass
@@ -817,6 +973,24 @@ class GenieStartConversationResponse:
 
 
 @dataclass
+class GetPublishedDashboardEmbeddedResponse:
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedDashboardEmbeddedResponse:
+        """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetPublishedDashboardTokenInfoResponse:
     authorization_details: Optional[List[AuthorizationDetails]] = None
     """Authorization constraints for accessing the published dashboard. Currently includes
@@ -1085,6 +1259,80 @@ class MessageStatus(Enum):
 
 
 @dataclass
+class PendingStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PendingStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PendingStatus:
+        """Deserializes the PendingStatus from a dictionary."""
+        return cls(data_token=d.get("data_token", None))
+
+
+@dataclass
+class PollQueryStatusResponse:
+    data: Optional[List[PollQueryStatusResponseData]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data:
+            body["data"] = [v.as_dict() for v in self.data]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data:
+            body["data"] = self.data
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponse:
+        """Deserializes the PollQueryStatusResponse from a dictionary."""
+        return cls(data=_repeated_dict(d, "data", PollQueryStatusResponseData))
+
+
+@dataclass
+class PollQueryStatusResponseData:
+    status: QueryResponseStatus
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status:
+            body["status"] = self.status.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PollQueryStatusResponseData:
+        """Deserializes the PollQueryStatusResponseData from a dictionary."""
+        return cls(status=_from_dict(d, "status", QueryResponseStatus))
+
+
+@dataclass
 class PublishedDashboard:
     display_name: Optional[str] = None
     """The display name of the published dashboard."""
@@ -1132,6 +1380,63 @@ class PublishedDashboard:
             embed_credentials=d.get("embed_credentials", None),
             revision_create_time=d.get("revision_create_time", None),
             warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+@dataclass
+class QueryResponseStatus:
+    canceled: Optional[Empty] = None
+
+    closed: Optional[Empty] = None
+
+    pending: Optional[PendingStatus] = None
+
+    statement_id: Optional[str] = None
+    """The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The statement_id should be
+    identical to data_token in SuccessStatus and PendingStatus. This field is created for audit
+    logging purpose to record the statement_id of all QueryResponseStatus."""
+
+    success: Optional[SuccessStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.canceled:
+            body["canceled"] = self.canceled.as_dict()
+        if self.closed:
+            body["closed"] = self.closed.as_dict()
+        if self.pending:
+            body["pending"] = self.pending.as_dict()
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
+        if self.success:
+            body["success"] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.canceled:
+            body["canceled"] = self.canceled
+        if self.closed:
+            body["closed"] = self.closed
+        if self.pending:
+            body["pending"] = self.pending
+        if self.statement_id is not None:
+            body["statement_id"] = self.statement_id
+        if self.success:
+            body["success"] = self.success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QueryResponseStatus:
+        """Deserializes the QueryResponseStatus from a dictionary."""
+        return cls(
+            canceled=_from_dict(d, "canceled", Empty),
+            closed=_from_dict(d, "closed", Empty),
+            pending=_from_dict(d, "pending", PendingStatus),
+            statement_id=d.get("statement_id", None),
+            success=_from_dict(d, "success", SuccessStatus),
         )
 
 
@@ -1451,6 +1756,39 @@ class SubscriptionSubscriberUser:
 
 
 @dataclass
+class SuccessStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    truncated: Optional[bool] = None
+    """Whether the query result is truncated (either by byte limit or row limit)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SuccessStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SuccessStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None:
+            body["data_token"] = self.data_token
+        if self.truncated is not None:
+            body["truncated"] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SuccessStatus:
+        """Deserializes the SuccessStatus from a dictionary."""
+        return cls(data_token=d.get("data_token", None), truncated=d.get("truncated", None))
+
+
+@dataclass
 class TextAttachment:
     content: Optional[str] = None
     """AI generated message"""
@@ -1675,6 +2013,75 @@ class GenieAPI:
             headers=headers,
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def generate_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
+    ) -> GenieGenerateDownloadFullQueryResultResponse:
+        """Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        the download. The query result is stored in an external link and can be retrieved using the [Get
+        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads",
+            headers=headers,
+        )
+        return GenieGenerateDownloadFullQueryResultResponse.from_dict(res)
+
+    def get_download_full_query_result(
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str
+    ) -> GenieGetDownloadFullQueryResultResponse:
+        """After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        successfully receiving a `download_id`, use this API to poll the download progress. When the download
+        is complete, the API returns one or more external links to the query result files. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
+        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param download_id: str
+          Download ID. This ID is provided by the [Generate Download
+          endpoint](:method:genie/generateDownloadFullQueryResult)
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}",
+            headers=headers,
+        )
+        return GenieGetDownloadFullQueryResultResponse.from_dict(res)
 
     def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
         """Get message from conversation.
@@ -2375,6 +2782,21 @@ class LakeviewEmbeddedAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def get_published_dashboard_embedded(self, dashboard_id: str):
+        """Get the current published dashboard within an embedded context.
+
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
+
     def get_published_dashboard_token_info(
         self, dashboard_id: str, *, external_value: Optional[str] = None, external_viewer_id: Optional[str] = None
     ) -> GetPublishedDashboardTokenInfoResponse:
@@ -2403,3 +2825,93 @@ class LakeviewEmbeddedAPI:
             "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo", query=query, headers=headers
         )
         return GetPublishedDashboardTokenInfoResponse.from_dict(res)
+
+
+class QueryExecutionAPI:
+    """Query execution APIs for AI / BI Dashboards"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_published_query_execution(
+        self, dashboard_name: str, dashboard_revision_id: str, *, tokens: Optional[List[str]] = None
+    ) -> CancelQueryExecutionResponse:
+        """Cancel the results for the a query for a published, embedded dashboard.
+
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+
+        :returns: :class:`CancelQueryExecutionResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None:
+            query["dashboard_name"] = dashboard_name
+        if dashboard_revision_id is not None:
+            query["dashboard_revision_id"] = dashboard_revision_id
+        if tokens is not None:
+            query["tokens"] = [v for v in tokens]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("DELETE", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)
+        return CancelQueryExecutionResponse.from_dict(res)
+
+    def execute_published_dashboard_query(
+        self, dashboard_name: str, dashboard_revision_id: str, *, override_warehouse_id: Optional[str] = None
+    ):
+        """Execute a query for a published dashboard.
+
+        :param dashboard_name: str
+          Dashboard name and revision_id is required to retrieve PublishedDatasetDataModel which contains the
+          list of datasets, warehouse_id, and embedded_credentials
+        :param dashboard_revision_id: str
+        :param override_warehouse_id: str (optional)
+          A dashboard schedule can override the warehouse used as compute for processing the published
+          dashboard queries
+
+
+        """
+        body = {}
+        if dashboard_name is not None:
+            body["dashboard_name"] = dashboard_name
+        if dashboard_revision_id is not None:
+            body["dashboard_revision_id"] = dashboard_revision_id
+        if override_warehouse_id is not None:
+            body["override_warehouse_id"] = override_warehouse_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do("POST", "/api/2.0/lakeview-query/query/published", body=body, headers=headers)
+
+    def poll_published_query_status(
+        self, dashboard_name: str, dashboard_revision_id: str, *, tokens: Optional[List[str]] = None
+    ) -> PollQueryStatusResponse:
+        """Poll the results for the a query for a published, embedded dashboard.
+
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+
+        :returns: :class:`PollQueryStatusResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None:
+            query["dashboard_name"] = dashboard_name
+        if dashboard_revision_id is not None:
+            query["dashboard_revision_id"] = dashboard_revision_id
+        if tokens is not None:
+            query["tokens"] = [v for v in tokens]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)
+        return PollQueryStatusResponse.from_dict(res)

@@ -32,6 +32,7 @@ from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
 from databricks.sdk.service import settings as pkg_settings
+from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
@@ -53,6 +54,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             QualityMonitorsAPI,
                                             RegisteredModelsAPI,
+                                            RequestForAccessAPI,
                                             ResourceQuotasAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -70,7 +72,8 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
-                                               LakeviewEmbeddedAPI)
+                                               LakeviewEmbeddedAPI,
+                                               QueryExecutionAPI)
 from databricks.sdk.service.database import DatabaseAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
@@ -125,6 +128,8 @@ from databricks.sdk.service.settings import (
     RestrictWorkspaceAdminsAPI, SettingsAPI, SqlResultsDownloadAPI,
     TokenManagementAPI, TokensAPI, WorkspaceConfAPI,
     WorkspaceNetworkConfigurationAPI)
+from databricks.sdk.service.settingsv2 import (AccountSettingsV2API,
+                                               WorkspaceSettingsV2API)
 from databricks.sdk.service.sharing import (ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientFederationPoliciesAPI,
@@ -313,6 +318,7 @@ class WorkspaceClient:
         self._quality_monitors = pkg_catalog.QualityMonitorsAPI(self._api_client)
         self._queries = pkg_sql.QueriesAPI(self._api_client)
         self._queries_legacy = pkg_sql.QueriesLegacyAPI(self._api_client)
+        self._query_execution = pkg_dashboards.QueryExecutionAPI(self._api_client)
         self._query_history = pkg_sql.QueryHistoryAPI(self._api_client)
         self._query_visualizations = pkg_sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = pkg_sql.QueryVisualizationsLegacyAPI(self._api_client)
@@ -322,6 +328,7 @@ class WorkspaceClient:
         self._redash_config = pkg_sql.RedashConfigAPI(self._api_client)
         self._registered_models = pkg_catalog.RegisteredModelsAPI(self._api_client)
         self._repos = pkg_workspace.ReposAPI(self._api_client)
+        self._request_for_access = pkg_catalog.RequestForAccessAPI(self._api_client)
         self._resource_quotas = pkg_catalog.ResourceQuotasAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
@@ -352,6 +359,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
+        self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
 
     @property
@@ -732,6 +740,11 @@ class WorkspaceClient:
         return self._queries_legacy
 
     @property
+    def query_execution(self) -> pkg_dashboards.QueryExecutionAPI:
+        """Query execution APIs for AI / BI Dashboards."""
+        return self._query_execution
+
+    @property
     def query_history(self) -> pkg_sql.QueryHistoryAPI:
         """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
@@ -775,6 +788,11 @@ class WorkspaceClient:
     def repos(self) -> pkg_workspace.ReposAPI:
         """The Repos API allows users to manage their git repos."""
         return self._repos
+
+    @property
+    def request_for_access(self) -> pkg_catalog.RequestForAccessAPI:
+        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        return self._request_for_access
 
     @property
     def resource_quotas(self) -> pkg_catalog.ResourceQuotasAPI:
@@ -902,6 +920,11 @@ class WorkspaceClient:
         return self._workspace_conf
 
     @property
+    def workspace_settings_v2(self) -> pkg_settingsv2.WorkspaceSettingsV2API:
+        """APIs to manage workspace level settings."""
+        return self._workspace_settings_v2
+
+    @property
     def forecasting(self) -> pkg_ml.ForecastingAPI:
         """The Forecasting API allows you to create and get serverless forecasting experiments."""
         return self._forecasting
@@ -1002,6 +1025,7 @@ class AccountClient:
         self._service_principal_secrets = pkg_oauth2.ServicePrincipalSecretsAPI(self._api_client)
         self._service_principals = pkg_iam.AccountServicePrincipalsAPI(self._api_client)
         self._settings = pkg_settings.AccountSettingsAPI(self._api_client)
+        self._settings_v2 = pkg_settingsv2.AccountSettingsV2API(self._api_client)
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
@@ -1129,6 +1153,11 @@ class AccountClient:
     def settings(self) -> pkg_settings.AccountSettingsAPI:
         """Accounts Settings API allows users to manage settings at the account level."""
         return self._settings
+
+    @property
+    def settings_v2(self) -> pkg_settingsv2.AccountSettingsV2API:
+        """APIs to manage account level settings."""
+        return self._settings_v2
 
     @property
     def storage(self) -> pkg_provisioning.StorageAPI:
