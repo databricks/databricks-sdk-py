@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
 from unittest.mock import Mock
 
-from databricks.sdk import oauth, oidc
-from databricks.sdk.credentials_provider import (_oidc_credentials_provider,
-                                                 external_browser)
+from databricks.sdk import credentials_provider, oauth, oidc
 
 
 # Tests for external_browser function
@@ -36,7 +34,7 @@ def test_external_browser_refresh_success(mocker):
         return_value=mock_token_cache,
     )
 
-    got_credentials_provider = external_browser(mock_cfg)
+    got_credentials_provider = credentials_provider.external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
     mock_session_credentials.token.assert_called_once()  # Verify token refresh was attempted
@@ -82,7 +80,7 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
         return_value=mock_oauth_client,
     )
 
-    got_credentials_provider = external_browser(mock_cfg)
+    got_credentials_provider = credentials_provider.external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
     mock_session_credentials.token.assert_called_once()  # Refresh attempt
@@ -131,7 +129,7 @@ def test_external_browser_no_cached_credentials(mocker):
         return_value=mock_oauth_client,
     )
 
-    got_credentials_provider = external_browser(mock_cfg)
+    got_credentials_provider = credentials_provider.external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
     mock_oauth_client.initiate_consent.assert_called_once()
@@ -169,7 +167,7 @@ def test_external_browser_consent_fails(mocker):
         return_value=mock_oauth_client,
     )
 
-    got_credentials_provider = external_browser(mock_cfg)
+    got_credentials_provider = credentials_provider.external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
     mock_oauth_client.initiate_consent.assert_called_once()
@@ -190,8 +188,8 @@ def test_oidc_credentials_provider_invalid_id_token_source():
     id_token_source = Mock()
     id_token_source.id_token.side_effect = ValueError("Invalid ID token source")
 
-    credentials_provider = _oidc_credentials_provider(mock_cfg, id_token_source)
-    assert credentials_provider is None
+    cp = credentials_provider._oidc_credentials_provider(mock_cfg, id_token_source)
+    assert cp is None
 
 
 def test_oidc_credentials_provider_valid_id_token_source(mocker):
@@ -218,9 +216,9 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
 
     mocker.patch.object(oidc.DatabricksOidcTokenSource, "_exchange_id_token", side_effect=mock_exchange_id_token)
 
-    credentials_provider = _oidc_credentials_provider(mock_cfg, id_token_source)
-    assert credentials_provider is not None
+    cp = credentials_provider._oidc_credentials_provider(mock_cfg, id_token_source)
+    assert cp is not None
 
     # Test that the credentials provider returns the expected headers
-    headers = credentials_provider()
+    headers = cp()
     assert headers == {"Authorization": "Bearer exchanged-test-jwt-token"}
