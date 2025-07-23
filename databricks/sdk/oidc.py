@@ -188,14 +188,18 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
             logger.debug("Client ID provided, authenticating with Workload Identity Federation")
 
         id_token = self._id_token_source.id_token()
+        return self._exchange_id_token(id_token)
 
+    # This function is used to create the OAuth client.
+    # It exists to make it easier to test.
+    def _exchange_id_token(self, id_token: IdToken) -> oauth.Token:
         client = oauth.ClientCredentials(
             client_id=self._client_id,
-            client_secret="",  # we have no (rotatable) secrets in OIDC flow
+            client_secret="",
             token_url=self._token_endpoint,
             endpoint_params={
                 "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-                "subject_token": id_token,
+                "subject_token": id_token.jwt,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
             scopes=["all-apis"],
