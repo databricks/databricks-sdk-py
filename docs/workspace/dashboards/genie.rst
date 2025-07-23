@@ -29,6 +29,18 @@
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
 
+    .. py:method:: delete_conversation(space_id: str, conversation_id: str)
+
+        Delete a conversation.
+
+        :param space_id: str
+          The ID associated with the Genie space where the conversation is located.
+        :param conversation_id: str
+          The ID of the conversation to delete.
+
+
+        
+
     .. py:method:: execute_message_attachment_query(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
         Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
@@ -58,51 +70,6 @@
           Message ID
 
         :returns: :class:`GenieGetMessageQueryResultResponse`
-        
-
-    .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
-
-        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
-        the download. The query result is stored in an external link and can be retrieved using the [Get
-        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
-        See [Execute Statement](:method:statementexecution/executestatement) for more details.
-
-        :param space_id: str
-          Genie space ID
-        :param conversation_id: str
-          Conversation ID
-        :param message_id: str
-          Message ID
-        :param attachment_id: str
-          Attachment ID
-
-        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
-        
-
-    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str) -> GenieGetDownloadFullQueryResultResponse
-
-        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
-        successfully receiving a `download_id`, use this API to poll the download progress. When the download
-        is complete, the API returns one or more external links to the query result files. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
-        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
-        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
-        Statement](:method:statementexecution/executestatement) for more details.
-
-        :param space_id: str
-          Genie space ID
-        :param conversation_id: str
-          Conversation ID
-        :param message_id: str
-          Message ID
-        :param attachment_id: str
-          Attachment ID
-        :param download_id: str
-          Download ID. This ID is provided by the [Generate Download
-          endpoint](:method:genie/generateDownloadFullQueryResult)
-
-        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
         
 
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
@@ -178,6 +145,20 @@
         :returns: :class:`GenieSpace`
         
 
+    .. py:method:: list_conversations(space_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationsResponse
+
+        Get a list of conversations in a Genie Space.
+
+        :param space_id: str
+          The ID of the Genie space to retrieve conversations from.
+        :param page_size: int (optional)
+          Maximum number of conversations to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListConversationsResponse`
+        
+
     .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListSpacesResponse
 
         Get list of Genie Spaces.
@@ -206,5 +187,15 @@
 
     .. py:method:: start_conversation_and_wait(space_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
+
+    .. py:method:: trash_space(space_id: str)
+
+        Move a Genie Space to the trash.
+
+        :param space_id: str
+          The ID associated with the Genie space to be sent to the trash.
+
+
+        
 
     .. py:method:: wait_get_message_genie_completed(conversation_id: str, message_id: str, space_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GenieMessage], None]]) -> GenieMessage

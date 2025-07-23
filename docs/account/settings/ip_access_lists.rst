@@ -42,10 +42,6 @@
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
 
         :returns: :class:`CreateIpAccessListResponse`
@@ -96,10 +92,6 @@
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -131,10 +123,6 @@
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
 
 
         

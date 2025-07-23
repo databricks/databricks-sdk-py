@@ -16,6 +16,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DatabaseInstanceRef
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseInstanceRole
+   :members:
+   :undoc-members:
+
+.. autoclass:: DatabaseInstanceRoleAttributes
+   :members:
+   :undoc-members:
+
+.. py:class:: DatabaseInstanceRoleIdentityType
+
+   .. py:attribute:: GROUP
+      :value: "GROUP"
+
+   .. py:attribute:: PG_ONLY
+      :value: "PG_ONLY"
+
+   .. py:attribute:: SERVICE_PRINCIPAL
+      :value: "SERVICE_PRINCIPAL"
+
+   .. py:attribute:: USER
+      :value: "USER"
+
+.. py:class:: DatabaseInstanceRoleMembershipRole
+
+   Roles that the DatabaseInstanceRole can be a member of.
+
+   .. py:attribute:: DATABRICKS_SUPERUSER
+      :value: "DATABRICKS_SUPERUSER"
+
 .. py:class:: DatabaseInstanceState
 
    .. py:attribute:: AVAILABLE
@@ -40,23 +73,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteDatabaseCatalogResponse
+.. autoclass:: DeltaTableSyncInfo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteDatabaseInstanceResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteDatabaseTableResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteSyncedDatabaseTableResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GenerateDatabaseCredentialRequest
+.. autoclass:: ListDatabaseInstanceRolesResponse
    :members:
    :undoc-members:
 
@@ -88,6 +109,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATING
       :value: "UPDATING"
 
+.. autoclass:: RequestedClaims
+   :members:
+   :undoc-members:
+
+.. py:class:: RequestedClaimsPermissionSet
+
+   Might add WRITE in the future
+
+   .. py:attribute:: READ_ONLY
+      :value: "READ_ONLY"
+
+.. autoclass:: RequestedResource
+   :members:
+   :undoc-members:
+
 .. autoclass:: SyncedDatabaseTable
    :members:
    :undoc-members:
@@ -101,6 +137,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SyncedTablePipelineProgress
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncedTablePosition
    :members:
    :undoc-members:
 

@@ -331,7 +331,7 @@ def file_oidc(cfg) -> Optional[CredentialsProvider]:
 # that provides a Databricks token from an IdTokenSource.
 def _oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optional[CredentialsProvider]:
     try:
-        id_token = id_token_source.id_token()
+        id_token_source.id_token()  # validate the id_token_source
     except Exception as e:
         logger.debug(f"Failed to get OIDC token: {e}")
         return None
@@ -341,7 +341,7 @@ def _oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Opti
         token_endpoint=cfg.oidc_endpoints.token_endpoint,
         client_id=cfg.client_id,
         account_id=cfg.account_id,
-        id_token=id_token,
+        id_token_source=id_token_source,
         disable_async=cfg.disable_async_token_refresh,
     )
 

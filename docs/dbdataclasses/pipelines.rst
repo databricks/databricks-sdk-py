@@ -4,10 +4,6 @@ Delta Live Tables
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
-.. autoclass:: CreatePipeline
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreatePipelineResponse
    :members:
    :undoc-members:
@@ -55,10 +51,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
-
-.. autoclass:: EditPipeline
-   :members:
-   :undoc-members:
 
 .. autoclass:: EditPipelineResponse
    :members:
@@ -130,7 +122,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig
+   :members:
+   :undoc-members:
+
 .. py:class:: IngestionSourceType
+
+   .. py:attribute:: BIGQUERY
+      :value: "BIGQUERY"
+
+   .. py:attribute:: CONFLUENCE
+      :value: "CONFLUENCE"
 
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
@@ -140,6 +142,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
+
+   .. py:attribute:: META_MARKETING
+      :value: "META_MARKETING"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
@@ -282,10 +287,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PipelinePermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: PipelineSpec
    :members:
    :undoc-members:
@@ -371,10 +372,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: StartUpdate
-   :members:
-   :undoc-members:
-
 .. py:class:: StartUpdateCause
 
    What triggered this update.
@@ -419,6 +416,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: TableSpecificConfigScdType
 
    The SCD type to use to ingest the table.
+
+   .. py:attribute:: APPEND_ONLY
+      :value: "APPEND_ONLY"
 
    .. py:attribute:: SCD_TYPE_1
       :value: "SCD_TYPE_1"

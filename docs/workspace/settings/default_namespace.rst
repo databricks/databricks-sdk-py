@@ -58,13 +58,6 @@
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,

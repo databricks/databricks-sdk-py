@@ -20,70 +20,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class AddInstanceProfile:
-    instance_profile_arn: str
-    """The AWS ARN of the instance profile to register with Databricks. This field is required."""
-
-    iam_role_arn: Optional[str] = None
-    """The AWS IAM role ARN of the role associated with the instance profile. This field is required if
-    your role name and instance profile name do not match and you want to use the instance profile
-    with [Databricks SQL Serverless].
-    
-    Otherwise, this field is optional.
-    
-    [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html"""
-
-    is_meta_instance_profile: Optional[bool] = None
-    """Boolean flag indicating whether the instance profile should only be used in credential
-    passthrough scenarios. If true, it means the instance profile contains an meta IAM role which
-    could assume a wide range of roles. Therefore it should always be used with authorization. This
-    field is optional, the default value is `false`."""
-
-    skip_validation: Optional[bool] = None
-    """By default, Databricks validates that it has sufficient permissions to launch instances with the
-    instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation
-    fails with an error message that does not indicate an IAM related permission issue, (e.g.
-    “Your requested instance type is not supported in your requested availability zone”), you
-    can pass this flag to skip the validation and forcibly add the instance profile."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AddInstanceProfile into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.iam_role_arn is not None:
-            body["iam_role_arn"] = self.iam_role_arn
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.is_meta_instance_profile is not None:
-            body["is_meta_instance_profile"] = self.is_meta_instance_profile
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AddInstanceProfile into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.iam_role_arn is not None:
-            body["iam_role_arn"] = self.iam_role_arn
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        if self.is_meta_instance_profile is not None:
-            body["is_meta_instance_profile"] = self.is_meta_instance_profile
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AddInstanceProfile:
-        """Deserializes the AddInstanceProfile from a dictionary."""
-        return cls(
-            iam_role_arn=d.get("iam_role_arn", None),
-            instance_profile_arn=d.get("instance_profile_arn", None),
-            is_meta_instance_profile=d.get("is_meta_instance_profile", None),
-            skip_validation=d.get("skip_validation", None),
-        )
-
-
-@dataclass
 class AddResponse:
     def as_dict(self) -> dict:
         """Serializes the AddResponse into a dictionary suitable for use as a JSON request body."""
@@ -168,9 +104,6 @@ class AwsAttributes:
     """Attributes set during cluster creation which are related to Amazon Web Services."""
 
     availability: Optional[AwsAvailability] = None
-    """Availability type used for all subsequent nodes past the `first_on_demand` ones.
-    
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."""
 
     ebs_volume_count: Optional[int] = None
     """The number of volumes launched for each instance. Users can choose up to 10 volumes. This
@@ -393,46 +326,6 @@ class AzureAvailability(Enum):
 
 
 @dataclass
-class CancelCommand:
-    cluster_id: Optional[str] = None
-
-    command_id: Optional[str] = None
-
-    context_id: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CancelCommand into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.command_id is not None:
-            body["commandId"] = self.command_id
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelCommand into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.command_id is not None:
-            body["commandId"] = self.command_id
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelCommand:
-        """Deserializes the CancelCommand from a dictionary."""
-        return cls(
-            cluster_id=d.get("clusterId", None),
-            command_id=d.get("commandId", None),
-            context_id=d.get("contextId", None),
-        )
-
-
-@dataclass
 class CancelResponse:
     def as_dict(self) -> dict:
         """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
@@ -448,37 +341,6 @@ class CancelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CancelResponse:
         """Deserializes the CancelResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class ChangeClusterOwner:
-    cluster_id: str
-
-    owner_username: str
-    """New owner of the cluster_id after this RPC."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ChangeClusterOwner into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.owner_username is not None:
-            body["owner_username"] = self.owner_username
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ChangeClusterOwner into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.owner_username is not None:
-            body["owner_username"] = self.owner_username
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ChangeClusterOwner:
-        """Deserializes the ChangeClusterOwner from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None), owner_username=d.get("owner_username", None))
 
 
 @dataclass
@@ -593,7 +455,6 @@ class ClusterAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[ClusterPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -742,30 +603,6 @@ class ClusterAttributes:
     tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -809,19 +646,6 @@ class ClusterAttributes:
     `spark_conf`, and `num_workers`"""
 
     kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -882,7 +706,6 @@ class ClusterAttributes:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterAttributes into a dictionary suitable for use as a JSON request body."""
@@ -1158,30 +981,6 @@ class ClusterDetails:
     tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
 
     default_tags: Optional[Dict[str, str]] = None
     """Tags that are added by Databricks regardless of any `custom_tags`, including:
@@ -1249,19 +1048,6 @@ class ClusterDetails:
     on this port in executor nodes."""
 
     kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
@@ -1369,7 +1155,6 @@ class ClusterDetails:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterDetails into a dictionary suitable for use as a JSON request body."""
@@ -1786,7 +1571,6 @@ class ClusterPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[ClusterPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterPermission into a dictionary suitable for use as a JSON request body."""
@@ -1873,7 +1657,6 @@ class ClusterPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[ClusterPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -1903,46 +1686,11 @@ class ClusterPermissionsDescription:
 
 
 @dataclass
-class ClusterPermissionsRequest:
-    access_control_list: Optional[List[ClusterAccessControlRequest]] = None
-
-    cluster_id: Optional[str] = None
-    """The cluster for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPermissionsRequest:
-        """Deserializes the ClusterPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ClusterAccessControlRequest),
-            cluster_id=d.get("cluster_id", None),
-        )
-
-
-@dataclass
 class ClusterPolicyAccessControlRequest:
     group_name: Optional[str] = None
     """name of the group"""
 
     permission_level: Optional[ClusterPolicyPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -2053,7 +1801,6 @@ class ClusterPolicyPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[ClusterPolicyPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterPolicyPermission into a dictionary suitable for use as a JSON request body."""
@@ -2138,7 +1885,6 @@ class ClusterPolicyPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[ClusterPolicyPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterPolicyPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -2164,40 +1910,6 @@ class ClusterPolicyPermissionsDescription:
         return cls(
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", ClusterPolicyPermissionLevel),
-        )
-
-
-@dataclass
-class ClusterPolicyPermissionsRequest:
-    access_control_list: Optional[List[ClusterPolicyAccessControlRequest]] = None
-
-    cluster_policy_id: Optional[str] = None
-    """The cluster policy for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.cluster_policy_id is not None:
-            body["cluster_policy_id"] = self.cluster_policy_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ClusterPolicyPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.cluster_policy_id is not None:
-            body["cluster_policy_id"] = self.cluster_policy_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ClusterPolicyPermissionsRequest:
-        """Deserializes the ClusterPolicyPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ClusterPolicyAccessControlRequest),
-            cluster_policy_id=d.get("cluster_policy_id", None),
         )
 
 
@@ -2351,30 +2063,6 @@ class ClusterSpec:
     tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -2418,19 +2106,6 @@ class ClusterSpec:
     `spark_conf`, and `num_workers`"""
 
     kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2505,7 +2180,6 @@ class ClusterSpec:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
@@ -2684,56 +2358,6 @@ class ClusterSpec:
         )
 
 
-@dataclass
-class Command:
-    cluster_id: Optional[str] = None
-    """Running cluster id"""
-
-    command: Optional[str] = None
-    """Executable code"""
-
-    context_id: Optional[str] = None
-    """Running context id"""
-
-    language: Optional[Language] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the Command into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.command is not None:
-            body["command"] = self.command
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        if self.language is not None:
-            body["language"] = self.language.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Command into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.command is not None:
-            body["command"] = self.command
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        if self.language is not None:
-            body["language"] = self.language
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Command:
-        """Deserializes the Command from a dictionary."""
-        return cls(
-            cluster_id=d.get("clusterId", None),
-            command=d.get("command", None),
-            context_id=d.get("contextId", None),
-            language=_enum(d, "language", Language),
-        )
-
-
 class CommandStatus(Enum):
 
     CANCELLED = "Cancelled"
@@ -2820,394 +2444,6 @@ class ContextStatusResponse:
 
 
 @dataclass
-class CreateCluster:
-    spark_version: str
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
-
-    apply_policy_default_values: Optional[bool] = None
-    """When set to true, fixed and default values from the policy will be used for fields that are
-    omitted. When set to false, only fixed values from the policy will be applied."""
-
-    autoscale: Optional[AutoScale] = None
-    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
-    autoscaling works best with DB runtime versions 3.0 or later."""
-
-    autotermination_minutes: Optional[int] = None
-    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
-    this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
-
-    aws_attributes: Optional[AwsAttributes] = None
-    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
-    creation, a set of default values will be used."""
-
-    azure_attributes: Optional[AzureAttributes] = None
-    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
-    a set of default values will be used."""
-
-    clone_from: Optional[CloneCluster] = None
-    """When specified, this clones libraries from a source cluster during the creation of a new
-    cluster."""
-
-    cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
-    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
-    specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
-
-    cluster_name: Optional[str] = None
-    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string. For job clusters, the cluster name is
-    automatically set based on the job and job run IDs."""
-
-    custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
-    
-    - Currently, Databricks allows at most 45 custom tags
-    
-    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
-
-    data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
-
-    docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
-
-    driver_instance_pool_id: Optional[str] = None
-    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
-    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
-
-    driver_node_type_id: Optional[str] = None
-    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
-
-    enable_elastic_disk: Optional[bool] = None
-    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
-
-    enable_local_disk_encryption: Optional[bool] = None
-    """Whether to enable LUKS on cluster VMs' local disks"""
-
-    gcp_attributes: Optional[GcpAttributes] = None
-    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
-    creation, a set of default values will be used."""
-
-    init_scripts: Optional[List[InitScriptInfo]] = None
-    """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
-
-    instance_pool_id: Optional[str] = None
-    """The optional ID of the instance pool to which the cluster belongs."""
-
-    is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
-    
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
-
-    kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
-
-    node_type_id: Optional[str] = None
-    """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
-
-    num_workers: Optional[int] = None
-    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
-    
-    Note: When reading the properties of a cluster, this field reflects the desired number of
-    workers rather than the actual current number of workers. For instance, if a cluster is resized
-    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
-
-    policy_id: Optional[str] = None
-    """The ID of the cluster policy used to create the cluster if applicable."""
-
-    remote_disk_throughput: Optional[int] = None
-    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
-
-    runtime_engine: Optional[RuntimeEngine] = None
-    """Determines the cluster's runtime engine, either standard or Photon.
-    
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
-    
-    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
-    -photon-, in which case Photon will be used."""
-
-    single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
-
-    spark_conf: Optional[Dict[str, str]] = None
-    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
-    Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
-
-    spark_env_vars: Optional[Dict[str, str]] = None
-    """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
-    
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
-    databricks managed environmental variables are included as well.
-    
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
-
-    ssh_public_keys: Optional[List[str]] = None
-    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
-
-    total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
-
-    use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
-    
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
-
-    workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.apply_policy_default_values is not None:
-            body["apply_policy_default_values"] = self.apply_policy_default_values
-        if self.autoscale:
-            body["autoscale"] = self.autoscale.as_dict()
-        if self.autotermination_minutes is not None:
-            body["autotermination_minutes"] = self.autotermination_minutes
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes.as_dict()
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes.as_dict()
-        if self.clone_from:
-            body["clone_from"] = self.clone_from.as_dict()
-        if self.cluster_log_conf:
-            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
-        if self.cluster_name is not None:
-            body["cluster_name"] = self.cluster_name
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.data_security_mode is not None:
-            body["data_security_mode"] = self.data_security_mode.value
-        if self.docker_image:
-            body["docker_image"] = self.docker_image.as_dict()
-        if self.driver_instance_pool_id is not None:
-            body["driver_instance_pool_id"] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None:
-            body["driver_node_type_id"] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption is not None:
-            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes.as_dict()
-        if self.init_scripts:
-            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.is_single_node is not None:
-            body["is_single_node"] = self.is_single_node
-        if self.kind is not None:
-            body["kind"] = self.kind.value
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.runtime_engine is not None:
-            body["runtime_engine"] = self.runtime_engine.value
-        if self.single_user_name is not None:
-            body["single_user_name"] = self.single_user_name
-        if self.spark_conf:
-            body["spark_conf"] = self.spark_conf
-        if self.spark_env_vars:
-            body["spark_env_vars"] = self.spark_env_vars
-        if self.spark_version is not None:
-            body["spark_version"] = self.spark_version
-        if self.ssh_public_keys:
-            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        if self.use_ml_runtime is not None:
-            body["use_ml_runtime"] = self.use_ml_runtime
-        if self.workload_type:
-            body["workload_type"] = self.workload_type.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.apply_policy_default_values is not None:
-            body["apply_policy_default_values"] = self.apply_policy_default_values
-        if self.autoscale:
-            body["autoscale"] = self.autoscale
-        if self.autotermination_minutes is not None:
-            body["autotermination_minutes"] = self.autotermination_minutes
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes
-        if self.clone_from:
-            body["clone_from"] = self.clone_from
-        if self.cluster_log_conf:
-            body["cluster_log_conf"] = self.cluster_log_conf
-        if self.cluster_name is not None:
-            body["cluster_name"] = self.cluster_name
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.data_security_mode is not None:
-            body["data_security_mode"] = self.data_security_mode
-        if self.docker_image:
-            body["docker_image"] = self.docker_image
-        if self.driver_instance_pool_id is not None:
-            body["driver_instance_pool_id"] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None:
-            body["driver_node_type_id"] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption is not None:
-            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes
-        if self.init_scripts:
-            body["init_scripts"] = self.init_scripts
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.is_single_node is not None:
-            body["is_single_node"] = self.is_single_node
-        if self.kind is not None:
-            body["kind"] = self.kind
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.runtime_engine is not None:
-            body["runtime_engine"] = self.runtime_engine
-        if self.single_user_name is not None:
-            body["single_user_name"] = self.single_user_name
-        if self.spark_conf:
-            body["spark_conf"] = self.spark_conf
-        if self.spark_env_vars:
-            body["spark_env_vars"] = self.spark_env_vars
-        if self.spark_version is not None:
-            body["spark_version"] = self.spark_version
-        if self.ssh_public_keys:
-            body["ssh_public_keys"] = self.ssh_public_keys
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        if self.use_ml_runtime is not None:
-            body["use_ml_runtime"] = self.use_ml_runtime
-        if self.workload_type:
-            body["workload_type"] = self.workload_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateCluster:
-        """Deserializes the CreateCluster from a dictionary."""
-        return cls(
-            apply_policy_default_values=d.get("apply_policy_default_values", None),
-            autoscale=_from_dict(d, "autoscale", AutoScale),
-            autotermination_minutes=d.get("autotermination_minutes", None),
-            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
-            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
-            clone_from=_from_dict(d, "clone_from", CloneCluster),
-            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
-            cluster_name=d.get("cluster_name", None),
-            custom_tags=d.get("custom_tags", None),
-            data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
-            docker_image=_from_dict(d, "docker_image", DockerImage),
-            driver_instance_pool_id=d.get("driver_instance_pool_id", None),
-            driver_node_type_id=d.get("driver_node_type_id", None),
-            enable_elastic_disk=d.get("enable_elastic_disk", None),
-            enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
-            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
-            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
-            instance_pool_id=d.get("instance_pool_id", None),
-            is_single_node=d.get("is_single_node", None),
-            kind=_enum(d, "kind", Kind),
-            node_type_id=d.get("node_type_id", None),
-            num_workers=d.get("num_workers", None),
-            policy_id=d.get("policy_id", None),
-            remote_disk_throughput=d.get("remote_disk_throughput", None),
-            runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
-            single_user_name=d.get("single_user_name", None),
-            spark_conf=d.get("spark_conf", None),
-            spark_env_vars=d.get("spark_env_vars", None),
-            spark_version=d.get("spark_version", None),
-            ssh_public_keys=d.get("ssh_public_keys", None),
-            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
-            use_ml_runtime=d.get("use_ml_runtime", None),
-            workload_type=_from_dict(d, "workload_type", WorkloadType),
-        )
-
-
-@dataclass
 class CreateClusterResponse:
     cluster_id: Optional[str] = None
 
@@ -3229,199 +2465,6 @@ class CreateClusterResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateClusterResponse:
         """Deserializes the CreateClusterResponse from a dictionary."""
         return cls(cluster_id=d.get("cluster_id", None))
-
-
-@dataclass
-class CreateContext:
-    cluster_id: Optional[str] = None
-    """Running cluster id"""
-
-    language: Optional[Language] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateContext into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.language is not None:
-            body["language"] = self.language.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateContext into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.language is not None:
-            body["language"] = self.language
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateContext:
-        """Deserializes the CreateContext from a dictionary."""
-        return cls(cluster_id=d.get("clusterId", None), language=_enum(d, "language", Language))
-
-
-@dataclass
-class CreateInstancePool:
-    instance_pool_name: str
-    """Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
-    characters."""
-
-    node_type_id: str
-    """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
-
-    aws_attributes: Optional[InstancePoolAwsAttributes] = None
-    """Attributes related to instance pools running on Amazon Web Services. If not specified at pool
-    creation, a set of default values will be used."""
-
-    azure_attributes: Optional[InstancePoolAzureAttributes] = None
-    """Attributes related to instance pools running on Azure. If not specified at pool creation, a set
-    of default values will be used."""
-
-    custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to `default_tags`. Notes:
-    
-    - Currently, Databricks allows at most 45 custom tags"""
-
-    disk_spec: Optional[DiskSpec] = None
-    """Defines the specification of the disks that will be attached to all spark containers."""
-
-    enable_elastic_disk: Optional[bool] = None
-    """Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
-    additional disk space when its Spark workers are running low on disk space. In AWS, this feature
-    requires specific AWS permissions to function correctly - refer to the User Guide for more
-    details."""
-
-    gcp_attributes: Optional[InstancePoolGcpAttributes] = None
-    """Attributes related to instance pools running on Google Cloud Platform. If not specified at pool
-    creation, a set of default values will be used."""
-
-    idle_instance_autotermination_minutes: Optional[int] = None
-    """Automatically terminates the extra instances in the pool cache after they are inactive for this
-    time in minutes if min_idle_instances requirement is already met. If not set, the extra pool
-    instances will be automatically terminated after a default timeout. If specified, the threshold
-    must be between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle
-    instances from the cache if min cache size could still hold."""
-
-    max_capacity: Optional[int] = None
-    """Maximum number of outstanding instances to keep in the pool, including both instances used by
-    clusters and idle instances. Clusters that require further instance provisioning will fail
-    during upsize requests."""
-
-    min_idle_instances: Optional[int] = None
-    """Minimum number of idle instances to keep in the instance pool"""
-
-    preloaded_docker_images: Optional[List[DockerImage]] = None
-    """Custom Docker Image BYOC"""
-
-    preloaded_spark_versions: Optional[List[str]] = None
-    """A list containing at most one preloaded Spark image version for the pool. Pool-backed clusters
-    started with the preloaded Spark version will start faster. A list of available Spark versions
-    can be retrieved by using the :method:clusters/sparkVersions API call."""
-
-    remote_disk_throughput: Optional[int] = None
-    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
-    supported for GCP HYPERDISK_BALANCED types."""
-
-    total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateInstancePool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes.as_dict()
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes.as_dict()
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.disk_spec:
-            body["disk_spec"] = self.disk_spec.as_dict()
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes.as_dict()
-        if self.idle_instance_autotermination_minutes is not None:
-            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_name is not None:
-            body["instance_pool_name"] = self.instance_pool_name
-        if self.max_capacity is not None:
-            body["max_capacity"] = self.max_capacity
-        if self.min_idle_instances is not None:
-            body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.preloaded_docker_images:
-            body["preloaded_docker_images"] = [v.as_dict() for v in self.preloaded_docker_images]
-        if self.preloaded_spark_versions:
-            body["preloaded_spark_versions"] = [v for v in self.preloaded_spark_versions]
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateInstancePool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.disk_spec:
-            body["disk_spec"] = self.disk_spec
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes
-        if self.idle_instance_autotermination_minutes is not None:
-            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_name is not None:
-            body["instance_pool_name"] = self.instance_pool_name
-        if self.max_capacity is not None:
-            body["max_capacity"] = self.max_capacity
-        if self.min_idle_instances is not None:
-            body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.preloaded_docker_images:
-            body["preloaded_docker_images"] = self.preloaded_docker_images
-        if self.preloaded_spark_versions:
-            body["preloaded_spark_versions"] = self.preloaded_spark_versions
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateInstancePool:
-        """Deserializes the CreateInstancePool from a dictionary."""
-        return cls(
-            aws_attributes=_from_dict(d, "aws_attributes", InstancePoolAwsAttributes),
-            azure_attributes=_from_dict(d, "azure_attributes", InstancePoolAzureAttributes),
-            custom_tags=d.get("custom_tags", None),
-            disk_spec=_from_dict(d, "disk_spec", DiskSpec),
-            enable_elastic_disk=d.get("enable_elastic_disk", None),
-            gcp_attributes=_from_dict(d, "gcp_attributes", InstancePoolGcpAttributes),
-            idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
-            instance_pool_name=d.get("instance_pool_name", None),
-            max_capacity=d.get("max_capacity", None),
-            min_idle_instances=d.get("min_idle_instances", None),
-            node_type_id=d.get("node_type_id", None),
-            preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
-            preloaded_spark_versions=d.get("preloaded_spark_versions", None),
-            remote_disk_throughput=d.get("remote_disk_throughput", None),
-            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
-        )
 
 
 @dataclass
@@ -3447,96 +2490,6 @@ class CreateInstancePoolResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateInstancePoolResponse:
         """Deserializes the CreateInstancePoolResponse from a dictionary."""
         return cls(instance_pool_id=d.get("instance_pool_id", None))
-
-
-@dataclass
-class CreatePolicy:
-    definition: Optional[str] = None
-    """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
-    
-    [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
-
-    description: Optional[str] = None
-    """Additional human-readable description of the cluster policy."""
-
-    libraries: Optional[List[Library]] = None
-    """A list of libraries to be installed on the next cluster restart that uses this policy. The
-    maximum number of libraries is 500."""
-
-    max_clusters_per_user: Optional[int] = None
-    """Max number of clusters per user that can be active using this policy. If not present, there is
-    no max limit."""
-
-    name: Optional[str] = None
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
-    policy_family_definition_overrides: Optional[str] = None
-    """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
-    document must be passed as a string and cannot be embedded in the requests.
-    
-    You can use this to customize the policy definition inherited from the policy family. Policy
-    rules specified here are merged into the inherited policy definition.
-    
-    [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
-
-    policy_family_id: Optional[str] = None
-    """ID of the policy family. The cluster policy's policy definition inherits the policy family's
-    policy definition.
-    
-    Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize
-    the policy definition."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreatePolicy into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.definition is not None:
-            body["definition"] = self.definition
-        if self.description is not None:
-            body["description"] = self.description
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        if self.max_clusters_per_user is not None:
-            body["max_clusters_per_user"] = self.max_clusters_per_user
-        if self.name is not None:
-            body["name"] = self.name
-        if self.policy_family_definition_overrides is not None:
-            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None:
-            body["policy_family_id"] = self.policy_family_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePolicy into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.definition is not None:
-            body["definition"] = self.definition
-        if self.description is not None:
-            body["description"] = self.description
-        if self.libraries:
-            body["libraries"] = self.libraries
-        if self.max_clusters_per_user is not None:
-            body["max_clusters_per_user"] = self.max_clusters_per_user
-        if self.name is not None:
-            body["name"] = self.name
-        if self.policy_family_definition_overrides is not None:
-            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None:
-            body["policy_family_id"] = self.policy_family_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePolicy:
-        """Deserializes the CreatePolicy from a dictionary."""
-        return cls(
-            definition=d.get("definition", None),
-            description=d.get("description", None),
-            libraries=_repeated_dict(d, "libraries", Library),
-            max_clusters_per_user=d.get("max_clusters_per_user", None),
-            name=d.get("name", None),
-            policy_family_definition_overrides=d.get("policy_family_definition_overrides", None),
-            policy_family_id=d.get("policy_family_id", None),
-        )
 
 
 @dataclass
@@ -3766,31 +2719,6 @@ class DbfsStorageInfo:
 
 
 @dataclass
-class DeleteCluster:
-    cluster_id: str
-    """The cluster to be terminated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteCluster:
-        """Deserializes the DeleteCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None))
-
-
-@dataclass
 class DeleteClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -3809,31 +2737,6 @@ class DeleteClusterResponse:
 
 
 @dataclass
-class DeleteInstancePool:
-    instance_pool_id: str
-    """The instance pool to be terminated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteInstancePool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteInstancePool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteInstancePool:
-        """Deserializes the DeleteInstancePool from a dictionary."""
-        return cls(instance_pool_id=d.get("instance_pool_id", None))
-
-
-@dataclass
 class DeleteInstancePoolResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
@@ -3849,31 +2752,6 @@ class DeleteInstancePoolResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteInstancePoolResponse:
         """Deserializes the DeleteInstancePoolResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DeletePolicy:
-    policy_id: str
-    """The ID of the policy to delete."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeletePolicy into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeletePolicy into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeletePolicy:
-        """Deserializes the DeletePolicy from a dictionary."""
-        return cls(policy_id=d.get("policy_id", None))
 
 
 @dataclass
@@ -3910,36 +2788,6 @@ class DeleteResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DestroyContext:
-    cluster_id: str
-
-    context_id: str
-
-    def as_dict(self) -> dict:
-        """Serializes the DestroyContext into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DestroyContext into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["clusterId"] = self.cluster_id
-        if self.context_id is not None:
-            body["contextId"] = self.context_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DestroyContext:
-        """Deserializes the DestroyContext from a dictionary."""
-        return cls(cluster_id=d.get("clusterId", None), context_id=d.get("contextId", None))
 
 
 @dataclass
@@ -4043,12 +2891,8 @@ class DiskType:
     """Describes the disk type."""
 
     azure_disk_volume_type: Optional[DiskTypeAzureDiskVolumeType] = None
-    """All Azure Disk types that Databricks supports. See
-    https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"""
 
     ebs_volume_type: Optional[DiskTypeEbsVolumeType] = None
-    """All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for
-    details."""
 
     def as_dict(self) -> dict:
         """Serializes the DiskType into a dictionary suitable for use as a JSON request body."""
@@ -4166,393 +3010,6 @@ class EbsVolumeType(Enum):
 
 
 @dataclass
-class EditCluster:
-    cluster_id: str
-    """ID of the cluster"""
-
-    spark_version: str
-    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
-    be retrieved by using the :method:clusters/sparkVersions API call."""
-
-    apply_policy_default_values: Optional[bool] = None
-    """When set to true, fixed and default values from the policy will be used for fields that are
-    omitted. When set to false, only fixed values from the policy will be applied."""
-
-    autoscale: Optional[AutoScale] = None
-    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
-    autoscaling works best with DB runtime versions 3.0 or later."""
-
-    autotermination_minutes: Optional[int] = None
-    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
-    this cluster will not be automatically terminated. If specified, the threshold must be between
-    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
-    termination."""
-
-    aws_attributes: Optional[AwsAttributes] = None
-    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
-    creation, a set of default values will be used."""
-
-    azure_attributes: Optional[AzureAttributes] = None
-    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
-    a set of default values will be used."""
-
-    cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
-    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
-    specified for one cluster. If the conf is given, the logs will be delivered to the destination
-    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
-    destination of executor logs is `$destination/$clusterId/executor`."""
-
-    cluster_name: Optional[str] = None
-    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
-    creation, the cluster name will be an empty string. For job clusters, the cluster name is
-    automatically set based on the job and job run IDs."""
-
-    custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
-    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
-    
-    - Currently, Databricks allows at most 45 custom tags
-    
-    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
-    tags"""
-
-    data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
-
-    docker_image: Optional[DockerImage] = None
-    """Custom docker image BYOC"""
-
-    driver_instance_pool_id: Optional[str] = None
-    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
-    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
-
-    driver_node_type_id: Optional[str] = None
-    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
-    type will be set as the same value as `node_type_id` defined above.
-    
-    This field, along with node_type_id, should not be set if virtual_cluster_size is set. If both
-    driver_node_type_id, node_type_id, and virtual_cluster_size are specified, driver_node_type_id
-    and node_type_id take precedence."""
-
-    enable_elastic_disk: Optional[bool] = None
-    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
-    space when its Spark workers are running low on disk space. This feature requires specific AWS
-    permissions to function correctly - refer to the User Guide for more details."""
-
-    enable_local_disk_encryption: Optional[bool] = None
-    """Whether to enable LUKS on cluster VMs' local disks"""
-
-    gcp_attributes: Optional[GcpAttributes] = None
-    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
-    creation, a set of default values will be used."""
-
-    init_scripts: Optional[List[InitScriptInfo]] = None
-    """The configuration for storing init scripts. Any number of destinations can be specified. The
-    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
-    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
-
-    instance_pool_id: Optional[str] = None
-    """The optional ID of the instance pool to which the cluster belongs."""
-
-    is_single_node: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
-    
-    When set to true, Databricks will automatically set single node related `custom_tags`,
-    `spark_conf`, and `num_workers`"""
-
-    kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
-
-    node_type_id: Optional[str] = None
-    """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
-
-    num_workers: Optional[int] = None
-    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
-    
-    Note: When reading the properties of a cluster, this field reflects the desired number of
-    workers rather than the actual current number of workers. For instance, if a cluster is resized
-    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
-
-    policy_id: Optional[str] = None
-    """The ID of the cluster policy used to create the cluster if applicable."""
-
-    remote_disk_throughput: Optional[int] = None
-    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
-
-    runtime_engine: Optional[RuntimeEngine] = None
-    """Determines the cluster's runtime engine, either standard or Photon.
-    
-    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
-    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
-    
-    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
-    -photon-, in which case Photon will be used."""
-
-    single_user_name: Optional[str] = None
-    """Single user name if data_security_mode is `SINGLE_USER`"""
-
-    spark_conf: Optional[Dict[str, str]] = None
-    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
-    Users can also pass in a string of extra JVM options to the driver and the executors via
-    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
-
-    spark_env_vars: Optional[Dict[str, str]] = None
-    """An object containing a set of optional, user-specified environment variable key-value pairs.
-    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
-    while launching the driver and workers.
-    
-    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
-    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
-    databricks managed environmental variables are included as well.
-    
-    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
-    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
-    -Dspark.shuffle.service.enabled=true"}`"""
-
-    ssh_public_keys: Optional[List[str]] = None
-    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
-    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
-    be specified."""
-
-    total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED disks."""
-
-    use_ml_runtime: Optional[bool] = None
-    """This field can only be used when `kind = CLASSIC_PREVIEW`.
-    
-    `effective_spark_version` is determined by `spark_version` (DBR release), this field
-    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
-
-    workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EditCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.apply_policy_default_values is not None:
-            body["apply_policy_default_values"] = self.apply_policy_default_values
-        if self.autoscale:
-            body["autoscale"] = self.autoscale.as_dict()
-        if self.autotermination_minutes is not None:
-            body["autotermination_minutes"] = self.autotermination_minutes
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes.as_dict()
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes.as_dict()
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.cluster_log_conf:
-            body["cluster_log_conf"] = self.cluster_log_conf.as_dict()
-        if self.cluster_name is not None:
-            body["cluster_name"] = self.cluster_name
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.data_security_mode is not None:
-            body["data_security_mode"] = self.data_security_mode.value
-        if self.docker_image:
-            body["docker_image"] = self.docker_image.as_dict()
-        if self.driver_instance_pool_id is not None:
-            body["driver_instance_pool_id"] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None:
-            body["driver_node_type_id"] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption is not None:
-            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes.as_dict()
-        if self.init_scripts:
-            body["init_scripts"] = [v.as_dict() for v in self.init_scripts]
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.is_single_node is not None:
-            body["is_single_node"] = self.is_single_node
-        if self.kind is not None:
-            body["kind"] = self.kind.value
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.runtime_engine is not None:
-            body["runtime_engine"] = self.runtime_engine.value
-        if self.single_user_name is not None:
-            body["single_user_name"] = self.single_user_name
-        if self.spark_conf:
-            body["spark_conf"] = self.spark_conf
-        if self.spark_env_vars:
-            body["spark_env_vars"] = self.spark_env_vars
-        if self.spark_version is not None:
-            body["spark_version"] = self.spark_version
-        if self.ssh_public_keys:
-            body["ssh_public_keys"] = [v for v in self.ssh_public_keys]
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        if self.use_ml_runtime is not None:
-            body["use_ml_runtime"] = self.use_ml_runtime
-        if self.workload_type:
-            body["workload_type"] = self.workload_type.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.apply_policy_default_values is not None:
-            body["apply_policy_default_values"] = self.apply_policy_default_values
-        if self.autoscale:
-            body["autoscale"] = self.autoscale
-        if self.autotermination_minutes is not None:
-            body["autotermination_minutes"] = self.autotermination_minutes
-        if self.aws_attributes:
-            body["aws_attributes"] = self.aws_attributes
-        if self.azure_attributes:
-            body["azure_attributes"] = self.azure_attributes
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.cluster_log_conf:
-            body["cluster_log_conf"] = self.cluster_log_conf
-        if self.cluster_name is not None:
-            body["cluster_name"] = self.cluster_name
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.data_security_mode is not None:
-            body["data_security_mode"] = self.data_security_mode
-        if self.docker_image:
-            body["docker_image"] = self.docker_image
-        if self.driver_instance_pool_id is not None:
-            body["driver_instance_pool_id"] = self.driver_instance_pool_id
-        if self.driver_node_type_id is not None:
-            body["driver_node_type_id"] = self.driver_node_type_id
-        if self.enable_elastic_disk is not None:
-            body["enable_elastic_disk"] = self.enable_elastic_disk
-        if self.enable_local_disk_encryption is not None:
-            body["enable_local_disk_encryption"] = self.enable_local_disk_encryption
-        if self.gcp_attributes:
-            body["gcp_attributes"] = self.gcp_attributes
-        if self.init_scripts:
-            body["init_scripts"] = self.init_scripts
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.is_single_node is not None:
-            body["is_single_node"] = self.is_single_node
-        if self.kind is not None:
-            body["kind"] = self.kind
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.runtime_engine is not None:
-            body["runtime_engine"] = self.runtime_engine
-        if self.single_user_name is not None:
-            body["single_user_name"] = self.single_user_name
-        if self.spark_conf:
-            body["spark_conf"] = self.spark_conf
-        if self.spark_env_vars:
-            body["spark_env_vars"] = self.spark_env_vars
-        if self.spark_version is not None:
-            body["spark_version"] = self.spark_version
-        if self.ssh_public_keys:
-            body["ssh_public_keys"] = self.ssh_public_keys
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        if self.use_ml_runtime is not None:
-            body["use_ml_runtime"] = self.use_ml_runtime
-        if self.workload_type:
-            body["workload_type"] = self.workload_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditCluster:
-        """Deserializes the EditCluster from a dictionary."""
-        return cls(
-            apply_policy_default_values=d.get("apply_policy_default_values", None),
-            autoscale=_from_dict(d, "autoscale", AutoScale),
-            autotermination_minutes=d.get("autotermination_minutes", None),
-            aws_attributes=_from_dict(d, "aws_attributes", AwsAttributes),
-            azure_attributes=_from_dict(d, "azure_attributes", AzureAttributes),
-            cluster_id=d.get("cluster_id", None),
-            cluster_log_conf=_from_dict(d, "cluster_log_conf", ClusterLogConf),
-            cluster_name=d.get("cluster_name", None),
-            custom_tags=d.get("custom_tags", None),
-            data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
-            docker_image=_from_dict(d, "docker_image", DockerImage),
-            driver_instance_pool_id=d.get("driver_instance_pool_id", None),
-            driver_node_type_id=d.get("driver_node_type_id", None),
-            enable_elastic_disk=d.get("enable_elastic_disk", None),
-            enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
-            gcp_attributes=_from_dict(d, "gcp_attributes", GcpAttributes),
-            init_scripts=_repeated_dict(d, "init_scripts", InitScriptInfo),
-            instance_pool_id=d.get("instance_pool_id", None),
-            is_single_node=d.get("is_single_node", None),
-            kind=_enum(d, "kind", Kind),
-            node_type_id=d.get("node_type_id", None),
-            num_workers=d.get("num_workers", None),
-            policy_id=d.get("policy_id", None),
-            remote_disk_throughput=d.get("remote_disk_throughput", None),
-            runtime_engine=_enum(d, "runtime_engine", RuntimeEngine),
-            single_user_name=d.get("single_user_name", None),
-            spark_conf=d.get("spark_conf", None),
-            spark_env_vars=d.get("spark_env_vars", None),
-            spark_version=d.get("spark_version", None),
-            ssh_public_keys=d.get("ssh_public_keys", None),
-            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
-            use_ml_runtime=d.get("use_ml_runtime", None),
-            workload_type=_from_dict(d, "workload_type", WorkloadType),
-        )
-
-
-@dataclass
 class EditClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the EditClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -4571,112 +3028,6 @@ class EditClusterResponse:
 
 
 @dataclass
-class EditInstancePool:
-    instance_pool_id: str
-    """Instance pool ID"""
-
-    instance_pool_name: str
-    """Pool name requested by the user. Pool name must be unique. Length must be between 1 and 100
-    characters."""
-
-    node_type_id: str
-    """This field encodes, through a single value, the resources available to each of the Spark nodes
-    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
-    compute intensive workloads. A list of available node types can be retrieved by using the
-    :method:clusters/listNodeTypes API call."""
-
-    custom_tags: Optional[Dict[str, str]] = None
-    """Additional tags for pool resources. Databricks will tag all pool resources (e.g., AWS instances
-    and EBS volumes) with these tags in addition to `default_tags`. Notes:
-    
-    - Currently, Databricks allows at most 45 custom tags"""
-
-    idle_instance_autotermination_minutes: Optional[int] = None
-    """Automatically terminates the extra instances in the pool cache after they are inactive for this
-    time in minutes if min_idle_instances requirement is already met. If not set, the extra pool
-    instances will be automatically terminated after a default timeout. If specified, the threshold
-    must be between 0 and 10000 minutes. Users can also set this value to 0 to instantly remove idle
-    instances from the cache if min cache size could still hold."""
-
-    max_capacity: Optional[int] = None
-    """Maximum number of outstanding instances to keep in the pool, including both instances used by
-    clusters and idle instances. Clusters that require further instance provisioning will fail
-    during upsize requests."""
-
-    min_idle_instances: Optional[int] = None
-    """Minimum number of idle instances to keep in the instance pool"""
-
-    remote_disk_throughput: Optional[int] = None
-    """If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only
-    supported for GCP HYPERDISK_BALANCED types."""
-
-    total_initial_remote_disk_size: Optional[int] = None
-    """If set, what the total initial volume size (in GB) of the remote disks should be. Currently only
-    supported for GCP HYPERDISK_BALANCED types."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EditInstancePool into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.idle_instance_autotermination_minutes is not None:
-            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.instance_pool_name is not None:
-            body["instance_pool_name"] = self.instance_pool_name
-        if self.max_capacity is not None:
-            body["max_capacity"] = self.max_capacity
-        if self.min_idle_instances is not None:
-            body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditInstancePool into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.idle_instance_autotermination_minutes is not None:
-            body["idle_instance_autotermination_minutes"] = self.idle_instance_autotermination_minutes
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        if self.instance_pool_name is not None:
-            body["instance_pool_name"] = self.instance_pool_name
-        if self.max_capacity is not None:
-            body["max_capacity"] = self.max_capacity
-        if self.min_idle_instances is not None:
-            body["min_idle_instances"] = self.min_idle_instances
-        if self.node_type_id is not None:
-            body["node_type_id"] = self.node_type_id
-        if self.remote_disk_throughput is not None:
-            body["remote_disk_throughput"] = self.remote_disk_throughput
-        if self.total_initial_remote_disk_size is not None:
-            body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditInstancePool:
-        """Deserializes the EditInstancePool from a dictionary."""
-        return cls(
-            custom_tags=d.get("custom_tags", None),
-            idle_instance_autotermination_minutes=d.get("idle_instance_autotermination_minutes", None),
-            instance_pool_id=d.get("instance_pool_id", None),
-            instance_pool_name=d.get("instance_pool_name", None),
-            max_capacity=d.get("max_capacity", None),
-            min_idle_instances=d.get("min_idle_instances", None),
-            node_type_id=d.get("node_type_id", None),
-            remote_disk_throughput=d.get("remote_disk_throughput", None),
-            total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
-        )
-
-
-@dataclass
 class EditInstancePoolResponse:
     def as_dict(self) -> dict:
         """Serializes the EditInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
@@ -4692,104 +3043,6 @@ class EditInstancePoolResponse:
     def from_dict(cls, d: Dict[str, Any]) -> EditInstancePoolResponse:
         """Deserializes the EditInstancePoolResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class EditPolicy:
-    policy_id: str
-    """The ID of the policy to update."""
-
-    definition: Optional[str] = None
-    """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
-    
-    [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
-
-    description: Optional[str] = None
-    """Additional human-readable description of the cluster policy."""
-
-    libraries: Optional[List[Library]] = None
-    """A list of libraries to be installed on the next cluster restart that uses this policy. The
-    maximum number of libraries is 500."""
-
-    max_clusters_per_user: Optional[int] = None
-    """Max number of clusters per user that can be active using this policy. If not present, there is
-    no max limit."""
-
-    name: Optional[str] = None
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
-    policy_family_definition_overrides: Optional[str] = None
-    """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
-    document must be passed as a string and cannot be embedded in the requests.
-    
-    You can use this to customize the policy definition inherited from the policy family. Policy
-    rules specified here are merged into the inherited policy definition.
-    
-    [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
-
-    policy_family_id: Optional[str] = None
-    """ID of the policy family. The cluster policy's policy definition inherits the policy family's
-    policy definition.
-    
-    Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize
-    the policy definition."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EditPolicy into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.definition is not None:
-            body["definition"] = self.definition
-        if self.description is not None:
-            body["description"] = self.description
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        if self.max_clusters_per_user is not None:
-            body["max_clusters_per_user"] = self.max_clusters_per_user
-        if self.name is not None:
-            body["name"] = self.name
-        if self.policy_family_definition_overrides is not None:
-            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None:
-            body["policy_family_id"] = self.policy_family_id
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EditPolicy into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.definition is not None:
-            body["definition"] = self.definition
-        if self.description is not None:
-            body["description"] = self.description
-        if self.libraries:
-            body["libraries"] = self.libraries
-        if self.max_clusters_per_user is not None:
-            body["max_clusters_per_user"] = self.max_clusters_per_user
-        if self.name is not None:
-            body["name"] = self.name
-        if self.policy_family_definition_overrides is not None:
-            body["policy_family_definition_overrides"] = self.policy_family_definition_overrides
-        if self.policy_family_id is not None:
-            body["policy_family_id"] = self.policy_family_id
-        if self.policy_id is not None:
-            body["policy_id"] = self.policy_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EditPolicy:
-        """Deserializes the EditPolicy from a dictionary."""
-        return cls(
-            definition=d.get("definition", None),
-            description=d.get("description", None),
-            libraries=_repeated_dict(d, "libraries", Library),
-            max_clusters_per_user=d.get("max_clusters_per_user", None),
-            name=d.get("name", None),
-            policy_family_definition_overrides=d.get("policy_family_definition_overrides", None),
-            policy_family_id=d.get("policy_family_id", None),
-            policy_id=d.get("policy_id", None),
-        )
 
 
 @dataclass
@@ -4826,39 +3079,6 @@ class EditResponse:
     def from_dict(cls, d: Dict[str, Any]) -> EditResponse:
         """Deserializes the EditResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class EnforceClusterComplianceRequest:
-    cluster_id: str
-    """The ID of the cluster you want to enforce policy compliance on."""
-
-    validate_only: Optional[bool] = None
-    """If set, previews the changes that would be made to a cluster to enforce compliance but does not
-    update the cluster."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EnforceClusterComplianceRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.validate_only is not None:
-            body["validate_only"] = self.validate_only
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EnforceClusterComplianceRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.validate_only is not None:
-            body["validate_only"] = self.validate_only
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EnforceClusterComplianceRequest:
-        """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None), validate_only=d.get("validate_only", None))
 
 
 @dataclass
@@ -5817,65 +4037,6 @@ class GetSparkVersionsResponse:
 
 
 @dataclass
-class GlobalInitScriptCreateRequest:
-    name: str
-    """The name of the script"""
-
-    script: str
-    """The Base64-encoded content of the script."""
-
-    enabled: Optional[bool] = None
-    """Specifies whether the script is enabled. The script runs only if enabled."""
-
-    position: Optional[int] = None
-    """The position of a global init script, where 0 represents the first script to run, 1 is the
-    second script to run, in ascending order.
-    
-    If you omit the numeric position for a new global init script, it defaults to last position. It
-    will run after all current scripts. Setting any value greater than the position of the last
-    script is equivalent to the last position. Example: Take three existing scripts with positions
-    0, 1, and 2. Any position of (3) or greater puts the script in the last position. If an explicit
-    position value conflicts with an existing script value, your request succeeds, but the original
-    script at that position and all later scripts have their positions incremented by 1."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GlobalInitScriptCreateRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.name is not None:
-            body["name"] = self.name
-        if self.position is not None:
-            body["position"] = self.position
-        if self.script is not None:
-            body["script"] = self.script
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GlobalInitScriptCreateRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.name is not None:
-            body["name"] = self.name
-        if self.position is not None:
-            body["position"] = self.position
-        if self.script is not None:
-            body["script"] = self.script
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptCreateRequest:
-        """Deserializes the GlobalInitScriptCreateRequest from a dictionary."""
-        return cls(
-            enabled=d.get("enabled", None),
-            name=d.get("name", None),
-            position=d.get("position", None),
-            script=d.get("script", None),
-        )
-
-
-@dataclass
 class GlobalInitScriptDetails:
     created_at: Optional[int] = None
     """Time when the script was created, represented as a Unix timestamp in milliseconds."""
@@ -6048,73 +4209,6 @@ class GlobalInitScriptDetailsWithContent:
             script_id=d.get("script_id", None),
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
-        )
-
-
-@dataclass
-class GlobalInitScriptUpdateRequest:
-    name: str
-    """The name of the script"""
-
-    script: str
-    """The Base64-encoded content of the script."""
-
-    enabled: Optional[bool] = None
-    """Specifies whether the script is enabled. The script runs only if enabled."""
-
-    position: Optional[int] = None
-    """The position of a script, where 0 represents the first script to run, 1 is the second script to
-    run, in ascending order. To move the script to run first, set its position to 0.
-    
-    To move the script to the end, set its position to any value greater or equal to the position of
-    the last script. Example, three existing scripts with positions 0, 1, and 2. Any position value
-    of 2 or greater puts the script in the last position (2).
-    
-    If an explicit position value conflicts with an existing script, your request succeeds, but the
-    original script at that position and all later scripts have their positions incremented by 1."""
-
-    script_id: Optional[str] = None
-    """The ID of the global init script."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GlobalInitScriptUpdateRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.name is not None:
-            body["name"] = self.name
-        if self.position is not None:
-            body["position"] = self.position
-        if self.script is not None:
-            body["script"] = self.script
-        if self.script_id is not None:
-            body["script_id"] = self.script_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GlobalInitScriptUpdateRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.name is not None:
-            body["name"] = self.name
-        if self.position is not None:
-            body["position"] = self.position
-        if self.script is not None:
-            body["script"] = self.script
-        if self.script_id is not None:
-            body["script_id"] = self.script_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GlobalInitScriptUpdateRequest:
-        """Deserializes the GlobalInitScriptUpdateRequest from a dictionary."""
-        return cls(
-            enabled=d.get("enabled", None),
-            name=d.get("name", None),
-            position=d.get("position", None),
-            script=d.get("script", None),
-            script_id=d.get("script_id", None),
         )
 
 
@@ -6370,38 +4464,6 @@ class InitScriptInfoAndExecutionDetails:
 
 
 @dataclass
-class InstallLibraries:
-    cluster_id: str
-    """Unique identifier for the cluster on which to install these libraries."""
-
-    libraries: List[Library]
-    """The libraries to install."""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstallLibraries into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstallLibraries into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.libraries:
-            body["libraries"] = self.libraries
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstallLibraries:
-        """Deserializes the InstallLibraries from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
-
-
-@dataclass
 class InstallLibrariesResponse:
     def as_dict(self) -> dict:
         """Serializes the InstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
@@ -6425,7 +4487,6 @@ class InstancePoolAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[InstancePoolPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -6854,8 +4915,6 @@ class InstancePoolGcpAttributes:
     """Attributes set during instance pool creation which are related to GCP."""
 
     gcp_availability: Optional[GcpAvailability] = None
-    """This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
-    preemptible VMs with a fallback to on-demand VMs if the former is unavailable."""
 
     local_ssd_count: Optional[int] = None
     """If provided, each node in the instance pool will have this number of local SSDs attached. Each
@@ -6917,7 +4976,6 @@ class InstancePoolPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[InstancePoolPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolPermission into a dictionary suitable for use as a JSON request body."""
@@ -7003,7 +5061,6 @@ class InstancePoolPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[InstancePoolPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -7029,40 +5086,6 @@ class InstancePoolPermissionsDescription:
         return cls(
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", InstancePoolPermissionLevel),
-        )
-
-
-@dataclass
-class InstancePoolPermissionsRequest:
-    access_control_list: Optional[List[InstancePoolAccessControlRequest]] = None
-
-    instance_pool_id: Optional[str] = None
-    """The instance pool for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the InstancePoolPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the InstancePoolPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.instance_pool_id is not None:
-            body["instance_pool_id"] = self.instance_pool_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> InstancePoolPermissionsRequest:
-        """Deserializes the InstancePoolPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", InstancePoolAccessControlRequest),
-            instance_pool_id=d.get("instance_pool_id", None),
         )
 
 
@@ -8226,31 +6249,6 @@ class PendingInstanceError:
 
 
 @dataclass
-class PermanentDeleteCluster:
-    cluster_id: str
-    """The cluster to be deleted."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PermanentDeleteCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PermanentDeleteCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PermanentDeleteCluster:
-        """Deserializes the PermanentDeleteCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None))
-
-
-@dataclass
 class PermanentDeleteClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the PermanentDeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -8266,30 +6264,6 @@ class PermanentDeleteClusterResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PermanentDeleteClusterResponse:
         """Deserializes the PermanentDeleteClusterResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class PinCluster:
-    cluster_id: str
-
-    def as_dict(self) -> dict:
-        """Serializes the PinCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PinCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PinCluster:
-        """Deserializes the PinCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None))
 
 
 @dataclass
@@ -8555,31 +6529,6 @@ class RCranLibrary:
 
 
 @dataclass
-class RemoveInstanceProfile:
-    instance_profile_arn: str
-    """The ARN of the instance profile to remove. This field is required."""
-
-    def as_dict(self) -> dict:
-        """Serializes the RemoveInstanceProfile into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RemoveInstanceProfile into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.instance_profile_arn is not None:
-            body["instance_profile_arn"] = self.instance_profile_arn
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RemoveInstanceProfile:
-        """Deserializes the RemoveInstanceProfile from a dictionary."""
-        return cls(instance_profile_arn=d.get("instance_profile_arn", None))
-
-
-@dataclass
 class RemoveResponse:
     def as_dict(self) -> dict:
         """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
@@ -8598,57 +6547,6 @@ class RemoveResponse:
 
 
 @dataclass
-class ResizeCluster:
-    cluster_id: str
-    """The cluster to be resized."""
-
-    autoscale: Optional[AutoScale] = None
-    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
-    autoscaling works best with DB runtime versions 3.0 or later."""
-
-    num_workers: Optional[int] = None
-    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
-    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
-    
-    Note: When reading the properties of a cluster, this field reflects the desired number of
-    workers rather than the actual current number of workers. For instance, if a cluster is resized
-    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
-    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
-    new nodes are provisioned."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResizeCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.autoscale:
-            body["autoscale"] = self.autoscale.as_dict()
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResizeCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.autoscale:
-            body["autoscale"] = self.autoscale
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.num_workers is not None:
-            body["num_workers"] = self.num_workers
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResizeCluster:
-        """Deserializes the ResizeCluster from a dictionary."""
-        return cls(
-            autoscale=_from_dict(d, "autoscale", AutoScale),
-            cluster_id=d.get("cluster_id", None),
-            num_workers=d.get("num_workers", None),
-        )
-
-
-@dataclass
 class ResizeClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the ResizeClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -8664,37 +6562,6 @@ class ResizeClusterResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ResizeClusterResponse:
         """Deserializes the ResizeClusterResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class RestartCluster:
-    cluster_id: str
-    """The cluster to be started."""
-
-    restart_user: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the RestartCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.restart_user is not None:
-            body["restart_user"] = self.restart_user
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RestartCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.restart_user is not None:
-            body["restart_user"] = self.restart_user
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RestartCluster:
-        """Deserializes the RestartCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None), restart_user=d.get("restart_user", None))
 
 
 @dataclass
@@ -9059,31 +6926,6 @@ class SparkVersion:
 
 
 @dataclass
-class StartCluster:
-    cluster_id: str
-    """The cluster to be started."""
-
-    def as_dict(self) -> dict:
-        """Serializes the StartCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the StartCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> StartCluster:
-        """Deserializes the StartCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None))
-
-
-@dataclass
 class StartClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the StartClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -9227,6 +7069,7 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
+    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -9306,6 +7149,7 @@ class TerminationReasonCode(Enum):
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
+    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -9349,38 +7193,6 @@ class TerminationReasonType(Enum):
 
 
 @dataclass
-class UninstallLibraries:
-    cluster_id: str
-    """Unique identifier for the cluster on which to uninstall these libraries."""
-
-    libraries: List[Library]
-    """The libraries to uninstall."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UninstallLibraries into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.libraries:
-            body["libraries"] = [v.as_dict() for v in self.libraries]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UninstallLibraries into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.libraries:
-            body["libraries"] = self.libraries
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UninstallLibraries:
-        """Deserializes the UninstallLibraries from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None), libraries=_repeated_dict(d, "libraries", Library))
-
-
-@dataclass
 class UninstallLibrariesResponse:
     def as_dict(self) -> dict:
         """Serializes the UninstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
@@ -9399,30 +7211,6 @@ class UninstallLibrariesResponse:
 
 
 @dataclass
-class UnpinCluster:
-    cluster_id: str
-
-    def as_dict(self) -> dict:
-        """Serializes the UnpinCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UnpinCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UnpinCluster:
-        """Deserializes the UnpinCluster from a dictionary."""
-        return cls(cluster_id=d.get("cluster_id", None))
-
-
-@dataclass
 class UnpinClusterResponse:
     def as_dict(self) -> dict:
         """Serializes the UnpinClusterResponse into a dictionary suitable for use as a JSON request body."""
@@ -9438,60 +7226,6 @@ class UnpinClusterResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UnpinClusterResponse:
         """Deserializes the UnpinClusterResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateCluster:
-    cluster_id: str
-    """ID of the cluster."""
-
-    update_mask: str
-    """Used to specify which cluster attributes and size fields to update. See
-    https://google.aip.dev/161 for more details.
-    
-    The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    cluster: Optional[UpdateClusterResource] = None
-    """The cluster to be updated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCluster into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster:
-            body["cluster"] = self.cluster.as_dict()
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCluster into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.cluster:
-            body["cluster"] = self.cluster
-        if self.cluster_id is not None:
-            body["cluster_id"] = self.cluster_id
-        if self.update_mask is not None:
-            body["update_mask"] = self.update_mask
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCluster:
-        """Deserializes the UpdateCluster from a dictionary."""
-        return cls(
-            cluster=_from_dict(d, "cluster", UpdateClusterResource),
-            cluster_id=d.get("cluster_id", None),
-            update_mask=d.get("update_mask", None),
-        )
 
 
 @dataclass
@@ -9536,30 +7270,6 @@ class UpdateClusterResource:
     tags"""
 
     data_security_mode: Optional[DataSecurityMode] = None
-    """Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-    Databricks will choose the most appropriate access mode depending on your compute configuration.
-    * `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
-    Alias for `SINGLE_USER`.
-    
-    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
-    multiple users sharing the cluster. Data governance features are not available in this mode. *
-    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
-    `single_user_name`. Most programming languages, cluster features and data governance features
-    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
-    users. Cluster users are fully isolated so that they cannot see each other's data and
-    credentials. Most data governance features are supported in this mode. But programming languages
-    and cluster features might be limited.
-    
-    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-    future Databricks Runtime versions:
-    
-    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
-    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
     """Custom docker image BYOC"""
@@ -9603,19 +7313,6 @@ class UpdateClusterResource:
     `spark_conf`, and `num_workers`"""
 
     kind: Optional[Kind] = None
-    """The kind of compute described by this compute specification.
-    
-    Depending on `kind`, different validations and default values will be applied.
-    
-    Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-    specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-    [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-    [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-    `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-    
-    By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-    
-    [simple form]: https://docs.databricks.com/compute/simple-form.html"""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -9690,7 +7387,6 @@ class UpdateClusterResource:
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
     workload_type: Optional[WorkloadType] = None
-    """Cluster Attributes showing for clusters workload types."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
@@ -10502,30 +8198,6 @@ class ClustersAPI:
 
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
-          Data security mode decides what data governance model to use when accessing data from a cluster.
-
-          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-          Databricks will choose the most appropriate access mode depending on your compute configuration. *
-          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
-          for `SINGLE_USER`.
-
-          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
-          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
-          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
-          Most programming languages, cluster features and data governance features are available in this
-          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
-          fully isolated so that they cannot see each other's data and credentials. Most data governance
-          features are supported in this mode. But programming languages and cluster features might be
-          limited.
-
-          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-          future Databricks Runtime versions:
-
-          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
-          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
-          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
-          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
           Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
@@ -10559,19 +8231,6 @@ class ClustersAPI:
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
         :param kind: :class:`Kind` (optional)
-          The kind of compute described by this compute specification.
-
-          Depending on `kind`, different validations and default values will be applied.
-
-          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-
-          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-
-          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -10630,7 +8289,6 @@ class ClustersAPI:
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
-          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
@@ -10907,30 +8565,6 @@ class ClustersAPI:
 
           - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster tags
         :param data_security_mode: :class:`DataSecurityMode` (optional)
-          Data security mode decides what data governance model to use when accessing data from a cluster.
-
-          The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:
-          Databricks will choose the most appropriate access mode depending on your compute configuration. *
-          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
-          for `SINGLE_USER`.
-
-          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
-          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
-          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
-          Most programming languages, cluster features and data governance features are available in this
-          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
-          fully isolated so that they cannot see each other's data and credentials. Most data governance
-          features are supported in this mode. But programming languages and cluster features might be
-          limited.
-
-          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
-          future Databricks Runtime versions:
-
-          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
-          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
-          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
-          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
           Custom docker image BYOC
         :param driver_instance_pool_id: str (optional)
@@ -10964,19 +8598,6 @@ class ClustersAPI:
           When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
           and `num_workers`
         :param kind: :class:`Kind` (optional)
-          The kind of compute described by this compute specification.
-
-          Depending on `kind`, different validations and default values will be applied.
-
-          Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no
-          specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *
-          [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-          [data_security_mode](/api/workspace/clusters/create#data_security_mode) set to
-          `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`
-
-          By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.
-
-          [simple form]: https://docs.databricks.com/compute/simple-form.html
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -11035,7 +8656,6 @@ class ClustersAPI:
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
-          Cluster Attributes showing for clusters workload types.
 
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.

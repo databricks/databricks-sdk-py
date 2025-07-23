@@ -28,35 +28,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCredentialRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateCredentialStsRole
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCustomerManagedKeyRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateGcpKeyInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateNetworkRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateStorageConfigurationRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateVpcEndpointRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateWorkspaceRequest
    :members:
    :undoc-members:
 
@@ -222,14 +198,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateWorkspaceRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpsertPrivateAccessSettingsRequest
    :members:
    :undoc-members:
 

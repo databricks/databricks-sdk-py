@@ -299,15 +299,19 @@ class AiGatewayInferenceTableConfig:
 
 @dataclass
 class AiGatewayRateLimit:
-    calls: int
-    """Used to specify how many calls are allowed for a key within the renewal_period."""
-
     renewal_period: AiGatewayRateLimitRenewalPeriod
     """Renewal period field for a rate limit. Currently, only 'minute' is supported."""
 
+    calls: Optional[int] = None
+    """Used to specify how many calls are allowed for a key within the renewal_period."""
+
     key: Optional[AiGatewayRateLimitKey] = None
-    """Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint'
-    being the default if not specified."""
+    """Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint'
+    are supported, with 'endpoint' being the default if not specified."""
+
+    principal: Optional[str] = None
+    """Principal field for a user, user group, or service principal to apply rate limiting to. Accepts
+    a user email, group name, or service principal application ID."""
 
     def as_dict(self) -> dict:
         """Serializes the AiGatewayRateLimit into a dictionary suitable for use as a JSON request body."""
@@ -316,6 +320,8 @@ class AiGatewayRateLimit:
             body["calls"] = self.calls
         if self.key is not None:
             body["key"] = self.key.value
+        if self.principal is not None:
+            body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period.value
         return body
@@ -327,6 +333,8 @@ class AiGatewayRateLimit:
             body["calls"] = self.calls
         if self.key is not None:
             body["key"] = self.key
+        if self.principal is not None:
+            body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period
         return body
@@ -337,6 +345,7 @@ class AiGatewayRateLimit:
         return cls(
             calls=d.get("calls", None),
             key=_enum(d, "key", AiGatewayRateLimitKey),
+            principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", AiGatewayRateLimitRenewalPeriod),
         )
 
@@ -344,7 +353,9 @@ class AiGatewayRateLimit:
 class AiGatewayRateLimitKey(Enum):
 
     ENDPOINT = "endpoint"
+    SERVICE_PRINCIPAL = "service_principal"
     USER = "user"
+    USER_GROUP = "user_group"
 
 
 class AiGatewayRateLimitRenewalPeriod(Enum):
@@ -839,145 +850,6 @@ class CohereConfig:
             cohere_api_base=d.get("cohere_api_base", None),
             cohere_api_key=d.get("cohere_api_key", None),
             cohere_api_key_plaintext=d.get("cohere_api_key_plaintext", None),
-        )
-
-
-@dataclass
-class CreatePtEndpointRequest:
-    name: str
-    """The name of the serving endpoint. This field is required and must be unique across a Databricks
-    workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
-
-    config: PtEndpointCoreConfig
-    """The core config of the serving endpoint."""
-
-    ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint."""
-
-    budget_policy_id: Optional[str] = None
-    """The budget policy associated with the endpoint."""
-
-    tags: Optional[List[EndpointTag]] = None
-    """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreatePtEndpointRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.ai_gateway:
-            body["ai_gateway"] = self.ai_gateway.as_dict()
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.tags:
-            body["tags"] = [v.as_dict() for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreatePtEndpointRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.ai_gateway:
-            body["ai_gateway"] = self.ai_gateway
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.config:
-            body["config"] = self.config
-        if self.name is not None:
-            body["name"] = self.name
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreatePtEndpointRequest:
-        """Deserializes the CreatePtEndpointRequest from a dictionary."""
-        return cls(
-            ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
-            budget_policy_id=d.get("budget_policy_id", None),
-            config=_from_dict(d, "config", PtEndpointCoreConfig),
-            name=d.get("name", None),
-            tags=_repeated_dict(d, "tags", EndpointTag),
-        )
-
-
-@dataclass
-class CreateServingEndpoint:
-    name: str
-    """The name of the serving endpoint. This field is required and must be unique across a Databricks
-    workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
-
-    ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned
-    throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only
-    support inference tables."""
-
-    budget_policy_id: Optional[str] = None
-    """The budget policy to be applied to the serving endpoint."""
-
-    config: Optional[EndpointCoreConfigInput] = None
-    """The core config of the serving endpoint."""
-
-    rate_limits: Optional[List[RateLimit]] = None
-    """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
-    Gateway to manage rate limits."""
-
-    route_optimized: Optional[bool] = None
-    """Enable route optimization for the serving endpoint."""
-
-    tags: Optional[List[EndpointTag]] = None
-    """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateServingEndpoint into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.ai_gateway:
-            body["ai_gateway"] = self.ai_gateway.as_dict()
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
-        if self.route_optimized is not None:
-            body["route_optimized"] = self.route_optimized
-        if self.tags:
-            body["tags"] = [v.as_dict() for v in self.tags]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateServingEndpoint into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.ai_gateway:
-            body["ai_gateway"] = self.ai_gateway
-        if self.budget_policy_id is not None:
-            body["budget_policy_id"] = self.budget_policy_id
-        if self.config:
-            body["config"] = self.config
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = self.rate_limits
-        if self.route_optimized is not None:
-            body["route_optimized"] = self.route_optimized
-        if self.tags:
-            body["tags"] = self.tags
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateServingEndpoint:
-        """Deserializes the CreateServingEndpoint from a dictionary."""
-        return cls(
-            ai_gateway=_from_dict(d, "ai_gateway", AiGatewayConfig),
-            budget_policy_id=d.get("budget_policy_id", None),
-            config=_from_dict(d, "config", EndpointCoreConfigInput),
-            name=d.get("name", None),
-            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
-            route_optimized=d.get("route_optimized", None),
-            tags=_repeated_dict(d, "tags", EndpointTag),
         )
 
 
@@ -1581,76 +1453,6 @@ class ExportMetricsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ExportMetricsResponse:
         """Deserializes the ExportMetricsResponse from a dictionary."""
         return cls(contents=d.get("contents", None))
-
-
-@dataclass
-class ExternalFunctionRequest:
-    """Simple Proto message for testing"""
-
-    connection_name: str
-    """The connection name to use. This is required to identify the external connection."""
-
-    method: ExternalFunctionRequestHttpMethod
-    """The HTTP method to use (e.g., 'GET', 'POST')."""
-
-    path: str
-    """The relative path for the API endpoint. This is required."""
-
-    headers: Optional[str] = None
-    """Additional headers for the request. If not provided, only auth headers from connections would be
-    passed."""
-
-    json: Optional[str] = None
-    """The JSON payload to send in the request body."""
-
-    params: Optional[str] = None
-    """Query parameters for the request."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExternalFunctionRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.headers is not None:
-            body["headers"] = self.headers
-        if self.json is not None:
-            body["json"] = self.json
-        if self.method is not None:
-            body["method"] = self.method.value
-        if self.params is not None:
-            body["params"] = self.params
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExternalFunctionRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.connection_name is not None:
-            body["connection_name"] = self.connection_name
-        if self.headers is not None:
-            body["headers"] = self.headers
-        if self.json is not None:
-            body["json"] = self.json
-        if self.method is not None:
-            body["method"] = self.method
-        if self.params is not None:
-            body["params"] = self.params
-        if self.path is not None:
-            body["path"] = self.path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExternalFunctionRequest:
-        """Deserializes the ExternalFunctionRequest from a dictionary."""
-        return cls(
-            connection_name=d.get("connection_name", None),
-            headers=d.get("headers", None),
-            json=d.get("json", None),
-            method=_enum(d, "method", ExternalFunctionRequestHttpMethod),
-            params=d.get("params", None),
-            path=d.get("path", None),
-        )
 
 
 class ExternalFunctionRequestHttpMethod(Enum):
@@ -2274,49 +2076,6 @@ class PaLmConfig:
 
 
 @dataclass
-class PatchServingEndpointTags:
-    add_tags: Optional[List[EndpointTag]] = None
-    """List of endpoint tags to add"""
-
-    delete_tags: Optional[List[str]] = None
-    """List of tag keys to delete"""
-
-    name: Optional[str] = None
-    """The name of the serving endpoint who's tags to patch. This field is required."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PatchServingEndpointTags into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.add_tags:
-            body["add_tags"] = [v.as_dict() for v in self.add_tags]
-        if self.delete_tags:
-            body["delete_tags"] = [v for v in self.delete_tags]
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PatchServingEndpointTags into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.add_tags:
-            body["add_tags"] = self.add_tags
-        if self.delete_tags:
-            body["delete_tags"] = self.delete_tags
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PatchServingEndpointTags:
-        """Deserializes the PatchServingEndpointTags from a dictionary."""
-        return cls(
-            add_tags=_repeated_dict(d, "add_tags", EndpointTag),
-            delete_tags=d.get("delete_tags", None),
-            name=d.get("name", None),
-        )
-
-
-@dataclass
 class PayloadTable:
     name: Optional[str] = None
 
@@ -2443,77 +2202,6 @@ class PtServedModel:
 
 
 @dataclass
-class PutAiGatewayRequest:
-    fallback_config: Optional[FallbackConfig] = None
-    """Configuration for traffic fallback which auto fallbacks to other served entities if the request
-    to a served entity fails with certain error codes, to increase availability."""
-
-    guardrails: Optional[AiGatewayGuardrails] = None
-    """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
-    responses."""
-
-    inference_table_config: Optional[AiGatewayInferenceTableConfig] = None
-    """Configuration for payload logging using inference tables. Use these tables to monitor and audit
-    data being sent to and received from model APIs and to improve model quality."""
-
-    name: Optional[str] = None
-    """The name of the serving endpoint whose AI Gateway is being updated. This field is required."""
-
-    rate_limits: Optional[List[AiGatewayRateLimit]] = None
-    """Configuration for rate limits which can be set to limit endpoint traffic."""
-
-    usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None
-    """Configuration to enable usage tracking using system tables. These tables allow you to monitor
-    operational usage on endpoints and their associated costs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutAiGatewayRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config.as_dict()
-        if self.guardrails:
-            body["guardrails"] = self.guardrails.as_dict()
-        if self.inference_table_config:
-            body["inference_table_config"] = self.inference_table_config.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
-        if self.usage_tracking_config:
-            body["usage_tracking_config"] = self.usage_tracking_config.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutAiGatewayRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.fallback_config:
-            body["fallback_config"] = self.fallback_config
-        if self.guardrails:
-            body["guardrails"] = self.guardrails
-        if self.inference_table_config:
-            body["inference_table_config"] = self.inference_table_config
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = self.rate_limits
-        if self.usage_tracking_config:
-            body["usage_tracking_config"] = self.usage_tracking_config
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutAiGatewayRequest:
-        """Deserializes the PutAiGatewayRequest from a dictionary."""
-        return cls(
-            fallback_config=_from_dict(d, "fallback_config", FallbackConfig),
-            guardrails=_from_dict(d, "guardrails", AiGatewayGuardrails),
-            inference_table_config=_from_dict(d, "inference_table_config", AiGatewayInferenceTableConfig),
-            name=d.get("name", None),
-            rate_limits=_repeated_dict(d, "rate_limits", AiGatewayRateLimit),
-            usage_tracking_config=_from_dict(d, "usage_tracking_config", AiGatewayUsageTrackingConfig),
-        )
-
-
-@dataclass
 class PutAiGatewayResponse:
     fallback_config: Optional[FallbackConfig] = None
     """Configuration for traffic fallback which auto fallbacks to other served entities if the request
@@ -2577,38 +2265,6 @@ class PutAiGatewayResponse:
 
 
 @dataclass
-class PutRequest:
-    name: Optional[str] = None
-    """The name of the serving endpoint whose rate limits are being updated. This field is required."""
-
-    rate_limits: Optional[List[RateLimit]] = None
-    """The list of endpoint rate limits."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PutRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = [v.as_dict() for v in self.rate_limits]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.rate_limits:
-            body["rate_limits"] = self.rate_limits
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutRequest:
-        """Deserializes the PutRequest from a dictionary."""
-        return cls(name=d.get("name", None), rate_limits=_repeated_dict(d, "rate_limits", RateLimit))
-
-
-@dataclass
 class PutResponse:
     rate_limits: Optional[List[RateLimit]] = None
     """The list of endpoint rate limits."""
@@ -2631,153 +2287,6 @@ class PutResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PutResponse:
         """Deserializes the PutResponse from a dictionary."""
         return cls(rate_limits=_repeated_dict(d, "rate_limits", RateLimit))
-
-
-@dataclass
-class QueryEndpointInput:
-    dataframe_records: Optional[List[Any]] = None
-    """Pandas Dataframe input in the records orientation."""
-
-    dataframe_split: Optional[DataframeSplitInput] = None
-    """Pandas Dataframe input in the split orientation."""
-
-    extra_params: Optional[Dict[str, str]] = None
-    """The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &
-    foundation model__ serving endpoints. This is a map of strings and should only be used with
-    other external/foundation model query fields."""
-
-    input: Optional[Any] = None
-    """The input string (or array of strings) field used ONLY for __embeddings external & foundation
-    model__ serving endpoints and is the only field (along with extra_params if needed) used by
-    embeddings queries."""
-
-    inputs: Optional[Any] = None
-    """Tensor-based input in columnar format."""
-
-    instances: Optional[List[Any]] = None
-    """Tensor-based input in row format."""
-
-    max_tokens: Optional[int] = None
-    """The max tokens field used ONLY for __completions__ and __chat external & foundation model__
-    serving endpoints. This is an integer and should only be used with other chat/completions query
-    fields."""
-
-    messages: Optional[List[ChatMessage]] = None
-    """The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is
-    a map of strings and should only be used with other chat query fields."""
-
-    n: Optional[int] = None
-    """The n (number of candidates) field used ONLY for __completions__ and __chat external &
-    foundation model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and
-    should only be used with other chat/completions query fields."""
-
-    name: Optional[str] = None
-    """The name of the serving endpoint. This field is required."""
-
-    prompt: Optional[Any] = None
-    """The prompt string (or array of strings) field used ONLY for __completions external & foundation
-    model__ serving endpoints and should only be used with other completions query fields."""
-
-    stop: Optional[List[str]] = None
-    """The stop sequences field used ONLY for __completions__ and __chat external & foundation model__
-    serving endpoints. This is a list of strings and should only be used with other chat/completions
-    query fields."""
-
-    stream: Optional[bool] = None
-    """The stream field used ONLY for __completions__ and __chat external & foundation model__ serving
-    endpoints. This is a boolean defaulting to false and should only be used with other
-    chat/completions query fields."""
-
-    temperature: Optional[float] = None
-    """The temperature field used ONLY for __completions__ and __chat external & foundation model__
-    serving endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be
-    used with other chat/completions query fields."""
-
-    def as_dict(self) -> dict:
-        """Serializes the QueryEndpointInput into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dataframe_records:
-            body["dataframe_records"] = [v for v in self.dataframe_records]
-        if self.dataframe_split:
-            body["dataframe_split"] = self.dataframe_split.as_dict()
-        if self.extra_params:
-            body["extra_params"] = self.extra_params
-        if self.input:
-            body["input"] = self.input
-        if self.inputs:
-            body["inputs"] = self.inputs
-        if self.instances:
-            body["instances"] = [v for v in self.instances]
-        if self.max_tokens is not None:
-            body["max_tokens"] = self.max_tokens
-        if self.messages:
-            body["messages"] = [v.as_dict() for v in self.messages]
-        if self.n is not None:
-            body["n"] = self.n
-        if self.name is not None:
-            body["name"] = self.name
-        if self.prompt:
-            body["prompt"] = self.prompt
-        if self.stop:
-            body["stop"] = [v for v in self.stop]
-        if self.stream is not None:
-            body["stream"] = self.stream
-        if self.temperature is not None:
-            body["temperature"] = self.temperature
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the QueryEndpointInput into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.dataframe_records:
-            body["dataframe_records"] = self.dataframe_records
-        if self.dataframe_split:
-            body["dataframe_split"] = self.dataframe_split
-        if self.extra_params:
-            body["extra_params"] = self.extra_params
-        if self.input:
-            body["input"] = self.input
-        if self.inputs:
-            body["inputs"] = self.inputs
-        if self.instances:
-            body["instances"] = self.instances
-        if self.max_tokens is not None:
-            body["max_tokens"] = self.max_tokens
-        if self.messages:
-            body["messages"] = self.messages
-        if self.n is not None:
-            body["n"] = self.n
-        if self.name is not None:
-            body["name"] = self.name
-        if self.prompt:
-            body["prompt"] = self.prompt
-        if self.stop:
-            body["stop"] = self.stop
-        if self.stream is not None:
-            body["stream"] = self.stream
-        if self.temperature is not None:
-            body["temperature"] = self.temperature
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> QueryEndpointInput:
-        """Deserializes the QueryEndpointInput from a dictionary."""
-        return cls(
-            dataframe_records=d.get("dataframe_records", None),
-            dataframe_split=_from_dict(d, "dataframe_split", DataframeSplitInput),
-            extra_params=d.get("extra_params", None),
-            input=d.get("input", None),
-            inputs=d.get("inputs", None),
-            instances=d.get("instances", None),
-            max_tokens=d.get("max_tokens", None),
-            messages=_repeated_dict(d, "messages", ChatMessage),
-            n=d.get("n", None),
-            name=d.get("name", None),
-            prompt=d.get("prompt", None),
-            stop=d.get("stop", None),
-            stream=d.get("stream", None),
-            temperature=d.get("temperature", None),
-        )
 
 
 @dataclass
@@ -2945,16 +2454,20 @@ class RateLimitRenewalPeriod(Enum):
 
 @dataclass
 class Route:
-    served_model_name: str
-    """The name of the served model this route configures traffic for."""
-
     traffic_percentage: int
     """The percentage of endpoint traffic to send to this route. It must be an integer between 0 and
     100 inclusive."""
 
+    served_entity_name: Optional[str] = None
+
+    served_model_name: Optional[str] = None
+    """The name of the served model this route configures traffic for."""
+
     def as_dict(self) -> dict:
         """Serializes the Route into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.served_entity_name is not None:
+            body["served_entity_name"] = self.served_entity_name
         if self.served_model_name is not None:
             body["served_model_name"] = self.served_model_name
         if self.traffic_percentage is not None:
@@ -2964,6 +2477,8 @@ class Route:
     def as_shallow_dict(self) -> dict:
         """Serializes the Route into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.served_entity_name is not None:
+            body["served_entity_name"] = self.served_entity_name
         if self.served_model_name is not None:
             body["served_model_name"] = self.served_model_name
         if self.traffic_percentage is not None:
@@ -2974,7 +2489,9 @@ class Route:
     def from_dict(cls, d: Dict[str, Any]) -> Route:
         """Deserializes the Route from a dictionary."""
         return cls(
-            served_model_name=d.get("served_model_name", None), traffic_percentage=d.get("traffic_percentage", None)
+            served_entity_name=d.get("served_entity_name", None),
+            served_model_name=d.get("served_model_name", None),
+            traffic_percentage=d.get("traffic_percentage", None),
         )
 
 
@@ -3164,8 +2681,6 @@ class ServedEntityOutput:
     external_model later. The task type of all external models within an endpoint must be the same."""
 
     foundation_model: Optional[FoundationModel] = None
-    """All fields are not sensitive as they are hard-coded in the system and made available to
-    customers."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -3331,8 +2846,6 @@ class ServedEntitySpec:
     external_model: Optional[ExternalModel] = None
 
     foundation_model: Optional[FoundationModel] = None
-    """All fields are not sensitive as they are hard-coded in the system and made available to
-    customers."""
 
     name: Optional[str] = None
 
@@ -3903,7 +3416,6 @@ class ServingEndpointAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -4179,7 +3691,6 @@ class ServingEndpointPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointPermission into a dictionary suitable for use as a JSON request body."""
@@ -4266,7 +3777,6 @@ class ServingEndpointPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[ServingEndpointPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -4292,40 +3802,6 @@ class ServingEndpointPermissionsDescription:
         return cls(
             description=d.get("description", None),
             permission_level=_enum(d, "permission_level", ServingEndpointPermissionLevel),
-        )
-
-
-@dataclass
-class ServingEndpointPermissionsRequest:
-    access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
-
-    serving_endpoint_id: Optional[str] = None
-    """The serving endpoint for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.serving_endpoint_id is not None:
-            body["serving_endpoint_id"] = self.serving_endpoint_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ServingEndpointPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.serving_endpoint_id is not None:
-            body["serving_endpoint_id"] = self.serving_endpoint_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsRequest:
-        """Deserializes the ServingEndpointPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", ServingEndpointAccessControlRequest),
-            serving_endpoint_id=d.get("serving_endpoint_id", None),
         )
 
 
@@ -4362,37 +3838,6 @@ class TrafficConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, "routes", Route))
-
-
-@dataclass
-class UpdateProvisionedThroughputEndpointConfigRequest:
-    config: PtEndpointCoreConfig
-
-    name: Optional[str] = None
-    """The name of the pt endpoint to update. This field is required."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateProvisionedThroughputEndpointConfigRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateProvisionedThroughputEndpointConfigRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.config:
-            body["config"] = self.config
-        if self.name is not None:
-            body["name"] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateProvisionedThroughputEndpointConfigRequest:
-        """Deserializes the UpdateProvisionedThroughputEndpointConfigRequest from a dictionary."""
-        return cls(config=_from_dict(d, "config", PtEndpointCoreConfig), name=d.get("name", None))
 
 
 @dataclass
@@ -4531,6 +3976,7 @@ class ServingEndpointsAPI:
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
+        description: Optional[str] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -4548,6 +3994,7 @@ class ServingEndpointsAPI:
           The budget policy to be applied to the serving endpoint.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
+        :param description: str (optional)
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -4567,6 +4014,8 @@ class ServingEndpointsAPI:
             body["budget_policy_id"] = budget_policy_id
         if config is not None:
             body["config"] = config.as_dict()
+        if description is not None:
+            body["description"] = description
         if name is not None:
             body["name"] = name
         if rate_limits is not None:
@@ -4594,6 +4043,7 @@ class ServingEndpointsAPI:
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
+        description: Optional[str] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -4603,6 +4053,7 @@ class ServingEndpointsAPI:
             ai_gateway=ai_gateway,
             budget_policy_id=budget_policy_id,
             config=config,
+            description=description,
             name=name,
             rate_limits=rate_limits,
             route_optimized=route_optimized,
@@ -5049,6 +4500,7 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
         response_headers = [
             "served-model-name",
         ]
@@ -5361,6 +4813,7 @@ class ServingEndpointsDataPlaneAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
         response_headers = [
             "served-model-name",
         ]

@@ -222,7 +222,6 @@ class AppAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -491,7 +490,6 @@ class AppPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the AppPermission into a dictionary suitable for use as a JSON request body."""
@@ -577,7 +575,6 @@ class AppPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[AppPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the AppPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -606,43 +603,11 @@ class AppPermissionsDescription:
 
 
 @dataclass
-class AppPermissionsRequest:
-    access_control_list: Optional[List[AppAccessControlRequest]] = None
-
-    app_name: Optional[str] = None
-    """The app for which to get or manage permissions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AppPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        if self.app_name is not None:
-            body["app_name"] = self.app_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AppPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        if self.app_name is not None:
-            body["app_name"] = self.app_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AppPermissionsRequest:
-        """Deserializes the AppPermissionsRequest from a dictionary."""
-        return cls(
-            access_control_list=_repeated_dict(d, "access_control_list", AppAccessControlRequest),
-            app_name=d.get("app_name", None),
-        )
-
-
-@dataclass
 class AppResource:
     name: str
     """Name of the App Resource."""
+
+    database: Optional[AppResourceDatabase] = None
 
     description: Optional[str] = None
     """Description of the App Resource."""
@@ -660,6 +625,8 @@ class AppResource:
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.database:
+            body["database"] = self.database.as_dict()
         if self.description is not None:
             body["description"] = self.description
         if self.job:
@@ -679,6 +646,8 @@ class AppResource:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.database:
+            body["database"] = self.database
         if self.description is not None:
             body["description"] = self.description
         if self.job:
@@ -699,6 +668,7 @@ class AppResource:
     def from_dict(cls, d: Dict[str, Any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
         return cls(
+            database=_from_dict(d, "database", AppResourceDatabase),
             description=d.get("description", None),
             job=_from_dict(d, "job", AppResourceJob),
             name=d.get("name", None),
@@ -707,6 +677,51 @@ class AppResource:
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
             uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
+
+
+@dataclass
+class AppResourceDatabase:
+    instance_name: str
+
+    database_name: str
+
+    permission: AppResourceDatabaseDatabasePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceDatabase into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.instance_name is not None:
+            body["instance_name"] = self.instance_name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceDatabase into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.instance_name is not None:
+            body["instance_name"] = self.instance_name
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceDatabase:
+        """Deserializes the AppResourceDatabase from a dictionary."""
+        return cls(
+            database_name=d.get("database_name", None),
+            instance_name=d.get("instance_name", None),
+            permission=_enum(d, "permission", AppResourceDatabaseDatabasePermission),
+        )
+
+
+class AppResourceDatabaseDatabasePermission(Enum):
+
+    CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
 
 
 @dataclass
@@ -1112,18 +1127,6 @@ class ListAppsResponse:
         return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
 
 
-@dataclass
-class StartAppRequest:
-    name: Optional[str] = None
-    """The name of the app."""
-
-
-@dataclass
-class StopAppRequest:
-    name: Optional[str] = None
-    """The name of the app."""
-
-
 class AppsAPI:
     """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on."""
@@ -1279,6 +1282,7 @@ class AppsAPI:
         :param app_name: str
           The name of the app.
         :param app_deployment: :class:`AppDeployment`
+          The app deployment configuration.
 
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.

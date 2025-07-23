@@ -44,15 +44,16 @@
             
             obj = w.workspace.get_status(path=notebook_path)
             
-            levels = w.permissions.get_permission_levels(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
+            _ = w.permissions.get(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
 
         Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
         object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
 
@@ -81,9 +82,10 @@
         Gets the permission levels that a user can have on an object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
 
         :returns: :class:`GetPermissionLevelsResponse`
@@ -128,9 +130,10 @@
         object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -144,9 +147,10 @@
         root object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
+          warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

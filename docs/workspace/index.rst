@@ -19,6 +19,7 @@ These APIs are available from WorkspaceClient
    jobs/index
    marketplace/index
    ml/index
+   oauth2/index
    pipelines/index
    qualitymonitorv2/index
    serving/index

@@ -204,7 +204,6 @@
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
@@ -234,10 +233,9 @@
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user or service principal that the job runs as. If not specified,
-          the job runs as the user who created the job.
-
-          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
+          The user or service principal that the job runs as, if specified in the request. This field
+          indicates the explicit configuration of `run_as` for the job. To find the value in all cases,
+          explicit or implicit, use `run_as_user_name`.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -355,21 +353,23 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            run = w.jobs.submit(
-                run_name=f"sdk-{time.time_ns()}",
+            created_job = w.jobs.create(
+                name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.SubmitTask(
+                    jobs.Task(
+                        description="test",
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key=f"sdk-{time.time_ns()}",
+                        task_key="test",
+                        timeout_seconds=0,
                     )
                 ],
-            ).result()
+            )
             
-            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete_run(run_id=run.run_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Get a single job.
 
@@ -1072,7 +1072,6 @@
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
-          An optional set of health rules that can be defined for this job.
         :param idempotency_token: str (optional)
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the

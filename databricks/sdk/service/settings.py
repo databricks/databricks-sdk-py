@@ -352,11 +352,6 @@ class ClusterAutoRestartMessage:
     enabled: Optional[bool] = None
 
     enablement_details: Optional[ClusterAutoRestartMessageEnablementDetails] = None
-    """Contains an information about the enablement status judging (e.g. whether the enterprise tier is
-    enabled) This is only additional information that MUST NOT be used to decide whether the setting
-    is enabled or not. This is intended to use only for purposes like showing an error message to
-    the customer with the additional details. For example, using these details we can check why
-    exactly the feature is disabled for this customer."""
 
     maintenance_window: Optional[ClusterAutoRestartMessageMaintenanceWindow] = None
 
@@ -615,7 +610,6 @@ class ComplianceSecurityProfile:
 @dataclass
 class ComplianceSecurityProfileSetting:
     compliance_security_profile_workspace: ComplianceSecurityProfile
-    """SHIELD feature: CSP"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -738,58 +732,10 @@ class Config:
 
 
 @dataclass
-class CreateIpAccessList:
-    """Details required to configure a block list or allow list."""
-
-    label: str
-    """Label for the IP access list. This **cannot** be empty."""
-
-    list_type: ListType
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
-
-    ip_addresses: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateIpAccessList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.ip_addresses:
-            body["ip_addresses"] = [v for v in self.ip_addresses]
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateIpAccessList into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.ip_addresses:
-            body["ip_addresses"] = self.ip_addresses
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateIpAccessList:
-        """Deserializes the CreateIpAccessList from a dictionary."""
-        return cls(
-            ip_addresses=d.get("ip_addresses", None),
-            label=d.get("label", None),
-            list_type=_enum(d, "list_type", ListType),
-        )
-
-
-@dataclass
 class CreateIpAccessListResponse:
     """An IP access list was successfully created."""
 
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -846,83 +792,6 @@ class CreateNetworkConnectivityConfiguration:
     def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfiguration:
         """Deserializes the CreateNetworkConnectivityConfiguration from a dictionary."""
         return cls(name=d.get("name", None), region=d.get("region", None))
-
-
-@dataclass
-class CreateNotificationDestinationRequest:
-    config: Optional[Config] = None
-    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
-
-    display_name: Optional[str] = None
-    """The display name for the notification destination."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateNotificationDestinationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.config:
-            body["config"] = self.config
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateNotificationDestinationRequest:
-        """Deserializes the CreateNotificationDestinationRequest from a dictionary."""
-        return cls(config=_from_dict(d, "config", Config), display_name=d.get("display_name", None))
-
-
-@dataclass
-class CreateOboTokenRequest:
-    """Configuration details for creating on-behalf tokens."""
-
-    application_id: str
-    """Application ID of the service principal."""
-
-    comment: Optional[str] = None
-    """Comment that describes the purpose of the token."""
-
-    lifetime_seconds: Optional[int] = None
-    """The number of seconds before the token expires."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateOboTokenRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.application_id is not None:
-            body["application_id"] = self.application_id
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.lifetime_seconds is not None:
-            body["lifetime_seconds"] = self.lifetime_seconds
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateOboTokenRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.application_id is not None:
-            body["application_id"] = self.application_id
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.lifetime_seconds is not None:
-            body["lifetime_seconds"] = self.lifetime_seconds
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateOboTokenRequest:
-        """Deserializes the CreateOboTokenRequest from a dictionary."""
-        return cls(
-            application_id=d.get("application_id", None),
-            comment=d.get("comment", None),
-            lifetime_seconds=d.get("lifetime_seconds", None),
-        )
 
 
 @dataclass
@@ -1032,40 +901,6 @@ class CreatePrivateEndpointRule:
 
 
 @dataclass
-class CreateTokenRequest:
-    comment: Optional[str] = None
-    """Optional description to attach to the token."""
-
-    lifetime_seconds: Optional[int] = None
-    """The lifetime of the token, in seconds.
-    
-    If the lifetime is not specified, this token remains valid indefinitely."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateTokenRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.lifetime_seconds is not None:
-            body["lifetime_seconds"] = self.lifetime_seconds
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateTokenRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.lifetime_seconds is not None:
-            body["lifetime_seconds"] = self.lifetime_seconds
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateTokenRequest:
-        """Deserializes the CreateTokenRequest from a dictionary."""
-        return cls(comment=d.get("comment", None), lifetime_seconds=d.get("lifetime_seconds", None))
-
-
-@dataclass
 class CreateTokenResponse:
     token_info: Optional[PublicTokenInfo] = None
     """The information for the new token."""
@@ -1138,7 +973,6 @@ class CspEnablementAccount:
 @dataclass
 class CspEnablementAccountSetting:
     csp_enablement_account: CspEnablementAccount
-    """Account level policy for CSP"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -1458,6 +1292,56 @@ class DefaultNamespaceSetting:
 
 
 @dataclass
+class DefaultWarehouseId:
+    string_val: StringMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultWarehouseId into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        if self.string_val:
+            body["string_val"] = self.string_val.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultWarehouseId into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.setting_name is not None:
+            body["setting_name"] = self.setting_name
+        if self.string_val:
+            body["string_val"] = self.string_val
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultWarehouseId:
+        """Deserializes the DefaultWarehouseId from a dictionary."""
+        return cls(
+            etag=d.get("etag", None),
+            setting_name=d.get("setting_name", None),
+            string_val=_from_dict(d, "string_val", StringMessage),
+        )
+
+
+@dataclass
 class DeleteAccountIpAccessEnableResponse:
     """The etag is returned."""
 
@@ -1618,6 +1502,38 @@ class DeleteDefaultNamespaceSettingResponse:
 
 
 @dataclass
+class DeleteDefaultWarehouseIdResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDefaultWarehouseIdResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDefaultWarehouseIdResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None:
+            body["etag"] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDefaultWarehouseIdResponse:
+        """Deserializes the DeleteDefaultWarehouseIdResponse from a dictionary."""
+        return cls(etag=d.get("etag", None))
+
+
+@dataclass
 class DeleteDisableLegacyAccessResponse:
     """The etag is returned."""
 
@@ -1743,42 +1659,6 @@ class DeleteLlmProxyPartnerPoweredWorkspaceResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeleteLlmProxyPartnerPoweredWorkspaceResponse:
         """Deserializes the DeleteLlmProxyPartnerPoweredWorkspaceResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
-
-
-@dataclass
-class DeleteNetworkConnectivityConfigurationResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkConnectivityConfigurationResponse:
-        """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteNetworkPolicyRpcResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteNetworkPolicyRpcResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteNetworkPolicyRpcResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkPolicyRpcResponse:
-        """Deserializes the DeleteNetworkPolicyRpcResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -2093,11 +1973,6 @@ class EgressNetworkPolicyInternetAccessPolicy:
     """Optional. If not specified, assume the policy is enforced for all workloads."""
 
     restriction_mode: Optional[EgressNetworkPolicyInternetAccessPolicyRestrictionMode] = None
-    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
-    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
-    only access explicitly allowed internet and storage destinations, as well as UC connections and
-    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
-    private link."""
 
     def as_dict(self) -> dict:
         """Serializes the EgressNetworkPolicyInternetAccessPolicy into a dictionary suitable for use as a JSON request body."""
@@ -2151,10 +2026,6 @@ class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
     protocol: Optional[
         EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
     ] = None
-    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
-    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
-    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
-    filtering (i.e. SNI based filtering, filtering by FQDN)."""
 
     type: Optional[EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType] = None
 
@@ -2785,7 +2656,6 @@ class EnhancedSecurityMonitoring:
 @dataclass
 class EnhancedSecurityMonitoringSetting:
     enhanced_security_monitoring_workspace: EnhancedSecurityMonitoring
-    """SHIELD feature: ESM"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -2864,7 +2734,6 @@ class EsmEnablementAccount:
 @dataclass
 class EsmEnablementAccountSetting:
     esm_enablement_account: EsmEnablementAccount
-    """Account level policy for ESM"""
 
     etag: Optional[str] = None
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
@@ -2974,51 +2843,6 @@ class ExchangeToken:
 
 
 @dataclass
-class ExchangeTokenRequest:
-    """Exchange a token with the IdP"""
-
-    partition_id: PartitionId
-    """The partition of Credentials store"""
-
-    token_type: List[TokenType]
-    """A list of token types being requested"""
-
-    scopes: List[str]
-    """Array of scopes for the token request."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExchangeTokenRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.partition_id:
-            body["partitionId"] = self.partition_id.as_dict()
-        if self.scopes:
-            body["scopes"] = [v for v in self.scopes]
-        if self.token_type:
-            body["tokenType"] = [v.value for v in self.token_type]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExchangeTokenRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.partition_id:
-            body["partitionId"] = self.partition_id
-        if self.scopes:
-            body["scopes"] = self.scopes
-        if self.token_type:
-            body["tokenType"] = self.token_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ExchangeTokenRequest:
-        """Deserializes the ExchangeTokenRequest from a dictionary."""
-        return cls(
-            partition_id=_from_dict(d, "partitionId", PartitionId),
-            scopes=d.get("scopes", None),
-            token_type=_repeated_enum(d, "tokenType", TokenType),
-        )
-
-
-@dataclass
 class ExchangeTokenResponse:
     """Exhanged tokens were successfully returned."""
 
@@ -3049,7 +2873,6 @@ class FetchIpAccessListResponse:
     """An IP access list was successfully returned."""
 
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the FetchIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -3141,7 +2964,6 @@ class GenericWebhookConfig:
 @dataclass
 class GetIpAccessListResponse:
     ip_access_list: Optional[IpAccessListInfo] = None
-    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the GetIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -3265,10 +3087,6 @@ class IpAccessListInfo:
     """Universally unique identifier (UUID) of the IP access list."""
 
     list_type: Optional[ListType] = None
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
     updated_at: Optional[int] = None
     """Update timestamp in milliseconds."""
@@ -4052,12 +3870,8 @@ class NccEgressDefaultRules:
     """Default rules don't have specific targets."""
 
     aws_stable_ip_rule: Optional[NccAwsStableIpRule] = None
-    """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
-    allow traffic from your Databricks workspace."""
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
-    """The stable Azure service endpoints. You can configure the firewall of your Azure resources to
-    allow traffic from your Databricks serverless compute resources."""
 
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
@@ -4533,11 +4347,6 @@ class PartitionId:
 @dataclass
 class PersonalComputeMessage:
     value: PersonalComputeMessageEnum
-    """ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing
-    all users to create single-machine compute resources. DELEGATE: Moves access control for the
-    Personal Compute default policy to individual workspaces and requires a workspace’s users or
-    groups to be added to the ACLs of that workspace’s Personal Compute default policy before they
-    will be able to create compute resources through that policy."""
 
     def as_dict(self) -> dict:
         """Serializes the PersonalComputeMessage into a dictionary suitable for use as a JSON request body."""
@@ -4672,69 +4481,6 @@ class PublicTokenInfo:
 
 
 @dataclass
-class ReplaceIpAccessList:
-    """Details required to replace an IP access list."""
-
-    label: str
-    """Label for the IP access list. This **cannot** be empty."""
-
-    list_type: ListType
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
-
-    enabled: bool
-    """Specifies whether this IP access list is enabled."""
-
-    ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list"""
-
-    ip_addresses: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ReplaceIpAccessList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.ip_access_list_id is not None:
-            body["ip_access_list_id"] = self.ip_access_list_id
-        if self.ip_addresses:
-            body["ip_addresses"] = [v for v in self.ip_addresses]
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplaceIpAccessList into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.ip_access_list_id is not None:
-            body["ip_access_list_id"] = self.ip_access_list_id
-        if self.ip_addresses:
-            body["ip_addresses"] = self.ip_addresses
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplaceIpAccessList:
-        """Deserializes the ReplaceIpAccessList from a dictionary."""
-        return cls(
-            enabled=d.get("enabled", None),
-            ip_access_list_id=d.get("ip_access_list_id", None),
-            ip_addresses=d.get("ip_addresses", None),
-            label=d.get("label", None),
-            list_type=_enum(d, "list_type", ListType),
-        )
-
-
-@dataclass
 class ReplaceResponse:
     def as_dict(self) -> dict:
         """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
@@ -4830,31 +4576,6 @@ class RestrictWorkspaceAdminsSetting:
             restrict_workspace_admins=_from_dict(d, "restrict_workspace_admins", RestrictWorkspaceAdminsMessage),
             setting_name=d.get("setting_name", None),
         )
-
-
-@dataclass
-class RevokeTokenRequest:
-    token_id: str
-    """The ID of the token to be revoked."""
-
-    def as_dict(self) -> dict:
-        """Serializes the RevokeTokenRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.token_id is not None:
-            body["token_id"] = self.token_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the RevokeTokenRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.token_id is not None:
-            body["token_id"] = self.token_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenRequest:
-        """Deserializes the RevokeTokenRequest from a dictionary."""
-        return cls(token_id=d.get("token_id", None))
 
 
 @dataclass
@@ -5006,7 +4727,6 @@ class TokenAccessControlRequest:
     """name of the group"""
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     service_principal_name: Optional[str] = None
     """application ID of a service principal"""
@@ -5208,7 +4928,6 @@ class TokenPermission:
     inherited_from_object: Optional[List[str]] = None
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the TokenPermission into a dictionary suitable for use as a JSON request body."""
@@ -5293,7 +5012,6 @@ class TokenPermissionsDescription:
     description: Optional[str] = None
 
     permission_level: Optional[TokenPermissionLevel] = None
-    """Permission level"""
 
     def as_dict(self) -> dict:
         """Serializes the TokenPermissionsDescription into a dictionary suitable for use as a JSON request body."""
@@ -5321,30 +5039,6 @@ class TokenPermissionsDescription:
         )
 
 
-@dataclass
-class TokenPermissionsRequest:
-    access_control_list: Optional[List[TokenAccessControlRequest]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the TokenPermissionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = [v.as_dict() for v in self.access_control_list]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TokenPermissionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.access_control_list:
-            body["access_control_list"] = self.access_control_list
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsRequest:
-        """Deserializes the TokenPermissionsRequest from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, "access_control_list", TokenAccessControlRequest))
-
-
 class TokenType(Enum):
     """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
 
@@ -5355,1157 +5049,6 @@ class TokenType(Enum):
         "ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY"
     )
     AZURE_ACTIVE_DIRECTORY_TOKEN = "AZURE_ACTIVE_DIRECTORY_TOKEN"
-
-
-@dataclass
-class UpdateAccountIpAccessEnableRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: AccountIpAccessEnable
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAccountIpAccessEnableRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAccountIpAccessEnableRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAccountIpAccessEnableRequest:
-        """Deserializes the UpdateAccountIpAccessEnableRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", AccountIpAccessEnable),
-        )
-
-
-@dataclass
-class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: AibiDashboardEmbeddingAccessPolicySetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
-        """Deserializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", AibiDashboardEmbeddingAccessPolicySetting),
-        )
-
-
-@dataclass
-class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: AibiDashboardEmbeddingApprovedDomainsSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
-        """Deserializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", AibiDashboardEmbeddingApprovedDomainsSetting),
-        )
-
-
-@dataclass
-class UpdateAutomaticClusterUpdateSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: AutomaticClusterUpdateSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateAutomaticClusterUpdateSettingRequest:
-        """Deserializes the UpdateAutomaticClusterUpdateSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", AutomaticClusterUpdateSetting),
-        )
-
-
-@dataclass
-class UpdateComplianceSecurityProfileSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: ComplianceSecurityProfileSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateComplianceSecurityProfileSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateComplianceSecurityProfileSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateComplianceSecurityProfileSettingRequest:
-        """Deserializes the UpdateComplianceSecurityProfileSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", ComplianceSecurityProfileSetting),
-        )
-
-
-@dataclass
-class UpdateCspEnablementAccountSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: CspEnablementAccountSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCspEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateCspEnablementAccountSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateCspEnablementAccountSettingRequest:
-        """Deserializes the UpdateCspEnablementAccountSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", CspEnablementAccountSetting),
-        )
-
-
-@dataclass
-class UpdateDashboardEmailSubscriptionsRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: DashboardEmailSubscriptions
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDashboardEmailSubscriptionsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateDashboardEmailSubscriptionsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateDashboardEmailSubscriptionsRequest:
-        """Deserializes the UpdateDashboardEmailSubscriptionsRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", DashboardEmailSubscriptions),
-        )
-
-
-@dataclass
-class UpdateDefaultNamespaceSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: DefaultNamespaceSetting
-    """This represents the setting configuration for the default namespace in the Databricks workspace.
-    Setting the default catalog for the workspace determines the catalog that is used when queries
-    do not reference a fully qualified 3 level name. For example, if the default catalog is set to
-    'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-    restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-    applies when using Unity Catalog-enabled compute."""
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDefaultNamespaceSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateDefaultNamespaceSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateDefaultNamespaceSettingRequest:
-        """Deserializes the UpdateDefaultNamespaceSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", DefaultNamespaceSetting),
-        )
-
-
-@dataclass
-class UpdateDisableLegacyAccessRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: DisableLegacyAccess
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyAccessRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyAccessRequest:
-        """Deserializes the UpdateDisableLegacyAccessRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", DisableLegacyAccess),
-        )
-
-
-@dataclass
-class UpdateDisableLegacyDbfsRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: DisableLegacyDbfs
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyDbfsRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyDbfsRequest:
-        """Deserializes the UpdateDisableLegacyDbfsRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", DisableLegacyDbfs),
-        )
-
-
-@dataclass
-class UpdateDisableLegacyFeaturesRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: DisableLegacyFeatures
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateDisableLegacyFeaturesRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateDisableLegacyFeaturesRequest:
-        """Deserializes the UpdateDisableLegacyFeaturesRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", DisableLegacyFeatures),
-        )
-
-
-@dataclass
-class UpdateEnableExportNotebookRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EnableExportNotebook
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEnableExportNotebookRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateEnableExportNotebookRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableExportNotebookRequest:
-        """Deserializes the UpdateEnableExportNotebookRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", EnableExportNotebook),
-        )
-
-
-@dataclass
-class UpdateEnableNotebookTableClipboardRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EnableNotebookTableClipboard
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEnableNotebookTableClipboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateEnableNotebookTableClipboardRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableNotebookTableClipboardRequest:
-        """Deserializes the UpdateEnableNotebookTableClipboardRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", EnableNotebookTableClipboard),
-        )
-
-
-@dataclass
-class UpdateEnableResultsDownloadingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EnableResultsDownloading
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEnableResultsDownloadingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateEnableResultsDownloadingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnableResultsDownloadingRequest:
-        """Deserializes the UpdateEnableResultsDownloadingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", EnableResultsDownloading),
-        )
-
-
-@dataclass
-class UpdateEnhancedSecurityMonitoringSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EnhancedSecurityMonitoringSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateEnhancedSecurityMonitoringSettingRequest:
-        """Deserializes the UpdateEnhancedSecurityMonitoringSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", EnhancedSecurityMonitoringSetting),
-        )
-
-
-@dataclass
-class UpdateEsmEnablementAccountSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EsmEnablementAccountSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEsmEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateEsmEnablementAccountSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateEsmEnablementAccountSettingRequest:
-        """Deserializes the UpdateEsmEnablementAccountSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", EsmEnablementAccountSetting),
-        )
-
-
-@dataclass
-class UpdateIpAccessList:
-    """Details required to update an IP access list."""
-
-    enabled: Optional[bool] = None
-    """Specifies whether this IP access list is enabled."""
-
-    ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list"""
-
-    ip_addresses: Optional[List[str]] = None
-
-    label: Optional[str] = None
-    """Label for the IP access list. This **cannot** be empty."""
-
-    list_type: Optional[ListType] = None
-    """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateIpAccessList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.ip_access_list_id is not None:
-            body["ip_access_list_id"] = self.ip_access_list_id
-        if self.ip_addresses:
-            body["ip_addresses"] = [v for v in self.ip_addresses]
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateIpAccessList into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enabled is not None:
-            body["enabled"] = self.enabled
-        if self.ip_access_list_id is not None:
-            body["ip_access_list_id"] = self.ip_access_list_id
-        if self.ip_addresses:
-            body["ip_addresses"] = self.ip_addresses
-        if self.label is not None:
-            body["label"] = self.label
-        if self.list_type is not None:
-            body["list_type"] = self.list_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateIpAccessList:
-        """Deserializes the UpdateIpAccessList from a dictionary."""
-        return cls(
-            enabled=d.get("enabled", None),
-            ip_access_list_id=d.get("ip_access_list_id", None),
-            ip_addresses=d.get("ip_addresses", None),
-            label=d.get("label", None),
-            list_type=_enum(d, "list_type", ListType),
-        )
-
-
-@dataclass
-class UpdateLlmProxyPartnerPoweredAccountRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: LlmProxyPartnerPoweredAccount
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredAccountRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredAccountRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredAccountRequest:
-        """Deserializes the UpdateLlmProxyPartnerPoweredAccountRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredAccount),
-        )
-
-
-@dataclass
-class UpdateLlmProxyPartnerPoweredEnforceRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: LlmProxyPartnerPoweredEnforce
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredEnforceRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredEnforceRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredEnforceRequest:
-        """Deserializes the UpdateLlmProxyPartnerPoweredEnforceRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredEnforce),
-        )
-
-
-@dataclass
-class UpdateLlmProxyPartnerPoweredWorkspaceRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: LlmProxyPartnerPoweredWorkspace
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateLlmProxyPartnerPoweredWorkspaceRequest:
-        """Deserializes the UpdateLlmProxyPartnerPoweredWorkspaceRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", LlmProxyPartnerPoweredWorkspace),
-        )
-
-
-@dataclass
-class UpdateNotificationDestinationRequest:
-    config: Optional[Config] = None
-    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
-
-    display_name: Optional[str] = None
-    """The display name for the notification destination."""
-
-    id: Optional[str] = None
-    """UUID identifying notification destination."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.config:
-            body["config"] = self.config.as_dict()
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateNotificationDestinationRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.config:
-            body["config"] = self.config
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.id is not None:
-            body["id"] = self.id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateNotificationDestinationRequest:
-        """Deserializes the UpdateNotificationDestinationRequest from a dictionary."""
-        return cls(
-            config=_from_dict(d, "config", Config), display_name=d.get("display_name", None), id=d.get("id", None)
-        )
-
-
-@dataclass
-class UpdatePersonalComputeSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: PersonalComputeSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdatePersonalComputeSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdatePersonalComputeSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalComputeSettingRequest:
-        """Deserializes the UpdatePersonalComputeSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", PersonalComputeSetting),
-        )
 
 
 @dataclass
@@ -6580,110 +5123,6 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateRestrictWorkspaceAdminsSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: RestrictWorkspaceAdminsSetting
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
-        """Deserializes the UpdateRestrictWorkspaceAdminsSettingRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", RestrictWorkspaceAdminsSetting),
-        )
-
-
-@dataclass
-class UpdateSqlResultsDownloadRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: SqlResultsDownload
-
-    field_mask: str
-    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
-    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
-    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
-    as only the entire collection field can be specified. Field names must exactly match the
-    resource field names.
-    
-    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
-    API changes in the future."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateSqlResultsDownloadRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateSqlResultsDownloadRequest into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.allow_missing is not None:
-            body["allow_missing"] = self.allow_missing
-        if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
-        if self.setting:
-            body["setting"] = self.setting
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateSqlResultsDownloadRequest:
-        """Deserializes the UpdateSqlResultsDownloadRequest from a dictionary."""
-        return cls(
-            allow_missing=d.get("allow_missing", None),
-            field_mask=d.get("field_mask", None),
-            setting=_from_dict(d, "setting", SqlResultsDownload),
-        )
 
 
 WorkspaceConf = Dict[str, str]
@@ -6766,10 +5205,6 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
 
         :returns: :class:`CreateIpAccessListResponse`
@@ -6863,10 +5298,6 @@ class AccountIpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -6924,10 +5355,6 @@ class AccountIpAccessListsAPI:
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
 
 
         """
@@ -7657,13 +6084,6 @@ class DefaultNamespaceAPI:
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -7693,6 +6113,100 @@ class DefaultNamespaceAPI:
             "PATCH", "/api/2.0/settings/types/default_namespace_ws/names/default", body=body, headers=headers
         )
         return DefaultNamespaceSetting.from_dict(res)
+
+
+class DefaultWarehouseIdAPI:
+    """Warehouse to be selected by default for users in this workspace. Covers SQL workloads only and can be
+    overridden by users."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDefaultWarehouseIdResponse:
+        """Reverts the Default Warehouse Id setting to its default value.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`DeleteDefaultWarehouseIdResponse`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "DELETE", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
+        )
+        return DeleteDefaultWarehouseIdResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DefaultWarehouseId:
+        """Gets the Default Warehouse Id setting.
+
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+
+        :returns: :class:`DefaultWarehouseId`
+        """
+
+        query = {}
+        if etag is not None:
+            query["etag"] = etag
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
+        )
+        return DefaultWarehouseId.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DefaultWarehouseId, field_mask: str) -> DefaultWarehouseId:
+        """Updates the Default Warehouse Id setting.
+
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DefaultWarehouseId`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`DefaultWarehouseId`
+        """
+        body = {}
+        if allow_missing is not None:
+            body["allow_missing"] = allow_missing
+        if field_mask is not None:
+            body["field_mask"] = field_mask
+        if setting is not None:
+            body["setting"] = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", "/api/2.0/settings/types/default_warehouse_id/names/default", body=body, headers=headers
+        )
+        return DefaultWarehouseId.from_dict(res)
 
 
 class DisableLegacyAccessAPI:
@@ -8484,10 +6998,6 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
 
         :returns: :class:`CreateIpAccessListResponse`
@@ -8576,10 +7086,6 @@ class IpAccessListsAPI:
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -8633,10 +7139,6 @@ class IpAccessListsAPI:
         :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
-          Type of IP access list. Valid values are as follows and are case-sensitive:
-
-          * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-          range. IP addresses in the block list are excluded even if they are included in an allow list.
 
 
         """
@@ -8933,7 +7435,6 @@ class NetworkConnectivityAPI:
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 
         :param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`
-          Properties of the new network connectivity configuration.
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
@@ -8964,8 +7465,6 @@ class NetworkConnectivityAPI:
         :param network_connectivity_config_id: str
           Your Network Connectivity Configuration ID.
         :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
 
         :returns: :class:`NccPrivateEndpointRule`
         """
@@ -9157,8 +7656,6 @@ class NetworkConnectivityAPI:
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
         :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
-          Properties of the new private endpoint rule. Note that you must approve the endpoint in Azure portal
-          after initialization.
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -9203,6 +7700,7 @@ class NetworkPoliciesAPI:
         environment.
 
         :param network_policy: :class:`AccountNetworkPolicy`
+          Network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         """
@@ -9287,6 +7785,7 @@ class NetworkPoliciesAPI:
         :param network_policy_id: str
           The unique identifier for the network policy.
         :param network_policy: :class:`AccountNetworkPolicy`
+          Updated network policy configuration details.
 
         :returns: :class:`AccountNetworkPolicy`
         """
@@ -9653,6 +8152,7 @@ class SettingsAPI:
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._dashboard_email_subscriptions = DashboardEmailSubscriptionsAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
+        self._default_warehouse_id = DefaultWarehouseIdAPI(self._api)
         self._disable_legacy_access = DisableLegacyAccessAPI(self._api)
         self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
         self._enable_export_notebook = EnableExportNotebookAPI(self._api)
@@ -9692,6 +8192,11 @@ class SettingsAPI:
     def default_namespace(self) -> DefaultNamespaceAPI:
         """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
         return self._default_namespace
+
+    @property
+    def default_warehouse_id(self) -> DefaultWarehouseIdAPI:
+        """Warehouse to be selected by default for users in this workspace."""
+        return self._default_warehouse_id
 
     @property
     def disable_legacy_access(self) -> DisableLegacyAccessAPI:
@@ -10136,6 +8641,7 @@ class WorkspaceNetworkConfigurationAPI:
         :param workspace_id: int
           The workspace ID.
         :param workspace_network_option: :class:`WorkspaceNetworkOption`
+          The network option details for the workspace.
 
         :returns: :class:`WorkspaceNetworkOption`
         """

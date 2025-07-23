@@ -42,7 +42,6 @@
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
-          The delta sharing authentication type.
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)

@@ -1,25 +1,20 @@
 # NEXT CHANGELOG
 
-## Release v0.58.0
+## Release v0.60.0
 
 ### New Features and Improvements
 
+* Added headers to HttpRequestResponse in OpenAI client.
+
 ### Bug Fixes
+
+- Correctly issue in OIDC implementation that prevented the use of the feature (see #994).
+- Fix a reported issue where `FilesExt` fails to retry if it receives certain status code from server.
 
 ### Documentation
 
 ### Internal Changes
 
+- Refactor unit tests for `FilesExt` to improve its readability.
+
 ### API Changes
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterAttributes`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterDetails`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterSpec`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.CreateCluster`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.CreateInstancePool`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.EditCluster`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.EditInstancePool`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.GetInstancePool`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.InstancePoolAndStats`.
-* Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.UpdateClusterResource`.
-* Added `r` enum value for `databricks.sdk.service.compute.Language`.
-* Added `continuous` and `continuous_restart` enum values for `databricks.sdk.service.jobs.TriggerType`.

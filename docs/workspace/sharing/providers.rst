@@ -38,7 +38,6 @@
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
-          The delta sharing authentication type.
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)
@@ -102,12 +101,25 @@
 
         .. code-block::
 
+            import time
+            
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import sharing
             
             w = WorkspaceClient()
             
-            all = w.providers.list(sharing.ListProvidersRequest())
+            public_share_recipient = """{
+                    "shareCredentialsVersion":1,
+                    "bearerToken":"dapiabcdefghijklmonpqrstuvwxyz",
+                    "endpoint":"https://sharing.delta.io/delta-sharing/"
+                }
+            """
+            
+            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
+            
+            shares = w.providers.list_shares(name=created.name)
+            
+            # cleanup
+            w.providers.delete(name=created.name)
 
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There

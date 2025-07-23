@@ -10,15 +10,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActivityAction
 
-   An action that a user (with sufficient permissions) could take on an activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+   An action that a user (with sufficient permissions) could take on an activity or comment.
+   For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+   For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
+   * `DELETE_COMMENT`: Delete the comment
 
    .. py:attribute:: APPROVE_TRANSITION_REQUEST
       :value: "APPROVE_TRANSITION_REQUEST"
 
    .. py:attribute:: CANCEL_TRANSITION_REQUEST
       :value: "CANCEL_TRANSITION_REQUEST"
+
+   .. py:attribute:: DELETE_COMMENT
+      :value: "DELETE_COMMENT"
+
+   .. py:attribute:: EDIT_COMMENT
+      :value: "EDIT_COMMENT"
 
    .. py:attribute:: REJECT_TRANSITION_REQUEST
       :value: "REJECT_TRANSITION_REQUEST"
@@ -53,18 +62,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SYSTEM_TRANSITION
       :value: "SYSTEM_TRANSITION"
 
-.. autoclass:: ApproveTransitionRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: ApproveTransitionRequestResponse
    :members:
    :undoc-members:
 
 .. py:class:: CommentActivityAction
 
-   An action that a user (with sufficient permissions) could take on a comment. Valid values are: * `EDIT_COMMENT`: Edit the comment
+   An action that a user (with sufficient permissions) could take on an activity or comment.
+   For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+   * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+   * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+   For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
    * `DELETE_COMMENT`: Delete the comment
+
+   .. py:attribute:: APPROVE_TRANSITION_REQUEST
+      :value: "APPROVE_TRANSITION_REQUEST"
+
+   .. py:attribute:: CANCEL_TRANSITION_REQUEST
+      :value: "CANCEL_TRANSITION_REQUEST"
 
    .. py:attribute:: DELETE_COMMENT
       :value: "DELETE_COMMENT"
@@ -72,11 +87,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EDIT_COMMENT
       :value: "EDIT_COMMENT"
 
-.. autoclass:: CommentObject
-   :members:
-   :undoc-members:
+   .. py:attribute:: REJECT_TRANSITION_REQUEST
+      :value: "REJECT_TRANSITION_REQUEST"
 
-.. autoclass:: CreateComment
+.. autoclass:: CommentObject
    :members:
    :undoc-members:
 
@@ -84,15 +98,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateExperiment
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateExperimentResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateForecastingExperimentRequest
    :members:
    :undoc-members:
 
@@ -100,15 +106,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateLoggedModelRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateLoggedModelResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateModelRequest
    :members:
    :undoc-members:
 
@@ -116,27 +114,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateModelVersionRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateModelVersionResponse
    :members:
    :undoc-members:
 
-.. autoclass:: CreateRegistryWebhook
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateRun
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateRunResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateTransitionRequest
    :members:
    :undoc-members:
 
@@ -157,10 +139,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteCommentResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteExperiment
    :members:
    :undoc-members:
 
@@ -192,27 +170,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteOnlineStoreResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteRun
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteRunResponse
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteRuns
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteRunsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteTag
    :members:
    :undoc-members:
 
@@ -223,20 +185,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DeleteTransitionRequestResponse
    :members:
    :undoc-members:
-
-.. py:class:: DeleteTransitionRequestStage
-
-   .. py:attribute:: ARCHIVED
-      :value: "ARCHIVED"
-
-   .. py:attribute:: NONE
-      :value: "NONE"
-
-   .. py:attribute:: PRODUCTION
-      :value: "PRODUCTION"
-
-   .. py:attribute:: STAGING
-      :value: "STAGING"
 
 .. autoclass:: DeleteWebhookResponse
    :members:
@@ -279,19 +227,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ExperimentPermissionsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: ExperimentTag
    :members:
    :undoc-members:
 
-.. autoclass:: FileInfo
+.. autoclass:: Feature
    :members:
    :undoc-members:
 
-.. autoclass:: FinalizeLoggedModelRequest
+.. autoclass:: FeatureLineage
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureLineageFeatureSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureLineageModel
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureLineageOnlineFeature
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureList
+   :members:
+   :undoc-members:
+
+.. autoclass:: FeatureTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: FileInfo
    :members:
    :undoc-members:
 
@@ -329,10 +297,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetExperimentResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetLatestVersionsRequest
    :members:
    :undoc-members:
 
@@ -396,6 +360,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListFeatureTagsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListModelsResponse
    :members:
    :undoc-members:
@@ -412,15 +380,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: LogBatch
-   :members:
-   :undoc-members:
-
 .. autoclass:: LogBatchResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: LogInputs
    :members:
    :undoc-members:
 
@@ -428,15 +388,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: LogLoggedModelParamsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: LogLoggedModelParamsRequestResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: LogMetric
    :members:
    :undoc-members:
 
@@ -444,23 +396,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: LogModel
-   :members:
-   :undoc-members:
-
 .. autoclass:: LogModelResponse
    :members:
    :undoc-members:
 
-.. autoclass:: LogOutputsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: LogOutputsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: LogParam
    :members:
    :undoc-members:
 
@@ -535,7 +475,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ModelVersionStatus
 
-   Current status of `model_version`
+   The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register a new model version is pending as server performs background tasks.
+   * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+   * `READY`: Model version is ready for use.
 
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"
@@ -582,6 +524,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Permission level of the requesting user on the object. For what is allowed at each level, see [MLflow Model permissions](..).
 
+   .. py:attribute:: CAN_CREATE_REGISTERED_MODEL
+      :value: "CAN_CREATE_REGISTERED_MODEL"
+
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
 
@@ -608,10 +553,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
-
-.. autoclass:: PublishTableRequest
-   :members:
-   :undoc-members:
 
 .. autoclass:: PublishTableResponse
    :members:
@@ -656,9 +597,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RegisteredModelPermissionsRequest
-   :members:
-   :undoc-members:
+.. py:class:: RegistryEmailSubscriptionType
+
+   .. note:: Experimental: This entity may change or be removed in a future release without warning. Email subscription types for registry notifications: - `ALL_EVENTS`: Subscribed to all events. - `DEFAULT`: Default subscription type. - `SUBSCRIBED`: Subscribed to notifications. - `UNSUBSCRIBED`: Not subscribed to notifications.
+
+   .. py:attribute:: ALL_EVENTS
+      :value: "ALL_EVENTS"
+
+   .. py:attribute:: DEFAULT
+      :value: "DEFAULT"
+
+   .. py:attribute:: SUBSCRIBED
+      :value: "SUBSCRIBED"
+
+   .. py:attribute:: UNSUBSCRIBED
+      :value: "UNSUBSCRIBED"
 
 .. autoclass:: RegistryWebhook
    :members:
@@ -717,15 +670,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TEST_MODE
       :value: "TEST_MODE"
 
-.. autoclass:: RejectTransitionRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: RejectTransitionRequestResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: RenameModelRequest
    :members:
    :undoc-members:
 
@@ -733,23 +678,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: RestoreExperiment
-   :members:
-   :undoc-members:
-
 .. autoclass:: RestoreExperimentResponse
    :members:
    :undoc-members:
 
-.. autoclass:: RestoreRun
-   :members:
-   :undoc-members:
-
 .. autoclass:: RestoreRunResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: RestoreRuns
    :members:
    :undoc-members:
 
@@ -796,10 +729,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SearchExperiments
-   :members:
-   :undoc-members:
-
 .. autoclass:: SearchExperimentsResponse
    :members:
    :undoc-members:
@@ -809,10 +738,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SearchLoggedModelsOrderBy
-   :members:
-   :undoc-members:
-
-.. autoclass:: SearchLoggedModelsRequest
    :members:
    :undoc-members:
 
@@ -828,15 +753,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SearchRuns
-   :members:
-   :undoc-members:
-
 .. autoclass:: SearchRunsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetExperimentTag
    :members:
    :undoc-members:
 
@@ -844,15 +761,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SetLoggedModelTagsRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: SetLoggedModelTagsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetModelTagRequest
    :members:
    :undoc-members:
 
@@ -860,41 +769,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: SetModelVersionTagRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: SetModelVersionTagResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetTag
    :members:
    :undoc-members:
 
 .. autoclass:: SetTagResponse
    :members:
    :undoc-members:
-
-.. py:class:: Stage
-
-   Stage of the model version. Valid values are:
-   * `None`: The initial stage of a model version.
-   * `Staging`: Staging or pre-production stage.
-   * `Production`: Production stage.
-   * `Archived`: Archived stage.
-
-   .. py:attribute:: ARCHIVED
-      :value: "ARCHIVED"
-
-   .. py:attribute:: NONE
-      :value: "NONE"
-
-   .. py:attribute:: PRODUCTION
-      :value: "PRODUCTION"
-
-   .. py:attribute:: STAGING
-      :value: "STAGING"
 
 .. py:class:: Status
 
@@ -911,19 +792,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READY
       :value: "READY"
 
-.. autoclass:: TestRegistryWebhook
-   :members:
-   :undoc-members:
-
-.. autoclass:: TestRegistryWebhookRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: TestRegistryWebhookResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: TransitionModelVersionStageDatabricks
    :members:
    :undoc-members:
 
@@ -935,15 +804,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateComment
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateCommentResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateExperiment
    :members:
    :undoc-members:
 
@@ -951,27 +812,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateModelRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateModelResponse
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateModelVersionRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdateModelVersionResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRegistryWebhook
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateRun
    :members:
    :undoc-members:
 

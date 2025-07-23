@@ -30,22 +30,20 @@
             
             w = WorkspaceClient()
             
-            storage_credential = w.storage_credentials.create(
+            credential = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
                 aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
-                comment="created via SDK",
             )
             
-            external_location = w.external_locations.create(
+            created = w.external_locations.create(
                 name=f"sdk-{time.time_ns()}",
-                credential_name=storage_credential.name,
-                comment="created via SDK",
-                url="s3://" + os.environ["TEST_BUCKET"] + "/" + f"sdk-{time.time_ns()}",
+                credential_name=credential.name,
+                url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f"sdk-{time.time_ns()}"),
             )
             
             # cleanup
-            w.storage_credentials.delete(name=storage_credential.name)
-            w.external_locations.delete(name=external_location.name)
+            w.storage_credentials.delete(name=credential.name)
+            w.external_locations.delete(name=created.name)
 
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
@@ -60,15 +58,14 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          [Create:OPT Update:OPT] Whether to enable file events on this external location.
+          Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
-          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          [Create:OPT Update:OPT] File event queue settings.
+          File event queue settings.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -107,20 +104,20 @@
             
             credential = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             created = w.external_locations.create(
                 name=f"sdk-{time.time_ns()}",
                 credential_name=credential.name,
-                url=f's3://{os.environ["TEST_BUCKET"]}/sdk-{time.time_ns()}',
+                url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f"sdk-{time.time_ns()}"),
             )
             
-            _ = w.external_locations.get(get=created.name)
+            _ = w.external_locations.get(name=created.name)
             
             # cleanup
-            w.storage_credentials.delete(delete=credential.name)
-            w.external_locations.delete(delete=created.name)
+            w.storage_credentials.delete(name=credential.name)
+            w.external_locations.delete(name=created.name)
 
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
@@ -142,11 +139,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.external_locations.list(catalog.ListExternalLocationsRequest())
+            all = w.external_locations.list()
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
@@ -213,15 +209,14 @@
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          [Create:OPT Update:OPT] Whether to enable file events on this external location.
+          Whether to enable file events on this external location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
-          Encryption options that apply to clients connecting to cloud storage.
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          [Create:OPT Update:OPT] File event queue settings.
+          File event queue settings.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

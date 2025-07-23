@@ -8,14 +8,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateEndpoint
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateVectorIndexRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CustomTag
    :members:
    :undoc-members:
@@ -115,10 +107,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: PatchEndpointBudgetPolicyRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: PatchEndpointBudgetPolicyResponse
    :members:
    :undoc-members:
@@ -133,14 +121,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
 
-.. autoclass:: QueryVectorIndexNextPageRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: QueryVectorIndexRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: QueryVectorIndexResponse
    :members:
    :undoc-members:
@@ -153,10 +133,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ScanVectorIndexRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: ScanVectorIndexResponse
    :members:
    :undoc-members:
@@ -166,10 +142,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SyncIndexResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateEndpointCustomTagsRequest
    :members:
    :undoc-members:
 
@@ -191,10 +163,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
-
-.. autoclass:: UpsertDataVectorIndexRequest
-   :members:
-   :undoc-members:
 
 .. autoclass:: UpsertDataVectorIndexResponse
    :members:

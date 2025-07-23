@@ -66,9 +66,7 @@
         :param credential_name: str
           The name of the service credential used to generate a temporary credential
         :param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)
-          The Azure cloud options to customize the requested temporary credential
         :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
-          The GCP cloud options to customize the requested temporary credential
 
         :returns: :class:`TemporaryCredentials`
         
@@ -159,13 +157,10 @@
         metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
 
         :param aws_iam_role: :class:`AwsIamRole` (optional)
-          The AWS IAM role configuration
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
-          The Azure managed identity configuration.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)
-          GCP long-lived credential. Databricks-created Google Cloud Storage service account.
         :param external_location_name: str (optional)
           The name of an existing external location to validate. Only applicable for storage credentials
           (purpose is **STORAGE**.)
