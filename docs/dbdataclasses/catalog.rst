@@ -1362,6 +1362,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
+   Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255
+
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
 

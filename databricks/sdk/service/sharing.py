@@ -2121,7 +2121,8 @@ class SharedDataObjectUpdate:
     """One of: **ADD**, **REMOVE**, **UPDATE**."""
 
     data_object: Optional[SharedDataObject] = None
-    """The data object that is being added, removed, or updated."""
+    """The data object that is being added, removed, or updated. The maximum number update data objects
+    allowed is a 100."""
 
     def as_dict(self) -> dict:
         """Serializes the SharedDataObjectUpdate into a dictionary suitable for use as a JSON request body."""
