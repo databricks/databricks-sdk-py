@@ -132,15 +132,24 @@ class CleanRoomAccessRestricted(Enum):
 class CleanRoomAsset:
     """Metadata of the clean room asset"""
 
+    name: str
+    """A fully qualified name that uniquely identifies the asset within the clean room. This is also
+    the name displayed in the clean room UI.
+    
+    For UC securable assets (tables, volumes, etc.), the format is
+    *shared_catalog*.*shared_schema*.*asset_name*
+    
+    For notebooks, the name is the notebook file name."""
+
+    asset_type: CleanRoomAssetAssetType
+    """The type of the asset."""
+
     added_at: Optional[int] = None
     """When the asset is added to the clean room, in epoch milliseconds."""
 
-    asset_type: Optional[CleanRoomAssetAssetType] = None
-    """The type of the asset."""
-
     clean_room_name: Optional[str] = None
-    """The name of the clean room this asset belongs to. This is an output-only field to ensure proper
-    resource identification."""
+    """The name of the clean room this asset belongs to. This field is required for create operations
+    and populated by the server for responses."""
 
     foreign_table: Optional[CleanRoomAssetForeignTable] = None
     """Foreign table details available to all collaborators of the clean room. Present if and only if
@@ -149,15 +158,6 @@ class CleanRoomAsset:
     foreign_table_local_details: Optional[CleanRoomAssetForeignTableLocalDetails] = None
     """Local details for a foreign that are only available to its owner. Present if and only if
     **asset_type** is **FOREIGN_TABLE**"""
-
-    name: Optional[str] = None
-    """A fully qualified name that uniquely identifies the asset within the clean room. This is also
-    the name displayed in the clean room UI.
-    
-    For UC securable assets (tables, volumes, etc.), the format is
-    *shared_catalog*.*shared_schema*.*asset_name*
-    
-    For notebooks, the name is the notebook file name."""
 
     notebook: Optional[CleanRoomAssetNotebook] = None
     """Notebook details available to all collaborators of the clean room. Present if and only if
@@ -314,7 +314,7 @@ class CleanRoomAssetForeignTable:
 
 @dataclass
 class CleanRoomAssetForeignTableLocalDetails:
-    local_name: Optional[str] = None
+    local_name: str
     """The fully qualified name of the foreign table in its owner's local metastore, in the format of
     *catalog*.*schema*.*foreign_table_name*"""
 
@@ -340,12 +340,12 @@ class CleanRoomAssetForeignTableLocalDetails:
 
 @dataclass
 class CleanRoomAssetNotebook:
-    etag: Optional[str] = None
-    """Server generated etag that represents the notebook version."""
-
-    notebook_content: Optional[str] = None
+    notebook_content: str
     """Base 64 representation of the notebook contents. This is the same format as returned by
     :method:workspace/export with the format of **HTML**."""
+
+    etag: Optional[str] = None
+    """Server generated etag that represents the notebook version."""
 
     review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
     """top-level status derived from all reviews"""
@@ -432,7 +432,7 @@ class CleanRoomAssetTable:
 
 @dataclass
 class CleanRoomAssetTableLocalDetails:
-    local_name: Optional[str] = None
+    local_name: str
     """The fully qualified name of the table in its owner's local metastore, in the format of
     *catalog*.*schema*.*table_name*"""
 
@@ -490,7 +490,7 @@ class CleanRoomAssetView:
 
 @dataclass
 class CleanRoomAssetViewLocalDetails:
-    local_name: Optional[str] = None
+    local_name: str
     """The fully qualified name of the view in its owner's local metastore, in the format of
     *catalog*.*schema*.*view_name*"""
 
@@ -516,7 +516,7 @@ class CleanRoomAssetViewLocalDetails:
 
 @dataclass
 class CleanRoomAssetVolumeLocalDetails:
-    local_name: Optional[str] = None
+    local_name: str
     """The fully qualified name of the volume in its owner's local metastore, in the format of
     *catalog*.*schema*.*volume_name*"""
 
@@ -1178,8 +1178,8 @@ class CleanRoomAssetsAPI:
         access the asset. Typically, you should use a group as the clean room owner.
 
         :param clean_room_name: str
-          The name of the clean room this asset belongs to. This is an output-only field to ensure proper
-          resource identification.
+          The name of the clean room this asset belongs to. This field is required for create operations and
+          populated by the server for responses.
         :param asset: :class:`CleanRoomAsset`
 
         :returns: :class:`CleanRoomAsset`

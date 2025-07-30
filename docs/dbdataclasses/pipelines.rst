@@ -158,6 +158,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
+   .. py:attribute:: REDSHIFT
+      :value: "REDSHIFT"
+
    .. py:attribute:: SALESFORCE
       :value: "SALESFORCE"
 
@@ -166,6 +169,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SHAREPOINT
       :value: "SHAREPOINT"
+
+   .. py:attribute:: SQLDW
+      :value: "SQLDW"
 
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"

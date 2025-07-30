@@ -7,7 +7,7 @@ These APIs are available from WorkspaceClient
 .. toctree::
    :maxdepth: 1
 
-   aibuilder/index
+   agentbricks/index
    apps/index
    catalog/index
    cleanrooms/index

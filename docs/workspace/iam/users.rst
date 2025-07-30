@@ -78,9 +78,12 @@
             
             w = WorkspaceClient()
             
-            other_owner = w.users.create(user_name=f"sdk-{time.time_ns()}@example.com")
+            user = w.users.create(
+                display_name=f"sdk-{time.time_ns()}",
+                user_name=f"sdk-{time.time_ns()}@example.com",
+            )
             
-            w.users.delete(id=other_owner.id)
+            w.users.delete(id=user.id)
 
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user.

@@ -23,9 +23,6 @@ class CustomLlm:
     instructions: str
     """Instructions for the custom LLM to follow"""
 
-    optimization_state: State
-    """If optimization is kicked off, tracks the state of the custom LLM"""
-
     agent_artifact_path: Optional[str] = None
 
     creation_time: Optional[str] = None
@@ -44,6 +41,9 @@ class CustomLlm:
     """Guidelines for the custom LLM to adhere to"""
 
     id: Optional[str] = None
+
+    optimization_state: Optional[State] = None
+    """If optimization is kicked off, tracks the state of the custom LLM"""
 
     def as_dict(self) -> dict:
         """Serializes the CustomLlm into a dictionary suitable for use as a JSON request body."""
@@ -190,7 +190,7 @@ class Table:
         )
 
 
-class AiBuilderAPI:
+class AgentBricksAPI:
     """The Custom LLMs service manages state and powers the UI for the Custom LLM product."""
 
     def __init__(self, api_client):
@@ -270,7 +270,7 @@ class AiBuilderAPI:
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/custom-lms/{id}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/custom-llms/{id}", headers=headers)
 
     def get_custom_llm(self, id: str) -> CustomLlm:
         """Get a Custom LLM.

@@ -109,6 +109,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATING
       :value: "UPDATING"
 
+.. py:class:: ProvisioningPhase
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SCAN
+      :value: "PROVISIONING_PHASE_INDEX_SCAN"
+
+   .. py:attribute:: PROVISIONING_PHASE_INDEX_SORT
+      :value: "PROVISIONING_PHASE_INDEX_SORT"
+
+   .. py:attribute:: PROVISIONING_PHASE_MAIN
+      :value: "PROVISIONING_PHASE_MAIN"
+
 .. autoclass:: RequestedClaims
    :members:
    :undoc-members:

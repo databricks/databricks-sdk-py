@@ -707,6 +707,13 @@ class ProvisioningInfoState(Enum):
     UPDATING = "UPDATING"
 
 
+class ProvisioningPhase(Enum):
+
+    PROVISIONING_PHASE_INDEX_SCAN = "PROVISIONING_PHASE_INDEX_SCAN"
+    PROVISIONING_PHASE_INDEX_SORT = "PROVISIONING_PHASE_INDEX_SORT"
+    PROVISIONING_PHASE_MAIN = "PROVISIONING_PHASE_MAIN"
+
+
 @dataclass
 class RequestedClaims:
     permission_set: Optional[RequestedClaimsPermissionSet] = None
@@ -960,6 +967,9 @@ class SyncedTablePipelineProgress:
     """The source table Delta version that was last processed by the pipeline. The pipeline may not
     have completely processed this version yet."""
 
+    provisioning_phase: Optional[ProvisioningPhase] = None
+    """The current phase of the data synchronization pipeline."""
+
     sync_progress_completion: Optional[float] = None
     """The completion ratio of this update. This is a number between 0 and 1."""
 
@@ -976,6 +986,8 @@ class SyncedTablePipelineProgress:
             body["estimated_completion_time_seconds"] = self.estimated_completion_time_seconds
         if self.latest_version_currently_processing is not None:
             body["latest_version_currently_processing"] = self.latest_version_currently_processing
+        if self.provisioning_phase is not None:
+            body["provisioning_phase"] = self.provisioning_phase.value
         if self.sync_progress_completion is not None:
             body["sync_progress_completion"] = self.sync_progress_completion
         if self.synced_row_count is not None:
@@ -991,6 +1003,8 @@ class SyncedTablePipelineProgress:
             body["estimated_completion_time_seconds"] = self.estimated_completion_time_seconds
         if self.latest_version_currently_processing is not None:
             body["latest_version_currently_processing"] = self.latest_version_currently_processing
+        if self.provisioning_phase is not None:
+            body["provisioning_phase"] = self.provisioning_phase
         if self.sync_progress_completion is not None:
             body["sync_progress_completion"] = self.sync_progress_completion
         if self.synced_row_count is not None:
@@ -1005,6 +1019,7 @@ class SyncedTablePipelineProgress:
         return cls(
             estimated_completion_time_seconds=d.get("estimated_completion_time_seconds", None),
             latest_version_currently_processing=d.get("latest_version_currently_processing", None),
+            provisioning_phase=_enum(d, "provisioning_phase", ProvisioningPhase),
             sync_progress_completion=d.get("sync_progress_completion", None),
             synced_row_count=d.get("synced_row_count", None),
             total_row_count=d.get("total_row_count", None),
@@ -1735,7 +1750,7 @@ class DatabaseAPI:
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
         :param update_mask: str
-          The list of fields to update.
+          The list of fields to update. This field is not yet supported, and is ignored by the server.
 
         :returns: :class:`DatabaseInstance`
         """

@@ -218,7 +218,7 @@
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
         :param update_mask: str
-          The list of fields to update.
+          The list of fields to update. This field is not yet supported, and is ignored by the server.
 
         :returns: :class:`DatabaseInstance`
         

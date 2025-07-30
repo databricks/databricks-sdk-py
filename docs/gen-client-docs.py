@@ -260,9 +260,9 @@ class Generator:
             "Create Database Instances and manage their configurations, including integrations with Unity Catalog"
         ),
         Package(
-            "aibuilder",
-            "AI Builder",
-            "Create and manage AI Builder resources."
+            "agentbricks",
+            "Agent Bricks",
+            "Create and manage Agent Bricks resources."
         )
     ]
 
