@@ -208,10 +208,8 @@ class Config:
         the existing provider. Otherwise, it raises a ValueError indicating that
         OAuth tokens are not available for the current authentication method.
         """
-        # Check if the current header factory is an OAuthCredentialsProvider
         if isinstance(self._header_factory, OAuthCredentialsProvider):
             return self._header_factory.oauth_token()
-        # Raise an error for non-OAuth authentication methods
         raise ValueError(
             f"OAuth tokens are not available for {self.auth_type} authentication. "
             f"Use an OAuth-based authentication method to access OAuth tokens."
