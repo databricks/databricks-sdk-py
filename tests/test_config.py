@@ -223,8 +223,11 @@ def test_oauth_token_with_oauth_provider(mocker):
     mock_oauth_provider = mocker.Mock(spec=OAuthCredentialsProvider)
     mock_oauth_provider.oauth_token.return_value = mock_token
 
-    # Create config with mocked header factory
-    config = Config(host="https://test.databricks.com", client_id="test-client-id", client_secret="test-client-secret")
+    # Create config with noop credentials to avoid network calls
+    config = Config(
+        host="https://test.databricks.com",
+        credentials_strategy=noop_credentials
+    )
 
     # Replace the header factory with our mock
     config._header_factory = mock_oauth_provider
@@ -247,8 +250,11 @@ def test_oauth_token_reuses_existing_provider(mocker):
     mock_oauth_provider = mocker.Mock(spec=OAuthCredentialsProvider)
     mock_oauth_provider.oauth_token.return_value = mock_token
 
-    # Create config with mocked header factory
-    config = Config(host="https://test.databricks.com", client_id="test-client-id", client_secret="test-client-secret")
+    # Create config with noop credentials to avoid network calls
+    config = Config(
+        host="https://test.databricks.com",
+        credentials_strategy=noop_credentials
+    )
 
     # Replace the header factory with our mock
     config._header_factory = mock_oauth_provider
