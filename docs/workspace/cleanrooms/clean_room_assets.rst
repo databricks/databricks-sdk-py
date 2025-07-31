@@ -22,6 +22,21 @@
         :returns: :class:`CleanRoomAsset`
         
 
+    .. py:method:: create_clean_room_asset_review(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, notebook_review: NotebookVersionReview) -> CreateCleanRoomAssetReviewResponse
+
+        submit an asset review
+
+        :param clean_room_name: str
+          Name of the clean room
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          can only be NOTEBOOK_FILE for now
+        :param name: str
+          Name of the asset
+        :param notebook_review: :class:`NotebookVersionReview`
+
+        :returns: :class:`CreateCleanRoomAssetReviewResponse`
+        
+
     .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str)
 
         Delete a clean room asset - unshare/remove the asset from the clean room

@@ -80,6 +80,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CleanRoomAutoApprovalRule
+   :members:
+   :undoc-members:
+
+.. py:class:: CleanRoomAutoApprovalRuleAuthorScope
+
+   .. py:attribute:: ANY_AUTHOR
+      :value: "ANY_AUTHOR"
+
 .. autoclass:: CleanRoomCollaborator
    :members:
    :undoc-members:
@@ -152,6 +161,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateCleanRoomAssetReviewResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateCleanRoomOutputCatalogResponse
    :members:
    :undoc-members:
@@ -160,7 +173,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListCleanRoomAssetRevisionsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListCleanRoomAssetsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCleanRoomAutoApprovalRulesResponse
    :members:
    :undoc-members:
 
@@ -169,5 +190,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListCleanRoomsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: NotebookVersionReview
    :members:
    :undoc-members:

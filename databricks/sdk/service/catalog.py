@@ -2361,6 +2361,24 @@ class DeleteCredentialResponse:
 
 
 @dataclass
+class DeleteMonitorResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteMonitorResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteMonitorResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteMonitorResponse:
+        """Deserializes the DeleteMonitorResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteRequestExternalLineage:
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
@@ -5833,7 +5851,7 @@ class MonitorCronSchedule:
     [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
 
     timezone_id: str
-    """The timezone id (e.g., ``"PST"``) in which to evaluate the quartz expression."""
+    """The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."""
 
     pause_status: Optional[MonitorCronSchedulePauseStatus] = None
     """Read only field that indicates whether a schedule is paused or not."""
@@ -5871,16 +5889,21 @@ class MonitorCronSchedule:
 
 
 class MonitorCronSchedulePauseStatus(Enum):
-    """Read only field that indicates whether a schedule is paused or not."""
+    """Source link:
+    https://src.dev.databricks.com/databricks/universe/-/blob/elastic-spark-common/api/messages/schedule.proto
+    Monitoring workflow schedule pause status."""
 
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
+    UNSPECIFIED = "UNSPECIFIED"
 
 
 @dataclass
 class MonitorDataClassificationConfig:
+    """Data classification related configuration."""
+
     enabled: Optional[bool] = None
-    """Whether data classification is enabled."""
+    """Whether to enable data classification."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorDataClassificationConfig into a dictionary suitable for use as a JSON request body."""
@@ -5930,36 +5953,26 @@ class MonitorDestination:
 
 @dataclass
 class MonitorInferenceLog:
+    problem_type: MonitorInferenceLogProblemType
+    """Problem type the model aims to solve."""
+
     timestamp_col: str
-    """Column that contains the timestamps of requests. The column must be one of the following: - A
-    ``TimestampType`` column - A column whose values can be converted to timestamps through the
-    pyspark ``to_timestamp`` [function].
-    
-    [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html"""
+    """Column for the timestamp."""
 
     granularities: List[str]
-    """Granularities for aggregating data into time windows based on their timestamp. Currently the
-    following static granularities are supported: {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``,
-    ``"1 day"``, ``"<n> week(s)"``, ``"1 month"``, ``"1 year"``}."""
-
-    model_id_col: str
-    """Column that contains the id of the model generating the predictions. Metrics will be computed
-    per model id by default, and also across all model ids."""
-
-    problem_type: MonitorInferenceLogProblemType
-    """Problem type the model aims to solve. Determines the type of model-quality metrics that will be
-    computed."""
+    """List of granularities to use when aggregating data into time windows based on their timestamp."""
 
     prediction_col: str
-    """Column that contains the output/prediction from the model."""
+    """Column for the prediction."""
+
+    model_id_col: str
+    """Column for the model identifier."""
 
     label_col: Optional[str] = None
-    """Optional column that contains the ground truth for the prediction."""
+    """Column for the label."""
 
     prediction_proba_col: Optional[str] = None
-    """Optional column that contains the prediction probabilities for each class in a classification
-    problem type. The values in this column should be a map, mapping each class label to the
-    prediction probability for a given sample. The map should be of PySpark MapType()."""
+    """Column for prediction probabilities"""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorInferenceLog into a dictionary suitable for use as a JSON request body."""
@@ -6014,8 +6027,6 @@ class MonitorInferenceLog:
 
 
 class MonitorInferenceLogProblemType(Enum):
-    """Problem type the model aims to solve. Determines the type of model-quality metrics that will be
-    computed."""
 
     PROBLEM_TYPE_CLASSIFICATION = "PROBLEM_TYPE_CLASSIFICATION"
     PROBLEM_TYPE_REGRESSION = "PROBLEM_TYPE_REGRESSION"
@@ -6023,60 +6034,66 @@ class MonitorInferenceLogProblemType(Enum):
 
 @dataclass
 class MonitorInfo:
+    output_schema_name: str
+    """[Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+    {catalog}.{schema}"""
+
     table_name: str
-    """The full name of the table to monitor. Format: __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] UC table to monitor. Format: `catalog.schema.table_name`"""
 
     status: MonitorInfoStatus
-
-    monitor_version: str
-    """The version of the monitor config (e.g. 1,2,3). If negative, the monitor may be corrupted."""
+    """[Create:ERR Update:IGN] The monitor status."""
 
     profile_metrics_table_name: str
-    """The full name of the profile metrics table. Format:
-    __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] Table that stores profile metrics data. Format:
+    `catalog.schema.table_name`."""
 
     drift_metrics_table_name: str
-    """The full name of the drift metrics table. Format:
-    __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] Table that stores drift metrics data. Format:
+    `catalog.schema.table_name`."""
+
+    monitor_version: int
+    """[Create:ERR Update:IGN] Represents the current monitor configuration version in use. The version
+    will be represented in a numeric fashion (1,2,3...). The field has flexibility to take on
+    negative values, which can indicate corrupted monitor_version numbers."""
 
     assets_dir: Optional[str] = None
-    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
+    """[Create:REQ Update:IGN] Field for specifying the absolute path to a custom directory to store
+    data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs."""
 
     baseline_table_name: Optional[str] = None
-    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-    table should also be present in the baseline table."""
+    """[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the
+    data in the monitored `table_name`. The baseline table and the monitored table shall have the
+    same schema."""
 
     custom_metrics: Optional[List[MonitorMetric]] = None
-    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
-    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
-    time windows)."""
+    """[Create:OPT Update:OPT] Custom metrics."""
 
     dashboard_id: Optional[str] = None
-    """Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in
-    PENDING state."""
+    """[Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty
+    if the monitor is in PENDING state."""
 
     data_classification_config: Optional[MonitorDataClassificationConfig] = None
-    """The data classification config for the monitor."""
+    """[Create:OPT Update:OPT] Data classification related config."""
 
     inference_log: Optional[MonitorInferenceLog] = None
-    """Configuration for monitoring inference logs."""
 
     latest_monitor_failure_msg: Optional[str] = None
-    """The latest failure message of the monitor (if any)."""
+    """[Create:ERR Update:IGN] The latest error message for a monitor failure."""
 
     notifications: Optional[MonitorNotifications] = None
-    """The notification settings for the monitor."""
-
-    output_schema_name: Optional[str] = None
-    """Schema where output metric tables are created."""
+    """[Create:OPT Update:OPT] Field for specifying notification settings."""
 
     schedule: Optional[MonitorCronSchedule] = None
-    """The schedule for automatically updating and refreshing metric tables."""
+    """[Create:OPT Update:OPT] The monitor schedule."""
 
     slicing_exprs: Optional[List[str]] = None
-    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
-    expression independently, resulting in a separate slice for each predicate and its complements.
-    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
+    """[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+    data is grouped by each expression independently, resulting in a separate slice for each
+    predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will
+    generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per
+    unique value in `col1`. For high-cardinality columns, only the top 100 unique values by
+    frequency will generate slices."""
 
     snapshot: Optional[MonitorSnapshot] = None
     """Configuration for monitoring snapshot tables."""
@@ -6192,7 +6209,6 @@ class MonitorInfo:
 
 
 class MonitorInfoStatus(Enum):
-    """The status of the monitor."""
 
     MONITOR_STATUS_ACTIVE = "MONITOR_STATUS_ACTIVE"
     MONITOR_STATUS_DELETE_PENDING = "MONITOR_STATUS_DELETE_PENDING"
@@ -6203,6 +6219,8 @@ class MonitorInfoStatus(Enum):
 
 @dataclass
 class MonitorMetric:
+    """Custom metric definition."""
+
     name: str
     """Name of the metric in the output tables."""
 
@@ -6271,10 +6289,10 @@ class MonitorMetric:
 
 
 class MonitorMetricType(Enum):
-    """Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or
-    ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and
-    ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the
-    ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
+    """Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or
+    ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and
+    ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the
+    ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the
     two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
     columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
     metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
@@ -6287,10 +6305,10 @@ class MonitorMetricType(Enum):
 @dataclass
 class MonitorNotifications:
     on_failure: Optional[MonitorDestination] = None
-    """Who to send notifications to on monitor failure."""
+    """Destinations to send notifications on failure/timeout."""
 
     on_new_classification_tag_detected: Optional[MonitorDestination] = None
-    """Who to send notifications to when new data classification tags are detected."""
+    """Destinations to send notifications on new classification tag detected."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorNotifications into a dictionary suitable for use as a JSON request body."""
@@ -6394,13 +6412,14 @@ class MonitorRefreshInfoState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCESS = "SUCCESS"
+    UNKNOWN = "UNKNOWN"
 
 
 class MonitorRefreshInfoTrigger(Enum):
-    """The method by which the refresh was triggered."""
 
     MANUAL = "MANUAL"
     SCHEDULE = "SCHEDULE"
+    UNKNOWN_TRIGGER = "UNKNOWN_TRIGGER"
 
 
 @dataclass
@@ -6430,6 +6449,8 @@ class MonitorRefreshListResponse:
 
 @dataclass
 class MonitorSnapshot:
+    """Snapshot analysis configuration"""
+
     def as_dict(self) -> dict:
         """Serializes the MonitorSnapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6448,17 +6469,15 @@ class MonitorSnapshot:
 
 @dataclass
 class MonitorTimeSeries:
+    """Time series analysis configuration."""
+
     timestamp_col: str
-    """Column that contains the timestamps of requests. The column must be one of the following: - A
-    ``TimestampType`` column - A column whose values can be converted to timestamps through the
-    pyspark ``to_timestamp`` [function].
-    
-    [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html"""
+    """Column for the timestamp."""
 
     granularities: List[str]
     """Granularities for aggregating data into time windows based on their timestamp. Currently the
-    following static granularities are supported: {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``,
-    ``"1 day"``, ``"<n> week(s)"``, ``"1 month"``, ``"1 year"``}."""
+    following static granularities are supported: {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1
+    hour\"``, ``\"1 day\"``, ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorTimeSeries into a dictionary suitable for use as a JSON request body."""
@@ -7360,10 +7379,9 @@ class R2Credentials:
 @dataclass
 class RegenerateDashboardResponse:
     dashboard_id: Optional[str] = None
-    """Id of the regenerated monitoring dashboard."""
 
     parent_folder: Optional[str] = None
-    """The directory where the regenerated dashboard is stored."""
+    """Parent folder is equivalent to {assets_dir}/{tableName}"""
 
     def as_dict(self) -> dict:
         """Serializes the RegenerateDashboardResponse into a dictionary suitable for use as a JSON request body."""
@@ -7723,7 +7741,6 @@ class SchemaInfo:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -12160,34 +12177,28 @@ class OnlineTablesAPI:
 
 class QualityMonitorsAPI:
     """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
-    tables and a dashboard that you can use to monitor table health and set alerts.
-
-    Most write operations require the user to be the owner of the table (or its parent schema or parent
-    catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
-    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
+    tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
+    require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
+    dashboard, computed metrics, or monitor configuration only requires the user to have **SELECT** privileges
+    on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel_refresh(self, table_name: str, refresh_id: str):
-        """Cancel an active monitor refresh for the given refresh ID.
-
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
-
-        Additionally, the call must be made from the workspace where the monitor was created.
+    def cancel_refresh(self, table_name: str, refresh_id: int):
+        """Cancels an already-initiated refresh job.
 
         :param table_name: str
-          Full name of the table.
-        :param refresh_id: str
-          ID of the refresh.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
+        :param refresh_id: int
 
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do(
             "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
@@ -12196,13 +12207,14 @@ class QualityMonitorsAPI:
     def create(
         self,
         table_name: str,
-        assets_dir: str,
         output_schema_name: str,
+        assets_dir: str,
         *,
         baseline_table_name: Optional[str] = None,
         custom_metrics: Optional[List[MonitorMetric]] = None,
         data_classification_config: Optional[MonitorDataClassificationConfig] = None,
         inference_log: Optional[MonitorInferenceLog] = None,
+        latest_monitor_failure_msg: Optional[str] = None,
         notifications: Optional[MonitorNotifications] = None,
         schedule: Optional[MonitorCronSchedule] = None,
         skip_builtin_dashboard: Optional[bool] = None,
@@ -12222,31 +12234,37 @@ class QualityMonitorsAPI:
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          Full name of the table.
-        :param assets_dir: str
-          The directory to store monitoring assets (e.g. dashboard, metric tables).
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
-          Schema where output metric tables are created.
+          [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+          {catalog}.{schema}
+        :param assets_dir: str
+          [Create:REQ Update:IGN] Field for specifying the absolute path to a custom directory to store
+          data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
+          [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
+          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+          [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
+          [Create:OPT Update:OPT] Data classification related config.
         :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
+        :param latest_monitor_failure_msg: str (optional)
+          [Create:ERR Update:IGN] The latest error message for a monitor failure.
         :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
+          [Create:OPT Update:OPT] Field for specifying notification settings.
         :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
+          [Create:OPT Update:OPT] The monitor schedule.
         :param skip_builtin_dashboard: bool (optional)
           Whether to skip creating a default dashboard summarizing data quality metrics.
         :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+          [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+          data is grouped by each expression independently, resulting in a separate slice for each predicate
+          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
+          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeries` (optional)
@@ -12268,6 +12286,8 @@ class QualityMonitorsAPI:
             body["data_classification_config"] = data_classification_config.as_dict()
         if inference_log is not None:
             body["inference_log"] = inference_log.as_dict()
+        if latest_monitor_failure_msg is not None:
+            body["latest_monitor_failure_msg"] = latest_monitor_failure_msg
         if notifications is not None:
             body["notifications"] = notifications.as_dict()
         if output_schema_name is not None:
@@ -12292,7 +12312,7 @@ class QualityMonitorsAPI:
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
-    def delete(self, table_name: str):
+    def delete(self, table_name: str) -> DeleteMonitorResponse:
         """Deletes a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -12306,14 +12326,18 @@ class QualityMonitorsAPI:
         be manually cleaned up (if desired).
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
 
-
+        :returns: :class:`DeleteMonitorResponse`
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
         """Gets a monitor for the specified table.
@@ -12328,7 +12352,8 @@ class QualityMonitorsAPI:
         workspace than where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
         """
@@ -12340,7 +12365,7 @@ class QualityMonitorsAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return MonitorInfo.from_dict(res)
 
-    def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
+    def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
         """Gets info about a specific monitor refresh using the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -12352,7 +12377,7 @@ class QualityMonitorsAPI:
 
         :param table_name: str
           Full name of the table.
-        :param refresh_id: str
+        :param refresh_id: int
           ID of the refresh.
 
         :returns: :class:`MonitorRefreshInfo`
@@ -12378,7 +12403,8 @@ class QualityMonitorsAPI:
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
         """
@@ -12404,7 +12430,8 @@ class QualityMonitorsAPI:
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
           running warehouse will be used.
@@ -12436,7 +12463,8 @@ class QualityMonitorsAPI:
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
         """
@@ -12458,6 +12486,7 @@ class QualityMonitorsAPI:
         dashboard_id: Optional[str] = None,
         data_classification_config: Optional[MonitorDataClassificationConfig] = None,
         inference_log: Optional[MonitorInferenceLog] = None,
+        latest_monitor_failure_msg: Optional[str] = None,
         notifications: Optional[MonitorNotifications] = None,
         schedule: Optional[MonitorCronSchedule] = None,
         slicing_exprs: Optional[List[str]] = None,
@@ -12477,30 +12506,35 @@ class QualityMonitorsAPI:
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
-          Schema where output metric tables are created.
+          [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+          {catalog}.{schema}
         :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
+          [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
+          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+          [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
-          Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING
-          state.
+          [Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty if
+          the monitor is in PENDING state.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
+          [Create:OPT Update:OPT] Data classification related config.
         :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
+        :param latest_monitor_failure_msg: str (optional)
+          [Create:ERR Update:IGN] The latest error message for a monitor failure.
         :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
+          [Create:OPT Update:OPT] Field for specifying notification settings.
         :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
+          [Create:OPT Update:OPT] The monitor schedule.
         :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+          [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+          data is grouped by each expression independently, resulting in a separate slice for each predicate
+          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
+          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeries` (optional)
@@ -12519,6 +12553,8 @@ class QualityMonitorsAPI:
             body["data_classification_config"] = data_classification_config.as_dict()
         if inference_log is not None:
             body["inference_log"] = inference_log.as_dict()
+        if latest_monitor_failure_msg is not None:
+            body["latest_monitor_failure_msg"] = latest_monitor_failure_msg
         if notifications is not None:
             body["notifications"] = notifications.as_dict()
         if output_schema_name is not None:

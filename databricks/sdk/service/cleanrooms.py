@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -541,6 +544,83 @@ class CleanRoomAssetVolumeLocalDetails:
 
 
 @dataclass
+class CleanRoomAutoApprovalRule:
+    author_collaborator_alias: Optional[str] = None
+
+    author_scope: Optional[CleanRoomAutoApprovalRuleAuthorScope] = None
+
+    clean_room_name: Optional[str] = None
+    """The name of the clean room this auto-approval rule belongs to."""
+
+    created_at: Optional[int] = None
+    """Timestamp of when the rule was created, in epoch milliseconds."""
+
+    rule_id: Optional[str] = None
+    """A generated UUID identifying the rule."""
+
+    rule_owner_collaborator_alias: Optional[str] = None
+    """The owner of the rule to whom the rule applies."""
+
+    runner_collaborator_alias: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomAutoApprovalRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.author_collaborator_alias is not None:
+            body["author_collaborator_alias"] = self.author_collaborator_alias
+        if self.author_scope is not None:
+            body["author_scope"] = self.author_scope.value
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.rule_id is not None:
+            body["rule_id"] = self.rule_id
+        if self.rule_owner_collaborator_alias is not None:
+            body["rule_owner_collaborator_alias"] = self.rule_owner_collaborator_alias
+        if self.runner_collaborator_alias is not None:
+            body["runner_collaborator_alias"] = self.runner_collaborator_alias
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomAutoApprovalRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.author_collaborator_alias is not None:
+            body["author_collaborator_alias"] = self.author_collaborator_alias
+        if self.author_scope is not None:
+            body["author_scope"] = self.author_scope
+        if self.clean_room_name is not None:
+            body["clean_room_name"] = self.clean_room_name
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.rule_id is not None:
+            body["rule_id"] = self.rule_id
+        if self.rule_owner_collaborator_alias is not None:
+            body["rule_owner_collaborator_alias"] = self.rule_owner_collaborator_alias
+        if self.runner_collaborator_alias is not None:
+            body["runner_collaborator_alias"] = self.runner_collaborator_alias
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAutoApprovalRule:
+        """Deserializes the CleanRoomAutoApprovalRule from a dictionary."""
+        return cls(
+            author_collaborator_alias=d.get("author_collaborator_alias", None),
+            author_scope=_enum(d, "author_scope", CleanRoomAutoApprovalRuleAuthorScope),
+            clean_room_name=d.get("clean_room_name", None),
+            created_at=d.get("created_at", None),
+            rule_id=d.get("rule_id", None),
+            rule_owner_collaborator_alias=d.get("rule_owner_collaborator_alias", None),
+            runner_collaborator_alias=d.get("runner_collaborator_alias", None),
+        )
+
+
+class CleanRoomAutoApprovalRuleAuthorScope(Enum):
+
+    ANY_AUTHOR = "ANY_AUTHOR"
+
+
+@dataclass
 class CleanRoomCollaborator:
     """Publicly visible clean room collaborator."""
 
@@ -1018,6 +1098,41 @@ class ComplianceSecurityProfile:
 
 
 @dataclass
+class CreateCleanRoomAssetReviewResponse:
+    notebook_review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """top-level status derived from all reviews"""
+
+    notebook_reviews: Optional[List[CleanRoomNotebookReview]] = None
+    """All existing notebook approvals or rejections"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateCleanRoomAssetReviewResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.notebook_review_state is not None:
+            body["notebook_review_state"] = self.notebook_review_state.value
+        if self.notebook_reviews:
+            body["notebook_reviews"] = [v.as_dict() for v in self.notebook_reviews]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCleanRoomAssetReviewResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.notebook_review_state is not None:
+            body["notebook_review_state"] = self.notebook_review_state
+        if self.notebook_reviews:
+            body["notebook_reviews"] = self.notebook_reviews
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCleanRoomAssetReviewResponse:
+        """Deserializes the CreateCleanRoomAssetReviewResponse from a dictionary."""
+        return cls(
+            notebook_review_state=_enum(d, "notebook_review_state", CleanRoomNotebookReviewNotebookReviewState),
+            notebook_reviews=_repeated_dict(d, "notebook_reviews", CleanRoomNotebookReview),
+        )
+
+
+@dataclass
 class CreateCleanRoomOutputCatalogResponse:
     output_catalog: Optional[CleanRoomOutputCatalog] = None
 
@@ -1063,6 +1178,38 @@ class DeleteCleanRoomAssetResponse:
 
 
 @dataclass
+class ListCleanRoomAssetRevisionsResponse:
+    next_page_token: Optional[str] = None
+
+    revisions: Optional[List[CleanRoomAsset]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCleanRoomAssetRevisionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.revisions:
+            body["revisions"] = [v.as_dict() for v in self.revisions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCleanRoomAssetRevisionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.revisions:
+            body["revisions"] = self.revisions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomAssetRevisionsResponse:
+        """Deserializes the ListCleanRoomAssetRevisionsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None), revisions=_repeated_dict(d, "revisions", CleanRoomAsset)
+        )
+
+
+@dataclass
 class ListCleanRoomAssetsResponse:
     assets: Optional[List[CleanRoomAsset]] = None
     """Assets in the clean room."""
@@ -1093,6 +1240,40 @@ class ListCleanRoomAssetsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomAssetsResponse:
         """Deserializes the ListCleanRoomAssetsResponse from a dictionary."""
         return cls(assets=_repeated_dict(d, "assets", CleanRoomAsset), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListCleanRoomAutoApprovalRulesResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages. page_token
+    should be set to this value for the next request (for the next page of results)."""
+
+    rules: Optional[List[CleanRoomAutoApprovalRule]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCleanRoomAutoApprovalRulesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.rules:
+            body["rules"] = [v.as_dict() for v in self.rules]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCleanRoomAutoApprovalRulesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.rules:
+            body["rules"] = self.rules
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomAutoApprovalRulesResponse:
+        """Deserializes the ListCleanRoomAutoApprovalRulesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None), rules=_repeated_dict(d, "rules", CleanRoomAutoApprovalRule)
+        )
 
 
 @dataclass
@@ -1164,6 +1345,130 @@ class ListCleanRoomsResponse:
         )
 
 
+@dataclass
+class NotebookVersionReview:
+    etag: str
+    """etag that identifies the notebook version"""
+
+    review_state: CleanRoomNotebookReviewNotebookReviewState
+    """review outcome"""
+
+    comment: Optional[str] = None
+    """review comment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the NotebookVersionReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.review_state is not None:
+            body["review_state"] = self.review_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotebookVersionReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.etag is not None:
+            body["etag"] = self.etag
+        if self.review_state is not None:
+            body["review_state"] = self.review_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookVersionReview:
+        """Deserializes the NotebookVersionReview from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            etag=d.get("etag", None),
+            review_state=_enum(d, "review_state", CleanRoomNotebookReviewNotebookReviewState),
+        )
+
+
+class CleanRoomAssetRevisionsAPI:
+    """Clean Room Asset Revisions denote new versions of uploaded assets (e.g. notebooks) in the clean room."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, etag: str) -> CleanRoomAsset:
+        """Get a specific revision of an asset
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          Asset type. Only NOTEBOOK_FILE is supported.
+        :param name: str
+          Name of the asset.
+        :param etag: str
+          Revision etag to fetch. If not provided, the latest revision will be returned.
+
+        :returns: :class:`CleanRoomAsset`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions/{etag}",
+            headers=headers,
+        )
+        return CleanRoomAsset.from_dict(res)
+
+    def list(
+        self,
+        clean_room_name: str,
+        asset_type: CleanRoomAssetAssetType,
+        name: str,
+        *,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[CleanRoomAsset]:
+        """List revisions for an asset
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          Asset type. Only NOTEBOOK_FILE is supported.
+        :param name: str
+          Name of the asset.
+        :param page_size: int (optional)
+          Maximum number of asset revisions to return. Defaults to 10.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on the previous query.
+
+        :returns: Iterator over :class:`CleanRoomAsset`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions",
+                query=query,
+                headers=headers,
+            )
+            if "revisions" in json:
+                for v in json["revisions"]:
+                    yield CleanRoomAsset.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+
 class CleanRoomAssetsAPI:
     """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the
     clean room."""
@@ -1192,6 +1497,41 @@ class CleanRoomAssetsAPI:
 
         res = self._api.do("POST", f"/api/2.0/clean-rooms/{clean_room_name}/assets", body=body, headers=headers)
         return CleanRoomAsset.from_dict(res)
+
+    def create_clean_room_asset_review(
+        self,
+        clean_room_name: str,
+        asset_type: CleanRoomAssetAssetType,
+        name: str,
+        notebook_review: NotebookVersionReview,
+    ) -> CreateCleanRoomAssetReviewResponse:
+        """submit an asset review
+
+        :param clean_room_name: str
+          Name of the clean room
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          can only be NOTEBOOK_FILE for now
+        :param name: str
+          Name of the asset
+        :param notebook_review: :class:`NotebookVersionReview`
+
+        :returns: :class:`CreateCleanRoomAssetReviewResponse`
+        """
+        body = {}
+        if notebook_review is not None:
+            body["notebook_review"] = notebook_review.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews",
+            body=body,
+            headers=headers,
+        )
+        return CreateCleanRoomAssetReviewResponse.from_dict(res)
 
     def delete(self, clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str):
         """Delete a clean room asset - unshare/remove the asset from the clean room
@@ -1302,6 +1642,128 @@ class CleanRoomAssetsAPI:
         return CleanRoomAsset.from_dict(res)
 
 
+class CleanRoomAutoApprovalRulesAPI:
+    """Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g.
+    notebook) meeting specific criteria is shared in a clean room."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, clean_room_name: str, auto_approval_rule: CleanRoomAutoApprovalRule) -> CleanRoomAutoApprovalRule:
+        """Create an auto-approval rule
+
+        :param clean_room_name: str
+          The name of the clean room this auto-approval rule belongs to.
+        :param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+        """
+        body = {}
+        if auto_approval_rule is not None:
+            body["auto_approval_rule"] = auto_approval_rule.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules", body=body, headers=headers
+        )
+        return CleanRoomAutoApprovalRule.from_dict(res)
+
+    def delete(self, clean_room_name: str, rule_id: str):
+        """Delete a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+        :param rule_id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers)
+
+    def get(self, clean_room_name: str, rule_id: str) -> CleanRoomAutoApprovalRule:
+        """Get a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+        :param rule_id: str
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", headers=headers
+        )
+        return CleanRoomAutoApprovalRule.from_dict(res)
+
+    def list(
+        self, clean_room_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CleanRoomAutoApprovalRule]:
+        """List all auto-approval rules for the caller
+
+        :param clean_room_name: str
+        :param page_size: int (optional)
+          Maximum number of auto-approval rules to return. Defaults to 100.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`CleanRoomAutoApprovalRule`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules", query=query, headers=headers
+            )
+            if "rules" in json:
+                for v in json["rules"]:
+                    yield CleanRoomAutoApprovalRule.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update(
+        self, clean_room_name: str, rule_id: str, auto_approval_rule: CleanRoomAutoApprovalRule
+    ) -> CleanRoomAutoApprovalRule:
+        """Update a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+          The name of the clean room this auto-approval rule belongs to.
+        :param rule_id: str
+          A generated UUID identifying the rule.
+        :param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`
+          The auto-approval rule to update. The rule_id field is used to identify the rule to update.
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+        """
+        body = auto_approval_rule.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}", body=body, headers=headers
+        )
+        return CleanRoomAutoApprovalRule.from_dict(res)
+
+
 class CleanRoomTaskRunsAPI:
     """Clean room task runs are the executions of notebooks in a clean room."""
 
@@ -1359,7 +1821,32 @@ class CleanRoomsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, clean_room: CleanRoom) -> CleanRoom:
+    def wait_get_clean_room_active(
+        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[CleanRoom], None]] = None
+    ) -> CleanRoom:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (CleanRoomStatusEnum.ACTIVE,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.status
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def create(self, clean_room: CleanRoom) -> Wait[CleanRoom]:
         """Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
         :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
@@ -1370,7 +1857,9 @@ class CleanRoomsAPI:
 
         :param clean_room: :class:`CleanRoom`
 
-        :returns: :class:`CleanRoom`
+        :returns:
+          Long-running operation waiter for :class:`CleanRoom`.
+          See :method:wait_get_clean_room_active for more details.
         """
         body = clean_room.as_dict()
         headers = {
@@ -1378,8 +1867,13 @@ class CleanRoomsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
-        return CleanRoom.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/clean-rooms", body=body, headers=headers)
+        return Wait(
+            self.wait_get_clean_room_active, response=CleanRoom.from_dict(op_response), name=op_response["name"]
+        )
+
+    def create_and_wait(self, clean_room: CleanRoom, timeout=timedelta(minutes=20)) -> CleanRoom:
+        return self.create(clean_room=clean_room).result(timeout=timeout)
 
     def create_output_catalog(
         self, clean_room_name: str, output_catalog: CleanRoomOutputCatalog

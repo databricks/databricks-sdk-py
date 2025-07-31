@@ -5017,6 +5017,10 @@ class QueryMetrics:
     projected_remaining_task_total_time_ms: Optional[int] = None
     """projected remaining work to be done aggregated across all stages in the query, in milliseconds"""
 
+    projected_remaining_wallclock_time_ms: Optional[int] = None
+    """projected lower bound on remaining total task time based on
+    projected_remaining_task_total_time_ms / maximum concurrency"""
+
     provisioning_queue_start_timestamp: Optional[int] = None
     """Timestamp of when the query was enqueued waiting for a cluster to be provisioned for the
     warehouse. This field is optional and will not appear if the query skipped the provisioning
@@ -5102,6 +5106,8 @@ class QueryMetrics:
             body["photon_total_time_ms"] = self.photon_total_time_ms
         if self.projected_remaining_task_total_time_ms is not None:
             body["projected_remaining_task_total_time_ms"] = self.projected_remaining_task_total_time_ms
+        if self.projected_remaining_wallclock_time_ms is not None:
+            body["projected_remaining_wallclock_time_ms"] = self.projected_remaining_wallclock_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
@@ -5161,6 +5167,8 @@ class QueryMetrics:
             body["photon_total_time_ms"] = self.photon_total_time_ms
         if self.projected_remaining_task_total_time_ms is not None:
             body["projected_remaining_task_total_time_ms"] = self.projected_remaining_task_total_time_ms
+        if self.projected_remaining_wallclock_time_ms is not None:
+            body["projected_remaining_wallclock_time_ms"] = self.projected_remaining_wallclock_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body["provisioning_queue_start_timestamp"] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None:
@@ -5215,6 +5223,7 @@ class QueryMetrics:
             overloading_queue_start_timestamp=d.get("overloading_queue_start_timestamp", None),
             photon_total_time_ms=d.get("photon_total_time_ms", None),
             projected_remaining_task_total_time_ms=d.get("projected_remaining_task_total_time_ms", None),
+            projected_remaining_wallclock_time_ms=d.get("projected_remaining_wallclock_time_ms", None),
             provisioning_queue_start_timestamp=d.get("provisioning_queue_start_timestamp", None),
             pruned_bytes=d.get("pruned_bytes", None),
             pruned_files_count=d.get("pruned_files_count", None),
