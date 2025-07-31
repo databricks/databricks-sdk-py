@@ -205,6 +205,7 @@ class AiGatewayGuardrailPiiBehavior:
 class AiGatewayGuardrailPiiBehaviorBehavior(Enum):
 
     BLOCK = "BLOCK"
+    MASK = "MASK"
     NONE = "NONE"
 
 

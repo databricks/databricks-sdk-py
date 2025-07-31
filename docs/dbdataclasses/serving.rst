@@ -25,6 +25,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK
       :value: "BLOCK"
 
+   .. py:attribute:: MASK
+      :value: "MASK"
+
    .. py:attribute:: NONE
       :value: "NONE"
 

@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1358,6 +1361,31 @@ class DatabaseAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def wait_get_database_instance_database_available(
+        self, name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[DatabaseInstance], None]] = None
+    ) -> DatabaseInstance:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (DatabaseInstanceState.AVAILABLE,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_database_instance(name=name)
+            status = poll.state
+            status_message = f"current status: {status}"
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
     def create_database_catalog(self, catalog: DatabaseCatalog) -> DatabaseCatalog:
         """Create a Database Catalog.
 
@@ -1374,13 +1402,15 @@ class DatabaseAPI:
         res = self._api.do("POST", "/api/2.0/database/catalogs", body=body, headers=headers)
         return DatabaseCatalog.from_dict(res)
 
-    def create_database_instance(self, database_instance: DatabaseInstance) -> DatabaseInstance:
+    def create_database_instance(self, database_instance: DatabaseInstance) -> Wait[DatabaseInstance]:
         """Create a Database Instance.
 
         :param database_instance: :class:`DatabaseInstance`
           Instance to create.
 
-        :returns: :class:`DatabaseInstance`
+        :returns:
+          Long-running operation waiter for :class:`DatabaseInstance`.
+          See :method:wait_get_database_instance_database_available for more details.
         """
         body = database_instance.as_dict()
         headers = {
@@ -1388,8 +1418,17 @@ class DatabaseAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/database/instances", body=body, headers=headers)
-        return DatabaseInstance.from_dict(res)
+        op_response = self._api.do("POST", "/api/2.0/database/instances", body=body, headers=headers)
+        return Wait(
+            self.wait_get_database_instance_database_available,
+            response=DatabaseInstance.from_dict(op_response),
+            name=op_response["name"],
+        )
+
+    def create_database_instance_and_wait(
+        self, database_instance: DatabaseInstance, timeout=timedelta(minutes=20)
+    ) -> DatabaseInstance:
+        return self.create_database_instance(database_instance=database_instance).result(timeout=timeout)
 
     def create_database_instance_role(
         self, instance_name: str, database_instance_role: DatabaseInstanceRole

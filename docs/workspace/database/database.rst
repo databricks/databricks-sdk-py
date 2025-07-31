@@ -15,15 +15,20 @@
         :returns: :class:`DatabaseCatalog`
         
 
-    .. py:method:: create_database_instance(database_instance: DatabaseInstance) -> DatabaseInstance
+    .. py:method:: create_database_instance(database_instance: DatabaseInstance) -> Wait[DatabaseInstance]
 
         Create a Database Instance.
 
         :param database_instance: :class:`DatabaseInstance`
           Instance to create.
 
-        :returns: :class:`DatabaseInstance`
+        :returns:
+          Long-running operation waiter for :class:`DatabaseInstance`.
+          See :method:wait_get_database_instance_database_available for more details.
         
+
+    .. py:method:: create_database_instance_and_wait(database_instance: DatabaseInstance, timeout: datetime.timedelta = 0:20:00) -> DatabaseInstance
+
 
     .. py:method:: create_database_instance_role(instance_name: str, database_instance_role: DatabaseInstanceRole) -> DatabaseInstanceRole
 
@@ -222,3 +227,5 @@
 
         :returns: :class:`DatabaseInstance`
         
+
+    .. py:method:: wait_get_database_instance_database_available(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[DatabaseInstance], None]]) -> DatabaseInstance

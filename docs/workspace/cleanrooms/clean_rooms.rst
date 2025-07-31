@@ -8,7 +8,7 @@
     environment where multiple parties can work together on sensitive enterprise data without direct access to
     each other's data.
 
-    .. py:method:: create(clean_room: CleanRoom) -> CleanRoom
+    .. py:method:: create(clean_room: CleanRoom) -> Wait[CleanRoom]
 
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
@@ -20,8 +20,13 @@
 
         :param clean_room: :class:`CleanRoom`
 
-        :returns: :class:`CleanRoom`
+        :returns:
+          Long-running operation waiter for :class:`CleanRoom`.
+          See :method:wait_get_clean_room_active for more details.
         
+
+    .. py:method:: create_and_wait(clean_room: CleanRoom, timeout: datetime.timedelta = 0:20:00) -> CleanRoom
+
 
     .. py:method:: create_output_catalog(clean_room_name: str, output_catalog: CleanRoomOutputCatalog) -> CreateCleanRoomOutputCatalogResponse
 
@@ -81,3 +86,5 @@
 
         :returns: :class:`CleanRoom`
         
+
+    .. py:method:: wait_get_clean_room_active(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[CleanRoom], None]]) -> CleanRoom

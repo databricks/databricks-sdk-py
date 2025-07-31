@@ -59,7 +59,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
-from databricks.sdk.service.cleanrooms import (CleanRoomAssetsAPI,
+from databricks.sdk.service.cleanrooms import (CleanRoomAssetRevisionsAPI,
+                                               CleanRoomAssetsAPI,
+                                               CleanRoomAutoApprovalRulesAPI,
                                                CleanRoomsAPI,
                                                CleanRoomTaskRunsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -247,7 +249,9 @@ class WorkspaceClient:
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
+        self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
         self._clean_room_assets = pkg_cleanrooms.CleanRoomAssetsAPI(self._api_client)
+        self._clean_room_auto_approval_rules = pkg_cleanrooms.CleanRoomAutoApprovalRulesAPI(self._api_client)
         self._clean_room_task_runs = pkg_cleanrooms.CleanRoomTaskRunsAPI(self._api_client)
         self._clean_rooms = pkg_cleanrooms.CleanRoomsAPI(self._api_client)
         self._cluster_policies = pkg_compute.ClusterPoliciesAPI(self._api_client)
@@ -412,9 +416,19 @@ class WorkspaceClient:
         return self._catalogs
 
     @property
+    def clean_room_asset_revisions(self) -> pkg_cleanrooms.CleanRoomAssetRevisionsAPI:
+        """Clean Room Asset Revisions denote new versions of uploaded assets (e.g."""
+        return self._clean_room_asset_revisions
+
+    @property
     def clean_room_assets(self) -> pkg_cleanrooms.CleanRoomAssetsAPI:
         """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room."""
         return self._clean_room_assets
+
+    @property
+    def clean_room_auto_approval_rules(self) -> pkg_cleanrooms.CleanRoomAutoApprovalRulesAPI:
+        """Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g."""
+        return self._clean_room_auto_approval_rules
 
     @property
     def clean_room_task_runs(self) -> pkg_cleanrooms.CleanRoomTaskRunsAPI:

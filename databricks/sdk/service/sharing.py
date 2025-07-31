@@ -727,6 +727,9 @@ class ListProviderShareAssetsResponse:
     notebooks: Optional[List[NotebookFile]] = None
     """The list of notebooks in the share."""
 
+    share: Optional[Share] = None
+    """The metadata of the share."""
+
     tables: Optional[List[Table]] = None
     """The list of tables in the share."""
 
@@ -740,6 +743,8 @@ class ListProviderShareAssetsResponse:
             body["functions"] = [v.as_dict() for v in self.functions]
         if self.notebooks:
             body["notebooks"] = [v.as_dict() for v in self.notebooks]
+        if self.share:
+            body["share"] = self.share.as_dict()
         if self.tables:
             body["tables"] = [v.as_dict() for v in self.tables]
         if self.volumes:
@@ -753,6 +758,8 @@ class ListProviderShareAssetsResponse:
             body["functions"] = self.functions
         if self.notebooks:
             body["notebooks"] = self.notebooks
+        if self.share:
+            body["share"] = self.share
         if self.tables:
             body["tables"] = self.tables
         if self.volumes:
@@ -765,6 +772,7 @@ class ListProviderShareAssetsResponse:
         return cls(
             functions=_repeated_dict(d, "functions", DeltaSharingFunction),
             notebooks=_repeated_dict(d, "notebooks", NotebookFile),
+            share=_from_dict(d, "share", Share),
             tables=_repeated_dict(d, "tables", Table),
             volumes=_repeated_dict(d, "volumes", Volume),
         )
@@ -1815,6 +1823,63 @@ class SecurablePropertiesKvPairs:
     def from_dict(cls, d: Dict[str, Any]) -> SecurablePropertiesKvPairs:
         """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
         return cls(properties=d.get("properties", None))
+
+
+@dataclass
+class Share:
+    comment: Optional[str] = None
+    """The comment of the share."""
+
+    display_name: Optional[str] = None
+    """The display name of the share. If defined, it will be shown in the UI."""
+
+    id: Optional[str] = None
+
+    name: Optional[str] = None
+
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the share."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Share into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Share into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.tags:
+            body["tags"] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Share:
+        """Deserializes the Share from a dictionary."""
+        return cls(
+            comment=d.get("comment", None),
+            display_name=d.get("display_name", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
 
 
 @dataclass
