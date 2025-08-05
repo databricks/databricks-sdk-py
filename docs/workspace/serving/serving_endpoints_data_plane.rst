@@ -9,10 +9,10 @@
 
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
 
-        Query a serving endpoint.
+        Query a serving endpoint
 
         :param name: str
-          The name of the serving endpoint. This field is required.
+          The name of the serving endpoint. This field is required and is provided via the path parameter.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -33,8 +33,8 @@
           The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is a
-          map of strings and should only be used with other chat query fields.
+          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be

@@ -7224,6 +7224,73 @@ class SubscriptionSubscriber:
 
 
 @dataclass
+class TableState:
+    has_seen_updates: Optional[bool] = None
+    """Whether or not the table has seen updates since either the creation of the trigger or the last
+    successful evaluation of the trigger"""
+
+    table_name: Optional[str] = None
+    """Full table name of the table to monitor, e.g. `mycatalog.myschema.mytable`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.has_seen_updates is not None:
+            body["has_seen_updates"] = self.has_seen_updates
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_seen_updates is not None:
+            body["has_seen_updates"] = self.has_seen_updates
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableState:
+        """Deserializes the TableState from a dictionary."""
+        return cls(has_seen_updates=d.get("has_seen_updates", None), table_name=d.get("table_name", None))
+
+
+@dataclass
+class TableTriggerState:
+    last_seen_table_states: Optional[List[TableState]] = None
+
+    using_scalable_monitoring: Optional[bool] = None
+    """Indicates whether the trigger is using scalable monitoring."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_seen_table_states:
+            body["last_seen_table_states"] = [v.as_dict() for v in self.last_seen_table_states]
+        if self.using_scalable_monitoring is not None:
+            body["using_scalable_monitoring"] = self.using_scalable_monitoring
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_seen_table_states:
+            body["last_seen_table_states"] = self.last_seen_table_states
+        if self.using_scalable_monitoring is not None:
+            body["using_scalable_monitoring"] = self.using_scalable_monitoring
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableTriggerState:
+        """Deserializes the TableTriggerState from a dictionary."""
+        return cls(
+            last_seen_table_states=_repeated_dict(d, "last_seen_table_states", TableState),
+            using_scalable_monitoring=d.get("using_scalable_monitoring", None),
+        )
+
+
+@dataclass
 class TableUpdateTriggerConfiguration:
     condition: Optional[Condition] = None
     """The table(s) condition based on which to trigger a job run."""
@@ -7993,11 +8060,15 @@ class TriggerSettings:
 class TriggerStateProto:
     file_arrival: Optional[FileArrivalTriggerState] = None
 
+    table: Optional[TableTriggerState] = None
+
     def as_dict(self) -> dict:
         """Serializes the TriggerStateProto into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.table:
+            body["table"] = self.table.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8005,12 +8076,17 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.table:
+            body["table"] = self.table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerStateProto:
         """Deserializes the TriggerStateProto from a dictionary."""
-        return cls(file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState))
+        return cls(
+            file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            table=_from_dict(d, "table", TableTriggerState),
+        )
 
 
 class TriggerType(Enum):

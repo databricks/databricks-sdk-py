@@ -790,7 +790,7 @@ class RequestedResource:
 
 @dataclass
 class SyncedDatabaseTable:
-    """Next field marker: 12"""
+    """Next field marker: 14"""
 
     name: str
     """Full three-part (catalog, schema, table) name of the table."""
@@ -804,6 +804,14 @@ class SyncedDatabaseTable:
     If this field is specified when creating synced database tables in registered catalogs, the
     database instance name MUST match that of the registered catalog (or the request will be
     rejected)."""
+
+    effective_database_instance_name: Optional[str] = None
+    """The name of the database instance that this table is registered to. This field is always
+    returned, and for tables inside database catalogs is inferred database instance associated with
+    the catalog."""
+
+    effective_logical_database_name: Optional[str] = None
+    """The name of the logical database that this table is registered to."""
 
     logical_database_name: Optional[str] = None
     """Target Postgres database object (logical database) name for this table.
@@ -831,6 +839,10 @@ class SyncedDatabaseTable:
             body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.effective_database_instance_name is not None:
+            body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_logical_database_name is not None:
+            body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
@@ -848,6 +860,10 @@ class SyncedDatabaseTable:
             body["data_synchronization_status"] = self.data_synchronization_status
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.effective_database_instance_name is not None:
+            body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_logical_database_name is not None:
+            body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
@@ -864,6 +880,8 @@ class SyncedDatabaseTable:
         return cls(
             data_synchronization_status=_from_dict(d, "data_synchronization_status", SyncedTableStatus),
             database_instance_name=d.get("database_instance_name", None),
+            effective_database_instance_name=d.get("effective_database_instance_name", None),
+            effective_logical_database_name=d.get("effective_logical_database_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
