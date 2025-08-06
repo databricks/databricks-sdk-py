@@ -948,6 +948,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: TableState
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableTriggerState
+   :members:
+   :undoc-members:
+
 .. autoclass:: TableUpdateTriggerConfiguration
    :members:
    :undoc-members:

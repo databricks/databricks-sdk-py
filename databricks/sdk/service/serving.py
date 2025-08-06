@@ -990,10 +990,13 @@ class DatabricksModelServingConfig:
 @dataclass
 class DataframeSplitInput:
     columns: Optional[List[Any]] = None
+    """Columns array for the dataframe"""
 
     data: Optional[List[Any]] = None
+    """Data array for the dataframe"""
 
     index: Optional[List[int]] = None
+    """Index array for the dataframe"""
 
     def as_dict(self) -> dict:
         """Serializes the DataframeSplitInput into a dictionary suitable for use as a JSON request body."""
@@ -1042,8 +1045,45 @@ class DeleteResponse:
 
 
 @dataclass
+class EmailNotifications:
+    on_update_failure: Optional[List[str]] = None
+    """A list of email addresses to be notified when an endpoint fails to update its configuration or
+    state."""
+
+    on_update_success: Optional[List[str]] = None
+    """A list of email addresses to be notified when an endpoint successfully updates its configuration
+    or state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EmailNotifications into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.on_update_failure:
+            body["on_update_failure"] = [v for v in self.on_update_failure]
+        if self.on_update_success:
+            body["on_update_success"] = [v for v in self.on_update_success]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EmailNotifications into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.on_update_failure:
+            body["on_update_failure"] = self.on_update_failure
+        if self.on_update_success:
+            body["on_update_success"] = self.on_update_success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EmailNotifications:
+        """Deserializes the EmailNotifications from a dictionary."""
+        return cls(
+            on_update_failure=d.get("on_update_failure", None), on_update_success=d.get("on_update_success", None)
+        )
+
+
+@dataclass
 class EmbeddingsV1ResponseEmbeddingElement:
     embedding: Optional[List[float]] = None
+    """The embedding vector"""
 
     index: Optional[int] = None
     """The index of the embedding in the response."""
@@ -3262,11 +3302,11 @@ class ServedModelState:
 
 class ServedModelStateDeployment(Enum):
 
-    ABORTED = "DEPLOYMENT_ABORTED"
-    CREATING = "DEPLOYMENT_CREATING"
-    FAILED = "DEPLOYMENT_FAILED"
-    READY = "DEPLOYMENT_READY"
-    RECOVERING = "DEPLOYMENT_RECOVERING"
+    DEPLOYMENT_ABORTED = "DEPLOYMENT_ABORTED"
+    DEPLOYMENT_CREATING = "DEPLOYMENT_CREATING"
+    DEPLOYMENT_FAILED = "DEPLOYMENT_FAILED"
+    DEPLOYMENT_READY = "DEPLOYMENT_READY"
+    DEPLOYMENT_RECOVERING = "DEPLOYMENT_RECOVERING"
 
 
 @dataclass
@@ -3545,6 +3585,9 @@ class ServingEndpointDetailed:
     description: Optional[str] = None
     """Description of the serving model"""
 
+    email_notifications: Optional[EmailNotifications] = None
+    """Email notification settings."""
+
     endpoint_url: Optional[str] = None
     """Endpoint invocation url if route optimization is enabled for endpoint"""
 
@@ -3593,6 +3636,8 @@ class ServingEndpointDetailed:
             body["data_plane_info"] = self.data_plane_info.as_dict()
         if self.description is not None:
             body["description"] = self.description
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications.as_dict()
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -3632,6 +3677,8 @@ class ServingEndpointDetailed:
             body["data_plane_info"] = self.data_plane_info
         if self.description is not None:
             body["description"] = self.description
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications
         if self.endpoint_url is not None:
             body["endpoint_url"] = self.endpoint_url
         if self.id is not None:
@@ -3665,6 +3712,7 @@ class ServingEndpointDetailed:
             creator=d.get("creator", None),
             data_plane_info=_from_dict(d, "data_plane_info", ModelDataPlaneInfo),
             description=d.get("description", None),
+            email_notifications=_from_dict(d, "email_notifications", EmailNotifications),
             endpoint_url=d.get("endpoint_url", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
@@ -3978,6 +4026,7 @@ class ServingEndpointsAPI:
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         description: Optional[str] = None,
+        email_notifications: Optional[EmailNotifications] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -3996,6 +4045,8 @@ class ServingEndpointsAPI:
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param description: str (optional)
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          Email notification settings.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -4017,6 +4068,8 @@ class ServingEndpointsAPI:
             body["config"] = config.as_dict()
         if description is not None:
             body["description"] = description
+        if email_notifications is not None:
+            body["email_notifications"] = email_notifications.as_dict()
         if name is not None:
             body["name"] = name
         if rate_limits is not None:
@@ -4045,6 +4098,7 @@ class ServingEndpointsAPI:
         budget_policy_id: Optional[str] = None,
         config: Optional[EndpointCoreConfigInput] = None,
         description: Optional[str] = None,
+        email_notifications: Optional[EmailNotifications] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -4055,6 +4109,7 @@ class ServingEndpointsAPI:
             budget_policy_id=budget_policy_id,
             config=config,
             description=description,
+            email_notifications=email_notifications,
             name=name,
             rate_limits=rate_limits,
             route_optimized=route_optimized,
@@ -4068,6 +4123,7 @@ class ServingEndpointsAPI:
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
+        email_notifications: Optional[EmailNotifications] = None,
         tags: Optional[List[EndpointTag]] = None,
     ) -> Wait[ServingEndpointDetailed]:
         """Create a new PT serving endpoint.
@@ -4081,6 +4137,8 @@ class ServingEndpointsAPI:
           The AI Gateway configuration for the serving endpoint.
         :param budget_policy_id: str (optional)
           The budget policy associated with the endpoint.
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          Email notification settings.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
 
@@ -4095,6 +4153,8 @@ class ServingEndpointsAPI:
             body["budget_policy_id"] = budget_policy_id
         if config is not None:
             body["config"] = config.as_dict()
+        if email_notifications is not None:
+            body["email_notifications"] = email_notifications.as_dict()
         if name is not None:
             body["name"] = name
         if tags is not None:
@@ -4118,11 +4178,17 @@ class ServingEndpointsAPI:
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
         budget_policy_id: Optional[str] = None,
+        email_notifications: Optional[EmailNotifications] = None,
         tags: Optional[List[EndpointTag]] = None,
         timeout=timedelta(minutes=20),
     ) -> ServingEndpointDetailed:
         return self.create_provisioned_throughput_endpoint(
-            ai_gateway=ai_gateway, budget_policy_id=budget_policy_id, config=config, name=name, tags=tags
+            ai_gateway=ai_gateway,
+            budget_policy_id=budget_policy_id,
+            config=config,
+            email_notifications=email_notifications,
+            name=name,
+            tags=tags,
         ).result(timeout=timeout)
 
     def delete(self, name: str):
@@ -4422,10 +4488,10 @@ class ServingEndpointsAPI:
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
     ) -> QueryEndpointResponse:
-        """Query a serving endpoint.
+        """Query a serving endpoint
 
         :param name: str
-          The name of the serving endpoint. This field is required.
+          The name of the serving endpoint. This field is required and is provided via the path parameter.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4446,8 +4512,8 @@ class ServingEndpointsAPI:
           The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is a
-          map of strings and should only be used with other chat query fields.
+          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
@@ -4725,10 +4791,10 @@ class ServingEndpointsDataPlaneAPI:
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
     ) -> QueryEndpointResponse:
-        """Query a serving endpoint.
+        """Query a serving endpoint
 
         :param name: str
-          The name of the serving endpoint. This field is required.
+          The name of the serving endpoint. This field is required and is provided via the path parameter.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4749,8 +4815,8 @@ class ServingEndpointsDataPlaneAPI:
           The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is a
-          map of strings and should only be used with other chat query fields.
+          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be

@@ -32,6 +32,8 @@ class App:
     app_status: Optional[ApplicationStatus] = None
 
     budget_policy_id: Optional[str] = None
+    """TODO: Deprecate this field after serverless entitlements are released to all prod stages and the
+    new usage_policy_id is properly populated and used."""
 
     compute_status: Optional[ComputeStatus] = None
 
@@ -49,6 +51,8 @@ class App:
     """The description of the app."""
 
     effective_budget_policy_id: Optional[str] = None
+    """TODO: Deprecate this field after serverless entitlements are released to all prod stages and the
+    new usage_policy_id is properly populated and used."""
 
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
