@@ -25,7 +25,7 @@ def test_open_ai_client_with_custom_params(monkeypatch):
     monkeypatch.setenv("DATABRICKS_HOST", "test_host")
     monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
     w = WorkspaceClient(config=Config())
-    
+
     # Test with timeout and max_retries parameters
     client = w.serving_endpoints.get_open_ai_client(timeout=30.0, max_retries=3)
 
@@ -41,12 +41,10 @@ def test_open_ai_client_with_additional_kwargs(monkeypatch):
     monkeypatch.setenv("DATABRICKS_HOST", "test_host")
     monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
     w = WorkspaceClient(config=Config())
-    
+
     # Test with additional kwargs that OpenAI client might accept
     client = w.serving_endpoints.get_open_ai_client(
-        timeout=60.0,
-        max_retries=5,
-        default_headers={"Custom-Header": "test-value"}
+        timeout=60.0, max_retries=5, default_headers={"Custom-Header": "test-value"}
     )
 
     assert client.base_url == "https://test_host/serving-endpoints/"

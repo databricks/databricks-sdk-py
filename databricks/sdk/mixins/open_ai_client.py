@@ -3,9 +3,7 @@ from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            HttpRequestResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod, HttpRequestResponse, ServingEndpointsAPI
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
@@ -33,12 +31,12 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
     def get_open_ai_client(self, **kwargs):
         """Create an OpenAI client configured for Databricks Model Serving.
-        
+
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
         to query endpoints within the workspace associated with the current WorkspaceClient
         instance.
-        
+
         Args:
             **kwargs: Additional parameters to pass to the OpenAI client constructor.
                 Common parameters include:
@@ -46,18 +44,18 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                 - max_retries (int): Maximum number of retries for failed requests (e.g., 3)
 
                 Any parameter accepted by the OpenAI client constructor can be passed here.
-                
+
         Returns:
             OpenAI: An OpenAI client instance configured for Databricks Model Serving.
-            
+
         Raises:
             ImportError: If the OpenAI library is not installed.
-            
+
         Example:
             >>> client = workspace_client.serving_endpoints.get_open_ai_client()
             >>> # With custom timeout and retries
             >>> client = workspace_client.serving_endpoints.get_open_ai_client(
-            ...     timeout=30.0, 
+            ...     timeout=30.0,
             ...     max_retries=5
             ... )
         """
@@ -74,7 +72,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             "api_key": "no-token",  # Passing in a placeholder to pass validations, this will not be used
             "http_client": self._get_authorized_http_client(),
         }
-        
+
         # Update with any additional parameters passed by the user
         client_params.update(kwargs)
 
