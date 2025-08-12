@@ -19,6 +19,44 @@ def test_open_ai_client(monkeypatch):
     assert client.api_key == "no-token"
 
 
+def test_open_ai_client_with_custom_params(monkeypatch):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+    
+    # Test with timeout and max_retries parameters
+    client = w.serving_endpoints.get_open_ai_client(timeout=30.0, max_retries=3)
+
+    assert client.base_url == "https://test_host/serving-endpoints/"
+    assert client.api_key == "no-token"
+    assert client.timeout == 30.0
+    assert client.max_retries == 3
+
+
+def test_open_ai_client_with_additional_kwargs(monkeypatch):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+    
+    # Test with additional kwargs that OpenAI client might accept
+    client = w.serving_endpoints.get_open_ai_client(
+        timeout=60.0,
+        max_retries=5,
+        default_headers={"Custom-Header": "test-value"}
+    )
+
+    assert client.base_url == "https://test_host/serving-endpoints/"
+    assert client.api_key == "no-token"
+    assert client.timeout == 60.0
+    assert client.max_retries == 5
+    assert "Custom-Header" in client.default_headers
+    assert client.default_headers["Custom-Header"] == "test-value"
+
+
 @pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python > 3.7")
 def test_langchain_open_ai_client(monkeypatch):
     from databricks.sdk import WorkspaceClient
