@@ -4474,6 +4474,7 @@ class ServingEndpointsAPI:
         self,
         name: str,
         *,
+        client_request_id: Optional[str] = None,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
         extra_params: Optional[Dict[str, str]] = None,
@@ -4487,11 +4488,15 @@ class ServingEndpointsAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        usage_context: Optional[Dict[str, str]] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4533,10 +4538,14 @@ class ServingEndpointsAPI:
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         """
         body = {}
+        if client_request_id is not None:
+            body["client_request_id"] = client_request_id
         if dataframe_records is not None:
             body["dataframe_records"] = [v for v in dataframe_records]
         if dataframe_split is not None:
@@ -4563,6 +4572,8 @@ class ServingEndpointsAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if usage_context is not None:
+            body["usage_context"] = usage_context
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4777,6 +4788,7 @@ class ServingEndpointsDataPlaneAPI:
         self,
         name: str,
         *,
+        client_request_id: Optional[str] = None,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
         extra_params: Optional[Dict[str, str]] = None,
@@ -4790,11 +4802,15 @@ class ServingEndpointsDataPlaneAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        usage_context: Optional[Dict[str, str]] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4836,10 +4852,14 @@ class ServingEndpointsDataPlaneAPI:
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         """
         body = {}
+        if client_request_id is not None:
+            body["client_request_id"] = client_request_id
         if dataframe_records is not None:
             body["dataframe_records"] = [v for v in dataframe_records]
         if dataframe_split is not None:
@@ -4866,6 +4886,8 @@ class ServingEndpointsDataPlaneAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if usage_context is not None:
+            body["usage_context"] = usage_context
         data_plane_info = self._data_plane_info_query(
             name=name,
         )

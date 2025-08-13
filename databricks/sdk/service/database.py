@@ -590,6 +590,40 @@ class DeltaTableSyncInfo:
 
 
 @dataclass
+class ListDatabaseCatalogsResponse:
+    database_catalogs: Optional[List[DatabaseCatalog]] = None
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of database catalogs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseCatalogsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_catalogs:
+            body["database_catalogs"] = [v.as_dict() for v in self.database_catalogs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseCatalogsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_catalogs:
+            body["database_catalogs"] = self.database_catalogs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseCatalogsResponse:
+        """Deserializes the ListDatabaseCatalogsResponse from a dictionary."""
+        return cls(
+            database_catalogs=_repeated_dict(d, "database_catalogs", DatabaseCatalog),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListDatabaseInstanceRolesResponse:
     database_instance_roles: Optional[List[DatabaseInstanceRole]] = None
     """List of database instance roles."""
@@ -656,6 +690,40 @@ class ListDatabaseInstancesResponse:
         return cls(
             database_instances=_repeated_dict(d, "database_instances", DatabaseInstance),
             next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class ListSyncedDatabaseTablesResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of synced tables."""
+
+    synced_tables: Optional[List[SyncedDatabaseTable]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSyncedDatabaseTablesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.synced_tables:
+            body["synced_tables"] = [v.as_dict() for v in self.synced_tables]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSyncedDatabaseTablesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.synced_tables:
+            body["synced_tables"] = self.synced_tables
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSyncedDatabaseTablesResponse:
+        """Deserializes the ListSyncedDatabaseTablesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            synced_tables=_repeated_dict(d, "synced_tables", SyncedDatabaseTable),
         )
 
 
@@ -1733,10 +1801,47 @@ class DatabaseAPI:
         res = self._api.do("GET", f"/api/2.0/database/synced_tables/{name}", headers=headers)
         return SyncedDatabaseTable.from_dict(res)
 
+    def list_database_catalogs(
+        self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseCatalog]:
+        """This API is currently unimplemented, but exposed for Terraform support.
+
+        :param instance_name: str
+          Name of the instance to get database catalogs for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseCatalog`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/instances/{instance_name}/catalogs", query=query, headers=headers
+            )
+            if "database_catalogs" in json:
+                for v in json["database_catalogs"]:
+                    yield DatabaseCatalog.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def list_database_instance_roles(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseInstanceRole]:
-        """START OF PG ROLE APIs Section
+        """START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more
+        recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will
+        remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.
 
         :param instance_name: str
         :param page_size: int (optional)
@@ -1798,6 +1903,67 @@ class DatabaseAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_synced_database_tables(
+        self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SyncedDatabaseTable]:
+        """This API is currently unimplemented, but exposed for Terraform support.
+
+        :param instance_name: str
+          Name of the instance to get synced tables for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`SyncedDatabaseTable`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/instances/{instance_name}/synced_tables", query=query, headers=headers
+            )
+            if "synced_tables" in json:
+                for v in json["synced_tables"]:
+                    yield SyncedDatabaseTable.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_database_catalog(
+        self, name: str, database_catalog: DatabaseCatalog, update_mask: str
+    ) -> DatabaseCatalog:
+        """This API is currently unimplemented, but exposed for Terraform support.
+
+        :param name: str
+          The name of the catalog in UC.
+        :param database_catalog: :class:`DatabaseCatalog`
+          Note that updating a database catalog is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`DatabaseCatalog`
+        """
+        body = database_catalog.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/catalogs/{name}", query=query, body=body, headers=headers)
+        return DatabaseCatalog.from_dict(res)
+
     def update_database_instance(
         self, name: str, database_instance: DatabaseInstance, update_mask: str
     ) -> DatabaseInstance:
@@ -1807,7 +1973,8 @@ class DatabaseAPI:
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
         :param update_mask: str
-          The list of fields to update. This field is not yet supported, and is ignored by the server.
+          The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out
+          custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.
 
         :returns: :class:`DatabaseInstance`
         """
@@ -1822,3 +1989,29 @@ class DatabaseAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
         return DatabaseInstance.from_dict(res)
+
+    def update_synced_database_table(
+        self, name: str, synced_table: SyncedDatabaseTable, update_mask: str
+    ) -> SyncedDatabaseTable:
+        """This API is currently unimplemented, but exposed for Terraform support.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+        :param synced_table: :class:`SyncedDatabaseTable`
+          Note that updating a synced database table is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`SyncedDatabaseTable`
+        """
+        body = synced_table.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/synced_tables/{name}", query=query, body=body, headers=headers)
+        return SyncedDatabaseTable.from_dict(res)

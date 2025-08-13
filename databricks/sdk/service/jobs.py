@@ -3037,6 +3037,11 @@ class JobSettings:
     the job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API
     request to `runNow`."""
 
+    usage_policy_id: Optional[str] = None
+    """The id of the user specified usage policy to use for this job. If not specified, a default usage
+    policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for
+    the budget policy used by this workload."""
+
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
 
@@ -3089,6 +3094,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger.as_dict()
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
             body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
@@ -3142,6 +3149,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
             body["webhook_notifications"] = self.webhook_notifications
         return body
@@ -3173,6 +3182,7 @@ class JobSettings:
             tasks=_repeated_dict(d, "tasks", Task),
             timeout_seconds=d.get("timeout_seconds", None),
             trigger=_from_dict(d, "trigger", TriggerSettings),
+            usage_policy_id=d.get("usage_policy_id", None),
             webhook_notifications=_from_dict(d, "webhook_notifications", WebhookNotifications),
         )
 
@@ -7884,6 +7894,8 @@ class TerminationCodeCode(Enum):
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
+    * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will
+    be retried with a mitigation config.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -8437,6 +8449,7 @@ class JobsAPI:
         tasks: Optional[List[Task]] = None,
         timeout_seconds: Optional[int] = None,
         trigger: Optional[TriggerSettings] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> CreateResponse:
         """Create a new job.
@@ -8531,6 +8544,10 @@ class JobsAPI:
           A configuration to trigger a run when certain conditions are met. The default behavior is that the
           job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
           `runNow`.
+        :param usage_policy_id: str (optional)
+          The id of the user specified usage policy to use for this job. If not specified, a default usage
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
@@ -8585,6 +8602,8 @@ class JobsAPI:
             body["timeout_seconds"] = timeout_seconds
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
         headers = {
@@ -9381,6 +9400,7 @@ class JobsAPI:
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> Wait[Run]:
         """Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -9432,6 +9452,9 @@ class JobsAPI:
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
+        :param usage_policy_id: str (optional)
+          The user specified id of the usage policy to use for this one-time run. If not specified, a default
+          usage policy may be applied when creating or modifying the job.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes.
 
@@ -9466,6 +9489,8 @@ class JobsAPI:
             body["tasks"] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None:
             body["timeout_seconds"] = timeout_seconds
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
         headers = {
@@ -9496,6 +9521,7 @@ class JobsAPI:
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
         timeout=timedelta(minutes=20),
     ) -> Run:
@@ -9513,6 +9539,7 @@ class JobsAPI:
             run_name=run_name,
             tasks=tasks,
             timeout_seconds=timeout_seconds,
+            usage_policy_id=usage_policy_id,
             webhook_notifications=webhook_notifications,
         ).result(timeout=timeout)
 

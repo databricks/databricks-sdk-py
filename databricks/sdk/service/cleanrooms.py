@@ -142,7 +142,8 @@ class CleanRoomAsset:
     For UC securable assets (tables, volumes, etc.), the format is
     *shared_catalog*.*shared_schema*.*asset_name*
     
-    For notebooks, the name is the notebook file name."""
+    For notebooks, the name is the notebook file name. For jar analyses, the name is the jar
+    analysis name."""
 
     asset_type: CleanRoomAssetAssetType
     """The type of the asset."""
@@ -351,7 +352,7 @@ class CleanRoomAssetNotebook:
     """Server generated etag that represents the notebook version."""
 
     review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
-    """top-level status derived from all reviews"""
+    """Top-level status derived from all reviews"""
 
     reviews: Optional[List[CleanRoomNotebookReview]] = None
     """All existing approvals or rejections"""
@@ -546,8 +547,12 @@ class CleanRoomAssetVolumeLocalDetails:
 @dataclass
 class CleanRoomAutoApprovalRule:
     author_collaborator_alias: Optional[str] = None
+    """Collaborator alias of the author covered by the rule. Only one of `author_collaborator_alias`
+    and `author_scope` can be set."""
 
     author_scope: Optional[CleanRoomAutoApprovalRuleAuthorScope] = None
+    """Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope`
+    can be set."""
 
     clean_room_name: Optional[str] = None
     """The name of the clean room this auto-approval rule belongs to."""
@@ -562,6 +567,7 @@ class CleanRoomAutoApprovalRule:
     """The owner of the rule to whom the rule applies."""
 
     runner_collaborator_alias: Optional[str] = None
+    """Collaborator alias of the runner covered by the rule."""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAutoApprovalRule into a dictionary suitable for use as a JSON request body."""
@@ -704,19 +710,19 @@ class CleanRoomCollaborator:
 @dataclass
 class CleanRoomNotebookReview:
     comment: Optional[str] = None
-    """review comment"""
+    """Review comment"""
 
     created_at_millis: Optional[int] = None
-    """timestamp of when the review was submitted"""
+    """When the review was submitted, in epoch milliseconds"""
 
     review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
-    """review outcome"""
+    """Review outcome"""
 
     review_sub_reason: Optional[CleanRoomNotebookReviewNotebookReviewSubReason] = None
-    """specified when the review was not explicitly made by a user"""
+    """Specified when the review was not explicitly made by a user"""
 
     reviewer_collaborator_alias: Optional[str] = None
-    """collaborator alias of the reviewer"""
+    """Collaborator alias of the reviewer"""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomNotebookReview into a dictionary suitable for use as a JSON request body."""
@@ -1100,7 +1106,7 @@ class ComplianceSecurityProfile:
 @dataclass
 class CreateCleanRoomAssetReviewResponse:
     notebook_review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
-    """top-level status derived from all reviews"""
+    """Top-level status derived from all reviews"""
 
     notebook_reviews: Optional[List[CleanRoomNotebookReview]] = None
     """All existing notebook approvals or rejections"""
@@ -1348,13 +1354,13 @@ class ListCleanRoomsResponse:
 @dataclass
 class NotebookVersionReview:
     etag: str
-    """etag that identifies the notebook version"""
+    """Etag identifying the notebook version"""
 
     review_state: CleanRoomNotebookReviewNotebookReviewState
-    """review outcome"""
+    """Review outcome"""
 
     comment: Optional[str] = None
-    """review comment"""
+    """Review comment"""
 
     def as_dict(self) -> dict:
         """Serializes the NotebookVersionReview into a dictionary suitable for use as a JSON request body."""
@@ -1505,12 +1511,12 @@ class CleanRoomAssetsAPI:
         name: str,
         notebook_review: NotebookVersionReview,
     ) -> CreateCleanRoomAssetReviewResponse:
-        """submit an asset review
+        """Submit an asset review
 
         :param clean_room_name: str
           Name of the clean room
         :param asset_type: :class:`CleanRoomAssetAssetType`
-          can only be NOTEBOOK_FILE for now
+          Asset type. Can only be NOTEBOOK_FILE.
         :param name: str
           Name of the asset
         :param notebook_review: :class:`NotebookVersionReview`
@@ -1620,7 +1626,8 @@ class CleanRoomAssetsAPI:
           For UC securable assets (tables, volumes, etc.), the format is
           *shared_catalog*.*shared_schema*.*asset_name*
 
-          For notebooks, the name is the notebook file name.
+          For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
+          name.
         :param asset: :class:`CleanRoomAsset`
           The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
           update.
