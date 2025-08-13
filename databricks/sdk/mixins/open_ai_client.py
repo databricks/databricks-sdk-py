@@ -3,9 +3,11 @@ from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            HttpRequestResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import (
+    ExternalFunctionRequestHttpMethod,
+    HttpRequestResponse,
+    ServingEndpointsAPI,
+)
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
@@ -44,14 +46,19 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                 Common parameters include:
                 - timeout (float): Request timeout in seconds (e.g., 30.0)
                 - max_retries (int): Maximum number of retries for failed requests (e.g., 3)
+                - default_headers (dict): Additional headers to include with requests
+                - default_query (dict): Additional query parameters to include with requests
 
-                Any parameter accepted by the OpenAI client constructor can be passed here.
+                Any parameter accepted by the OpenAI client constructor can be passed here,
+                except for the following parameters which are reserved for Databricks integration:
+                base_url, api_key, http_client
 
         Returns:
             OpenAI: An OpenAI client instance configured for Databricks Model Serving.
 
         Raises:
             ImportError: If the OpenAI library is not installed.
+            ValueError: If any reserved Databricks parameters are provided in kwargs.
 
         Example:
             >>> client = workspace_client.serving_endpoints.get_open_ai_client()
@@ -66,6 +73,15 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         except Exception:
             raise ImportError(
                 "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
+            )
+
+        # Check for reserved parameters that should not be overridden
+        reserved_params = {"base_url", "api_key", "http_client"}
+        conflicting_params = reserved_params.intersection(kwargs.keys())
+        if conflicting_params:
+            raise ValueError(
+                f"Cannot override reserved Databricks parameters: {', '.join(sorted(conflicting_params))}. "
+                f"These parameters are automatically configured for Databricks Model Serving."
             )
 
         # Default parameters that are required for Databricks integration

@@ -55,6 +55,30 @@ def test_open_ai_client_with_additional_kwargs(monkeypatch):
     assert client.default_headers["Custom-Header"] == "test-value"
 
 
+def test_open_ai_client_prevents_reserved_param_override(monkeypatch):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
+    # Test that trying to override base_url raises an error
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: base_url"):
+        w.serving_endpoints.get_open_ai_client(base_url="https://custom-host")
+
+    # Test that trying to override api_key raises an error
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: api_key"):
+        w.serving_endpoints.get_open_ai_client(api_key="custom-key")
+
+    # Test that trying to override http_client raises an error
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: http_client"):
+        w.serving_endpoints.get_open_ai_client(http_client=None)
+
+    # Test that trying to override multiple reserved params shows all of them
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: api_key, base_url"):
+        w.serving_endpoints.get_open_ai_client(base_url="https://custom-host", api_key="custom-key")
+
+
 @pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python > 3.7")
 def test_langchain_open_ai_client(monkeypatch):
     from databricks.sdk import WorkspaceClient
