@@ -20,6 +20,50 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class AccessRequestDestinations:
+    destinations: List[NotificationDestination]
+    """The access request destinations for the securable."""
+
+    securable: Securable
+    """The securable for which the access request destinations are being retrieved."""
+
+    are_any_destinations_hidden: Optional[bool] = None
+    """Indicates whether any destinations are hidden from the caller due to a lack of permissions. This
+    value is true if the caller does not have permission to see all destinations."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.are_any_destinations_hidden is not None:
+            body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destinations:
+            body["destinations"] = [v.as_dict() for v in self.destinations]
+        if self.securable:
+            body["securable"] = self.securable.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccessRequestDestinations into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.are_any_destinations_hidden is not None:
+            body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destinations:
+            body["destinations"] = self.destinations
+        if self.securable:
+            body["securable"] = self.securable
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccessRequestDestinations:
+        """Deserializes the AccessRequestDestinations from a dictionary."""
+        return cls(
+            are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
+            destinations=_repeated_dict(d, "destinations", NotificationDestination),
+            securable=_from_dict(d, "securable", Securable),
+        )
+
+
+@dataclass
 class AccountsMetastoreAssignment:
     metastore_assignment: Optional[MetastoreAssignment] = None
 
@@ -707,6 +751,31 @@ class AzureUserDelegationSas:
 
 
 @dataclass
+class BatchCreateAccessRequestsResponse:
+    responses: Optional[List[CreateAccessRequestResponse]] = None
+    """The access request destinations for each securable object the principal requested."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchCreateAccessRequestsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.responses:
+            body["responses"] = [v.as_dict() for v in self.responses]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BatchCreateAccessRequestsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.responses:
+            body["responses"] = self.responses
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BatchCreateAccessRequestsResponse:
+        """Deserializes the BatchCreateAccessRequestsResponse from a dictionary."""
+        return cls(responses=_repeated_dict(d, "responses", CreateAccessRequestResponse))
+
+
+@dataclass
 class CancelRefreshResponse:
     def as_dict(self) -> dict:
         """Serializes the CancelRefreshResponse into a dictionary suitable for use as a JSON request body."""
@@ -1294,9 +1363,6 @@ class ConnectionInfo:
     credential_type: Optional[CredentialType] = None
     """The type of credential."""
 
-    environment_settings: Optional[EnvironmentSettings] = None
-    """[Create,Update:OPT] Connection environment settings as EnvironmentSettings object."""
-
     full_name: Optional[str] = None
     """Full name of connection."""
 
@@ -1346,8 +1412,6 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type.value
-        if self.environment_settings:
-            body["environment_settings"] = self.environment_settings.as_dict()
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1389,8 +1453,6 @@ class ConnectionInfo:
             body["created_by"] = self.created_by
         if self.credential_type is not None:
             body["credential_type"] = self.credential_type
-        if self.environment_settings:
-            body["environment_settings"] = self.environment_settings
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.metastore_id is not None:
@@ -1427,7 +1489,6 @@ class ConnectionInfo:
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
             credential_type=_enum(d, "credential_type", CredentialType),
-            environment_settings=_from_dict(d, "environment_settings", EnvironmentSettings),
             full_name=d.get("full_name", None),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -1513,6 +1574,93 @@ class ContinuousUpdateStatus:
             initial_pipeline_sync_progress=_from_dict(d, "initial_pipeline_sync_progress", PipelineProgress),
             last_processed_commit_version=d.get("last_processed_commit_version", None),
             timestamp=d.get("timestamp", None),
+        )
+
+
+@dataclass
+class CreateAccessRequest:
+    behalf_of: Optional[Principal] = None
+    """Optional. The principal this request is for. Empty `behalf_of` defaults to the requester's
+    identity.
+    
+    Principals must be unique across the API call."""
+
+    comment: Optional[str] = None
+    """Optional. Comment associated with the request.
+    
+    At most 200 characters, can only contain lowercase/uppercase letters (a-z, A-Z), numbers (0-9),
+    punctuation, and spaces."""
+
+    securable_permissions: Optional[List[SecurablePermissions]] = None
+    """List of securables and their corresponding requested UC privileges.
+    
+    At most 30 securables can be requested for a principal per batched call. Each securable can only
+    be requested once per principal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAccessRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.behalf_of:
+            body["behalf_of"] = self.behalf_of.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.securable_permissions:
+            body["securable_permissions"] = [v.as_dict() for v in self.securable_permissions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAccessRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.behalf_of:
+            body["behalf_of"] = self.behalf_of
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.securable_permissions:
+            body["securable_permissions"] = self.securable_permissions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAccessRequest:
+        """Deserializes the CreateAccessRequest from a dictionary."""
+        return cls(
+            behalf_of=_from_dict(d, "behalf_of", Principal),
+            comment=d.get("comment", None),
+            securable_permissions=_repeated_dict(d, "securable_permissions", SecurablePermissions),
+        )
+
+
+@dataclass
+class CreateAccessRequestResponse:
+    behalf_of: Optional[Principal] = None
+    """The principal the request was made on behalf of."""
+
+    request_destinations: Optional[List[AccessRequestDestinations]] = None
+    """The access request destinations for all the securables the principal requested."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAccessRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.behalf_of:
+            body["behalf_of"] = self.behalf_of.as_dict()
+        if self.request_destinations:
+            body["request_destinations"] = [v.as_dict() for v in self.request_destinations]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAccessRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.behalf_of:
+            body["behalf_of"] = self.behalf_of
+        if self.request_destinations:
+            body["request_destinations"] = self.request_destinations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAccessRequestResponse:
+        """Deserializes the CreateAccessRequestResponse from a dictionary."""
+        return cls(
+            behalf_of=_from_dict(d, "behalf_of", Principal),
+            request_destinations=_repeated_dict(d, "request_destinations", AccessRequestDestinations),
         )
 
 
@@ -2635,6 +2783,15 @@ class DependencyList:
         return cls(dependencies=_repeated_dict(d, "dependencies", Dependency))
 
 
+class DestinationType(Enum):
+
+    EMAIL = "EMAIL"
+    GENERIC_WEBHOOK = "GENERIC_WEBHOOK"
+    MICROSOFT_TEAMS = "MICROSOFT_TEAMS"
+    SLACK = "SLACK"
+    URL = "URL"
+
+
 @dataclass
 class DisableResponse:
     def as_dict(self) -> dict:
@@ -2869,38 +3026,6 @@ class EncryptionDetails:
     def from_dict(cls, d: Dict[str, Any]) -> EncryptionDetails:
         """Deserializes the EncryptionDetails from a dictionary."""
         return cls(sse_encryption_details=_from_dict(d, "sse_encryption_details", SseEncryptionDetails))
-
-
-@dataclass
-class EnvironmentSettings:
-    environment_version: Optional[str] = None
-
-    java_dependencies: Optional[List[str]] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the EnvironmentSettings into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.environment_version is not None:
-            body["environment_version"] = self.environment_version
-        if self.java_dependencies:
-            body["java_dependencies"] = [v for v in self.java_dependencies]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the EnvironmentSettings into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.environment_version is not None:
-            body["environment_version"] = self.environment_version
-        if self.java_dependencies:
-            body["java_dependencies"] = self.java_dependencies
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> EnvironmentSettings:
-        """Deserializes the EnvironmentSettings from a dictionary."""
-        return cls(
-            environment_version=d.get("environment_version", None), java_dependencies=d.get("java_dependencies", None)
-        )
 
 
 @dataclass
@@ -6764,6 +6889,55 @@ class NamedTableConstraint:
 
 
 @dataclass
+class NotificationDestination:
+    destination_id: Optional[str] = None
+    """The identifier for the destination. This is the email address for EMAIL destinations, the URL
+    for URL destinations, or the unique Databricks notification destination ID for all other
+    external destinations."""
+
+    destination_type: Optional[DestinationType] = None
+    """The type of the destination."""
+
+    special_destination: Optional[SpecialDestination] = None
+    """This field is used to denote whether the destination is the email of the owner of the securable
+    object. The special destination cannot be assigned to a securable and only represents the
+    default destination of the securable. The securable types that support default special
+    destinations are: "catalog", "external_location", "connection", "credential", and "metastore".
+    The **destination_type** of a **special_destination** is always EMAIL."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.destination_type is not None:
+            body["destination_type"] = self.destination_type.value
+        if self.special_destination is not None:
+            body["special_destination"] = self.special_destination.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotificationDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None:
+            body["destination_id"] = self.destination_id
+        if self.destination_type is not None:
+            body["destination_type"] = self.destination_type
+        if self.special_destination is not None:
+            body["special_destination"] = self.special_destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NotificationDestination:
+        """Deserializes the NotificationDestination from a dictionary."""
+        return cls(
+            destination_id=d.get("destination_id", None),
+            destination_type=_enum(d, "destination_type", DestinationType),
+            special_destination=_enum(d, "special_destination", SpecialDestination),
+        )
+
+
+@dataclass
 class OnlineTable:
     """Online Table information."""
 
@@ -7525,6 +7699,44 @@ class PrimaryKeyConstraint:
         )
 
 
+@dataclass
+class Principal:
+    id: Optional[str] = None
+    """Databricks user, group or service principal ID."""
+
+    principal_type: Optional[PrincipalType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Principal into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None:
+            body["id"] = self.id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Principal into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None:
+            body["id"] = self.id
+        if self.principal_type is not None:
+            body["principal_type"] = self.principal_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Principal:
+        """Deserializes the Principal from a dictionary."""
+        return cls(id=d.get("id", None), principal_type=_enum(d, "principal_type", PrincipalType))
+
+
+class PrincipalType(Enum):
+
+    GROUP_PRINCIPAL = "GROUP_PRINCIPAL"
+    SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
+    USER_PRINCIPAL = "USER_PRINCIPAL"
+
+
 class Privilege(Enum):
 
     ACCESS = "ACCESS"
@@ -8190,6 +8402,53 @@ class SchemaInfo:
         )
 
 
+@dataclass
+class Securable:
+    """Generic definition of a securable, which is uniquely defined in a metastore by its type and full
+    name."""
+
+    full_name: Optional[str] = None
+    """Required. The full name of the catalog/schema/table. Optional if resource_name is present."""
+
+    provider_share: Optional[str] = None
+    """Optional. The name of the Share object that contains the securable when the securable is getting
+    shared in D2D Delta Sharing."""
+
+    type: Optional[SecurableType] = None
+    """Required. The type of securable (catalog/schema/table). Optional if resource_name is present."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Securable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.provider_share is not None:
+            body["provider_share"] = self.provider_share
+        if self.type is not None:
+            body["type"] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Securable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
+        if self.provider_share is not None:
+            body["provider_share"] = self.provider_share
+        if self.type is not None:
+            body["type"] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Securable:
+        """Deserializes the Securable from a dictionary."""
+        return cls(
+            full_name=d.get("full_name", None),
+            provider_share=d.get("provider_share", None),
+            type=_enum(d, "type", SecurableType),
+        )
+
+
 class SecurableKind(Enum):
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
@@ -8321,6 +8580,38 @@ class SecurableKindManifest:
         )
 
 
+@dataclass
+class SecurablePermissions:
+    permissions: Optional[List[str]] = None
+    """List of requested Unity Catalog permissions."""
+
+    securable: Optional[Securable] = None
+    """The securable for which the access request destinations are being requested."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SecurablePermissions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permissions:
+            body["permissions"] = [v for v in self.permissions]
+        if self.securable:
+            body["securable"] = self.securable.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecurablePermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permissions:
+            body["permissions"] = self.permissions
+        if self.securable:
+            body["securable"] = self.securable
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SecurablePermissions:
+        """Deserializes the SecurablePermissions from a dictionary."""
+        return cls(permissions=d.get("permissions", None), securable=_from_dict(d, "securable", Securable))
+
+
 class SecurableType(Enum):
     """The type of Unity Catalog securable."""
 
@@ -8341,6 +8632,15 @@ class SecurableType(Enum):
     STORAGE_CREDENTIAL = "STORAGE_CREDENTIAL"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
+
+
+class SpecialDestination(Enum):
+
+    SPECIAL_DESTINATION_CATALOG_OWNER = "SPECIAL_DESTINATION_CATALOG_OWNER"
+    SPECIAL_DESTINATION_CONNECTION_OWNER = "SPECIAL_DESTINATION_CONNECTION_OWNER"
+    SPECIAL_DESTINATION_CREDENTIAL_OWNER = "SPECIAL_DESTINATION_CREDENTIAL_OWNER"
+    SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER = "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER"
+    SPECIAL_DESTINATION_METASTORE_OWNER = "SPECIAL_DESTINATION_METASTORE_OWNER"
 
 
 @dataclass
@@ -10701,7 +11001,6 @@ class ConnectionsAPI:
         options: Dict[str, str],
         *,
         comment: Optional[str] = None,
-        environment_settings: Optional[EnvironmentSettings] = None,
         properties: Optional[Dict[str, str]] = None,
         read_only: Optional[bool] = None,
     ) -> ConnectionInfo:
@@ -10718,8 +11017,6 @@ class ConnectionsAPI:
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -10732,8 +11029,6 @@ class ConnectionsAPI:
             body["comment"] = comment
         if connection_type is not None:
             body["connection_type"] = connection_type.value
-        if environment_settings is not None:
-            body["environment_settings"] = environment_settings.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -10814,13 +11109,7 @@ class ConnectionsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        name: str,
-        options: Dict[str, str],
-        *,
-        environment_settings: Optional[EnvironmentSettings] = None,
-        new_name: Optional[str] = None,
-        owner: Optional[str] = None,
+        self, name: str, options: Dict[str, str], *, new_name: Optional[str] = None, owner: Optional[str] = None
     ) -> ConnectionInfo:
         """Updates the connection that matches the supplied name.
 
@@ -10828,8 +11117,6 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -10838,8 +11125,6 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
         body = {}
-        if environment_settings is not None:
-            body["environment_settings"] = environment_settings.as_dict()
         if new_name is not None:
             body["new_name"] = new_name
         if options is not None:
@@ -13569,6 +13854,112 @@ class ResourceQuotasAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+
+class RfaAPI:
+    """Request for Access enables customers to request access to and manage access request destinations for Unity
+    Catalog securables.
+
+    These APIs provide a standardized way to update, get, and request to access request destinations.
+    Fine-grained authorization ensures that only users with appropriate permissions can manage access request
+    destinations."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def batch_create_access_requests(
+        self, *, requests: Optional[List[CreateAccessRequest]] = None
+    ) -> BatchCreateAccessRequestsResponse:
+        """Creates access requests for Unity Catalog permissions for a specified principal on a securable object.
+        This Batch API can take in multiple principals, securable objects, and permissions as the input and
+        returns the access request destinations for each. Principals must be unique across the API call.
+
+        The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
+        "connection", "credential", "function", "registered_model", and "volume".
+
+        :param requests: List[:class:`CreateAccessRequest`] (optional)
+          A list of individual access requests, where each request corresponds to a set of permissions being
+          requested on a list of securables for a specified principal.
+
+          At most 30 requests per API call.
+
+        :returns: :class:`BatchCreateAccessRequestsResponse`
+        """
+        body = {}
+        if requests is not None:
+            body["requests"] = [v.as_dict() for v in requests]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/3.0/rfa/requests", body=body, headers=headers)
+        return BatchCreateAccessRequestsResponse.from_dict(res)
+
+    def get_access_request_destinations(self, securable_type: str, full_name: str) -> AccessRequestDestinations:
+        """Gets an array of access request destinations for the specified securable. Any caller can see URL
+        destinations or the destinations on the metastore. Otherwise, only those with **BROWSE** permissions
+        on the securable can see destinations.
+
+        The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
+        "connection", "credential", "function", "registered_model", and "volume".
+
+        :param securable_type: str
+          The type of the securable.
+        :param full_name: str
+          The full name of the securable.
+
+        :returns: :class:`AccessRequestDestinations`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/3.0/rfa/destinations/{securable_type}/{full_name}", headers=headers)
+        return AccessRequestDestinations.from_dict(res)
+
+    def update_access_request_destinations(
+        self, access_request_destinations: AccessRequestDestinations, update_mask: str
+    ) -> AccessRequestDestinations:
+        """Updates the access request destinations for the given securable. The caller must be a metastore admin,
+        the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to
+        assign destinations. Destinations cannot be updated for securables underneath schemas (tables,
+        volumes, functions, and models). For these securable types, destinations are inherited from the parent
+        securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
+        Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
+        other destinations can be set.
+
+        The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
+        "connection", "credential", "function", "registered_model", and "volume".
+
+        :param access_request_destinations: :class:`AccessRequestDestinations`
+          The access request destinations to assign to the securable. For each destination, a
+          **destination_id** and **destination_type** must be defined.
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`AccessRequestDestinations`
+        """
+        body = access_request_destinations.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", "/api/3.0/rfa/destinations", query=query, body=body, headers=headers)
+        return AccessRequestDestinations.from_dict(res)
 
 
 class SchemasAPI:

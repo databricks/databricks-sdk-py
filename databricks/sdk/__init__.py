@@ -53,8 +53,8 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             PoliciesAPI, QualityMonitorsAPI,
                                             RegisteredModelsAPI,
-                                            ResourceQuotasAPI, SchemasAPI,
-                                            StorageCredentialsAPI,
+                                            ResourceQuotasAPI, RfaAPI,
+                                            SchemasAPI, StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryPathCredentialsAPI,
@@ -322,6 +322,7 @@ class WorkspaceClient:
         self._query_history = pkg_sql.QueryHistoryAPI(self._api_client)
         self._query_visualizations = pkg_sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = pkg_sql.QueryVisualizationsLegacyAPI(self._api_client)
+        self._rfa = pkg_catalog.RfaAPI(self._api_client)
         self._recipient_activation = pkg_sharing.RecipientActivationAPI(self._api_client)
         self._recipient_federation_policies = pkg_sharing.RecipientFederationPoliciesAPI(self._api_client)
         self._recipients = pkg_sharing.RecipientsAPI(self._api_client)
@@ -767,6 +768,11 @@ class WorkspaceClient:
     def query_visualizations_legacy(self) -> pkg_sql.QueryVisualizationsLegacyAPI:
         """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
         return self._query_visualizations_legacy
+
+    @property
+    def rfa(self) -> pkg_catalog.RfaAPI:
+        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        return self._rfa
 
     @property
     def recipient_activation(self) -> pkg_sharing.RecipientActivationAPI:

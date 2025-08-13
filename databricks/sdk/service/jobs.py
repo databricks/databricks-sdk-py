@@ -42,6 +42,9 @@ class BaseJob:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this job for cost attribution purposes."""
+
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -66,6 +69,8 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -85,6 +90,8 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -102,6 +109,7 @@ class BaseJob:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             settings=_from_dict(d, "settings", JobSettings),
@@ -146,6 +154,9 @@ class BaseRun:
     * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
+
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this run for cost attribution purposes."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -267,6 +278,8 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -338,6 +351,8 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -403,6 +418,7 @@ class BaseRun:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -2212,6 +2228,9 @@ class Job:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this job for cost attribution purposes."""
+
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -2248,6 +2267,8 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -2271,6 +2292,8 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -2292,6 +2315,7 @@ class Job:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             next_page_token=d.get("next_page_token", None),
@@ -3039,8 +3063,8 @@ class JobSettings:
 
     usage_policy_id: Optional[str] = None
     """The id of the user specified usage policy to use for this job. If not specified, a default usage
-    policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for
-    the budget policy used by this workload."""
+    policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for
+    the usage policy used by this workload."""
 
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
@@ -4509,6 +4533,9 @@ class Run:
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this run for cost attribution purposes."""
+
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
@@ -4635,6 +4662,8 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4710,6 +4739,8 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4779,6 +4810,7 @@ class Run:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -8546,8 +8578,8 @@ class JobsAPI:
           `runNow`.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
-          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
-          budget policy used by this workload.
+          policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for the
+          usage policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
