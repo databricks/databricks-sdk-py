@@ -3410,6 +3410,15 @@ class GcpAttributes:
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
 
+    first_on_demand: Optional[int] = None
+    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
+    value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
+    instance. If this value is greater than or equal to the current cluster size, all nodes will be
+    placed on on-demand instances. If this value is less than the current cluster size,
+    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
+    on `availability` instances. Note that this value does not affect cluster size and cannot
+    currently be mutated over the lifetime of a cluster."""
+
     google_service_account: Optional[str] = None
     """If provided, the cluster will impersonate the google service account when accessing gcloud
     services (like GCS). The google service account must have previously been added to the
@@ -3441,6 +3450,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
             body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
@@ -3458,6 +3469,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
             body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
@@ -3474,6 +3487,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),
             use_preemptible_executors=d.get("use_preemptible_executors", None),
