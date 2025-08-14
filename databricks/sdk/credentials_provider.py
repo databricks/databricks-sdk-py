@@ -89,7 +89,6 @@ def credentials_strategy(name: str, require: List[str]):
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
             for attr in require:
-                getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -405,6 +404,57 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
+
+@oauth_credentials_strategy("azdo-oidc", ["host", "client_id"])
+def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token 
+    and exchanges it for a Databricks Token.
+
+    Supported in Azure DevOps pipelines with OIDC service connections.
+    """
+    supplier = oidc_token_supplier.AzureDevOpsOIDCTokenSupplier()
+
+    audience = cfg.token_audience
+    if audience is None and cfg.is_account_client:
+        audience = cfg.account_id
+    if audience is None and not cfg.is_account_client:
+        audience = cfg.oidc_endpoints.token_endpoint
+
+    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
+    id_token = supplier.get_oidc_token(audience)
+    if not id_token:
+        return None
+
+    def token_source_for(audience: str) -> oauth.TokenSource:
+        id_token = supplier.get_oidc_token(audience)
+        if not id_token:
+            # Should not happen, since we checked it above.
+            raise Exception("Cannot get Azure DevOps OIDC token")
+
+        return oauth.ClientCredentials(
+            client_id=cfg.client_id,
+            client_secret="",  # we have no (rotatable) secrets in OIDC flow
+            token_url=cfg.oidc_endpoints.token_endpoint,
+            endpoint_params={
+                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+                "subject_token": id_token,
+                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+            },
+            scopes=["all-apis"],
+            use_params=True,
+            disable_async=cfg.disable_async_token_refresh,
+        )
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = token_source_for(audience).token()
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
+
+    def token() -> oauth.Token:
+        return token_source_for(audience).token()
+
+    return OAuthCredentialsProvider(refreshed_headers, token)
+
 
 
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
@@ -1003,11 +1053,11 @@ def model_serving_auth(cfg: "Config") -> Optional[CredentialsProvider]:
 
 
 class DefaultCredentials:
-    """Select the first applicable credential provider from the chain"""
+    """Select the first applicable credential strategy from the chain"""
 
     def __init__(self) -> None:
         self._auth_type = "default"
-        self._auth_providers = [
+        self._auth_strategies = [
             pat_auth,
             basic_auth,
             metadata_service,
@@ -1015,6 +1065,7 @@ class DefaultCredentials:
             env_oidc,
             file_oidc,
             github_oidc,
+            azure_devops_oidc,
             azure_service_principal,
             github_oidc_azure,
             azure_cli,
@@ -1030,26 +1081,26 @@ class DefaultCredentials:
         return self._auth_type
 
     def oauth_token(self, cfg: "Config") -> oauth.Token:
-        for provider in self._auth_providers:
-            auth_type = provider.auth_type()
+        for strategy in self._auth_strategies:
+            auth_type = strategy.auth_type()
             if auth_type != self._auth_type:
                 # ignore other auth types if they don't match the selected one
                 continue
-            return provider.oauth_token(cfg)
+            return strategy.oauth_token(cfg)
 
     def __call__(self, cfg: "Config") -> CredentialsProvider:
-        for provider in self._auth_providers:
-            auth_type = provider.auth_type()
+        for strategy in self._auth_strategies:
+            auth_type = strategy.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
                 # ignore other auth types if one is explicitly enforced
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
             logger.debug(f"Attempting to configure auth: {auth_type}")
             try:
-                # The header factory might be None if the provider cannot be
+                # The header factory might be None if the strategy cannot be
                 # configured for the current environment. For example, if the
-                # provider requires some missing environment variables.
-                header_factory = provider(cfg)
+                # strategy requires some missing environment variables.
+                header_factory = strategy(cfg)
                 if not header_factory:
                     continue
 
