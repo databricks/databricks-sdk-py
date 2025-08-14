@@ -26,3 +26,48 @@ class GitHubOIDCTokenSupplier:
             return None
 
         return response_json["value"]
+
+
+class AzureDevOpsOIDCTokenSupplier:
+    """
+    Supplies OIDC tokens from Azure DevOps pipelines.
+    """
+
+    def get_oidc_token(self, audience: str) -> Optional[str]:
+        # Retrieve necessary environment variables
+        access_token = os.environ.get('SYSTEM_ACCESSTOKEN')
+        collection_uri = os.environ.get('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI')
+        project_id = os.environ.get('SYSTEM_TEAMPROJECT')
+        plan_id = os.environ.get('SYSTEM_PLANID')
+        job_id = os.environ.get('SYSTEM_JOBID')
+        hub_name = 'build' # Or 'release' for release pipelines
+
+        # Check for required variables
+        if not all([access_token, collection_uri, project_id, plan_id, job_id]):
+            # not in Azure DevOps pipeline
+            return None
+            
+        # Construct the URL
+        request_url = f"{collection_uri}{project_id}/_apis/distributedtask/hubs/{hub_name}/plans/{plan_id}/jobs/{job_id}/oidctoken?api-version=7.1-preview.1"
+
+        # See https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        # Set up the JSON payload for the request body
+        payload = {
+            'audience': audience
+        }
+        try:
+            # Make the POST request
+            response = requests.post(request_url, headers=headers, json=payload)
+            response.raise_for_status() # Raise an exception for bad status codes
+
+            # Return the OIDC token from the JSON response
+            return response.json()['oidcToken']
+        except requests.exceptions.RequestException as e:
+            print(f"Error requesting OIDC token: {e}")
+            return None
+        
