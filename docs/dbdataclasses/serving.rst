@@ -25,6 +25,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK
       :value: "BLOCK"
 
+   .. py:attribute:: MASK
+      :value: "MASK"
+
    .. py:attribute:: NONE
       :value: "NONE"
 
@@ -147,6 +150,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: EmailNotifications
    :members:
    :undoc-members:
 
@@ -416,20 +423,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelStateDeployment
 
-   .. py:attribute:: ABORTED
-      :value: "ABORTED"
+   .. py:attribute:: DEPLOYMENT_ABORTED
+      :value: "DEPLOYMENT_ABORTED"
 
-   .. py:attribute:: CREATING
-      :value: "CREATING"
+   .. py:attribute:: DEPLOYMENT_CREATING
+      :value: "DEPLOYMENT_CREATING"
 
-   .. py:attribute:: FAILED
-      :value: "FAILED"
+   .. py:attribute:: DEPLOYMENT_FAILED
+      :value: "DEPLOYMENT_FAILED"
 
-   .. py:attribute:: READY
-      :value: "READY"
+   .. py:attribute:: DEPLOYMENT_READY
+      :value: "DEPLOYMENT_READY"
 
-   .. py:attribute:: RECOVERING
-      :value: "RECOVERING"
+   .. py:attribute:: DEPLOYMENT_RECOVERING
+      :value: "DEPLOYMENT_RECOVERING"
 
 .. autoclass:: ServerLogsResponse
    :members:

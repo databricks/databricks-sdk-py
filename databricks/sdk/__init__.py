@@ -51,15 +51,18 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ExternalMetadataAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
-                                            QualityMonitorsAPI,
+                                            PoliciesAPI, QualityMonitorsAPI,
                                             RegisteredModelsAPI,
                                             ResourceQuotasAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
+                                            TemporaryPathCredentialsAPI,
                                             TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
-from databricks.sdk.service.cleanrooms import (CleanRoomAssetsAPI,
+from databricks.sdk.service.cleanrooms import (CleanRoomAssetRevisionsAPI,
+                                               CleanRoomAssetsAPI,
+                                               CleanRoomAutoApprovalRulesAPI,
                                                CleanRoomsAPI,
                                                CleanRoomTaskRunsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
@@ -247,7 +250,9 @@ class WorkspaceClient:
         self._apps = pkg_apps.AppsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
+        self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
         self._clean_room_assets = pkg_cleanrooms.CleanRoomAssetsAPI(self._api_client)
+        self._clean_room_auto_approval_rules = pkg_cleanrooms.CleanRoomAutoApprovalRulesAPI(self._api_client)
         self._clean_room_task_runs = pkg_cleanrooms.CleanRoomTaskRunsAPI(self._api_client)
         self._clean_rooms = pkg_cleanrooms.CleanRoomsAPI(self._api_client)
         self._cluster_policies = pkg_compute.ClusterPoliciesAPI(self._api_client)
@@ -296,6 +301,7 @@ class WorkspaceClient:
         self._permission_migration = pkg_iam.PermissionMigrationAPI(self._api_client)
         self._permissions = pkg_iam.PermissionsAPI(self._api_client)
         self._pipelines = pkg_pipelines.PipelinesAPI(self._api_client)
+        self._policies = pkg_catalog.PoliciesAPI(self._api_client)
         self._policy_compliance_for_clusters = pkg_compute.PolicyComplianceForClustersAPI(self._api_client)
         self._policy_compliance_for_jobs = pkg_jobs.PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = pkg_compute.PolicyFamiliesAPI(self._api_client)
@@ -341,6 +347,7 @@ class WorkspaceClient:
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
+        self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
         self._tokens = pkg_settings.TokensAPI(self._api_client)
@@ -412,9 +419,19 @@ class WorkspaceClient:
         return self._catalogs
 
     @property
+    def clean_room_asset_revisions(self) -> pkg_cleanrooms.CleanRoomAssetRevisionsAPI:
+        """Clean Room Asset Revisions denote new versions of uploaded assets (e.g."""
+        return self._clean_room_asset_revisions
+
+    @property
     def clean_room_assets(self) -> pkg_cleanrooms.CleanRoomAssetsAPI:
         """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room."""
         return self._clean_room_assets
+
+    @property
+    def clean_room_auto_approval_rules(self) -> pkg_cleanrooms.CleanRoomAutoApprovalRulesAPI:
+        """Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g."""
+        return self._clean_room_auto_approval_rules
 
     @property
     def clean_room_task_runs(self) -> pkg_cleanrooms.CleanRoomTaskRunsAPI:
@@ -657,6 +674,11 @@ class WorkspaceClient:
         return self._pipelines
 
     @property
+    def policies(self) -> pkg_catalog.PoliciesAPI:
+        """Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies in Unity Catalog."""
+        return self._policies
+
+    @property
     def policy_compliance_for_clusters(self) -> pkg_compute.PolicyComplianceForClustersAPI:
         """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace."""
         return self._policy_compliance_for_clusters
@@ -847,8 +869,13 @@ class WorkspaceClient:
         return self._tables
 
     @property
+    def temporary_path_credentials(self) -> pkg_catalog.TemporaryPathCredentialsAPI:
+        """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks."""
+        return self._temporary_path_credentials
+
+    @property
     def temporary_table_credentials(self) -> pkg_catalog.TemporaryTableCredentialsAPI:
-        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
+        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locations where table data is stored in Databricks."""
         return self._temporary_table_credentials
 
     @property

@@ -531,6 +531,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteMonitorResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRequestExternalLineage
    :members:
    :undoc-members:
@@ -924,13 +928,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorCronSchedulePauseStatus
 
-   Read only field that indicates whether a schedule is paused or not.
+   Source link: https://src.dev.databricks.com/databricks/universe/-/blob/elastic-spark-common/api/messages/schedule.proto Monitoring workflow schedule pause status.
 
    .. py:attribute:: PAUSED
       :value: "PAUSED"
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+   .. py:attribute:: UNSPECIFIED
+      :value: "UNSPECIFIED"
 
 .. autoclass:: MonitorDataClassificationConfig
    :members:
@@ -946,8 +953,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorInferenceLogProblemType
 
-   Problem type the model aims to solve. Determines the type of model-quality metrics that will be computed.
-
    .. py:attribute:: PROBLEM_TYPE_CLASSIFICATION
       :value: "PROBLEM_TYPE_CLASSIFICATION"
 
@@ -959,8 +964,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: MonitorInfoStatus
-
-   The status of the monitor.
 
    .. py:attribute:: MONITOR_STATUS_ACTIVE
       :value: "MONITOR_STATUS_ACTIVE"
@@ -1021,15 +1024,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. py:class:: MonitorRefreshInfoTrigger
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
 
-   The method by which the refresh was triggered.
+.. py:class:: MonitorRefreshInfoTrigger
 
    .. py:attribute:: MANUAL
       :value: "MANUAL"
 
    .. py:attribute:: SCHEDULE
       :value: "SCHEDULE"
+
+   .. py:attribute:: UNKNOWN_TRIGGER
+      :value: "UNKNOWN_TRIGGER"
 
 .. autoclass:: MonitorRefreshListResponse
    :members:
@@ -1364,8 +1371,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SecurableKind
-
-   Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

@@ -1034,6 +1034,7 @@ class MessageErrorType(Enum):
     INVALID_SQL_UNKNOWN_TABLE_EXCEPTION = "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION"
     INVALID_TABLE_IDENTIFIER_EXCEPTION = "INVALID_TABLE_IDENTIFIER_EXCEPTION"
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
+    MESSAGE_ATTACHMENT_TOO_LONG_ERROR = "MESSAGE_ATTACHMENT_TOO_LONG_ERROR"
     MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION"
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
@@ -1147,6 +1148,9 @@ class Result:
     """Statement Execution API statement id. Use [Get status, manifest, and result first
     chunk](:method:statementexecution/getstatement) to get the full result data."""
 
+    statement_id_signature: Optional[str] = None
+    """JWT corresponding to the statement contained in this result"""
+
     def as_dict(self) -> dict:
         """Serializes the Result into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1156,6 +1160,8 @@ class Result:
             body["row_count"] = self.row_count
         if self.statement_id is not None:
             body["statement_id"] = self.statement_id
+        if self.statement_id_signature is not None:
+            body["statement_id_signature"] = self.statement_id_signature
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1167,6 +1173,8 @@ class Result:
             body["row_count"] = self.row_count
         if self.statement_id is not None:
             body["statement_id"] = self.statement_id
+        if self.statement_id_signature is not None:
+            body["statement_id_signature"] = self.statement_id_signature
         return body
 
     @classmethod
@@ -1176,6 +1184,7 @@ class Result:
             is_truncated=d.get("is_truncated", None),
             row_count=d.get("row_count", None),
             statement_id=d.get("statement_id", None),
+            statement_id_signature=d.get("statement_id_signature", None),
         )
 
 

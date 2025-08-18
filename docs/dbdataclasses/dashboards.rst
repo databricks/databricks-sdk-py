@@ -198,6 +198,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LOCAL_CONTEXT_EXCEEDED_EXCEPTION
       :value: "LOCAL_CONTEXT_EXCEEDED_EXCEPTION"
 
+   .. py:attribute:: MESSAGE_ATTACHMENT_TOO_LONG_ERROR
+      :value: "MESSAGE_ATTACHMENT_TOO_LONG_ERROR"
+
    .. py:attribute:: MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION
       :value: "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION"
 

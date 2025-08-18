@@ -3037,6 +3037,11 @@ class JobSettings:
     the job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API
     request to `runNow`."""
 
+    usage_policy_id: Optional[str] = None
+    """The id of the user specified usage policy to use for this job. If not specified, a default usage
+    policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for
+    the budget policy used by this workload."""
+
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
 
@@ -3089,6 +3094,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger.as_dict()
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
             body["webhook_notifications"] = self.webhook_notifications.as_dict()
         return body
@@ -3142,6 +3149,8 @@ class JobSettings:
             body["timeout_seconds"] = self.timeout_seconds
         if self.trigger:
             body["trigger"] = self.trigger
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.webhook_notifications:
             body["webhook_notifications"] = self.webhook_notifications
         return body
@@ -3173,6 +3182,7 @@ class JobSettings:
             tasks=_repeated_dict(d, "tasks", Task),
             timeout_seconds=d.get("timeout_seconds", None),
             trigger=_from_dict(d, "trigger", TriggerSettings),
+            usage_policy_id=d.get("usage_policy_id", None),
             webhook_notifications=_from_dict(d, "webhook_notifications", WebhookNotifications),
         )
 
@@ -7224,6 +7234,73 @@ class SubscriptionSubscriber:
 
 
 @dataclass
+class TableState:
+    has_seen_updates: Optional[bool] = None
+    """Whether or not the table has seen updates since either the creation of the trigger or the last
+    successful evaluation of the trigger"""
+
+    table_name: Optional[str] = None
+    """Full table name of the table to monitor, e.g. `mycatalog.myschema.mytable`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.has_seen_updates is not None:
+            body["has_seen_updates"] = self.has_seen_updates
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_seen_updates is not None:
+            body["has_seen_updates"] = self.has_seen_updates
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableState:
+        """Deserializes the TableState from a dictionary."""
+        return cls(has_seen_updates=d.get("has_seen_updates", None), table_name=d.get("table_name", None))
+
+
+@dataclass
+class TableTriggerState:
+    last_seen_table_states: Optional[List[TableState]] = None
+
+    using_scalable_monitoring: Optional[bool] = None
+    """Indicates whether the trigger is using scalable monitoring."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTriggerState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_seen_table_states:
+            body["last_seen_table_states"] = [v.as_dict() for v in self.last_seen_table_states]
+        if self.using_scalable_monitoring is not None:
+            body["using_scalable_monitoring"] = self.using_scalable_monitoring
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableTriggerState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_seen_table_states:
+            body["last_seen_table_states"] = self.last_seen_table_states
+        if self.using_scalable_monitoring is not None:
+            body["using_scalable_monitoring"] = self.using_scalable_monitoring
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TableTriggerState:
+        """Deserializes the TableTriggerState from a dictionary."""
+        return cls(
+            last_seen_table_states=_repeated_dict(d, "last_seen_table_states", TableState),
+            using_scalable_monitoring=d.get("using_scalable_monitoring", None),
+        )
+
+
+@dataclass
 class TableUpdateTriggerConfiguration:
     condition: Optional[Condition] = None
     """The table(s) condition based on which to trigger a job run."""
@@ -7817,6 +7894,8 @@ class TerminationCodeCode(Enum):
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
+    * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will
+    be retried with a mitigation config.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -7993,11 +8072,15 @@ class TriggerSettings:
 class TriggerStateProto:
     file_arrival: Optional[FileArrivalTriggerState] = None
 
+    table: Optional[TableTriggerState] = None
+
     def as_dict(self) -> dict:
         """Serializes the TriggerStateProto into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.table:
+            body["table"] = self.table.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -8005,12 +8088,17 @@ class TriggerStateProto:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.table:
+            body["table"] = self.table
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TriggerStateProto:
         """Deserializes the TriggerStateProto from a dictionary."""
-        return cls(file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState))
+        return cls(
+            file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerState),
+            table=_from_dict(d, "table", TableTriggerState),
+        )
 
 
 class TriggerType(Enum):
@@ -8361,6 +8449,7 @@ class JobsAPI:
         tasks: Optional[List[Task]] = None,
         timeout_seconds: Optional[int] = None,
         trigger: Optional[TriggerSettings] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> CreateResponse:
         """Create a new job.
@@ -8455,6 +8544,10 @@ class JobsAPI:
           A configuration to trigger a run when certain conditions are met. The default behavior is that the
           job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
           `runNow`.
+        :param usage_policy_id: str (optional)
+          The id of the user specified usage policy to use for this job. If not specified, a default usage
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
@@ -8509,6 +8602,8 @@ class JobsAPI:
             body["timeout_seconds"] = timeout_seconds
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
         headers = {
@@ -9305,6 +9400,7 @@ class JobsAPI:
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
     ) -> Wait[Run]:
         """Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
@@ -9356,6 +9452,9 @@ class JobsAPI:
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
+        :param usage_policy_id: str (optional)
+          The user specified id of the usage policy to use for this one-time run. If not specified, a default
+          usage policy may be applied when creating or modifying the job.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes.
 
@@ -9390,6 +9489,8 @@ class JobsAPI:
             body["tasks"] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None:
             body["timeout_seconds"] = timeout_seconds
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         if webhook_notifications is not None:
             body["webhook_notifications"] = webhook_notifications.as_dict()
         headers = {
@@ -9420,6 +9521,7 @@ class JobsAPI:
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         webhook_notifications: Optional[WebhookNotifications] = None,
         timeout=timedelta(minutes=20),
     ) -> Run:
@@ -9437,6 +9539,7 @@ class JobsAPI:
             run_name=run_name,
             tasks=tasks,
             timeout_seconds=timeout_seconds,
+            usage_policy_id=usage_policy_id,
             webhook_notifications=webhook_notifications,
         ).result(timeout=timeout)
 

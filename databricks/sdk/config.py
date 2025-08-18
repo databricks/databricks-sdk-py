@@ -13,7 +13,8 @@ import requests
 from . import useragent
 from ._base_client import _fix_host_if_needed
 from .clock import Clock, RealClock
-from .credentials_provider import CredentialsStrategy, DefaultCredentials
+from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
+                                   OAuthCredentialsProvider)
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
@@ -200,7 +201,19 @@ class Config:
             raise ValueError(message) from e
 
     def oauth_token(self) -> Token:
-        return self._credentials_strategy.oauth_token(self)
+        """Returns the OAuth token from the current credential provider.
+
+        This method only works when using OAuth-based authentication methods.
+        If the current credential provider is an OAuthCredentialsProvider, it reuses
+        the existing provider. Otherwise, it raises a ValueError indicating that
+        OAuth tokens are not available for the current authentication method.
+        """
+        if isinstance(self._header_factory, OAuthCredentialsProvider):
+            return self._header_factory.oauth_token()
+        raise ValueError(
+            f"OAuth tokens are not available for {self.auth_type} authentication. "
+            f"Use an OAuth-based authentication method to access OAuth tokens."
+        )
 
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()

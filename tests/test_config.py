@@ -189,3 +189,74 @@ def test_load_azure_tenant_id_happy_path(requests_mock, monkeypatch):
     cfg = Config(host="https://abc123.azuredatabricks.net")
     assert cfg.azure_tenant_id == "tenant-id"
     assert mock.called_once
+
+
+def test_oauth_token_with_pat_auth():
+    """Test that oauth_token() raises an error for PAT authentication."""
+    config = Config(host="https://test.databricks.com", token="dapi1234567890abcdef")
+
+    with pytest.raises(ValueError) as exc_info:
+        config.oauth_token()
+
+    assert "OAuth tokens are not available for pat authentication" in str(exc_info.value)
+
+
+def test_oauth_token_with_basic_auth():
+    """Test that oauth_token() raises an error for basic authentication."""
+    config = Config(host="https://test.databricks.com", username="testuser", password="testpass")
+
+    with pytest.raises(ValueError) as exc_info:
+        config.oauth_token()
+
+    assert "OAuth tokens are not available for basic authentication" in str(exc_info.value)
+
+
+def test_oauth_token_with_oauth_provider(mocker):
+    """Test that oauth_token() works correctly for OAuth authentication."""
+    from databricks.sdk.credentials_provider import OAuthCredentialsProvider
+    from databricks.sdk.oauth import Token
+
+    # Create a mock OAuth token
+    mock_token = Token(access_token="mock_access_token", token_type="Bearer", refresh_token="mock_refresh_token")
+
+    # Create a mock OAuth provider
+    mock_oauth_provider = mocker.Mock(spec=OAuthCredentialsProvider)
+    mock_oauth_provider.oauth_token.return_value = mock_token
+
+    # Create config with noop credentials to avoid network calls
+    config = Config(host="https://test.databricks.com", credentials_strategy=noop_credentials)
+
+    # Replace the header factory with our mock
+    config._header_factory = mock_oauth_provider
+
+    # Test that oauth_token() works and returns the expected token
+    token = config.oauth_token()
+    assert token == mock_token
+    mock_oauth_provider.oauth_token.assert_called_once()
+
+
+def test_oauth_token_reuses_existing_provider(mocker):
+    """Test that oauth_token() reuses the existing OAuthCredentialsProvider."""
+    from databricks.sdk.credentials_provider import OAuthCredentialsProvider
+    from databricks.sdk.oauth import Token
+
+    # Create a mock OAuth token
+    mock_token = Token(access_token="mock_access_token", token_type="Bearer", refresh_token="mock_refresh_token")
+
+    # Create a mock OAuth provider
+    mock_oauth_provider = mocker.Mock(spec=OAuthCredentialsProvider)
+    mock_oauth_provider.oauth_token.return_value = mock_token
+
+    # Create config with noop credentials to avoid network calls
+    config = Config(host="https://test.databricks.com", credentials_strategy=noop_credentials)
+
+    # Replace the header factory with our mock
+    config._header_factory = mock_oauth_provider
+
+    # Call oauth_token() multiple times to verify reuse
+    token1 = config.oauth_token()
+    token2 = config.oauth_token()
+
+    # Both calls should work and use the same provider instance
+    assert token1 == token2 == mock_token
+    assert mock_oauth_provider.oauth_token.call_count == 2

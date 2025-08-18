@@ -4617,6 +4617,18 @@ class SetStatusResponse:
 
 @dataclass
 class SlackConfig:
+    channel_id: Optional[str] = None
+    """[Input-Only] Slack channel ID for notifications."""
+
+    channel_id_set: Optional[bool] = None
+    """[Output-Only] Whether channel ID is set."""
+
+    oauth_token: Optional[str] = None
+    """[Input-Only] OAuth token for Slack authentication."""
+
+    oauth_token_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth token is set."""
+
     url: Optional[str] = None
     """[Input-Only] URL for Slack destination."""
 
@@ -4626,6 +4638,14 @@ class SlackConfig:
     def as_dict(self) -> dict:
         """Serializes the SlackConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.oauth_token is not None:
+            body["oauth_token"] = self.oauth_token
+        if self.oauth_token_set is not None:
+            body["oauth_token_set"] = self.oauth_token_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -4635,6 +4655,14 @@ class SlackConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the SlackConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.oauth_token is not None:
+            body["oauth_token"] = self.oauth_token
+        if self.oauth_token_set is not None:
+            body["oauth_token_set"] = self.oauth_token_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -4644,7 +4672,14 @@ class SlackConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SlackConfig:
         """Deserializes the SlackConfig from a dictionary."""
-        return cls(url=d.get("url", None), url_set=d.get("url_set", None))
+        return cls(
+            channel_id=d.get("channel_id", None),
+            channel_id_set=d.get("channel_id_set", None),
+            oauth_token=d.get("oauth_token", None),
+            oauth_token_set=d.get("oauth_token_set", None),
+            url=d.get("url", None),
+            url_set=d.get("url_set", None),
+        )
 
 
 @dataclass

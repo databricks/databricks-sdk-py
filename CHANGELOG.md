@@ -1,5 +1,66 @@
 # Version changelog
 
+## Release v0.63.0
+
+### API Changes
+* Added [w.policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/policies.html) workspace-level service and [w.temporary_path_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/temporary_path_credentials.html) workspace-level service.
+* Added `create()` method for [w.tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/tables.html) workspace-level service.
+* Added `list_database_catalogs()`, `list_synced_database_tables()`, `update_database_catalog()` and `update_synced_database_table()` methods for [w.database](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/database/database.html) workspace-level service.
+* Added `first_on_demand` field for `databricks.sdk.service.compute.GcpAttributes`.
+* Added `usage_policy_id` field for `databricks.sdk.service.jobs.CreateJob`.
+* Added `usage_policy_id` field for `databricks.sdk.service.jobs.JobSettings`.
+* Added `usage_policy_id` field for `databricks.sdk.service.jobs.SubmitRun`.
+* Added `client_request_id` and `usage_context` fields for `databricks.sdk.service.serving.QueryEndpointInput`.
+* Added `channel_id`, `channel_id_set`, `oauth_token` and `oauth_token_set` fields for `databricks.sdk.service.settings.SlackConfig`.
+* Added `snapshot` enum value for `databricks.sdk.service.ml.PublishSpecPublishMode`.
+* [Breaking] Changed `publish_mode` field for `databricks.sdk.service.ml.PublishSpec` to be required.
+
+
+## Release v0.62.0
+
+### Bug Fixes
+
+* Fix `Config.oauth_token()` to avoid re-creating a new `CredentialsProvider` at each call. This fix indirectly makes `oauth_token()` benefit from the internal caching mechanism of some providers. 
+
+### API Changes
+* Added `statement_id_signature` field for `databricks.sdk.service.dashboards.Result`.
+* Added `effective_database_instance_name` and `effective_logical_database_name` fields for `databricks.sdk.service.database.SyncedDatabaseTable`.
+* Added `table` field for `databricks.sdk.service.jobs.TriggerStateProto`.
+* Added `email_notifications` field for `databricks.sdk.service.serving.CreatePtEndpointRequest`.
+* Added `email_notifications` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
+* Added `email_notifications` field for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+* [Breaking] Changed `list()` method for [w.consumer_providers](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/marketplace/consumer_providers.html) workspace-level service . New request type is `databricks.sdk.service.marketplace.ListConsumerProvidersRequest` dataclass.
+* [Breaking] Changed `create()` method for [a.private_access](https://databricks-sdk-py.readthedocs.io/en/latest/account/provisioning/private_access.html) account-level service with new required argument order.
+* [Breaking] Changed `create()` method for [a.private_access](https://databricks-sdk-py.readthedocs.io/en/latest/account/provisioning/private_access.html) account-level service . New request type is `databricks.sdk.service.provisioning.CreatePrivateAccessSettingsRequest` dataclass.
+* [Breaking] Changed `replace()` method for [a.private_access](https://databricks-sdk-py.readthedocs.io/en/latest/account/provisioning/private_access.html) account-level service . New request type is `databricks.sdk.service.provisioning.ReplacePrivateAccessSettingsRequest` dataclass.
+* [Breaking] Removed `is_featured` field for `databricks.sdk.service.marketplace.ListProvidersRequest`.
+
+
+## Release v0.61.0
+
+### API Changes
+* Added [w.clean_room_asset_revisions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_asset_revisions.html) workspace-level service and [w.clean_room_auto_approval_rules](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_auto_approval_rules.html) workspace-level service.
+* Added `create_clean_room_asset_review()` method for [w.clean_room_assets](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_assets.html) workspace-level service.
+* Added `latest_monitor_failure_msg` field for `databricks.sdk.service.catalog.CreateMonitor`.
+* Added `latest_monitor_failure_msg` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+* Added `share` field for `databricks.sdk.service.sharing.ListProviderShareAssetsResponse`.
+* Added `projected_remaining_wallclock_time_ms` field for `databricks.sdk.service.sql.QueryMetrics`.
+* Added `unspecified` enum value for `databricks.sdk.service.catalog.MonitorCronSchedulePauseStatus`.
+* Added `unknown` enum value for `databricks.sdk.service.catalog.MonitorRefreshInfoState`.
+* Added `unknown_trigger` enum value for `databricks.sdk.service.catalog.MonitorRefreshInfoTrigger`.
+* Added `message_attachment_too_long_error` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.
+* Added `mask` enum value for `databricks.sdk.service.serving.AiGatewayGuardrailPiiBehaviorBehavior`.
+* [Breaking] Added waiter for [CleanRoomsAPI.create](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_rooms.html#databricks.sdk.service.cleanrooms.CleanRoomsAPI.create) method.
+* [Breaking] Added waiter for [DatabaseAPI.create_database_instance](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/database/database.html#databricks.sdk.service.database.DatabaseAPI.create_database_instance) method.
+* [Breaking] Changed `cancel_refresh()` method for [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/quality_monitors.html) workspace-level service to start returning `databricks.sdk.service.catalog.CancelRefreshResponse` dataclass.
+* [Breaking] Changed `create()` method for [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/quality_monitors.html) workspace-level service with new required argument order.
+* [Breaking] Changed `delete()` method for [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/quality_monitors.html) workspace-level service to start returning `databricks.sdk.service.catalog.DeleteMonitorResponse` dataclass.
+* [Breaking] Changed `refresh_id` field for `databricks.sdk.service.catalog.CancelRefreshRequest` to type `int` dataclass.
+* [Breaking] Changed `refresh_id` field for `databricks.sdk.service.catalog.GetRefreshRequest` to type `int` dataclass.
+* [Breaking] Changed `monitor_version` field for `databricks.sdk.service.catalog.MonitorInfo` to type `int` dataclass.
+* Changed `output_schema_name` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+
+
 ## Release v0.60.0
 
 ### New Features and Improvements

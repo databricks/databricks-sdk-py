@@ -3494,10 +3494,8 @@ class PublishSpec:
     online_table_name: str
     """The full three-part (catalog, schema, table) name of the online table."""
 
-    publish_mode: Optional[PublishSpecPublishMode] = None
-    """The publish mode of the pipeline that syncs the online table with the source table. Defaults to
-    TRIGGERED if not specified. All publish modes require the source table to have Change Data Feed
-    (CDF) enabled."""
+    publish_mode: PublishSpecPublishMode
+    """The publish mode of the pipeline that syncs the online table with the source table."""
 
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
@@ -3534,6 +3532,7 @@ class PublishSpec:
 class PublishSpecPublishMode(Enum):
 
     CONTINUOUS = "CONTINUOUS"
+    SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
 
 

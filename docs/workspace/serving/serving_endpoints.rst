@@ -27,7 +27,7 @@
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
         Create a new serving endpoint.
 
@@ -43,6 +43,8 @@
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
         :param description: str (optional)
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          Email notification settings.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -56,10 +58,10 @@
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], config: Optional[EndpointCoreConfigInput], description: Optional[str], email_notifications: Optional[EmailNotifications], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
-    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create_provisioned_throughput_endpoint(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
         Create a new PT serving endpoint.
 
@@ -72,6 +74,8 @@
           The AI Gateway configuration for the serving endpoint.
         :param budget_policy_id: str (optional)
           The budget policy associated with the endpoint.
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          Email notification settings.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
 
@@ -80,7 +84,7 @@
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_provisioned_throughput_endpoint_and_wait(name: str, config: PtEndpointCoreConfig [, ai_gateway: Optional[AiGatewayConfig], budget_policy_id: Optional[str], email_notifications: Optional[EmailNotifications], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: delete(name: str)
@@ -243,10 +247,10 @@
 
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
 
-        Query a serving endpoint.
+        Query a serving endpoint
 
         :param name: str
-          The name of the serving endpoint. This field is required.
+          The name of the serving endpoint. This field is required and is provided via the path parameter.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -267,8 +271,8 @@
           The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is an integer and should only be used with other chat/completions query fields.
         :param messages: List[:class:`ChatMessage`] (optional)
-          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is a
-          map of strings and should only be used with other chat query fields.
+          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an
+          array of ChatMessage objects and should only be used with other chat query fields.
         :param n: int (optional)
           The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
           model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be

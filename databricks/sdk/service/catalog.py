@@ -1139,6 +1139,55 @@ class ColumnMask:
 
 
 @dataclass
+class ColumnMaskOptions:
+    function_name: str
+    """The fully qualified name of the column mask function. The function is called on each row of the
+    target table. The function's first argument and its return type should match the type of the
+    masked column. Required on create and update."""
+
+    on_column: str
+    """The alias of the column to be masked. The alias must refer to one of matched columns. The values
+    of the column is passed to the column mask function as the first argument. Required on create
+    and update."""
+
+    using: Optional[List[FunctionArgument]] = None
+    """Optional list of column aliases or constant literals to be passed as additional arguments to the
+    column mask function. The type of each column should match the positional argument of the column
+    mask function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnMaskOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.on_column is not None:
+            body["on_column"] = self.on_column
+        if self.using:
+            body["using"] = [v.as_dict() for v in self.using]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnMaskOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.on_column is not None:
+            body["on_column"] = self.on_column
+        if self.using:
+            body["using"] = self.using
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMaskOptions:
+        """Deserializes the ColumnMaskOptions from a dictionary."""
+        return cls(
+            function_name=d.get("function_name", None),
+            on_column=d.get("on_column", None),
+            using=_repeated_dict(d, "using", FunctionArgument),
+        )
+
+
+@dataclass
 class ColumnRelationship:
     source: Optional[str] = None
 
@@ -2357,6 +2406,42 @@ class DeleteCredentialResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteCredentialResponse:
         """Deserializes the DeleteCredentialResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteMonitorResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeleteMonitorResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteMonitorResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteMonitorResponse:
+        """Deserializes the DeleteMonitorResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeletePolicyResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePolicyResponse:
+        """Deserializes the DeletePolicyResponse from a dictionary."""
         return cls()
 
 
@@ -3813,6 +3898,38 @@ class ForeignKeyConstraint:
 
 
 @dataclass
+class FunctionArgument:
+    alias: Optional[str] = None
+    """The alias of a matched column."""
+
+    constant: Optional[str] = None
+    """A constant literal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionArgument into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionArgument into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionArgument:
+        """Deserializes the FunctionArgument from a dictionary."""
+        return cls(alias=d.get("alias", None), constant=d.get("constant", None))
+
+
+@dataclass
 class FunctionDependency:
     """A function that is dependent on a SQL object."""
 
@@ -4341,6 +4458,77 @@ class GcpPubsub:
         """Deserializes the GcpPubsub from a dictionary."""
         return cls(
             managed_resource_id=d.get("managed_resource_id", None), subscription_name=d.get("subscription_name", None)
+        )
+
+
+@dataclass
+class GenerateTemporaryPathCredentialResponse:
+    aws_temp_credentials: Optional[AwsCredentials] = None
+
+    azure_aad: Optional[AzureActiveDirectoryToken] = None
+
+    azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+
+    expiration_time: Optional[int] = None
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
+
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+
+    r2_temp_credentials: Optional[R2Credentials] = None
+
+    url: Optional[str] = None
+    """The URL of the storage path accessible by the temporary credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryPathCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials.as_dict()
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad.as_dict()
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas.as_dict()
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenerateTemporaryPathCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryPathCredentialResponse:
+        """Deserializes the GenerateTemporaryPathCredentialResponse from a dictionary."""
+        return cls(
+            aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
+            azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
+            azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
+            expiration_time=d.get("expiration_time", None),
+            gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
+            r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            url=d.get("url", None),
         )
 
 
@@ -5145,6 +5333,39 @@ class ListModelVersionsResponse:
 
 
 @dataclass
+class ListPoliciesResponse:
+    next_page_token: Optional[str] = None
+    """Optional opaque token for continuing pagination. `page_token` should be set to this value for
+    the next request to retrieve the next page of results."""
+
+    policies: Optional[List[PolicyInfo]] = None
+    """The list of retrieved policies."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = [v.as_dict() for v in self.policies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = self.policies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPoliciesResponse:
+        """Deserializes the ListPoliciesResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", PolicyInfo))
+
+
+@dataclass
 class ListQuotasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
@@ -5412,6 +5633,38 @@ class ListVolumesResponseContent:
     def from_dict(cls, d: Dict[str, Any]) -> ListVolumesResponseContent:
         """Deserializes the ListVolumesResponseContent from a dictionary."""
         return cls(next_page_token=d.get("next_page_token", None), volumes=_repeated_dict(d, "volumes", VolumeInfo))
+
+
+@dataclass
+class MatchColumn:
+    alias: Optional[str] = None
+    """Optional alias of the matched column."""
+
+    condition: Optional[str] = None
+    """The condition expression used to match a table column."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MatchColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.condition is not None:
+            body["condition"] = self.condition
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MatchColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.condition is not None:
+            body["condition"] = self.condition
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MatchColumn:
+        """Deserializes the MatchColumn from a dictionary."""
+        return cls(alias=d.get("alias", None), condition=d.get("condition", None))
 
 
 class MatchType(Enum):
@@ -5833,7 +6086,7 @@ class MonitorCronSchedule:
     [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
 
     timezone_id: str
-    """The timezone id (e.g., ``"PST"``) in which to evaluate the quartz expression."""
+    """The timezone id (e.g., ``PST``) in which to evaluate the quartz expression."""
 
     pause_status: Optional[MonitorCronSchedulePauseStatus] = None
     """Read only field that indicates whether a schedule is paused or not."""
@@ -5871,16 +6124,21 @@ class MonitorCronSchedule:
 
 
 class MonitorCronSchedulePauseStatus(Enum):
-    """Read only field that indicates whether a schedule is paused or not."""
+    """Source link:
+    https://src.dev.databricks.com/databricks/universe/-/blob/elastic-spark-common/api/messages/schedule.proto
+    Monitoring workflow schedule pause status."""
 
     PAUSED = "PAUSED"
     UNPAUSED = "UNPAUSED"
+    UNSPECIFIED = "UNSPECIFIED"
 
 
 @dataclass
 class MonitorDataClassificationConfig:
+    """Data classification related configuration."""
+
     enabled: Optional[bool] = None
-    """Whether data classification is enabled."""
+    """Whether to enable data classification."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorDataClassificationConfig into a dictionary suitable for use as a JSON request body."""
@@ -5930,36 +6188,26 @@ class MonitorDestination:
 
 @dataclass
 class MonitorInferenceLog:
+    problem_type: MonitorInferenceLogProblemType
+    """Problem type the model aims to solve."""
+
     timestamp_col: str
-    """Column that contains the timestamps of requests. The column must be one of the following: - A
-    ``TimestampType`` column - A column whose values can be converted to timestamps through the
-    pyspark ``to_timestamp`` [function].
-    
-    [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html"""
+    """Column for the timestamp."""
 
     granularities: List[str]
-    """Granularities for aggregating data into time windows based on their timestamp. Currently the
-    following static granularities are supported: {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``,
-    ``"1 day"``, ``"<n> week(s)"``, ``"1 month"``, ``"1 year"``}."""
-
-    model_id_col: str
-    """Column that contains the id of the model generating the predictions. Metrics will be computed
-    per model id by default, and also across all model ids."""
-
-    problem_type: MonitorInferenceLogProblemType
-    """Problem type the model aims to solve. Determines the type of model-quality metrics that will be
-    computed."""
+    """List of granularities to use when aggregating data into time windows based on their timestamp."""
 
     prediction_col: str
-    """Column that contains the output/prediction from the model."""
+    """Column for the prediction."""
+
+    model_id_col: str
+    """Column for the model identifier."""
 
     label_col: Optional[str] = None
-    """Optional column that contains the ground truth for the prediction."""
+    """Column for the label."""
 
     prediction_proba_col: Optional[str] = None
-    """Optional column that contains the prediction probabilities for each class in a classification
-    problem type. The values in this column should be a map, mapping each class label to the
-    prediction probability for a given sample. The map should be of PySpark MapType()."""
+    """Column for prediction probabilities"""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorInferenceLog into a dictionary suitable for use as a JSON request body."""
@@ -6014,8 +6262,6 @@ class MonitorInferenceLog:
 
 
 class MonitorInferenceLogProblemType(Enum):
-    """Problem type the model aims to solve. Determines the type of model-quality metrics that will be
-    computed."""
 
     PROBLEM_TYPE_CLASSIFICATION = "PROBLEM_TYPE_CLASSIFICATION"
     PROBLEM_TYPE_REGRESSION = "PROBLEM_TYPE_REGRESSION"
@@ -6023,60 +6269,66 @@ class MonitorInferenceLogProblemType(Enum):
 
 @dataclass
 class MonitorInfo:
+    output_schema_name: str
+    """[Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+    {catalog}.{schema}"""
+
     table_name: str
-    """The full name of the table to monitor. Format: __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] UC table to monitor. Format: `catalog.schema.table_name`"""
 
     status: MonitorInfoStatus
-
-    monitor_version: str
-    """The version of the monitor config (e.g. 1,2,3). If negative, the monitor may be corrupted."""
+    """[Create:ERR Update:IGN] The monitor status."""
 
     profile_metrics_table_name: str
-    """The full name of the profile metrics table. Format:
-    __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] Table that stores profile metrics data. Format:
+    `catalog.schema.table_name`."""
 
     drift_metrics_table_name: str
-    """The full name of the drift metrics table. Format:
-    __catalog_name__.__schema_name__.__table_name__."""
+    """[Create:ERR Update:IGN] Table that stores drift metrics data. Format:
+    `catalog.schema.table_name`."""
+
+    monitor_version: int
+    """[Create:ERR Update:IGN] Represents the current monitor configuration version in use. The version
+    will be represented in a numeric fashion (1,2,3...). The field has flexibility to take on
+    negative values, which can indicate corrupted monitor_version numbers."""
 
     assets_dir: Optional[str] = None
-    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
+    """[Create:REQ Update:IGN] Field for specifying the absolute path to a custom directory to store
+    data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs."""
 
     baseline_table_name: Optional[str] = None
-    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-    table should also be present in the baseline table."""
+    """[Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the
+    data in the monitored `table_name`. The baseline table and the monitored table shall have the
+    same schema."""
 
     custom_metrics: Optional[List[MonitorMetric]] = None
-    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
-    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
-    time windows)."""
+    """[Create:OPT Update:OPT] Custom metrics."""
 
     dashboard_id: Optional[str] = None
-    """Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in
-    PENDING state."""
+    """[Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty
+    if the monitor is in PENDING state."""
 
     data_classification_config: Optional[MonitorDataClassificationConfig] = None
-    """The data classification config for the monitor."""
+    """[Create:OPT Update:OPT] Data classification related config."""
 
     inference_log: Optional[MonitorInferenceLog] = None
-    """Configuration for monitoring inference logs."""
 
     latest_monitor_failure_msg: Optional[str] = None
-    """The latest failure message of the monitor (if any)."""
+    """[Create:ERR Update:IGN] The latest error message for a monitor failure."""
 
     notifications: Optional[MonitorNotifications] = None
-    """The notification settings for the monitor."""
-
-    output_schema_name: Optional[str] = None
-    """Schema where output metric tables are created."""
+    """[Create:OPT Update:OPT] Field for specifying notification settings."""
 
     schedule: Optional[MonitorCronSchedule] = None
-    """The schedule for automatically updating and refreshing metric tables."""
+    """[Create:OPT Update:OPT] The monitor schedule."""
 
     slicing_exprs: Optional[List[str]] = None
-    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
-    expression independently, resulting in a separate slice for each predicate and its complements.
-    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
+    """[Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+    data is grouped by each expression independently, resulting in a separate slice for each
+    predicate and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will
+    generate the following slices: two slices for `col_2 > 10` (True and False), and one slice per
+    unique value in `col1`. For high-cardinality columns, only the top 100 unique values by
+    frequency will generate slices."""
 
     snapshot: Optional[MonitorSnapshot] = None
     """Configuration for monitoring snapshot tables."""
@@ -6192,7 +6444,6 @@ class MonitorInfo:
 
 
 class MonitorInfoStatus(Enum):
-    """The status of the monitor."""
 
     MONITOR_STATUS_ACTIVE = "MONITOR_STATUS_ACTIVE"
     MONITOR_STATUS_DELETE_PENDING = "MONITOR_STATUS_DELETE_PENDING"
@@ -6203,6 +6454,8 @@ class MonitorInfoStatus(Enum):
 
 @dataclass
 class MonitorMetric:
+    """Custom metric definition."""
+
     name: str
     """Name of the metric in the output tables."""
 
@@ -6271,10 +6524,10 @@ class MonitorMetric:
 
 
 class MonitorMetricType(Enum):
-    """Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or
-    ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and
-    ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the
-    ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the
+    """Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or
+    ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and
+    ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the
+    ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the
     two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing
     columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
     metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"""
@@ -6287,10 +6540,10 @@ class MonitorMetricType(Enum):
 @dataclass
 class MonitorNotifications:
     on_failure: Optional[MonitorDestination] = None
-    """Who to send notifications to on monitor failure."""
+    """Destinations to send notifications on failure/timeout."""
 
     on_new_classification_tag_detected: Optional[MonitorDestination] = None
-    """Who to send notifications to when new data classification tags are detected."""
+    """Destinations to send notifications on new classification tag detected."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorNotifications into a dictionary suitable for use as a JSON request body."""
@@ -6394,13 +6647,14 @@ class MonitorRefreshInfoState(Enum):
     PENDING = "PENDING"
     RUNNING = "RUNNING"
     SUCCESS = "SUCCESS"
+    UNKNOWN = "UNKNOWN"
 
 
 class MonitorRefreshInfoTrigger(Enum):
-    """The method by which the refresh was triggered."""
 
     MANUAL = "MANUAL"
     SCHEDULE = "SCHEDULE"
+    UNKNOWN_TRIGGER = "UNKNOWN_TRIGGER"
 
 
 @dataclass
@@ -6430,6 +6684,8 @@ class MonitorRefreshListResponse:
 
 @dataclass
 class MonitorSnapshot:
+    """Snapshot analysis configuration"""
+
     def as_dict(self) -> dict:
         """Serializes the MonitorSnapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -6448,17 +6704,15 @@ class MonitorSnapshot:
 
 @dataclass
 class MonitorTimeSeries:
+    """Time series analysis configuration."""
+
     timestamp_col: str
-    """Column that contains the timestamps of requests. The column must be one of the following: - A
-    ``TimestampType`` column - A column whose values can be converted to timestamps through the
-    pyspark ``to_timestamp`` [function].
-    
-    [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html"""
+    """Column for the timestamp."""
 
     granularities: List[str]
     """Granularities for aggregating data into time windows based on their timestamp. Currently the
-    following static granularities are supported: {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``,
-    ``"1 day"``, ``"<n> week(s)"``, ``"1 month"``, ``"1 year"``}."""
+    following static granularities are supported: {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1
+    hour\"``, ``\"1 day\"``, ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}."""
 
     def as_dict(self) -> dict:
         """Serializes the MonitorTimeSeries into a dictionary suitable for use as a JSON request body."""
@@ -6935,6 +7189,13 @@ class OptionSpecOptionType(Enum):
     OPTION_STRING = "OPTION_STRING"
 
 
+class PathOperation(Enum):
+
+    PATH_CREATE_TABLE = "PATH_CREATE_TABLE"
+    PATH_READ = "PATH_READ"
+    PATH_READ_WRITE = "PATH_READ_WRITE"
+
+
 @dataclass
 class PermissionsChange:
     add: Optional[List[Privilege]] = None
@@ -7039,6 +7300,178 @@ class PipelineProgress:
             synced_row_count=d.get("synced_row_count", None),
             total_row_count=d.get("total_row_count", None),
         )
+
+
+@dataclass
+class PolicyInfo:
+    to_principals: List[str]
+    """List of user or group names that the policy applies to. Required on create and optional on
+    update."""
+
+    for_securable_type: SecurableType
+    """Type of securables that the policy should take effect on. Only `table` is supported at this
+    moment. Required on create and optional on update."""
+
+    policy_type: PolicyType
+    """Type of the policy. Required on create and ignored on update."""
+
+    column_mask: Optional[ColumnMaskOptions] = None
+    """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
+    Required on create and optional on update. When specified on update, the new options will
+    replace the existing options as a whole."""
+
+    comment: Optional[str] = None
+    """Optional description of the policy."""
+
+    created_at: Optional[int] = None
+    """Time at which the policy was created, in epoch milliseconds. Output only."""
+
+    created_by: Optional[str] = None
+    """Username of the user who created the policy. Output only."""
+
+    except_principals: Optional[List[str]] = None
+    """Optional list of user or group names that should be excluded from the policy."""
+
+    id: Optional[str] = None
+    """Unique identifier of the policy. This field is output only and is generated by the system."""
+
+    match_columns: Optional[List[MatchColumn]] = None
+    """Optional list of condition expressions used to match table columns. Only valid when
+    `for_securable_type` is `table`. When specified, the policy only applies to tables whose columns
+    satisfy all match conditions."""
+
+    name: Optional[str] = None
+    """Name of the policy. Required on create and ignored on update. To update the name, use the
+    `new_name` field."""
+
+    on_securable_fullname: Optional[str] = None
+    """Full name of the securable on which the policy is defined. Required on create and ignored on
+    update."""
+
+    on_securable_type: Optional[SecurableType] = None
+    """Type of the securable on which the policy is defined. Only `catalog`, `schema` and `table` are
+    supported at this moment. Required on create and ignored on update."""
+
+    row_filter: Optional[RowFilterOptions] = None
+    """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
+    Required on create and optional on update. When specified on update, the new options will
+    replace the existing options as a whole."""
+
+    updated_at: Optional[int] = None
+    """Time at which the policy was last modified, in epoch milliseconds. Output only."""
+
+    updated_by: Optional[str] = None
+    """Username of the user who last modified the policy. Output only."""
+
+    when_condition: Optional[str] = None
+    """Optional condition when the policy should take effect."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_mask:
+            body["column_mask"] = self.column_mask.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.except_principals:
+            body["except_principals"] = [v for v in self.except_principals]
+        if self.for_securable_type is not None:
+            body["for_securable_type"] = self.for_securable_type.value
+        if self.id is not None:
+            body["id"] = self.id
+        if self.match_columns:
+            body["match_columns"] = [v.as_dict() for v in self.match_columns]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.on_securable_fullname is not None:
+            body["on_securable_fullname"] = self.on_securable_fullname
+        if self.on_securable_type is not None:
+            body["on_securable_type"] = self.on_securable_type.value
+        if self.policy_type is not None:
+            body["policy_type"] = self.policy_type.value
+        if self.row_filter:
+            body["row_filter"] = self.row_filter.as_dict()
+        if self.to_principals:
+            body["to_principals"] = [v for v in self.to_principals]
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.when_condition is not None:
+            body["when_condition"] = self.when_condition
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_mask:
+            body["column_mask"] = self.column_mask
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.except_principals:
+            body["except_principals"] = self.except_principals
+        if self.for_securable_type is not None:
+            body["for_securable_type"] = self.for_securable_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.match_columns:
+            body["match_columns"] = self.match_columns
+        if self.name is not None:
+            body["name"] = self.name
+        if self.on_securable_fullname is not None:
+            body["on_securable_fullname"] = self.on_securable_fullname
+        if self.on_securable_type is not None:
+            body["on_securable_type"] = self.on_securable_type
+        if self.policy_type is not None:
+            body["policy_type"] = self.policy_type
+        if self.row_filter:
+            body["row_filter"] = self.row_filter
+        if self.to_principals:
+            body["to_principals"] = self.to_principals
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.when_condition is not None:
+            body["when_condition"] = self.when_condition
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyInfo:
+        """Deserializes the PolicyInfo from a dictionary."""
+        return cls(
+            column_mask=_from_dict(d, "column_mask", ColumnMaskOptions),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            except_principals=d.get("except_principals", None),
+            for_securable_type=_enum(d, "for_securable_type", SecurableType),
+            id=d.get("id", None),
+            match_columns=_repeated_dict(d, "match_columns", MatchColumn),
+            name=d.get("name", None),
+            on_securable_fullname=d.get("on_securable_fullname", None),
+            on_securable_type=_enum(d, "on_securable_type", SecurableType),
+            policy_type=_enum(d, "policy_type", PolicyType),
+            row_filter=_from_dict(d, "row_filter", RowFilterOptions),
+            to_principals=d.get("to_principals", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+            when_condition=d.get("when_condition", None),
+        )
+
+
+class PolicyType(Enum):
+
+    POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
+    POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
 
 
 @dataclass
@@ -7361,10 +7794,9 @@ class R2Credentials:
 @dataclass
 class RegenerateDashboardResponse:
     dashboard_id: Optional[str] = None
-    """Id of the regenerated monitoring dashboard."""
 
     parent_folder: Optional[str] = None
-    """The directory where the regenerated dashboard is stored."""
+    """Parent folder is equivalent to {assets_dir}/{tableName}"""
 
     def as_dict(self) -> dict:
         """Serializes the RegenerateDashboardResponse into a dictionary suitable for use as a JSON request body."""
@@ -7557,6 +7989,42 @@ class RegisteredModelInfo:
 
 
 @dataclass
+class RowFilterOptions:
+    function_name: str
+    """The fully qualified name of the row filter function. The function is called on each row of the
+    target table. It should return a boolean value indicating whether the row should be visible to
+    the user. Required on create and update."""
+
+    using: Optional[List[FunctionArgument]] = None
+    """Optional list of column aliases or constant literals to be passed as arguments to the row filter
+    function. The type of each column should match the positional argument of the row filter
+    function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RowFilterOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using:
+            body["using"] = [v.as_dict() for v in self.using]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RowFilterOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using:
+            body["using"] = self.using
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RowFilterOptions:
+        """Deserializes the RowFilterOptions from a dictionary."""
+        return cls(function_name=d.get("function_name", None), using=_repeated_dict(d, "using", FunctionArgument))
+
+
+@dataclass
 class SchemaInfo:
     """Next ID: 40"""
 
@@ -7724,7 +8192,6 @@ class SchemaInfo:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8097,7 +8564,7 @@ class SystemSchemaInfo:
     state: str
     """The current state of enablement for the system schema. An empty string means the system schema
     is available and ready for opt-in. Possible values: AVAILABLE | ENABLE_INITIALIZED |
-    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE"""
+    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE | MANAGED"""
 
     def as_dict(self) -> dict:
         """Serializes the SystemSchemaInfo into a dictionary suitable for use as a JSON request body."""
@@ -12159,36 +12626,209 @@ class OnlineTablesAPI:
         return OnlineTable.from_dict(res)
 
 
-class QualityMonitorsAPI:
-    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
-    tables and a dashboard that you can use to monitor table health and set alerts.
-
-    Most write operations require the user to be the owner of the table (or its parent schema or parent
-    catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
-    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
+class PoliciesAPI:
+    """Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies
+    in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
+    data attributes rather than specific resources, enabling more flexible and comprehensive access control.
+    ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
+    environment contexts. Callers must have the `MANAGE` privilege on a securable to view, create, update, or
+    delete ABAC policies."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def cancel_refresh(self, table_name: str, refresh_id: str):
-        """Cancel an active monitor refresh for the given refresh ID.
+    def create_policy(self, policy_info: PolicyInfo) -> PolicyInfo:
+        """Creates a new policy on a securable. The new policy applies to the securable and all its descendants.
 
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
+        :param policy_info: :class:`PolicyInfo`
+          Required. The policy to create.
 
-        Additionally, the call must be made from the workspace where the monitor was created.
+        :returns: :class:`PolicyInfo`
+        """
+        body = policy_info.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/policies", body=body, headers=headers)
+        return PolicyInfo.from_dict(res)
+
+    def delete_policy(self, on_securable_type: str, on_securable_fullname: str, name: str) -> DeletePolicyResponse:
+        """Delete an ABAC policy defined on a securable.
+
+        :param on_securable_type: str
+          Required. The type of the securable to delete the policy from.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of the securable to delete the policy from.
+        :param name: str
+          Required. The name of the policy to delete
+
+        :returns: :class:`DeletePolicyResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "DELETE",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            headers=headers,
+        )
+        return DeletePolicyResponse.from_dict(res)
+
+    def get_policy(self, on_securable_type: str, on_securable_fullname: str, name: str) -> PolicyInfo:
+        """Get the policy definition on a securable
+
+        :param on_securable_type: str
+          Required. The type of the securable to retrieve the policy for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of securable to retrieve policy for.
+        :param name: str
+          Required. The name of the policy to retrieve.
+
+        :returns: :class:`PolicyInfo`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            headers=headers,
+        )
+        return PolicyInfo.from_dict(res)
+
+    def list_policies(
+        self,
+        on_securable_type: str,
+        on_securable_fullname: str,
+        *,
+        include_inherited: Optional[bool] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[PolicyInfo]:
+        """List all policies defined on a securable. Optionally, the list can include inherited policies defined
+        on the securable's parent schema or catalog.
+
+        :param on_securable_type: str
+          Required. The type of the securable to list policies for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of securable to list policies for.
+        :param include_inherited: bool (optional)
+          Optional. Whether to include policies defined on parent securables. By default, the inherited
+          policies are not included.
+        :param max_results: int (optional)
+          Optional. Maximum number of policies to return on a single page (page length). - When not set or set
+          to 0, the page length is set to a server configured value (recommended); - When set to a value
+          greater than 0, the page length is the minimum of this value and a server configured value;
+        :param page_token: str (optional)
+          Optional. Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`PolicyInfo`
+        """
+
+        query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}",
+                query=query,
+                headers=headers,
+            )
+            if "policies" in json:
+                for v in json["policies"]:
+                    yield PolicyInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_policy(
+        self,
+        on_securable_type: str,
+        on_securable_fullname: str,
+        name: str,
+        policy_info: PolicyInfo,
+        *,
+        update_mask: Optional[str] = None,
+    ) -> PolicyInfo:
+        """Update an ABAC policy on a securable.
+
+        :param on_securable_type: str
+          Required. The type of the securable to update the policy for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of the securable to update the policy for.
+        :param name: str
+          Required. The name of the policy to update.
+        :param policy_info: :class:`PolicyInfo`
+          Optional fields to update. This is the request body for updating a policy. Use `update_mask` field
+          to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all
+          specified fields will be updated. - If `update_mask` is specified, only the fields specified in the
+          `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,
+          the field will be cleared. Users can use the update mask to explicitly unset optional fields such as
+          `exception_principals` and `when_condition`.
+        :param update_mask: str (optional)
+          Optional. The update mask field for specifying user intentions on which fields to update in the
+          request.
+
+        :returns: :class:`PolicyInfo`
+        """
+        body = policy_info.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return PolicyInfo.from_dict(res)
+
+
+class QualityMonitorsAPI:
+    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
+    tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
+    require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
+    dashboard, computed metrics, or monitor configuration only requires the user to have **SELECT** privileges
+    on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_refresh(self, table_name: str, refresh_id: int):
+        """Cancels an already-initiated refresh job.
 
         :param table_name: str
-          Full name of the table.
-        :param refresh_id: str
-          ID of the refresh.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
+        :param refresh_id: int
 
 
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
         self._api.do(
             "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
@@ -12197,13 +12837,14 @@ class QualityMonitorsAPI:
     def create(
         self,
         table_name: str,
-        assets_dir: str,
         output_schema_name: str,
+        assets_dir: str,
         *,
         baseline_table_name: Optional[str] = None,
         custom_metrics: Optional[List[MonitorMetric]] = None,
         data_classification_config: Optional[MonitorDataClassificationConfig] = None,
         inference_log: Optional[MonitorInferenceLog] = None,
+        latest_monitor_failure_msg: Optional[str] = None,
         notifications: Optional[MonitorNotifications] = None,
         schedule: Optional[MonitorCronSchedule] = None,
         skip_builtin_dashboard: Optional[bool] = None,
@@ -12223,31 +12864,37 @@ class QualityMonitorsAPI:
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
 
         :param table_name: str
-          Full name of the table.
-        :param assets_dir: str
-          The directory to store monitoring assets (e.g. dashboard, metric tables).
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
-          Schema where output metric tables are created.
+          [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+          {catalog}.{schema}
+        :param assets_dir: str
+          [Create:REQ Update:IGN] Field for specifying the absolute path to a custom directory to store
+          data-monitoring assets. Normally prepopulated to a default user location via UI and Python APIs.
         :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
+          [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
+          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+          [Create:OPT Update:OPT] Custom metrics.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
+          [Create:OPT Update:OPT] Data classification related config.
         :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
+        :param latest_monitor_failure_msg: str (optional)
+          [Create:ERR Update:IGN] The latest error message for a monitor failure.
         :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
+          [Create:OPT Update:OPT] Field for specifying notification settings.
         :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
+          [Create:OPT Update:OPT] The monitor schedule.
         :param skip_builtin_dashboard: bool (optional)
           Whether to skip creating a default dashboard summarizing data quality metrics.
         :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+          [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+          data is grouped by each expression independently, resulting in a separate slice for each predicate
+          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
+          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeries` (optional)
@@ -12269,6 +12916,8 @@ class QualityMonitorsAPI:
             body["data_classification_config"] = data_classification_config.as_dict()
         if inference_log is not None:
             body["inference_log"] = inference_log.as_dict()
+        if latest_monitor_failure_msg is not None:
+            body["latest_monitor_failure_msg"] = latest_monitor_failure_msg
         if notifications is not None:
             body["notifications"] = notifications.as_dict()
         if output_schema_name is not None:
@@ -12293,7 +12942,7 @@ class QualityMonitorsAPI:
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
-    def delete(self, table_name: str):
+    def delete(self, table_name: str) -> DeleteMonitorResponse:
         """Deletes a monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -12307,14 +12956,18 @@ class QualityMonitorsAPI:
         be manually cleaned up (if desired).
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
 
-
+        :returns: :class:`DeleteMonitorResponse`
         """
 
-        headers = {}
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
+        return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
         """Gets a monitor for the specified table.
@@ -12329,7 +12982,8 @@ class QualityMonitorsAPI:
         workspace than where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
 
         :returns: :class:`MonitorInfo`
         """
@@ -12341,7 +12995,7 @@ class QualityMonitorsAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return MonitorInfo.from_dict(res)
 
-    def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
+    def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
         """Gets info about a specific monitor refresh using the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
@@ -12353,7 +13007,7 @@ class QualityMonitorsAPI:
 
         :param table_name: str
           Full name of the table.
-        :param refresh_id: str
+        :param refresh_id: int
           ID of the refresh.
 
         :returns: :class:`MonitorRefreshInfo`
@@ -12379,7 +13033,8 @@ class QualityMonitorsAPI:
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
 
         :returns: :class:`MonitorRefreshListResponse`
         """
@@ -12405,7 +13060,8 @@ class QualityMonitorsAPI:
         regenerated in the assets directory that was specified when the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
           running warehouse will be used.
@@ -12437,7 +13093,8 @@ class QualityMonitorsAPI:
         Additionally, the call must be made from the workspace where the monitor was created.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
+          disallowed.
 
         :returns: :class:`MonitorRefreshInfo`
         """
@@ -12459,6 +13116,7 @@ class QualityMonitorsAPI:
         dashboard_id: Optional[str] = None,
         data_classification_config: Optional[MonitorDataClassificationConfig] = None,
         inference_log: Optional[MonitorInferenceLog] = None,
+        latest_monitor_failure_msg: Optional[str] = None,
         notifications: Optional[MonitorNotifications] = None,
         schedule: Optional[MonitorCronSchedule] = None,
         slicing_exprs: Optional[List[str]] = None,
@@ -12478,30 +13136,35 @@ class QualityMonitorsAPI:
         Certain configuration fields, such as output asset identifiers, cannot be updated.
 
         :param table_name: str
-          Full name of the table.
+          UC table name in format `catalog.schema.table_name`. This field corresponds to the
+          {full_table_name_arg} arg in the endpoint path.
         :param output_schema_name: str
-          Schema where output metric tables are created.
+          [Create:REQ Update:REQ] Schema where output tables are created. Needs to be in 2-level format
+          {catalog}.{schema}
         :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
+          [Create:OPT Update:OPT] Baseline table name. Baseline data is used to compute drift from the data in
+          the monitored `table_name`. The baseline table and the monitored table shall have the same schema.
         :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+          [Create:OPT Update:OPT] Custom metrics.
         :param dashboard_id: str (optional)
-          Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING
-          state.
+          [Create:ERR Update:OPT] Id of dashboard that visualizes the computed metrics. This can be empty if
+          the monitor is in PENDING state.
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
+          [Create:OPT Update:OPT] Data classification related config.
         :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
+        :param latest_monitor_failure_msg: str (optional)
+          [Create:ERR Update:IGN] The latest error message for a monitor failure.
         :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
+          [Create:OPT Update:OPT] Field for specifying notification settings.
         :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
+          [Create:OPT Update:OPT] The monitor schedule.
         :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+          [Create:OPT Update:OPT] List of column expressions to slice data with for targeted analysis. The
+          data is grouped by each expression independently, resulting in a separate slice for each predicate
+          and its complements. For example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+          following slices: two slices for `col_2 > 10` (True and False), and one slice per unique value in
+          `col1`. For high-cardinality columns, only the top 100 unique values by frequency will generate
+          slices.
         :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeries` (optional)
@@ -12520,6 +13183,8 @@ class QualityMonitorsAPI:
             body["data_classification_config"] = data_classification_config.as_dict()
         if inference_log is not None:
             body["inference_log"] = inference_log.as_dict()
+        if latest_monitor_failure_msg is not None:
+            body["latest_monitor_failure_msg"] = latest_monitor_failure_msg
         if notifications is not None:
             body["notifications"] = notifications.as_dict()
         if output_schema_name is not None:
@@ -12925,7 +13590,7 @@ class SchemasAPI:
         properties: Optional[Dict[str, str]] = None,
         storage_root: Optional[str] = None,
     ) -> SchemaInfo:
-        """Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
+        """Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
 
         :param name: str
@@ -13607,6 +14272,79 @@ class TablesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create(
+        self,
+        name: str,
+        catalog_name: str,
+        schema_name: str,
+        table_type: TableType,
+        data_source_format: DataSourceFormat,
+        storage_location: str,
+        *,
+        columns: Optional[List[ColumnInfo]] = None,
+        properties: Optional[Dict[str, str]] = None,
+    ) -> TableInfo:
+        """Creates a new table in the specified catalog and schema.
+
+        To create an external delta table, the caller must have the **EXTERNAL_USE_SCHEMA** privilege on the
+        parent schema and the **EXTERNAL_USE_LOCATION** privilege on the external location. These privileges
+        must always be granted explicitly, and cannot be inherited through ownership or **ALL_PRIVILEGES**.
+
+        Standard UC permissions needed to create tables still apply: **USE_CATALOG** on the parent catalog (or
+        ownership of the parent catalog), **CREATE_TABLE** and **USE_SCHEMA** on the parent schema (or
+        ownership of the parent schema), and **CREATE_EXTERNAL_TABLE** on external location.
+
+        The **columns** field needs to be in a Spark compatible format, so we recommend you use Spark to
+        create these tables. The API itself does not validate the correctness of the column spec. If the spec
+        is not Spark compatible, the tables may not be readable by Databricks Runtime.
+
+        NOTE: The Create Table API for external clients only supports creating **external delta tables**. The
+        values shown in the respective enums are all values supported by Databricks, however for this specific
+        Create Table API, only **table_type** **EXTERNAL** and **data_source_format** **DELTA** are supported.
+        Additionally, column masks are not supported when creating tables through this API.
+
+        :param name: str
+          Name of table, relative to parent schema.
+        :param catalog_name: str
+          Name of parent catalog.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
+        :param table_type: :class:`TableType`
+        :param data_source_format: :class:`DataSourceFormat`
+        :param storage_location: str
+          Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+        :param columns: List[:class:`ColumnInfo`] (optional)
+          The array of __ColumnInfo__ definitions of the table's columns.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+
+        :returns: :class:`TableInfo`
+        """
+        body = {}
+        if catalog_name is not None:
+            body["catalog_name"] = catalog_name
+        if columns is not None:
+            body["columns"] = [v.as_dict() for v in columns]
+        if data_source_format is not None:
+            body["data_source_format"] = data_source_format.value
+        if name is not None:
+            body["name"] = name
+        if properties is not None:
+            body["properties"] = properties
+        if schema_name is not None:
+            body["schema_name"] = schema_name
+        if storage_location is not None:
+            body["storage_location"] = storage_location
+        if table_type is not None:
+            body["table_type"] = table_type.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/tables", body=body, headers=headers)
+        return TableInfo.from_dict(res)
+
     def delete(self, full_name: str):
         """Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
@@ -13628,10 +14366,10 @@ class TablesAPI:
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
+        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
-        the parent catalog * Have BROWSE privilege on the parent schema.
+        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
+        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -13656,9 +14394,9 @@ class TablesAPI:
     ) -> TableInfo:
         """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
-        the table owner or have the SELECT privilege on the table.
+        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
+        and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -13856,19 +14594,86 @@ class TablesAPI:
         self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
 
 
+class TemporaryPathCredentialsAPI:
+    """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud
+    storage locations registered in Databricks. These credentials are employed to provide secure and
+    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
+    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
+    supports temporary credentials through OAuth 2.0.
+
+    Temporary path credentials ensure that data access is limited in scope and duration, reducing the risk of
+    unauthorized access or misuse. To use the temporary path credentials API, a metastore admin needs to
+    enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
+    granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
+    tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
+    admin.
+
+    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog admin
+    explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
+    Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
+    external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
+    the external location for security reasons.
+
+    This API only supports temporary path credentials for external locations and external tables, and volumes
+    will be supported in the future."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def generate_temporary_path_credentials(
+        self, url: str, operation: PathOperation, *, dry_run: Optional[bool] = None
+    ) -> GenerateTemporaryPathCredentialResponse:
+        """Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.
+        The Generate Temporary Path Credentials API is only supported for external storage paths, specifically
+        external locations and external tables. Managed tables are not supported by this API. The metastore
+        must have **external_access_enabled** flag set to true (default false). The caller must have the
+        **EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be granted by
+        external location owners. For requests on existing external tables, the caller must also have the
+        **EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by catalog
+        owners.
+
+        :param url: str
+          URL for path-based access.
+        :param operation: :class:`PathOperation`
+          The operation being performed on the path.
+        :param dry_run: bool (optional)
+          Optional. When set to true, the service will not validate that the generated credentials can perform
+          write operations, therefore no new paths will be created and the response will not contain valid
+          credentials. Defaults to false.
+
+        :returns: :class:`GenerateTemporaryPathCredentialResponse`
+        """
+        body = {}
+        if dry_run is not None:
+            body["dry_run"] = dry_run
+        if operation is not None:
+            body["operation"] = operation.value
+        if url is not None:
+            body["url"] = url
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-path-credentials", body=body, headers=headers)
+        return GenerateTemporaryPathCredentialResponse.from_dict(res)
+
+
 class TemporaryTableCredentialsAPI:
     """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage
-    locationswhere table data is stored in Databricks. These credentials are employed to provide secure and
-    time-limitedaccess to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
-    has its own typeof credentials: AWS uses temporary session tokens via AWS Security Token Service (STS),
-    Azure utilizesShared Access Signatures (SAS) for its data storage services, and Google Cloud supports
-    temporary credentialsthrough OAuth 2.0.Temporary table credentials ensure that data access is limited in
-    scope and duration, reducing the risk ofunauthorized access or misuse. To use the temporary table
-    credentials API, a metastore admin needs to enable the external_access_enabled flag (off by default) at
-    the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA permission at the schema level
-    by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by
-    catalog admin explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for
-    security reason."""
+    locations where table data is stored in Databricks. These credentials are employed to provide secure and
+    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
+    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
+    supports temporary credentials through OAuth 2.0.
+
+    Temporary table credentials ensure that data access is limited in scope and duration, reducing the risk of
+    unauthorized access or misuse. To use the temporary table credentials API, a metastore admin needs to
+    enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
+    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog admin. Note that EXTERNAL USE
+    SCHEMA is a schema level permission that can only be granted by catalog admin explicitly and is not
+    included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -13877,9 +14682,9 @@ class TemporaryTableCredentialsAPI:
         self, *, operation: Optional[TableOperation] = None, table_id: Optional[str] = None
     ) -> GenerateTemporaryTableCredentialResponse:
         """Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
-        must have external_access_enabled flag set to true (default false). The caller must have
-        EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog
-        owners.
+        must have **external_access_enabled** flag set to true (default false). The caller must have the
+        **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege can only be granted by
+        catalog owners.
 
         :param operation: :class:`TableOperation` (optional)
           The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
