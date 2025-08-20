@@ -413,6 +413,14 @@ class GenieConversationSummary:
         )
 
 
+class GenieFeedbackRating(Enum):
+    """Feedback rating for Genie messages"""
+
+    NEGATIVE = "NEGATIVE"
+    NONE = "NONE"
+    POSITIVE = "POSITIVE"
+
+
 @dataclass
 class GenieGetMessageQueryResultResponse:
     statement_response: Optional[sql.StatementResponse] = None
@@ -437,6 +445,38 @@ class GenieGetMessageQueryResultResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GenieGetMessageQueryResultResponse:
         """Deserializes the GenieGetMessageQueryResultResponse from a dictionary."""
         return cls(statement_response=_from_dict(d, "statement_response", sql.StatementResponse))
+
+
+@dataclass
+class GenieListConversationMessagesResponse:
+    messages: Optional[List[GenieMessage]] = None
+    """List of messages in the conversation."""
+
+    next_page_token: Optional[str] = None
+    """The token to use for retrieving the next page of results."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieListConversationMessagesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.messages:
+            body["messages"] = [v.as_dict() for v in self.messages]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieListConversationMessagesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.messages:
+            body["messages"] = self.messages
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieListConversationMessagesResponse:
+        """Deserializes the GenieListConversationMessagesResponse from a dictionary."""
+        return cls(messages=_repeated_dict(d, "messages", GenieMessage), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1630,6 +1670,29 @@ class GenieAPI:
 
         self._api.do("DELETE", f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}", headers=headers)
 
+    def delete_conversation_message(self, space_id: str, conversation_id: str, message_id: str):
+        """Delete a conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space where the message is located.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}",
+            headers=headers,
+        )
+
     def execute_message_attachment_query(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
@@ -1662,7 +1725,8 @@ class GenieAPI:
     def execute_message_query(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Execute the SQL query in the message.
+        """DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -1741,8 +1805,8 @@ class GenieAPI:
     def get_message_query_result(
         self, space_id: str, conversation_id: str, message_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY`.
+        """DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -1768,8 +1832,8 @@ class GenieAPI:
     def get_message_query_result_by_attachment(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
-        """Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
+        """DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -1810,13 +1874,55 @@ class GenieAPI:
         res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
         return GenieSpace.from_dict(res)
 
+    def list_conversation_messages(
+        self, space_id: str, conversation_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> GenieListConversationMessagesResponse:
+        """List messages in a conversation
+
+        :param space_id: str
+          The ID associated with the Genie space where the conversation is located
+        :param conversation_id: str
+          The ID of the conversation to list messages from
+        :param page_size: int (optional)
+          Maximum number of messages to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListConversationMessagesResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages",
+            query=query,
+            headers=headers,
+        )
+        return GenieListConversationMessagesResponse.from_dict(res)
+
     def list_conversations(
-        self, space_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+        self,
+        space_id: str,
+        *,
+        include_all: Optional[bool] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
     ) -> GenieListConversationsResponse:
         """Get a list of conversations in a Genie Space.
 
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
+        :param include_all: bool (optional)
+          Include all conversations in the space across all users. Requires "Can Manage" permission on the
+          space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)
@@ -1826,6 +1932,8 @@ class GenieAPI:
         """
 
         query = {}
+        if include_all is not None:
+            query["include_all"] = include_all
         if page_size is not None:
             query["page_size"] = page_size
         if page_token is not None:
@@ -1861,6 +1969,47 @@ class GenieAPI:
 
         res = self._api.do("GET", "/api/2.0/genie/spaces", query=query, headers=headers)
         return GenieListSpacesResponse.from_dict(res)
+
+    def send_message_feedback(
+        self,
+        space_id: str,
+        conversation_id: str,
+        message_id: str,
+        feedback_rating: GenieFeedbackRating,
+        *,
+        feedback_text: Optional[str] = None,
+    ):
+        """Send feedback for a message.
+
+        :param space_id: str
+          The ID associated with the Genie space where the message is located.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message to provide feedback for.
+        :param feedback_rating: :class:`GenieFeedbackRating`
+          The rating (POSITIVE, NEGATIVE, or NONE).
+        :param feedback_text: str (optional)
+          Optional text feedback that will be stored as a comment.
+
+
+        """
+        body = {}
+        if feedback_rating is not None:
+            body["feedback_rating"] = feedback_rating.value
+        if feedback_text is not None:
+            body["feedback_text"] = feedback_text
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        self._api.do(
+            "POST",
+            f"/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback",
+            body=body,
+            headers=headers,
+        )
 
     def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
         """Start a new conversation.
