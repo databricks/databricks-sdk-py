@@ -1827,59 +1827,32 @@ class SecurablePropertiesKvPairs:
 
 @dataclass
 class Share:
-    comment: Optional[str] = None
-    """The comment of the share."""
-
-    display_name: Optional[str] = None
-    """The display name of the share. If defined, it will be shown in the UI."""
-
     id: Optional[str] = None
 
     name: Optional[str] = None
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
-    """The tags of the share."""
-
     def as_dict(self) -> dict:
         """Serializes the Share into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.tags:
-            body["tags"] = [v.as_dict() for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Share into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.tags:
-            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Share:
         """Deserializes the Share from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            name=d.get("name", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
-        )
+        return cls(id=d.get("id", None), name=d.get("name", None))
 
 
 @dataclass

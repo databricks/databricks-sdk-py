@@ -314,6 +314,9 @@ class AiGatewayRateLimit:
     """Principal field for a user, user group, or service principal to apply rate limiting to. Accepts
     a user email, group name, or service principal application ID."""
 
+    tokens: Optional[int] = None
+    """Used to specify how many tokens are allowed for a key within the renewal_period."""
+
     def as_dict(self) -> dict:
         """Serializes the AiGatewayRateLimit into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -325,6 +328,8 @@ class AiGatewayRateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period.value
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -338,6 +343,8 @@ class AiGatewayRateLimit:
             body["principal"] = self.principal
         if self.renewal_period is not None:
             body["renewal_period"] = self.renewal_period
+        if self.tokens is not None:
+            body["tokens"] = self.tokens
         return body
 
     @classmethod
@@ -348,6 +355,7 @@ class AiGatewayRateLimit:
             key=_enum(d, "key", AiGatewayRateLimitKey),
             principal=d.get("principal", None),
             renewal_period=_enum(d, "renewal_period", AiGatewayRateLimitRenewalPeriod),
+            tokens=d.get("tokens", None),
         )
 
 
@@ -3374,6 +3382,9 @@ class ServingEndpoint:
     task: Optional[str] = None
     """The task type of the serving endpoint."""
 
+    usage_policy_id: Optional[str] = None
+    """The usage policy associated with serving endpoint."""
+
     def as_dict(self) -> dict:
         """Serializes the ServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3401,6 +3412,8 @@ class ServingEndpoint:
             body["tags"] = [v.as_dict() for v in self.tags]
         if self.task is not None:
             body["task"] = self.task
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3430,6 +3443,8 @@ class ServingEndpoint:
             body["tags"] = self.tags
         if self.task is not None:
             body["task"] = self.task
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -3448,6 +3463,7 @@ class ServingEndpoint:
             state=_from_dict(d, "state", EndpointState),
             tags=_repeated_dict(d, "tags", EndpointTag),
             task=d.get("task", None),
+            usage_policy_id=d.get("usage_policy_id", None),
         )
 
 

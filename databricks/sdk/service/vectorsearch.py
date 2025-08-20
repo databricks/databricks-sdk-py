@@ -377,7 +377,10 @@ class DirectAccessVectorIndexSpec:
 @dataclass
 class EmbeddingSourceColumn:
     embedding_model_endpoint_name: Optional[str] = None
-    """Name of the embedding model endpoint"""
+    """Name of the embedding model endpoint, used by default for both ingestion and querying."""
+
+    model_endpoint_name_for_query: Optional[str] = None
+    """Name of the embedding model endpoint which, if specified, is used for querying (not ingestion)."""
 
     name: Optional[str] = None
     """Name of the column"""
@@ -387,6 +390,8 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
+        if self.model_endpoint_name_for_query is not None:
+            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -396,6 +401,8 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
+        if self.model_endpoint_name_for_query is not None:
+            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -403,7 +410,11 @@ class EmbeddingSourceColumn:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
+        return cls(
+            embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None),
+            model_endpoint_name_for_query=d.get("model_endpoint_name_for_query", None),
+            name=d.get("name", None),
+        )
 
 
 @dataclass

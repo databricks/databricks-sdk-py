@@ -646,6 +646,10 @@ class AlertV2:
     display_name: Optional[str] = None
     """The display name of the alert."""
 
+    effective_run_as: Optional[AlertV2RunAs] = None
+    """The actual identity that will be used to execute the alert. This is an output-only field that
+    shows the resolved run-as identity after applying permissions and defaults."""
+
     evaluation: Optional[AlertV2Evaluation] = None
 
     id: Optional[str] = None
@@ -664,10 +668,18 @@ class AlertV2:
     query_text: Optional[str] = None
     """Text of the query to be run."""
 
+    run_as: Optional[AlertV2RunAs] = None
+    """Specifies the identity that will be used to run the alert. This field allows you to configure
+    alerts to run as a specific user or service principal. - For user identity: Set `user_name` to
+    the email of an active workspace user. Users can only set this to their own email. - For service
+    principal: Set `service_principal_name` to the application ID. Requires the
+    `servicePrincipal/user` role. If not specified, the alert will run as the request user."""
+
     run_as_user_name: Optional[str] = None
     """The run as username or application ID of service principal. On Create and Update, this field can
     be set to application ID of an active service principal. Setting this field requires the
-    servicePrincipal/user role."""
+    servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed
+    in a future release."""
 
     schedule: Optional[CronSchedule] = None
 
@@ -688,6 +700,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_run_as:
+            body["effective_run_as"] = self.effective_run_as.as_dict()
         if self.evaluation:
             body["evaluation"] = self.evaluation.as_dict()
         if self.id is not None:
@@ -700,6 +714,8 @@ class AlertV2:
             body["parent_path"] = self.parent_path
         if self.query_text is not None:
             body["query_text"] = self.query_text
+        if self.run_as:
+            body["run_as"] = self.run_as.as_dict()
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.schedule:
@@ -721,6 +737,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_run_as:
+            body["effective_run_as"] = self.effective_run_as
         if self.evaluation:
             body["evaluation"] = self.evaluation
         if self.id is not None:
@@ -733,6 +751,8 @@ class AlertV2:
             body["parent_path"] = self.parent_path
         if self.query_text is not None:
             body["query_text"] = self.query_text
+        if self.run_as:
+            body["run_as"] = self.run_as
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.schedule:
@@ -751,12 +771,14 @@ class AlertV2:
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
             display_name=d.get("display_name", None),
+            effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
             lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
             owner_user_name=d.get("owner_user_name", None),
             parent_path=d.get("parent_path", None),
             query_text=d.get("query_text", None),
+            run_as=_from_dict(d, "run_as", AlertV2RunAs),
             run_as_user_name=d.get("run_as_user_name", None),
             schedule=_from_dict(d, "schedule", CronSchedule),
             update_time=d.get("update_time", None),
@@ -990,6 +1012,39 @@ class AlertV2OperandValue:
             double_value=d.get("double_value", None),
             string_value=d.get("string_value", None),
         )
+
+
+@dataclass
+class AlertV2RunAs:
+    service_principal_name: Optional[str] = None
+    """Application ID of an active service principal. Setting this field requires the
+    `servicePrincipal/user` role."""
+
+    user_name: Optional[str] = None
+    """The email of an active workspace user. Can only set this field to their own email."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertV2RunAs into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertV2RunAs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.user_name is not None:
+            body["user_name"] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AlertV2RunAs:
+        """Deserializes the AlertV2RunAs from a dictionary."""
+        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -4723,6 +4778,9 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
+    cache_query_id: Optional[str] = None
+    """The ID of the cached query if this result retrieved from cache"""
+
     channel_used: Optional[ChannelInfo] = None
     """SQL Warehouse channel information at the time of query execution"""
 
@@ -4808,6 +4866,8 @@ class QueryInfo:
     def as_dict(self) -> dict:
         """Serializes the QueryInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cache_query_id is not None:
+            body["cache_query_id"] = self.cache_query_id
         if self.channel_used:
             body["channel_used"] = self.channel_used.as_dict()
         if self.client_application is not None:
@@ -4861,6 +4921,8 @@ class QueryInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the QueryInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cache_query_id is not None:
+            body["cache_query_id"] = self.cache_query_id
         if self.channel_used:
             body["channel_used"] = self.channel_used
         if self.client_application is not None:
@@ -4915,6 +4977,7 @@ class QueryInfo:
     def from_dict(cls, d: Dict[str, Any]) -> QueryInfo:
         """Deserializes the QueryInfo from a dictionary."""
         return cls(
+            cache_query_id=d.get("cache_query_id", None),
             channel_used=_from_dict(d, "channel_used", ChannelInfo),
             client_application=d.get("client_application", None),
             duration=d.get("duration", None),
