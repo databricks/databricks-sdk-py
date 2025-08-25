@@ -167,9 +167,13 @@ def _make_dbutils(config: client.Config):
         return dbutils.RemoteDbUtils(config)
 
     # We are in runtime, so we can use the runtime dbutils
-    from databricks.sdk.runtime import dbutils as runtime_dbutils
-
-    return runtime_dbutils
+    try:
+        from databricks.sdk.runtime import dbutils as runtime_dbutils
+        return runtime_dbutils
+    except ImportError:
+        # Expected on shared clusters where runtime dbutils access is restricted
+        _LOG.debug("Runtime dbutils not available, falling back to RemoteDbUtils (likely shared cluster)")
+        return dbutils.RemoteDbUtils(config)
 
 
 def _make_files_client(apiClient: client.ApiClient, config: client.Config):
