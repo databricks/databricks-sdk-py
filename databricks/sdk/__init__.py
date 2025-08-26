@@ -169,6 +169,7 @@ def _make_dbutils(config: client.Config):
     # We are in runtime, so we can use the runtime dbutils
     try:
         from databricks.sdk.runtime import dbutils as runtime_dbutils
+
         return runtime_dbutils
     except ImportError:
         # Expected on shared clusters where runtime dbutils access is restricted
