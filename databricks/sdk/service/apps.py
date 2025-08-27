@@ -484,6 +484,312 @@ class AppDeploymentStatus:
 
 
 @dataclass
+class AppManifest:
+    """App manifest definition"""
+
+    version: int
+    """The manifest schema version, for now only 1 is allowed"""
+
+    name: str
+    """Name of the app defined by manifest author / publisher"""
+
+    description: Optional[str] = None
+    """Description of the app defined by manifest author / publisher"""
+
+    resource_specs: Optional[List[AppManifestAppResourceSpec]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.resource_specs:
+            body["resource_specs"] = [v.as_dict() for v in self.resource_specs]
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.name is not None:
+            body["name"] = self.name
+        if self.resource_specs:
+            body["resource_specs"] = self.resource_specs
+        if self.version is not None:
+            body["version"] = self.version
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifest:
+        """Deserializes the AppManifest from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            name=d.get("name", None),
+            resource_specs=_repeated_dict(d, "resource_specs", AppManifestAppResourceSpec),
+            version=d.get("version", None),
+        )
+
+
+@dataclass
+class AppManifestAppResourceJobSpec:
+    permission: AppManifestAppResourceJobSpecJobPermission
+    """Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER",
+    "CAN_MANAGE_RUN", "CAN_VIEW"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceJobSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceJobSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceJobSpec:
+        """Deserializes the AppManifestAppResourceJobSpec from a dictionary."""
+        return cls(permission=_enum(d, "permission", AppManifestAppResourceJobSpecJobPermission))
+
+
+class AppManifestAppResourceJobSpecJobPermission(Enum):
+
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_MANAGE_RUN = "CAN_MANAGE_RUN"
+    CAN_VIEW = "CAN_VIEW"
+    IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppManifestAppResourceSecretSpec:
+    permission: AppManifestAppResourceSecretSpecSecretPermission
+    """Permission to grant on the secret scope. For secrets, only one permission is allowed. Permission
+    must be one of: "READ", "WRITE", "MANAGE"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSecretSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSecretSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceSecretSpec:
+        """Deserializes the AppManifestAppResourceSecretSpec from a dictionary."""
+        return cls(permission=_enum(d, "permission", AppManifestAppResourceSecretSpecSecretPermission))
+
+
+class AppManifestAppResourceSecretSpecSecretPermission(Enum):
+    """Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE"."""
+
+    MANAGE = "MANAGE"
+    READ = "READ"
+    WRITE = "WRITE"
+
+
+@dataclass
+class AppManifestAppResourceServingEndpointSpec:
+    permission: AppManifestAppResourceServingEndpointSpecServingEndpointPermission
+    """Permission to grant on the serving endpoint. Supported permissions are: "CAN_MANAGE",
+    "CAN_QUERY", "CAN_VIEW"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceServingEndpointSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceServingEndpointSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceServingEndpointSpec:
+        """Deserializes the AppManifestAppResourceServingEndpointSpec from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", AppManifestAppResourceServingEndpointSpecServingEndpointPermission)
+        )
+
+
+class AppManifestAppResourceServingEndpointSpecServingEndpointPermission(Enum):
+
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_QUERY = "CAN_QUERY"
+    CAN_VIEW = "CAN_VIEW"
+
+
+@dataclass
+class AppManifestAppResourceSpec:
+    """AppResource related fields are copied from app.proto but excludes resource identifiers (e.g.
+    name, id, key, scope, etc.)"""
+
+    name: str
+    """Name of the App Resource."""
+
+    description: Optional[str] = None
+    """Description of the App Resource."""
+
+    job_spec: Optional[AppManifestAppResourceJobSpec] = None
+
+    secret_spec: Optional[AppManifestAppResourceSecretSpec] = None
+
+    serving_endpoint_spec: Optional[AppManifestAppResourceServingEndpointSpec] = None
+
+    sql_warehouse_spec: Optional[AppManifestAppResourceSqlWarehouseSpec] = None
+
+    uc_securable_spec: Optional[AppManifestAppResourceUcSecurableSpec] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.job_spec:
+            body["job_spec"] = self.job_spec.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.secret_spec:
+            body["secret_spec"] = self.secret_spec.as_dict()
+        if self.serving_endpoint_spec:
+            body["serving_endpoint_spec"] = self.serving_endpoint_spec.as_dict()
+        if self.sql_warehouse_spec:
+            body["sql_warehouse_spec"] = self.sql_warehouse_spec.as_dict()
+        if self.uc_securable_spec:
+            body["uc_securable_spec"] = self.uc_securable_spec.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.job_spec:
+            body["job_spec"] = self.job_spec
+        if self.name is not None:
+            body["name"] = self.name
+        if self.secret_spec:
+            body["secret_spec"] = self.secret_spec
+        if self.serving_endpoint_spec:
+            body["serving_endpoint_spec"] = self.serving_endpoint_spec
+        if self.sql_warehouse_spec:
+            body["sql_warehouse_spec"] = self.sql_warehouse_spec
+        if self.uc_securable_spec:
+            body["uc_securable_spec"] = self.uc_securable_spec
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceSpec:
+        """Deserializes the AppManifestAppResourceSpec from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            job_spec=_from_dict(d, "job_spec", AppManifestAppResourceJobSpec),
+            name=d.get("name", None),
+            secret_spec=_from_dict(d, "secret_spec", AppManifestAppResourceSecretSpec),
+            serving_endpoint_spec=_from_dict(d, "serving_endpoint_spec", AppManifestAppResourceServingEndpointSpec),
+            sql_warehouse_spec=_from_dict(d, "sql_warehouse_spec", AppManifestAppResourceSqlWarehouseSpec),
+            uc_securable_spec=_from_dict(d, "uc_securable_spec", AppManifestAppResourceUcSecurableSpec),
+        )
+
+
+@dataclass
+class AppManifestAppResourceSqlWarehouseSpec:
+    permission: AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission
+    """Permission to grant on the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE",
+    "IS_OWNER"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSqlWarehouseSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceSqlWarehouseSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceSqlWarehouseSpec:
+        """Deserializes the AppManifestAppResourceSqlWarehouseSpec from a dictionary."""
+        return cls(permission=_enum(d, "permission", AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission))
+
+
+class AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission(Enum):
+
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_USE = "CAN_USE"
+    IS_OWNER = "IS_OWNER"
+
+
+@dataclass
+class AppManifestAppResourceUcSecurableSpec:
+    securable_type: AppManifestAppResourceUcSecurableSpecUcSecurableType
+
+    permission: AppManifestAppResourceUcSecurableSpecUcSecurablePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceUcSecurableSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceUcSecurableSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceUcSecurableSpec:
+        """Deserializes the AppManifestAppResourceUcSecurableSpec from a dictionary."""
+        return cls(
+            permission=_enum(d, "permission", AppManifestAppResourceUcSecurableSpecUcSecurablePermission),
+            securable_type=_enum(d, "securable_type", AppManifestAppResourceUcSecurableSpecUcSecurableType),
+        )
+
+
+class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
+
+    MANAGE = "MANAGE"
+    READ_VOLUME = "READ_VOLUME"
+    WRITE_VOLUME = "WRITE_VOLUME"
+
+
+class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
+
+    VOLUME = "VOLUME"
+
+
+@dataclass
 class AppPermission:
     inherited: Optional[bool] = None
 
@@ -1037,6 +1343,81 @@ class ComputeStatus:
 
 
 @dataclass
+class CustomTemplate:
+    name: str
+    """The name of the template. It must contain only alphanumeric characters, hyphens, underscores,
+    and whitespaces. It must be unique within the workspace."""
+
+    git_repo: str
+    """The Git repository URL that the template resides in."""
+
+    path: str
+    """The path to the template within the Git repository."""
+
+    manifest: AppManifest
+    """The manifest of the template. It defines fields and default values when installing the template."""
+
+    git_provider: str
+    """The Git provider of the template."""
+
+    creator: Optional[str] = None
+
+    description: Optional[str] = None
+    """The description of the template."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomTemplate into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
+        if self.git_provider is not None:
+            body["git_provider"] = self.git_provider
+        if self.git_repo is not None:
+            body["git_repo"] = self.git_repo
+        if self.manifest:
+            body["manifest"] = self.manifest.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.path is not None:
+            body["path"] = self.path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomTemplate into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
+        if self.git_provider is not None:
+            body["git_provider"] = self.git_provider
+        if self.git_repo is not None:
+            body["git_repo"] = self.git_repo
+        if self.manifest:
+            body["manifest"] = self.manifest
+        if self.name is not None:
+            body["name"] = self.name
+        if self.path is not None:
+            body["path"] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CustomTemplate:
+        """Deserializes the CustomTemplate from a dictionary."""
+        return cls(
+            creator=d.get("creator", None),
+            description=d.get("description", None),
+            git_provider=d.get("git_provider", None),
+            git_repo=d.get("git_repo", None),
+            manifest=_from_dict(d, "manifest", AppManifest),
+            name=d.get("name", None),
+            path=d.get("path", None),
+        )
+
+
+@dataclass
 class GetAppPermissionLevelsResponse:
     permission_levels: Optional[List[AppPermissionsDescription]] = None
     """Specific permission levels"""
@@ -1125,6 +1506,39 @@ class ListAppsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
         return cls(apps=_repeated_dict(d, "apps", App), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListCustomTemplatesResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of custom templates."""
+
+    templates: Optional[List[CustomTemplate]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCustomTemplatesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.templates:
+            body["templates"] = [v.as_dict() for v in self.templates]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListCustomTemplatesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.templates:
+            body["templates"] = self.templates
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListCustomTemplatesResponse:
+        """Deserializes the ListCustomTemplatesResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None), templates=_repeated_dict(d, "templates", CustomTemplate)
+        )
 
 
 class AppsAPI:
@@ -1542,3 +1956,108 @@ class AppsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
+
+
+class AppsSettingsAPI:
+    """Apps Settings manage the settings for the Apps service on a customer's Databricks instance."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_custom_template(self, template: CustomTemplate) -> CustomTemplate:
+        """Creates a custom template.
+
+        :param template: :class:`CustomTemplate`
+
+        :returns: :class:`CustomTemplate`
+        """
+        body = template.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/apps-settings/templates", body=body, headers=headers)
+        return CustomTemplate.from_dict(res)
+
+    def delete_custom_template(self, name: str) -> CustomTemplate:
+        """Deletes the custom template with the specified name.
+
+        :param name: str
+          The name of the custom template.
+
+        :returns: :class:`CustomTemplate`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("DELETE", f"/api/2.0/apps-settings/templates/{name}", headers=headers)
+        return CustomTemplate.from_dict(res)
+
+    def get_custom_template(self, name: str) -> CustomTemplate:
+        """Gets the custom template with the specified name.
+
+        :param name: str
+          The name of the custom template.
+
+        :returns: :class:`CustomTemplate`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/apps-settings/templates/{name}", headers=headers)
+        return CustomTemplate.from_dict(res)
+
+    def list_custom_templates(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[CustomTemplate]:
+        """Lists all custom templates in the workspace.
+
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of custom templates. Requests first page if absent.
+
+        :returns: Iterator over :class:`CustomTemplate`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/apps-settings/templates", query=query, headers=headers)
+            if "templates" in json:
+                for v in json["templates"]:
+                    yield CustomTemplate.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_custom_template(self, name: str, template: CustomTemplate) -> CustomTemplate:
+        """Updates the custom template with the specified name. Note that the template name cannot be updated.
+
+        :param name: str
+          The name of the template. It must contain only alphanumeric characters, hyphens, underscores, and
+          whitespaces. It must be unique within the workspace.
+        :param template: :class:`CustomTemplate`
+
+        :returns: :class:`CustomTemplate`
+        """
+        body = template.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PUT", f"/api/2.0/apps-settings/templates/{name}", body=body, headers=headers)
+        return CustomTemplate.from_dict(res)

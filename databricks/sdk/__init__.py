@@ -32,12 +32,14 @@ from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
 from databricks.sdk.service import settings as pkg_settings
+from databricks.sdk.service import settingsv2 as pkg_settingsv2
 from databricks.sdk.service import sharing as pkg_sharing
 from databricks.sdk.service import sql as pkg_sql
+from databricks.sdk.service import tags as pkg_tags
 from databricks.sdk.service import vectorsearch as pkg_vectorsearch
 from databricks.sdk.service import workspace as pkg_workspace
 from databricks.sdk.service.agentbricks import AgentBricksAPI
-from databricks.sdk.service.apps import AppsAPI
+from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
                                             UsageDashboardsAPI)
@@ -46,6 +48,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountStorageCredentialsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI, CredentialsAPI,
+                                            EntityTagAssignmentsAPI,
                                             ExternalLineageAPI,
                                             ExternalLocationsAPI,
                                             ExternalMetadataAPI, FunctionsAPI,
@@ -53,8 +56,8 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             PoliciesAPI, QualityMonitorsAPI,
                                             RegisteredModelsAPI,
-                                            ResourceQuotasAPI, SchemasAPI,
-                                            StorageCredentialsAPI,
+                                            ResourceQuotasAPI, RfaAPI,
+                                            SchemasAPI, StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryPathCredentialsAPI,
@@ -128,6 +131,8 @@ from databricks.sdk.service.settings import (
     RestrictWorkspaceAdminsAPI, SettingsAPI, SqlResultsDownloadAPI,
     TokenManagementAPI, TokensAPI, WorkspaceConfAPI,
     WorkspaceNetworkConfigurationAPI)
+from databricks.sdk.service.settingsv2 import (AccountSettingsV2API,
+                                               WorkspaceSettingsV2API)
 from databricks.sdk.service.sharing import (ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientFederationPoliciesAPI,
@@ -141,6 +146,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
+from databricks.sdk.service.tags import TagPoliciesAPI
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -248,6 +254,7 @@ class WorkspaceClient:
         self._alerts_legacy = pkg_sql.AlertsLegacyAPI(self._api_client)
         self._alerts_v2 = pkg_sql.AlertsV2API(self._api_client)
         self._apps = pkg_apps.AppsAPI(self._api_client)
+        self._apps_settings = pkg_apps.AppsSettingsAPI(self._api_client)
         self._artifact_allowlists = pkg_catalog.ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = pkg_catalog.CatalogsAPI(self._api_client)
         self._clean_room_asset_revisions = pkg_cleanrooms.CleanRoomAssetRevisionsAPI(self._api_client)
@@ -273,6 +280,7 @@ class WorkspaceClient:
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
+        self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
         self._experiments = pkg_ml.ExperimentsAPI(self._api_client)
         self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
@@ -329,6 +337,7 @@ class WorkspaceClient:
         self._registered_models = pkg_catalog.RegisteredModelsAPI(self._api_client)
         self._repos = pkg_workspace.ReposAPI(self._api_client)
         self._resource_quotas = pkg_catalog.ResourceQuotasAPI(self._api_client)
+        self._rfa = pkg_catalog.RfaAPI(self._api_client)
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
@@ -347,6 +356,7 @@ class WorkspaceClient:
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
+        self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
@@ -359,6 +369,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
+        self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
 
     @property
@@ -407,6 +418,11 @@ class WorkspaceClient:
     def apps(self) -> pkg_apps.AppsAPI:
         """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
         return self._apps
+
+    @property
+    def apps_settings(self) -> pkg_apps.AppsSettingsAPI:
+        """Apps Settings manage the settings for the Apps service on a customer's Databricks instance."""
+        return self._apps_settings
 
     @property
     def artifact_allowlists(self) -> pkg_catalog.ArtifactAllowlistsAPI:
@@ -532,6 +548,11 @@ class WorkspaceClient:
     def dbsql_permissions(self) -> pkg_sql.DbsqlPermissionsAPI:
         """The SQL Permissions API is similar to the endpoints of the :method:permissions/set."""
         return self._dbsql_permissions
+
+    @property
+    def entity_tag_assignments(self) -> pkg_catalog.EntityTagAssignmentsAPI:
+        """Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog."""
+        return self._entity_tag_assignments
 
     @property
     def experiments(self) -> pkg_ml.ExperimentsAPI:
@@ -804,6 +825,11 @@ class WorkspaceClient:
         return self._resource_quotas
 
     @property
+    def rfa(self) -> pkg_catalog.RfaAPI:
+        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        return self._rfa
+
+    @property
     def schemas(self) -> pkg_catalog.SchemasAPI:
         """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace."""
         return self._schemas
@@ -869,6 +895,11 @@ class WorkspaceClient:
         return self._tables
 
     @property
+    def tag_policies(self) -> pkg_tags.TagPoliciesAPI:
+        """The Tag Policy API allows you to manage tag policies in Databricks."""
+        return self._tag_policies
+
+    @property
     def temporary_path_credentials(self) -> pkg_catalog.TemporaryPathCredentialsAPI:
         """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks."""
         return self._temporary_path_credentials
@@ -927,6 +958,11 @@ class WorkspaceClient:
     def workspace_conf(self) -> pkg_settings.WorkspaceConfAPI:
         """This API allows updating known workspace settings for advanced users."""
         return self._workspace_conf
+
+    @property
+    def workspace_settings_v2(self) -> pkg_settingsv2.WorkspaceSettingsV2API:
+        """APIs to manage workspace level settings."""
+        return self._workspace_settings_v2
 
     @property
     def forecasting(self) -> pkg_ml.ForecastingAPI:
@@ -1029,6 +1065,7 @@ class AccountClient:
         self._service_principal_secrets = pkg_oauth2.ServicePrincipalSecretsAPI(self._api_client)
         self._service_principals = pkg_iam.AccountServicePrincipalsAPI(self._api_client)
         self._settings = pkg_settings.AccountSettingsAPI(self._api_client)
+        self._settings_v2 = pkg_settingsv2.AccountSettingsV2API(self._api_client)
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
@@ -1156,6 +1193,11 @@ class AccountClient:
     def settings(self) -> pkg_settings.AccountSettingsAPI:
         """Accounts Settings API allows users to manage settings at the account level."""
         return self._settings
+
+    @property
+    def settings_v2(self) -> pkg_settingsv2.AccountSettingsV2API:
+        """APIs to manage account level settings."""
+        return self._settings_v2
 
     @property
     def storage(self) -> pkg_provisioning.StorageAPI:

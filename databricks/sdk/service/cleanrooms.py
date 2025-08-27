@@ -45,7 +45,7 @@ class CleanRoom:
     using the separate CreateCleanRoomOutputCatalog API."""
 
     owner: Optional[str] = None
-    """This is Databricks username of the owner of the local clean room securable for permission
+    """This is the Databricks username of the owner of the local clean room securable for permission
     management."""
 
     remote_detailed_info: Optional[CleanRoomRemoteDetail] = None
@@ -358,7 +358,7 @@ class CleanRoomAssetNotebook:
     """All existing approvals or rejections"""
 
     runner_collaborator_aliases: Optional[List[str]] = None
-    """collaborators that can run the notebook"""
+    """Aliases of collaborators that can run the notebook."""
 
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a dictionary suitable for use as a JSON request body."""
@@ -643,7 +643,7 @@ class CleanRoomCollaborator:
     It is not restricted to these values and could change in the future"""
 
     global_metastore_id: Optional[str] = None
-    """The global Unity Catalog metastore id of the collaborator. The identifier is of format
+    """The global Unity Catalog metastore ID of the collaborator. The identifier is of format
     cloud:region:metastore-uuid."""
 
     invite_recipient_email: Optional[str] = None
