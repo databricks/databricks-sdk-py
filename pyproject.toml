@@ -36,7 +36,7 @@ Documentation = "https://databricks-sdk-py.readthedocs.io"
 dev = [
     "pytest",
     "pytest-cov",
-    "pytest-xdist",
+    "pytest-xdist>=3.6.1,<4.0",
     "pytest-mock",
     "black",
     "pycodestyle",
