@@ -41,6 +41,20 @@
 
         
 
+    .. py:method:: delete_conversation_message(space_id: str, conversation_id: str, message_id: str)
+
+        Delete a conversation message.
+
+        :param space_id: str
+          The ID associated with the Genie space where the message is located.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message to delete.
+
+
+        
+
     .. py:method:: execute_message_attachment_query(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
         Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
@@ -60,7 +74,8 @@
 
     .. py:method:: execute_message_query(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
-        Execute the SQL query in the message.
+        DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -105,8 +120,8 @@
 
     .. py:method:: get_message_query_result(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY`.
+        DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -120,8 +135,8 @@
 
     .. py:method:: get_message_query_result_by_attachment(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
 
-        Get the result of SQL query if the message has a query attachment. This is only available if a message
-        has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.
+        DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
+        instead.
 
         :param space_id: str
           Genie space ID
@@ -145,12 +160,31 @@
         :returns: :class:`GenieSpace`
         
 
-    .. py:method:: list_conversations(space_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationsResponse
+    .. py:method:: list_conversation_messages(space_id: str, conversation_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationMessagesResponse
+
+        List messages in a conversation
+
+        :param space_id: str
+          The ID associated with the Genie space where the conversation is located
+        :param conversation_id: str
+          The ID of the conversation to list messages from
+        :param page_size: int (optional)
+          Maximum number of messages to return per page
+        :param page_token: str (optional)
+          Token to get the next page of results
+
+        :returns: :class:`GenieListConversationMessagesResponse`
+        
+
+    .. py:method:: list_conversations(space_id: str [, include_all: Optional[bool], page_size: Optional[int], page_token: Optional[str]]) -> GenieListConversationsResponse
 
         Get a list of conversations in a Genie Space.
 
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
+        :param include_all: bool (optional)
+          Include all conversations in the space across all users. Requires "Can Manage" permission on the
+          space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)
@@ -169,6 +203,24 @@
           Pagination token for getting the next page of results
 
         :returns: :class:`GenieListSpacesResponse`
+        
+
+    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
+
+        Send feedback for a message.
+
+        :param space_id: str
+          The ID associated with the Genie space where the message is located.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param message_id: str
+          The ID associated with the message to provide feedback for.
+        :param rating: :class:`GenieFeedbackRating`
+          The rating (POSITIVE, NEGATIVE, or NONE).
+        :param comment: str (optional)
+          Optional text feedback that will be stored as a comment.
+
+
         
 
     .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]

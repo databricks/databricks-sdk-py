@@ -8,3 +8,4 @@ Build custom applications on Databricks
    :maxdepth: 1
 
    apps
+   apps_settings

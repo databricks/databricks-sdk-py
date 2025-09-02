@@ -122,6 +122,40 @@
 
     .. py:method:: get_open_ai_client()
 
+        Create an OpenAI client configured for Databricks Model Serving.
+
+        Returns an OpenAI client instance that is pre-configured to send requests to
+        Databricks Model Serving endpoints. The client uses Databricks authentication
+        to query endpoints within the workspace associated with the current WorkspaceClient
+        instance.
+
+        Args:
+            **kwargs: Additional parameters to pass to the OpenAI client constructor.
+                Common parameters include:
+                - timeout (float): Request timeout in seconds (e.g., 30.0)
+                - max_retries (int): Maximum number of retries for failed requests (e.g., 3)
+                - default_headers (dict): Additional headers to include with requests
+                - default_query (dict): Additional query parameters to include with requests
+
+                Any parameter accepted by the OpenAI client constructor can be passed here,
+                except for the following parameters which are reserved for Databricks integration:
+                base_url, api_key, http_client
+
+        Returns:
+            OpenAI: An OpenAI client instance configured for Databricks Model Serving.
+
+        Raises:
+            ImportError: If the OpenAI library is not installed.
+            ValueError: If any reserved Databricks parameters are provided in kwargs.
+
+        Example:
+            >>> client = workspace_client.serving_endpoints.get_open_ai_client()
+            >>> # With custom timeout and retries
+            >>> client = workspace_client.serving_endpoints.get_open_ai_client(
+            ...     timeout=30.0,
+            ...     max_retries=5
+            ... )
+        
 
     .. py:method:: get_open_api(name: str) -> GetOpenApiResponse
 
@@ -245,12 +279,15 @@
         :returns: :class:`PutAiGatewayResponse`
         
 
-    .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
+    .. py:method:: query(name: str [, client_request_id: Optional[str], dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float], usage_context: Optional[Dict[str, str]]]) -> QueryEndpointResponse
 
         Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -292,6 +329,8 @@
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         

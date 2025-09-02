@@ -13,7 +13,7 @@
     objects based on cloud storage. Users may create different types of connections with each connection
     having a unique set of configuration options to support credential management and other settings.
 
-    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], environment_settings: Optional[EnvironmentSettings], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
+    .. py:method:: create(name: str, connection_type: ConnectionType, options: Dict[str, str] [, comment: Optional[str], properties: Optional[Dict[str, str]], read_only: Optional[bool]]) -> ConnectionInfo
 
 
         Usage:
@@ -54,8 +54,6 @@
           A map of key-value properties attached to the securable.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
@@ -148,7 +146,7 @@
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name: str, options: Dict[str, str] [, environment_settings: Optional[EnvironmentSettings], new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
 
 
         Usage:
@@ -191,8 +189,6 @@
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param environment_settings: :class:`EnvironmentSettings` (optional)
-          [Create,Update:OPT] Connection environment settings as EnvironmentSettings object.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)

@@ -24,9 +24,9 @@
         :param instructions: str
           Instructions for the custom LLM to follow
         :param agent_artifact_path: str (optional)
-          Optional: UC path for agent artifacts. If you are using a dataset that you only have read
-          permissions, please provide a destination path where you have write permissions. Please provide this
-          in catalog.schema format.
+          This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset
+          that you only have read permissions, please provide a destination path where you have write
+          permissions. Please provide this in catalog.schema format.
         :param datasets: List[:class:`Dataset`] (optional)
           Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is
           accepted.

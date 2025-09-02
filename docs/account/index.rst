@@ -13,3 +13,4 @@ These APIs are available from AccountClient
    oauth2/index
    provisioning/index
    settings/index
+   settingsv2/index

@@ -238,6 +238,8 @@ class Generator:
         Package("sharing", "Delta Sharing",
                 "Configure data sharing with Unity Catalog for providers, recipients, and shares"),
         Package("settings", "Settings", "Manage security settings for Accounts and Workspaces"),
+        Package("settingsv2", "SettingsV2", "Manage admin settings"),
+        Package("tags", "Tags", "Manage tag policies and tag assignments on workspace objects"),
         Package(
             "provisioning", "Provisioning",
             "Resource management for secure Databricks Workspace deployment, cross-account IAM roles, " +

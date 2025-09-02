@@ -350,6 +350,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PostgresCatalogConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: PostgresSlotConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReportSpec
    :members:
    :undoc-members:
@@ -371,6 +379,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SerializedException
+   :members:
+   :undoc-members:
+
+.. autoclass:: SourceCatalogConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: SourceConfig
    :members:
    :undoc-members:
 

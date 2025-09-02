@@ -1509,17 +1509,18 @@ class CleanRoomAssetsAPI:
         clean_room_name: str,
         asset_type: CleanRoomAssetAssetType,
         name: str,
-        notebook_review: NotebookVersionReview,
+        *,
+        notebook_review: Optional[NotebookVersionReview] = None,
     ) -> CreateCleanRoomAssetReviewResponse:
         """Submit an asset review
 
         :param clean_room_name: str
           Name of the clean room
         :param asset_type: :class:`CleanRoomAssetAssetType`
-          Asset type. Can only be NOTEBOOK_FILE.
+          Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
         :param name: str
           Name of the asset
-        :param notebook_review: :class:`NotebookVersionReview`
+        :param notebook_review: :class:`NotebookVersionReview` (optional)
 
         :returns: :class:`CreateCleanRoomAssetReviewResponse`
         """

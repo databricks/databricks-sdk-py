@@ -125,6 +125,13 @@ class DatabaseInstance:
     creator: Optional[str] = None
     """The email of the creator of the instance."""
 
+    effective_enable_pg_native_login: Optional[bool] = None
+    """xref AIP-129. `enable_pg_native_login` is owned by the client, while
+    `effective_enable_pg_native_login` is owned by the server. `enable_pg_native_login` will only be
+    set in Create/Update response messages if and only if the user provides the field via the
+    request. `effective_enable_pg_native_login` on the other hand will always bet set in all
+    response messages (Create/Update/Get/List)."""
+
     effective_enable_readable_secondaries: Optional[bool] = None
     """xref AIP-129. `enable_readable_secondaries` is owned by the client, while
     `effective_enable_readable_secondaries` is owned by the server. `enable_readable_secondaries`
@@ -150,6 +157,9 @@ class DatabaseInstance:
     server. `stopped` will only be set in Create/Update response messages if and only if the user
     provides the field via the request. `effective_stopped` on the other hand will always bet set in
     all response messages (Create/Update/Get/List)."""
+
+    enable_pg_native_login: Optional[bool] = None
+    """Whether the instance has PG native password login enabled. Defaults to true."""
 
     enable_readable_secondaries: Optional[bool] = None
     """Whether to enable secondaries to serve read-only traffic. Defaults to false."""
@@ -197,6 +207,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_enable_pg_native_login is not None:
+            body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
             body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
         if self.effective_node_count is not None:
@@ -205,6 +217,8 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
             body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
@@ -240,6 +254,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_enable_pg_native_login is not None:
+            body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
             body["effective_enable_readable_secondaries"] = self.effective_enable_readable_secondaries
         if self.effective_node_count is not None:
@@ -248,6 +264,8 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
+        if self.enable_pg_native_login is not None:
+            body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
             body["enable_readable_secondaries"] = self.enable_readable_secondaries
         if self.name is not None:
@@ -280,10 +298,12 @@ class DatabaseInstance:
             child_instance_refs=_repeated_dict(d, "child_instance_refs", DatabaseInstanceRef),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
+            effective_enable_pg_native_login=d.get("effective_enable_pg_native_login", None),
             effective_enable_readable_secondaries=d.get("effective_enable_readable_secondaries", None),
             effective_node_count=d.get("effective_node_count", None),
             effective_retention_window_in_days=d.get("effective_retention_window_in_days", None),
             effective_stopped=d.get("effective_stopped", None),
+            enable_pg_native_login=d.get("enable_pg_native_login", None),
             enable_readable_secondaries=d.get("enable_readable_secondaries", None),
             name=d.get("name", None),
             node_count=d.get("node_count", None),
