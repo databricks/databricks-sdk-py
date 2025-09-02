@@ -24,7 +24,9 @@ These APIs are available from WorkspaceClient
    qualitymonitorv2/index
    serving/index
    settings/index
+   settingsv2/index
    sharing/index
    sql/index
+   tags/index
    vectorsearch/index
    workspace/index

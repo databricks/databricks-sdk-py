@@ -77,11 +77,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListDatabaseCatalogsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListDatabaseInstanceRolesResponse
    :members:
    :undoc-members:
 
 .. autoclass:: ListDatabaseInstancesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSyncedDatabaseTablesResponse
    :members:
    :undoc-members:
 

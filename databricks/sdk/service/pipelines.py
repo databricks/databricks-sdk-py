@@ -613,6 +613,9 @@ class IngestionPipelineDefinition:
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
 
+    source_configurations: Optional[List[SourceConfig]] = None
+    """Top-level source configurations"""
+
     source_type: Optional[IngestionSourceType] = None
     """The type of the foreign source. The source type will be inferred from the source connection or
     ingestion gateway. This field is output only and will be ignored if provided."""
@@ -630,6 +633,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = [v.as_dict() for v in self.objects]
+        if self.source_configurations:
+            body["source_configurations"] = [v.as_dict() for v in self.source_configurations]
         if self.source_type is not None:
             body["source_type"] = self.source_type.value
         if self.table_configuration:
@@ -645,6 +650,8 @@ class IngestionPipelineDefinition:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.objects:
             body["objects"] = self.objects
+        if self.source_configurations:
+            body["source_configurations"] = self.source_configurations
         if self.source_type is not None:
             body["source_type"] = self.source_type
         if self.table_configuration:
@@ -658,6 +665,7 @@ class IngestionPipelineDefinition:
             connection_name=d.get("connection_name", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
+            source_configurations=_repeated_dict(d, "source_configurations", SourceConfig),
             source_type=_enum(d, "source_type", IngestionSourceType),
             table_configuration=_from_dict(d, "table_configuration", TableSpecificConfig),
         )
@@ -2240,6 +2248,67 @@ class PipelinesEnvironment:
 
 
 @dataclass
+class PostgresCatalogConfig:
+    """PG-specific catalog-level configuration parameters"""
+
+    slot_config: Optional[PostgresSlotConfig] = None
+    """Optional. The Postgres slot configuration to use for logical replication"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PostgresCatalogConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.slot_config:
+            body["slot_config"] = self.slot_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PostgresCatalogConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.slot_config:
+            body["slot_config"] = self.slot_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PostgresCatalogConfig:
+        """Deserializes the PostgresCatalogConfig from a dictionary."""
+        return cls(slot_config=_from_dict(d, "slot_config", PostgresSlotConfig))
+
+
+@dataclass
+class PostgresSlotConfig:
+    """PostgresSlotConfig contains the configuration for a Postgres logical replication slot"""
+
+    publication_name: Optional[str] = None
+    """The name of the publication to use for the Postgres source"""
+
+    slot_name: Optional[str] = None
+    """The name of the logical replication slot to use for the Postgres source"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PostgresSlotConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.publication_name is not None:
+            body["publication_name"] = self.publication_name
+        if self.slot_name is not None:
+            body["slot_name"] = self.slot_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PostgresSlotConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.publication_name is not None:
+            body["publication_name"] = self.publication_name
+        if self.slot_name is not None:
+            body["slot_name"] = self.slot_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PostgresSlotConfig:
+        """Deserializes the PostgresSlotConfig from a dictionary."""
+        return cls(publication_name=d.get("publication_name", None), slot_name=d.get("slot_name", None))
+
+
+@dataclass
 class ReportSpec:
     source_url: str
     """Required. Report URL in the source system."""
@@ -2525,6 +2594,67 @@ class SerializedException:
             message=d.get("message", None),
             stack=_repeated_dict(d, "stack", StackFrame),
         )
+
+
+@dataclass
+class SourceCatalogConfig:
+    """SourceCatalogConfig contains catalog-level custom configuration parameters for each source"""
+
+    postgres: Optional[PostgresCatalogConfig] = None
+    """Postgres-specific catalog-level configuration parameters"""
+
+    source_catalog: Optional[str] = None
+    """Source catalog name"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SourceCatalogConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.postgres:
+            body["postgres"] = self.postgres.as_dict()
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SourceCatalogConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.postgres:
+            body["postgres"] = self.postgres
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SourceCatalogConfig:
+        """Deserializes the SourceCatalogConfig from a dictionary."""
+        return cls(
+            postgres=_from_dict(d, "postgres", PostgresCatalogConfig), source_catalog=d.get("source_catalog", None)
+        )
+
+
+@dataclass
+class SourceConfig:
+    catalog: Optional[SourceCatalogConfig] = None
+    """Catalog-level source configuration parameters"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SourceConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog:
+            body["catalog"] = self.catalog.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SourceConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog:
+            body["catalog"] = self.catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SourceConfig:
+        """Deserializes the SourceConfig from a dictionary."""
+        return cls(catalog=_from_dict(d, "catalog", SourceCatalogConfig))
 
 
 @dataclass

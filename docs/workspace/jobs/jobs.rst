@@ -126,7 +126,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -255,6 +255,10 @@
           A configuration to trigger a run when certain conditions are met. The default behavior is that the
           job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
           `runNow`.
+        :param usage_policy_id: str (optional)
+          The id of the user specified usage policy to use for this job. If not specified, a default usage
+          policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for the
+          usage policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
@@ -1012,7 +1016,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -1096,6 +1100,9 @@
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
+        :param usage_policy_id: str (optional)
+          The user specified id of the usage policy to use for this one-time run. If not specified, a default
+          usage policy may be applied when creating or modifying the job.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes.
 
@@ -1104,7 +1111,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

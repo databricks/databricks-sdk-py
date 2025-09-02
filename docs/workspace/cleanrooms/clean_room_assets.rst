@@ -22,17 +22,17 @@
         :returns: :class:`CleanRoomAsset`
         
 
-    .. py:method:: create_clean_room_asset_review(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, notebook_review: NotebookVersionReview) -> CreateCleanRoomAssetReviewResponse
+    .. py:method:: create_clean_room_asset_review(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str [, notebook_review: Optional[NotebookVersionReview]]) -> CreateCleanRoomAssetReviewResponse
 
-        submit an asset review
+        Submit an asset review
 
         :param clean_room_name: str
           Name of the clean room
         :param asset_type: :class:`CleanRoomAssetAssetType`
-          can only be NOTEBOOK_FILE for now
+          Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
         :param name: str
           Name of the asset
-        :param notebook_review: :class:`NotebookVersionReview`
+        :param notebook_review: :class:`NotebookVersionReview` (optional)
 
         :returns: :class:`CreateCleanRoomAssetReviewResponse`
         
@@ -93,7 +93,8 @@
           For UC securable assets (tables, volumes, etc.), the format is
           *shared_catalog*.*shared_schema*.*asset_name*
 
-          For notebooks, the name is the notebook file name.
+          For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
+          name.
         :param asset: :class:`CleanRoomAsset`
           The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
           update.

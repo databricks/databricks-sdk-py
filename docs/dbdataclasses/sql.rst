@@ -153,6 +153,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AlertV2RunAs
+   :members:
+   :undoc-members:
+
 .. autoclass:: AlertV2Subscription
    :members:
    :undoc-members:

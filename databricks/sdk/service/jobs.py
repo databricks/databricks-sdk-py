@@ -873,11 +873,16 @@ class Continuous:
     pause_status: Optional[PauseStatus] = None
     """Indicate whether the continuous execution of the job is paused or not. Defaults to UNPAUSED."""
 
+    task_retry_mode: Optional[TaskRetryMode] = None
+    """Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER."""
+
     def as_dict(self) -> dict:
         """Serializes the Continuous into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -885,12 +890,17 @@ class Continuous:
         body = {}
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
+        if self.task_retry_mode is not None:
+            body["task_retry_mode"] = self.task_retry_mode
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Continuous:
         """Deserializes the Continuous from a dictionary."""
-        return cls(pause_status=_enum(d, "pause_status", PauseStatus))
+        return cls(
+            pause_status=_enum(d, "pause_status", PauseStatus),
+            task_retry_mode=_enum(d, "task_retry_mode", TaskRetryMode),
+        )
 
 
 @dataclass
@@ -7889,6 +7899,16 @@ class TaskNotificationSettings:
             no_alert_for_canceled_runs=d.get("no_alert_for_canceled_runs", None),
             no_alert_for_skipped_runs=d.get("no_alert_for_skipped_runs", None),
         )
+
+
+class TaskRetryMode(Enum):
+    """task retry mode of the continuous job * NEVER: The failed task will not be retried. *
+    ON_FAILURE: Retry a failed task if at least one other task in the job is still running its first
+    attempt. When this condition is no longer met or the retry limit is reached, the job run is
+    cancelled and a new run is started."""
+
+    NEVER = "NEVER"
+    ON_FAILURE = "ON_FAILURE"
 
 
 class TerminationCodeCode(Enum):

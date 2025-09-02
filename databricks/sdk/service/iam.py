@@ -2193,7 +2193,9 @@ class AccountGroupsAPI:
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
     ) -> Iterator[Group]:
-        """Gets all details of the groups associated with the Databricks account.
+        """Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
+        will not return members. Instead, members should be retrieved by iterating through `Get group
+        details`.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.

@@ -190,9 +190,25 @@
         :returns: :class:`SyncedDatabaseTable`
         
 
+    .. py:method:: list_database_catalogs(instance_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DatabaseCatalog]
+
+        This API is currently unimplemented, but exposed for Terraform support.
+
+        :param instance_name: str
+          Name of the instance to get database catalogs for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseCatalog`
+        
+
     .. py:method:: list_database_instance_roles(instance_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DatabaseInstanceRole]
 
-        START OF PG ROLE APIs Section
+        START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more
+        recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will
+        remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.
 
         :param instance_name: str
         :param page_size: int (optional)
@@ -215,6 +231,34 @@
         :returns: Iterator over :class:`DatabaseInstance`
         
 
+    .. py:method:: list_synced_database_tables(instance_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SyncedDatabaseTable]
+
+        This API is currently unimplemented, but exposed for Terraform support.
+
+        :param instance_name: str
+          Name of the instance to get synced tables for.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of synced database tables. Requests first page if absent.
+
+        :returns: Iterator over :class:`SyncedDatabaseTable`
+        
+
+    .. py:method:: update_database_catalog(name: str, database_catalog: DatabaseCatalog, update_mask: str) -> DatabaseCatalog
+
+        This API is currently unimplemented, but exposed for Terraform support.
+
+        :param name: str
+          The name of the catalog in UC.
+        :param database_catalog: :class:`DatabaseCatalog`
+          Note that updating a database catalog is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`DatabaseCatalog`
+        
+
     .. py:method:: update_database_instance(name: str, database_instance: DatabaseInstance, update_mask: str) -> DatabaseInstance
 
         Update a Database Instance.
@@ -223,9 +267,24 @@
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
         :param update_mask: str
-          The list of fields to update. This field is not yet supported, and is ignored by the server.
+          The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out
+          custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.
 
         :returns: :class:`DatabaseInstance`
+        
+
+    .. py:method:: update_synced_database_table(name: str, synced_table: SyncedDatabaseTable, update_mask: str) -> SyncedDatabaseTable
+
+        This API is currently unimplemented, but exposed for Terraform support.
+
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+        :param synced_table: :class:`SyncedDatabaseTable`
+          Note that updating a synced database table is not yet supported.
+        :param update_mask: str
+          The list of fields to update. Setting this field is not yet supported.
+
+        :returns: :class:`SyncedDatabaseTable`
         
 
     .. py:method:: wait_get_database_instance_database_available(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[DatabaseInstance], None]]) -> DatabaseInstance
