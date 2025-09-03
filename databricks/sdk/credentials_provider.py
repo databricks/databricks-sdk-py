@@ -319,17 +319,18 @@ def env_oidc(cfg) -> Optional[CredentialsProvider]:
     if cfg.oidc_token_env:
         env_var = cfg.oidc_token_env
 
-    return _oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
+    return oidc_credentials_provider(cfg, oidc.EnvIdTokenSource(env_var))
 
 
 @credentials_strategy("file-oidc", ["host", "oidc_token_filepath"])
 def file_oidc(cfg) -> Optional[CredentialsProvider]:
-    return _oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
+    return oidc_credentials_provider(cfg, oidc.FileIdTokenSource(cfg.oidc_token_filepath))
 
 
-# This function is a helper function to create an OIDC CredentialsProvider
-# that provides a Databricks token from an IdTokenSource.
-def _oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optional[CredentialsProvider]:
+def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optional[CredentialsProvider]:
+    """Creates a CredentialsProvider to sign requests with an OAuth token obtained
+    by automatically performing the token exchange using the given IdTokenSource."""
+
     try:
         id_token_source.id_token()  # validate the id_token_source
     except Exception as e:
