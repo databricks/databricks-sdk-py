@@ -35,14 +35,14 @@
             w.warehouses.delete(id=created.id)
 
         Creates a new SQL warehouse.
-
+        
         :param auto_stop_mins: int (optional)
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
-
+          
           Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
           non-serverless warehouses - 0 indicates no autostop.
-
+          
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
           Channel Details
@@ -50,14 +50,14 @@
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
-
+          
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
           4X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
-
+          
           Defaults to false.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
@@ -65,30 +65,30 @@
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-
+          
           Supported values: - Must be >= min_num_clusters - Must be <= 30.
-
+          
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
           Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
-
+          
           Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-
+          
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
-
+          
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
-
+          
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
-
+        
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
@@ -100,11 +100,11 @@
     .. py:method:: delete(id: str)
 
         Deletes a SQL warehouse.
-
+        
         :param id: str
           Required. Id of the SQL warehouse.
-
-
+        
+        
         
 
     .. py:method:: edit(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
@@ -143,15 +143,15 @@
             w.warehouses.delete(id=created.id)
 
         Updates the configuration for a SQL warehouse.
-
+        
         :param id: str
           Required. Id of the warehouse to configure.
         :param auto_stop_mins: int (optional)
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
-
+          
           Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
-
+          
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
           Channel Details
@@ -159,14 +159,14 @@
           Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you
           to run larger queries on it. If you want to increase the number of concurrent queries, please tune
           max_num_clusters.
-
+          
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
           4X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
-
+          
           Defaults to false.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute.
@@ -174,30 +174,30 @@
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
-
+          
           Supported values: - Must be >= min_num_clusters - Must be <= 30.
-
+          
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
           Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this
           will ensure that a larger number of clusters are always running and therefore may reduce the cold
           start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.
-
+          
           Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
-
+          
           Defaults to 1
         :param name: str (optional)
           Logical name for the cluster.
-
+          
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
-
+          
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
-
+        
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
@@ -236,20 +236,20 @@
             w.warehouses.delete(id=created.id)
 
         Gets the information for a single SQL warehouse.
-
+        
         :param id: str
           Required. Id of the SQL warehouse.
-
+        
         :returns: :class:`GetWarehouseResponse`
         
 
     .. py:method:: get_permission_levels(warehouse_id: str) -> GetWarehousePermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.
-
+        
         :param warehouse_id: str
           The SQL warehouse for which to get or manage permissions.
-
+        
         :returns: :class:`GetWarehousePermissionLevelsResponse`
         
 
@@ -257,18 +257,18 @@
 
         Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
-
+        
         :param warehouse_id: str
           The SQL warehouse for which to get or manage permissions.
-
+        
         :returns: :class:`WarehousePermissions`
         
 
     .. py:method:: get_workspace_warehouse_config() -> GetWorkspaceWarehouseConfigResponse
 
         Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
-
-
+        
+        
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         
 
@@ -287,11 +287,11 @@
             all = w.warehouses.list(sql.ListWarehousesRequest())
 
         Lists all SQL warehouses that a user has manager permissions on.
-
+        
         :param run_as_user_id: int (optional)
           Service Principal which will be used to fetch the list of warehouses. If not specified, the user
           from the session header is used.
-
+        
         :returns: Iterator over :class:`EndpointInfo`
         
 
@@ -299,18 +299,18 @@
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
-
+        
         :param warehouse_id: str
           The SQL warehouse for which to get or manage permissions.
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
-
+        
         :returns: :class:`WarehousePermissions`
         
 
     .. py:method:: set_workspace_warehouse_config( [, channel: Optional[Channel], config_param: Optional[RepeatedEndpointConfPairs], data_access_config: Optional[List[EndpointConfPair]], enabled_warehouse_types: Optional[List[WarehouseTypePair]], global_param: Optional[RepeatedEndpointConfPairs], google_service_account: Optional[str], instance_profile_arn: Optional[str], security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy], sql_configuration_parameters: Optional[RepeatedEndpointConfPairs]])
 
         Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
-
+        
         :param channel: :class:`Channel` (optional)
           Optional: Channel selection details
         :param config_param: :class:`RepeatedEndpointConfPairs` (optional)
@@ -333,17 +333,17 @@
           Security policy for warehouses
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
           SQL configuration parameters
-
-
+        
+        
         
 
     .. py:method:: start(id: str) -> Wait[GetWarehouseResponse]
 
         Starts a SQL warehouse.
-
+        
         :param id: str
           Required. Id of the SQL warehouse.
-
+        
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
@@ -355,10 +355,10 @@
     .. py:method:: stop(id: str) -> Wait[GetWarehouseResponse]
 
         Stops a SQL warehouse.
-
+        
         :param id: str
           Required. Id of the SQL warehouse.
-
+        
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
@@ -371,11 +371,11 @@
 
         Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root
         object.
-
+        
         :param warehouse_id: str
           The SQL warehouse for which to get or manage permissions.
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
-
+        
         :returns: :class:`WarehousePermissions`
         
 

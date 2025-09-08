@@ -38,19 +38,19 @@
         specified account. Databricks uses this to set up network infrastructure properly to host Databricks
         clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account
         ID) in the returned credential object, and configure the required access policy.
-
+        
         Save the response's `credentials_id` field, which is the ID for your new credential configuration
         object.
-
+        
         For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
-
+        
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
+        
         :param credentials_name: str
           The human-readable name of the credential configuration object.
         :param aws_credentials: :class:`CreateCredentialAwsCredentials`
-
+        
         :returns: :class:`Credential`
         
 
@@ -58,11 +58,11 @@
 
         Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
         delete a credential that is associated with any workspace.
-
+        
         :param credentials_id: str
           Databricks Account API credential configuration ID
-
-
+        
+        
         
 
     .. py:method:: get(credentials_id: str) -> Credential
@@ -93,10 +93,10 @@
             a.credentials.delete(credentials_id=role.credentials_id)
 
         Gets a Databricks credential configuration object for an account, both specified by ID.
-
+        
         :param credentials_id: str
           Databricks Account API credential configuration ID
-
+        
         :returns: :class:`Credential`
         
 
@@ -114,7 +114,7 @@
             configs = a.credentials.list()
 
         Gets all Databricks credential configurations associated with an account specified by ID.
-
-
+        
+        
         :returns: Iterator over :class:`Credential`
         

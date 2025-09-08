@@ -10,36 +10,36 @@
 
         Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
         Lakeview dashboard id.
-
-
+        
+        
         :returns: :class:`ProviderAnalyticsDashboard`
         
 
     .. py:method:: get() -> ListProviderAnalyticsDashboardResponse
 
         Get provider analytics dashboard.
-
-
+        
+        
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
         
 
     .. py:method:: get_latest_version() -> GetLatestVersionProviderAnalyticsDashboardResponse
 
         Get latest version of provider analytics dashboard.
-
-
+        
+        
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
         
 
     .. py:method:: update(id: str [, version: Optional[int]]) -> UpdateProviderAnalyticsDashboardResponse
 
         Update provider analytics dashboard.
-
+        
         :param id: str
           id is immutable property and can't be updated.
         :param version: int (optional)
           this is the version of the dashboard template we want to update our user to current expectation is
           that it should be equal to latest version of the dashboard template
-
+        
         :returns: :class:`UpdateProviderAnalyticsDashboardResponse`
         

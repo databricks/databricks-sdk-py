@@ -11,10 +11,10 @@
 
         Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
         the **MANAGE ALLOWLIST** privilege on the metastore.
-
+        
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
-
+        
         :returns: :class:`ArtifactAllowlistInfo`
         
 
@@ -23,7 +23,7 @@
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
-
+        
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
         :param artifact_matchers: List[:class:`ArtifactMatcher`]
@@ -34,6 +34,6 @@
           Username of the user who set the artifact allowlist.
         :param metastore_id: str (optional)
           Unique identifier of parent metastore.
-
+        
         :returns: :class:`ArtifactAllowlistInfo`
         

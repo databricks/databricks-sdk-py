@@ -37,3 +37,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Table
    :members:
    :undoc-members:
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:

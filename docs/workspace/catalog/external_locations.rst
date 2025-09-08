@@ -9,9 +9,9 @@
     access-control policies that control which users and groups can access the credential. If a user does not
     have access to an external location in Unity Catalog, the request fails and Unity Catalog does not attempt
     to authenticate to your cloud tenant on the user’s behalf.
-
+    
     Databricks recommends using external locations rather than using storage credentials directly.
-
+    
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
@@ -50,7 +50,7 @@
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
         credential.
-
+        
         :param name: str
           Name of the external location.
         :param url: str
@@ -67,12 +67,13 @@
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
           Skips validation of the storage credential associated with the external location.
-
+        
         :returns: :class:`ExternalLocationInfo`
         
 
@@ -80,13 +81,13 @@
 
         Deletes the specified external location from the metastore. The caller must be the owner of the
         external location.
-
+        
         :param name: str
           Name of the external location.
         :param force: bool (optional)
           Force deletion even if there are dependent external tables or mounts.
-
-
+        
+        
         
 
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> ExternalLocationInfo
@@ -123,13 +124,13 @@
 
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
-
+        
         :param name: str
           Name of the external location.
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
           selective metadata for
-
+        
         :returns: :class:`ExternalLocationInfo`
         
 
@@ -150,7 +151,7 @@
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
-
+        
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
           selective metadata for
@@ -161,7 +162,7 @@
           value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
@@ -204,7 +205,7 @@
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
         location.
-
+        
         :param name: str
           Name of the external location.
         :param comment: str (optional)
@@ -219,7 +220,8 @@
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -233,6 +235,6 @@
           Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
           Path URL of the external location.
-
+        
         :returns: :class:`ExternalLocationInfo`
         

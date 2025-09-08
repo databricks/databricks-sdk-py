@@ -9,7 +9,7 @@
     .. py:method:: list(clean_room_name: str [, notebook_name: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CleanRoomNotebookTaskRun]
 
         List all the historical notebook task runs in a clean room.
-
+        
         :param clean_room_name: str
           Name of the clean room.
         :param notebook_name: str (optional)
@@ -18,6 +18,6 @@
           The maximum number of task runs to return. Currently ignored - all runs will be returned.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`CleanRoomNotebookTaskRun`
         

@@ -8,7 +8,7 @@
     Access can be granted by either a metastore admin, the owner of an object, or the owner of the catalog or
     schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
     inherited downward.
-
+    
     Securable objects in Unity Catalog are hierarchical and privileges are inherited downward. This means that
     granting a privilege on the catalog automatically grants the privilege to all current and future objects
     within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
@@ -61,7 +61,7 @@
             w.tables.delete(full_name=table_full_name)
 
         Gets the permissions for a securable. Does not include inherited permissions.
-
+        
         :param securable_type: str
           Type of securable.
         :param full_name: str
@@ -70,7 +70,7 @@
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the
           requested Securable for the respective principal.
-
+          
           If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -
           0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid
           parameter error (this is to ensure that server is able to return at least one complete
@@ -80,7 +80,7 @@
           Opaque pagination token to go to next page based on previous query.
         :param principal: str (optional)
           If provided, only the permissions for the specified principal (user or group) are returned.
-
+        
         :returns: :class:`GetPermissionsResponse`
         
 
@@ -132,7 +132,7 @@
 
         Gets the effective permissions for a securable. Includes inherited permissions from any parent
         securables.
-
+        
         :param securable_type: str
           Type of securable.
         :param full_name: str
@@ -142,7 +142,7 @@
           EffectivePrivilegeAssignment present in a single page response is guaranteed to contain all the
           effective privileges granted on (or inherited by) the requested Securable for the respective
           principal.
-
+          
           If not set, all the effective permissions are returned. If set to - lesser than 0: invalid parameter
           error - 0: page length is set to a server configured value - lesser than 150 but greater than 0:
           invalid parameter error (this is to ensure that server is able to return at least one complete
@@ -153,7 +153,7 @@
         :param principal: str (optional)
           If provided, only the effective permissions for the specified principal (user or group) are
           returned.
-
+        
         :returns: :class:`EffectivePermissionsList`
         
 
@@ -212,13 +212,13 @@
             w.tables.delete(full_name=table_full_name)
 
         Updates the permissions for a securable.
-
+        
         :param securable_type: str
           Type of securable.
         :param full_name: str
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
-
+        
         :returns: :class:`UpdatePermissionsResponse`
         

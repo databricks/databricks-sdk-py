@@ -5,7 +5,7 @@
 .. py:class:: WorkspaceExt
 
     The Workspace API allows you to list, import, export, and delete notebooks and folders.
-
+    
     A notebook is a web-based interface to a document that contains runnable code, visualizations, and
     explanatory text.
 
@@ -15,17 +15,17 @@
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
         non-empty directory and `recursive` is set to `false`, this call returns an error
         `DIRECTORY_NOT_EMPTY`.
-
+        
         Object deletion cannot be undone and deleting a directory recursively is not atomic.
-
+        
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
           The flag that specifies whether to delete the object recursively. It is `false` by default. Please
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
-
-
+        
+        
         
 
     .. py:method:: download(path: str [, format: ExportFormat]) -> BinaryIO
@@ -82,39 +82,39 @@
             export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
-
+        
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
-
+        
         If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
         Currently, this API does not support exporting a library.
-
+        
         :param path: str
           The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,
           `SOURCE`, and `AUTO` format.
         :param format: :class:`ExportFormat` (optional)
           This specifies the format of the exported file. By default, this is `SOURCE`.
-
+          
           The value is case sensitive.
-
+          
           - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook
           entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported
           as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.
           Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
           R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
           Directory exports will include notebooks and workspace files.
-
+        
         :returns: :class:`ExportResponse`
         
 
     .. py:method:: get_permission_levels(workspace_object_type: str, workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.
-
+        
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
-
+        
         :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
         
 
@@ -122,12 +122,12 @@
 
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
-
+        
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
-
+        
         :returns: :class:`WorkspaceObjectPermissions`
         
 
@@ -150,10 +150,10 @@
 
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`.
-
+        
         :param path: str
           The absolute path of the notebook or directory.
-
+        
         :returns: :class:`ObjectInfo`
         
 
@@ -187,20 +187,20 @@
         `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
         format with the `language` field unset. To import a single file as `SOURCE`, you must set the
         `language` field.
-
+        
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
           and `SOURCE` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
-
+          
           If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
           This parameter might be absent, and instead a posted file is used.
         :param format: :class:`ImportFormat` (optional)
           This specifies the format of the file to be imported.
-
+          
           The value is case sensitive.
-
+          
           - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
           content provided in the request. If the item is imported as a notebook, then the item's extension is
           automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
@@ -212,8 +212,8 @@
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
           format, `overwrite` is not supported since it may contain a directory.
-
-
+        
+        
         
 
     .. py:method:: list(path: str [, notebooks_modified_after: int, recursive: bool = False]) -> ObjectInfo
@@ -245,15 +245,15 @@
         Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
-
+        
         Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories.
-
+        
         :param path: str
           The absolute path of the directory. If the parent directories do not exist, it will also create
           them. If the directory already exists, this command will do nothing and succeed.
-
-
+        
+        
         
 
     .. py:method:: set_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions
@@ -261,13 +261,13 @@
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
-
+        
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-
+        
         :returns: :class:`WorkspaceObjectPermissions`
         
 
@@ -275,13 +275,13 @@
 
         Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
-
+        
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-
+        
         :returns: :class:`WorkspaceObjectPermissions`
         
 

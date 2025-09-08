@@ -1405,6 +1405,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
+   .. py:attribute:: NO_ACTIVATED_K8S
+      :value: "NO_ACTIVATED_K8S"
+
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1519,6 +1522,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATE_INSTANCE_PROFILE_FAILURE
       :value: "UPDATE_INSTANCE_PROFILE_FAILURE"
 
+   .. py:attribute:: USAGE_POLICY_ENTITLEMENT_DENIED
+      :value: "USAGE_POLICY_ENTITLEMENT_DENIED"
+
    .. py:attribute:: USER_INITIATED_VM_TERMINATION
       :value: "USER_INITIATED_VM_TERMINATION"
 
@@ -1552,6 +1558,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
 
 .. autoclass:: UninstallLibrariesResponse
    :members:

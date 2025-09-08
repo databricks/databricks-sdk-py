@@ -22,17 +22,17 @@
 
         Returns billable usage logs in CSV format for the specified account and date range. For the data
         schema, see:
-
+        
         - AWS: [CSV file schema]. - GCP: [CSV file schema].
-
+        
         Note that this method might take multiple minutes to complete.
-
+        
         **Warning**: Depending on the queried date range, the number of workspaces in the account, the size of
         the response and the internet speed of the caller, this API may hit a timeout after a few minutes. If
         you experience this, try to mitigate by calling the API with narrower date ranges.
-
+        
         [CSV file schema]: https://docs.gcp.databricks.com/administration-guide/account-settings/usage-analysis.html#csv-file-schema
-
+        
         :param start_month: str
           Format specification for month in the format `YYYY-MM`. This is used to specify billable usage
           `start_month` and `end_month` properties. **Note**: Billable usage logs are unavailable before March
@@ -43,6 +43,6 @@
           Specify whether to include personally identifiable information in the billable usage logs, for
           example the email addresses of cluster creators. Handle this information with care. Defaults to
           false.
-
+        
         :returns: :class:`DownloadResponse`
         

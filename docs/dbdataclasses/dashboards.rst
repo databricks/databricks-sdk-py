@@ -37,6 +37,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieFeedback
+   :members:
+   :undoc-members:
+
 .. py:class:: GenieFeedbackRating
 
    Feedback rating for Genie messages
@@ -349,6 +353,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TextAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: Token
    :members:
    :undoc-members:
 

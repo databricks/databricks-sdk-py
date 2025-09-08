@@ -9,7 +9,7 @@
     .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str, etag: str) -> CleanRoomAsset
 
         Get a specific revision of an asset
-
+        
         :param clean_room_name: str
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
@@ -18,14 +18,14 @@
           Name of the asset.
         :param etag: str
           Revision etag to fetch. If not provided, the latest revision will be returned.
-
+        
         :returns: :class:`CleanRoomAsset`
         
 
     .. py:method:: list(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CleanRoomAsset]
 
         List revisions for an asset
-
+        
         :param clean_room_name: str
           Name of the clean room.
         :param asset_type: :class:`CleanRoomAssetAssetType`
@@ -36,6 +36,6 @@
           Maximum number of asset revisions to return. Defaults to 10.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on the previous query.
-
+        
         :returns: Iterator over :class:`CleanRoomAsset`
         

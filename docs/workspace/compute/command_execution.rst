@@ -10,13 +10,13 @@
     .. py:method:: cancel( [, cluster_id: Optional[str], command_id: Optional[str], context_id: Optional[str]]) -> Wait[CommandStatusResponse]
 
         Cancels a currently running command within an execution context.
-
+        
         The command ID is obtained from a prior successful call to __execute__.
-
+        
         :param cluster_id: str (optional)
         :param command_id: str (optional)
         :param context_id: str (optional)
-
+        
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
@@ -28,23 +28,23 @@
     .. py:method:: command_status(cluster_id: str, context_id: str, command_id: str) -> CommandStatusResponse
 
         Gets the status of and, if available, the results from a currently executing command.
-
+        
         The command ID is obtained from a prior successful call to __execute__.
-
+        
         :param cluster_id: str
         :param context_id: str
         :param command_id: str
-
+        
         :returns: :class:`CommandStatusResponse`
         
 
     .. py:method:: context_status(cluster_id: str, context_id: str) -> ContextStatusResponse
 
         Gets the status for an execution context.
-
+        
         :param cluster_id: str
         :param context_id: str
-
+        
         :returns: :class:`ContextStatusResponse`
         
 
@@ -70,13 +70,13 @@
             w.command_execution.destroy(cluster_id=cluster_id, context_id=context.id)
 
         Creates an execution context for running cluster commands.
-
+        
         If successful, this method returns the ID of the new execution context.
-
+        
         :param cluster_id: str (optional)
           Running cluster id
         :param language: :class:`Language` (optional)
-
+        
         :returns:
           Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
@@ -88,11 +88,11 @@
     .. py:method:: destroy(cluster_id: str, context_id: str)
 
         Deletes an execution context.
-
+        
         :param cluster_id: str
         :param context_id: str
-
-
+        
+        
         
 
     .. py:method:: execute( [, cluster_id: Optional[str], command: Optional[str], context_id: Optional[str], language: Optional[Language]]) -> Wait[CommandStatusResponse]
@@ -124,9 +124,9 @@
             w.command_execution.destroy(cluster_id=cluster_id, context_id=context.id)
 
         Runs a cluster command in the given execution context, using the provided language.
-
+        
         If successful, it returns an ID for tracking the status of the command's execution.
-
+        
         :param cluster_id: str (optional)
           Running cluster id
         :param command: str (optional)
@@ -134,7 +134,7 @@
         :param context_id: str (optional)
           Running context id
         :param language: :class:`Language` (optional)
-
+        
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.

@@ -8,10 +8,10 @@
     views) and the permissions that govern access to them. Databricks account admins can create metastores and
     assign them to Databricks workspaces to control which workloads use each metastore. For a workspace to use
     Unity Catalog, it must have a Unity Catalog metastore attached.
-
+    
     Each metastore is configured with a root storage location in a cloud storage account. This storage
     location is used for metadata and managed tables data.
-
+    
     NOTE: This metastore is distinct from the metastore included in Databricks workspaces created before Unity
     Catalog was released. If your workspace includes a legacy Hive metastore, the data in that metastore is
     available in a catalog named hive_metastore.
@@ -45,7 +45,7 @@
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
-
+        
         :param workspace_id: int
           A workspace ID.
         :param metastore_id: str
@@ -53,8 +53,8 @@
         :param default_catalog_name: str
           The name of the default catalog in the metastore. This field is deprecated. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
-
-
+        
+        
         
 
     .. py:method:: create(name: str [, region: Optional[str], storage_root: Optional[str]]) -> MetastoreInfo
@@ -83,14 +83,14 @@
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
-
+        
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
           The storage root URL for metastore
-
+        
         :returns: :class:`MetastoreInfo`
         
 
@@ -108,21 +108,21 @@
             current_metastore = w.metastores.current()
 
         Gets the metastore assignment for the workspace being accessed.
-
-
+        
+        
         :returns: :class:`MetastoreAssignment`
         
 
     .. py:method:: delete(id: str [, force: Optional[bool]])
 
         Deletes a metastore. The caller must be a metastore admin.
-
+        
         :param id: str
           Unique ID of the metastore.
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
-
-
+        
+        
         
 
     .. py:method:: get(id: str) -> MetastoreInfo
@@ -151,10 +151,10 @@
 
         Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
         info.
-
+        
         :param id: str
           Unique ID of the metastore.
-
+        
         :returns: :class:`MetastoreInfo`
         
 
@@ -173,7 +173,7 @@
 
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
-
+        
         :param max_results: int (optional)
           Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
           minimum of this value and a server configured value; - when set to 0, the page length is set to a
@@ -184,7 +184,7 @@
           from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`MetastoreInfo`
         
 
@@ -203,8 +203,8 @@
 
         Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
-
-
+        
+        
         :returns: :class:`GetMetastoreSummaryResponse`
         
 
@@ -235,13 +235,13 @@
             w.metastores.delete(id=created.metastore_id, force=True)
 
         Deletes a metastore assignment. The caller must be an account administrator.
-
+        
         :param workspace_id: int
           A workspace ID.
         :param metastore_id: str
           Query for the ID of the metastore to delete.
-
-
+        
+        
         
 
     .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[DeltaSharingScopeEnum], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
@@ -270,7 +270,7 @@
 
         Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
         field is set to the empty string (**""**), the ownership is updated to the System User.
-
+        
         :param id: str
           Unique ID of the metastore.
         :param delta_sharing_organization_name: str (optional)
@@ -288,7 +288,7 @@
           Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
-
+        
         :returns: :class:`MetastoreInfo`
         
 
@@ -298,7 +298,7 @@
         __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
         Workspace admin.
-
+        
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
@@ -306,6 +306,6 @@
           Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
-
-
+        
+        
         

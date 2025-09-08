@@ -24,7 +24,7 @@
     the required permissions for specific actions or abilities and other important information, see [Access
     Control]. Note that to manage access control on service principals, use **[Account Access Control
     Proxy](:service:accountaccesscontrolproxy)**.
-
+    
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 
     .. py:method:: get(request_object_type: str, request_object_id: str) -> ObjectPermissions
@@ -48,7 +48,7 @@
 
         Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
         object.
-
+        
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
@@ -56,7 +56,7 @@
           warehouses.
         :param request_object_id: str
           The id of the request object.
-
+        
         :returns: :class:`ObjectPermissions`
         
 
@@ -80,14 +80,14 @@
             levels = w.permissions.get_permission_levels(request_object_type="notebooks", request_object_id="%d" % (obj.object_id))
 
         Gets the permission levels that a user can have on an object.
-
+        
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
           instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
           warehouses.
         :param request_object_id: str
-
+        
         :returns: :class:`GetPermissionLevelsResponse`
         
 
@@ -128,7 +128,7 @@
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
-
+        
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
@@ -137,7 +137,7 @@
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
-
+        
         :returns: :class:`ObjectPermissions`
         
 
@@ -145,7 +145,7 @@
 
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
-
+        
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
           clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
@@ -154,6 +154,6 @@
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
-
+        
         :returns: :class:`ObjectPermissions`
         

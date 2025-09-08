@@ -20,12 +20,16 @@
             conf = w.workspace_conf.get_status(keys="enableWorkspaceFilesystem")
 
         Gets the configuration status for a workspace.
-
+        
         :param keys: str
-
+        
         :returns: Dict[str,str]
         
 
     .. py:method:: set_status(contents: Dict[str, str])
 
         Sets the configuration status for a workspace, including enabling or disabling it.
+        
+        
+        
+        

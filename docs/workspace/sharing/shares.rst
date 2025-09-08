@@ -29,25 +29,25 @@
 
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
-
+        
         :param name: str
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
         :param storage_root: str (optional)
           Storage root URL for the share.
-
+        
         :returns: :class:`ShareInfo`
         
 
     .. py:method:: delete(name: str)
 
         Deletes a data object share from the metastore. The caller must be an owner of the share.
-
+        
         :param name: str
           The name of the share.
-
-
+        
+        
         
 
     .. py:method:: get(name: str [, include_shared_data: Optional[bool]]) -> ShareInfo
@@ -72,12 +72,12 @@
 
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
         share.
-
+        
         :param name: str
           The name of the share.
         :param include_shared_data: bool (optional)
           Query for data to include in the share.
-
+        
         :returns: :class:`ShareInfo`
         
 
@@ -97,7 +97,7 @@
 
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
-
+        
         :param max_results: int (optional)
           Maximum number of shares to return. - when set to 0, the page length is set to a server configured
           value (recommended); - when set to a value greater than 0, the page length is the minimum of this
@@ -108,7 +108,7 @@
           response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`ShareInfo`
         
 
@@ -116,7 +116,7 @@
 
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
         owner of the share.
-
+        
         :param name: str
           The name of the share.
         :param max_results: int (optional)
@@ -129,7 +129,7 @@
           unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: :class:`GetSharePermissionsResponse`
         
 
@@ -187,20 +187,20 @@
 
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
-
+        
         When the caller is a metastore admin, only the __owner__ field can be updated.
-
+        
         In the case the share name is changed, **updateShare** requires that the caller is the owner of the
         share and has the CREATE_SHARE privilege.
-
+        
         If there are notebook files in the share, the __storage_root__ field cannot be updated.
-
+        
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
         table. Typically, you should use a group as the share owner.
-
+        
         Table removals through **update** do not require additional privileges.
-
+        
         :param name: str
           The name of the share.
         :param comment: str (optional)
@@ -213,7 +213,7 @@
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
           Array of shared data object updates.
-
+        
         :returns: :class:`ShareInfo`
         
 
@@ -221,16 +221,16 @@
 
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
-
+        
         For new recipient grants, the user must also be the recipient owner or metastore admin. recipient
         revocations do not require additional privileges.
-
+        
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
         :param omit_permissions_list: bool (optional)
           Optional. Whether to return the latest permissions list of the share in the response.
-
+        
         :returns: :class:`UpdateSharePermissionsResponse`
         

@@ -11,22 +11,22 @@
 
         Deletes the workspace permissions assignment in a given account and workspace for the specified
         principal.
-
+        
         :param workspace_id: int
           The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
-
-
+        
+        
         
 
     .. py:method:: get(workspace_id: int) -> WorkspacePermissions
 
         Get an array of workspace permissions for the specified account and workspace.
-
+        
         :param workspace_id: int
           The workspace ID.
-
+        
         :returns: :class:`WorkspacePermissions`
         
 
@@ -48,10 +48,10 @@
             all = a.workspace_assignment.list(list=workspace_id)
 
         Get the permission assignments for the specified Databricks account and Databricks workspace.
-
+        
         :param workspace_id: int
           The workspace ID for the account.
-
+        
         :returns: Iterator over :class:`PermissionAssignment`
         
 
@@ -84,7 +84,7 @@
 
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
-
+        
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
@@ -95,6 +95,6 @@
           will be ignored. Note that excluding this field, or providing unsupported values, will have the same
           effect as providing an empty list, which will result in the deletion of all permissions for the
           principal.
-
+        
         :returns: :class:`PermissionAssignment`
         

@@ -10,7 +10,7 @@
     .. py:method:: query(name: str [, client_request_id: Optional[str], dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float], usage_context: Optional[Dict[str, str]]]) -> QueryEndpointResponse
 
         Query a serving endpoint
-
+        
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
         :param client_request_id: str (optional)
@@ -59,6 +59,6 @@
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)
           Optional user-provided context that will be recorded in the usage tracking table.
-
+        
         :returns: :class:`QueryEndpointResponse`
         

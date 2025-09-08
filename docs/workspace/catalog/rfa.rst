@@ -6,7 +6,7 @@
 
     Request for Access enables customers to request access to and manage access request destinations for Unity
     Catalog securables.
-
+    
     These APIs provide a standardized way to update, get, and request to access request destinations.
     Fine-grained authorization ensures that only users with appropriate permissions can manage access request
     destinations.
@@ -16,16 +16,16 @@
         Creates access requests for Unity Catalog permissions for a specified principal on a securable object.
         This Batch API can take in multiple principals, securable objects, and permissions as the input and
         returns the access request destinations for each. Principals must be unique across the API call.
-
+        
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
-
+        
         :param requests: List[:class:`CreateAccessRequest`] (optional)
           A list of individual access requests, where each request corresponds to a set of permissions being
           requested on a list of securables for a specified principal.
-
+          
           At most 30 requests per API call.
-
+        
         :returns: :class:`BatchCreateAccessRequestsResponse`
         
 
@@ -34,15 +34,15 @@
         Gets an array of access request destinations for the specified securable. Any caller can see URL
         destinations or the destinations on the metastore. Otherwise, only those with **BROWSE** permissions
         on the securable can see destinations.
-
+        
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
-
+        
         :param securable_type: str
           The type of the securable.
         :param full_name: str
           The full name of the securable.
-
+        
         :returns: :class:`AccessRequestDestinations`
         
 
@@ -55,10 +55,10 @@
         securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and
         Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no
         other destinations can be set.
-
+        
         The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",
         "connection", "credential", "function", "registered_model", and "volume".
-
+        
         :param access_request_destinations: :class:`AccessRequestDestinations`
           The access request destinations to assign to the securable. For each destination, a
           **destination_id** and **destination_type** must be defined.
@@ -68,10 +68,10 @@
           `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
-
+          
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
-
+        
         :returns: :class:`AccessRequestDestinations`
         
