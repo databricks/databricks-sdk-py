@@ -283,6 +283,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL"
 
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateResponse
    :members:
    :undoc-members:

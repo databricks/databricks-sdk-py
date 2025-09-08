@@ -7,7 +7,7 @@
     External Lineage APIs enable defining and managing lineage relationships between Databricks objects and
     external systems. These APIs allow users to capture data flows connecting Databricks tables, models, and
     file paths with external metadata objects.
-
+    
     With these APIs, users can create, update, delete, and list lineage relationships with support for
     column-level mappings and custom properties.
 
@@ -15,9 +15,9 @@
 
         Creates an external lineage relationship between a Databricks or external metadata object and another
         external metadata object.
-
+        
         :param external_lineage_relationship: :class:`CreateRequestExternalLineage`
-
+        
         :returns: :class:`ExternalLineageRelationship`
         
 
@@ -25,17 +25,17 @@
 
         Deletes an external lineage relationship between a Databricks or external metadata object and another
         external metadata object.
-
+        
         :param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
-
-
+        
+        
         
 
     .. py:method:: list_external_lineage_relationships(object_info: ExternalLineageObject, lineage_direction: LineageDirection [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLineageInfo]
 
         Lists external lineage relationships of a Databricks object or external metadata given a supplied
         direction.
-
+        
         :param object_info: :class:`ExternalLineageObject`
           The object to query external lineage relationships for. Since this field is a query parameter,
           please flatten the nested fields. For example, if the object is a table, the query parameter should
@@ -47,7 +47,7 @@
           value must be less than or equal to 1000.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`ExternalLineageInfo`
         
 
@@ -55,7 +55,7 @@
 
         Updates an external lineage relationship between a Databricks or external metadata object and another
         external metadata object.
-
+        
         :param external_lineage_relationship: :class:`UpdateRequestExternalLineage`
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
@@ -63,10 +63,10 @@
           `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
           the entire collection field can be specified. Field names must exactly match the resource field
           names.
-
+          
           A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
-
+        
         :returns: :class:`ExternalLineageRelationship`
         

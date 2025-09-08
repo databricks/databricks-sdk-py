@@ -10,46 +10,46 @@
     .. py:method:: create(listing: Listing) -> CreateListingResponse
 
         Create a new listing
-
+        
         :param listing: :class:`Listing`
-
+        
         :returns: :class:`CreateListingResponse`
         
 
     .. py:method:: delete(id: str)
 
         Delete a listing
-
+        
         :param id: str
-
-
+        
+        
         
 
     .. py:method:: get(id: str) -> GetListingResponse
 
         Get a listing
-
+        
         :param id: str
-
+        
         :returns: :class:`GetListingResponse`
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Listing]
 
         List listings owned by this provider
-
+        
         :param page_size: int (optional)
         :param page_token: str (optional)
-
+        
         :returns: Iterator over :class:`Listing`
         
 
     .. py:method:: update(id: str, listing: Listing) -> UpdateListingResponse
 
         Update a listing
-
+        
         :param id: str
         :param listing: :class:`Listing`
-
+        
         :returns: :class:`UpdateListingResponse`
         

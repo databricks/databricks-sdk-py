@@ -14,38 +14,38 @@
     .. py:method:: create_policy(policy_info: PolicyInfo) -> PolicyInfo
 
         Creates a new policy on a securable. The new policy applies to the securable and all its descendants.
-
+        
         :param policy_info: :class:`PolicyInfo`
           Required. The policy to create.
-
+        
         :returns: :class:`PolicyInfo`
         
 
     .. py:method:: delete_policy(on_securable_type: str, on_securable_fullname: str, name: str) -> DeletePolicyResponse
 
         Delete an ABAC policy defined on a securable.
-
+        
         :param on_securable_type: str
           Required. The type of the securable to delete the policy from.
         :param on_securable_fullname: str
           Required. The fully qualified name of the securable to delete the policy from.
         :param name: str
           Required. The name of the policy to delete
-
+        
         :returns: :class:`DeletePolicyResponse`
         
 
     .. py:method:: get_policy(on_securable_type: str, on_securable_fullname: str, name: str) -> PolicyInfo
 
         Get the policy definition on a securable
-
+        
         :param on_securable_type: str
           Required. The type of the securable to retrieve the policy for.
         :param on_securable_fullname: str
           Required. The fully qualified name of securable to retrieve policy for.
         :param name: str
           Required. The name of the policy to retrieve.
-
+        
         :returns: :class:`PolicyInfo`
         
 
@@ -53,7 +53,7 @@
 
         List all policies defined on a securable. Optionally, the list can include inherited policies defined
         on the securable's parent schema or catalog.
-
+        
         :param on_securable_type: str
           Required. The type of the securable to list policies for.
         :param on_securable_fullname: str
@@ -67,14 +67,14 @@
           greater than 0, the page length is the minimum of this value and a server configured value;
         :param page_token: str (optional)
           Optional. Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`PolicyInfo`
         
 
     .. py:method:: update_policy(on_securable_type: str, on_securable_fullname: str, name: str, policy_info: PolicyInfo [, update_mask: Optional[str]]) -> PolicyInfo
 
         Update an ABAC policy on a securable.
-
+        
         :param on_securable_type: str
           Required. The type of the securable to update the policy for.
         :param on_securable_fullname: str
@@ -91,6 +91,6 @@
         :param update_mask: str (optional)
           Optional. The update mask field for specifying user intentions on which fields to update in the
           request.
-
+        
         :returns: :class:`PolicyInfo`
         

@@ -36,16 +36,16 @@
         object that represents the root AWS S3 bucket in your account. Databricks stores related workspace
         assets including DBFS, cluster logs, and job results. For the AWS S3 bucket, you need to configure the
         required bucket policy.
-
+        
         For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
-
+        
         [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
+        
         :param storage_configuration_name: str
           The human-readable name of the storage configuration.
         :param root_bucket_info: :class:`RootBucketInfo`
-
+        
         :returns: :class:`StorageConfiguration`
         
 
@@ -53,11 +53,11 @@
 
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
-
+        
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
-
-
+        
+        
         
 
     .. py:method:: get(storage_configuration_id: str) -> StorageConfiguration
@@ -82,10 +82,10 @@
             by_id = a.storage.get(storage_configuration_id=storage.storage_configuration_id)
 
         Gets a Databricks storage configuration for an account, both specified by ID.
-
+        
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
-
+        
         :returns: :class:`StorageConfiguration`
         
 
@@ -103,7 +103,7 @@
             configs = a.storage.list()
 
         Gets a list of all Databricks storage configurations for your account, specified by ID.
-
-
+        
+        
         :returns: Iterator over :class:`StorageConfiguration`
         

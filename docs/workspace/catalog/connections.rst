@@ -5,7 +5,7 @@
 .. py:class:: ConnectionsAPI
 
     Connections allow for creating a connection to an external data source.
-
+    
     A connection is an abstraction of an external data source that can be connected from Databricks Compute.
     Creating a connection object is the first step to managing external data sources within Unity Catalog,
     with the second step being creating a data object (catalog, schema, or table) using the connection. Data
@@ -42,10 +42,10 @@
             w.connections.delete(name=conn_create.name)
 
         Creates a new connection
-
+        
         Creates a new connection to an external data source. It allows users to specify connection details and
         configurations for interaction with the external server.
-
+        
         :param name: str
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
@@ -58,18 +58,18 @@
           A map of key-value properties attached to the securable.
         :param read_only: bool (optional)
           If the connection is read only.
-
+        
         :returns: :class:`ConnectionInfo`
         
 
     .. py:method:: delete(name: str)
 
         Deletes the connection that matches the supplied name.
-
+        
         :param name: str
           The name of the connection to be deleted.
-
-
+        
+        
         
 
     .. py:method:: get(name: str) -> ConnectionInfo
@@ -112,10 +112,10 @@
             w.connections.delete(name=conn_create.name)
 
         Gets a connection from it's name.
-
+        
         :param name: str
           Name of the connection.
-
+        
         :returns: :class:`ConnectionInfo`
         
 
@@ -134,7 +134,7 @@
             conn_list = w.connections.list(catalog.ListConnectionsRequest())
 
         List all connections.
-
+        
         :param max_results: int (optional)
           Maximum number of connections to return. - If not set, all connections are returned (not
           recommended). - when set to a value greater than 0, the page length is the minimum of this value and
@@ -142,7 +142,7 @@
           (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`ConnectionInfo`
         
 
@@ -184,7 +184,7 @@
             w.connections.delete(name=conn_create.name)
 
         Updates the connection that matches the supplied name.
-
+        
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
@@ -193,6 +193,6 @@
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
-
+        
         :returns: :class:`ConnectionInfo`
         

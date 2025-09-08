@@ -118,13 +118,13 @@ class Value:
 
 
 class TagPoliciesAPI:
-    """The Tag Policy API allows you to manage tag policies in Databricks."""
+    """The Tag Policy API allows you to manage policies for governed tags in Databricks."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_tag_policy(self, tag_policy: TagPolicy) -> TagPolicy:
-        """Creates a new tag policy.
+        """Creates a new tag policy, making the associated tag key governed.
 
         :param tag_policy: :class:`TagPolicy`
 
@@ -140,7 +140,7 @@ class TagPoliciesAPI:
         return TagPolicy.from_dict(res)
 
     def delete_tag_policy(self, tag_key: str):
-        """Deletes a tag policy by its key.
+        """Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned.
 
         :param tag_key: str
 
@@ -154,7 +154,7 @@ class TagPoliciesAPI:
         self._api.do("DELETE", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
 
     def get_tag_policy(self, tag_key: str) -> TagPolicy:
-        """Gets a single tag policy by its key.
+        """Gets a single tag policy by its associated governed tag's key.
 
         :param tag_key: str
 
@@ -171,7 +171,7 @@ class TagPoliciesAPI:
     def list_tag_policies(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[TagPolicy]:
-        """Lists all tag policies in the account.
+        """Lists the tag policies for all governed tags in the account.
 
         :param page_size: int (optional)
           The maximum number of results to return in this request. Fewer results may be returned than
@@ -202,7 +202,7 @@ class TagPoliciesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_tag_policy(self, tag_key: str, tag_policy: TagPolicy, update_mask: str) -> TagPolicy:
-        """Updates an existing tag policy.
+        """Updates an existing tag policy for a single governed tag.
 
         :param tag_key: str
         :param tag_policy: :class:`TagPolicy`

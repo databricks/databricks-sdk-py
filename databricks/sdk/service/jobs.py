@@ -5696,9 +5696,6 @@ class RunTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
-    disabled: Optional[bool] = None
-    """Deprecated, field was never used in production."""
-
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -5873,8 +5870,6 @@ class RunTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -5972,8 +5967,6 @@ class RunTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6061,7 +6054,6 @@ class RunTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
-            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -7438,6 +7430,10 @@ class Task:
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     email_notifications: Optional[TaskEmailNotifications] = None
     """An optional set of email addresses that is notified when runs of this task begin or complete as
     well as when this task is deleted. The default behavior is to not send any emails."""
@@ -7568,6 +7564,8 @@ class Task:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7643,6 +7641,8 @@ class Task:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7710,6 +7710,7 @@ class Task:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", TaskEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),

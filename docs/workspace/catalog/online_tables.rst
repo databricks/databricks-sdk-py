@@ -9,10 +9,10 @@
     .. py:method:: create(table: OnlineTable) -> Wait[OnlineTable]
 
         Create a new Online Table.
-
+        
         :param table: :class:`OnlineTable`
           Specification of the online table to be created.
-
+        
         :returns:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
@@ -26,20 +26,20 @@
         Delete an online table. Warning: This will delete all the data in the online table. If the source
         Delta table was deleted or modified since this Online Table was created, this will lose the data
         forever!
-
+        
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
-
-
+        
+        
         
 
     .. py:method:: get(name: str) -> OnlineTable
 
         Get information about an existing online table and its status.
-
+        
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
-
+        
         :returns: :class:`OnlineTable`
         
 

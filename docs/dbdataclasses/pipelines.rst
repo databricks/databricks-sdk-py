@@ -137,6 +137,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
 
+   .. py:attribute:: FOREIGN_CATALOG
+      :value: "FOREIGN_CATALOG"
+
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
@@ -447,6 +450,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SCD_TYPE_2
       :value: "SCD_TYPE_2"
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateInfo
    :members:

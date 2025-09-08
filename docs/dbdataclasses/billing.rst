@@ -192,6 +192,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POLICY_NAME
       :value: "POLICY_NAME"
 
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateBudgetConfigurationBudget
    :members:
    :undoc-members:

@@ -494,6 +494,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILE_BASED_TABLE
       :value: "FILE_BASED_TABLE"
 
+   .. py:attribute:: FOREIGN_ICEBERG_TABLE
+      :value: "FOREIGN_ICEBERG_TABLE"
+
    .. py:attribute:: FOREIGN_TABLE
       :value: "FOREIGN_TABLE"
 
@@ -505,6 +508,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateSharePermissionsResponse
    :members:

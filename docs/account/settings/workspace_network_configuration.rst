@@ -14,10 +14,10 @@
 
         Gets the network option for a workspace. Every workspace has exactly one network policy binding, with
         'default-policy' used if no explicit assignment exists.
-
+        
         :param workspace_id: int
           The workspace ID.
-
+        
         :returns: :class:`WorkspaceNetworkOption`
         
 
@@ -25,11 +25,11 @@
 
         Updates the network option for a workspace. This operation associates the workspace with the specified
         network policy. To revert to the default policy, specify 'default-policy' as the network_policy_id.
-
+        
         :param workspace_id: int
           The workspace ID.
         :param workspace_network_option: :class:`WorkspaceNetworkOption`
           The network option details for the workspace.
-
+        
         :returns: :class:`WorkspaceNetworkOption`
         

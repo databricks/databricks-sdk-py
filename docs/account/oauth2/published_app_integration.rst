@@ -10,14 +10,14 @@
     .. py:method:: create( [, app_id: Optional[str], token_access_policy: Optional[TokenAccessPolicy]]) -> CreatePublishedAppIntegrationOutput
 
         Create Published OAuth App Integration.
-
+        
         You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
-
+        
         :param app_id: str (optional)
           App id of the OAuth published app integration. For example power-bi, tableau-deskop
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
-
+        
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         
 
@@ -25,28 +25,28 @@
 
         Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
-
+        
         :param integration_id: str
-
-
+        
+        
         
 
     .. py:method:: get(integration_id: str) -> GetPublishedAppIntegrationOutput
 
         Gets the Published OAuth App Integration for the given integration id.
-
+        
         :param integration_id: str
-
+        
         :returns: :class:`GetPublishedAppIntegrationOutput`
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[GetPublishedAppIntegrationOutput]
 
         Get the list of published OAuth app integrations for the specified Databricks account
-
+        
         :param page_size: int (optional)
         :param page_token: str (optional)
-
+        
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         
 
@@ -54,10 +54,10 @@
 
         Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
-
+        
         :param integration_id: str
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published OAuth app integration
-
-
+        
+        
         

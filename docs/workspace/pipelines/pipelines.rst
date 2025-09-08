@@ -5,11 +5,11 @@
 .. py:class:: PipelinesAPI
 
     The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
-
+    
     Delta Live Tables is a framework for building reliable, maintainable, and testable data processing
     pipelines. You define the transformations to perform on your data, and Delta Live Tables manages task
     orchestration, cluster management, monitoring, data quality, and error handling.
-
+    
     Instead of defining your data pipelines using a series of separate Apache Spark tasks, Delta Live Tables
     manages how your data is transformed based on a target schema you define for each processing step. You can
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
@@ -53,7 +53,7 @@
 
         Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
-
+        
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param budget_policy_id: str (optional)
@@ -120,7 +120,7 @@
           for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
-
+        
         :returns: :class:`CreatePipelineResponse`
         
 
@@ -128,10 +128,10 @@
 
         Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
         its tables. You cannot undo this action.
-
+        
         :param pipeline_id: str
-
-
+        
+        
         
 
     .. py:method:: get(pipeline_id: str) -> GetPipelineResponse
@@ -173,41 +173,41 @@
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Get a pipeline.
-
+        
         :param pipeline_id: str
-
+        
         :returns: :class:`GetPipelineResponse`
         
 
     .. py:method:: get_permission_levels(pipeline_id: str) -> GetPipelinePermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.
-
+        
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
-
+        
         :returns: :class:`GetPipelinePermissionLevelsResponse`
         
 
     .. py:method:: get_permissions(pipeline_id: str) -> PipelinePermissions
 
         Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
-
+        
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
-
+        
         :returns: :class:`PipelinePermissions`
         
 
     .. py:method:: get_update(pipeline_id: str, update_id: str) -> GetUpdateResponse
 
         Gets an update from an active pipeline.
-
+        
         :param pipeline_id: str
           The ID of the pipeline.
         :param update_id: str
           The ID of the update.
-
+        
         :returns: :class:`GetUpdateResponse`
         
 
@@ -250,14 +250,14 @@
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Retrieves events for a pipeline.
-
+        
         :param pipeline_id: str
           The pipeline to return events for.
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
           are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
           > 'TIMESTAMP' (or >=,<,<=,=)
-
+          
           Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
           '2021-07-22T06:37:33.083Z'
         :param max_results: int (optional)
@@ -271,7 +271,7 @@
           Page token returned by previous call. This field is mutually exclusive with all fields in this
           request except max_results. An error is returned if any fields other than max_results are set when
           this field is set.
-
+        
         :returns: Iterator over :class:`PipelineEvent`
         
 
@@ -290,14 +290,14 @@
             all = w.pipelines.list_pipelines(pipelines.ListPipelinesRequest())
 
         Lists pipelines defined in the Delta Live Tables system.
-
+        
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
-
+          
           * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
           '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
           example: `name LIKE '%shopping%'`
-
+          
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
           The maximum number of entries to return in a single page. The system may return fewer than
@@ -309,14 +309,14 @@
           default is id asc. This field is optional.
         :param page_token: str (optional)
           Page token returned by previous call
-
+        
         :returns: Iterator over :class:`PipelineStateInfo`
         
 
     .. py:method:: list_updates(pipeline_id: str [, max_results: Optional[int], page_token: Optional[str], until_update_id: Optional[str]]) -> ListUpdatesResponse
 
         List updates for an active pipeline.
-
+        
         :param pipeline_id: str
           The pipeline to return updates for.
         :param max_results: int (optional)
@@ -325,7 +325,7 @@
           Page token returned by previous call
         :param until_update_id: str (optional)
           If present, returns updates until and including this update_id.
-
+        
         :returns: :class:`ListUpdatesResponse`
         
 
@@ -333,11 +333,11 @@
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
-
+        
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-
+        
         :returns: :class:`PipelinePermissions`
         
 
@@ -345,7 +345,7 @@
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
-
+        
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
         :param full_refresh: bool (optional)
@@ -361,7 +361,7 @@
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
-
+        
         :returns: :class:`StartUpdateResponse`
         
 
@@ -369,9 +369,9 @@
 
         Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
         request is a no-op.
-
+        
         :param pipeline_id: str
-
+        
         :returns:
           Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
@@ -433,7 +433,7 @@
             w.pipelines.delete(pipeline_id=created.pipeline_id)
 
         Updates a pipeline with the supplied configuration.
-
+        
         :param pipeline_id: str
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
@@ -504,18 +504,18 @@
           for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
-
-
+        
+        
         
 
     .. py:method:: update_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
         Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
-
+        
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-
+        
         :returns: :class:`PipelinePermissions`
         
 

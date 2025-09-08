@@ -425,6 +425,7 @@ class Group:
     [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
 
     external_id: Optional[str] = None
+    """external_id should be unique for identifying groups"""
 
     groups: Optional[List[ComplexValue]] = None
 
@@ -2111,6 +2112,7 @@ class AccountGroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks group ID
@@ -2308,6 +2310,7 @@ class AccountGroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
@@ -3026,6 +3029,7 @@ class GroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks group ID
@@ -3215,6 +3219,7 @@ class GroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)

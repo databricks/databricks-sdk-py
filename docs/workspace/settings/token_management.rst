@@ -35,25 +35,25 @@
             w.token_management.delete(token_id=obo.token_info.token_id)
 
         Creates a token on behalf of a service principal.
-
+        
         :param application_id: str
           Application ID of the service principal.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
-
+        
         :returns: :class:`CreateOboTokenResponse`
         
 
     .. py:method:: delete(token_id: str)
 
         Deletes a token, specified by its ID.
-
+        
         :param token_id: str
           The ID of the token to revoke.
-
-
+        
+        
         
 
     .. py:method:: get(token_id: str) -> GetTokenResponse
@@ -86,26 +86,26 @@
             w.token_management.delete(token_id=obo.token_info.token_id)
 
         Gets information about a token, specified by its ID.
-
+        
         :param token_id: str
           The ID of the token to get.
-
+        
         :returns: :class:`GetTokenResponse`
         
 
     .. py:method:: get_permission_levels() -> GetTokenPermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.
-
-
+        
+        
         :returns: :class:`GetTokenPermissionLevelsResponse`
         
 
     .. py:method:: get_permissions() -> TokenPermissions
 
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
-
-
+        
+        
         :returns: :class:`TokenPermissions`
         
 
@@ -124,12 +124,12 @@
             all = w.token_management.list(settings.ListTokenManagementRequest())
 
         Lists all tokens associated with the specified workspace or user.
-
+        
         :param created_by_id: int (optional)
           User ID of the user that created the token.
         :param created_by_username: str (optional)
           Username of the user that created the token.
-
+        
         :returns: Iterator over :class:`TokenInfo`
         
 
@@ -137,17 +137,17 @@
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
         permissions if none are specified. Objects can inherit permissions from their root object.
-
+        
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-
+        
         :returns: :class:`TokenPermissions`
         
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[TokenAccessControlRequest]]]) -> TokenPermissions
 
         Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
-
+        
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-
+        
         :returns: :class:`TokenPermissions`
         

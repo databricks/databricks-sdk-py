@@ -11,6 +11,7 @@ databricks/sdk/service/dashboards.py linguist-generated=true
 databricks/sdk/service/database.py linguist-generated=true
 databricks/sdk/service/files.py linguist-generated=true
 databricks/sdk/service/iam.py linguist-generated=true
+databricks/sdk/service/iamv2.py linguist-generated=true
 databricks/sdk/service/jobs.py linguist-generated=true
 databricks/sdk/service/marketplace.py linguist-generated=true
 databricks/sdk/service/ml.py linguist-generated=true

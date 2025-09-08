@@ -9,7 +9,7 @@
     .. py:method:: get_config() -> ClientConfig
 
         Read workspace configuration for Redash-v2.
-
-
+        
+        
         :returns: :class:`ClientConfig`
         

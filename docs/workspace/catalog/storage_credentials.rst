@@ -9,9 +9,9 @@
     control which users and groups can access the credential. If a user does not have access to a storage
     credential in Unity Catalog, the request fails and Unity Catalog does not attempt to authenticate to your
     cloud tenant on the user’s behalf.
-
+    
     Databricks recommends using external locations rather than using storage credentials directly.
-
+    
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
     storage credential can delegate ownership to another user or group to manage permissions on it.
 
@@ -39,10 +39,10 @@
             w.storage_credentials.delete(delete=created.name)
 
         Creates a new storage credential.
-
+        
         The caller must be a metastore admin or have the **CREATE_STORAGE_CREDENTIAL** privilege on the
         metastore.
-
+        
         :param name: str
           The credential name. The name must be unique among storage and service credentials within the
           metastore.
@@ -63,7 +63,7 @@
           **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the created credential.
-
+        
         :returns: :class:`StorageCredentialInfo`
         
 
@@ -71,14 +71,14 @@
 
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
-
+        
         :param name: str
           Name of the storage credential.
         :param force: bool (optional)
           Force an update even if there are dependent external locations or external tables (when purpose is
           **STORAGE**) or dependent services (when purpose is **SERVICE**).
-
-
+        
+        
         
 
     .. py:method:: get(name: str) -> StorageCredentialInfo
@@ -108,10 +108,10 @@
 
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
-
+        
         :param name: str
           Name of the storage credential.
-
+        
         :returns: :class:`StorageCredentialInfo`
         
 
@@ -132,7 +132,7 @@
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
-
+        
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
           returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
@@ -141,7 +141,7 @@
           returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-
+        
         :returns: Iterator over :class:`StorageCredentialInfo`
         
 
@@ -175,10 +175,10 @@
             w.storage_credentials.delete(delete=created.name)
 
         Updates a storage credential on the metastore.
-
+        
         The caller must be the owner of the storage credential or a metastore admin. If the caller is a
         metastore admin, only the **owner** field can be changed.
-
+        
         :param name: str
           Name of the storage credential.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
@@ -206,7 +206,7 @@
           **STORAGE**.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the updated credential.
-
+        
         :returns: :class:`StorageCredentialInfo`
         
 
@@ -216,12 +216,12 @@
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
         the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
         overlapping urls.
-
+        
         Either the __storage_credential_name__ or the cloud-specific credential must be provided.
-
+        
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
-
+        
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
@@ -240,6 +240,6 @@
           Required. The name of an existing credential or long-lived cloud credential to validate.
         :param url: str (optional)
           The external location url to validate.
-
+        
         :returns: :class:`ValidateStorageCredentialResponse`
         

@@ -32,10 +32,10 @@
 
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
-
+        
         :param dashboard_id: str
-
-
+        
+        
         
 
     .. py:method:: get(dashboard_id: str) -> Dashboard
@@ -59,9 +59,9 @@
             w.dashboards.delete(dashboard_id=created.id)
 
         Returns a JSON representation of a dashboard object, including its visualization and query objects.
-
+        
         :param dashboard_id: str
-
+        
         :returns: :class:`Dashboard`
         
 
@@ -80,10 +80,10 @@
             all = w.dashboards.list(sql.ListDashboardsRequest())
 
         Fetch a paginated list of dashboard objects.
-
+        
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
-
+        
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
         :param page: int (optional)
@@ -92,7 +92,7 @@
           Number of dashboards to return per page.
         :param q: str (optional)
           Full text search term.
-
+        
         :returns: Iterator over :class:`Dashboard`
         
 
@@ -117,19 +117,19 @@
             w.dashboards.delete(dashboard_id=created.id)
 
         A restored dashboard appears in list views and searches and can be shared.
-
+        
         :param dashboard_id: str
-
-
+        
+        
         
 
     .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Dashboard
 
         Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
         does not add, modify, or remove widgets.
-
+        
         **Note**: You cannot undo this operation.
-
+        
         :param dashboard_id: str
         :param name: str (optional)
           The title of this dashboard that appears in list views and at the top of the dashboard page.
@@ -137,6 +137,6 @@
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
-
+        
         :returns: :class:`Dashboard`
         
