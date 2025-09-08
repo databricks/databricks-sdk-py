@@ -53,12 +53,16 @@
 
         
 
-    .. py:method:: get_index(index_name: str) -> VectorIndex
+    .. py:method:: get_index(index_name: str [, ensure_reranker_compatible: Optional[bool]]) -> VectorIndex
 
         Get an index.
 
         :param index_name: str
           Name of the index
+        :param ensure_reranker_compatible: bool (optional)
+          If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently
+          this means we return the CP URL regardless of how the index is being accessed. If not set or set to
+          false, the URL may still be compatible with the reranker depending on what URL we return.
 
         :returns: :class:`VectorIndex`
         
@@ -75,7 +79,7 @@
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
-    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
+    .. py:method:: query_index(index_name: str, columns: List[str] [, columns_to_rerank: Optional[List[str]], filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], reranker: Optional[RerankerConfig], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
 
         Query the specified vector index.
 
@@ -102,6 +106,7 @@
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
+        :param reranker: :class:`RerankerConfig` (optional)
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 

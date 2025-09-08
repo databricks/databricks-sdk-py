@@ -125,6 +125,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RerankerConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: RerankerConfigRerankerParameters
+   :members:
+   :undoc-members:
+
 .. autoclass:: ResultData
    :members:
    :undoc-members:

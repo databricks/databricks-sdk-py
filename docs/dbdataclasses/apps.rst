@@ -50,6 +50,99 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AppManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: AppManifestAppResourceJobSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceJobSpecJobPermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_MANAGE_RUN
+      :value: "CAN_MANAGE_RUN"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
+
+.. autoclass:: AppManifestAppResourceSecretSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceSecretSpecSecretPermission
+
+   Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE".
+
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
+
+   .. py:attribute:: READ
+      :value: "READ"
+
+   .. py:attribute:: WRITE
+      :value: "WRITE"
+
+.. autoclass:: AppManifestAppResourceServingEndpointSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceServingEndpointSpecServingEndpointPermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_QUERY
+      :value: "CAN_QUERY"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+.. autoclass:: AppManifestAppResourceSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: AppManifestAppResourceSqlWarehouseSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
+
+.. autoclass:: AppManifestAppResourceUcSecurableSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceUcSecurableSpecUcSecurablePermission
+
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
+
+   .. py:attribute:: READ_VOLUME
+      :value: "READ_VOLUME"
+
+   .. py:attribute:: WRITE_VOLUME
+      :value: "WRITE_VOLUME"
+
+.. py:class:: AppManifestAppResourceUcSecurableSpecUcSecurableType
+
+   .. py:attribute:: VOLUME
+      :value: "VOLUME"
+
 .. autoclass:: AppPermission
    :members:
    :undoc-members:
@@ -212,6 +305,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomTemplate
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetAppPermissionLevelsResponse
    :members:
    :undoc-members:
@@ -221,5 +318,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAppsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCustomTemplatesResponse
    :members:
    :undoc-members:

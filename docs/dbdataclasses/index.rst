@@ -24,7 +24,9 @@ Dataclasses
    qualitymonitorv2
    serving
    settings
+   settingsv2
    sharing
    sql
+   tags
    vectorsearch
    workspace

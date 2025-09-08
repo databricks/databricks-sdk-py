@@ -37,7 +37,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: GenieFeedbackRating
+
+   Feedback rating for Genie messages
+
+   .. py:attribute:: NEGATIVE
+      :value: "NEGATIVE"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: POSITIVE
+      :value: "POSITIVE"
+
 .. autoclass:: GenieGetMessageQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieListConversationMessagesResponse
    :members:
    :undoc-members:
 

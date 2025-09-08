@@ -4,6 +4,10 @@ Unity Catalog
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.catalog`` module.
 
 .. py:currentmodule:: databricks.sdk.service.catalog
+.. autoclass:: AccessRequestDestinations
+   :members:
+   :undoc-members:
+
 .. autoclass:: AccountsMetastoreAssignment
    :members:
    :undoc-members:
@@ -89,6 +93,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BatchCreateAccessRequestsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CancelRefreshResponse
    :members:
    :undoc-members:
@@ -136,6 +144,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ColumnMask
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnMaskOptions
    :members:
    :undoc-members:
 
@@ -290,6 +302,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "WORKDAY_RAAS"
 
 .. autoclass:: ContinuousUpdateStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateAccessRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateAccessRequestResponse
    :members:
    :undoc-members:
 
@@ -535,6 +555,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeletePolicyResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRequestExternalLineage
    :members:
    :undoc-members:
@@ -566,6 +590,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DependencyList
    :members:
    :undoc-members:
+
+.. py:class:: DestinationType
+
+   .. py:attribute:: EMAIL
+      :value: "EMAIL"
+
+   .. py:attribute:: GENERIC_WEBHOOK
+      :value: "GENERIC_WEBHOOK"
+
+   .. py:attribute:: MICROSOFT_TEAMS
+      :value: "MICROSOFT_TEAMS"
+
+   .. py:attribute:: SLACK
+      :value: "SLACK"
+
+   .. py:attribute:: URL
+      :value: "URL"
 
 .. autoclass:: DisableResponse
    :members:
@@ -616,7 +657,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: EnvironmentSettings
+.. autoclass:: EntityTagAssignment
    :members:
    :undoc-members:
 
@@ -685,6 +726,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ForeignKeyConstraint
+   :members:
+   :undoc-members:
+
+.. autoclass:: FunctionArgument
    :members:
    :undoc-members:
 
@@ -766,6 +811,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenerateTemporaryPathCredentialResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
    :members:
    :undoc-members:
@@ -834,6 +883,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListEntityTagAssignmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListExternalLineageRelationshipsResponse
    :members:
    :undoc-members:
@@ -855,6 +908,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListModelVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListPoliciesResponse
    :members:
    :undoc-members:
 
@@ -887,6 +944,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListVolumesResponseContent
+   :members:
+   :undoc-members:
+
+.. autoclass:: MatchColumn
    :members:
    :undoc-members:
 
@@ -1054,6 +1115,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: NotificationDestination
+   :members:
+   :undoc-members:
+
 .. autoclass:: OnlineTable
    :members:
    :undoc-members:
@@ -1150,6 +1215,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: OPTION_STRING
       :value: "OPTION_STRING"
 
+.. py:class:: PathOperation
+
+   .. py:attribute:: PATH_CREATE_TABLE
+      :value: "PATH_CREATE_TABLE"
+
+   .. py:attribute:: PATH_READ
+      :value: "PATH_READ"
+
+   .. py:attribute:: PATH_READ_WRITE
+      :value: "PATH_READ_WRITE"
+
 .. autoclass:: PermissionsChange
    :members:
    :undoc-members:
@@ -1158,9 +1234,36 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PolicyInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: PolicyType
+
+   .. py:attribute:: POLICY_TYPE_COLUMN_MASK
+      :value: "POLICY_TYPE_COLUMN_MASK"
+
+   .. py:attribute:: POLICY_TYPE_ROW_FILTER
+      :value: "POLICY_TYPE_ROW_FILTER"
+
 .. autoclass:: PrimaryKeyConstraint
    :members:
    :undoc-members:
+
+.. autoclass:: Principal
+   :members:
+   :undoc-members:
+
+.. py:class:: PrincipalType
+
+   .. py:attribute:: GROUP_PRINCIPAL
+      :value: "GROUP_PRINCIPAL"
+
+   .. py:attribute:: SERVICE_PRINCIPAL
+      :value: "SERVICE_PRINCIPAL"
+
+   .. py:attribute:: USER_PRINCIPAL
+      :value: "USER_PRINCIPAL"
 
 .. py:class:: Privilege
 
@@ -1366,7 +1469,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RowFilterOptions
+   :members:
+   :undoc-members:
+
 .. autoclass:: SchemaInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: Securable
    :members:
    :undoc-members:
 
@@ -1556,6 +1667,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SecurablePermissions
+   :members:
+   :undoc-members:
+
 .. py:class:: SecurableType
 
    The type of Unity Catalog securable.
@@ -1610,6 +1725,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"
+
+.. py:class:: SpecialDestination
+
+   .. py:attribute:: SPECIAL_DESTINATION_CATALOG_OWNER
+      :value: "SPECIAL_DESTINATION_CATALOG_OWNER"
+
+   .. py:attribute:: SPECIAL_DESTINATION_CONNECTION_OWNER
+      :value: "SPECIAL_DESTINATION_CONNECTION_OWNER"
+
+   .. py:attribute:: SPECIAL_DESTINATION_CREDENTIAL_OWNER
+      :value: "SPECIAL_DESTINATION_CREDENTIAL_OWNER"
+
+   .. py:attribute:: SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER
+      :value: "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER"
+
+   .. py:attribute:: SPECIAL_DESTINATION_METASTORE_OWNER
+      :value: "SPECIAL_DESTINATION_METASTORE_OWNER"
 
 .. autoclass:: SseEncryptionDetails
    :members:

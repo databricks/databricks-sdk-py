@@ -1975,9 +1975,9 @@ class GenieAPI:
         space_id: str,
         conversation_id: str,
         message_id: str,
-        feedback_rating: GenieFeedbackRating,
+        rating: GenieFeedbackRating,
         *,
-        feedback_text: Optional[str] = None,
+        comment: Optional[str] = None,
     ):
         """Send feedback for a message.
 
@@ -1987,18 +1987,18 @@ class GenieAPI:
           The ID associated with the conversation.
         :param message_id: str
           The ID associated with the message to provide feedback for.
-        :param feedback_rating: :class:`GenieFeedbackRating`
+        :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
-        :param feedback_text: str (optional)
+        :param comment: str (optional)
           Optional text feedback that will be stored as a comment.
 
 
         """
         body = {}
-        if feedback_rating is not None:
-            body["feedback_rating"] = feedback_rating.value
-        if feedback_text is not None:
-            body["feedback_text"] = feedback_text
+        if comment is not None:
+            body["comment"] = comment
+        if rating is not None:
+            body["rating"] = rating.value
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

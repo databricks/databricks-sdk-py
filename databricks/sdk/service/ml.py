@@ -1211,51 +1211,6 @@ class ExperimentTag:
 
 
 @dataclass
-class Feature:
-    """Feature for model version."""
-
-    feature_name: Optional[str] = None
-    """Feature name"""
-
-    feature_table_id: Optional[str] = None
-    """Feature table id"""
-
-    feature_table_name: Optional[str] = None
-    """Feature table name"""
-
-    def as_dict(self) -> dict:
-        """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.feature_name is not None:
-            body["feature_name"] = self.feature_name
-        if self.feature_table_id is not None:
-            body["feature_table_id"] = self.feature_table_id
-        if self.feature_table_name is not None:
-            body["feature_table_name"] = self.feature_table_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Feature into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.feature_name is not None:
-            body["feature_name"] = self.feature_name
-        if self.feature_table_id is not None:
-            body["feature_table_id"] = self.feature_table_id
-        if self.feature_table_name is not None:
-            body["feature_table_name"] = self.feature_table_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Feature:
-        """Deserializes the Feature from a dictionary."""
-        return cls(
-            feature_name=d.get("feature_name", None),
-            feature_table_id=d.get("feature_table_id", None),
-            feature_table_name=d.get("feature_table_name", None),
-        )
-
-
-@dataclass
 class FeatureLineage:
     feature_specs: Optional[List[FeatureLineageFeatureSpec]] = None
     """List of feature specs that contain this feature."""
@@ -1391,7 +1346,7 @@ class FeatureLineageOnlineFeature:
 class FeatureList:
     """Feature list wrap all the features for a model version"""
 
-    features: Optional[List[Feature]] = None
+    features: Optional[List[LinkedFeature]] = None
 
     def as_dict(self) -> dict:
         """Serializes the FeatureList into a dictionary suitable for use as a JSON request body."""
@@ -1410,7 +1365,7 @@ class FeatureList:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FeatureList:
         """Deserializes the FeatureList from a dictionary."""
-        return cls(features=_repeated_dict(d, "features", Feature))
+        return cls(features=_repeated_dict(d, "features", LinkedFeature))
 
 
 @dataclass
@@ -2052,6 +2007,51 @@ class JobSpecWithoutSecret:
     def from_dict(cls, d: Dict[str, Any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get("job_id", None), workspace_url=d.get("workspace_url", None))
+
+
+@dataclass
+class LinkedFeature:
+    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
+
+    feature_name: Optional[str] = None
+    """Feature name"""
+
+    feature_table_id: Optional[str] = None
+    """Feature table id"""
+
+    feature_table_name: Optional[str] = None
+    """Feature table name"""
+
+    def as_dict(self) -> dict:
+        """Serializes the LinkedFeature into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LinkedFeature into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LinkedFeature:
+        """Deserializes the LinkedFeature from a dictionary."""
+        return cls(
+            feature_name=d.get("feature_name", None),
+            feature_table_id=d.get("feature_table_id", None),
+            feature_table_name=d.get("feature_table_name", None),
+        )
 
 
 @dataclass

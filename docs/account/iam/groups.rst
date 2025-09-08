@@ -59,7 +59,9 @@
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[Group]
 
-        Gets all details of the groups associated with the Databricks account.
+        Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
+        will not return members. Instead, members should be retrieved by iterating through `Get group
+        details`.
 
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.

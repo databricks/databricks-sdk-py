@@ -13,6 +13,45 @@
     A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
     (rather than a managed or external table).
 
+    .. py:method:: create(name: str, catalog_name: str, schema_name: str, table_type: TableType, data_source_format: DataSourceFormat, storage_location: str [, columns: Optional[List[ColumnInfo]], properties: Optional[Dict[str, str]]]) -> TableInfo
+
+        Creates a new table in the specified catalog and schema.
+
+        To create an external delta table, the caller must have the **EXTERNAL_USE_SCHEMA** privilege on the
+        parent schema and the **EXTERNAL_USE_LOCATION** privilege on the external location. These privileges
+        must always be granted explicitly, and cannot be inherited through ownership or **ALL_PRIVILEGES**.
+
+        Standard UC permissions needed to create tables still apply: **USE_CATALOG** on the parent catalog (or
+        ownership of the parent catalog), **CREATE_TABLE** and **USE_SCHEMA** on the parent schema (or
+        ownership of the parent schema), and **CREATE_EXTERNAL_TABLE** on external location.
+
+        The **columns** field needs to be in a Spark compatible format, so we recommend you use Spark to
+        create these tables. The API itself does not validate the correctness of the column spec. If the spec
+        is not Spark compatible, the tables may not be readable by Databricks Runtime.
+
+        NOTE: The Create Table API for external clients only supports creating **external delta tables**. The
+        values shown in the respective enums are all values supported by Databricks, however for this specific
+        Create Table API, only **table_type** **EXTERNAL** and **data_source_format** **DELTA** are supported.
+        Additionally, column masks are not supported when creating tables through this API.
+
+        :param name: str
+          Name of table, relative to parent schema.
+        :param catalog_name: str
+          Name of parent catalog.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
+        :param table_type: :class:`TableType`
+        :param data_source_format: :class:`DataSourceFormat`
+        :param storage_location: str
+          Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+        :param columns: List[:class:`ColumnInfo`] (optional)
+          The array of __ColumnInfo__ definitions of the table's columns.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+
+        :returns: :class:`TableInfo`
+        
+
     .. py:method:: delete(full_name: str)
 
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
@@ -30,10 +69,10 @@
 
         Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
+        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
-        the parent catalog * Have BROWSE privilege on the parent schema.
+        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
+        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -83,9 +122,9 @@
 
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
-        the table owner or have the SELECT privilege on the table.
+        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
+        and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.

@@ -30,7 +30,7 @@
             w.catalogs.delete(name=created_catalog.name, force=True)
             w.schemas.delete(full_name=created_schema.full_name)
 
-        Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
+        Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
 
         :param name: str

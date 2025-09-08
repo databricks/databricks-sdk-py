@@ -7,12 +7,15 @@
     Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
     endpoints service.
 
-    .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
+    .. py:method:: query(name: str [, client_request_id: Optional[str], dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float], usage_context: Optional[Dict[str, str]]]) -> QueryEndpointResponse
 
         Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -54,6 +57,8 @@
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         

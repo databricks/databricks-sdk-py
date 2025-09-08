@@ -188,7 +188,7 @@ def test_oidc_credentials_provider_invalid_id_token_source():
     id_token_source = Mock()
     id_token_source.id_token.side_effect = ValueError("Invalid ID token source")
 
-    cp = credentials_provider._oidc_credentials_provider(mock_cfg, id_token_source)
+    cp = credentials_provider.oidc_credentials_provider(mock_cfg, id_token_source)
     assert cp is None
 
 
@@ -216,7 +216,7 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
 
     mocker.patch.object(oidc.DatabricksOidcTokenSource, "_exchange_id_token", side_effect=mock_exchange_id_token)
 
-    cp = credentials_provider._oidc_credentials_provider(mock_cfg, id_token_source)
+    cp = credentials_provider.oidc_credentials_provider(mock_cfg, id_token_source)
     assert cp is not None
 
     # Test that the credentials provider returns the expected headers

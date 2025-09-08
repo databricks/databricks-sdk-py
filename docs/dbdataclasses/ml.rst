@@ -231,10 +231,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: Feature
-   :members:
-   :undoc-members:
-
 .. autoclass:: FeatureLineage
    :members:
    :undoc-members:
@@ -349,6 +345,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobSpecWithoutSecret
+   :members:
+   :undoc-members:
+
+.. autoclass:: LinkedFeature
    :members:
    :undoc-members:
 
@@ -550,6 +550,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
 
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
