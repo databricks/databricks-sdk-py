@@ -23,6 +23,7 @@ from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
+from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
@@ -88,6 +89,7 @@ from databricks.sdk.service.iam import (AccessControlAPI,
                                         GroupsAPI, PermissionMigrationAPI,
                                         PermissionsAPI, ServicePrincipalsAPI,
                                         UsersAPI, WorkspaceAssignmentAPI)
+from databricks.sdk.service.iamv2 import AccountIamV2API, WorkspaceIamV2API
 from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
@@ -371,6 +373,7 @@ class WorkspaceClient:
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
         self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
+        self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -896,7 +899,7 @@ class WorkspaceClient:
 
     @property
     def tag_policies(self) -> pkg_tags.TagPoliciesAPI:
-        """The Tag Policy API allows you to manage tag policies in Databricks."""
+        """The Tag Policy API allows you to manage policies for governed tags in Databricks."""
         return self._tag_policies
 
     @property
@@ -968,6 +971,11 @@ class WorkspaceClient:
     def forecasting(self) -> pkg_ml.ForecastingAPI:
         """The Forecasting API allows you to create and get serverless forecasting experiments."""
         return self._forecasting
+
+    @property
+    def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
+        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        return self._workspace_iam_v2
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""
@@ -1074,6 +1082,7 @@ class AccountClient:
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
         self._workspace_network_configuration = pkg_settings.WorkspaceNetworkConfigurationAPI(self._api_client)
         self._workspaces = pkg_provisioning.WorkspacesAPI(self._api_client)
+        self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
         self._budgets = pkg_billing.BudgetsAPI(self._api_client)
 
     @property
@@ -1238,6 +1247,11 @@ class AccountClient:
     def workspaces(self) -> pkg_provisioning.WorkspacesAPI:
         """These APIs manage workspaces for this account."""
         return self._workspaces
+
+    @property
+    def iam_v2(self) -> pkg_iamv2.AccountIamV2API:
+        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        return self._iam_v2
 
     @property
     def budgets(self) -> pkg_billing.BudgetsAPI:

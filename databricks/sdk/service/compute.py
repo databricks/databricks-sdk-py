@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -3136,6 +3138,9 @@ class Environment:
     version and a set of Python packages. The version is a string, consisting of an integer."""
 
     jar_dependencies: Optional[List[str]] = None
+    """Use `java_dependencies` instead."""
+
+    java_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
     `/Volumes/path/to/test.jar`."""
 
@@ -3150,6 +3155,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3163,6 +3170,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
         return body
 
     @classmethod
@@ -3173,6 +3182,7 @@ class Environment:
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
+            java_dependencies=d.get("java_dependencies", None),
         )
 
 
@@ -7151,6 +7161,7 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE = "NETWORK_CHECK_STORAGE_FAILURE"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -7189,6 +7200,7 @@ class TerminationReasonCode(Enum):
     UNKNOWN = "UNKNOWN"
     UNSUPPORTED_INSTANCE_TYPE = "UNSUPPORTED_INSTANCE_TYPE"
     UPDATE_INSTANCE_PROFILE_FAILURE = "UPDATE_INSTANCE_PROFILE_FAILURE"
+    USAGE_POLICY_ENTITLEMENT_DENIED = "USAGE_POLICY_ENTITLEMENT_DENIED"
     USER_INITIATED_VM_TERMINATION = "USER_INITIATED_VM_TERMINATION"
     USER_REQUEST = "USER_REQUEST"
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
