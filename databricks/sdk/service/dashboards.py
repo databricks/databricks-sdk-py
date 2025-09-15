@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -413,6 +415,40 @@ class GenieConversationSummary:
         )
 
 
+@dataclass
+class GenieFeedback:
+    """Feedback containing rating and optional comment"""
+
+    comment: Optional[str] = None
+    """Optional feedback comment text"""
+
+    rating: Optional[GenieFeedbackRating] = None
+    """The feedback rating"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedback into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.rating is not None:
+            body["rating"] = self.rating.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedback into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.rating is not None:
+            body["rating"] = self.rating
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedback:
+        """Deserializes the GenieFeedback from a dictionary."""
+        return cls(comment=d.get("comment", None), rating=_enum(d, "rating", GenieFeedbackRating))
+
+
 class GenieFeedbackRating(Enum):
     """Feedback rating for Genie messages"""
 
@@ -572,6 +608,9 @@ class GenieMessage:
     error: Optional[MessageError] = None
     """Error message if Genie failed to respond to the message"""
 
+    feedback: Optional[GenieFeedback] = None
+    """User feedback for the message if provided"""
+
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
 
@@ -597,6 +636,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error.as_dict()
+        if self.feedback:
+            body["feedback"] = self.feedback.as_dict()
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -626,6 +667,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error
+        if self.feedback:
+            body["feedback"] = self.feedback
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -651,6 +694,7 @@ class GenieMessage:
             conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             error=_from_dict(d, "error", MessageError),
+            feedback=_from_dict(d, "feedback", GenieFeedback),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             message_id=d.get("message_id", None),
@@ -1921,8 +1965,8 @@ class GenieAPI:
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
         :param include_all: bool (optional)
-          Include all conversations in the space across all users. Requires "Can Manage" permission on the
-          space.
+          Include all conversations in the space across all users. Requires at least CAN MANAGE permission on
+          the space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)

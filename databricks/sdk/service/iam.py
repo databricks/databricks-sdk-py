@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -425,6 +426,7 @@ class Group:
     [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
 
     external_id: Optional[str] = None
+    """external_id should be unique for identifying groups"""
 
     groups: Optional[List[ComplexValue]] = None
 
@@ -2111,6 +2113,7 @@ class AccountGroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks group ID
@@ -2308,6 +2311,7 @@ class AccountGroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
@@ -3026,6 +3030,7 @@ class GroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks group ID
@@ -3215,6 +3220,7 @@ class GroupsAPI:
 
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          external_id should be unique for identifying groups
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)

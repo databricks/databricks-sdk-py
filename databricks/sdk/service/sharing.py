@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -2307,6 +2308,9 @@ class Table:
 class TableInternalAttributes:
     """Internal information for D2D sharing that should not be disclosed to external users."""
 
+    auxiliary_managed_location: Optional[str] = None
+    """Managed Delta Metadata location for foreign iceberg tables."""
+
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2327,6 +2331,8 @@ class TableInternalAttributes:
     def as_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auxiliary_managed_location is not None:
+            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2340,6 +2346,8 @@ class TableInternalAttributes:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auxiliary_managed_location is not None:
+            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2354,6 +2362,7 @@ class TableInternalAttributes:
     def from_dict(cls, d: Dict[str, Any]) -> TableInternalAttributes:
         """Deserializes the TableInternalAttributes from a dictionary."""
         return cls(
+            auxiliary_managed_location=d.get("auxiliary_managed_location", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),
@@ -2366,6 +2375,7 @@ class TableInternalAttributesSharedTableType(Enum):
     DELTA_ICEBERG_TABLE = "DELTA_ICEBERG_TABLE"
     DIRECTORY_BASED_TABLE = "DIRECTORY_BASED_TABLE"
     FILE_BASED_TABLE = "FILE_BASED_TABLE"
+    FOREIGN_ICEBERG_TABLE = "FOREIGN_ICEBERG_TABLE"
     FOREIGN_TABLE = "FOREIGN_TABLE"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"

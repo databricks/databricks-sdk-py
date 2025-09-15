@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -735,6 +737,7 @@ class IngestionSourceType(Enum):
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
+    FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
     META_MARKETING = "META_MARKETING"
