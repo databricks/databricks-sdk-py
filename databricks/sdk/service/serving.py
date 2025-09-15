@@ -4505,6 +4505,7 @@ class ServingEndpointsAPI:
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
         usage_context: Optional[Dict[str, str]] = None,
+        served_model_name: Optional[str] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
@@ -4556,6 +4557,8 @@ class ServingEndpointsAPI:
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)
           Optional user-provided context that will be recorded in the usage tracking table.
+        :param served_model_name: str (optional)
+          Optional served model name to query individual model behind an endpoint.
 
         :returns: :class:`QueryEndpointResponse`
         """
@@ -4598,9 +4601,13 @@ class ServingEndpointsAPI:
         response_headers = [
             "served-model-name",
         ]
+
+        full_name = f"{name}/served-models/{served_model_name}" if served_model_name else name
+        url = f"/serving-endpoints/{full_name}/invocations"
+
         res = self._api.do(
             "POST",
-            f"/serving-endpoints/{name}/invocations",
+            url,
             body=body,
             headers=headers,
             response_headers=response_headers,
@@ -4819,6 +4826,7 @@ class ServingEndpointsDataPlaneAPI:
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
         usage_context: Optional[Dict[str, str]] = None,
+        served_model_name: Optional[str] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
@@ -4870,6 +4878,9 @@ class ServingEndpointsDataPlaneAPI:
           other chat/completions query fields.
         :param usage_context: Dict[str,str] (optional)
           Optional user-provided context that will be recorded in the usage tracking table.
+        :param served_model_name: str (optional)
+          Optional served model name to query individual model behind an endpoint.
+
 
         :returns: :class:`QueryEndpointResponse`
         """
@@ -4922,9 +4933,13 @@ class ServingEndpointsDataPlaneAPI:
         response_headers = [
             "served-model-name",
         ]
+
+        url = data_plane_info.endpoint_url
+        if served_model_name:
+            url = url.replace("/invocations", f"/served-models/{served_model_name}/invocations")
         res = self._api.do(
             "POST",
-            url=data_plane_info.endpoint_url,
+            url=url,
             body=body,
             headers=headers,
             response_headers=response_headers,
