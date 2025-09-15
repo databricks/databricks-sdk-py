@@ -1,8 +1,10 @@
 import datetime
 import urllib.parse
 from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
-from google.protobuf.timestamp_pb2 import Timestamp
+
 from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.common.types.fieldmask import FieldMask
 
 
@@ -56,6 +58,7 @@ def _timestamp(d: Dict[str, any], field: str) -> Optional[Timestamp]:
     ts.FromJsonString(d[field])
     return ts
 
+
 def _repeated_timestamp(d: Dict[str, any], field: str) -> Optional[List[Timestamp]]:
     if field not in d or not d[field]:
         return None
@@ -66,12 +69,14 @@ def _repeated_timestamp(d: Dict[str, any], field: str) -> Optional[List[Timestam
         result.append(ts)
     return result
 
+
 def _duration(d: Dict[str, any], field: str) -> Optional[Duration]:
     if field not in d or not d[field]:
         return None
     dur = Duration()
     dur.FromJsonString(d[field])
     return dur
+
 
 def _repeated_duration(d: Dict[str, any], field: str) -> Optional[List[Duration]]:
     if field not in d or not d[field]:
@@ -83,12 +88,14 @@ def _repeated_duration(d: Dict[str, any], field: str) -> Optional[List[Duration]
         result.append(dur)
     return result
 
+
 def _fieldmask(d: Dict[str, any], field: str) -> Optional[FieldMask]:
     if field not in d or not d[field]:
         return None
     fm = FieldMask()
     fm.FromJsonString(d[field])
     return fm
+
 
 def _repeated_fieldmask(d: Dict[str, any], field: str) -> Optional[List[FieldMask]]:
     if field not in d or not d[field]:
@@ -99,7 +106,6 @@ def _repeated_fieldmask(d: Dict[str, any], field: str) -> Optional[List[FieldMas
         fm.FromJsonString(v)
         result.append(fm)
     return result
-
 
 
 ReturnType = TypeVar("ReturnType")
