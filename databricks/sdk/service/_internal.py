@@ -1,6 +1,9 @@
 import datetime
 import urllib.parse
-from typing import Callable, Dict, Generic, Optional, Type, TypeVar
+from typing import Callable, Dict, Generic, List, Optional, Type, TypeVar
+from google.protobuf.timestamp_pb2 import Timestamp
+from google.protobuf.duration_pb2 import Duration
+from databricks.sdk.common.types.fieldmask import FieldMask
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
@@ -44,6 +47,59 @@ def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
 
 def _escape_multi_segment_path_parameter(param: str) -> str:
     return urllib.parse.quote(param)
+
+
+def _timestamp(d: Dict[str, any], field: str) -> Optional[Timestamp]:
+    if field not in d or not d[field]:
+        return None
+    ts = Timestamp()
+    ts.FromJsonString(d[field])
+    return ts
+
+def _repeated_timestamp(d: Dict[str, any], field: str) -> Optional[List[Timestamp]]:
+    if field not in d or not d[field]:
+        return None
+    result = []
+    for v in d[field]:
+        ts = Timestamp()
+        ts.FromJsonString(v)
+        result.append(ts)
+    return result
+
+def _duration(d: Dict[str, any], field: str) -> Optional[Duration]:
+    if field not in d or not d[field]:
+        return None
+    dur = Duration()
+    dur.FromJsonString(d[field])
+    return dur
+
+def _repeated_duration(d: Dict[str, any], field: str) -> Optional[List[Duration]]:
+    if field not in d or not d[field]:
+        return None
+    result = []
+    for v in d[field]:
+        dur = Duration()
+        dur.FromJsonString(v)
+        result.append(dur)
+    return result
+
+def _fieldmask(d: Dict[str, any], field: str) -> Optional[FieldMask]:
+    if field not in d or not d[field]:
+        return None
+    fm = FieldMask()
+    fm.FromJsonString(d[field])
+    return fm
+
+def _repeated_fieldmask(d: Dict[str, any], field: str) -> Optional[List[FieldMask]]:
+    if field not in d or not d[field]:
+        return None
+    result = []
+    for v in d[field]:
+        fm = FieldMask()
+        fm.FromJsonString(v)
+        result.append(fm)
+    return result
+
 
 
 ReturnType = TypeVar("ReturnType")
