@@ -260,6 +260,9 @@ class GenieAttachment:
     attachment_id: Optional[str] = None
     """Attachment ID"""
 
+    followup_questions: Optional[GenieFollowupQuestionsAttachment] = None
+    """Follow-up questions suggested by Genie"""
+
     query: Optional[GenieQueryAttachment] = None
     """Query Attachment if Genie responds with a SQL query"""
 
@@ -271,6 +274,8 @@ class GenieAttachment:
         body = {}
         if self.attachment_id is not None:
             body["attachment_id"] = self.attachment_id
+        if self.followup_questions:
+            body["followup_questions"] = self.followup_questions.as_dict()
         if self.query:
             body["query"] = self.query.as_dict()
         if self.text:
@@ -282,6 +287,8 @@ class GenieAttachment:
         body = {}
         if self.attachment_id is not None:
             body["attachment_id"] = self.attachment_id
+        if self.followup_questions:
+            body["followup_questions"] = self.followup_questions
         if self.query:
             body["query"] = self.query
         if self.text:
@@ -293,6 +300,7 @@ class GenieAttachment:
         """Deserializes the GenieAttachment from a dictionary."""
         return cls(
             attachment_id=d.get("attachment_id", None),
+            followup_questions=_from_dict(d, "followup_questions", GenieFollowupQuestionsAttachment),
             query=_from_dict(d, "query", GenieQueryAttachment),
             text=_from_dict(d, "text", TextAttachment),
         )
@@ -413,12 +421,73 @@ class GenieConversationSummary:
         )
 
 
+@dataclass
+class GenieFeedback:
+    """Feedback containing rating and optional comment"""
+
+    comment: Optional[str] = None
+    """Optional feedback comment text"""
+
+    rating: Optional[GenieFeedbackRating] = None
+    """The feedback rating"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedback into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.rating is not None:
+            body["rating"] = self.rating.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedback into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.rating is not None:
+            body["rating"] = self.rating
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedback:
+        """Deserializes the GenieFeedback from a dictionary."""
+        return cls(comment=d.get("comment", None), rating=_enum(d, "rating", GenieFeedbackRating))
+
+
 class GenieFeedbackRating(Enum):
     """Feedback rating for Genie messages"""
 
     NEGATIVE = "NEGATIVE"
     NONE = "NONE"
     POSITIVE = "POSITIVE"
+
+
+@dataclass
+class GenieFollowupQuestionsAttachment:
+    """Follow-up questions suggested by Genie"""
+
+    questions: Optional[List[str]] = None
+    """The suggested follow-up questions"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFollowupQuestionsAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.questions:
+            body["questions"] = [v for v in self.questions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFollowupQuestionsAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.questions:
+            body["questions"] = self.questions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFollowupQuestionsAttachment:
+        """Deserializes the GenieFollowupQuestionsAttachment from a dictionary."""
+        return cls(questions=d.get("questions", None))
 
 
 @dataclass
@@ -572,6 +641,9 @@ class GenieMessage:
     error: Optional[MessageError] = None
     """Error message if Genie failed to respond to the message"""
 
+    feedback: Optional[GenieFeedback] = None
+    """User feedback for the message if provided"""
+
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
 
@@ -597,6 +669,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error.as_dict()
+        if self.feedback:
+            body["feedback"] = self.feedback.as_dict()
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -626,6 +700,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error
+        if self.feedback:
+            body["feedback"] = self.feedback
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -651,6 +727,7 @@ class GenieMessage:
             conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             error=_from_dict(d, "error", MessageError),
+            feedback=_from_dict(d, "feedback", GenieFeedback),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             message_id=d.get("message_id", None),
@@ -1063,6 +1140,8 @@ class MessageErrorType(Enum):
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
     GENERIC_SQL_EXEC_API_CALL_EXCEPTION = "GENERIC_SQL_EXEC_API_CALL_EXCEPTION"
     ILLEGAL_PARAMETER_DEFINITION_EXCEPTION = "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
+    INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION = "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION"
+    INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
     INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
@@ -1921,8 +2000,8 @@ class GenieAPI:
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
         :param include_all: bool (optional)
-          Include all conversations in the space across all users. Requires "Can Manage" permission on the
-          space.
+          Include all conversations in the space across all users. Requires at least CAN MANAGE permission on
+          the space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)

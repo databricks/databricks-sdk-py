@@ -265,6 +265,11 @@ class Generator:
             "agentbricks",
             "Agent Bricks",
             "Create and manage Agent Bricks resources."
+        ),
+        Package(
+            "iamv2",
+            "Identity and Access Management",
+            "Manage identities and workspace access."
         )
     ]
 
