@@ -372,6 +372,10 @@ class Generator:
         ignore_client_fields = ('config', 'dbutils', 'api_client', 'get_workspace_client', 'get_workspace_id')
         all = []
         for service_name, service_inst in inspect.getmembers(client_inst, lambda o: not inspect.ismethod(o)):
+            # These services are frozen in the SDK, so we don't need to update
+            # their docs.
+            if service_name in ['groups', 'service_principals', 'users']:
+                continue
             if service_name.startswith('_'):
                 continue
             if service_name in ignore_client_fields:

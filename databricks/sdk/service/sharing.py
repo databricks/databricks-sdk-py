@@ -3372,7 +3372,9 @@ class SharesAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ShareInfo]:
+    def list_shares(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
 

@@ -5807,21 +5807,10 @@ class RunTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
     
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -6995,21 +6984,10 @@ class SubmitTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
     
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7516,21 +7494,10 @@ class Task:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
     
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
