@@ -1505,7 +1505,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 37"""
+    """Next Id: 38"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1515,6 +1515,7 @@ class ConnectionType(Enum):
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
+    PALANTIR = "PALANTIR"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
@@ -2892,8 +2893,6 @@ class EffectivePredictiveOptimizationFlag:
 
 
 class EffectivePredictiveOptimizationFlagInheritedFromType(Enum):
-    """The type of the object from which the flag was inherited. If there was no inheritance, this
-    field is left blank."""
 
     CATALOG = "CATALOG"
     SCHEMA = "SCHEMA"
@@ -3652,7 +3651,8 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings."""
+    """File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly
+    one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -8540,6 +8540,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
+    """Latest kind: CONNECTION_PALANTIR_OAUTH_M2M = 263; Next id:264"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8550,6 +8551,7 @@ class SecurableKind(Enum):
     TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
     TABLE_DELTA_UNIFORM_HUDI_EXTERNAL = "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL"
     TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL = "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+    TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING = "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
     TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL = (
         "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
     )
@@ -8580,6 +8582,7 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
+    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -8597,6 +8600,7 @@ class SecurableKind(Enum):
     TABLE_MATERIALIZED_VIEW = "TABLE_MATERIALIZED_VIEW"
     TABLE_MATERIALIZED_VIEW_DELTASHARING = "TABLE_MATERIALIZED_VIEW_DELTASHARING"
     TABLE_METRIC_VIEW = "TABLE_METRIC_VIEW"
+    TABLE_METRIC_VIEW_DELTASHARING = "TABLE_METRIC_VIEW_DELTASHARING"
     TABLE_ONLINE_VECTOR_INDEX_DIRECT = "TABLE_ONLINE_VECTOR_INDEX_DIRECT"
     TABLE_ONLINE_VECTOR_INDEX_REPLICA = "TABLE_ONLINE_VECTOR_INDEX_REPLICA"
     TABLE_ONLINE_VIEW = "TABLE_ONLINE_VIEW"
@@ -11946,7 +11950,8 @@ class ExternalLocationsAPI:
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -12108,7 +12113,8 @@ class ExternalLocationsAPI:
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

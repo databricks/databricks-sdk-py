@@ -610,6 +610,10 @@ class IngestionPipelineDefinition:
     """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
     with the source database. This is used with connectors to databases like SQL Server."""
 
+    netsuite_jar_path: Optional[str] = None
+    """Netsuite only configuration. When the field is set for a netsuite connector, the jar stored in
+    the field will be validated and added to the classpath of pipeline's cluster."""
+
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
 
@@ -631,6 +635,8 @@ class IngestionPipelineDefinition:
             body["connection_name"] = self.connection_name
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
+        if self.netsuite_jar_path is not None:
+            body["netsuite_jar_path"] = self.netsuite_jar_path
         if self.objects:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.source_configurations:
@@ -648,6 +654,8 @@ class IngestionPipelineDefinition:
             body["connection_name"] = self.connection_name
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
+        if self.netsuite_jar_path is not None:
+            body["netsuite_jar_path"] = self.netsuite_jar_path
         if self.objects:
             body["objects"] = self.objects
         if self.source_configurations:
@@ -664,6 +672,7 @@ class IngestionPipelineDefinition:
         return cls(
             connection_name=d.get("connection_name", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
+            netsuite_jar_path=d.get("netsuite_jar_path", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
             source_configurations=_repeated_dict(d, "source_configurations", SourceConfig),
             source_type=_enum(d, "source_type", IngestionSourceType),
@@ -730,11 +739,97 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
         )
 
 
+@dataclass
+class IngestionPipelineDefinitionWorkdayReportParameters:
+    incremental: Optional[bool] = None
+    """(Optional) Marks the report as incremental. This field is deprecated and should not be used. Use
+    `parameters` instead. The incremental behavior is now controlled by the `parameters` field."""
+
+    parameters: Optional[Dict[str, str]] = None
+    """Parameters for the Workday report. Each key represents the parameter name (e.g., "start_date",
+    "end_date"), and the corresponding value is a SQL-like expression used to compute the parameter
+    value at runtime. Example: { "start_date": "{ coalesce(current_offset(), date(\"2025-02-01\"))
+    }", "end_date": "{ current_date() - INTERVAL 1 DAY }" }"""
+
+    report_parameters: Optional[List[IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue]] = None
+    """(Optional) Additional custom parameters for Workday Report This field is deprecated and should
+    not be used. Use `parameters` instead."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.incremental is not None:
+            body["incremental"] = self.incremental
+        if self.parameters:
+            body["parameters"] = self.parameters
+        if self.report_parameters:
+            body["report_parameters"] = [v.as_dict() for v in self.report_parameters]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.incremental is not None:
+            body["incremental"] = self.incremental
+        if self.parameters:
+            body["parameters"] = self.parameters
+        if self.report_parameters:
+            body["report_parameters"] = self.report_parameters
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionWorkdayReportParameters:
+        """Deserializes the IngestionPipelineDefinitionWorkdayReportParameters from a dictionary."""
+        return cls(
+            incremental=d.get("incremental", None),
+            parameters=d.get("parameters", None),
+            report_parameters=_repeated_dict(
+                d, "report_parameters", IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue
+            ),
+        )
+
+
+@dataclass
+class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
+    key: Optional[str] = None
+    """Key for the report parameter, can be a column name or other metadata"""
+
+    value: Optional[str] = None
+    """Value for the report parameter. Possible values it can take are these sql functions: 1.
+    coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the passed
+    date, else current_offset() 2. current_date() 3. date_sub(current_date(), x) -> subtract x (some
+    non-negative integer) days from current date"""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
+        """Deserializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
 class IngestionSourceType(Enum):
 
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
+    FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
     META_MARKETING = "META_MARKETING"
@@ -2871,6 +2966,9 @@ class TableSpecificConfig:
     """The column names specifying the logical order of events in the source data. Delta Live Tables
     uses this sequencing to handle change events that arrive out of order."""
 
+    workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
+    """(Optional) Additional custom parameters for Workday Report"""
+
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2888,6 +2986,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
+        if self.workday_report_parameters:
+            body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2907,6 +3007,8 @@ class TableSpecificConfig:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
+        if self.workday_report_parameters:
+            body["workday_report_parameters"] = self.workday_report_parameters
         return body
 
     @classmethod
@@ -2924,6 +3026,9 @@ class TableSpecificConfig:
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
+            workday_report_parameters=_from_dict(
+                d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
+            ),
         )
 
 

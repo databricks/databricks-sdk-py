@@ -323,44 +323,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
 
 
 @dataclass
-class DefaultDataSecurityModeMessage:
-    """Changes the behaviour of Jobs service when creating job clusters.
-
-    Before this setting is introduced, all workspaces with metastore attached had behaviour matching
-    SINGLE_USER setting.
-
-    See: - go/defaultdatasecuritymode - go/defaultdatasecuritymode/setting - go/datasecuritymode"""
-
-    status: DefaultDataSecurityModeMessageStatus
-
-    def as_dict(self) -> dict:
-        """Serializes the DefaultDataSecurityModeMessage into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.status is not None:
-            body["status"] = self.status.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DefaultDataSecurityModeMessage into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.status is not None:
-            body["status"] = self.status
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DefaultDataSecurityModeMessage:
-        """Deserializes the DefaultDataSecurityModeMessage from a dictionary."""
-        return cls(status=_enum(d, "status", DefaultDataSecurityModeMessageStatus))
-
-
-class DefaultDataSecurityModeMessageStatus(Enum):
-
-    NOT_SET = "NOT_SET"
-    SINGLE_USER = "SINGLE_USER"
-    USER_ISOLATION = "USER_ISOLATION"
-
-
-@dataclass
 class IntegerMessage:
     value: Optional[int] = None
 
@@ -528,11 +490,8 @@ class Setting:
     aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
 
     automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
-    """todo: Mark these Public after onboarded to DSL"""
 
     boolean_val: Optional[BooleanMessage] = None
-
-    default_data_security_mode: Optional[DefaultDataSecurityModeMessage] = None
 
     effective_aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
 
@@ -541,8 +500,6 @@ class Setting:
     effective_automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
 
     effective_boolean_val: Optional[BooleanMessage] = None
-
-    effective_default_data_security_mode: Optional[DefaultDataSecurityModeMessage] = None
 
     effective_integer_val: Optional[IntegerMessage] = None
 
@@ -574,8 +531,6 @@ class Setting:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace.as_dict()
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val.as_dict()
-        if self.default_data_security_mode:
-            body["default_data_security_mode"] = self.default_data_security_mode.as_dict()
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy.as_dict()
@@ -590,8 +545,6 @@ class Setting:
             )
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
-        if self.effective_default_data_security_mode:
-            body["effective_default_data_security_mode"] = self.effective_default_data_security_mode.as_dict()
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val.as_dict()
         if self.effective_personal_compute:
@@ -623,8 +576,6 @@ class Setting:
             body["automatic_cluster_update_workspace"] = self.automatic_cluster_update_workspace
         if self.boolean_val:
             body["boolean_val"] = self.boolean_val
-        if self.default_data_security_mode:
-            body["default_data_security_mode"] = self.default_data_security_mode
         if self.effective_aibi_dashboard_embedding_access_policy:
             body["effective_aibi_dashboard_embedding_access_policy"] = (
                 self.effective_aibi_dashboard_embedding_access_policy
@@ -637,8 +588,6 @@ class Setting:
             body["effective_automatic_cluster_update_workspace"] = self.effective_automatic_cluster_update_workspace
         if self.effective_boolean_val:
             body["effective_boolean_val"] = self.effective_boolean_val
-        if self.effective_default_data_security_mode:
-            body["effective_default_data_security_mode"] = self.effective_default_data_security_mode
         if self.effective_integer_val:
             body["effective_integer_val"] = self.effective_integer_val
         if self.effective_personal_compute:
@@ -673,7 +622,6 @@ class Setting:
                 d, "automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
-            default_data_security_mode=_from_dict(d, "default_data_security_mode", DefaultDataSecurityModeMessage),
             effective_aibi_dashboard_embedding_access_policy=_from_dict(
                 d, "effective_aibi_dashboard_embedding_access_policy", AibiDashboardEmbeddingAccessPolicy
             ),
@@ -684,9 +632,6 @@ class Setting:
                 d, "effective_automatic_cluster_update_workspace", ClusterAutoRestartMessage
             ),
             effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
-            effective_default_data_security_mode=_from_dict(
-                d, "effective_default_data_security_mode", DefaultDataSecurityModeMessage
-            ),
             effective_integer_val=_from_dict(d, "effective_integer_val", IntegerMessage),
             effective_personal_compute=_from_dict(d, "effective_personal_compute", PersonalComputeMessage),
             effective_restrict_workspace_admins=_from_dict(
@@ -784,7 +729,8 @@ class AccountSettingsV2API:
         self._api = api_client
 
     def get_public_account_setting(self, name: str) -> Setting:
-        """Get a setting value at account level
+        """Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
+        setting available via public APIs at account level.
 
         :param name: str
 
@@ -801,9 +747,8 @@ class AccountSettingsV2API:
     def list_account_settings_metadata(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SettingsMetadata]:
-        """List valid setting keys and metadata. These settings are available to referenced via [GET
-        /api/2.1/settings/{name}](#~1api~1account~1settingsv2~1getpublicaccountsetting) and [PATCH
-        /api/2.1/settings/{name}](#~1api~1account~1settingsv2~patchpublicaccountsetting) APIs
+        """List valid setting keys and metadata. These settings are available to be referenced via GET
+        :method:settingsv2/getpublicaccountsetting and PATCH :method:settingsv2/patchpublicaccountsetting APIs
 
         :param page_size: int (optional)
           The maximum number of settings to return. The service may return fewer than this value. If
@@ -840,7 +785,8 @@ class AccountSettingsV2API:
             query["page_token"] = json["next_page_token"]
 
     def patch_public_account_setting(self, name: str, setting: Setting) -> Setting:
-        """Patch a setting value at account level
+        """Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
+        setting available via public APIs at account level.
 
         :param name: str
         :param setting: :class:`Setting`
@@ -866,7 +812,8 @@ class WorkspaceSettingsV2API:
         self._api = api_client
 
     def get_public_workspace_setting(self, name: str) -> Setting:
-        """Get a setting value at workspace level
+        """Get a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for list
+        of setting available via public APIs.
 
         :param name: str
 
@@ -883,9 +830,9 @@ class WorkspaceSettingsV2API:
     def list_workspace_settings_metadata(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SettingsMetadata]:
-        """List valid setting keys and metadata. These settings are available to referenced via [GET
-        /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~1getpublicworkspacesetting) and [PATCH
-        /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~patchpublicworkspacesetting) APIs
+        """List valid setting keys and metadata. These settings are available to be referenced via GET
+        :method:settingsv2/getpublicworkspacesetting and PATCH :method:settingsv2/patchpublicworkspacesetting
+        APIs
 
         :param page_size: int (optional)
           The maximum number of settings to return. The service may return fewer than this value. If
@@ -920,7 +867,8 @@ class WorkspaceSettingsV2API:
             query["page_token"] = json["next_page_token"]
 
     def patch_public_workspace_setting(self, name: str, setting: Setting) -> Setting:
-        """Patch a setting value at workspace level
+        """Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
+        list of setting available via public APIs at workspace level.
 
         :param name: str
         :param setting: :class:`Setting`
