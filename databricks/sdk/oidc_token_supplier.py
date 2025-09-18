@@ -37,10 +37,10 @@ class AzureDevOpsOIDCTokenSupplier:
         # Retrieve necessary environment variables
         access_token = os.environ.get('SYSTEM_ACCESSTOKEN')
         collection_uri = os.environ.get('SYSTEM_TEAMFOUNDATIONCOLLECTIONURI')
-        project_id = os.environ.get('SYSTEM_TEAMPROJECT')
+        project_id = os.environ.get('SYSTEM_TEAMPROJECTID')
         plan_id = os.environ.get('SYSTEM_PLANID')
         job_id = os.environ.get('SYSTEM_JOBID')
-        hub_name = 'build' # Or 'release' for release pipelines
+        hub_name = os.environ.get('SYSTEM_HOSTTYPE')
 
         # Check for required variables
         if not all([access_token, collection_uri, project_id, plan_id, job_id]):
