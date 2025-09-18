@@ -12,6 +12,7 @@ from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
+from databricks.sdk.mixins.sharing import SharesExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service import agentbricks as pkg_agentbricks
 from databricks.sdk.service import apps as pkg_apps
@@ -23,6 +24,7 @@ from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
+from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
@@ -82,12 +84,16 @@ from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
-                                        AccountGroupsAPI,
+                                        AccountGroupsAPI, AccountGroupsV2API,
                                         AccountServicePrincipalsAPI,
-                                        AccountUsersAPI, CurrentUserAPI,
-                                        GroupsAPI, PermissionMigrationAPI,
-                                        PermissionsAPI, ServicePrincipalsAPI,
-                                        UsersAPI, WorkspaceAssignmentAPI)
+                                        AccountServicePrincipalsV2API,
+                                        AccountUsersAPI, AccountUsersV2API,
+                                        CurrentUserAPI, GroupsAPI, GroupsV2API,
+                                        PermissionMigrationAPI, PermissionsAPI,
+                                        ServicePrincipalsAPI,
+                                        ServicePrincipalsV2API, UsersAPI,
+                                        UsersV2API, WorkspaceAssignmentAPI)
+from databricks.sdk.service.iamv2 import AccountIamV2API, WorkspaceIamV2API
 from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
@@ -95,8 +101,9 @@ from databricks.sdk.service.marketplace import (
     ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
-from databricks.sdk.service.ml import (ExperimentsAPI, FeatureStoreAPI,
-                                       ForecastingAPI, MaterializedFeaturesAPI,
+from databricks.sdk.service.ml import (ExperimentsAPI, FeatureEngineeringAPI,
+                                       FeatureStoreAPI, ForecastingAPI,
+                                       MaterializedFeaturesAPI,
                                        ModelRegistryAPI)
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            CustomAppIntegrationAPI,
@@ -285,6 +292,7 @@ class WorkspaceClient:
         self._external_lineage = pkg_catalog.ExternalLineageAPI(self._api_client)
         self._external_locations = pkg_catalog.ExternalLocationsAPI(self._api_client)
         self._external_metadata = pkg_catalog.ExternalMetadataAPI(self._api_client)
+        self._feature_engineering = pkg_ml.FeatureEngineeringAPI(self._api_client)
         self._feature_store = pkg_ml.FeatureStoreAPI(self._api_client)
         self._files = _make_files_client(self._api_client, self._config)
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
@@ -292,7 +300,7 @@ class WorkspaceClient:
         self._git_credentials = pkg_workspace.GitCredentialsAPI(self._api_client)
         self._global_init_scripts = pkg_compute.GlobalInitScriptsAPI(self._api_client)
         self._grants = pkg_catalog.GrantsAPI(self._api_client)
-        self._groups = pkg_iam.GroupsAPI(self._api_client)
+        self._groups_v2 = pkg_iam.GroupsV2API(self._api_client)
         self._instance_pools = pkg_compute.InstancePoolsAPI(self._api_client)
         self._instance_profiles = pkg_compute.InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = pkg_settings.IpAccessListsAPI(self._api_client)
@@ -341,7 +349,7 @@ class WorkspaceClient:
         self._schemas = pkg_catalog.SchemasAPI(self._api_client)
         self._secrets = pkg_workspace.SecretsAPI(self._api_client)
         self._service_principal_secrets_proxy = pkg_oauth2.ServicePrincipalSecretsProxyAPI(self._api_client)
-        self._service_principals = pkg_iam.ServicePrincipalsAPI(self._api_client)
+        self._service_principals_v2 = pkg_iam.ServicePrincipalsV2API(self._api_client)
         self._serving_endpoints = serving_endpoints
         serving_endpoints_data_plane_token_source = DataPlaneTokenSource(
             self._config.host, self._config.oauth_token, self._config.disable_async_token_refresh
@@ -350,7 +358,7 @@ class WorkspaceClient:
             self._api_client, serving_endpoints, serving_endpoints_data_plane_token_source
         )
         self._settings = pkg_settings.SettingsAPI(self._api_client)
-        self._shares = pkg_sharing.SharesAPI(self._api_client)
+        self._shares = SharesExt(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
@@ -361,7 +369,7 @@ class WorkspaceClient:
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = pkg_settings.TokenManagementAPI(self._api_client)
         self._tokens = pkg_settings.TokensAPI(self._api_client)
-        self._users = pkg_iam.UsersAPI(self._api_client)
+        self._users_v2 = pkg_iam.UsersV2API(self._api_client)
         self._vector_search_endpoints = pkg_vectorsearch.VectorSearchEndpointsAPI(self._api_client)
         self._vector_search_indexes = pkg_vectorsearch.VectorSearchIndexesAPI(self._api_client)
         self._volumes = pkg_catalog.VolumesAPI(self._api_client)
@@ -371,6 +379,10 @@ class WorkspaceClient:
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
         self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
+        self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
+        self._groups = pkg_iam.GroupsAPI(self._api_client)
+        self._service_principals = pkg_iam.ServicePrincipalsAPI(self._api_client)
+        self._users = pkg_iam.UsersAPI(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -575,6 +587,11 @@ class WorkspaceClient:
         return self._external_metadata
 
     @property
+    def feature_engineering(self) -> pkg_ml.FeatureEngineeringAPI:
+        """[description]."""
+        return self._feature_engineering
+
+    @property
     def feature_store(self) -> pkg_ml.FeatureStoreAPI:
         """A feature store is a centralized repository that enables data scientists to find and share features."""
         return self._feature_store
@@ -610,9 +627,9 @@ class WorkspaceClient:
         return self._grants
 
     @property
-    def groups(self) -> pkg_iam.GroupsAPI:
+    def groups_v2(self) -> pkg_iam.GroupsV2API:
         """Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects."""
-        return self._groups
+        return self._groups_v2
 
     @property
     def instance_pools(self) -> pkg_compute.InstancePoolsAPI:
@@ -845,9 +862,9 @@ class WorkspaceClient:
         return self._service_principal_secrets_proxy
 
     @property
-    def service_principals(self) -> pkg_iam.ServicePrincipalsAPI:
+    def service_principals_v2(self) -> pkg_iam.ServicePrincipalsV2API:
         """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms."""
-        return self._service_principals
+        return self._service_principals_v2
 
     @property
     def serving_endpoints(self) -> ServingEndpointsExt:
@@ -865,7 +882,7 @@ class WorkspaceClient:
         return self._settings
 
     @property
-    def shares(self) -> pkg_sharing.SharesAPI:
+    def shares(self) -> SharesExt:
         """A share is a container instantiated with :method:shares/create."""
         return self._shares
 
@@ -896,7 +913,7 @@ class WorkspaceClient:
 
     @property
     def tag_policies(self) -> pkg_tags.TagPoliciesAPI:
-        """The Tag Policy API allows you to manage tag policies in Databricks."""
+        """The Tag Policy API allows you to manage policies for governed tags in Databricks."""
         return self._tag_policies
 
     @property
@@ -920,9 +937,9 @@ class WorkspaceClient:
         return self._tokens
 
     @property
-    def users(self) -> pkg_iam.UsersAPI:
+    def users_v2(self) -> pkg_iam.UsersV2API:
         """User identities recognized by Databricks and represented by email addresses."""
-        return self._users
+        return self._users_v2
 
     @property
     def vector_search_endpoints(self) -> pkg_vectorsearch.VectorSearchEndpointsAPI:
@@ -968,6 +985,26 @@ class WorkspaceClient:
     def forecasting(self) -> pkg_ml.ForecastingAPI:
         """The Forecasting API allows you to create and get serverless forecasting experiments."""
         return self._forecasting
+
+    @property
+    def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
+        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        return self._workspace_iam_v2
+
+    @property
+    def groups(self) -> pkg_iam.GroupsAPI:
+        """Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects."""
+        return self._groups
+
+    @property
+    def service_principals(self) -> pkg_iam.ServicePrincipalsAPI:
+        """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms."""
+        return self._service_principals
+
+    @property
+    def users(self) -> pkg_iam.UsersAPI:
+        """User identities recognized by Databricks and represented by email addresses."""
+        return self._users
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""
@@ -1050,7 +1087,7 @@ class AccountClient:
         self._custom_app_integration = pkg_oauth2.CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = pkg_provisioning.EncryptionKeysAPI(self._api_client)
         self._federation_policy = pkg_oauth2.AccountFederationPolicyAPI(self._api_client)
-        self._groups = pkg_iam.AccountGroupsAPI(self._api_client)
+        self._groups_v2 = pkg_iam.AccountGroupsV2API(self._api_client)
         self._ip_access_lists = pkg_settings.AccountIpAccessListsAPI(self._api_client)
         self._log_delivery = pkg_billing.LogDeliveryAPI(self._api_client)
         self._metastore_assignments = pkg_catalog.AccountMetastoreAssignmentsAPI(self._api_client)
@@ -1063,18 +1100,22 @@ class AccountClient:
         self._published_app_integration = pkg_oauth2.PublishedAppIntegrationAPI(self._api_client)
         self._service_principal_federation_policy = pkg_oauth2.ServicePrincipalFederationPolicyAPI(self._api_client)
         self._service_principal_secrets = pkg_oauth2.ServicePrincipalSecretsAPI(self._api_client)
-        self._service_principals = pkg_iam.AccountServicePrincipalsAPI(self._api_client)
+        self._service_principals_v2 = pkg_iam.AccountServicePrincipalsV2API(self._api_client)
         self._settings = pkg_settings.AccountSettingsAPI(self._api_client)
         self._settings_v2 = pkg_settingsv2.AccountSettingsV2API(self._api_client)
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
-        self._users = pkg_iam.AccountUsersAPI(self._api_client)
+        self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
         self._workspace_network_configuration = pkg_settings.WorkspaceNetworkConfigurationAPI(self._api_client)
         self._workspaces = pkg_provisioning.WorkspacesAPI(self._api_client)
+        self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
         self._budgets = pkg_billing.BudgetsAPI(self._api_client)
+        self._groups = pkg_iam.AccountGroupsAPI(self._api_client)
+        self._service_principals = pkg_iam.AccountServicePrincipalsAPI(self._api_client)
+        self._users = pkg_iam.AccountUsersAPI(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -1120,9 +1161,9 @@ class AccountClient:
         return self._federation_policy
 
     @property
-    def groups(self) -> pkg_iam.AccountGroupsAPI:
+    def groups_v2(self) -> pkg_iam.AccountGroupsV2API:
         """Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects."""
-        return self._groups
+        return self._groups_v2
 
     @property
     def ip_access_lists(self) -> pkg_settings.AccountIpAccessListsAPI:
@@ -1185,9 +1226,9 @@ class AccountClient:
         return self._service_principal_secrets
 
     @property
-    def service_principals(self) -> pkg_iam.AccountServicePrincipalsAPI:
+    def service_principals_v2(self) -> pkg_iam.AccountServicePrincipalsV2API:
         """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms."""
-        return self._service_principals
+        return self._service_principals_v2
 
     @property
     def settings(self) -> pkg_settings.AccountSettingsAPI:
@@ -1215,9 +1256,9 @@ class AccountClient:
         return self._usage_dashboards
 
     @property
-    def users(self) -> pkg_iam.AccountUsersAPI:
+    def users_v2(self) -> pkg_iam.AccountUsersV2API:
         """User identities recognized by Databricks and represented by email addresses."""
-        return self._users
+        return self._users_v2
 
     @property
     def vpc_endpoints(self) -> pkg_provisioning.VpcEndpointsAPI:
@@ -1240,9 +1281,29 @@ class AccountClient:
         return self._workspaces
 
     @property
+    def iam_v2(self) -> pkg_iamv2.AccountIamV2API:
+        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        return self._iam_v2
+
+    @property
     def budgets(self) -> pkg_billing.BudgetsAPI:
         """These APIs manage budget configurations for this account."""
         return self._budgets
+
+    @property
+    def groups(self) -> pkg_iam.AccountGroupsAPI:
+        """Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects."""
+        return self._groups
+
+    @property
+    def service_principals(self) -> pkg_iam.AccountServicePrincipalsAPI:
+        """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms."""
+        return self._service_principals
+
+    @property
+    def users(self) -> pkg_iam.AccountUsersAPI:
+        """User identities recognized by Databricks and represented by email addresses."""
+        return self._users
 
     def get_workspace_client(self, workspace: Workspace) -> WorkspaceClient:
         """Constructs a ``WorkspaceClient`` for the given workspace.

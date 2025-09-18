@@ -125,48 +125,36 @@ class DatabaseInstance:
     creator: Optional[str] = None
     """The email of the creator of the instance."""
 
+    effective_capacity: Optional[str] = None
+    """Deprecated. The sku of the instance; this field will always match the value of capacity."""
+
     effective_enable_pg_native_login: Optional[bool] = None
-    """xref AIP-129. `enable_pg_native_login` is owned by the client, while
-    `effective_enable_pg_native_login` is owned by the server. `enable_pg_native_login` will only be
-    set in Create/Update response messages if and only if the user provides the field via the
-    request. `effective_enable_pg_native_login` on the other hand will always bet set in all
-    response messages (Create/Update/Get/List)."""
+    """Whether the instance has PG native password login enabled."""
 
     effective_enable_readable_secondaries: Optional[bool] = None
-    """xref AIP-129. `enable_readable_secondaries` is owned by the client, while
-    `effective_enable_readable_secondaries` is owned by the server. `enable_readable_secondaries`
-    will only be set in Create/Update response messages if and only if the user provides the field
-    via the request. `effective_enable_readable_secondaries` on the other hand will always bet set
-    in all response messages (Create/Update/Get/List)."""
+    """Whether secondaries serving read-only traffic are enabled. Defaults to false."""
 
     effective_node_count: Optional[int] = None
-    """xref AIP-129. `node_count` is owned by the client, while `effective_node_count` is owned by the
-    server. `node_count` will only be set in Create/Update response messages if and only if the user
-    provides the field via the request. `effective_node_count` on the other hand will always bet set
-    in all response messages (Create/Update/Get/List)."""
+    """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
+    to 1 primary and 0 secondaries."""
 
     effective_retention_window_in_days: Optional[int] = None
-    """xref AIP-129. `retention_window_in_days` is owned by the client, while
-    `effective_retention_window_in_days` is owned by the server. `retention_window_in_days` will
-    only be set in Create/Update response messages if and only if the user provides the field via
-    the request. `effective_retention_window_in_days` on the other hand will always bet set in all
-    response messages (Create/Update/Get/List)."""
+    """The retention window for the instance. This is the time window in days for which the historical
+    data is retained."""
 
     effective_stopped: Optional[bool] = None
-    """xref AIP-129. `stopped` is owned by the client, while `effective_stopped` is owned by the
-    server. `stopped` will only be set in Create/Update response messages if and only if the user
-    provides the field via the request. `effective_stopped` on the other hand will always bet set in
-    all response messages (Create/Update/Get/List)."""
+    """Whether the instance is stopped."""
 
     enable_pg_native_login: Optional[bool] = None
-    """Whether the instance has PG native password login enabled. Defaults to true."""
+    """Whether to enable PG native password login on the instance. Defaults to false."""
 
     enable_readable_secondaries: Optional[bool] = None
     """Whether to enable secondaries to serve read-only traffic. Defaults to false."""
 
     node_count: Optional[int] = None
     """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
-    to 1 primary and 0 secondaries."""
+    to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the
+    output."""
 
     parent_instance_ref: Optional[DatabaseInstanceRef] = None
     """The ref of the parent instance. This is only available if the instance is child instance. Input:
@@ -191,7 +179,7 @@ class DatabaseInstance:
     """The current state of the instance."""
 
     stopped: Optional[bool] = None
-    """Whether the instance is stopped."""
+    """Whether to stop the instance. An input only param, see effective_stopped for the output."""
 
     uid: Optional[str] = None
     """An immutable UUID identifier for the instance."""
@@ -207,6 +195,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_capacity is not None:
+            body["effective_capacity"] = self.effective_capacity
         if self.effective_enable_pg_native_login is not None:
             body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
@@ -254,6 +244,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.effective_capacity is not None:
+            body["effective_capacity"] = self.effective_capacity
         if self.effective_enable_pg_native_login is not None:
             body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
@@ -298,6 +290,7 @@ class DatabaseInstance:
             child_instance_refs=_repeated_dict(d, "child_instance_refs", DatabaseInstanceRef),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
+            effective_capacity=d.get("effective_capacity", None),
             effective_enable_pg_native_login=d.get("effective_enable_pg_native_login", None),
             effective_enable_readable_secondaries=d.get("effective_enable_readable_secondaries", None),
             effective_node_count=d.get("effective_node_count", None),
@@ -335,12 +328,9 @@ class DatabaseInstanceRef:
     provided as input to create a child instance."""
 
     effective_lsn: Optional[str] = None
-    """xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is owned by the server. `lsn`
-    will only be set in Create/Update response messages if and only if the user provides the field
-    via the request. `effective_lsn` on the other hand will always bet set in all response messages
-    (Create/Update/Get/List). For a parent ref instance, this is the LSN on the parent instance from
-    which the instance was created. For a child ref instance, this is the LSN on the instance from
-    which the child instance was created."""
+    """For a parent ref instance, this is the LSN on the parent instance from which the instance was
+    created. For a child ref instance, this is the LSN on the instance from which the child instance
+    was created."""
 
     lsn: Optional[str] = None
     """User-specified WAL LSN of the ref database instance.
@@ -1611,12 +1601,8 @@ class DatabaseAPI:
           By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
-          Note purge=false is in development. If false, the database instance is soft deleted (implementation
-          pending). Soft deleted instances behave as if they are deleted, and cannot be used for CRUD
-          operations nor connected to. However they can be undeleted by calling the undelete API for a limited
-          time (implementation pending). If true, the database instance is hard deleted and cannot be
-          undeleted. For the time being, setting this value to true is required to delete an instance (soft
-          delete is not yet supported).
+          Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.
+          Setting a value of false will throw a bad request.
 
 
         """
