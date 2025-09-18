@@ -126,7 +126,7 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Python initially tries [Databricks token authentication](https://docs.databricks.com/dev-tools/api/latest/authentication.html) (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF) based authentication with support for GitHub Actions (`auth_type: "github-oidc"`) and Azure DevOps Pipelines (`auth_type: "azure-devops-oidc"`).
+By default, the Databricks SDK for Python initially tries [Databricks token authentication](https://docs.databricks.com/dev-tools/api/latest/authentication.html) (`auth_type='pat'` argument). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF). See [Supported WIF](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation-provider) for the supported JWT token providers.
 
 - For Databricks token authentication, you must provide `host` and `token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks OIDC authentication, you must provide the `host`, `client_id` and `token_audience` _(optional)_ either directly, through the corresponding environment variables, or in your `.databrickscfg` configuration file.
