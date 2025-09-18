@@ -31,7 +31,7 @@ class GitHubOIDCTokenSupplier:
 class AzureDevOpsOIDCTokenSupplier:
     """
     Supplies OIDC tokens from Azure DevOps pipelines.
-    
+
     Constructs the OIDC token request URL using official Azure DevOps predefined variables.
     See: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
     """
@@ -39,7 +39,7 @@ class AzureDevOpsOIDCTokenSupplier:
     def get_oidc_token(self, audience: str) -> Optional[str]:
         # Note: Azure DevOps OIDC tokens have a fixed audience of "api://AzureADTokenExchange"
         # The audience parameter is ignored but kept for interface compatibility with other OIDC suppliers
-        
+
         # Check for required Azure DevOps environment variables
         access_token = os.environ.get("SYSTEM_ACCESSTOKEN")
         collection_uri = os.environ.get("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI")
@@ -52,20 +52,20 @@ class AzureDevOpsOIDCTokenSupplier:
         if not all([access_token, collection_uri, project_id, plan_id, job_id]):
             # not in Azure DevOps pipeline
             return None
-            
+
         try:
             # Construct the OIDC token request URL
             # Format: {collection_uri}{project_id}/_apis/distributedtask/hubs/{hubName}/plans/{planId}/jobs/{jobId}/oidctoken
             request_url = f"{collection_uri}{project_id}/_apis/distributedtask/hubs/{hub_name}/plans/{plan_id}/jobs/{job_id}/oidctoken"
-            
+
             # Add API version (audience is fixed to "api://AzureADTokenExchange" by Azure DevOps)
             endpoint = f"{request_url}?api-version=7.2-preview.1"
             headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/json",
-                "Content-Length": "0"
+                "Content-Length": "0",
             }
-            
+
             # Azure DevOps OIDC endpoint requires POST request with empty body
             response = requests.post(endpoint, headers=headers)
             if not response.ok:
