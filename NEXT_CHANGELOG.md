@@ -35,3 +35,12 @@
 * [Breaking] Removed `disabled` field for `databricks.sdk.service.jobs.RunTask`.
 * [Breaking] Removed `default_data_security_mode` and `effective_default_data_security_mode` fields for `databricks.sdk.service.settingsv2.Setting`.
 * Added `list_shares()` method for [w.shares](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/sharing/shares.html) workspace-level service.
+* Added `suggested_questions` field for `databricks.sdk.service.dashboards.GenieAttachment`.
+* Added `warehouse_id` field for `databricks.sdk.service.dashboards.GenieSpace`.
+* Added `palantir` enum value for `databricks.sdk.service.catalog.ConnectionType`.
+* Added `table_metric_view_deltasharing` and `table_foreign_palantir` enum values for `databricks.sdk.service.catalog.SecurableKind`.
+* Added `no_activated_k8s_testing_tag` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Added `metric_view` enum value for `databricks.sdk.service.sharing.TableInternalAttributesSharedTableType`.
+* [Breaking] Removed `followup_questions` field for `databricks.sdk.service.dashboards.GenieAttachment`.
+* [Breaking] Removed `comment` field for `databricks.sdk.service.dashboards.GenieFeedback`.
+* [Breaking] Removed `comment` field for `databricks.sdk.service.dashboards.GenieSendMessageFeedbackRequest`.

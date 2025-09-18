@@ -1651,9 +1651,7 @@ class ExportRunOutput:
 
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
-    the JSON response, download and run this [Python script].
-    
-    [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
+    the JSON response, download and run this [Python script](/_static/examples/extract.py)."""
 
     def as_dict(self) -> dict:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
@@ -5659,7 +5657,7 @@ class RunTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -5808,9 +5806,8 @@ class RunTask:
 
     spark_submit_task: Optional[SparkSubmitTask] = None
     """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
-    
-    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -6897,7 +6894,7 @@ class SubmitTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -6985,9 +6982,8 @@ class SubmitTask:
 
     spark_submit_task: Optional[SparkSubmitTask] = None
     """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
-    
-    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7377,7 +7373,7 @@ class Task:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -7495,9 +7491,8 @@ class Task:
 
     spark_submit_task: Optional[SparkSubmitTask] = None
     """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for jobs].
-    
-    [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html"""
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when

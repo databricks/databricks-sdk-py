@@ -851,6 +851,57 @@ class ListAccountServicePrincipalsResponse:
 
 
 @dataclass
+class ListAccountUsersResponse:
+    items_per_page: Optional[int] = None
+    """Total results returned in the response."""
+
+    resources: Optional[List[AccountUser]] = None
+    """User objects returned in the response."""
+
+    start_index: Optional[int] = None
+    """Starting index of all the results that matched the request filters. First item is number 1."""
+
+    total_results: Optional[int] = None
+    """Total results that match the request filters."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountUsersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.items_per_page is not None:
+            body["itemsPerPage"] = self.items_per_page
+        if self.resources:
+            body["Resources"] = [v.as_dict() for v in self.resources]
+        if self.start_index is not None:
+            body["startIndex"] = self.start_index
+        if self.total_results is not None:
+            body["totalResults"] = self.total_results
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAccountUsersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.items_per_page is not None:
+            body["itemsPerPage"] = self.items_per_page
+        if self.resources:
+            body["Resources"] = self.resources
+        if self.start_index is not None:
+            body["startIndex"] = self.start_index
+        if self.total_results is not None:
+            body["totalResults"] = self.total_results
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountUsersResponse:
+        """Deserializes the ListAccountUsersResponse from a dictionary."""
+        return cls(
+            items_per_page=d.get("itemsPerPage", None),
+            resources=_repeated_dict(d, "Resources", AccountUser),
+            start_index=d.get("startIndex", None),
+            total_results=d.get("totalResults", None),
+        )
+
+
+@dataclass
 class ListGroupsResponse:
     items_per_page: Optional[int] = None
     """Total results returned in the response."""
@@ -3039,7 +3090,7 @@ class AccountUsersV2API:
         sort_by: Optional[str] = None,
         sort_order: Optional[ListSortOrder] = None,
         start_index: Optional[int] = None,
-    ) -> Iterator[AccountGroup]:
+    ) -> Iterator[AccountUser]:
         """Gets details for all the users associated with a Databricks account.
 
         :param attributes: str (optional)
@@ -3063,7 +3114,7 @@ class AccountUsersV2API:
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
 
-        :returns: Iterator over :class:`AccountGroup`
+        :returns: Iterator over :class:`AccountUser`
         """
 
         query = {}
@@ -3094,7 +3145,7 @@ class AccountUsersV2API:
             )
             if "Resources" in json:
                 for v in json["Resources"]:
-                    yield AccountGroup.from_dict(v)
+                    yield AccountUser.from_dict(v)
             if "Resources" not in json or not json["Resources"]:
                 return
             query["startIndex"] += len(json["Resources"])
