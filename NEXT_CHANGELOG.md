@@ -6,6 +6,8 @@
 
 * Add a public helper function to build a `CredentialsProvider` directly from an `IdTokenSource`.
 
+* Add native support for authentication through Azure DevOps OIDC
+
 ### Bug Fixes
 
 ### Documentation
