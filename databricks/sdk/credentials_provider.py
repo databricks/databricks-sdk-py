@@ -150,9 +150,7 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth,
-                                        init_runtime_native_auth,
-                                        init_runtime_repl_auth)
+    from databricks.sdk.runtime import init_runtime_legacy_auth, init_runtime_native_auth, init_runtime_repl_auth
 
     for init in [
         init_runtime_native_auth,
@@ -406,10 +404,11 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
     return OAuthCredentialsProvider(refreshed_headers, token)
 
+
 @oauth_credentials_strategy("azdo-oidc", ["host", "client_id"])
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
-    Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token 
+    Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
     and exchanges it for a Databricks Token.
 
     Supported in Azure DevOps pipelines with OIDC service connections.
@@ -455,7 +454,6 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
-
 
 
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
