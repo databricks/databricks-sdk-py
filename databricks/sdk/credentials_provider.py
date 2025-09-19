@@ -1065,11 +1065,11 @@ def model_serving_auth(cfg: "Config") -> Optional[CredentialsProvider]:
 
 
 class DefaultCredentials:
-    """Select the first applicable credential strategy from the chain"""
+    """Select the first applicable credential provider from the chain"""
 
     def __init__(self) -> None:
         self._auth_type = "default"
-        self._auth_strategies = [
+        self._auth_providers = [
             pat_auth,
             basic_auth,
             metadata_service,
@@ -1093,26 +1093,26 @@ class DefaultCredentials:
         return self._auth_type
 
     def oauth_token(self, cfg: "Config") -> oauth.Token:
-        for strategy in self._auth_strategies:
-            auth_type = strategy.auth_type()
+        for provider in self._auth_providers:
+            auth_type = provider.auth_type()
             if auth_type != self._auth_type:
                 # ignore other auth types if they don't match the selected one
                 continue
-            return strategy.oauth_token(cfg)
+            return provider.oauth_token(cfg)
 
     def __call__(self, cfg: "Config") -> CredentialsProvider:
-        for strategy in self._auth_strategies:
-            auth_type = strategy.auth_type()
+        for provider in self._auth_providers:
+            auth_type = provider.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
                 # ignore other auth types if one is explicitly enforced
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
             logger.debug(f"Attempting to configure auth: {auth_type}")
             try:
-                # The header factory might be None if the strategy cannot be
+                # The header factory might be None if the provider cannot be
                 # configured for the current environment. For example, if the
-                # strategy requires some missing environment variables.
-                header_factory = strategy(cfg)
+                # provider requires some missing environment variables.
+                header_factory = provider(cfg)
                 if not header_factory:
                     continue
 
