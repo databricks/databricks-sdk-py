@@ -2084,24 +2084,6 @@ class CreateRequestExternalLineage:
 
 
 @dataclass
-class CreateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
-        """Deserializes the CreateResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CreateStorageCredential:
     name: str
     """The credential name. The name must be unique among storage and service credentials within the
@@ -2577,24 +2559,6 @@ class DatabricksGcpServiceAccountResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get("credential_id", None), email=d.get("email", None))
-
-
-@dataclass
-class DeleteAliasResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAliasResponse:
-        """Deserializes the DeleteAliasResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -14198,6 +14162,10 @@ class RegisteredModelsAPI:
         :returns: :class:`RegisteredModelAlias`
         """
         body = {}
+        if alias is not None:
+            body["alias"] = alias
+        if full_name is not None:
+            body["full_name"] = full_name
         if version_num is not None:
             body["version_num"] = version_num
         headers = {

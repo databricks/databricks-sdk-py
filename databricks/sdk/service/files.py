@@ -51,24 +51,6 @@ class CloseResponse:
 
 
 @dataclass
-class CreateDirectoryResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CreateDirectoryResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateDirectoryResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateDirectoryResponse:
-        """Deserializes the CreateDirectoryResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CreateResponse:
     handle: Optional[int] = None
     """Handle which should subsequently be passed into the AddBlock and Close calls when writing to a
@@ -92,24 +74,6 @@ class CreateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(handle=d.get("handle", None))
-
-
-@dataclass
-class DeleteDirectoryResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteDirectoryResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteDirectoryResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteDirectoryResponse:
-        """Deserializes the DeleteDirectoryResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -287,24 +251,6 @@ class FileInfo:
             modification_time=d.get("modification_time", None),
             path=d.get("path", None),
         )
-
-
-@dataclass
-class GetDirectoryMetadataResponse:
-    def as_dict(self) -> dict:
-        """Serializes the GetDirectoryMetadataResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the GetDirectoryMetadataResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> GetDirectoryMetadataResponse:
-        """Deserializes the GetDirectoryMetadataResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -493,24 +439,6 @@ class ReadResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
         return cls(bytes_read=d.get("bytes_read", None), data=d.get("data", None))
-
-
-@dataclass
-class UploadResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UploadResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UploadResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UploadResponse:
-        """Deserializes the UploadResponse from a dictionary."""
-        return cls()
 
 
 class DbfsAPI:

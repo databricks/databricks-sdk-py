@@ -1134,24 +1134,6 @@ class BaseChunkInfo:
 
 
 @dataclass
-class CancelExecutionResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelExecutionResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelExecutionResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelExecutionResponse:
-        """Deserializes the CancelExecutionResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class Channel:
     """Configures the channel name and DBSQL version of the warehouse. CHANNEL_NAME_CUSTOM should be
     chosen only when `dbsql_version` is specified."""
@@ -9444,7 +9426,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=EditWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def edit_and_wait(
         self,
@@ -9671,7 +9653,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=StartWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -9692,7 +9674,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return Wait(self.wait_get_warehouse_stopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
