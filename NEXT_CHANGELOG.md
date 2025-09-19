@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+* Fix the bug where the SDK would fail to properly recursively traverse directories in the _VolumesPath.list function
+
 ### Documentation
 
 ### Internal Changes
