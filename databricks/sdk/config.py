@@ -88,6 +88,15 @@ class Config:
     azure_client_id: str = ConfigAttribute(env="ARM_CLIENT_ID", auth="azure")
     azure_tenant_id: str = ConfigAttribute(env="ARM_TENANT_ID", auth="azure")
     azure_environment: str = ConfigAttribute(env="ARM_ENVIRONMENT")
+
+    # Azure DevOps environment variables (automatically provided by Azure DevOps pipelines)
+    azure_devops_access_token: str = ConfigAttribute(env="SYSTEM_ACCESSTOKEN", auth="azdo-oidc", sensitive=True)
+    azure_devops_collection_uri: str = ConfigAttribute(env="SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", auth="azdo-oidc")
+    azure_devops_project_id: str = ConfigAttribute(env="SYSTEM_TEAMPROJECTID", auth="azdo-oidc")
+    azure_devops_plan_id: str = ConfigAttribute(env="SYSTEM_PLANID", auth="azdo-oidc")
+    azure_devops_job_id: str = ConfigAttribute(env="SYSTEM_JOBID", auth="azdo-oidc")
+    azure_devops_host_type: str = ConfigAttribute(env="SYSTEM_HOSTTYPE", auth="azdo-oidc")
+
     databricks_cli_path: str = ConfigAttribute(env="DATABRICKS_CLI_PATH")
     auth_type: str = ConfigAttribute(env="DATABRICKS_AUTH_TYPE")
     cluster_id: str = ConfigAttribute(env="DATABRICKS_CLUSTER_ID")

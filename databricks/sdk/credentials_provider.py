@@ -407,7 +407,18 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy("azdo-oidc", ["host", "client_id"])
+@oauth_credentials_strategy(
+    "azdo-oidc",
+    [
+        "host",
+        "client_id",
+        "azure_devops_access_token",
+        "azure_devops_collection_uri",
+        "azure_devops_project_id",
+        "azure_devops_plan_id",
+        "azure_devops_job_id",
+    ],
+)
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
     Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
@@ -424,12 +435,12 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
-    id_token = supplier.get_oidc_token(audience)
+    id_token = supplier.get_oidc_token(audience, cfg)
     if not id_token:
         return None
 
     def token_source_for(audience: str) -> oauth.TokenSource:
-        id_token = supplier.get_oidc_token(audience)
+        id_token = supplier.get_oidc_token(audience, cfg)
         if not id_token:
             # Should not happen, since we checked it above.
             raise Exception("Cannot get Azure DevOps OIDC token")

@@ -36,17 +36,20 @@ class AzureDevOpsOIDCTokenSupplier:
     See: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
     """
 
-    def get_oidc_token(self, audience: str) -> Optional[str]:
+    def get_oidc_token(self, audience: str, config=None) -> Optional[str]:
         # Note: Azure DevOps OIDC tokens have a fixed audience of "api://AzureADTokenExchange"
         # The audience parameter is ignored but kept for interface compatibility with other OIDC suppliers
 
-        # Check for required Azure DevOps environment variables
-        access_token = os.environ.get("SYSTEM_ACCESSTOKEN")
-        collection_uri = os.environ.get("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI")
-        project_id = os.environ.get("SYSTEM_TEAMPROJECTID")
-        plan_id = os.environ.get("SYSTEM_PLANID")
-        job_id = os.environ.get("SYSTEM_JOBID")
-        hub_name = os.environ.get("SYSTEM_HOSTTYPE", "build")  # Default to "build"
+        # Get Azure DevOps environment variables from config
+        if config is None:
+            return None
+
+        access_token = config.azure_devops_access_token
+        collection_uri = config.azure_devops_collection_uri
+        project_id = config.azure_devops_project_id
+        plan_id = config.azure_devops_plan_id
+        job_id = config.azure_devops_job_id
+        hub_name = config.azure_devops_host_type or "build"  # Default to "build"
 
         # Check for required variables
         if not all([access_token, collection_uri, project_id, plan_id, job_id]):
