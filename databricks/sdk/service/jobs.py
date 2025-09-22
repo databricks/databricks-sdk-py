@@ -448,42 +448,6 @@ class BaseRun:
         )
 
 
-@dataclass
-class CancelAllRunsResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRunsResponse:
-        """Deserializes the CancelAllRunsResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class CancelRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelRunResponse:
-        """Deserializes the CancelRunResponse from a dictionary."""
-        return cls()
-
-
 class CleanRoomTaskRunLifeCycleState(Enum):
     """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to
     remove coupling with jobs API definition"""
@@ -1509,42 +1473,6 @@ class DbtTask:
             source=_enum(d, "source", Source),
             warehouse_id=d.get("warehouse_id", None),
         )
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
-        """Deserializes the DeleteRunResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -3529,6 +3457,78 @@ class ListRunsResponse:
 
 
 @dataclass
+class ModelTriggerConfiguration:
+    condition: ModelTriggerConfigurationCondition
+    """The condition based on which to trigger a job run."""
+
+    aliases: Optional[List[str]] = None
+    """Aliases of the model versions to monitor. Can only be used in conjunction with condition
+    MODEL_ALIAS_SET."""
+
+    min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time has passed since the
+    last time the trigger fired. The minimum allowed value is 60 seconds."""
+
+    securable_name: Optional[str] = None
+    """Name of the securable to monitor ("mycatalog.myschema.mymodel" in the case of model-level
+    triggers, "mycatalog.myschema" in the case of schema-level triggers) or empty in the case of
+    metastore-level triggers."""
+
+    wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no model updates have occurred for the specified
+    time and can be used to wait for a series of model updates before triggering a run. The minimum
+    allowed value is 60 seconds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v for v in self.aliases]
+        if self.condition is not None:
+            body["condition"] = self.condition.value
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.condition is not None:
+            body["condition"] = self.condition
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTriggerConfiguration:
+        """Deserializes the ModelTriggerConfiguration from a dictionary."""
+        return cls(
+            aliases=d.get("aliases", None),
+            condition=_enum(d, "condition", ModelTriggerConfigurationCondition),
+            min_time_between_triggers_seconds=d.get("min_time_between_triggers_seconds", None),
+            securable_name=d.get("securable_name", None),
+            wait_after_last_change_seconds=d.get("wait_after_last_change_seconds", None),
+        )
+
+
+class ModelTriggerConfigurationCondition(Enum):
+
+    MODEL_ALIAS_SET = "MODEL_ALIAS_SET"
+    MODEL_CREATED = "MODEL_CREATED"
+    MODEL_VERSION_READY = "MODEL_VERSION_READY"
+
+
+@dataclass
 class NotebookOutput:
     result: Optional[str] = None
     """The value passed to
@@ -4206,24 +4206,6 @@ class RepairRunResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get("repair_id", None))
-
-
-@dataclass
-class ResetResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResetResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResetResponse:
-        """Deserializes the ResetResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -5694,6 +5676,10 @@ class RunTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -5856,6 +5842,8 @@ class RunTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -5953,6 +5941,8 @@ class RunTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6040,6 +6030,7 @@ class RunTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -6921,6 +6912,10 @@ class SubmitTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7016,6 +7011,8 @@ class SubmitTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7081,6 +7078,8 @@ class SubmitTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7139,6 +7138,7 @@ class SubmitTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
@@ -8030,6 +8030,8 @@ class TriggerSettings:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger settings."""
 
+    model: Optional[ModelTriggerConfiguration] = None
+
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
@@ -8046,6 +8048,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
@@ -8061,6 +8065,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.periodic:
@@ -8076,6 +8082,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
             table=_from_dict(d, "table", TableUpdateTriggerConfiguration),
@@ -8137,24 +8144,6 @@ class TriggerType(Enum):
     RETRY = "RETRY"
     RUN_JOB_TASK = "RUN_JOB_TASK"
     TABLE = "TABLE"
-
-
-@dataclass
-class UpdateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8428,11 +8417,7 @@ class JobsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
-        return Wait(
-            self.wait_get_run_job_terminated_or_skipped,
-            response=CancelRunResponse.from_dict(op_response),
-            run_id=run_id,
-        )
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)
