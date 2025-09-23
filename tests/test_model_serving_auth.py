@@ -5,6 +5,7 @@ import pytest
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import ModelServingUserCredentials
+from greenlet import greenlet, getcurrent
 
 from .conftest import raises
 
@@ -217,7 +218,41 @@ def test_agent_user_credentials(monkeypatch, mocker):
     thread.start()
     thread.join()
     assert successful_authentication_event.is_set()
+    del current_thread.__dict__["invokers_token"]  # Clean up invokers token
 
+def test_agent_user_credentials_via_greenlet(monkeypatch, mocker):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv("DATABRICKS_CONFIG_FILE", "x")
+
+    monkeypatch.setenv("IS_IN_DB_MODEL_SERVING_ENV", "true")
+    monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
+    monkeypatch.setattr(
+        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "tests/testdata/model-serving-test-token",
+    )
+
+    invokers_token_val = "databricks_invokers_token"
+    greenlet_local = getcurrent()
+    setattr(greenlet_local, "invokers_token", invokers_token_val)
+
+    cfg = Config(credentials_strategy=ModelServingUserCredentials())
+    assert cfg.auth_type == "model_serving_user_credentials"
+
+    headers = cfg.authenticate()
+
+    assert cfg.host == "x"
+    assert headers.get("Authorization") == f"Bearer {invokers_token_val}"
+
+    # Test updates of invokers token
+    invokers_token_val = "databricks_invokers_token_v2"
+    setattr(greenlet_local, "invokers_token", invokers_token_val)
+
+    headers = cfg.authenticate()
+    assert cfg.host == "x"
+    assert headers.get("Authorization") == f"Bearer {invokers_token_val}"
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
 def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):

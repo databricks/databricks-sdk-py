@@ -943,6 +943,14 @@ class ModelServingAuthProvider:
                 ) from e
         return self.current_token
 
+    def _get_invokers_token_from_greenlet(self):
+        # Attempt to retrieve 'invokers_token' from greenlet local
+        from greenlet import greenlet, getcurrent
+        greenlet = getcurrent()
+        if hasattr(greenlet, 'invokers_token'):
+            return greenlet.invokers_token
+        raise RuntimeError("Unable to read Invokers Token in Databricks Model Serving")
+
     def _get_invokers_token(self):
         main_thread = threading.main_thread()
         thread_data = main_thread.__dict__
@@ -951,7 +959,8 @@ class ModelServingAuthProvider:
             invokers_token = thread_data["invokers_token"]
 
         if invokers_token is None:
-            raise RuntimeError("Unable to read Invokers Token in Databricks Model Serving")
+            # This is likely async server code, so we should check greenlet local
+            return self._get_invokers_token_from_greenlet()
 
         return invokers_token
 
