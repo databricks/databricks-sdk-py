@@ -31,7 +31,7 @@ class GitHubOIDCTokenSupplier:
 class AzureDevOpsOIDCTokenSupplier:
     """
     Supplies OIDC tokens from Azure DevOps pipelines.
-    
+
     Constructs the OIDC token request URL using official Azure DevOps predefined variables.
     See: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
     """
@@ -39,7 +39,6 @@ class AzureDevOpsOIDCTokenSupplier:
     def get_oidc_token(self, audience: str) -> Optional[str]:
         # Note: Azure DevOps OIDC tokens have a fixed audience of "api://AzureADTokenExchange"
         # The audience parameter is ignored but kept for interface compatibility with other OIDC suppliers
-        
 
         access_token = os.environ.get("SYSTEM_ACCESSTOKEN")
         collection_uri = os.environ.get("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI")

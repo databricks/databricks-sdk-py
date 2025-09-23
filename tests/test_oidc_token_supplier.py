@@ -25,7 +25,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         response_ok=True,
         response_json={"oidcToken": "test-azdo-jwt-token"},
@@ -36,9 +36,9 @@ _azure_devops_oidc_test_cases = [
         env_vars={
             "SYSTEM_ACCESSTOKEN": "azdo-access-token",
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
-            "SYSTEM_TEAMPROJECTID": "project-123", 
+            "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_PLANID": "plan-456",
-            "SYSTEM_JOBID": "job-789"
+            "SYSTEM_JOBID": "job-789",
         },
         want_none=True,
     ),
@@ -47,9 +47,9 @@ _azure_devops_oidc_test_cases = [
         env_vars={
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
             "SYSTEM_TEAMPROJECTID": "project-123",
-            "SYSTEM_PLANID": "plan-456", 
+            "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         want_none=True,
     ),
@@ -60,7 +60,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
             "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         want_none=True,
     ),
@@ -71,7 +71,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
             "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_PLANID": "plan-456",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         want_none=True,
     ),
@@ -82,7 +82,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         want_none=True,
     ),
@@ -93,7 +93,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
             "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         want_none=True,
     ),
@@ -105,7 +105,7 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_TEAMPROJECTID": "project-123",
             "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         response_ok=False,
         want_none=True,
@@ -116,9 +116,9 @@ _azure_devops_oidc_test_cases = [
             "SYSTEM_ACCESSTOKEN": "azdo-access-token",
             "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg/",
             "SYSTEM_TEAMPROJECTID": "project-123",
-            "SYSTEM_PLANID": "plan-456", 
+            "SYSTEM_PLANID": "plan-456",
             "SYSTEM_JOBID": "job-789",
-            "SYSTEM_HOSTTYPE": "build"
+            "SYSTEM_HOSTTYPE": "build",
         },
         response_ok=True,
         response_json={"error": "no oidcToken"},
@@ -134,23 +134,29 @@ def test_azure_devops_oidc_token_supplier(test_case: AzureDevOpsOIDCTestCase, mo
     if test_case.env_vars:
         for key, value in test_case.env_vars.items():
             monkeypatch.setenv(key, value)
-    
+
     # Mock requests.post if we have all required environment variables (including HOSTTYPE)
-    required_vars = ["SYSTEM_ACCESSTOKEN", "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", 
-                     "SYSTEM_TEAMPROJECTID", "SYSTEM_PLANID", "SYSTEM_JOBID", "SYSTEM_HOSTTYPE"]
+    required_vars = [
+        "SYSTEM_ACCESSTOKEN",
+        "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
+        "SYSTEM_TEAMPROJECTID",
+        "SYSTEM_PLANID",
+        "SYSTEM_JOBID",
+        "SYSTEM_HOSTTYPE",
+    ]
     has_required_vars = test_case.env_vars and all(var in test_case.env_vars for var in required_vars)
-    
+
     mock_post = None
     if has_required_vars:  # Only mock if all required vars exist
         mock_response = mocker.Mock()
         mock_response.ok = test_case.response_ok
         if test_case.response_json:
             mock_response.json.return_value = test_case.response_json
-        mock_post = mocker.patch('requests.post', return_value=mock_response)
-    
+        mock_post = mocker.patch("requests.post", return_value=mock_response)
+
     supplier = AzureDevOpsOIDCTokenSupplier()
     token = supplier.get_oidc_token("ignored-audience")  # Audience is ignored for Azure DevOps
-    
+
     if test_case.want_none:
         assert token is None
     else:
@@ -166,7 +172,6 @@ def test_azure_devops_oidc_token_supplier(test_case: AzureDevOpsOIDCTestCase, mo
                 headers={
                     "Authorization": "Bearer azdo-access-token",
                     "Content-Type": "application/json",
-                    "Content-Length": "0"
-                }
+                    "Content-Length": "0",
+                },
             )
-

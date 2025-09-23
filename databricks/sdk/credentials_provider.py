@@ -103,7 +103,7 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called.
-    
+
     Args:
         name: The name of the authentication strategy
         require: List of config attributes that must be present
@@ -118,7 +118,7 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
             # Early environment detection - check before config validation
             if env_vars and not all(os.environ.get(var) for var in env_vars):
                 return None
-                
+
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -418,9 +418,16 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
 
 @oauth_credentials_strategy(
-    "azdo-oidc", 
-    ["host", "client_id"], 
-    env_vars=["SYSTEM_ACCESSTOKEN", "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "SYSTEM_TEAMPROJECTID", "SYSTEM_PLANID", "SYSTEM_JOBID", "SYSTEM_HOSTTYPE"]
+    "azdo-oidc",
+    ["host", "client_id"],
+    env_vars=[
+        "SYSTEM_ACCESSTOKEN",
+        "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
+        "SYSTEM_TEAMPROJECTID",
+        "SYSTEM_PLANID",
+        "SYSTEM_JOBID",
+        "SYSTEM_HOSTTYPE",
+    ],
 )
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
