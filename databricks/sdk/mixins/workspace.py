@@ -23,7 +23,8 @@ class WorkspaceExt(WorkspaceAPI):
         """List workspace objects
 
         :param recursive: bool
-            Optionally invoke recursive traversal
+            Optionally invoke recursive traversal.
+            `ObjectType.DIRECTORY` aren't returned when using this flag.
 
         :returns: Iterator of workspaceObjectInfo
         """
