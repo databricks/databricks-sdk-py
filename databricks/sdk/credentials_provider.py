@@ -99,16 +99,26 @@ def credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-def oauth_credentials_strategy(name: str, require: List[str]):
+def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional[List[str]] = None):
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called."""
+    attribute names to be present for this function to be called.
+    
+    Args:
+        name: The name of the authentication strategy
+        require: List of config attributes that must be present
+        env_vars: Optional list of environment variables that must all be present for this strategy
+    """
 
     def inner(
         func: Callable[["Config"], OAuthCredentialsProvider],
     ) -> OauthCredentialsStrategy:
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
+            # Early environment detection - check before config validation
+            if env_vars and not all(os.environ.get(var) for var in env_vars):
+                return None
+                
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -408,16 +418,9 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
 
 @oauth_credentials_strategy(
-    "azdo-oidc",
-    [
-        "host",
-        "client_id",
-        "azure_devops_access_token",
-        "azure_devops_collection_uri",
-        "azure_devops_project_id",
-        "azure_devops_plan_id",
-        "azure_devops_job_id",
-    ],
+    "azdo-oidc", 
+    ["host", "client_id"], 
+    env_vars=["SYSTEM_ACCESSTOKEN", "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI", "SYSTEM_TEAMPROJECTID", "SYSTEM_PLANID", "SYSTEM_JOBID", "SYSTEM_HOSTTYPE"]
 )
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
@@ -435,12 +438,12 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
-    id_token = supplier.get_oidc_token(audience, cfg)
+    id_token = supplier.get_oidc_token(audience)
     if not id_token:
         return None
 
     def token_source_for(audience: str) -> oauth.TokenSource:
-        id_token = supplier.get_oidc_token(audience, cfg)
+        id_token = supplier.get_oidc_token(audience)
         if not id_token:
             # Should not happen, since we checked it above.
             raise Exception("Cannot get Azure DevOps OIDC token")
