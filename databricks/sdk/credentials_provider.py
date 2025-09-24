@@ -118,8 +118,14 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
             # Early environment detection - check before config validation
             if env_vars and not all(os.environ.get(var) for var in env_vars):
                 # Provide specific error message for Azure DevOps OIDC SYSTEM_ACCESSTOKEN
-                if name == "azdo-oidc" and "SYSTEM_ACCESSTOKEN" in env_vars and not os.environ.get("SYSTEM_ACCESSTOKEN"):
-                    logger.debug("Azure DevOps OIDC: SYSTEM_ACCESSTOKEN env var not found. If calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken")
+                if (
+                    name == "azdo-oidc"
+                    and "SYSTEM_ACCESSTOKEN" in env_vars
+                    and not os.environ.get("SYSTEM_ACCESSTOKEN")
+                ):
+                    logger.debug(
+                        "Azure DevOps OIDC: SYSTEM_ACCESSTOKEN env var not found. If calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken"
+                    )
                 else:
                     logger.debug(f"{name}: required environment variables not present, skipping")
                 return None
