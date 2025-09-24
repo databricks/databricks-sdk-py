@@ -117,6 +117,11 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
         def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
             # Early environment detection - check before config validation
             if env_vars and not all(os.environ.get(var) for var in env_vars):
+                # Provide specific error message for Azure DevOps OIDC SYSTEM_ACCESSTOKEN
+                if name == "azdo-oidc" and "SYSTEM_ACCESSTOKEN" in env_vars and not os.environ.get("SYSTEM_ACCESSTOKEN"):
+                    logger.debug("Azure DevOps OIDC: SYSTEM_ACCESSTOKEN env var not found. If calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken")
+                else:
+                    logger.debug(f"{name}: required environment variables not present, skipping")
                 return None
 
             for attr in require:
@@ -447,7 +452,10 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
     id_token = supplier.get_oidc_token(audience)
     if not id_token:
+        logger.debug("Azure DevOps OIDC: no token available, skipping authentication method")
         return None
+
+    logger.info("Configured Azure DevOps OIDC authentication")
 
     def token_source_for(audience: str) -> oauth.TokenSource:
         id_token = supplier.get_oidc_token(audience)

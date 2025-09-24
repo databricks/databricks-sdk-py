@@ -1,7 +1,10 @@
+import logging
 import os
 from typing import Optional
 
 import requests
+
+logger = logging.getLogger("databricks.sdk")
 
 
 class GitHubOIDCTokenSupplier:
@@ -50,6 +53,7 @@ class AzureDevOpsOIDCTokenSupplier:
         # Check for required variables
         if not all([access_token, collection_uri, project_id, plan_id, job_id, hub_name]):
             # not in Azure DevOps pipeline
+            logger.debug("Azure DevOps OIDC: not in Azure DevOps pipeline environment")
             return None
 
         try:
@@ -68,14 +72,17 @@ class AzureDevOpsOIDCTokenSupplier:
             # Azure DevOps OIDC endpoint requires POST request with empty body
             response = requests.post(endpoint, headers=headers)
             if not response.ok:
+                logger.debug(f"Azure DevOps OIDC: token request failed with status {response.status_code}")
                 return None
 
             # Azure DevOps returns the token in 'oidcToken' field
             response_json = response.json()
             if "oidcToken" not in response_json:
+                logger.debug("Azure DevOps OIDC: response missing 'oidcToken' field")
                 return None
 
+            logger.debug("Azure DevOps OIDC: successfully obtained token")
             return response_json["oidcToken"]
-        except Exception:
-            # If any error occurs, return None to fall back to other auth methods
+        except Exception as e:
+            logger.debug(f"Azure DevOps OIDC: failed to get token: {e}")
             return None
