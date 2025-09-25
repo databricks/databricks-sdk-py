@@ -89,7 +89,6 @@ def credentials_strategy(name: str, require: List[str]):
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
             for attr in require:
-                getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -103,7 +102,12 @@ def credentials_strategy(name: str, require: List[str]):
 def oauth_credentials_strategy(name: str, require: List[str]):
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called."""
+    attribute names to be present for this function to be called.
+
+    Args:
+        name: The name of the authentication strategy
+        require: List of config attributes that must be present
+    """
 
     def inner(
         func: Callable[["Config"], OAuthCredentialsProvider],
@@ -383,6 +387,64 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         if not id_token:
             # Should not happen, since we checked it above.
             raise Exception("Cannot get OIDC token")
+
+        return oauth.ClientCredentials(
+            client_id=cfg.client_id,
+            client_secret="",  # we have no (rotatable) secrets in OIDC flow
+            token_url=cfg.oidc_endpoints.token_endpoint,
+            endpoint_params={
+                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+                "subject_token": id_token,
+                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+            },
+            scopes=["all-apis"],
+            use_params=True,
+            disable_async=cfg.disable_async_token_refresh,
+        )
+
+    def refreshed_headers() -> Dict[str, str]:
+        token = token_source_for(audience).token()
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
+
+    def token() -> oauth.Token:
+        return token_source_for(audience).token()
+
+    return OAuthCredentialsProvider(refreshed_headers, token)
+
+
+@oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"])
+def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
+    and exchanges it for a Databricks Token.
+
+    Supported in Azure DevOps pipelines with OIDC service connections.
+    """
+    try:
+        supplier = oidc_token_supplier.AzureDevOpsOIDCTokenSupplier()
+    except ValueError as e:
+        logger.debug(str(e))
+        return None
+
+    audience = cfg.token_audience
+    if audience is None and cfg.is_account_client:
+        audience = cfg.account_id
+    if audience is None and not cfg.is_account_client:
+        audience = cfg.oidc_endpoints.token_endpoint
+
+    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
+    id_token = supplier.get_oidc_token(audience)
+    if not id_token:
+        logger.debug("Azure DevOps OIDC: no token available, skipping authentication method")
+        return None
+
+    logger.info("Configured Azure DevOps OIDC authentication")
+
+    def token_source_for(audience: str) -> oauth.TokenSource:
+        id_token = supplier.get_oidc_token(audience)
+        if not id_token:
+            # Should not happen, since we checked it above.
+            raise Exception("Cannot get Azure DevOps OIDC token")
 
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
@@ -1016,6 +1078,7 @@ class DefaultCredentials:
             env_oidc,
             file_oidc,
             github_oidc,
+            azure_devops_oidc,
             azure_service_principal,
             github_oidc_azure,
             azure_cli,
