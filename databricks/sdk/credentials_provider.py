@@ -99,7 +99,7 @@ def credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional[List[str]] = None):
+def oauth_credentials_strategy(name: str, require: List[str]):
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called.
@@ -107,7 +107,6 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
     Args:
         name: The name of the authentication strategy
         require: List of config attributes that must be present
-        env_vars: Optional list of environment variables that must all be present for this strategy
     """
 
     def inner(
@@ -115,21 +114,6 @@ def oauth_credentials_strategy(name: str, require: List[str], env_vars: Optional
     ) -> OauthCredentialsStrategy:
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
-            # Early environment detection - check before config validation
-            if env_vars and not all(os.environ.get(var) for var in env_vars):
-                # Provide specific error message for Azure DevOps OIDC SYSTEM_ACCESSTOKEN
-                if (
-                    name == "azdo-oidc"
-                    and "SYSTEM_ACCESSTOKEN" in env_vars
-                    and not os.environ.get("SYSTEM_ACCESSTOKEN")
-                ):
-                    logger.debug(
-                        "Azure DevOps OIDC: SYSTEM_ACCESSTOKEN env var not found. If calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken"
-                    )
-                else:
-                    logger.debug(f"{name}: required environment variables not present, skipping")
-                return None
-
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -428,18 +412,7 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy(
-    "azdo-oidc",
-    ["host", "client_id"],
-    env_vars=[
-        "SYSTEM_ACCESSTOKEN",
-        "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI",
-        "SYSTEM_TEAMPROJECTID",
-        "SYSTEM_PLANID",
-        "SYSTEM_JOBID",
-        "SYSTEM_HOSTTYPE",
-    ],
-)
+@oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"])
 def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     """
     Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
@@ -447,7 +420,11 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
     Supported in Azure DevOps pipelines with OIDC service connections.
     """
-    supplier = oidc_token_supplier.AzureDevOpsOIDCTokenSupplier()
+    try:
+        supplier = oidc_token_supplier.AzureDevOpsOIDCTokenSupplier()
+    except ValueError as e:
+        logger.debug(str(e))
+        return None
 
     audience = cfg.token_audience
     if audience is None and cfg.is_account_client:
