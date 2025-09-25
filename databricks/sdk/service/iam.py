@@ -3583,7 +3583,7 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
           instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
           warehouses.
         :param request_object_id: str
@@ -3604,7 +3604,7 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
           instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
           warehouses.
         :param request_object_id: str
@@ -3634,7 +3634,7 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
           instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
           warehouses.
         :param request_object_id: str
@@ -3668,7 +3668,7 @@ class PermissionsAPI:
 
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files,
+          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
           instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
           warehouses.
         :param request_object_id: str

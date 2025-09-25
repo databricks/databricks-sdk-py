@@ -714,6 +714,8 @@ class GenieQueryAttachment:
     last_updated_timestamp: Optional[int] = None
     """Time when the user updated the query last"""
 
+    parameters: Optional[List[QueryAttachmentParameter]] = None
+
     query: Optional[str] = None
     """AI generated SQL query"""
 
@@ -736,6 +738,8 @@ class GenieQueryAttachment:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.parameters:
+            body["parameters"] = [v.as_dict() for v in self.parameters]
         if self.query is not None:
             body["query"] = self.query
         if self.query_result_metadata:
@@ -755,6 +759,8 @@ class GenieQueryAttachment:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.query is not None:
             body["query"] = self.query
         if self.query_result_metadata:
@@ -772,6 +778,7 @@ class GenieQueryAttachment:
             description=d.get("description", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
+            parameters=_repeated_dict(d, "parameters", QueryAttachmentParameter),
             query=d.get("query", None),
             query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
             statement_id=d.get("statement_id", None),
@@ -1135,6 +1142,7 @@ class MessageErrorType(Enum):
     DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
     DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
     DESCRIBE_QUERY_UNEXPECTED_FAILURE = "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
+    EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION = "EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION"
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
@@ -1258,6 +1266,42 @@ class PublishedDashboard:
             revision_create_time=d.get("revision_create_time", None),
             warehouse_id=d.get("warehouse_id", None),
         )
+
+
+@dataclass
+class QueryAttachmentParameter:
+    keyword: Optional[str] = None
+
+    sql_type: Optional[str] = None
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryAttachmentParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.keyword is not None:
+            body["keyword"] = self.keyword
+        if self.sql_type is not None:
+            body["sql_type"] = self.sql_type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryAttachmentParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.keyword is not None:
+            body["keyword"] = self.keyword
+        if self.sql_type is not None:
+            body["sql_type"] = self.sql_type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QueryAttachmentParameter:
+        """Deserializes the QueryAttachmentParameter from a dictionary."""
+        return cls(keyword=d.get("keyword", None), sql_type=d.get("sql_type", None), value=d.get("value", None))
 
 
 @dataclass

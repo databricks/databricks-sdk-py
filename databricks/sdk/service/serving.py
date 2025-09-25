@@ -3906,6 +3906,38 @@ class TrafficConfig:
 
 
 @dataclass
+class UpdateInferenceEndpointNotificationsResponse:
+    email_notifications: Optional[EmailNotifications] = None
+
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateInferenceEndpointNotificationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateInferenceEndpointNotificationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInferenceEndpointNotificationsResponse:
+        """Deserializes the UpdateInferenceEndpointNotificationsResponse from a dictionary."""
+        return cls(
+            email_notifications=_from_dict(d, "email_notifications", EmailNotifications), name=d.get("name", None)
+        )
+
+
+@dataclass
 class V1ResponseChoiceElement:
     finish_reason: Optional[str] = None
     """The finish reason returned by the endpoint."""
@@ -4705,6 +4737,30 @@ class ServingEndpointsAPI:
             served_models=served_models,
             traffic_config=traffic_config,
         ).result(timeout=timeout)
+
+    def update_notifications(
+        self, name: str, *, email_notifications: Optional[EmailNotifications] = None
+    ) -> UpdateInferenceEndpointNotificationsResponse:
+        """Updates the email and webhook notification settings for an endpoint.
+
+        :param name: str
+          The name of the serving endpoint whose notifications are being updated. This field is required.
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          The email notification settings to update. Specify email addresses to notify when endpoint state
+          changes occur.
+
+        :returns: :class:`UpdateInferenceEndpointNotificationsResponse`
+        """
+        body = {}
+        if email_notifications is not None:
+            body["email_notifications"] = email_notifications.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/notifications", body=body, headers=headers)
+        return UpdateInferenceEndpointNotificationsResponse.from_dict(res)
 
     def update_permissions(
         self,

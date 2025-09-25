@@ -7856,6 +7856,7 @@ class Privilege(Enum):
     CREATE_VOLUME = "CREATE_VOLUME"
     EXECUTE = "EXECUTE"
     EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
+    EXTERNAL_USE_SCHEMA = "EXTERNAL_USE_SCHEMA"
     MANAGE = "MANAGE"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
     MODIFY = "MODIFY"
@@ -8539,7 +8540,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_PALANTIR_OAUTH_M2M = 263; Next id:264"""
+    """Latest kind: CONNECTION_SHAREPOINT_OAUTH_M2M = 264; Next id:265"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -9003,6 +9004,7 @@ class SystemType(Enum):
     SAP = "SAP"
     SERVICENOW = "SERVICENOW"
     SNOWFLAKE = "SNOWFLAKE"
+    STREAM_NATIVE = "STREAM_NATIVE"
     TABLEAU = "TABLEAU"
     TERADATA = "TERADATA"
     WORKDAY = "WORKDAY"
@@ -10249,6 +10251,11 @@ class VolumeInfo:
     """The unique identifier of the volume"""
 
     volume_type: Optional[VolumeType] = None
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -10353,11 +10360,6 @@ class VolumeInfo:
 
 
 class VolumeType(Enum):
-    """The type of the volume. An external volume is located in the specified external location. A
-    managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
@@ -15424,6 +15426,11 @@ class VolumesAPI:
         :param name: str
           The name of the volume
         :param volume_type: :class:`VolumeType`
+          The type of the volume. An external volume is located in the specified external location. A managed
+          volume is located in the default location which is specified by the parent schema, or the parent
+          catalog, or the Metastore. [Learn more]
+
+          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -15482,7 +15489,7 @@ class VolumesAPI:
 
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
-        **READ VOLUME** privilege on the volume to recieve the volumes in the response. For the latter case,
+        **READ VOLUME** privilege on the volume to receive the volumes in the response. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
 
