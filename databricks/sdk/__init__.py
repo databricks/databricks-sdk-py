@@ -12,7 +12,6 @@ from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
-from databricks.sdk.mixins.sharing import SharesExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service import agentbricks as pkg_agentbricks
 from databricks.sdk.service import apps as pkg_apps
@@ -358,7 +357,7 @@ class WorkspaceClient:
             self._api_client, serving_endpoints, serving_endpoints_data_plane_token_source
         )
         self._settings = pkg_settings.SettingsAPI(self._api_client)
-        self._shares = SharesExt(self._api_client)
+        self._shares = pkg_sharing.SharesAPI(self._api_client)
         self._statement_execution = pkg_sql.StatementExecutionAPI(self._api_client)
         self._storage_credentials = pkg_catalog.StorageCredentialsAPI(self._api_client)
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
@@ -882,7 +881,7 @@ class WorkspaceClient:
         return self._settings
 
     @property
-    def shares(self) -> SharesExt:
+    def shares(self) -> pkg_sharing.SharesAPI:
         """A share is a container instantiated with :method:shares/create."""
         return self._shares
 
