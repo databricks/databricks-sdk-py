@@ -192,6 +192,9 @@ class DeltaSyncVectorIndexSpecRequest:
     columns from the source table are synced with the index. The primary key column and embedding
     source column or embedding vector column are always synced."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -216,6 +219,8 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -233,6 +238,8 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -250,6 +257,7 @@ class DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
             columns_to_sync=d.get("columns_to_sync", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -260,6 +268,9 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -285,6 +296,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -302,6 +315,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -320,6 +335,7 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -377,10 +393,7 @@ class DirectAccessVectorIndexSpec:
 @dataclass
 class EmbeddingSourceColumn:
     embedding_model_endpoint_name: Optional[str] = None
-    """Name of the embedding model endpoint, used by default for both ingestion and querying."""
-
-    model_endpoint_name_for_query: Optional[str] = None
-    """Name of the embedding model endpoint which, if specified, is used for querying (not ingestion)."""
+    """Name of the embedding model endpoint"""
 
     name: Optional[str] = None
     """Name of the column"""
@@ -390,8 +403,6 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
-        if self.model_endpoint_name_for_query is not None:
-            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -401,8 +412,6 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
-        if self.model_endpoint_name_for_query is not None:
-            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -410,11 +419,7 @@ class EmbeddingSourceColumn:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(
-            embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None),
-            model_endpoint_name_for_query=d.get("model_endpoint_name_for_query", None),
-            name=d.get("name", None),
-        )
+        return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
 
 
 @dataclass
@@ -1522,8 +1527,7 @@ class VectorSearchEndpointsAPI:
         :param endpoint_name: str
           Name of the vector search endpoint
         :param budget_policy_id: str
-          The budget policy id to be applied (hima-sheth) TODO: remove this once we've migrated to usage
-          policies
+          The budget policy id to be applied
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         """

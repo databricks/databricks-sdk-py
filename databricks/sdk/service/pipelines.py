@@ -22,6 +22,33 @@ from databricks.sdk.service import compute
 
 
 @dataclass
+class ConnectionParameters:
+    source_catalog: Optional[str] = None
+    """Source catalog for initial connection. This is necessary for schema exploration in some database
+    systems like Oracle, and optional but nice-to-have in some other database systems like Postgres.
+    For Oracle databases, this maps to a service name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionParameters:
+        """Deserializes the ConnectionParameters from a dictionary."""
+        return cls(source_catalog=d.get("source_catalog", None))
+
+
+@dataclass
 class CreatePipelineResponse:
     effective_settings: Optional[PipelineSpec] = None
     """Only returned when dry_run is true."""
@@ -553,6 +580,9 @@ class IngestionGatewayPipelineDefinition:
     """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
     gateway pipeline uses to communicate with the source."""
 
+    connection_parameters: Optional[ConnectionParameters] = None
+    """Optional, Internal. Parameters required to establish an initial connection with the source."""
+
     gateway_storage_name: Optional[str] = None
     """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Delta Live Tables system will
@@ -565,6 +595,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters.as_dict()
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -580,6 +612,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -594,6 +628,7 @@ class IngestionGatewayPipelineDefinition:
         return cls(
             connection_id=d.get("connection_id", None),
             connection_name=d.get("connection_name", None),
+            connection_parameters=_from_dict(d, "connection_parameters", ConnectionParameters),
             gateway_storage_catalog=d.get("gateway_storage_catalog", None),
             gateway_storage_name=d.get("gateway_storage_name", None),
             gateway_storage_schema=d.get("gateway_storage_schema", None),
@@ -606,13 +641,14 @@ class IngestionPipelineDefinition:
     """Immutable. The Unity Catalog connection that this ingestion pipeline uses to communicate with
     the source. This is used with connectors for applications like Salesforce, Workday, and so on."""
 
+    ingest_from_uc_foreign_catalog: Optional[bool] = None
+    """Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly
+    without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in
+    objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
+
     ingestion_gateway_id: Optional[str] = None
     """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
     with the source database. This is used with connectors to databases like SQL Server."""
-
-    netsuite_jar_path: Optional[str] = None
-    """Netsuite only configuration. When the field is set for a netsuite connector, the jar stored in
-    the field will be validated and added to the classpath of pipeline's cluster."""
 
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
@@ -633,10 +669,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
-        if self.netsuite_jar_path is not None:
-            body["netsuite_jar_path"] = self.netsuite_jar_path
         if self.objects:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.source_configurations:
@@ -652,10 +688,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
-        if self.netsuite_jar_path is not None:
-            body["netsuite_jar_path"] = self.netsuite_jar_path
         if self.objects:
             body["objects"] = self.objects
         if self.source_configurations:
@@ -671,8 +707,8 @@ class IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
+            ingest_from_uc_foreign_catalog=d.get("ingest_from_uc_foreign_catalog", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
-            netsuite_jar_path=d.get("netsuite_jar_path", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
             source_configurations=_repeated_dict(d, "source_configurations", SourceConfig),
             source_type=_enum(d, "source_type", IngestionSourceType),
@@ -739,97 +775,11 @@ class IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
         )
 
 
-@dataclass
-class IngestionPipelineDefinitionWorkdayReportParameters:
-    incremental: Optional[bool] = None
-    """(Optional) Marks the report as incremental. This field is deprecated and should not be used. Use
-    `parameters` instead. The incremental behavior is now controlled by the `parameters` field."""
-
-    parameters: Optional[Dict[str, str]] = None
-    """Parameters for the Workday report. Each key represents the parameter name (e.g., "start_date",
-    "end_date"), and the corresponding value is a SQL-like expression used to compute the parameter
-    value at runtime. Example: { "start_date": "{ coalesce(current_offset(), date(\"2025-02-01\"))
-    }", "end_date": "{ current_date() - INTERVAL 1 DAY }" }"""
-
-    report_parameters: Optional[List[IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue]] = None
-    """(Optional) Additional custom parameters for Workday Report This field is deprecated and should
-    not be used. Use `parameters` instead."""
-
-    def as_dict(self) -> dict:
-        """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.incremental is not None:
-            body["incremental"] = self.incremental
-        if self.parameters:
-            body["parameters"] = self.parameters
-        if self.report_parameters:
-            body["report_parameters"] = [v.as_dict() for v in self.report_parameters]
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the IngestionPipelineDefinitionWorkdayReportParameters into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.incremental is not None:
-            body["incremental"] = self.incremental
-        if self.parameters:
-            body["parameters"] = self.parameters
-        if self.report_parameters:
-            body["report_parameters"] = self.report_parameters
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionWorkdayReportParameters:
-        """Deserializes the IngestionPipelineDefinitionWorkdayReportParameters from a dictionary."""
-        return cls(
-            incremental=d.get("incremental", None),
-            parameters=d.get("parameters", None),
-            report_parameters=_repeated_dict(
-                d, "report_parameters", IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue
-            ),
-        )
-
-
-@dataclass
-class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
-    key: Optional[str] = None
-    """Key for the report parameter, can be a column name or other metadata"""
-
-    value: Optional[str] = None
-    """Value for the report parameter. Possible values it can take are these sql functions: 1.
-    coalesce(current_offset(), date("YYYY-MM-DD")) -> if current_offset() is null, then the passed
-    date, else current_offset() 2. current_date() 3. date_sub(current_date(), x) -> subtract x (some
-    non-negative integer) days from current date"""
-
-    def as_dict(self) -> dict:
-        """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
-        """Deserializes the IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
-
-
 class IngestionSourceType(Enum):
 
     BIGQUERY = "BIGQUERY"
     CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
-    FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
     META_MARKETING = "META_MARKETING"
@@ -2511,6 +2461,24 @@ class RestartWindow:
 
 
 @dataclass
+class RestorePipelineRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RestorePipelineRequestResponse:
+        """Deserializes the RestorePipelineRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RunAs:
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -2955,6 +2923,10 @@ class TableSpecificConfig:
         None
     )
 
+    row_filter: Optional[str] = None
+    """(Optional, Immutable) The row filter condition to be applied to the table. It must not contain
+    the WHERE keyword, only the actual filter condition. It must be in DBSQL format."""
+
     salesforce_include_formula_fields: Optional[bool] = None
     """If true, formula fields defined in the table are included in the ingestion. This setting is only
     valid for the Salesforce connector"""
@@ -2965,9 +2937,6 @@ class TableSpecificConfig:
     sequence_by: Optional[List[str]] = None
     """The column names specifying the logical order of events in the source data. Delta Live Tables
     uses this sequencing to handle change events that arrive out of order."""
-
-    workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
-    """(Optional) Additional custom parameters for Workday Report"""
 
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
@@ -2980,14 +2949,14 @@ class TableSpecificConfig:
             body["primary_keys"] = [v for v in self.primary_keys]
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config.as_dict()
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
             body["scd_type"] = self.scd_type.value
         if self.sequence_by:
             body["sequence_by"] = [v for v in self.sequence_by]
-        if self.workday_report_parameters:
-            body["workday_report_parameters"] = self.workday_report_parameters.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3001,14 +2970,14 @@ class TableSpecificConfig:
             body["primary_keys"] = self.primary_keys
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
             body["scd_type"] = self.scd_type
         if self.sequence_by:
             body["sequence_by"] = self.sequence_by
-        if self.workday_report_parameters:
-            body["workday_report_parameters"] = self.workday_report_parameters
         return body
 
     @classmethod
@@ -3023,12 +2992,10 @@ class TableSpecificConfig:
                 "query_based_connector_config",
                 IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig,
             ),
+            row_filter=d.get("row_filter", None),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
-            workday_report_parameters=_from_dict(
-                d, "workday_report_parameters", IngestionPipelineDefinitionWorkdayReportParameters
-            ),
         )
 
 
@@ -3685,6 +3652,23 @@ class PipelinesAPI:
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
+
+    def restore_pipeline(self, pipeline_id: str) -> RestorePipelineRequestResponse:
+        """* Restores a pipeline that was previously deleted, if within the restoration window. All tables
+        deleted at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/restore", headers=headers)
+        return RestorePipelineRequestResponse.from_dict(res)
 
     def set_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None

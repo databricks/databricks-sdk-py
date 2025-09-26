@@ -513,30 +513,6 @@ class CreateWebhookResponse:
 
 
 @dataclass
-class DataSource:
-    delta_table_source: Optional[DeltaTableSource] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.delta_table_source:
-            body["delta_table_source"] = self.delta_table_source.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DataSource into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.delta_table_source:
-            body["delta_table_source"] = self.delta_table_source
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DataSource:
-        """Deserializes the DataSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
-
-
-@dataclass
 class Dataset:
     """Dataset. Represents a reference to data used for training, testing, or evaluation during the
     model development process."""
@@ -893,49 +869,6 @@ class DeleteWebhookResponse:
 
 
 @dataclass
-class DeltaTableSource:
-    full_name: str
-    """The full three-part (catalog, schema, table) name of the Delta table."""
-
-    entity_columns: List[str]
-    """The entity columns of the Delta table."""
-
-    timeseries_column: str
-    """The timeseries column of the Delta table."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeltaTableSource into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.entity_columns:
-            body["entity_columns"] = [v for v in self.entity_columns]
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.timeseries_column is not None:
-            body["timeseries_column"] = self.timeseries_column
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeltaTableSource into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.entity_columns:
-            body["entity_columns"] = self.entity_columns
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.timeseries_column is not None:
-            body["timeseries_column"] = self.timeseries_column
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeltaTableSource:
-        """Deserializes the DeltaTableSource from a dictionary."""
-        return cls(
-            entity_columns=d.get("entity_columns", None),
-            full_name=d.get("full_name", None),
-            timeseries_column=d.get("timeseries_column", None),
-        )
-
-
-@dataclass
 class Experiment:
     """An experiment and its metadata."""
 
@@ -1279,68 +1212,46 @@ class ExperimentTag:
 
 @dataclass
 class Feature:
-    full_name: str
-    """The full three-part name (catalog, schema, name) of the feature."""
+    """Feature for model version."""
 
-    source: DataSource
-    """The data source of the feature."""
+    feature_name: Optional[str] = None
+    """Feature name"""
 
-    inputs: List[str]
-    """The input columns from which the feature is computed."""
+    feature_table_id: Optional[str] = None
+    """Feature table id"""
 
-    function: Function
-    """The function by which the feature is computed."""
-
-    time_window: TimeWindow
-    """The time window in which the feature is computed."""
-
-    description: Optional[str] = None
-    """The description of the feature."""
+    feature_table_name: Optional[str] = None
+    """Feature table name"""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.function:
-            body["function"] = self.function.as_dict()
-        if self.inputs:
-            body["inputs"] = [v for v in self.inputs]
-        if self.source:
-            body["source"] = self.source.as_dict()
-        if self.time_window:
-            body["time_window"] = self.time_window.as_dict()
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Feature into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.description is not None:
-            body["description"] = self.description
-        if self.full_name is not None:
-            body["full_name"] = self.full_name
-        if self.function:
-            body["function"] = self.function
-        if self.inputs:
-            body["inputs"] = self.inputs
-        if self.source:
-            body["source"] = self.source
-        if self.time_window:
-            body["time_window"] = self.time_window
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.feature_table_id is not None:
+            body["feature_table_id"] = self.feature_table_id
+        if self.feature_table_name is not None:
+            body["feature_table_name"] = self.feature_table_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Feature:
         """Deserializes the Feature from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            full_name=d.get("full_name", None),
-            function=_from_dict(d, "function", Function),
-            inputs=d.get("inputs", None),
-            source=_from_dict(d, "source", DataSource),
-            time_window=_from_dict(d, "time_window", TimeWindow),
+            feature_name=d.get("feature_name", None),
+            feature_table_id=d.get("feature_table_id", None),
+            feature_table_name=d.get("feature_table_name", None),
         )
 
 
@@ -1480,7 +1391,7 @@ class FeatureLineageOnlineFeature:
 class FeatureList:
     """Feature list wrap all the features for a model version"""
 
-    features: Optional[List[LinkedFeature]] = None
+    features: Optional[List[Feature]] = None
 
     def as_dict(self) -> dict:
         """Serializes the FeatureList into a dictionary suitable for use as a JSON request body."""
@@ -1499,7 +1410,7 @@ class FeatureList:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> FeatureList:
         """Deserializes the FeatureList from a dictionary."""
-        return cls(features=_repeated_dict(d, "features", LinkedFeature))
+        return cls(features=_repeated_dict(d, "features", Feature))
 
 
 @dataclass
@@ -1655,90 +1566,6 @@ class ForecastingExperimentState(Enum):
 
 
 @dataclass
-class Function:
-    function_type: FunctionFunctionType
-    """The type of the function."""
-
-    extra_parameters: Optional[List[FunctionExtraParameter]] = None
-    """Extra parameters for parameterized functions."""
-
-    def as_dict(self) -> dict:
-        """Serializes the Function into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.extra_parameters:
-            body["extra_parameters"] = [v.as_dict() for v in self.extra_parameters]
-        if self.function_type is not None:
-            body["function_type"] = self.function_type.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the Function into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.extra_parameters:
-            body["extra_parameters"] = self.extra_parameters
-        if self.function_type is not None:
-            body["function_type"] = self.function_type
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> Function:
-        """Deserializes the Function from a dictionary."""
-        return cls(
-            extra_parameters=_repeated_dict(d, "extra_parameters", FunctionExtraParameter),
-            function_type=_enum(d, "function_type", FunctionFunctionType),
-        )
-
-
-@dataclass
-class FunctionExtraParameter:
-    key: str
-    """The name of the parameter."""
-
-    value: str
-    """The value of the parameter."""
-
-    def as_dict(self) -> dict:
-        """Serializes the FunctionExtraParameter into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the FunctionExtraParameter into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> FunctionExtraParameter:
-        """Deserializes the FunctionExtraParameter from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-class FunctionFunctionType(Enum):
-
-    APPROX_COUNT_DISTINCT = "APPROX_COUNT_DISTINCT"
-    APPROX_PERCENTILE = "APPROX_PERCENTILE"
-    AVG = "AVG"
-    COUNT = "COUNT"
-    FIRST = "FIRST"
-    LAST = "LAST"
-    MAX = "MAX"
-    MIN = "MIN"
-    STDDEV_POP = "STDDEV_POP"
-    STDDEV_SAMP = "STDDEV_SAMP"
-    SUM = "SUM"
-    VAR_POP = "VAR_POP"
-    VAR_SAMP = "VAR_SAMP"
-
-
-@dataclass
 class GetExperimentByNameResponse:
     experiment: Optional[Experiment] = None
     """Experiment details."""
@@ -1862,6 +1689,31 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
+class GetLoggedModelsRequestResponse:
+    models: Optional[List[LoggedModel]] = None
+    """The retrieved logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
+        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -2228,51 +2080,6 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
-class LinkedFeature:
-    """Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)"""
-
-    feature_name: Optional[str] = None
-    """Feature name"""
-
-    feature_table_id: Optional[str] = None
-    """Feature table id"""
-
-    feature_table_name: Optional[str] = None
-    """Feature table name"""
-
-    def as_dict(self) -> dict:
-        """Serializes the LinkedFeature into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.feature_name is not None:
-            body["feature_name"] = self.feature_name
-        if self.feature_table_id is not None:
-            body["feature_table_id"] = self.feature_table_id
-        if self.feature_table_name is not None:
-            body["feature_table_name"] = self.feature_table_name
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the LinkedFeature into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.feature_name is not None:
-            body["feature_name"] = self.feature_name
-        if self.feature_table_id is not None:
-            body["feature_table_id"] = self.feature_table_id
-        if self.feature_table_name is not None:
-            body["feature_table_name"] = self.feature_table_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> LinkedFeature:
-        """Deserializes the LinkedFeature from a dictionary."""
-        return cls(
-            feature_name=d.get("feature_name", None),
-            feature_table_id=d.get("feature_table_id", None),
-            feature_table_name=d.get("feature_table_name", None),
-        )
-
-
-@dataclass
 class ListArtifactsResponse:
     files: Optional[List[FileInfo]] = None
     """The file location and metadata for artifacts."""
@@ -2383,38 +2190,6 @@ class ListFeatureTagsResponse:
         return cls(
             feature_tags=_repeated_dict(d, "feature_tags", FeatureTag), next_page_token=d.get("next_page_token", None)
         )
-
-
-@dataclass
-class ListFeaturesResponse:
-    features: Optional[List[Feature]] = None
-    """List of features."""
-
-    next_page_token: Optional[str] = None
-    """Pagination token to request the next page of results for this query."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ListFeaturesResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.features:
-            body["features"] = [v.as_dict() for v in self.features]
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ListFeaturesResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.features:
-            body["features"] = self.features
-        if self.next_page_token is not None:
-            body["next_page_token"] = self.next_page_token
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ListFeaturesResponse:
-        """Deserializes the ListFeaturesResponse from a dictionary."""
-        return cls(features=_repeated_dict(d, "features", Feature), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -3744,8 +3519,10 @@ class PublishSpec:
     online_table_name: str
     """The full three-part (catalog, schema, table) name of the online table."""
 
-    publish_mode: PublishSpecPublishMode
-    """The publish mode of the pipeline that syncs the online table with the source table."""
+    publish_mode: Optional[PublishSpecPublishMode] = None
+    """The publish mode of the pipeline that syncs the online table with the source table. Defaults to
+    TRIGGERED if not specified. All publish modes require the source table to have Change Data Feed
+    (CDF) enabled."""
 
     def as_dict(self) -> dict:
         """Serializes the PublishSpec into a dictionary suitable for use as a JSON request body."""
@@ -3782,7 +3559,6 @@ class PublishSpec:
 class PublishSpecPublishMode(Enum):
 
     CONTINUOUS = "CONTINUOUS"
-    SNAPSHOT = "SNAPSHOT"
     TRIGGERED = "TRIGGERED"
 
 
@@ -4985,38 +4761,6 @@ class TestRegistryWebhookResponse:
 
 
 @dataclass
-class TimeWindow:
-    duration: str
-    """The duration of the time window."""
-
-    offset: Optional[str] = None
-    """The offset of the time window."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TimeWindow into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration
-        if self.offset is not None:
-            body["offset"] = self.offset
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the TimeWindow into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration
-        if self.offset is not None:
-            body["offset"] = self.offset
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> TimeWindow:
-        """Deserializes the TimeWindow from a dictionary."""
-        return cls(duration=d.get("duration", None), offset=d.get("offset", None))
-
-
-@dataclass
 class TransitionRequest:
     """For activities, this contains the activity recorded for the action. For comments, this contains
     the comment details. For transition requests, this contains the transition request details."""
@@ -5669,6 +5413,25 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
+
+    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
+        """Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        """
+
+        query = {}
+        if model_ids is not None:
+            query["model_ids"] = [v for v in model_ids]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
+        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
@@ -6536,116 +6299,6 @@ class ExperimentsAPI:
 
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
-
-
-class FeatureEngineeringAPI:
-    """[description]"""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create_feature(self, feature: Feature) -> Feature:
-        """Create a Feature.
-
-        :param feature: :class:`Feature`
-          Feature to create.
-
-        :returns: :class:`Feature`
-        """
-        body = feature.as_dict()
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
-        return Feature.from_dict(res)
-
-    def delete_feature(self, full_name: str):
-        """Delete a Feature.
-
-        :param full_name: str
-          Name of the feature to delete.
-
-
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
-
-    def get_feature(self, full_name: str) -> Feature:
-        """Get a Feature.
-
-        :param full_name: str
-          Name of the feature to get.
-
-        :returns: :class:`Feature`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
-        return Feature.from_dict(res)
-
-    def list_features(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Feature]:
-        """List Features.
-
-        :param page_size: int (optional)
-          The maximum number of results to return.
-        :param page_token: str (optional)
-          Pagination token to go to the next page based on a previous query.
-
-        :returns: Iterator over :class:`Feature`
-        """
-
-        query = {}
-        if page_size is not None:
-            query["page_size"] = page_size
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        while True:
-            json = self._api.do("GET", "/api/2.0/feature-engineering/features", query=query, headers=headers)
-            if "features" in json:
-                for v in json["features"]:
-                    yield Feature.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
-    def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
-        """Update a Feature.
-
-        :param full_name: str
-          The full three-part name (catalog, schema, name) of the feature.
-        :param feature: :class:`Feature`
-          Feature to update.
-        :param update_mask: str
-          The list of fields to update.
-
-        :returns: :class:`Feature`
-        """
-        body = feature.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
-        )
-        return Feature.from_dict(res)
 
 
 class FeatureStoreAPI:

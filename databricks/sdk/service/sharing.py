@@ -1142,6 +1142,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[str]] = None
     """The set of privileges to remove."""
 
@@ -1152,6 +1161,8 @@ class PermissionsChange:
             body["add"] = [v for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v for v in self.remove]
         return body
@@ -1163,6 +1174,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -1170,7 +1183,12 @@ class PermissionsChange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
-        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
+        return cls(
+            add=d.get("add", None),
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            remove=d.get("remove", None),
+        )
 
 
 class Privilege(Enum):
@@ -1228,6 +1246,10 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, `principal` is empty
     while `principal_id` is populated."""
 
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both `principal` and `principal_id`
+    are present."""
+
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -1236,6 +1258,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -1245,6 +1269,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -1252,7 +1278,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -1827,32 +1857,59 @@ class SecurablePropertiesKvPairs:
 
 @dataclass
 class Share:
+    comment: Optional[str] = None
+    """The comment of the share."""
+
+    display_name: Optional[str] = None
+    """The display name of the share. If defined, it will be shown in the UI."""
+
     id: Optional[str] = None
 
     name: Optional[str] = None
 
+    tags: Optional[List[catalog.TagKeyValue]] = None
+    """The tags of the share."""
+
     def as_dict(self) -> dict:
         """Serializes the Share into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Share into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
+        if self.tags:
+            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Share:
         """Deserializes the Share from a dictionary."""
-        return cls(id=d.get("id", None), name=d.get("name", None))
+        return cls(
+            comment=d.get("comment", None),
+            display_name=d.get("display_name", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
+        )
 
 
 @dataclass
@@ -1874,6 +1931,10 @@ class ShareInfo:
 
     owner: Optional[str] = None
     """Username of current owner of share."""
+
+    serverless_budget_policy_id: Optional[str] = None
+    """Serverless budget policy id (can only be created/updated when calling data-sharing service)
+    [Create,Update:IGN]"""
 
     storage_location: Optional[str] = None
     """Storage Location URL (full path) for the share."""
@@ -1902,6 +1963,8 @@ class ShareInfo:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1927,6 +1990,8 @@ class ShareInfo:
             body["objects"] = self.objects
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1947,6 +2012,7 @@ class ShareInfo:
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
             owner=d.get("owner", None),
+            serverless_budget_policy_id=d.get("serverless_budget_policy_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
             updated_at=d.get("updated_at", None),
@@ -2307,9 +2373,6 @@ class Table:
 class TableInternalAttributes:
     """Internal information for D2D sharing that should not be disclosed to external users."""
 
-    auxiliary_managed_location: Optional[str] = None
-    """Managed Delta Metadata location for foreign iceberg tables."""
-
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2330,8 +2393,6 @@ class TableInternalAttributes:
     def as_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.auxiliary_managed_location is not None:
-            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2345,8 +2406,6 @@ class TableInternalAttributes:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.auxiliary_managed_location is not None:
-            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2361,7 +2420,6 @@ class TableInternalAttributes:
     def from_dict(cls, d: Dict[str, Any]) -> TableInternalAttributes:
         """Deserializes the TableInternalAttributes from a dictionary."""
         return cls(
-            auxiliary_managed_location=d.get("auxiliary_managed_location", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),
@@ -2374,10 +2432,8 @@ class TableInternalAttributesSharedTableType(Enum):
     DELTA_ICEBERG_TABLE = "DELTA_ICEBERG_TABLE"
     DIRECTORY_BASED_TABLE = "DIRECTORY_BASED_TABLE"
     FILE_BASED_TABLE = "FILE_BASED_TABLE"
-    FOREIGN_ICEBERG_TABLE = "FOREIGN_ICEBERG_TABLE"
     FOREIGN_TABLE = "FOREIGN_TABLE"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
-    METRIC_VIEW = "METRIC_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
 
@@ -3310,7 +3366,14 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        serverless_budget_policy_id: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -3318,6 +3381,9 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -3328,6 +3394,8 @@ class SharesAPI:
             body["comment"] = comment
         if name is not None:
             body["name"] = name
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
@@ -3373,9 +3441,7 @@ class SharesAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list_shares(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[ShareInfo]:
+    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
 
@@ -3454,6 +3520,7 @@ class SharesAPI:
         comment: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        serverless_budget_policy_id: Optional[str] = None,
         storage_root: Optional[str] = None,
         updates: Optional[List[SharedDataObjectUpdate]] = None,
     ) -> ShareInfo:
@@ -3481,6 +3548,9 @@ class SharesAPI:
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
@@ -3495,6 +3565,8 @@ class SharesAPI:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         if updates is not None:

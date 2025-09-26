@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_enum
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -68,87 +68,154 @@ class Group:
         )
 
 
+@dataclass
+class ListGroupsResponse:
+    """TODO: Write description later when this method is implemented"""
+
+    groups: Optional[List[Group]] = None
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListGroupsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.groups:
+            body["groups"] = [v.as_dict() for v in self.groups]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListGroupsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.groups:
+            body["groups"] = self.groups
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
+        """Deserializes the ListGroupsResponse from a dictionary."""
+        return cls(groups=_repeated_dict(d, "groups", Group), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListServicePrincipalsResponse:
+    """TODO: Write description later when this method is implemented"""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    service_principals: Optional[List[ServicePrincipal]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListServicePrincipalsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.service_principals:
+            body["service_principals"] = [v.as_dict() for v in self.service_principals]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListServicePrincipalsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.service_principals:
+            body["service_principals"] = self.service_principals
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalsResponse:
+        """Deserializes the ListServicePrincipalsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            service_principals=_repeated_dict(d, "service_principals", ServicePrincipal),
+        )
+
+
+@dataclass
+class ListUsersResponse:
+    """TODO: Write description later when this method is implemented"""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    users: Optional[List[User]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListUsersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.users:
+            body["users"] = [v.as_dict() for v in self.users]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListUsersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.users:
+            body["users"] = self.users
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
+        """Deserializes the ListUsersResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), users=_repeated_dict(d, "users", User))
+
+
+@dataclass
+class ListWorkspaceAccessDetailsResponse:
+    """TODO: Write description later when this method is implemented"""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as page_token to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    workspace_access_details: Optional[List[WorkspaceAccessDetail]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListWorkspaceAccessDetailsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.workspace_access_details:
+            body["workspace_access_details"] = [v.as_dict() for v in self.workspace_access_details]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListWorkspaceAccessDetailsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.workspace_access_details:
+            body["workspace_access_details"] = self.workspace_access_details
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListWorkspaceAccessDetailsResponse:
+        """Deserializes the ListWorkspaceAccessDetailsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            workspace_access_details=_repeated_dict(d, "workspace_access_details", WorkspaceAccessDetail),
+        )
+
+
 class PrincipalType(Enum):
     """The type of the principal (user/sp/group)."""
 
     GROUP = "GROUP"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
     USER = "USER"
-
-
-@dataclass
-class ResolveGroupResponse:
-    group: Optional[Group] = None
-    """The group that was resolved."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolveGroupResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group:
-            body["group"] = self.group.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolveGroupResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group:
-            body["group"] = self.group
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolveGroupResponse:
-        """Deserializes the ResolveGroupResponse from a dictionary."""
-        return cls(group=_from_dict(d, "group", Group))
-
-
-@dataclass
-class ResolveServicePrincipalResponse:
-    service_principal: Optional[ServicePrincipal] = None
-    """The service principal that was resolved."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolveServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.service_principal:
-            body["service_principal"] = self.service_principal.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolveServicePrincipalResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.service_principal:
-            body["service_principal"] = self.service_principal
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolveServicePrincipalResponse:
-        """Deserializes the ResolveServicePrincipalResponse from a dictionary."""
-        return cls(service_principal=_from_dict(d, "service_principal", ServicePrincipal))
-
-
-@dataclass
-class ResolveUserResponse:
-    user: Optional[User] = None
-    """The user that was resolved."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ResolveUserResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.user:
-            body["user"] = self.user.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResolveUserResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.user:
-            body["user"] = self.user
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResolveUserResponse:
-        """Deserializes the ResolveUserResponse from a dictionary."""
-        return cls(user=_from_dict(d, "user", User))
 
 
 @dataclass
@@ -159,7 +226,7 @@ class ServicePrincipal:
     """The parent account ID for the service principal in Databricks."""
 
     account_sp_status: Optional[State] = None
-    """The activity status of a service principal in a Databricks account."""
+    """The activity status of a sp in a Databricks account."""
 
     application_id: Optional[str] = None
     """Application ID of the service principal."""
@@ -225,6 +292,81 @@ class State(Enum):
 
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
+
+
+@dataclass
+class SyncGroupResponse:
+    group: Optional[Group] = None
+    """The group that was synced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncGroupResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.group:
+            body["group"] = self.group.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncGroupResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group:
+            body["group"] = self.group
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncGroupResponse:
+        """Deserializes the SyncGroupResponse from a dictionary."""
+        return cls(group=_from_dict(d, "group", Group))
+
+
+@dataclass
+class SyncServicePrincipalResponse:
+    service_principal: Optional[ServicePrincipal] = None
+    """The service principal that was synced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_principal:
+            body["service_principal"] = self.service_principal.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncServicePrincipalResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_principal:
+            body["service_principal"] = self.service_principal
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncServicePrincipalResponse:
+        """Deserializes the SyncServicePrincipalResponse from a dictionary."""
+        return cls(service_principal=_from_dict(d, "service_principal", ServicePrincipal))
+
+
+@dataclass
+class SyncUserResponse:
+    user: Optional[User] = None
+    """The user that was synced."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncUserResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.user:
+            body["user"] = self.user.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SyncUserResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.user:
+            body["user"] = self.user
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SyncUserResponse:
+        """Deserializes the SyncUserResponse from a dictionary."""
+        return cls(user=_from_dict(d, "user", User))
 
 
 @dataclass
@@ -427,6 +569,217 @@ class AccountIamV2API:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create_group(self, group: Group) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param group: :class:`Group`
+          Required. Group to be created in <Databricks>
+
+        :returns: :class:`Group`
+        """
+        body = group.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/groups", body=body, headers=headers
+        )
+        return Group.from_dict(res)
+
+    def create_service_principal(self, service_principal: ServicePrincipal) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service principal to be created in <Databricks>
+
+        :returns: :class:`ServicePrincipal`
+        """
+        body = service_principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals", body=body, headers=headers
+        )
+        return ServicePrincipal.from_dict(res)
+
+    def create_user(self, user: User) -> User:
+        """TODO: Write description later when this method is implemented
+
+        :param user: :class:`User`
+          Required. User to be created in <Databricks>
+
+        :returns: :class:`User`
+        """
+        body = user.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", f"/api/2.0/identity/accounts/{self._api.account_id}/users", body=body, headers=headers
+        )
+        return User.from_dict(res)
+
+    def create_workspace_access_detail(
+        self, parent: str, workspace_access_detail: WorkspaceAccessDetail
+    ) -> WorkspaceAccessDetail:
+        """TODO: Write description later when this method is implemented
+
+        :param parent: str
+          Required. The parent path for workspace access detail.
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. Workspace access detail to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAccessDetail`
+        """
+        body = workspace_access_detail.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{parent}/workspaceAccessDetails",
+            body=body,
+            headers=headers,
+        )
+        return WorkspaceAccessDetail.from_dict(res)
+
+    def delete_group(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{internal_id}", headers=headers
+        )
+
+    def delete_service_principal(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/{internal_id}",
+            headers=headers,
+        )
+
+    def delete_user(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/identity/accounts/{self._api.account_id}/users/{internal_id}", headers=headers
+        )
+
+    def delete_workspace_access_detail(self, workspace_id: int, principal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          The workspace ID where the principal has access.
+        :param principal_id: int
+          Required. ID of the principal in Databricks to delete workspace access for.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}",
+            headers=headers,
+        )
+
+    def get_group(self, internal_id: int) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+        :returns: :class:`Group`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{internal_id}", headers=headers
+        )
+        return Group.from_dict(res)
+
+    def get_service_principal(self, internal_id: int) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+        :returns: :class:`ServicePrincipal`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/{internal_id}", headers=headers
+        )
+        return ServicePrincipal.from_dict(res)
+
+    def get_user(self, internal_id: int) -> User:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+        :returns: :class:`User`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/users/{internal_id}", headers=headers
+        )
+        return User.from_dict(res)
+
     def get_workspace_access_detail(
         self, workspace_id: int, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
     ) -> WorkspaceAccessDetail:
@@ -462,15 +815,130 @@ class AccountIamV2API:
         )
         return WorkspaceAccessDetail.from_dict(res)
 
-    def resolve_group(self, external_id: str) -> ResolveGroupResponse:
-        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
-        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
-        (AIM), this will return an error.
+    def list_groups(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> ListGroupsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of groups to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
+          page.
+
+        :returns: :class:`ListGroupsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/groups", query=query, headers=headers
+        )
+        return ListGroupsResponse.from_dict(res)
+
+    def list_service_principals(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListServicePrincipalsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of service principals to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListServicePrincipalsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals", query=query, headers=headers
+        )
+        return ListServicePrincipalsResponse.from_dict(res)
+
+    def list_users(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> ListUsersResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of users to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+
+        :returns: :class:`ListUsersResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/identity/accounts/{self._api.account_id}/users", query=query, headers=headers
+        )
+        return ListUsersResponse.from_dict(res)
+
+    def list_workspace_access_details(
+        self, workspace_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListWorkspaceAccessDetailsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          The workspace ID for which the workspace access details are being fetched.
+        :param page_size: int (optional)
+          The maximum number of workspace access details to return. The service may return fewer than this
+          value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListWorkspaceAccessDetailsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAccessDetails",
+            query=query,
+            headers=headers,
+        )
+        return ListWorkspaceAccessDetailsResponse.from_dict(res)
+
+    def sync_group(self, external_id: str) -> SyncGroupResponse:
+        """Syncs a group with the given external ID from the customer's IdP. If the group does not exist, it will
+        be created in the account. If the customer is not onboarded onto Automatic Identity Management (AIM),
+        this will return an error. Synced information is cached for 30 minutes, so subsequent calls to this
+        method will not result in a full sync unless the cache is stale. If this is triggered while the cache
+        is still valid, it will return the cached group information.
 
         :param external_id: str
           Required. The external ID of the group in the customer's IdP.
 
-        :returns: :class:`ResolveGroupResponse`
+        :returns: :class:`SyncGroupResponse`
         """
         body = {}
         if external_id is not None:
@@ -482,21 +950,23 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/syncByExternalId",
             body=body,
             headers=headers,
         )
-        return ResolveGroupResponse.from_dict(res)
+        return SyncGroupResponse.from_dict(res)
 
-    def resolve_service_principal(self, external_id: str) -> ResolveServicePrincipalResponse:
-        """Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
-        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+    def sync_service_principal(self, external_id: str) -> SyncServicePrincipalResponse:
+        """Syncs a sp with the given external ID from the customer's IdP. If the sp does not exist, it will be
+        created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will return
+        an error. Synced information is cached for 30 minutes, so subsequent calls to this method will not
+        result in a full sync unless the cache is stale. If this is triggered while the cache is still valid,
+        it will return the cached SP information.
 
         :param external_id: str
           Required. The external ID of the service principal in the customer's IdP.
 
-        :returns: :class:`ResolveServicePrincipalResponse`
+        :returns: :class:`SyncServicePrincipalResponse`
         """
         body = {}
         if external_id is not None:
@@ -508,21 +978,23 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/syncByExternalId",
             body=body,
             headers=headers,
         )
-        return ResolveServicePrincipalResponse.from_dict(res)
+        return SyncServicePrincipalResponse.from_dict(res)
 
-    def resolve_user(self, external_id: str) -> ResolveUserResponse:
-        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
-        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+    def sync_user(self, external_id: str) -> SyncUserResponse:
+        """Syncs a user with the given external ID from the customer's IdP. If the user does not exist, it will
+        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error. Synced information is cached for 30 minutes, so subsequent calls to this method will
+        not result in a full sync unless the cache is stale. If this is triggered while the cache is still
+        valid, it will return the cached user information.
 
         :param external_id: str
           Required. The external ID of the user in the customer's IdP.
 
-        :returns: :class:`ResolveUserResponse`
+        :returns: :class:`SyncUserResponse`
         """
         body = {}
         if external_id is not None:
@@ -534,11 +1006,137 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/users/resolveByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/users/syncByExternalId",
             body=body,
             headers=headers,
         )
-        return ResolveUserResponse.from_dict(res)
+        return SyncUserResponse.from_dict(res)
+
+    def update_group(self, internal_id: int, group: Group, update_mask: str) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+        :param group: :class:`Group`
+          Required. Group to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`Group`
+        """
+        body = group.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/{internal_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return Group.from_dict(res)
+
+    def update_service_principal(
+        self, internal_id: int, service_principal: ServicePrincipal, update_mask: str
+    ) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service Principal to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`ServicePrincipal`
+        """
+        body = service_principal.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/{internal_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return ServicePrincipal.from_dict(res)
+
+    def update_user(self, internal_id: int, user: User, update_mask: str) -> User:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+        :param user: :class:`User`
+          Required. User to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`User`
+        """
+        body = user.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/users/{internal_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return User.from_dict(res)
+
+    def update_workspace_access_detail(
+        self, workspace_id: int, principal_id: int, workspace_access_detail: WorkspaceAccessDetail, update_mask: str
+    ) -> WorkspaceAccessDetail:
+        """TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          Required. The workspace ID for which the workspace access detail is being updated.
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. Workspace access detail to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`WorkspaceAccessDetail`
+        """
+        body = workspace_access_detail.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return WorkspaceAccessDetail.from_dict(res)
 
 
 class WorkspaceIamV2API:
@@ -546,6 +1144,184 @@ class WorkspaceIamV2API:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def create_group_proxy(self, group: Group) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param group: :class:`Group`
+          Required. Group to be created in <Databricks>
+
+        :returns: :class:`Group`
+        """
+        body = group.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/groups", body=body, headers=headers)
+        return Group.from_dict(res)
+
+    def create_service_principal_proxy(self, service_principal: ServicePrincipal) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service principal to be created in <Databricks>
+
+        :returns: :class:`ServicePrincipal`
+        """
+        body = service_principal.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/servicePrincipals", body=body, headers=headers)
+        return ServicePrincipal.from_dict(res)
+
+    def create_user_proxy(self, user: User) -> User:
+        """TODO: Write description later when this method is implemented
+
+        :param user: :class:`User`
+          Required. User to be created in <Databricks>
+
+        :returns: :class:`User`
+        """
+        body = user.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/users", body=body, headers=headers)
+        return User.from_dict(res)
+
+    def create_workspace_access_detail_local(
+        self, workspace_access_detail: WorkspaceAccessDetail
+    ) -> WorkspaceAccessDetail:
+        """TODO: Write description later when this method is implemented
+
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. Workspace access detail to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAccessDetail`
+        """
+        body = workspace_access_detail.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/workspaceAccessDetails", body=body, headers=headers)
+        return WorkspaceAccessDetail.from_dict(res)
+
+    def delete_group_proxy(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/identity/groups/{internal_id}", headers=headers)
+
+    def delete_service_principal_proxy(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/identity/servicePrincipals/{internal_id}", headers=headers)
+
+    def delete_user_proxy(self, internal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/identity/users/{internal_id}", headers=headers)
+
+    def delete_workspace_access_detail_local(self, principal_id: int):
+        """TODO: Write description later when this method is implemented
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/identity/workspaceAccessDetails/{principal_id}", headers=headers)
+
+    def get_group_proxy(self, internal_id: int) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+        :returns: :class:`Group`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/identity/groups/{internal_id}", headers=headers)
+        return Group.from_dict(res)
+
+    def get_service_principal_proxy(self, internal_id: int) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+        :returns: :class:`ServicePrincipal`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/identity/servicePrincipals/{internal_id}", headers=headers)
+        return ServicePrincipal.from_dict(res)
+
+    def get_user_proxy(self, internal_id: int) -> User:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+        :returns: :class:`User`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/identity/users/{internal_id}", headers=headers)
+        return User.from_dict(res)
 
     def get_workspace_access_detail_local(
         self, principal_id: int, *, view: Optional[WorkspaceAccessDetailView] = None
@@ -577,15 +1353,121 @@ class WorkspaceIamV2API:
         )
         return WorkspaceAccessDetail.from_dict(res)
 
-    def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
-        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
-        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
-        (AIM), this will return an error.
+    def list_groups_proxy(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListGroupsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of groups to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
+          page.
+
+        :returns: :class:`ListGroupsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/identity/groups", query=query, headers=headers)
+        return ListGroupsResponse.from_dict(res)
+
+    def list_service_principals_proxy(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListServicePrincipalsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of sps to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListServicePrincipalsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/identity/servicePrincipals", query=query, headers=headers)
+        return ListServicePrincipalsResponse.from_dict(res)
+
+    def list_users_proxy(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListUsersResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of users to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+
+        :returns: :class:`ListUsersResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/identity/users", query=query, headers=headers)
+        return ListUsersResponse.from_dict(res)
+
+    def list_workspace_access_details_local(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> ListWorkspaceAccessDetailsResponse:
+        """TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of workspace access details to return. The service may return fewer than this
+          value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListWorkspaceAccessDetailsResponse`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/identity/workspaceAccessDetails", query=query, headers=headers)
+        return ListWorkspaceAccessDetailsResponse.from_dict(res)
+
+    def sync_group_proxy(self, external_id: str) -> SyncGroupResponse:
+        """Syncs a group with the given external ID from the customer's IdP. If the group does not exist, it will
+        be created in the account. If the customer is not onboarded onto Automatic Identity Management (AIM),
+        this will return an error. Synced information is cached for 30 minutes, so subsequent calls to this
+        method will not result in a full sync unless the cache is stale. If this is triggered while the cache
+        is still valid, it will return the cached group information.
 
         :param external_id: str
           Required. The external ID of the group in the customer's IdP.
 
-        :returns: :class:`ResolveGroupResponse`
+        :returns: :class:`SyncGroupResponse`
         """
         body = {}
         if external_id is not None:
@@ -595,49 +1477,155 @@ class WorkspaceIamV2API:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/identity/groups/resolveByExternalId", body=body, headers=headers)
-        return ResolveGroupResponse.from_dict(res)
+        res = self._api.do("POST", "/api/2.0/identity/groups/syncByExternalId", body=body, headers=headers)
+        return SyncGroupResponse.from_dict(res)
 
-    def resolve_service_principal_proxy(self, external_id: str) -> ResolveServicePrincipalResponse:
-        """Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
-        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+    def sync_service_principal_proxy(self, external_id: str) -> SyncServicePrincipalResponse:
+        """Syncs a sp with the given external ID from the customer's IdP. If the sp does not exist, it will be
+        created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will return
+        an error. Synced information is cached for 30 minutes, so subsequent calls to this method will not
+        result in a full sync unless the cache is stale. If this is triggered while the cache is still valid,
+        it will return the cached SP information.
 
         :param external_id: str
           Required. The external ID of the service principal in the customer's IdP.
 
-        :returns: :class:`ResolveServicePrincipalResponse`
+        :returns: :class:`SyncServicePrincipalResponse`
         """
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/servicePrincipals/syncByExternalId", body=body, headers=headers)
+        return SyncServicePrincipalResponse.from_dict(res)
+
+    def sync_user_proxy(self, external_id: str) -> SyncUserResponse:
+        """Syncs a user with the given external ID from the customer's IdP. If the user does not exist, it will
+        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error. Synced information is cached for 30 minutes, so subsequent calls to this method will
+        not result in a full sync unless the cache is stale. If this is triggered while the cache is still
+        valid, it will return the cached user information.
+
+        :param external_id: str
+          Required. The external ID of the user in the customer's IdP.
+
+        :returns: :class:`SyncUserResponse`
+        """
+        body = {}
+        if external_id is not None:
+            body["external_id"] = external_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/identity/users/syncByExternalId", body=body, headers=headers)
+        return SyncUserResponse.from_dict(res)
+
+    def update_group_proxy(self, internal_id: int, group: Group, update_mask: str) -> Group:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+        :param group: :class:`Group`
+          Required. Group to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`Group`
+        """
+        body = group.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/identity/groups/{internal_id}", query=query, body=body, headers=headers)
+        return Group.from_dict(res)
+
+    def update_service_principal_proxy(
+        self, internal_id: int, service_principal: ServicePrincipal, update_mask: str
+    ) -> ServicePrincipal:
+        """TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service principal to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`ServicePrincipal`
+        """
+        body = service_principal.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
         res = self._api.do(
-            "POST", "/api/2.0/identity/servicePrincipals/resolveByExternalId", body=body, headers=headers
+            "PATCH", f"/api/2.0/identity/servicePrincipals/{internal_id}", query=query, body=body, headers=headers
         )
-        return ResolveServicePrincipalResponse.from_dict(res)
+        return ServicePrincipal.from_dict(res)
 
-    def resolve_user_proxy(self, external_id: str) -> ResolveUserResponse:
-        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
-        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error.
+    def update_user_proxy(self, internal_id: int, user: User, update_mask: str) -> User:
+        """TODO: Write description later when this method is implemented
 
-        :param external_id: str
-          Required. The external ID of the user in the customer's IdP.
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+        :param user: :class:`User`
+          Required. User to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
 
-        :returns: :class:`ResolveUserResponse`
+        :returns: :class:`User`
         """
-        body = {}
-        if external_id is not None:
-            body["external_id"] = external_id
+        body = user.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/identity/users/resolveByExternalId", body=body, headers=headers)
-        return ResolveUserResponse.from_dict(res)
+        res = self._api.do("PATCH", f"/api/2.0/identity/users/{internal_id}", query=query, body=body, headers=headers)
+        return User.from_dict(res)
+
+    def update_workspace_access_detail_local(
+        self, principal_id: int, workspace_access_detail: WorkspaceAccessDetail, update_mask: str
+    ) -> WorkspaceAccessDetail:
+        """TODO: Write description later when this method is implemented
+
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. WorkspaceAccessDetail to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`WorkspaceAccessDetail`
+        """
+        body = workspace_access_detail.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/identity/workspaceAccessDetails/{principal_id}", query=query, body=body, headers=headers
+        )
+        return WorkspaceAccessDetail.from_dict(res)

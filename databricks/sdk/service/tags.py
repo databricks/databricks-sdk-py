@@ -15,6 +15,39 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class ListTagAssignmentsResponse:
+    next_page_token: Optional[str] = None
+
+    tag_assignments: Optional[List[TagAssignment]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListTagAssignmentsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.tag_assignments:
+            body["tag_assignments"] = [v.as_dict() for v in self.tag_assignments]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListTagAssignmentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.tag_assignments:
+            body["tag_assignments"] = self.tag_assignments
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListTagAssignmentsResponse:
+        """Deserializes the ListTagAssignmentsResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            tag_assignments=_repeated_dict(d, "tag_assignments", TagAssignment),
+        )
+
+
+@dataclass
 class ListTagPoliciesResponse:
     next_page_token: Optional[str] = None
 
@@ -47,34 +80,71 @@ class ListTagPoliciesResponse:
 
 
 @dataclass
-class TagPolicy:
+class TagAssignment:
+    entity_type: str
+
+    entity_id: str
+
     tag_key: str
 
-    create_time: Optional[str] = None
-    """Timestamp when the tag policy was created"""
+    tag_value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the TagAssignment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_id is not None:
+            body["entity_id"] = self.entity_id
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        if self.tag_value is not None:
+            body["tag_value"] = self.tag_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TagAssignment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_id is not None:
+            body["entity_id"] = self.entity_id
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
+        if self.tag_key is not None:
+            body["tag_key"] = self.tag_key
+        if self.tag_value is not None:
+            body["tag_value"] = self.tag_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TagAssignment:
+        """Deserializes the TagAssignment from a dictionary."""
+        return cls(
+            entity_id=d.get("entity_id", None),
+            entity_type=d.get("entity_type", None),
+            tag_key=d.get("tag_key", None),
+            tag_value=d.get("tag_value", None),
+        )
+
+
+@dataclass
+class TagPolicy:
+    tag_key: str
 
     description: Optional[str] = None
 
     id: Optional[str] = None
-
-    update_time: Optional[str] = None
-    """Timestamp when the tag policy was last updated"""
 
     values: Optional[List[Value]] = None
 
     def as_dict(self) -> dict:
         """Serializes the TagPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.description is not None:
             body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         if self.values:
             body["values"] = [v.as_dict() for v in self.values]
         return body
@@ -82,16 +152,12 @@ class TagPolicy:
     def as_shallow_dict(self) -> dict:
         """Serializes the TagPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.create_time is not None:
-            body["create_time"] = self.create_time
         if self.description is not None:
             body["description"] = self.description
         if self.id is not None:
             body["id"] = self.id
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
-        if self.update_time is not None:
-            body["update_time"] = self.update_time
         if self.values:
             body["values"] = self.values
         return body
@@ -100,11 +166,9 @@ class TagPolicy:
     def from_dict(cls, d: Dict[str, Any]) -> TagPolicy:
         """Deserializes the TagPolicy from a dictionary."""
         return cls(
-            create_time=d.get("create_time", None),
             description=d.get("description", None),
             id=d.get("id", None),
             tag_key=d.get("tag_key", None),
-            update_time=d.get("update_time", None),
             values=_repeated_dict(d, "values", Value),
         )
 
@@ -133,17 +197,147 @@ class Value:
         return cls(name=d.get("name", None))
 
 
-class TagPoliciesAPI:
-    """The Tag Policy API allows you to manage policies for governed tags in Databricks. Permissions for tag
-    policies can be managed using the [Account Access Control Proxy API].
+class TagAssignmentsAPI:
+    """Manage tag assignments on workspace-scoped objects."""
 
-    [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy"""
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_tag_assignment(self, tag_assignment: TagAssignment) -> TagAssignment:
+        """Create a tag assignment
+
+        :param tag_assignment: :class:`TagAssignment`
+
+        :returns: :class:`TagAssignment`
+        """
+        body = tag_assignment.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/entity-tag-assignments", body=body, headers=headers)
+        return TagAssignment.from_dict(res)
+
+    def delete_tag_assignment(self, entity_type: str, entity_id: str, tag_key: str):
+        """Delete a tag assignment
+
+        :param entity_type: str
+        :param entity_id: str
+        :param tag_key: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
+        )
+
+    def get_tag_assignment(self, entity_type: str, entity_id: str, tag_key: str) -> TagAssignment:
+        """Get a tag assignment
+
+        :param entity_type: str
+        :param entity_id: str
+        :param tag_key: str
+
+        :returns: :class:`TagAssignment`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}", headers=headers
+        )
+        return TagAssignment.from_dict(res)
+
+    def list_tag_assignments(
+        self, entity_type: str, entity_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[TagAssignment]:
+        """List the tag assignments for an entity
+
+        :param entity_type: str
+        :param entity_id: str
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`TagAssignment`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}", query=query, headers=headers
+            )
+            if "tag_assignments" in json:
+                for v in json["tag_assignments"]:
+                    yield TagAssignment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_tag_assignment(
+        self, entity_type: str, entity_id: str, tag_key: str, tag_assignment: TagAssignment, update_mask: str
+    ) -> TagAssignment:
+        """Update a tag assignment
+
+        :param entity_type: str
+        :param entity_id: str
+        :param tag_key: str
+        :param tag_assignment: :class:`TagAssignment`
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`TagAssignment`
+        """
+        body = tag_assignment.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return TagAssignment.from_dict(res)
+
+
+class TagPoliciesAPI:
+    """The Tag Policy API allows you to manage tag policies in Databricks."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_tag_policy(self, tag_policy: TagPolicy) -> TagPolicy:
-        """Creates a new tag policy, making the associated tag key governed.
+        """Creates a new tag policy.
 
         :param tag_policy: :class:`TagPolicy`
 
@@ -159,7 +353,7 @@ class TagPoliciesAPI:
         return TagPolicy.from_dict(res)
 
     def delete_tag_policy(self, tag_key: str):
-        """Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned.
+        """Deletes a tag policy by its key.
 
         :param tag_key: str
 
@@ -173,7 +367,7 @@ class TagPoliciesAPI:
         self._api.do("DELETE", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
 
     def get_tag_policy(self, tag_key: str) -> TagPolicy:
-        """Gets a single tag policy by its associated governed tag's key.
+        """Gets a single tag policy by its key.
 
         :param tag_key: str
 
@@ -190,14 +384,10 @@ class TagPoliciesAPI:
     def list_tag_policies(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[TagPolicy]:
-        """Lists the tag policies for all governed tags in the account.
+        """Lists all tag policies in the account.
 
         :param page_size: int (optional)
-          The maximum number of results to return in this request. Fewer results may be returned than
-          requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values
-          above 1000 will be coerced down to 1000.
         :param page_token: str (optional)
-          An optional page token received from a previous list tag policies call.
 
         :returns: Iterator over :class:`TagPolicy`
         """
@@ -221,7 +411,7 @@ class TagPoliciesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_tag_policy(self, tag_key: str, tag_policy: TagPolicy, update_mask: str) -> TagPolicy:
-        """Updates an existing tag policy for a single governed tag.
+        """Updates an existing tag policy.
 
         :param tag_key: str
         :param tag_policy: :class:`TagPolicy`

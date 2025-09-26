@@ -19,38 +19,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class CustomTag:
-    key: Optional[str] = None
-    """The key of the custom tag."""
-
-    value: Optional[str] = None
-    """The value of the custom tag."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CustomTag into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CustomTag into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.key is not None:
-            body["key"] = self.key
-        if self.value is not None:
-            body["value"] = self.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CustomTag:
-        """Deserializes the CustomTag from a dictionary."""
-        return cls(key=d.get("key", None), value=d.get("value", None))
-
-
-@dataclass
 class DatabaseCatalog:
     name: str
     """The name of the catalog in UC."""
@@ -145,6 +113,11 @@ class DatabaseInstance:
     name: str
     """The name of the instance. This is the unique identifier for the instance."""
 
+    budget_policy_id: Optional[str] = None
+    """The desired budget policy to associate with the instance. This field is only returned on
+    create/update responses, and represents the customer provided budget policy. See
+    effective_budget_policy_id for the policy that is actually applied to the instance."""
+
     capacity: Optional[str] = None
     """The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8"."""
 
@@ -157,46 +130,51 @@ class DatabaseInstance:
     creator: Optional[str] = None
     """The email of the creator of the instance."""
 
-    custom_tags: Optional[List[CustomTag]] = None
-    """Custom tags associated with the instance. This field is only included on create and update
-    responses."""
-
-    effective_capacity: Optional[str] = None
-    """Deprecated. The sku of the instance; this field will always match the value of capacity."""
-
-    effective_custom_tags: Optional[List[CustomTag]] = None
-    """The recorded custom tags associated with the instance."""
-
-    effective_enable_pg_native_login: Optional[bool] = None
-    """Whether the instance has PG native password login enabled."""
-
-    effective_enable_readable_secondaries: Optional[bool] = None
-    """Whether secondaries serving read-only traffic are enabled. Defaults to false."""
-
-    effective_node_count: Optional[int] = None
-    """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
-    to 1 primary and 0 secondaries."""
-
-    effective_retention_window_in_days: Optional[int] = None
-    """The retention window for the instance. This is the time window in days for which the historical
-    data is retained."""
-
-    effective_stopped: Optional[bool] = None
-    """Whether the instance is stopped."""
-
-    effective_usage_policy_id: Optional[str] = None
+    effective_budget_policy_id: Optional[str] = None
     """The policy that is applied to the instance."""
 
+    effective_enable_pg_native_login: Optional[bool] = None
+    """xref AIP-129. `enable_pg_native_login` is owned by the client, while
+    `effective_enable_pg_native_login` is owned by the server. `enable_pg_native_login` will only be
+    set in Create/Update response messages if and only if the user provides the field via the
+    request. `effective_enable_pg_native_login` on the other hand will always bet set in all
+    response messages (Create/Update/Get/List)."""
+
+    effective_enable_readable_secondaries: Optional[bool] = None
+    """xref AIP-129. `enable_readable_secondaries` is owned by the client, while
+    `effective_enable_readable_secondaries` is owned by the server. `enable_readable_secondaries`
+    will only be set in Create/Update response messages if and only if the user provides the field
+    via the request. `effective_enable_readable_secondaries` on the other hand will always bet set
+    in all response messages (Create/Update/Get/List)."""
+
+    effective_node_count: Optional[int] = None
+    """xref AIP-129. `node_count` is owned by the client, while `effective_node_count` is owned by the
+    server. `node_count` will only be set in Create/Update response messages if and only if the user
+    provides the field via the request. `effective_node_count` on the other hand will always bet set
+    in all response messages (Create/Update/Get/List)."""
+
+    effective_retention_window_in_days: Optional[int] = None
+    """xref AIP-129. `retention_window_in_days` is owned by the client, while
+    `effective_retention_window_in_days` is owned by the server. `retention_window_in_days` will
+    only be set in Create/Update response messages if and only if the user provides the field via
+    the request. `effective_retention_window_in_days` on the other hand will always bet set in all
+    response messages (Create/Update/Get/List)."""
+
+    effective_stopped: Optional[bool] = None
+    """xref AIP-129. `stopped` is owned by the client, while `effective_stopped` is owned by the
+    server. `stopped` will only be set in Create/Update response messages if and only if the user
+    provides the field via the request. `effective_stopped` on the other hand will always bet set in
+    all response messages (Create/Update/Get/List)."""
+
     enable_pg_native_login: Optional[bool] = None
-    """Whether to enable PG native password login on the instance. Defaults to false."""
+    """Whether the instance has PG native password login enabled. Defaults to true."""
 
     enable_readable_secondaries: Optional[bool] = None
     """Whether to enable secondaries to serve read-only traffic. Defaults to false."""
 
     node_count: Optional[int] = None
     """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
-    to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the
-    output."""
+    to 1 primary and 0 secondaries."""
 
     parent_instance_ref: Optional[DatabaseInstanceRef] = None
     """The ref of the parent instance. This is only available if the instance is child instance. Input:
@@ -221,17 +199,16 @@ class DatabaseInstance:
     """The current state of the instance."""
 
     stopped: Optional[bool] = None
-    """Whether to stop the instance. An input only param, see effective_stopped for the output."""
+    """Whether the instance is stopped."""
 
     uid: Optional[str] = None
     """An immutable UUID identifier for the instance."""
 
-    usage_policy_id: Optional[str] = None
-    """The desired usage policy to associate with the instance."""
-
     def as_dict(self) -> dict:
         """Serializes the DatabaseInstance into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.capacity is not None:
             body["capacity"] = self.capacity
         if self.child_instance_refs:
@@ -240,12 +217,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
-        if self.custom_tags:
-            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
-        if self.effective_capacity is not None:
-            body["effective_capacity"] = self.effective_capacity
-        if self.effective_custom_tags:
-            body["effective_custom_tags"] = [v.as_dict() for v in self.effective_custom_tags]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.effective_enable_pg_native_login is not None:
             body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
@@ -256,8 +229,6 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.enable_pg_native_login is not None:
             body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
@@ -282,13 +253,13 @@ class DatabaseInstance:
             body["stopped"] = self.stopped
         if self.uid is not None:
             body["uid"] = self.uid
-        if self.usage_policy_id is not None:
-            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DatabaseInstance into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.capacity is not None:
             body["capacity"] = self.capacity
         if self.child_instance_refs:
@@ -297,12 +268,8 @@ class DatabaseInstance:
             body["creation_time"] = self.creation_time
         if self.creator is not None:
             body["creator"] = self.creator
-        if self.custom_tags:
-            body["custom_tags"] = self.custom_tags
-        if self.effective_capacity is not None:
-            body["effective_capacity"] = self.effective_capacity
-        if self.effective_custom_tags:
-            body["effective_custom_tags"] = self.effective_custom_tags
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
         if self.effective_enable_pg_native_login is not None:
             body["effective_enable_pg_native_login"] = self.effective_enable_pg_native_login
         if self.effective_enable_readable_secondaries is not None:
@@ -313,8 +280,6 @@ class DatabaseInstance:
             body["effective_retention_window_in_days"] = self.effective_retention_window_in_days
         if self.effective_stopped is not None:
             body["effective_stopped"] = self.effective_stopped
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.enable_pg_native_login is not None:
             body["enable_pg_native_login"] = self.enable_pg_native_login
         if self.enable_readable_secondaries is not None:
@@ -339,27 +304,23 @@ class DatabaseInstance:
             body["stopped"] = self.stopped
         if self.uid is not None:
             body["uid"] = self.uid
-        if self.usage_policy_id is not None:
-            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseInstance:
         """Deserializes the DatabaseInstance from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
             capacity=d.get("capacity", None),
             child_instance_refs=_repeated_dict(d, "child_instance_refs", DatabaseInstanceRef),
             creation_time=d.get("creation_time", None),
             creator=d.get("creator", None),
-            custom_tags=_repeated_dict(d, "custom_tags", CustomTag),
-            effective_capacity=d.get("effective_capacity", None),
-            effective_custom_tags=_repeated_dict(d, "effective_custom_tags", CustomTag),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_enable_pg_native_login=d.get("effective_enable_pg_native_login", None),
             effective_enable_readable_secondaries=d.get("effective_enable_readable_secondaries", None),
             effective_node_count=d.get("effective_node_count", None),
             effective_retention_window_in_days=d.get("effective_retention_window_in_days", None),
             effective_stopped=d.get("effective_stopped", None),
-            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             enable_pg_native_login=d.get("enable_pg_native_login", None),
             enable_readable_secondaries=d.get("enable_readable_secondaries", None),
             name=d.get("name", None),
@@ -372,7 +333,6 @@ class DatabaseInstance:
             state=_enum(d, "state", DatabaseInstanceState),
             stopped=d.get("stopped", None),
             uid=d.get("uid", None),
-            usage_policy_id=d.get("usage_policy_id", None),
         )
 
 
@@ -393,9 +353,12 @@ class DatabaseInstanceRef:
     provided as input to create a child instance."""
 
     effective_lsn: Optional[str] = None
-    """For a parent ref instance, this is the LSN on the parent instance from which the instance was
-    created. For a child ref instance, this is the LSN on the instance from which the child instance
-    was created."""
+    """xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is owned by the server. `lsn`
+    will only be set in Create/Update response messages if and only if the user provides the field
+    via the request. `effective_lsn` on the other hand will always bet set in all response messages
+    (Create/Update/Get/List). For a parent ref instance, this is the LSN on the parent instance from
+    which the instance was created. For a child ref instance, this is the LSN on the instance from
+    which the child instance was created."""
 
     lsn: Optional[str] = None
     """User-specified WAL LSN of the ref database instance.
@@ -455,34 +418,25 @@ class DatabaseInstanceRef:
 class DatabaseInstanceRole:
     """A DatabaseInstanceRole represents a Postgres role in a database instance."""
 
-    name: str
-    """The name of the role. This is the unique identifier for the role in an instance."""
-
     attributes: Optional[DatabaseInstanceRoleAttributes] = None
-    """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
-
-    effective_attributes: Optional[DatabaseInstanceRoleAttributes] = None
-    """The attributes that are applied to the role."""
+    """API-exposed Postgres role attributes"""
 
     identity_type: Optional[DatabaseInstanceRoleIdentityType] = None
     """The type of the role."""
 
-    instance_name: Optional[str] = None
-
     membership_role: Optional[DatabaseInstanceRoleMembershipRole] = None
     """An enum value for a standard role that this role is a member of."""
+
+    name: Optional[str] = None
+    """The name of the role. This is the unique identifier for the role in an instance."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseInstanceRole into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attributes:
             body["attributes"] = self.attributes.as_dict()
-        if self.effective_attributes:
-            body["effective_attributes"] = self.effective_attributes.as_dict()
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type.value
-        if self.instance_name is not None:
-            body["instance_name"] = self.instance_name
         if self.membership_role is not None:
             body["membership_role"] = self.membership_role.value
         if self.name is not None:
@@ -494,12 +448,8 @@ class DatabaseInstanceRole:
         body = {}
         if self.attributes:
             body["attributes"] = self.attributes
-        if self.effective_attributes:
-            body["effective_attributes"] = self.effective_attributes
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type
-        if self.instance_name is not None:
-            body["instance_name"] = self.instance_name
         if self.membership_role is not None:
             body["membership_role"] = self.membership_role
         if self.name is not None:
@@ -511,9 +461,7 @@ class DatabaseInstanceRole:
         """Deserializes the DatabaseInstanceRole from a dictionary."""
         return cls(
             attributes=_from_dict(d, "attributes", DatabaseInstanceRoleAttributes),
-            effective_attributes=_from_dict(d, "effective_attributes", DatabaseInstanceRoleAttributes),
             identity_type=_enum(d, "identity_type", DatabaseInstanceRoleIdentityType),
-            instance_name=d.get("instance_name", None),
             membership_role=_enum(d, "membership_role", DatabaseInstanceRoleMembershipRole),
             name=d.get("name", None),
         )
@@ -611,6 +559,9 @@ class DatabaseTable:
     When creating a table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database."""
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -620,6 +571,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -631,6 +584,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     @classmethod
@@ -640,6 +595,7 @@ class DatabaseTable:
             database_instance_name=d.get("database_instance_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
+            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -822,6 +778,9 @@ class NewPipelineSpec:
     """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
     fields of pipeline are still inferred by table def internally"""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.
     
@@ -837,6 +796,8 @@ class NewPipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -846,6 +807,8 @@ class NewPipelineSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -855,7 +818,11 @@ class NewPipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 class ProvisioningInfoState(Enum):
@@ -985,6 +952,9 @@ class SyncedDatabaseTable:
 
     spec: Optional[SyncedTableSpec] = None
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
     state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
@@ -1007,6 +977,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -1028,6 +1000,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -1043,6 +1017,7 @@ class SyncedDatabaseTable:
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 
@@ -1607,32 +1582,22 @@ class DatabaseAPI:
         return self.create_database_instance(database_instance=database_instance).result(timeout=timeout)
 
     def create_database_instance_role(
-        self,
-        instance_name: str,
-        database_instance_role: DatabaseInstanceRole,
-        *,
-        database_instance_name: Optional[str] = None,
+        self, instance_name: str, database_instance_role: DatabaseInstanceRole
     ) -> DatabaseInstanceRole:
         """Create a role for a Database Instance.
 
         :param instance_name: str
         :param database_instance_role: :class:`DatabaseInstanceRole`
-        :param database_instance_name: str (optional)
 
         :returns: :class:`DatabaseInstanceRole`
         """
         body = database_instance_role.as_dict()
-        query = {}
-        if database_instance_name is not None:
-            query["database_instance_name"] = database_instance_name
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST", f"/api/2.0/database/instances/{instance_name}/roles", query=query, body=body, headers=headers
-        )
+        res = self._api.do("POST", f"/api/2.0/database/instances/{instance_name}/roles", body=body, headers=headers)
         return DatabaseInstanceRole.from_dict(res)
 
     def create_database_table(self, table: DatabaseTable) -> DatabaseTable:
@@ -1691,8 +1656,12 @@ class DatabaseAPI:
           By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
-          Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.
-          Setting a value of false will throw a bad request.
+          Note purge=false is in development. If false, the database instance is soft deleted (implementation
+          pending). Soft deleted instances behave as if they are deleted, and cannot be used for CRUD
+          operations nor connected to. However they can be undeleted by calling the undelete API for a limited
+          time (implementation pending). If true, the database instance is hard deleted and cannot be
+          undeleted. For the time being, setting this value to true is required to delete an instance (soft
+          delete is not yet supported).
 
 
         """
@@ -1767,6 +1736,28 @@ class DatabaseAPI:
         }
 
         self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
+
+    def failover_database_instance(
+        self, name: str, *, failover_target_database_instance_name: Optional[str] = None
+    ) -> DatabaseInstance:
+        """Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        """
+        body = {}
+        if failover_target_database_instance_name is not None:
+            body["failover_target_database_instance_name"] = failover_target_database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/instances/{name}/failover", body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
 
     def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
         """Find a Database Instance by uid.
@@ -1900,7 +1891,7 @@ class DatabaseAPI:
     def list_database_catalogs(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseCatalog]:
-        """This API is currently unimplemented, but exposed for Terraform support.
+        """List all Database Catalogs within a Database Instance.
 
         :param instance_name: str
           Name of the instance to get database catalogs for.
@@ -1935,9 +1926,7 @@ class DatabaseAPI:
     def list_database_instance_roles(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[DatabaseInstanceRole]:
-        """START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more
-        recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will
-        remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.
+        """START OF PG ROLE APIs Section
 
         :param instance_name: str
         :param page_size: int (optional)
@@ -2002,7 +1991,7 @@ class DatabaseAPI:
     def list_synced_database_tables(
         self, instance_name: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SyncedDatabaseTable]:
-        """This API is currently unimplemented, but exposed for Terraform support.
+        """List all Synced Database Tables within a Database Instance.
 
         :param instance_name: str
           Name of the instance to get synced tables for.
@@ -2037,7 +2026,7 @@ class DatabaseAPI:
     def update_database_catalog(
         self, name: str, database_catalog: DatabaseCatalog, update_mask: str
     ) -> DatabaseCatalog:
-        """This API is currently unimplemented, but exposed for Terraform support.
+        """Updated a Database Catalog.
 
         :param name: str
           The name of the catalog in UC.
@@ -2069,8 +2058,7 @@ class DatabaseAPI:
           The name of the instance. This is the unique identifier for the instance.
         :param database_instance: :class:`DatabaseInstance`
         :param update_mask: str
-          The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out
-          custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.
+          The list of fields to update. This field is not yet supported, and is ignored by the server.
 
         :returns: :class:`DatabaseInstance`
         """
@@ -2089,7 +2077,7 @@ class DatabaseAPI:
     def update_synced_database_table(
         self, name: str, synced_table: SyncedDatabaseTable, update_mask: str
     ) -> SyncedDatabaseTable:
-        """This API is currently unimplemented, but exposed for Terraform support.
+        """Update a Synced Database Table.
 
         :param name: str
           Full three-part (catalog, schema, table) name of the table.

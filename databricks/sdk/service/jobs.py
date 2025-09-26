@@ -42,9 +42,6 @@ class BaseJob:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
-    effective_usage_policy_id: Optional[str] = None
-    """The id of the usage policy used by this job for cost attribution purposes."""
-
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -69,8 +66,6 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -90,8 +85,6 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -109,7 +102,6 @@ class BaseJob:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
-            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             settings=_from_dict(d, "settings", JobSettings),
@@ -154,9 +146,6 @@ class BaseRun:
     * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
-
-    effective_usage_policy_id: Optional[str] = None
-    """The id of the usage policy used by this run for cost attribution purposes."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -278,8 +267,6 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -351,8 +338,6 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -418,7 +403,6 @@ class BaseRun:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -1651,7 +1635,9 @@ class ExportRunOutput:
 
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
-    the JSON response, download and run this [Python script](/_static/examples/extract.py)."""
+    the JSON response, download and run this [Python script].
+    
+    [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
 
     def as_dict(self) -> dict:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
@@ -2236,9 +2222,6 @@ class Job:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
-    effective_usage_policy_id: Optional[str] = None
-    """The id of the usage policy used by this job for cost attribution purposes."""
-
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -2275,8 +2258,6 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -2300,8 +2281,6 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
@@ -2323,7 +2302,6 @@ class Job:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
-            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             next_page_token=d.get("next_page_token", None),
@@ -3071,8 +3049,8 @@ class JobSettings:
 
     usage_policy_id: Optional[str] = None
     """The id of the user specified usage policy to use for this job. If not specified, a default usage
-    policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for
-    the usage policy used by this workload."""
+    policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for
+    the budget policy used by this workload."""
 
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
@@ -3526,6 +3504,78 @@ class ListRunsResponse:
             prev_page_token=d.get("prev_page_token", None),
             runs=_repeated_dict(d, "runs", BaseRun),
         )
+
+
+@dataclass
+class ModelTriggerConfiguration:
+    condition: ModelTriggerConfigurationCondition
+    """The condition based on which to trigger a job run."""
+
+    aliases: Optional[List[str]] = None
+    """Aliases of the model versions to monitor. Can only be used in conjunction with condition
+    MODEL_ALIAS_SET."""
+
+    min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time has passed since the
+    last time the trigger fired. The minimum allowed value is 60 seconds."""
+
+    securable_name: Optional[str] = None
+    """Name of the securable to monitor ("mycatalog.myschema.mymodel" in the case of model-level
+    triggers, "mycatalog.myschema" in the case of schema-level triggers) or empty in the case of
+    metastore-level triggers."""
+
+    wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no model updates have occurred for the specified
+    time and can be used to wait for a series of model updates before triggering a run. The minimum
+    allowed value is 60 seconds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v for v in self.aliases]
+        if self.condition is not None:
+            body["condition"] = self.condition.value
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.condition is not None:
+            body["condition"] = self.condition
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTriggerConfiguration:
+        """Deserializes the ModelTriggerConfiguration from a dictionary."""
+        return cls(
+            aliases=d.get("aliases", None),
+            condition=_enum(d, "condition", ModelTriggerConfigurationCondition),
+            min_time_between_triggers_seconds=d.get("min_time_between_triggers_seconds", None),
+            securable_name=d.get("securable_name", None),
+            wait_after_last_change_seconds=d.get("wait_after_last_change_seconds", None),
+        )
+
+
+class ModelTriggerConfigurationCondition(Enum):
+
+    MODEL_ALIAS_SET = "MODEL_ALIAS_SET"
+    MODEL_CREATED = "MODEL_CREATED"
+    MODEL_VERSION_READY = "MODEL_VERSION_READY"
 
 
 @dataclass
@@ -4541,9 +4591,6 @@ class Run:
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
 
-    effective_usage_policy_id: Optional[str] = None
-    """The id of the usage policy used by this run for cost attribution purposes."""
-
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
@@ -4670,8 +4717,6 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4747,8 +4792,6 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
-        if self.effective_usage_policy_id is not None:
-            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4818,7 +4861,6 @@ class Run:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
-            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -5657,7 +5699,7 @@ class RunTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -5693,6 +5735,9 @@ class RunTask:
 
     description: Optional[str] = None
     """An optional description for this task."""
+
+    disabled: Optional[bool] = None
+    """Deprecated, field was never used in production."""
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
@@ -5805,9 +5850,21 @@ class RunTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
-    jobs](/jobs/spark-submit)."""
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -5856,6 +5913,8 @@ class RunTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -5953,6 +6012,8 @@ class RunTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6040,6 +6101,7 @@ class RunTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -6894,7 +6956,7 @@ class SubmitTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -6981,9 +7043,21 @@ class SubmitTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
-    jobs](/jobs/spark-submit)."""
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7373,7 +7447,7 @@ class Task:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -7490,9 +7564,21 @@ class Task:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
-    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
-    jobs](/jobs/spark-submit)."""
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7909,8 +7995,6 @@ class TerminationCodeCode(Enum):
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
-    * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will
-    be retried with a mitigation config.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -8030,6 +8114,8 @@ class TriggerSettings:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger settings."""
 
+    model: Optional[ModelTriggerConfiguration] = None
+
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
@@ -8046,6 +8132,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
@@ -8061,6 +8149,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.periodic:
@@ -8076,6 +8166,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
             table=_from_dict(d, "table", TableUpdateTriggerConfiguration),
@@ -8561,8 +8652,8 @@ class JobsAPI:
           `runNow`.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
-          policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for the
-          usage policy used by this workload.
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
