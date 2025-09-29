@@ -42,6 +42,9 @@ class BaseJob:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this job for cost attribution purposes."""
+
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -49,6 +52,10 @@ class BaseJob:
 
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
+
+    path: Optional[str] = None
+    """Path of the job object in workspace file tree, including file extension. If absent, the job
+    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
 
     settings: Optional[JobSettings] = None
     """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
@@ -66,10 +73,14 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
+        if self.path is not None:
+            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.trigger_state:
@@ -85,10 +96,14 @@ class BaseJob:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
+        if self.path is not None:
+            body["path"] = self.path
         if self.settings:
             body["settings"] = self.settings
         if self.trigger_state:
@@ -102,8 +117,10 @@ class BaseJob:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
+            path=d.get("path", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
         )
@@ -146,6 +163,9 @@ class BaseRun:
     * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
+
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this run for cost attribution purposes."""
 
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
@@ -267,6 +287,8 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -338,6 +360,8 @@ class BaseRun:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -403,6 +427,7 @@ class BaseRun:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -1635,9 +1660,7 @@ class ExportRunOutput:
 
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
-    the JSON response, download and run this [Python script].
-    
-    [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
+    the JSON response, download and run this [Python script](/_static/examples/extract.py)."""
 
     def as_dict(self) -> dict:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
@@ -2222,6 +2245,9 @@ class Job:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this job for cost attribution purposes."""
+
     has_more: Optional[bool] = None
     """Indicates if the job has more array properties (`tasks`, `job_clusters`) that are not shown.
     They can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2
@@ -2232,6 +2258,10 @@ class Job:
 
     next_page_token: Optional[str] = None
     """A token that can be used to list the next page of array properties."""
+
+    path: Optional[str] = None
+    """Path of the job object in workspace file tree, including file extension. If absent, the job
+    doesn't have a workspace object. Example: /Workspace/user@example.com/my_project/my_job.job.json"""
 
     run_as_user_name: Optional[str] = None
     """The email of an active workspace user or the application ID of a service principal that the job
@@ -2258,12 +2288,16 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
+        if self.path is not None:
+            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -2281,12 +2315,16 @@ class Job:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.has_more is not None:
             body["has_more"] = self.has_more
         if self.job_id is not None:
             body["job_id"] = self.job_id
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
+        if self.path is not None:
+            body["path"] = self.path
         if self.run_as_user_name is not None:
             body["run_as_user_name"] = self.run_as_user_name
         if self.settings:
@@ -2302,9 +2340,11 @@ class Job:
             created_time=d.get("created_time", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             has_more=d.get("has_more", None),
             job_id=d.get("job_id", None),
             next_page_token=d.get("next_page_token", None),
+            path=d.get("path", None),
             run_as_user_name=d.get("run_as_user_name", None),
             settings=_from_dict(d, "settings", JobSettings),
             trigger_state=_from_dict(d, "trigger_state", TriggerStateProto),
@@ -3007,6 +3047,10 @@ class JobSettings:
     parameters: Optional[List[JobParameterDefinition]] = None
     """Job-level parameter definitions"""
 
+    parent_path: Optional[str] = None
+    """Path of the job parent folder in workspace file tree. If absent, the job doesn't have a
+    workspace object."""
+
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. This field determines the level of compute performance
     or cost-efficiency for the run.
@@ -3049,8 +3093,8 @@ class JobSettings:
 
     usage_policy_id: Optional[str] = None
     """The id of the user specified usage policy to use for this job. If not specified, a default usage
-    policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for
-    the budget policy used by this workload."""
+    policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for
+    the usage policy used by this workload."""
 
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
@@ -3088,6 +3132,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings.as_dict()
         if self.parameters:
             body["parameters"] = [v.as_dict() for v in self.parameters]
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target.value
         if self.queue:
@@ -3143,6 +3189,8 @@ class JobSettings:
             body["notification_settings"] = self.notification_settings
         if self.parameters:
             body["parameters"] = self.parameters
+        if self.parent_path is not None:
+            body["parent_path"] = self.parent_path
         if self.performance_target is not None:
             body["performance_target"] = self.performance_target
         if self.queue:
@@ -3184,6 +3232,7 @@ class JobSettings:
             name=d.get("name", None),
             notification_settings=_from_dict(d, "notification_settings", JobNotificationSettings),
             parameters=_repeated_dict(d, "parameters", JobParameterDefinition),
+            parent_path=d.get("parent_path", None),
             performance_target=_enum(d, "performance_target", PerformanceTarget),
             queue=_from_dict(d, "queue", QueueSettings),
             run_as=_from_dict(d, "run_as", JobRunAs),
@@ -4591,6 +4640,9 @@ class Run:
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
     optimized cluster performance."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """The id of the usage policy used by this run for cost attribution purposes."""
+
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
@@ -4717,6 +4769,8 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4792,6 +4846,8 @@ class Run:
             body["description"] = self.description
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.end_time is not None:
             body["end_time"] = self.end_time
         if self.execution_duration is not None:
@@ -4861,6 +4917,7 @@ class Run:
             creator_user_name=d.get("creator_user_name", None),
             description=d.get("description", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             end_time=d.get("end_time", None),
             execution_duration=d.get("execution_duration", None),
             git_source=_from_dict(d, "git_source", GitSource),
@@ -5699,7 +5756,7 @@ class RunTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -5737,7 +5794,8 @@ class RunTask:
     """An optional description for this task."""
 
     disabled: Optional[bool] = None
-    """Deprecated, field was never used in production."""
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
@@ -5850,21 +5908,9 @@ class RunTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -6956,7 +7002,7 @@ class SubmitTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -6982,6 +7028,10 @@ class SubmitTask:
 
     description: Optional[str] = None
     """An optional description for this task."""
+
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
@@ -7043,21 +7093,9 @@ class SubmitTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7090,6 +7128,8 @@ class SubmitTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7155,6 +7195,8 @@ class SubmitTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7213,6 +7255,7 @@ class SubmitTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
@@ -7447,7 +7490,7 @@ class Task:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -7564,21 +7607,9 @@ class Task:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7995,6 +8026,8 @@ class TerminationCodeCode(Enum):
     run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.
+    * `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will
+    be retried with a mitigation config.
 
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
@@ -8547,6 +8580,7 @@ class JobsAPI:
         name: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
         parameters: Optional[List[JobParameterDefinition]] = None,
+        parent_path: Optional[str] = None,
         performance_target: Optional[PerformanceTarget] = None,
         queue: Optional[QueueSettings] = None,
         run_as: Optional[JobRunAs] = None,
@@ -8618,6 +8652,9 @@ class JobsAPI:
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param parent_path: str (optional)
+          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a workspace
+          object.
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
           cost-efficiency for the run.
@@ -8652,8 +8689,8 @@ class JobsAPI:
           `runNow`.
         :param usage_policy_id: str (optional)
           The id of the user specified usage policy to use for this job. If not specified, a default usage
-          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
-          budget policy used by this workload.
+          policy may be applied when creating or modifying the job. See `effective_usage_policy_id` for the
+          usage policy used by this workload.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
 
@@ -8692,6 +8729,8 @@ class JobsAPI:
             body["notification_settings"] = notification_settings.as_dict()
         if parameters is not None:
             body["parameters"] = [v.as_dict() for v in parameters]
+        if parent_path is not None:
+            body["parent_path"] = parent_path
         if performance_target is not None:
             body["performance_target"] = performance_target.value
         if queue is not None:

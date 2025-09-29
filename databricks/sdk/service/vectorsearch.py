@@ -195,6 +195,8 @@ class DeltaSyncVectorIndexSpecRequest:
     effective_budget_policy_id: Optional[str] = None
     """The budget policy id applied to the vector search index"""
 
+    effective_usage_policy_id: Optional[str] = None
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -221,6 +223,8 @@ class DeltaSyncVectorIndexSpecRequest:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -240,6 +244,8 @@ class DeltaSyncVectorIndexSpecRequest:
             body["columns_to_sync"] = self.columns_to_sync
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -258,6 +264,7 @@ class DeltaSyncVectorIndexSpecRequest:
         return cls(
             columns_to_sync=d.get("columns_to_sync", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -270,6 +277,8 @@ class DeltaSyncVectorIndexSpecRequest:
 class DeltaSyncVectorIndexSpecResponse:
     effective_budget_policy_id: Optional[str] = None
     """The budget policy id applied to the vector search index"""
+
+    effective_usage_policy_id: Optional[str] = None
 
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
@@ -298,6 +307,8 @@ class DeltaSyncVectorIndexSpecResponse:
         body = {}
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -317,6 +328,8 @@ class DeltaSyncVectorIndexSpecResponse:
         body = {}
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -336,6 +349,7 @@ class DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -393,7 +407,10 @@ class DirectAccessVectorIndexSpec:
 @dataclass
 class EmbeddingSourceColumn:
     embedding_model_endpoint_name: Optional[str] = None
-    """Name of the embedding model endpoint"""
+    """Name of the embedding model endpoint, used by default for both ingestion and querying."""
+
+    model_endpoint_name_for_query: Optional[str] = None
+    """Name of the embedding model endpoint which, if specified, is used for querying (not ingestion)."""
 
     name: Optional[str] = None
     """Name of the column"""
@@ -403,6 +420,8 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
+        if self.model_endpoint_name_for_query is not None:
+            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -412,6 +431,8 @@ class EmbeddingSourceColumn:
         body = {}
         if self.embedding_model_endpoint_name is not None:
             body["embedding_model_endpoint_name"] = self.embedding_model_endpoint_name
+        if self.model_endpoint_name_for_query is not None:
+            body["model_endpoint_name_for_query"] = self.model_endpoint_name_for_query
         if self.name is not None:
             body["name"] = self.name
         return body
@@ -419,7 +440,11 @@ class EmbeddingSourceColumn:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
+        return cls(
+            embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None),
+            model_endpoint_name_for_query=d.get("model_endpoint_name_for_query", None),
+            name=d.get("name", None),
+        )
 
 
 @dataclass
@@ -1109,6 +1134,24 @@ class UpdateEndpointCustomTagsResponse:
 
 
 @dataclass
+class UpdateVectorIndexUsagePolicyResponse:
+    def as_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateVectorIndexUsagePolicyResponse:
+        """Deserializes the UpdateVectorIndexUsagePolicyResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpsertDataResult:
     failed_primary_keys: Optional[List[str]] = None
     """List of primary keys for rows that failed to process."""
@@ -1417,7 +1460,12 @@ class VectorSearchEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_endpoint(
-        self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
+        self,
+        name: str,
+        endpoint_type: EndpointType,
+        *,
+        budget_policy_id: Optional[str] = None,
+        usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
 
@@ -1427,6 +1475,8 @@ class VectorSearchEndpointsAPI:
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied once we've migrated to usage policies
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
@@ -1439,6 +1489,8 @@ class VectorSearchEndpointsAPI:
             body["endpoint_type"] = endpoint_type.value
         if name is not None:
             body["name"] = name
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1457,11 +1509,12 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
-        return self.create_endpoint(budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name).result(
-            timeout=timeout
-        )
+        return self.create_endpoint(
+            budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name, usage_policy_id=usage_policy_id
+        ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete a vector search endpoint.
@@ -1527,7 +1580,8 @@ class VectorSearchEndpointsAPI:
         :param endpoint_name: str
           Name of the vector search endpoint
         :param budget_policy_id: str
-          The budget policy id to be applied
+          The budget policy id to be applied (hima-sheth) TODO: remove this once we've migrated to usage
+          policies
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         """
@@ -1863,6 +1917,22 @@ class VectorSearchIndexesAPI:
         }
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
+
+    def update_index_budget_policy(self, index_name: str) -> UpdateVectorIndexUsagePolicyResponse:
+        """Update the budget policy of an index
+
+        :param index_name: str
+          Name of the vector search index
+
+        :returns: :class:`UpdateVectorIndexUsagePolicyResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/vector-search/indexes/{index_name}/usage-policy", headers=headers)
+        return UpdateVectorIndexUsagePolicyResponse.from_dict(res)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Handles the upserting of data into a specified vector index.

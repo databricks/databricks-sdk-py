@@ -232,11 +232,11 @@ class FederationPolicy:
     oidc_policy: Optional[OidcFederationPolicy] = None
 
     policy_id: Optional[str] = None
-    """The ID of the federation policy."""
+    """The ID of the federation policy. Output only."""
 
     service_principal_id: Optional[int] = None
-    """The service principal ID that this federation policy applies to. Only set for service principal
-    federation policies."""
+    """The service principal ID that this federation policy applies to. Output only. Only set for
+    service principal federation policies."""
 
     uid: Optional[str] = None
     """Unique, immutable id of the federation policy."""

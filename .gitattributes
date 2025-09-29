@@ -9,6 +9,7 @@ databricks/sdk/service/cleanrooms.py linguist-generated=true
 databricks/sdk/service/compute.py linguist-generated=true
 databricks/sdk/service/dashboards.py linguist-generated=true
 databricks/sdk/service/database.py linguist-generated=true
+databricks/sdk/service/dataquality.py linguist-generated=true
 databricks/sdk/service/files.py linguist-generated=true
 databricks/sdk/service/iam.py linguist-generated=true
 databricks/sdk/service/iamv2.py linguist-generated=true

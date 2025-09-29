@@ -64,7 +64,190 @@ class AccessRequestDestinations:
 
 
 @dataclass
+class AccountsCreateMetastoreAssignmentResponse:
+    """The metastore assignment was successfully created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsCreateMetastoreAssignmentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsCreateMetastoreAssignmentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastoreAssignmentResponse:
+        """Deserializes the AccountsCreateMetastoreAssignmentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class AccountsCreateMetastoreResponse:
+    metastore_info: Optional[MetastoreInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsCreateMetastoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsCreateMetastoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastoreResponse:
+        """Deserializes the AccountsCreateMetastoreResponse from a dictionary."""
+        return cls(metastore_info=_from_dict(d, "metastore_info", MetastoreInfo))
+
+
+@dataclass
+class AccountsCreateStorageCredentialInfo:
+    credential_info: Optional[StorageCredentialInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsCreateStorageCredentialInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsCreateStorageCredentialInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateStorageCredentialInfo:
+        """Deserializes the AccountsCreateStorageCredentialInfo from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
+
+
+@dataclass
+class AccountsDeleteMetastoreAssignmentResponse:
+    """The metastore assignment was successfully deleted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsDeleteMetastoreAssignmentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsDeleteMetastoreAssignmentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsDeleteMetastoreAssignmentResponse:
+        """Deserializes the AccountsDeleteMetastoreAssignmentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class AccountsDeleteMetastoreResponse:
+    """The metastore was successfully deleted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsDeleteMetastoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsDeleteMetastoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsDeleteMetastoreResponse:
+        """Deserializes the AccountsDeleteMetastoreResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class AccountsDeleteStorageCredentialResponse:
+    """The storage credential was successfully deleted."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsDeleteStorageCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsDeleteStorageCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsDeleteStorageCredentialResponse:
+        """Deserializes the AccountsDeleteStorageCredentialResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class AccountsGetMetastoreResponse:
+    """The metastore was successfully returned."""
+
+    metastore_info: Optional[MetastoreInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsGetMetastoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsGetMetastoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsGetMetastoreResponse:
+        """Deserializes the AccountsGetMetastoreResponse from a dictionary."""
+        return cls(metastore_info=_from_dict(d, "metastore_info", MetastoreInfo))
+
+
+@dataclass
+class AccountsListMetastoresResponse:
+    """Metastores were returned successfully."""
+
+    metastores: Optional[List[MetastoreInfo]] = None
+    """An array of metastore information objects."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsListMetastoresResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metastores:
+            body["metastores"] = [v.as_dict() for v in self.metastores]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsListMetastoresResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metastores:
+            body["metastores"] = self.metastores
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsListMetastoresResponse:
+        """Deserializes the AccountsListMetastoresResponse from a dictionary."""
+        return cls(metastores=_repeated_dict(d, "metastores", MetastoreInfo))
+
+
+@dataclass
 class AccountsMetastoreAssignment:
+    """The workspace metastore assignment was successfully returned."""
+
     metastore_assignment: Optional[MetastoreAssignment] = None
 
     def as_dict(self) -> dict:
@@ -88,31 +271,9 @@ class AccountsMetastoreAssignment:
 
 
 @dataclass
-class AccountsMetastoreInfo:
-    metastore_info: Optional[MetastoreInfo] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountsMetastoreInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the AccountsMetastoreInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.metastore_info:
-            body["metastore_info"] = self.metastore_info
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> AccountsMetastoreInfo:
-        """Deserializes the AccountsMetastoreInfo from a dictionary."""
-        return cls(metastore_info=_from_dict(d, "metastore_info", MetastoreInfo))
-
-
-@dataclass
 class AccountsStorageCredentialInfo:
+    """The storage credential was successfully retrieved."""
+
     credential_info: Optional[StorageCredentialInfo] = None
 
     def as_dict(self) -> dict:
@@ -132,6 +293,78 @@ class AccountsStorageCredentialInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AccountsStorageCredentialInfo:
         """Deserializes the AccountsStorageCredentialInfo from a dictionary."""
+        return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
+
+
+@dataclass
+class AccountsUpdateMetastoreAssignmentResponse:
+    """The metastore assignment was successfully updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsUpdateMetastoreAssignmentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsUpdateMetastoreAssignmentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastoreAssignmentResponse:
+        """Deserializes the AccountsUpdateMetastoreAssignmentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class AccountsUpdateMetastoreResponse:
+    """The metastore update request succeeded."""
+
+    metastore_info: Optional[MetastoreInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsUpdateMetastoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsUpdateMetastoreResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metastore_info:
+            body["metastore_info"] = self.metastore_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastoreResponse:
+        """Deserializes the AccountsUpdateMetastoreResponse from a dictionary."""
+        return cls(metastore_info=_from_dict(d, "metastore_info", MetastoreInfo))
+
+
+@dataclass
+class AccountsUpdateStorageCredentialResponse:
+    """The storage credential was successfully updated."""
+
+    credential_info: Optional[StorageCredentialInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountsUpdateStorageCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountsUpdateStorageCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential_info:
+            body["credential_info"] = self.credential_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateStorageCredentialResponse:
+        """Deserializes the AccountsUpdateStorageCredentialResponse from a dictionary."""
         return cls(credential_info=_from_dict(d, "credential_info", StorageCredentialInfo))
 
 
@@ -807,11 +1040,17 @@ class CatalogInfo:
     connection_name: Optional[str] = None
     """The name of the connection to an external data source."""
 
+    conversion_info: Optional[ConversionInfo] = None
+    """Status of conversion of FOREIGN catalog to UC Native catalog."""
+
     created_at: Optional[int] = None
     """Time at which this catalog was created, in epoch milliseconds."""
 
     created_by: Optional[str] = None
     """Username of catalog creator."""
+
+    dr_replication_info: Optional[DrReplicationInfo] = None
+    """Disaster Recovery replication state snapshot."""
 
     effective_predictive_optimization_flag: Optional[EffectivePredictiveOptimizationFlag] = None
 
@@ -874,10 +1113,14 @@ class CatalogInfo:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info.as_dict()
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info.as_dict()
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag.as_dict()
         if self.enable_predictive_optimization is not None:
@@ -925,10 +1168,14 @@ class CatalogInfo:
             body["comment"] = self.comment
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.conversion_info:
+            body["conversion_info"] = self.conversion_info
         if self.created_at is not None:
             body["created_at"] = self.created_at
         if self.created_by is not None:
             body["created_by"] = self.created_by
+        if self.dr_replication_info:
+            body["dr_replication_info"] = self.dr_replication_info
         if self.effective_predictive_optimization_flag:
             body["effective_predictive_optimization_flag"] = self.effective_predictive_optimization_flag
         if self.enable_predictive_optimization is not None:
@@ -973,8 +1220,10 @@ class CatalogInfo:
             catalog_type=_enum(d, "catalog_type", CatalogType),
             comment=d.get("comment", None),
             connection_name=d.get("connection_name", None),
+            conversion_info=_from_dict(d, "conversion_info", ConversionInfo),
             created_at=d.get("created_at", None),
             created_by=d.get("created_by", None),
+            dr_replication_info=_from_dict(d, "dr_replication_info", DrReplicationInfo),
             effective_predictive_optimization_flag=_from_dict(
                 d, "effective_predictive_optimization_flag", EffectivePredictiveOptimizationFlag
             ),
@@ -1205,6 +1454,55 @@ class ColumnMask:
     def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
         return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
+
+
+@dataclass
+class ColumnMaskOptions:
+    function_name: str
+    """The fully qualified name of the column mask function. The function is called on each row of the
+    target table. The function's first argument and its return type should match the type of the
+    masked column. Required on create and update."""
+
+    on_column: str
+    """The alias of the column to be masked. The alias must refer to one of matched columns. The values
+    of the column is passed to the column mask function as the first argument. Required on create
+    and update."""
+
+    using: Optional[List[FunctionArgument]] = None
+    """Optional list of column aliases or constant literals to be passed as additional arguments to the
+    column mask function. The type of each column should match the positional argument of the column
+    mask function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnMaskOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.on_column is not None:
+            body["on_column"] = self.on_column
+        if self.using:
+            body["using"] = [v.as_dict() for v in self.using]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnMaskOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.on_column is not None:
+            body["on_column"] = self.on_column
+        if self.using:
+            body["using"] = self.using
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMaskOptions:
+        """Deserializes the ColumnMaskOptions from a dictionary."""
+        return cls(
+            function_name=d.get("function_name", None),
+            on_column=d.get("on_column", None),
+            using=_repeated_dict(d, "using", FunctionArgument),
+        )
 
 
 @dataclass
@@ -1464,7 +1762,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 37"""
+    """Next Id: 38"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1474,6 +1772,7 @@ class ConnectionType(Enum):
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
+    PALANTIR = "PALANTIR"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
@@ -1534,6 +1833,39 @@ class ContinuousUpdateStatus:
             last_processed_commit_version=d.get("last_processed_commit_version", None),
             timestamp=d.get("timestamp", None),
         )
+
+
+@dataclass
+class ConversionInfo:
+    """Status of conversion of FOREIGN entity into UC Native entity."""
+
+    state: Optional[ConversionInfoState] = None
+    """The conversion state of the resource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConversionInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConversionInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConversionInfo:
+        """Deserializes the ConversionInfo from a dictionary."""
+        return cls(state=_enum(d, "state", ConversionInfoState))
+
+
+class ConversionInfoState(Enum):
+
+    COMPLETED = "COMPLETED"
+    IN_PROGRESS = "IN_PROGRESS"
 
 
 @dataclass
@@ -1624,17 +1956,144 @@ class CreateAccessRequestResponse:
 
 
 @dataclass
+class CreateAccountsMetastore:
+    name: str
+    """The user-specified name of the metastore."""
+
+    region: Optional[str] = None
+    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
+
+    storage_root: Optional[str] = None
+    """The storage root URL for metastore"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAccountsMetastore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAccountsMetastore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.region is not None:
+            body["region"] = self.region
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAccountsMetastore:
+        """Deserializes the CreateAccountsMetastore from a dictionary."""
+        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
+
+
+@dataclass
+class CreateAccountsStorageCredential:
+    name: str
+    """The credential name. The name must be unique among storage and service credentials within the
+    metastore."""
+
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
+    """The AWS IAM role configuration."""
+
+    azure_managed_identity: Optional[AzureManagedIdentityRequest] = None
+    """The Azure managed identity configuration."""
+
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
+    comment: Optional[str] = None
+    """Comment associated with the credential."""
+
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
+    """The Databricks managed GCP service account configuration."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAccountsStorageCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAccountsStorageCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
+        if self.name is not None:
+            body["name"] = self.name
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateAccountsStorageCredential:
+        """Deserializes the CreateAccountsStorageCredential from a dictionary."""
+        return cls(
+            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
+            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityRequest),
+            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
+            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
+            comment=d.get("comment", None),
+            databricks_gcp_service_account=_from_dict(
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
+            ),
+            name=d.get("name", None),
+            read_only=d.get("read_only", None),
+        )
+
+
+@dataclass
 class CreateFunction:
     name: str
     """Name of function, relative to parent schema."""
 
     catalog_name: str
-    """Name of parent catalog."""
+    """Name of parent Catalog."""
 
     schema_name: str
-    """Name of parent schema relative to its parent catalog."""
+    """Name of parent Schema relative to its parent Catalog."""
 
     input_params: FunctionParameterInfos
+    """Function input parameters."""
 
     data_type: ColumnTypeName
     """Scalar function return data type."""
@@ -1644,8 +2103,8 @@ class CreateFunction:
 
     routine_body: CreateFunctionRoutineBody
     """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
+    specified in the **external_language** field, and the **return_params** of the function cannot
+    be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be
     **NO_SQL**."""
 
     routine_definition: str
@@ -1685,7 +2144,7 @@ class CreateFunction:
     """Table function return parameters."""
 
     routine_dependencies: Optional[DependencyList] = None
-    """Function dependencies."""
+    """function dependencies."""
 
     sql_path: Optional[str] = None
     """List of schemes whose objects can be referenced without qualification."""
@@ -1813,72 +2272,26 @@ class CreateFunction:
 
 
 class CreateFunctionParameterStyle(Enum):
-    """Function parameter style. **S** is the value for SQL."""
 
     S = "S"
 
 
 class CreateFunctionRoutineBody(Enum):
-    """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-    **NO_SQL**."""
 
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class CreateFunctionSecurityType(Enum):
-    """The security type of the function."""
 
     DEFINER = "DEFINER"
 
 
 class CreateFunctionSqlDataAccess(Enum):
-    """Function SQL data access."""
 
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
     READS_SQL_DATA = "READS_SQL_DATA"
-
-
-@dataclass
-class CreateMetastore:
-    name: str
-    """The user-specified name of the metastore."""
-
-    region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
-
-    storage_root: Optional[str] = None
-    """The storage root URL for metastore"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateMetastore into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.region is not None:
-            body["region"] = self.region
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateMetastore into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.name is not None:
-            body["name"] = self.name
-        if self.region is not None:
-            body["region"] = self.region
-        if self.storage_root is not None:
-            body["storage_root"] = self.storage_root
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastore:
-        """Deserializes the CreateMetastore from a dictionary."""
-        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
 
 
 @dataclass
@@ -1981,119 +2394,6 @@ class CreateRequestExternalLineage:
             properties=d.get("properties", None),
             source=_from_dict(d, "source", ExternalLineageObject),
             target=_from_dict(d, "target", ExternalLineageObject),
-        )
-
-
-@dataclass
-class CreateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
-        """Deserializes the CreateResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class CreateStorageCredential:
-    name: str
-    """The credential name. The name must be unique among storage and service credentials within the
-    metastore."""
-
-    aws_iam_role: Optional[AwsIamRoleRequest] = None
-    """The AWS IAM role configuration."""
-
-    azure_managed_identity: Optional[AzureManagedIdentityRequest] = None
-    """The Azure managed identity configuration."""
-
-    azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration."""
-
-    cloudflare_api_token: Optional[CloudflareApiToken] = None
-    """The Cloudflare API token configuration."""
-
-    comment: Optional[str] = None
-    """Comment associated with the credential."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The Databricks managed GCP service account configuration."""
-
-    read_only: Optional[bool] = None
-    """Whether the credential is usable only for read operations. Only applicable when purpose is
-    **STORAGE**."""
-
-    skip_validation: Optional[bool] = None
-    """Supplying true to this argument skips validation of the created credential."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateStorageCredential into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal.as_dict()
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.name is not None:
-            body["name"] = self.name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateStorageCredential into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.name is not None:
-            body["name"] = self.name
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateStorageCredential:
-        """Deserializes the CreateStorageCredential from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityRequest),
-            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
-            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
-            comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(
-                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
-            ),
-            name=d.get("name", None),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
         )
 
 
@@ -2535,6 +2835,24 @@ class DeleteMonitorResponse:
 
 
 @dataclass
+class DeletePolicyResponse:
+    def as_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePolicyResponse:
+        """Deserializes the DeletePolicyResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteRequestExternalLineage:
     source: ExternalLineageObject
     """Source object of the external lineage relationship."""
@@ -2752,6 +3070,38 @@ class DisableResponse:
 
 
 @dataclass
+class DrReplicationInfo:
+    """Metadata related to Disaster Recovery."""
+
+    status: Optional[DrReplicationStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DrReplicationInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DrReplicationInfo:
+        """Deserializes the DrReplicationInfo from a dictionary."""
+        return cls(status=_enum(d, "status", DrReplicationStatus))
+
+
+class DrReplicationStatus(Enum):
+
+    DR_REPLICATION_STATUS_PRIMARY = "DR_REPLICATION_STATUS_PRIMARY"
+    DR_REPLICATION_STATUS_SECONDARY = "DR_REPLICATION_STATUS_SECONDARY"
+
+
+@dataclass
 class EffectivePermissionsList:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
@@ -2833,8 +3183,6 @@ class EffectivePredictiveOptimizationFlag:
 
 
 class EffectivePredictiveOptimizationFlagInheritedFromType(Enum):
-    """The type of the object from which the flag was inherited. If there was no inheritance, this
-    field is left blank."""
 
     CATALOG = "CATALOG"
     SCHEMA = "SCHEMA"
@@ -2974,15 +3322,14 @@ class EntityTagAssignment:
     """Represents a tag assignment to an entity"""
 
     entity_name: str
-    """Required. The fully qualified structured name of the entity to which the tag is assigned. The
-    entity name should follow the format of: entity_type/fully_qualified_entity_name. eg.
-    catalogs/my_catalog, schemas/my_catalog.my_schema,
-    columns/my_catalog.my_schema.my_table.my_column. When containing segments with special
-    characters (e.g. '/'), the whole segment must be wrapped with backticks. For example,
-    columns/catalog.schema.table.\`column/a\`"""
+    """The fully qualified name of the entity to which the tag is assigned"""
 
     tag_key: str
     """The key of the tag"""
+
+    entity_type: str
+    """The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas,
+    tables, columns, volumes."""
 
     tag_value: Optional[str] = None
     """The value of the tag"""
@@ -2992,6 +3339,8 @@ class EntityTagAssignment:
         body = {}
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
@@ -3003,6 +3352,8 @@ class EntityTagAssignment:
         body = {}
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
+        if self.entity_type is not None:
+            body["entity_type"] = self.entity_type
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
@@ -3013,7 +3364,10 @@ class EntityTagAssignment:
     def from_dict(cls, d: Dict[str, Any]) -> EntityTagAssignment:
         """Deserializes the EntityTagAssignment from a dictionary."""
         return cls(
-            entity_name=d.get("entity_name", None), tag_key=d.get("tag_key", None), tag_value=d.get("tag_value", None)
+            entity_name=d.get("entity_name", None),
+            entity_type=d.get("entity_type", None),
+            tag_key=d.get("tag_key", None),
+            tag_value=d.get("tag_value", None),
         )
 
 
@@ -3619,7 +3973,8 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings."""
+    """File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly
+    one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -4044,6 +4399,38 @@ class ForeignKeyConstraint:
 
 
 @dataclass
+class FunctionArgument:
+    alias: Optional[str] = None
+    """The alias of a matched column."""
+
+    constant: Optional[str] = None
+    """A constant literal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FunctionArgument into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FunctionArgument into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionArgument:
+        """Deserializes the FunctionArgument from a dictionary."""
+        return cls(alias=d.get("alias", None), constant=d.get("constant", None))
+
+
+@dataclass
 class FunctionDependency:
     """A function that is dependent on a SQL object."""
 
@@ -4078,7 +4465,7 @@ class FunctionInfo:
     through the BROWSE privilege when include_browse is enabled in the request."""
 
     catalog_name: Optional[str] = None
-    """Name of parent catalog."""
+    """Name of parent Catalog."""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -4102,12 +4489,13 @@ class FunctionInfo:
     """Pretty printed function data type."""
 
     full_name: Optional[str] = None
-    """Full name of function, in form of __catalog_name__.__schema_name__.__function__name__"""
+    """Full name of Function, in form of **catalog_name**.**schema_name**.**function_name**"""
 
     function_id: Optional[str] = None
     """Id of Function, relative to parent schema."""
 
     input_params: Optional[FunctionParameterInfos] = None
+    """Function input parameters."""
 
     is_deterministic: Optional[bool] = None
     """Whether the function is deterministic."""
@@ -4122,7 +4510,7 @@ class FunctionInfo:
     """Name of function, relative to parent schema."""
 
     owner: Optional[str] = None
-    """Username of current owner of function."""
+    """Username of current owner of the function."""
 
     parameter_style: Optional[FunctionInfoParameterStyle] = None
     """Function parameter style. **S** is the value for SQL."""
@@ -4135,18 +4523,18 @@ class FunctionInfo:
 
     routine_body: Optional[FunctionInfoRoutineBody] = None
     """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
+    specified in the **external_language** field, and the **return_params** of the function cannot
+    be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be
     **NO_SQL**."""
 
     routine_definition: Optional[str] = None
     """Function body."""
 
     routine_dependencies: Optional[DependencyList] = None
-    """Function dependencies."""
+    """function dependencies."""
 
     schema_name: Optional[str] = None
-    """Name of parent schema relative to its parent catalog."""
+    """Name of parent Schema relative to its parent Catalog."""
 
     security_type: Optional[FunctionInfoSecurityType] = None
     """Function security type."""
@@ -4161,10 +4549,10 @@ class FunctionInfo:
     """List of schemes whose objects can be referenced without qualification."""
 
     updated_at: Optional[int] = None
-    """Time at which this function was created, in epoch milliseconds."""
+    """Time at which this function was last modified, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
-    """Username of user who last modified function."""
+    """Username of user who last modified the function."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionInfo into a dictionary suitable for use as a JSON request body."""
@@ -4334,29 +4722,22 @@ class FunctionInfo:
 
 
 class FunctionInfoParameterStyle(Enum):
-    """Function parameter style. **S** is the value for SQL."""
 
     S = "S"
 
 
 class FunctionInfoRoutineBody(Enum):
-    """Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-    **NO_SQL**."""
 
     EXTERNAL = "EXTERNAL"
     SQL = "SQL"
 
 
 class FunctionInfoSecurityType(Enum):
-    """The security type of the function."""
 
     DEFINER = "DEFINER"
 
 
 class FunctionInfoSqlDataAccess(Enum):
-    """Function SQL data access."""
 
     CONTAINS_SQL = "CONTAINS_SQL"
     NO_SQL = "NO_SQL"
@@ -4366,12 +4747,13 @@ class FunctionInfoSqlDataAccess(Enum):
 @dataclass
 class FunctionParameterInfo:
     name: str
-    """Name of parameter."""
+    """Name of Parameter."""
 
     type_text: str
     """Full data type spec, SQL/catalogString text."""
 
     type_name: ColumnTypeName
+    """Name of type (INT, STRUCT, MAP, etc.)"""
 
     position: int
     """Ordinal position of column (starting at position 0)."""
@@ -4383,8 +4765,10 @@ class FunctionParameterInfo:
     """Default value of the parameter."""
 
     parameter_mode: Optional[FunctionParameterMode] = None
+    """Function parameter mode."""
 
     parameter_type: Optional[FunctionParameterType] = None
+    """Function parameter type."""
 
     type_interval_type: Optional[str] = None
     """Format of IntervalType."""
@@ -4478,7 +4862,6 @@ class FunctionParameterInfo:
 @dataclass
 class FunctionParameterInfos:
     parameters: Optional[List[FunctionParameterInfo]] = None
-    """The array of __FunctionParameterInfo__ definitions of the function's parameters."""
 
     def as_dict(self) -> dict:
         """Serializes the FunctionParameterInfos into a dictionary suitable for use as a JSON request body."""
@@ -4501,13 +4884,11 @@ class FunctionParameterInfos:
 
 
 class FunctionParameterMode(Enum):
-    """The mode of the function parameter."""
 
     IN = "IN"
 
 
 class FunctionParameterType(Enum):
-    """The type of function parameter."""
 
     COLUMN = "COLUMN"
     PARAM = "PARAM"
@@ -4572,6 +4953,77 @@ class GcpPubsub:
         """Deserializes the GcpPubsub from a dictionary."""
         return cls(
             managed_resource_id=d.get("managed_resource_id", None), subscription_name=d.get("subscription_name", None)
+        )
+
+
+@dataclass
+class GenerateTemporaryPathCredentialResponse:
+    aws_temp_credentials: Optional[AwsCredentials] = None
+
+    azure_aad: Optional[AzureActiveDirectoryToken] = None
+
+    azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+
+    expiration_time: Optional[int] = None
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
+
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+
+    r2_temp_credentials: Optional[R2Credentials] = None
+
+    url: Optional[str] = None
+    """The URL of the storage path accessible by the temporary credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryPathCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials.as_dict()
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad.as_dict()
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas.as_dict()
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials.as_dict()
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenerateTemporaryPathCredentialResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_temp_credentials:
+            body["aws_temp_credentials"] = self.aws_temp_credentials
+        if self.azure_aad:
+            body["azure_aad"] = self.azure_aad
+        if self.azure_user_delegation_sas:
+            body["azure_user_delegation_sas"] = self.azure_user_delegation_sas
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.gcp_oauth_token:
+            body["gcp_oauth_token"] = self.gcp_oauth_token
+        if self.r2_temp_credentials:
+            body["r2_temp_credentials"] = self.r2_temp_credentials
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenerateTemporaryPathCredentialResponse:
+        """Deserializes the GenerateTemporaryPathCredentialResponse from a dictionary."""
+        return cls(
+            aws_temp_credentials=_from_dict(d, "aws_temp_credentials", AwsCredentials),
+            azure_aad=_from_dict(d, "azure_aad", AzureActiveDirectoryToken),
+            azure_user_delegation_sas=_from_dict(d, "azure_user_delegation_sas", AzureUserDelegationSas),
+            expiration_time=d.get("expiration_time", None),
+            gcp_oauth_token=_from_dict(d, "gcp_oauth_token", GcpOauthToken),
+            r2_temp_credentials=_from_dict(d, "r2_temp_credentials", R2Credentials),
+            url=d.get("url", None),
         )
 
 
@@ -5017,7 +5469,7 @@ class LineageDirection(Enum):
 
 @dataclass
 class ListAccountMetastoreAssignmentsResponse:
-    """The list of workspaces to which the given metastore is assigned."""
+    """The metastore assignments were successfully returned."""
 
     workspace_ids: Optional[List[int]] = None
 
@@ -5043,6 +5495,8 @@ class ListAccountMetastoreAssignmentsResponse:
 
 @dataclass
 class ListAccountStorageCredentialsResponse:
+    """The metastore storage credentials were successfully returned."""
+
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
     """An array of metastore storage credentials."""
 
@@ -5411,6 +5865,39 @@ class ListModelVersionsResponse:
 
 
 @dataclass
+class ListPoliciesResponse:
+    next_page_token: Optional[str] = None
+    """Optional opaque token for continuing pagination. `page_token` should be set to this value for
+    the next request to retrieve the next page of results."""
+
+    policies: Optional[List[PolicyInfo]] = None
+    """The list of retrieved policies."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = [v.as_dict() for v in self.policies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = self.policies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListPoliciesResponse:
+        """Deserializes the ListPoliciesResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", PolicyInfo))
+
+
+@dataclass
 class ListQuotasResponse:
     next_page_token: Optional[str] = None
     """Opaque token to retrieve the next page of results. Absent if there are no more pages.
@@ -5680,6 +6167,38 @@ class ListVolumesResponseContent:
         return cls(next_page_token=d.get("next_page_token", None), volumes=_repeated_dict(d, "volumes", VolumeInfo))
 
 
+@dataclass
+class MatchColumn:
+    alias: Optional[str] = None
+    """Optional alias of the matched column."""
+
+    condition: Optional[str] = None
+    """The condition expression used to match a table column."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MatchColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.condition is not None:
+            body["condition"] = self.condition
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MatchColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alias is not None:
+            body["alias"] = self.alias
+        if self.condition is not None:
+            body["condition"] = self.condition
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MatchColumn:
+        """Deserializes the MatchColumn from a dictionary."""
+        return cls(alias=d.get("alias", None), condition=d.get("condition", None))
+
+
 class MatchType(Enum):
     """The artifact pattern matching type"""
 
@@ -5695,7 +6214,8 @@ class MetastoreAssignment:
     """The unique ID of the metastore."""
 
     default_catalog_name: Optional[str] = None
-    """The name of the default catalog in the metastore."""
+    """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the MetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -5912,10 +6432,6 @@ class ModelVersionInfo:
     aliases: Optional[List[RegisteredModelAlias]] = None
     """List of aliases associated with the model version"""
 
-    browse_only: Optional[bool] = None
-    """Indicates whether the principal is limited to retrieving metadata for the associated object
-    through the BROWSE privilege when include_browse is enabled in the request."""
-
     catalog_name: Optional[str] = None
     """The name of the catalog containing the model version"""
 
@@ -5974,8 +6490,6 @@ class ModelVersionInfo:
         body = {}
         if self.aliases:
             body["aliases"] = [v.as_dict() for v in self.aliases]
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -6017,8 +6531,6 @@ class ModelVersionInfo:
         body = {}
         if self.aliases:
             body["aliases"] = self.aliases
-        if self.browse_only is not None:
-            body["browse_only"] = self.browse_only
         if self.catalog_name is not None:
             body["catalog_name"] = self.catalog_name
         if self.comment is not None:
@@ -6060,7 +6572,6 @@ class ModelVersionInfo:
         """Deserializes the ModelVersionInfo from a dictionary."""
         return cls(
             aliases=_repeated_dict(d, "aliases", RegisteredModelAlias),
-            browse_only=d.get("browse_only", None),
             catalog_name=d.get("catalog_name", None),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
@@ -6082,11 +6593,9 @@ class ModelVersionInfo:
 
 
 class ModelVersionInfoStatus(Enum):
-    """Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
-    status, then move to READY status once the model version files are uploaded and the model
-    version is finalized. Only model versions in READY status can be loaded for inference or served."""
 
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
+    MODEL_VERSION_STATUS_UNKNOWN = "MODEL_VERSION_STATUS_UNKNOWN"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
     READY = "READY"
 
@@ -7251,6 +7760,13 @@ class OptionSpecOptionType(Enum):
     OPTION_STRING = "OPTION_STRING"
 
 
+class PathOperation(Enum):
+
+    PATH_CREATE_TABLE = "PATH_CREATE_TABLE"
+    PATH_READ = "PATH_READ"
+    PATH_READ_WRITE = "PATH_READ_WRITE"
+
+
 @dataclass
 class PermissionsChange:
     add: Optional[List[Privilege]] = None
@@ -7372,6 +7888,178 @@ class PipelineProgress:
 
 
 @dataclass
+class PolicyInfo:
+    to_principals: List[str]
+    """List of user or group names that the policy applies to. Required on create and optional on
+    update."""
+
+    for_securable_type: SecurableType
+    """Type of securables that the policy should take effect on. Only `TABLE` is supported at this
+    moment. Required on create and optional on update."""
+
+    policy_type: PolicyType
+    """Type of the policy. Required on create and ignored on update."""
+
+    column_mask: Optional[ColumnMaskOptions] = None
+    """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
+    Required on create and optional on update. When specified on update, the new options will
+    replace the existing options as a whole."""
+
+    comment: Optional[str] = None
+    """Optional description of the policy."""
+
+    created_at: Optional[int] = None
+    """Time at which the policy was created, in epoch milliseconds. Output only."""
+
+    created_by: Optional[str] = None
+    """Username of the user who created the policy. Output only."""
+
+    except_principals: Optional[List[str]] = None
+    """Optional list of user or group names that should be excluded from the policy."""
+
+    id: Optional[str] = None
+    """Unique identifier of the policy. This field is output only and is generated by the system."""
+
+    match_columns: Optional[List[MatchColumn]] = None
+    """Optional list of condition expressions used to match table columns. Only valid when
+    `for_securable_type` is `TABLE`. When specified, the policy only applies to tables whose columns
+    satisfy all match conditions."""
+
+    name: Optional[str] = None
+    """Name of the policy. Required on create and optional on update. To rename the policy, set `name`
+    to a different value on update."""
+
+    on_securable_fullname: Optional[str] = None
+    """Full name of the securable on which the policy is defined. Required on create and ignored on
+    update."""
+
+    on_securable_type: Optional[SecurableType] = None
+    """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
+    supported at this moment. Required on create and ignored on update."""
+
+    row_filter: Optional[RowFilterOptions] = None
+    """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
+    Required on create and optional on update. When specified on update, the new options will
+    replace the existing options as a whole."""
+
+    updated_at: Optional[int] = None
+    """Time at which the policy was last modified, in epoch milliseconds. Output only."""
+
+    updated_by: Optional[str] = None
+    """Username of the user who last modified the policy. Output only."""
+
+    when_condition: Optional[str] = None
+    """Optional condition when the policy should take effect."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_mask:
+            body["column_mask"] = self.column_mask.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.except_principals:
+            body["except_principals"] = [v for v in self.except_principals]
+        if self.for_securable_type is not None:
+            body["for_securable_type"] = self.for_securable_type.value
+        if self.id is not None:
+            body["id"] = self.id
+        if self.match_columns:
+            body["match_columns"] = [v.as_dict() for v in self.match_columns]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.on_securable_fullname is not None:
+            body["on_securable_fullname"] = self.on_securable_fullname
+        if self.on_securable_type is not None:
+            body["on_securable_type"] = self.on_securable_type.value
+        if self.policy_type is not None:
+            body["policy_type"] = self.policy_type.value
+        if self.row_filter:
+            body["row_filter"] = self.row_filter.as_dict()
+        if self.to_principals:
+            body["to_principals"] = [v for v in self.to_principals]
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.when_condition is not None:
+            body["when_condition"] = self.when_condition
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_mask:
+            body["column_mask"] = self.column_mask
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.except_principals:
+            body["except_principals"] = self.except_principals
+        if self.for_securable_type is not None:
+            body["for_securable_type"] = self.for_securable_type
+        if self.id is not None:
+            body["id"] = self.id
+        if self.match_columns:
+            body["match_columns"] = self.match_columns
+        if self.name is not None:
+            body["name"] = self.name
+        if self.on_securable_fullname is not None:
+            body["on_securable_fullname"] = self.on_securable_fullname
+        if self.on_securable_type is not None:
+            body["on_securable_type"] = self.on_securable_type
+        if self.policy_type is not None:
+            body["policy_type"] = self.policy_type
+        if self.row_filter:
+            body["row_filter"] = self.row_filter
+        if self.to_principals:
+            body["to_principals"] = self.to_principals
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
+        if self.when_condition is not None:
+            body["when_condition"] = self.when_condition
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyInfo:
+        """Deserializes the PolicyInfo from a dictionary."""
+        return cls(
+            column_mask=_from_dict(d, "column_mask", ColumnMaskOptions),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            except_principals=d.get("except_principals", None),
+            for_securable_type=_enum(d, "for_securable_type", SecurableType),
+            id=d.get("id", None),
+            match_columns=_repeated_dict(d, "match_columns", MatchColumn),
+            name=d.get("name", None),
+            on_securable_fullname=d.get("on_securable_fullname", None),
+            on_securable_type=_enum(d, "on_securable_type", SecurableType),
+            policy_type=_enum(d, "policy_type", PolicyType),
+            row_filter=_from_dict(d, "row_filter", RowFilterOptions),
+            to_principals=d.get("to_principals", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+            when_condition=d.get("when_condition", None),
+        )
+
+
+class PolicyType(Enum):
+
+    POLICY_TYPE_COLUMN_MASK = "POLICY_TYPE_COLUMN_MASK"
+    POLICY_TYPE_ROW_FILTER = "POLICY_TYPE_ROW_FILTER"
+
+
+@dataclass
 class PrimaryKeyConstraint:
     name: str
     """The name of the constraint."""
@@ -7490,6 +8178,7 @@ class Privilege(Enum):
     CREATE_VOLUME = "CREATE_VOLUME"
     EXECUTE = "EXECUTE"
     EXECUTE_CLEAN_ROOM_TASK = "EXECUTE_CLEAN_ROOM_TASK"
+    EXTERNAL_USE_SCHEMA = "EXTERNAL_USE_SCHEMA"
     MANAGE = "MANAGE"
     MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
     MODIFY = "MODIFY"
@@ -7770,10 +8459,20 @@ class RegenerateDashboardResponse:
 
 @dataclass
 class RegisteredModelAlias:
-    """Registered model alias."""
-
     alias_name: Optional[str] = None
     """Name of the alias, e.g. 'champion' or 'latest_stable'"""
+
+    catalog_name: Optional[str] = None
+    """The name of the catalog containing the model version"""
+
+    id: Optional[str] = None
+    """The unique identifier of the alias"""
+
+    model_name: Optional[str] = None
+    """The name of the parent registered model of the model version, relative to parent schema"""
+
+    schema_name: Optional[str] = None
+    """The name of the schema containing the model version, relative to parent catalog"""
 
     version_num: Optional[int] = None
     """Integer version number of the model version to which this alias points."""
@@ -7783,6 +8482,14 @@ class RegisteredModelAlias:
         body = {}
         if self.alias_name is not None:
             body["alias_name"] = self.alias_name
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.id is not None:
+            body["id"] = self.id
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.version_num is not None:
             body["version_num"] = self.version_num
         return body
@@ -7792,6 +8499,14 @@ class RegisteredModelAlias:
         body = {}
         if self.alias_name is not None:
             body["alias_name"] = self.alias_name
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.id is not None:
+            body["id"] = self.id
+        if self.model_name is not None:
+            body["model_name"] = self.model_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
         if self.version_num is not None:
             body["version_num"] = self.version_num
         return body
@@ -7799,7 +8514,14 @@ class RegisteredModelAlias:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAlias:
         """Deserializes the RegisteredModelAlias from a dictionary."""
-        return cls(alias_name=d.get("alias_name", None), version_num=d.get("version_num", None))
+        return cls(
+            alias_name=d.get("alias_name", None),
+            catalog_name=d.get("catalog_name", None),
+            id=d.get("id", None),
+            model_name=d.get("model_name", None),
+            schema_name=d.get("schema_name", None),
+            version_num=d.get("version_num", None),
+        )
 
 
 @dataclass
@@ -7932,6 +8654,42 @@ class RegisteredModelInfo:
             updated_at=d.get("updated_at", None),
             updated_by=d.get("updated_by", None),
         )
+
+
+@dataclass
+class RowFilterOptions:
+    function_name: str
+    """The fully qualified name of the row filter function. The function is called on each row of the
+    target table. It should return a boolean value indicating whether the row should be visible to
+    the user. Required on create and update."""
+
+    using: Optional[List[FunctionArgument]] = None
+    """Optional list of column aliases or constant literals to be passed as arguments to the row filter
+    function. The type of each column should match the positional argument of the row filter
+    function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RowFilterOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using:
+            body["using"] = [v.as_dict() for v in self.using]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RowFilterOptions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.function_name is not None:
+            body["function_name"] = self.function_name
+        if self.using:
+            body["using"] = self.using
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RowFilterOptions:
+        """Deserializes the RowFilterOptions from a dictionary."""
+        return cls(function_name=d.get("function_name", None), using=_repeated_dict(d, "using", FunctionArgument))
 
 
 @dataclass
@@ -8149,6 +8907,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
+    """Latest kind: CONNECTION_SHAREPOINT_OAUTH_M2M = 264; Next id:265"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8159,6 +8918,7 @@ class SecurableKind(Enum):
     TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
     TABLE_DELTA_UNIFORM_HUDI_EXTERNAL = "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL"
     TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL = "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+    TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING = "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
     TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL = (
         "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
     )
@@ -8189,6 +8949,7 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
+    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -8206,6 +8967,7 @@ class SecurableKind(Enum):
     TABLE_MATERIALIZED_VIEW = "TABLE_MATERIALIZED_VIEW"
     TABLE_MATERIALIZED_VIEW_DELTASHARING = "TABLE_MATERIALIZED_VIEW_DELTASHARING"
     TABLE_METRIC_VIEW = "TABLE_METRIC_VIEW"
+    TABLE_METRIC_VIEW_DELTASHARING = "TABLE_METRIC_VIEW_DELTASHARING"
     TABLE_ONLINE_VECTOR_INDEX_DIRECT = "TABLE_ONLINE_VECTOR_INDEX_DIRECT"
     TABLE_ONLINE_VECTOR_INDEX_REPLICA = "TABLE_ONLINE_VECTOR_INDEX_REPLICA"
     TABLE_ONLINE_VIEW = "TABLE_ONLINE_VIEW"
@@ -8562,7 +9324,7 @@ class SystemSchemaInfo:
     state: str
     """The current state of enablement for the system schema. An empty string means the system schema
     is available and ready for opt-in. Possible values: AVAILABLE | ENABLE_INITIALIZED |
-    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE"""
+    ENABLE_COMPLETED | DISABLE_INITIALIZED | UNAVAILABLE | MANAGED"""
 
     def as_dict(self) -> dict:
         """Serializes the SystemSchemaInfo into a dictionary suitable for use as a JSON request body."""
@@ -8609,6 +9371,7 @@ class SystemType(Enum):
     SAP = "SAP"
     SERVICENOW = "SERVICENOW"
     SNOWFLAKE = "SNOWFLAKE"
+    STREAM_NATIVE = "STREAM_NATIVE"
     TABLEAU = "TABLEAU"
     TERADATA = "TERADATA"
     WORKDAY = "WORKDAY"
@@ -9240,6 +10003,174 @@ class UnassignResponse:
 
 
 @dataclass
+class UpdateAccountsMetastore:
+    delta_sharing_organization_name: Optional[str] = None
+    """The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta
+    Sharing as the official name."""
+
+    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
+    """The lifetime of delta sharing recipient token in seconds."""
+
+    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
+    """The scope of Delta Sharing enabled for the metastore."""
+
+    owner: Optional[str] = None
+    """The owner of the metastore."""
+
+    privilege_model_version: Optional[str] = None
+    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
+
+    storage_root_credential_id: Optional[str] = None
+    """UUID of storage credential to access the metastore storage_root."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAccountsMetastore into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_sharing_organization_name is not None:
+            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
+        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
+            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
+                self.delta_sharing_recipient_token_lifetime_in_seconds
+            )
+        if self.delta_sharing_scope is not None:
+            body["delta_sharing_scope"] = self.delta_sharing_scope.value
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.privilege_model_version is not None:
+            body["privilege_model_version"] = self.privilege_model_version
+        if self.storage_root_credential_id is not None:
+            body["storage_root_credential_id"] = self.storage_root_credential_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAccountsMetastore into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_sharing_organization_name is not None:
+            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
+        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
+            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
+                self.delta_sharing_recipient_token_lifetime_in_seconds
+            )
+        if self.delta_sharing_scope is not None:
+            body["delta_sharing_scope"] = self.delta_sharing_scope
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.privilege_model_version is not None:
+            body["privilege_model_version"] = self.privilege_model_version
+        if self.storage_root_credential_id is not None:
+            body["storage_root_credential_id"] = self.storage_root_credential_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAccountsMetastore:
+        """Deserializes the UpdateAccountsMetastore from a dictionary."""
+        return cls(
+            delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
+            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
+                "delta_sharing_recipient_token_lifetime_in_seconds", None
+            ),
+            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
+            owner=d.get("owner", None),
+            privilege_model_version=d.get("privilege_model_version", None),
+            storage_root_credential_id=d.get("storage_root_credential_id", None),
+        )
+
+
+@dataclass
+class UpdateAccountsStorageCredential:
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
+    """The AWS IAM role configuration."""
+
+    azure_managed_identity: Optional[AzureManagedIdentityResponse] = None
+    """The Azure managed identity configuration."""
+
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
+    comment: Optional[str] = None
+    """Comment associated with the credential."""
+
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
+    """The Databricks managed GCP service account configuration."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
+    owner: Optional[str] = None
+    """Username of current owner of credential."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAccountsStorageCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role.as_dict()
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
+        if self.isolation_mode is not None:
+            body["isolation_mode"] = self.isolation_mode.value
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAccountsStorageCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_iam_role:
+            body["aws_iam_role"] = self.aws_iam_role
+        if self.azure_managed_identity:
+            body["azure_managed_identity"] = self.azure_managed_identity
+        if self.azure_service_principal:
+            body["azure_service_principal"] = self.azure_service_principal
+        if self.cloudflare_api_token:
+            body["cloudflare_api_token"] = self.cloudflare_api_token
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.databricks_gcp_service_account:
+            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
+        if self.isolation_mode is not None:
+            body["isolation_mode"] = self.isolation_mode
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.read_only is not None:
+            body["read_only"] = self.read_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAccountsStorageCredential:
+        """Deserializes the UpdateAccountsStorageCredential from a dictionary."""
+        return cls(
+            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
+            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityResponse),
+            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
+            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
+            comment=d.get("comment", None),
+            databricks_gcp_service_account=_from_dict(
+                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
+            ),
+            isolation_mode=_enum(d, "isolation_mode", IsolationMode),
+            owner=d.get("owner", None),
+            read_only=d.get("read_only", None),
+        )
+
+
+@dataclass
 class UpdateAssignmentResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateAssignmentResponse into a dictionary suitable for use as a JSON request body."""
@@ -9280,96 +10211,6 @@ class UpdateCatalogWorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalogWorkspaceBindingsResponse:
         """Deserializes the UpdateCatalogWorkspaceBindingsResponse from a dictionary."""
         return cls(workspaces=d.get("workspaces", None))
-
-
-@dataclass
-class UpdateMetastore:
-    delta_sharing_organization_name: Optional[str] = None
-    """The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta
-    Sharing as the official name."""
-
-    delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None
-    """The lifetime of delta sharing recipient token in seconds."""
-
-    delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
-    """The scope of Delta Sharing enabled for the metastore."""
-
-    id: Optional[str] = None
-    """Unique ID of the metastore."""
-
-    new_name: Optional[str] = None
-    """New name for the metastore."""
-
-    owner: Optional[str] = None
-    """The owner of the metastore."""
-
-    privilege_model_version: Optional[str] = None
-    """Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`)."""
-
-    storage_root_credential_id: Optional[str] = None
-    """UUID of storage credential to access the metastore storage_root."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateMetastore into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.delta_sharing_organization_name is not None:
-            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
-        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
-                self.delta_sharing_recipient_token_lifetime_in_seconds
-            )
-        if self.delta_sharing_scope is not None:
-            body["delta_sharing_scope"] = self.delta_sharing_scope.value
-        if self.id is not None:
-            body["id"] = self.id
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.privilege_model_version is not None:
-            body["privilege_model_version"] = self.privilege_model_version
-        if self.storage_root_credential_id is not None:
-            body["storage_root_credential_id"] = self.storage_root_credential_id
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateMetastore into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.delta_sharing_organization_name is not None:
-            body["delta_sharing_organization_name"] = self.delta_sharing_organization_name
-        if self.delta_sharing_recipient_token_lifetime_in_seconds is not None:
-            body["delta_sharing_recipient_token_lifetime_in_seconds"] = (
-                self.delta_sharing_recipient_token_lifetime_in_seconds
-            )
-        if self.delta_sharing_scope is not None:
-            body["delta_sharing_scope"] = self.delta_sharing_scope
-        if self.id is not None:
-            body["id"] = self.id
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.privilege_model_version is not None:
-            body["privilege_model_version"] = self.privilege_model_version
-        if self.storage_root_credential_id is not None:
-            body["storage_root_credential_id"] = self.storage_root_credential_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastore:
-        """Deserializes the UpdateMetastore from a dictionary."""
-        return cls(
-            delta_sharing_organization_name=d.get("delta_sharing_organization_name", None),
-            delta_sharing_recipient_token_lifetime_in_seconds=d.get(
-                "delta_sharing_recipient_token_lifetime_in_seconds", None
-            ),
-            delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
-            id=d.get("id", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-            privilege_model_version=d.get("privilege_model_version", None),
-            storage_root_credential_id=d.get("storage_root_credential_id", None),
-        )
 
 
 @dataclass
@@ -9516,132 +10357,6 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateStorageCredential:
-    aws_iam_role: Optional[AwsIamRoleRequest] = None
-    """The AWS IAM role configuration."""
-
-    azure_managed_identity: Optional[AzureManagedIdentityResponse] = None
-    """The Azure managed identity configuration."""
-
-    azure_service_principal: Optional[AzureServicePrincipal] = None
-    """The Azure service principal configuration."""
-
-    cloudflare_api_token: Optional[CloudflareApiToken] = None
-    """The Cloudflare API token configuration."""
-
-    comment: Optional[str] = None
-    """Comment associated with the credential."""
-
-    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The Databricks managed GCP service account configuration."""
-
-    force: Optional[bool] = None
-    """Force update even if there are dependent external locations or external tables."""
-
-    isolation_mode: Optional[IsolationMode] = None
-    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
-
-    name: Optional[str] = None
-    """Name of the storage credential."""
-
-    new_name: Optional[str] = None
-    """New name for the storage credential."""
-
-    owner: Optional[str] = None
-    """Username of current owner of credential."""
-
-    read_only: Optional[bool] = None
-    """Whether the credential is usable only for read operations. Only applicable when purpose is
-    **STORAGE**."""
-
-    skip_validation: Optional[bool] = None
-    """Supplying true to this argument skips validation of the updated credential."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateStorageCredential into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role.as_dict()
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity.as_dict()
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal.as_dict()
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token.as_dict()
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account.as_dict()
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode.value
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateStorageCredential into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.aws_iam_role:
-            body["aws_iam_role"] = self.aws_iam_role
-        if self.azure_managed_identity:
-            body["azure_managed_identity"] = self.azure_managed_identity
-        if self.azure_service_principal:
-            body["azure_service_principal"] = self.azure_service_principal
-        if self.cloudflare_api_token:
-            body["cloudflare_api_token"] = self.cloudflare_api_token
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.databricks_gcp_service_account:
-            body["databricks_gcp_service_account"] = self.databricks_gcp_service_account
-        if self.force is not None:
-            body["force"] = self.force
-        if self.isolation_mode is not None:
-            body["isolation_mode"] = self.isolation_mode
-        if self.name is not None:
-            body["name"] = self.name
-        if self.new_name is not None:
-            body["new_name"] = self.new_name
-        if self.owner is not None:
-            body["owner"] = self.owner
-        if self.read_only is not None:
-            body["read_only"] = self.read_only
-        if self.skip_validation is not None:
-            body["skip_validation"] = self.skip_validation
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateStorageCredential:
-        """Deserializes the UpdateStorageCredential from a dictionary."""
-        return cls(
-            aws_iam_role=_from_dict(d, "aws_iam_role", AwsIamRoleRequest),
-            azure_managed_identity=_from_dict(d, "azure_managed_identity", AzureManagedIdentityResponse),
-            azure_service_principal=_from_dict(d, "azure_service_principal", AzureServicePrincipal),
-            cloudflare_api_token=_from_dict(d, "cloudflare_api_token", CloudflareApiToken),
-            comment=d.get("comment", None),
-            databricks_gcp_service_account=_from_dict(
-                d, "databricks_gcp_service_account", DatabricksGcpServiceAccountRequest
-            ),
-            force=d.get("force", None),
-            isolation_mode=_enum(d, "isolation_mode", IsolationMode),
-            name=d.get("name", None),
-            new_name=d.get("new_name", None),
-            owner=d.get("owner", None),
-            read_only=d.get("read_only", None),
-            skip_validation=d.get("skip_validation", None),
-        )
 
 
 @dataclass
@@ -9855,6 +10570,11 @@ class VolumeInfo:
     """The unique identifier of the volume"""
 
     volume_type: Optional[VolumeType] = None
+    """The type of the volume. An external volume is located in the specified external location. A
+    managed volume is located in the default location which is specified by the parent schema, or
+    the parent catalog, or the Metastore. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumeInfo into a dictionary suitable for use as a JSON request body."""
@@ -9959,11 +10679,6 @@ class VolumeInfo:
 
 
 class VolumeType(Enum):
-    """The type of the volume. An external volume is located in the specified external location. A
-    managed volume is located in the default location which is specified by the parent schema, or
-    the parent catalog, or the Metastore. [Learn more]
-
-    [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"""
 
     EXTERNAL = "EXTERNAL"
     MANAGED = "MANAGED"
@@ -10019,7 +10734,7 @@ class AccountMetastoreAssignmentsAPI:
 
     def create(
         self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[CreateMetastoreAssignment] = None
-    ):
+    ) -> AccountsCreateMetastoreAssignmentResponse:
         """Creates an assignment to a metastore for a workspace
 
         :param workspace_id: int
@@ -10028,7 +10743,7 @@ class AccountMetastoreAssignmentsAPI:
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
 
-
+        :returns: :class:`AccountsCreateMetastoreAssignmentResponse`
         """
         body = {}
         if metastore_assignment is not None:
@@ -10038,14 +10753,15 @@ class AccountMetastoreAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
+        res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
             body=body,
             headers=headers,
         )
+        return AccountsCreateMetastoreAssignmentResponse.from_dict(res)
 
-    def delete(self, workspace_id: int, metastore_id: str):
+    def delete(self, workspace_id: int, metastore_id: str) -> AccountsDeleteMetastoreAssignmentResponse:
         """Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
 
         :param workspace_id: int
@@ -10053,23 +10769,24 @@ class AccountMetastoreAssignmentsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
 
-
+        :returns: :class:`AccountsDeleteMetastoreAssignmentResponse`
         """
 
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do(
+        res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
             headers=headers,
         )
+        return AccountsDeleteMetastoreAssignmentResponse.from_dict(res)
 
     def get(self, workspace_id: int) -> AccountsMetastoreAssignment:
         """Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
-        a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
-        will not be found and a 404 returned.
+        a metastore, the mapping will be returned. If no metastore is assigned to the workspace, the
+        assignment will not be found and a 404 returned.
 
         :param workspace_id: int
           Workspace ID.
@@ -10107,7 +10824,7 @@ class AccountMetastoreAssignmentsAPI:
 
     def update(
         self, workspace_id: int, metastore_id: str, *, metastore_assignment: Optional[UpdateMetastoreAssignment] = None
-    ):
+    ) -> AccountsUpdateMetastoreAssignmentResponse:
         """Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
         updated.
 
@@ -10117,7 +10834,7 @@ class AccountMetastoreAssignmentsAPI:
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
 
-
+        :returns: :class:`AccountsUpdateMetastoreAssignmentResponse`
         """
         body = {}
         if metastore_assignment is not None:
@@ -10127,12 +10844,13 @@ class AccountMetastoreAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
+        res = self._api.do(
             "PUT",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
             body=body,
             headers=headers,
         )
+        return AccountsUpdateMetastoreAssignmentResponse.from_dict(res)
 
 
 class AccountMetastoresAPI:
@@ -10142,12 +10860,12 @@ class AccountMetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, metastore_info: Optional[CreateMetastore] = None) -> AccountsMetastoreInfo:
+    def create(self, *, metastore_info: Optional[CreateAccountsMetastore] = None) -> AccountsCreateMetastoreResponse:
         """Creates a Unity Catalog metastore.
 
-        :param metastore_info: :class:`CreateMetastore` (optional)
+        :param metastore_info: :class:`CreateAccountsMetastore` (optional)
 
-        :returns: :class:`AccountsMetastoreInfo`
+        :returns: :class:`AccountsCreateMetastoreResponse`
         """
         body = {}
         if metastore_info is not None:
@@ -10158,9 +10876,9 @@ class AccountMetastoresAPI:
         }
 
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
-        return AccountsMetastoreInfo.from_dict(res)
+        return AccountsCreateMetastoreResponse.from_dict(res)
 
-    def delete(self, metastore_id: str, *, force: Optional[bool] = None):
+    def delete(self, metastore_id: str, *, force: Optional[bool] = None) -> AccountsDeleteMetastoreResponse:
         """Deletes a Unity Catalog metastore for an account, both specified by ID.
 
         :param metastore_id: str
@@ -10168,7 +10886,7 @@ class AccountMetastoresAPI:
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
 
-
+        :returns: :class:`AccountsDeleteMetastoreResponse`
         """
 
         query = {}
@@ -10178,20 +10896,21 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
+        res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}",
             query=query,
             headers=headers,
         )
+        return AccountsDeleteMetastoreResponse.from_dict(res)
 
-    def get(self, metastore_id: str) -> AccountsMetastoreInfo:
+    def get(self, metastore_id: str) -> AccountsGetMetastoreResponse:
         """Gets a Unity Catalog metastore from an account, both specified by ID.
 
         :param metastore_id: str
           Unity Catalog metastore ID
 
-        :returns: :class:`AccountsMetastoreInfo`
+        :returns: :class:`AccountsGetMetastoreResponse`
         """
 
         headers = {
@@ -10201,7 +10920,7 @@ class AccountMetastoresAPI:
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
         )
-        return AccountsMetastoreInfo.from_dict(res)
+        return AccountsGetMetastoreResponse.from_dict(res)
 
     def list(self) -> Iterator[MetastoreInfo]:
         """Gets all Unity Catalog metastores associated with an account specified by ID.
@@ -10215,17 +10934,20 @@ class AccountMetastoresAPI:
         }
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
-        parsed = ListMetastoresResponse.from_dict(json).metastores
+        parsed = AccountsListMetastoresResponse.from_dict(json).metastores
         return parsed if parsed is not None else []
 
-    def update(self, metastore_id: str, *, metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
+    def update(
+        self, metastore_id: str, *, metastore_info: Optional[UpdateAccountsMetastore] = None
+    ) -> AccountsUpdateMetastoreResponse:
         """Updates an existing Unity Catalog metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
-        :param metastore_info: :class:`UpdateMetastore` (optional)
+        :param metastore_info: :class:`UpdateAccountsMetastore` (optional)
+          Properties of the metastore to change.
 
-        :returns: :class:`AccountsMetastoreInfo`
+        :returns: :class:`AccountsUpdateMetastoreResponse`
         """
         body = {}
         if metastore_info is not None:
@@ -10238,7 +10960,7 @@ class AccountMetastoresAPI:
         res = self._api.do(
             "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
         )
-        return AccountsMetastoreInfo.from_dict(res)
+        return AccountsUpdateMetastoreResponse.from_dict(res)
 
 
 class AccountStorageCredentialsAPI:
@@ -10248,25 +10970,33 @@ class AccountStorageCredentialsAPI:
         self._api = api_client
 
     def create(
-        self, metastore_id: str, *, credential_info: Optional[CreateStorageCredential] = None
-    ) -> AccountsStorageCredentialInfo:
-        """Creates a new storage credential. The request object is specific to the cloud:
+        self,
+        metastore_id: str,
+        *,
+        credential_info: Optional[CreateAccountsStorageCredential] = None,
+        skip_validation: Optional[bool] = None,
+    ) -> AccountsCreateStorageCredentialInfo:
+        """Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
+        AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP
+        credentials
 
-        * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure credentials *
-        **GcpServiceAcountKey** for GCP credentials.
-
-        The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
+        The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the
         metastore.
 
         :param metastore_id: str
           Unity Catalog metastore ID
-        :param credential_info: :class:`CreateStorageCredential` (optional)
+        :param credential_info: :class:`CreateAccountsStorageCredential` (optional)
+        :param skip_validation: bool (optional)
+          Optional, default false. Supplying true to this argument skips validation of the created set of
+          credentials.
 
-        :returns: :class:`AccountsStorageCredentialInfo`
+        :returns: :class:`AccountsCreateStorageCredentialInfo`
         """
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
+        if skip_validation is not None:
+            body["skip_validation"] = skip_validation
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -10278,9 +11008,11 @@ class AccountStorageCredentialsAPI:
             body=body,
             headers=headers,
         )
-        return AccountsStorageCredentialInfo.from_dict(res)
+        return AccountsCreateStorageCredentialInfo.from_dict(res)
 
-    def delete(self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None):
+    def delete(
+        self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None
+    ) -> AccountsDeleteStorageCredentialResponse:
         """Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
 
@@ -10291,7 +11023,7 @@ class AccountStorageCredentialsAPI:
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
 
-
+        :returns: :class:`AccountsDeleteStorageCredentialResponse`
         """
 
         query = {}
@@ -10301,12 +11033,13 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
+        res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
             query=query,
             headers=headers,
         )
+        return AccountsDeleteStorageCredentialResponse.from_dict(res)
 
     def get(self, metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo:
         """Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
@@ -10315,7 +11048,7 @@ class AccountStorageCredentialsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
         :param storage_credential_name: str
-          Name of the storage credential.
+          Required. Name of the storage credential.
 
         :returns: :class:`AccountsStorageCredentialInfo`
         """
@@ -10357,22 +11090,27 @@ class AccountStorageCredentialsAPI:
         metastore_id: str,
         storage_credential_name: str,
         *,
-        credential_info: Optional[UpdateStorageCredential] = None,
-    ) -> AccountsStorageCredentialInfo:
+        credential_info: Optional[UpdateAccountsStorageCredential] = None,
+        skip_validation: Optional[bool] = None,
+    ) -> AccountsUpdateStorageCredentialResponse:
         """Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
-        If the caller is a metastore admin, only the __owner__ credential can be changed.
+        If the caller is a metastore admin, only the **owner** credential can be changed.
 
         :param metastore_id: str
           Unity Catalog metastore ID
         :param storage_credential_name: str
           Name of the storage credential.
-        :param credential_info: :class:`UpdateStorageCredential` (optional)
+        :param credential_info: :class:`UpdateAccountsStorageCredential` (optional)
+        :param skip_validation: bool (optional)
+          Optional. Supplying true to this argument skips validation of the updated set of credentials.
 
-        :returns: :class:`AccountsStorageCredentialInfo`
+        :returns: :class:`AccountsUpdateStorageCredentialResponse`
         """
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
+        if skip_validation is not None:
+            body["skip_validation"] = skip_validation
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -10384,7 +11122,7 @@ class AccountStorageCredentialsAPI:
             body=body,
             headers=headers,
         )
-        return AccountsStorageCredentialInfo.from_dict(res)
+        return AccountsUpdateStorageCredentialResponse.from_dict(res)
 
 
 class ArtifactAllowlistsAPI:
@@ -10474,6 +11212,8 @@ class CatalogsAPI:
         *,
         comment: Optional[str] = None,
         connection_name: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         options: Optional[Dict[str, str]] = None,
         properties: Optional[Dict[str, str]] = None,
         provider_name: Optional[str] = None,
@@ -10489,6 +11229,10 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param options: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
@@ -10509,6 +11253,10 @@ class CatalogsAPI:
             body["comment"] = comment
         if connection_name is not None:
             body["connection_name"] = connection_name
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -10627,6 +11375,8 @@ class CatalogsAPI:
         name: str,
         *,
         comment: Optional[str] = None,
+        conversion_info: Optional[ConversionInfo] = None,
+        dr_replication_info: Optional[DrReplicationInfo] = None,
         enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
         isolation_mode: Optional[CatalogIsolationMode] = None,
         new_name: Optional[str] = None,
@@ -10641,6 +11391,10 @@ class CatalogsAPI:
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)
@@ -10659,6 +11413,10 @@ class CatalogsAPI:
         body = {}
         if comment is not None:
             body["comment"] = comment
+        if conversion_info is not None:
+            body["conversion_info"] = conversion_info.as_dict()
+        if dr_replication_info is not None:
+            body["dr_replication_info"] = dr_replication_info.as_dict()
         if enable_predictive_optimization is not None:
             body["enable_predictive_optimization"] = enable_predictive_optimization.value
         if isolation_mode is not None:
@@ -11204,13 +11962,25 @@ class CredentialsAPI:
 
 
 class EntityTagAssignmentsAPI:
-    """Entity Tag Assignments provide a unified interface for managing tag assignments on Unity Catalog entities."""
+    """Tags are attributes that include keys and optional values that you can use to organize and categorize
+    entities in Unity Catalog. Entity tagging is currently supported on catalogs, schemas, tables (including
+    views), columns, volumes. With these APIs, users can create, update, delete, and list tag assignments
+    across Unity Catalog entities"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(self, tag_assignment: EntityTagAssignment) -> EntityTagAssignment:
-        """Create an tag assignment for an Unity Catalog entity.
+        """Creates a tag assignment for an Unity Catalog entity.
+
+        To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -
+        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
+        entity's parent catalog
+
+        To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
+        permission on the tag policy. See [Manage tag policy permissions].
+
+        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
 
         :param tag_assignment: :class:`EntityTagAssignment`
 
@@ -11225,15 +11995,23 @@ class EntityTagAssignmentsAPI:
         res = self._api.do("POST", "/api/2.1/unity-catalog/entity-tag-assignments", body=body, headers=headers)
         return EntityTagAssignment.from_dict(res)
 
-    def delete(self, entity_name: str, tag_key: str):
-        """Delete a tag assignment for an Unity Catalog entity.
+    def delete(self, entity_type: str, entity_name: str, tag_key: str):
+        """Deletes a tag assignment for an Unity Catalog entity by its key.
 
+        To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:
+        - **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
+        entity's parent catalog
+
+        To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
+        permission on the tag policy. See [Manage tag policy permissions].
+
+        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+
+        :param entity_type: str
+          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
+          columns, volumes.
         :param entity_name: str
-          Required. The fully qualified structured name of the entity to which the tag is assigned. The entity
-          name should follow the format of: entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
-          schemas/my_catalog.my_schema, columns/my_catalog.my_schema.my_table.my_column. When containing
-          segments with special characters (e.g. '/'), the whole segment must be wrapped with backticks. For
-          example, columns/catalog.schema.table.\`column/a\`
+          The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag to delete
 
@@ -11245,18 +12023,19 @@ class EntityTagAssignmentsAPI:
         }
 
         self._api.do(
-            "DELETE", f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_name}/tags/{tag_key}", headers=headers
+            "DELETE",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            headers=headers,
         )
 
-    def get(self, entity_name: str, tag_key: str) -> EntityTagAssignment:
-        """Get a tag assignment for an Unity Catalog entity.
+    def get(self, entity_type: str, entity_name: str, tag_key: str) -> EntityTagAssignment:
+        """Gets a tag assignment for an Unity Catalog entity by tag key.
 
+        :param entity_type: str
+          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
+          columns, volumes.
         :param entity_name: str
-          Required. The fully qualified structured name of the entity to which the tag is assigned. The entity
-          name should follow the format of: entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
-          schemas/my_catalog.my_schema, columns/my_catalog.my_schema.my_table.my_column. When containing
-          segments with special characters (e.g. '/'), the whole segment must be wrapped with backticks. For
-          example, columns/catalog.schema.table.\`column/a\`
+          The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           Required. The key of the tag
 
@@ -11268,21 +12047,22 @@ class EntityTagAssignmentsAPI:
         }
 
         res = self._api.do(
-            "GET", f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_name}/tags/{tag_key}", headers=headers
+            "GET",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
+            headers=headers,
         )
         return EntityTagAssignment.from_dict(res)
 
     def list(
-        self, entity_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+        self, entity_type: str, entity_name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[EntityTagAssignment]:
         """List tag assignments for an Unity Catalog entity
 
+        :param entity_type: str
+          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
+          columns, volumes.
         :param entity_name: str
-          Required. The fully qualified structured name of the entity to which the tag is assigned. The entity
-          name should follow the format of: entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
-          schemas/my_catalog.my_schema, columns/my_catalog.my_schema.my_table.my_column. When containing
-          segments with special characters (e.g. '/'), the whole segment must be wrapped with backticks. For
-          example, columns/catalog.schema.table.\`column/a\`
+          The fully qualified name of the entity to which the tag is assigned
         :param max_results: int (optional)
           Optional. Maximum number of tag assignments to return in a single page
         :param page_token: str (optional)
@@ -11302,7 +12082,10 @@ class EntityTagAssignmentsAPI:
 
         while True:
             json = self._api.do(
-                "GET", f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_name}/tags", query=query, headers=headers
+                "GET",
+                f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags",
+                query=query,
+                headers=headers,
             )
             if "tag_assignments" in json:
                 for v in json["tag_assignments"]:
@@ -11312,16 +12095,24 @@ class EntityTagAssignmentsAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self, entity_name: str, tag_key: str, tag_assignment: EntityTagAssignment, update_mask: str
+        self, entity_type: str, entity_name: str, tag_key: str, tag_assignment: EntityTagAssignment, update_mask: str
     ) -> EntityTagAssignment:
-        """Update a tag assignment for an Unity Catalog entity
+        """Updates an existing tag assignment for an Unity Catalog entity.
 
+        To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -
+        **APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the
+        entity's parent catalog
+
+        To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**
+        permission on the tag policy. See [Manage tag policy permissions].
+
+        [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+
+        :param entity_type: str
+          The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
+          columns, volumes.
         :param entity_name: str
-          Required. The fully qualified structured name of the entity to which the tag is assigned. The entity
-          name should follow the format of: entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
-          schemas/my_catalog.my_schema, columns/my_catalog.my_schema.my_table.my_column. When containing
-          segments with special characters (e.g. '/'), the whole segment must be wrapped with backticks. For
-          example, columns/catalog.schema.table.\`column/a\`
+          The fully qualified name of the entity to which the tag is assigned
         :param tag_key: str
           The key of the tag
         :param tag_assignment: :class:`EntityTagAssignment`
@@ -11349,7 +12140,7 @@ class EntityTagAssignmentsAPI:
 
         res = self._api.do(
             "PATCH",
-            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_name}/tags/{tag_key}",
+            f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
             query=query,
             body=body,
             headers=headers,
@@ -11537,7 +12328,8 @@ class ExternalLocationsAPI:
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -11699,7 +12491,8 @@ class ExternalLocationsAPI:
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -11930,7 +12723,7 @@ class FunctionsAPI:
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          __catalog_name__.__schema_name__.__function__name__) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -11940,9 +12733,7 @@ class FunctionsAPI:
         query = {}
         if force is not None:
             query["force"] = force
-        headers = {
-            "Accept": "application/json",
-        }
+        headers = {}
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
 
@@ -12043,7 +12834,7 @@ class FunctionsAPI:
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param owner: str (optional)
-          Username of current owner of function.
+          Username of current owner of the function.
 
         :returns: :class:`FunctionInfo`
         """
@@ -12658,7 +13449,29 @@ class ModelVersionsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
+    def update(
+        self,
+        full_name: str,
+        version: int,
+        *,
+        aliases: Optional[List[RegisteredModelAlias]] = None,
+        catalog_name: Optional[str] = None,
+        comment: Optional[str] = None,
+        created_at: Optional[int] = None,
+        created_by: Optional[str] = None,
+        id: Optional[str] = None,
+        metastore_id: Optional[str] = None,
+        model_name: Optional[str] = None,
+        model_version_dependencies: Optional[DependencyList] = None,
+        run_id: Optional[str] = None,
+        run_workspace_id: Optional[int] = None,
+        schema_name: Optional[str] = None,
+        source: Optional[str] = None,
+        status: Optional[ModelVersionInfoStatus] = None,
+        storage_location: Optional[str] = None,
+        updated_at: Optional[int] = None,
+        updated_by: Optional[str] = None,
+    ) -> ModelVersionInfo:
         """Updates the specified model version.
 
         The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
@@ -12671,14 +13484,80 @@ class ModelVersionsAPI:
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
+        :param aliases: List[:class:`RegisteredModelAlias`] (optional)
+          List of aliases associated with the model version
+        :param catalog_name: str (optional)
+          The name of the catalog containing the model version
         :param comment: str (optional)
           The comment attached to the model version
+        :param created_at: int (optional)
+        :param created_by: str (optional)
+          The identifier of the user who created the model version
+        :param id: str (optional)
+          The unique identifier of the model version
+        :param metastore_id: str (optional)
+          The unique identifier of the metastore containing the model version
+        :param model_name: str (optional)
+          The name of the parent registered model of the model version, relative to parent schema
+        :param model_version_dependencies: :class:`DependencyList` (optional)
+          Model version dependencies, for feature-store packaged models
+        :param run_id: str (optional)
+          MLflow run ID used when creating the model version, if ``source`` was generated by an experiment run
+          stored in an MLflow tracking server
+        :param run_workspace_id: int (optional)
+          ID of the Databricks workspace containing the MLflow run that generated this model version, if
+          applicable
+        :param schema_name: str (optional)
+          The name of the schema containing the model version, relative to parent catalog
+        :param source: str (optional)
+          URI indicating the location of the source artifacts (files) for the model version
+        :param status: :class:`ModelVersionInfoStatus` (optional)
+          Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
+          status, then move to READY status once the model version files are uploaded and the model version is
+          finalized. Only model versions in READY status can be loaded for inference or served.
+        :param storage_location: str (optional)
+          The storage location on the cloud under which model version data files are stored
+        :param updated_at: int (optional)
+        :param updated_by: str (optional)
+          The identifier of the user who updated the model version last time
 
         :returns: :class:`ModelVersionInfo`
         """
         body = {}
+        if aliases is not None:
+            body["aliases"] = [v.as_dict() for v in aliases]
+        if catalog_name is not None:
+            body["catalog_name"] = catalog_name
         if comment is not None:
             body["comment"] = comment
+        if created_at is not None:
+            body["created_at"] = created_at
+        if created_by is not None:
+            body["created_by"] = created_by
+        if id is not None:
+            body["id"] = id
+        if metastore_id is not None:
+            body["metastore_id"] = metastore_id
+        if model_name is not None:
+            body["model_name"] = model_name
+        if model_version_dependencies is not None:
+            body["model_version_dependencies"] = model_version_dependencies.as_dict()
+        if run_id is not None:
+            body["run_id"] = run_id
+        if run_workspace_id is not None:
+            body["run_workspace_id"] = run_workspace_id
+        if schema_name is not None:
+            body["schema_name"] = schema_name
+        if source is not None:
+            body["source"] = source
+        if status is not None:
+            body["status"] = status.value
+        if storage_location is not None:
+            body["storage_location"] = storage_location
+        if updated_at is not None:
+            body["updated_at"] = updated_at
+        if updated_by is not None:
+            body["updated_by"] = updated_by
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -12781,6 +13660,185 @@ class OnlineTablesAPI:
 
         res = self._api.do("GET", f"/api/2.0/online-tables/{name}", headers=headers)
         return OnlineTable.from_dict(res)
+
+
+class PoliciesAPI:
+    """Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies
+    in Unity Catalog. With ABAC policies, access is controlled in a hierarchical and scalable manner, based on
+    data attributes rather than specific resources, enabling more flexible and comprehensive access control.
+    ABAC policies in Unity Catalog support conditions on securable properties, governance tags, and
+    environment contexts. Callers must have the `MANAGE` privilege on a securable to view, create, update, or
+    delete ABAC policies."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_policy(self, policy_info: PolicyInfo) -> PolicyInfo:
+        """Creates a new policy on a securable. The new policy applies to the securable and all its descendants.
+
+        :param policy_info: :class:`PolicyInfo`
+          Required. The policy to create.
+
+        :returns: :class:`PolicyInfo`
+        """
+        body = policy_info.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/policies", body=body, headers=headers)
+        return PolicyInfo.from_dict(res)
+
+    def delete_policy(self, on_securable_type: str, on_securable_fullname: str, name: str) -> DeletePolicyResponse:
+        """Delete an ABAC policy defined on a securable.
+
+        :param on_securable_type: str
+          Required. The type of the securable to delete the policy from.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of the securable to delete the policy from.
+        :param name: str
+          Required. The name of the policy to delete
+
+        :returns: :class:`DeletePolicyResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "DELETE",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            headers=headers,
+        )
+        return DeletePolicyResponse.from_dict(res)
+
+    def get_policy(self, on_securable_type: str, on_securable_fullname: str, name: str) -> PolicyInfo:
+        """Get the policy definition on a securable
+
+        :param on_securable_type: str
+          Required. The type of the securable to retrieve the policy for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of securable to retrieve policy for.
+        :param name: str
+          Required. The name of the policy to retrieve.
+
+        :returns: :class:`PolicyInfo`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            headers=headers,
+        )
+        return PolicyInfo.from_dict(res)
+
+    def list_policies(
+        self,
+        on_securable_type: str,
+        on_securable_fullname: str,
+        *,
+        include_inherited: Optional[bool] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[PolicyInfo]:
+        """List all policies defined on a securable. Optionally, the list can include inherited policies defined
+        on the securable's parent schema or catalog.
+
+        :param on_securable_type: str
+          Required. The type of the securable to list policies for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of securable to list policies for.
+        :param include_inherited: bool (optional)
+          Optional. Whether to include policies defined on parent securables. By default, the inherited
+          policies are not included.
+        :param max_results: int (optional)
+          Optional. Maximum number of policies to return on a single page (page length). - When not set or set
+          to 0, the page length is set to a server configured value (recommended); - When set to a value
+          greater than 0, the page length is the minimum of this value and a server configured value;
+        :param page_token: str (optional)
+          Optional. Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`PolicyInfo`
+        """
+
+        query = {}
+        if include_inherited is not None:
+            query["include_inherited"] = include_inherited
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}",
+                query=query,
+                headers=headers,
+            )
+            if "policies" in json:
+                for v in json["policies"]:
+                    yield PolicyInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def update_policy(
+        self,
+        on_securable_type: str,
+        on_securable_fullname: str,
+        name: str,
+        policy_info: PolicyInfo,
+        *,
+        update_mask: Optional[str] = None,
+    ) -> PolicyInfo:
+        """Update an ABAC policy on a securable.
+
+        :param on_securable_type: str
+          Required. The type of the securable to update the policy for.
+        :param on_securable_fullname: str
+          Required. The fully qualified name of the securable to update the policy for.
+        :param name: str
+          Required. The name of the policy to update.
+        :param policy_info: :class:`PolicyInfo`
+          Optional fields to update. This is the request body for updating a policy. Use `update_mask` field
+          to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all
+          specified fields will be updated. - If `update_mask` is specified, only the fields specified in the
+          `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,
+          the field will be cleared. Users can use the update mask to explicitly unset optional fields such as
+          `exception_principals` and `when_condition`.
+        :param update_mask: str (optional)
+          Optional. The update mask field for specifying user intentions on which fields to update in the
+          request.
+
+        :returns: :class:`PolicyInfo`
+        """
+        body = policy_info.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return PolicyInfo.from_dict(res)
 
 
 class QualityMonitorsAPI:
@@ -13207,20 +14265,29 @@ class RegisteredModelsAPI:
     new model version, or update permissions on the registered model, users must be owners of the registered
     model.
 
-    Note: The securable type for models is "FUNCTION". When using REST APIs (e.g. tagging, grants) that
-    specify a securable type, use "FUNCTION" as the securable type."""
+    Note: The securable type for models is FUNCTION. When using REST APIs (e.g. tagging, grants) that specify
+    a securable type, use FUNCTION as the securable type."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
         self,
-        catalog_name: str,
-        schema_name: str,
-        name: str,
         *,
+        aliases: Optional[List[RegisteredModelAlias]] = None,
+        browse_only: Optional[bool] = None,
+        catalog_name: Optional[str] = None,
         comment: Optional[str] = None,
+        created_at: Optional[int] = None,
+        created_by: Optional[str] = None,
+        full_name: Optional[str] = None,
+        metastore_id: Optional[str] = None,
+        name: Optional[str] = None,
+        owner: Optional[str] = None,
+        schema_name: Optional[str] = None,
         storage_location: Optional[str] = None,
+        updated_at: Optional[int] = None,
+        updated_by: Optional[str] = None,
     ) -> RegisteredModelInfo:
         """Creates a new registered model in Unity Catalog.
 
@@ -13232,30 +14299,67 @@ class RegisteredModelsAPI:
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
-        :param catalog_name: str
+        :param aliases: List[:class:`RegisteredModelAlias`] (optional)
+          List of aliases associated with the registered model
+        :param browse_only: bool (optional)
+          Indicates whether the principal is limited to retrieving metadata for the associated object through
+          the BROWSE privilege when include_browse is enabled in the request.
+        :param catalog_name: str (optional)
           The name of the catalog where the schema and the registered model reside
-        :param schema_name: str
-          The name of the schema where the registered model resides
-        :param name: str
-          The name of the registered model
         :param comment: str (optional)
           The comment attached to the registered model
+        :param created_at: int (optional)
+          Creation timestamp of the registered model in milliseconds since the Unix epoch
+        :param created_by: str (optional)
+          The identifier of the user who created the registered model
+        :param full_name: str (optional)
+          The three-level (fully qualified) name of the registered model
+        :param metastore_id: str (optional)
+          The unique identifier of the metastore
+        :param name: str (optional)
+          The name of the registered model
+        :param owner: str (optional)
+          The identifier of the user who owns the registered model
+        :param schema_name: str (optional)
+          The name of the schema where the registered model resides
         :param storage_location: str (optional)
           The storage location on the cloud under which model version data files are stored
+        :param updated_at: int (optional)
+          Last-update timestamp of the registered model in milliseconds since the Unix epoch
+        :param updated_by: str (optional)
+          The identifier of the user who updated the registered model last time
 
         :returns: :class:`RegisteredModelInfo`
         """
         body = {}
+        if aliases is not None:
+            body["aliases"] = [v.as_dict() for v in aliases]
+        if browse_only is not None:
+            body["browse_only"] = browse_only
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
         if comment is not None:
             body["comment"] = comment
+        if created_at is not None:
+            body["created_at"] = created_at
+        if created_by is not None:
+            body["created_by"] = created_by
+        if full_name is not None:
+            body["full_name"] = full_name
+        if metastore_id is not None:
+            body["metastore_id"] = metastore_id
         if name is not None:
             body["name"] = name
+        if owner is not None:
+            body["owner"] = owner
         if schema_name is not None:
             body["schema_name"] = schema_name
         if storage_location is not None:
             body["storage_location"] = storage_location
+        if updated_at is not None:
+            body["updated_at"] = updated_at
+        if updated_by is not None:
+            body["updated_by"] = updated_by
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13413,7 +14517,7 @@ class RegisteredModelsAPI:
         **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          Full name of the registered model
+          The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
         :param version_num: int
@@ -13438,9 +14542,20 @@ class RegisteredModelsAPI:
         self,
         full_name: str,
         *,
+        aliases: Optional[List[RegisteredModelAlias]] = None,
+        browse_only: Optional[bool] = None,
+        catalog_name: Optional[str] = None,
         comment: Optional[str] = None,
+        created_at: Optional[int] = None,
+        created_by: Optional[str] = None,
+        metastore_id: Optional[str] = None,
+        name: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        schema_name: Optional[str] = None,
+        storage_location: Optional[str] = None,
+        updated_at: Optional[int] = None,
+        updated_by: Optional[str] = None,
     ) -> RegisteredModelInfo:
         """Updates the specified registered model.
 
@@ -13452,22 +14567,67 @@ class RegisteredModelsAPI:
 
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param aliases: List[:class:`RegisteredModelAlias`] (optional)
+          List of aliases associated with the registered model
+        :param browse_only: bool (optional)
+          Indicates whether the principal is limited to retrieving metadata for the associated object through
+          the BROWSE privilege when include_browse is enabled in the request.
+        :param catalog_name: str (optional)
+          The name of the catalog where the schema and the registered model reside
         :param comment: str (optional)
           The comment attached to the registered model
+        :param created_at: int (optional)
+          Creation timestamp of the registered model in milliseconds since the Unix epoch
+        :param created_by: str (optional)
+          The identifier of the user who created the registered model
+        :param metastore_id: str (optional)
+          The unique identifier of the metastore
+        :param name: str (optional)
+          The name of the registered model
         :param new_name: str (optional)
           New name for the registered model.
         :param owner: str (optional)
           The identifier of the user who owns the registered model
+        :param schema_name: str (optional)
+          The name of the schema where the registered model resides
+        :param storage_location: str (optional)
+          The storage location on the cloud under which model version data files are stored
+        :param updated_at: int (optional)
+          Last-update timestamp of the registered model in milliseconds since the Unix epoch
+        :param updated_by: str (optional)
+          The identifier of the user who updated the registered model last time
 
         :returns: :class:`RegisteredModelInfo`
         """
         body = {}
+        if aliases is not None:
+            body["aliases"] = [v.as_dict() for v in aliases]
+        if browse_only is not None:
+            body["browse_only"] = browse_only
+        if catalog_name is not None:
+            body["catalog_name"] = catalog_name
         if comment is not None:
             body["comment"] = comment
+        if created_at is not None:
+            body["created_at"] = created_at
+        if created_by is not None:
+            body["created_by"] = created_by
+        if metastore_id is not None:
+            body["metastore_id"] = metastore_id
+        if name is not None:
+            body["name"] = name
         if new_name is not None:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
+        if schema_name is not None:
+            body["schema_name"] = schema_name
+        if storage_location is not None:
+            body["storage_location"] = storage_location
+        if updated_at is not None:
+            body["updated_at"] = updated_at
+        if updated_by is not None:
+            body["updated_by"] = updated_by
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -13477,7 +14637,80 @@ class RegisteredModelsAPI:
         return RegisteredModelInfo.from_dict(res)
 
 
-class RequestForAccessAPI:
+class ResourceQuotasAPI:
+    """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
+    can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
+    metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
+    limits. For more information on resource quotas see the [Unity Catalog documentation].
+
+    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
+    """
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_quota(self, parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse:
+        """The GetQuota API returns usage information for a single resource quota, defined as a child-parent
+        pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
+        asynchronously. The updated count might not be returned in the first call.
+
+        :param parent_securable_type: str
+          Securable type of the quota parent.
+        :param parent_full_name: str
+          Full name of the parent resource. Provide the metastore ID if the parent is a metastore.
+        :param quota_name: str
+          Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.
+
+        :returns: :class:`GetQuotaResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}",
+            headers=headers,
+        )
+        return GetQuotaResponse.from_dict(res)
+
+    def list_quotas(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[QuotaInfo]:
+        """ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
+        counts returned. This API does not trigger a refresh of quota counts.
+
+        :param max_results: int (optional)
+          The number of quotas to return.
+        :param page_token: str (optional)
+          Opaque token for the next page of results.
+
+        :returns: Iterator over :class:`QuotaInfo`
+        """
+
+        query = {}
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas", query=query, headers=headers
+            )
+            if "quotas" in json:
+                for v in json["quotas"]:
+                    yield QuotaInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+
+class RfaAPI:
     """Request for Access enables customers to request access to and manage access request destinations for Unity
     Catalog securables.
 
@@ -13583,79 +14816,6 @@ class RequestForAccessAPI:
         return AccessRequestDestinations.from_dict(res)
 
 
-class ResourceQuotasAPI:
-    """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
-    can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
-    metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
-    limits. For more information on resource quotas see the [Unity Catalog documentation].
-
-    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
-    """
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def get_quota(self, parent_securable_type: str, parent_full_name: str, quota_name: str) -> GetQuotaResponse:
-        """The GetQuota API returns usage information for a single resource quota, defined as a child-parent
-        pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
-        asynchronously. The updated count might not be returned in the first call.
-
-        :param parent_securable_type: str
-          Securable type of the quota parent.
-        :param parent_full_name: str
-          Full name of the parent resource. Provide the metastore ID if the parent is a metastore.
-        :param quota_name: str
-          Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.
-
-        :returns: :class:`GetQuotaResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}",
-            headers=headers,
-        )
-        return GetQuotaResponse.from_dict(res)
-
-    def list_quotas(
-        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
-    ) -> Iterator[QuotaInfo]:
-        """ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
-        counts returned. This API does not trigger a refresh of quota counts.
-
-        :param max_results: int (optional)
-          The number of quotas to return.
-        :param page_token: str (optional)
-          Opaque token for the next page of results.
-
-        :returns: Iterator over :class:`QuotaInfo`
-        """
-
-        query = {}
-        if max_results is not None:
-            query["max_results"] = max_results
-        if page_token is not None:
-            query["page_token"] = page_token
-        headers = {
-            "Accept": "application/json",
-        }
-
-        while True:
-            json = self._api.do(
-                "GET", "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas", query=query, headers=headers
-            )
-            if "quotas" in json:
-                for v in json["quotas"]:
-                    yield QuotaInfo.from_dict(v)
-            if "next_page_token" not in json or not json["next_page_token"]:
-                return
-            query["page_token"] = json["next_page_token"]
-
-
 class SchemasAPI:
     """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
     organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
@@ -13674,7 +14834,7 @@ class SchemasAPI:
         properties: Optional[Dict[str, str]] = None,
         storage_root: Optional[str] = None,
     ) -> SchemaInfo:
-        """Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
+        """Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
 
         :param name: str
@@ -14356,6 +15516,79 @@ class TablesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def create(
+        self,
+        name: str,
+        catalog_name: str,
+        schema_name: str,
+        table_type: TableType,
+        data_source_format: DataSourceFormat,
+        storage_location: str,
+        *,
+        columns: Optional[List[ColumnInfo]] = None,
+        properties: Optional[Dict[str, str]] = None,
+    ) -> TableInfo:
+        """Creates a new table in the specified catalog and schema.
+
+        To create an external delta table, the caller must have the **EXTERNAL_USE_SCHEMA** privilege on the
+        parent schema and the **EXTERNAL_USE_LOCATION** privilege on the external location. These privileges
+        must always be granted explicitly, and cannot be inherited through ownership or **ALL_PRIVILEGES**.
+
+        Standard UC permissions needed to create tables still apply: **USE_CATALOG** on the parent catalog (or
+        ownership of the parent catalog), **CREATE_TABLE** and **USE_SCHEMA** on the parent schema (or
+        ownership of the parent schema), and **CREATE_EXTERNAL_TABLE** on external location.
+
+        The **columns** field needs to be in a Spark compatible format, so we recommend you use Spark to
+        create these tables. The API itself does not validate the correctness of the column spec. If the spec
+        is not Spark compatible, the tables may not be readable by Databricks Runtime.
+
+        NOTE: The Create Table API for external clients only supports creating **external delta tables**. The
+        values shown in the respective enums are all values supported by Databricks, however for this specific
+        Create Table API, only **table_type** **EXTERNAL** and **data_source_format** **DELTA** are supported.
+        Additionally, column masks are not supported when creating tables through this API.
+
+        :param name: str
+          Name of table, relative to parent schema.
+        :param catalog_name: str
+          Name of parent catalog.
+        :param schema_name: str
+          Name of parent schema relative to its parent catalog.
+        :param table_type: :class:`TableType`
+        :param data_source_format: :class:`DataSourceFormat`
+        :param storage_location: str
+          Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+        :param columns: List[:class:`ColumnInfo`] (optional)
+          The array of __ColumnInfo__ definitions of the table's columns.
+        :param properties: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
+
+        :returns: :class:`TableInfo`
+        """
+        body = {}
+        if catalog_name is not None:
+            body["catalog_name"] = catalog_name
+        if columns is not None:
+            body["columns"] = [v.as_dict() for v in columns]
+        if data_source_format is not None:
+            body["data_source_format"] = data_source_format.value
+        if name is not None:
+            body["name"] = name
+        if properties is not None:
+            body["properties"] = properties
+        if schema_name is not None:
+            body["schema_name"] = schema_name
+        if storage_location is not None:
+            body["storage_location"] = storage_location
+        if table_type is not None:
+            body["table_type"] = table_type.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.1/unity-catalog/tables", body=body, headers=headers)
+        return TableInfo.from_dict(res)
+
     def delete(self, full_name: str):
         """Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
@@ -14377,10 +15610,10 @@ class TablesAPI:
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
-        owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
+        owner of the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
-        and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
-        the parent catalog * Have BROWSE privilege on the parent schema.
+        and either be the table owner or have the **SELECT** privilege on the table. * Have **BROWSE**
+        privilege on the parent catalog * Have **BROWSE** privilege on the parent schema
 
         :param full_name: str
           Full name of the table.
@@ -14405,9 +15638,9 @@ class TablesAPI:
     ) -> TableInfo:
         """Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
-        the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
-        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
-        the table owner or have the SELECT privilege on the table.
+        the parent schema and have the **USE_CATALOG** privilege on the parent catalog * Have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
+        and either be the table owner or have the **SELECT** privilege on the table.
 
         :param full_name: str
           Full name of the table.
@@ -14605,19 +15838,86 @@ class TablesAPI:
         self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
 
 
+class TemporaryPathCredentialsAPI:
+    """Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud
+    storage locations registered in Databricks. These credentials are employed to provide secure and
+    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
+    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
+    supports temporary credentials through OAuth 2.0.
+
+    Temporary path credentials ensure that data access is limited in scope and duration, reducing the risk of
+    unauthorized access or misuse. To use the temporary path credentials API, a metastore admin needs to
+    enable the external_access_enabled flag (off by default) at the metastore level. A user needs to be
+    granted the EXTERNAL USE LOCATION permission by external location owner. For requests on existing external
+    tables, user also needs to be granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
+    admin.
+
+    Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by catalog admin
+    explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for security reasons.
+    Similarly, EXTERNAL USE LOCATION is an external location level permission that can only be granted by
+    external location owner explicitly and is not included in external location ownership or ALL PRIVILEGES on
+    the external location for security reasons.
+
+    This API only supports temporary path credentials for external locations and external tables, and volumes
+    will be supported in the future."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def generate_temporary_path_credentials(
+        self, url: str, operation: PathOperation, *, dry_run: Optional[bool] = None
+    ) -> GenerateTemporaryPathCredentialResponse:
+        """Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.
+        The Generate Temporary Path Credentials API is only supported for external storage paths, specifically
+        external locations and external tables. Managed tables are not supported by this API. The metastore
+        must have **external_access_enabled** flag set to true (default false). The caller must have the
+        **EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be granted by
+        external location owners. For requests on existing external tables, the caller must also have the
+        **EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by catalog
+        owners.
+
+        :param url: str
+          URL for path-based access.
+        :param operation: :class:`PathOperation`
+          The operation being performed on the path.
+        :param dry_run: bool (optional)
+          Optional. When set to true, the service will not validate that the generated credentials can perform
+          write operations, therefore no new paths will be created and the response will not contain valid
+          credentials. Defaults to false.
+
+        :returns: :class:`GenerateTemporaryPathCredentialResponse`
+        """
+        body = {}
+        if dry_run is not None:
+            body["dry_run"] = dry_run
+        if operation is not None:
+            body["operation"] = operation.value
+        if url is not None:
+            body["url"] = url
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-path-credentials", body=body, headers=headers)
+        return GenerateTemporaryPathCredentialResponse.from_dict(res)
+
+
 class TemporaryTableCredentialsAPI:
     """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage
-    locationswhere table data is stored in Databricks. These credentials are employed to provide secure and
-    time-limitedaccess to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
-    has its own typeof credentials: AWS uses temporary session tokens via AWS Security Token Service (STS),
-    Azure utilizesShared Access Signatures (SAS) for its data storage services, and Google Cloud supports
-    temporary credentialsthrough OAuth 2.0.Temporary table credentials ensure that data access is limited in
-    scope and duration, reducing the risk ofunauthorized access or misuse. To use the temporary table
-    credentials API, a metastore admin needs to enable the external_access_enabled flag (off by default) at
-    the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA permission at the schema level
-    by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by
-    catalog admin explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for
-    security reason."""
+    locations where table data is stored in Databricks. These credentials are employed to provide secure and
+    time-limited access to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
+    provider has its own type of credentials: AWS uses temporary session tokens via AWS Security Token Service
+    (STS), Azure utilizes Shared Access Signatures (SAS) for its data storage services, and Google Cloud
+    supports temporary credentials through OAuth 2.0.
+
+    Temporary table credentials ensure that data access is limited in scope and duration, reducing the risk of
+    unauthorized access or misuse. To use the temporary table credentials API, a metastore admin needs to
+    enable the external_access_enabled flag (off by default) at the metastore level, and user needs to be
+    granted the EXTERNAL USE SCHEMA permission at the schema level by catalog admin. Note that EXTERNAL USE
+    SCHEMA is a schema level permission that can only be granted by catalog admin explicitly and is not
+    included in schema ownership or ALL PRIVILEGES on the schema for security reasons."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14626,9 +15926,9 @@ class TemporaryTableCredentialsAPI:
         self, *, operation: Optional[TableOperation] = None, table_id: Optional[str] = None
     ) -> GenerateTemporaryTableCredentialResponse:
         """Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
-        must have external_access_enabled flag set to true (default false). The caller must have
-        EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog
-        owners.
+        must have **external_access_enabled** flag set to true (default false). The caller must have the
+        **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege can only be granted by
+        catalog owners.
 
         :param operation: :class:`TableOperation` (optional)
           The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
@@ -14696,6 +15996,11 @@ class VolumesAPI:
         :param name: str
           The name of the volume
         :param volume_type: :class:`VolumeType`
+          The type of the volume. An external volume is located in the specified external location. A managed
+          volume is located in the default location which is specified by the parent schema, or the parent
+          catalog, or the Metastore. [Learn more]
+
+          [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
         :param comment: str (optional)
           The comment attached to the volume
         :param storage_location: str (optional)
@@ -14754,7 +16059,7 @@ class VolumesAPI:
 
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
-        **READ VOLUME** privilege on the volume to recieve the volumes in the response. For the latter case,
+        **READ VOLUME** privilege on the volume to receive the volumes in the response. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
 

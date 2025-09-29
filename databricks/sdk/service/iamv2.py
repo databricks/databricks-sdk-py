@@ -219,6 +219,81 @@ class PrincipalType(Enum):
 
 
 @dataclass
+class ResolveGroupResponse:
+    group: Optional[Group] = None
+    """The group that was resolved."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolveGroupResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.group:
+            body["group"] = self.group.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolveGroupResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group:
+            body["group"] = self.group
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolveGroupResponse:
+        """Deserializes the ResolveGroupResponse from a dictionary."""
+        return cls(group=_from_dict(d, "group", Group))
+
+
+@dataclass
+class ResolveServicePrincipalResponse:
+    service_principal: Optional[ServicePrincipal] = None
+    """The service principal that was resolved."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolveServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_principal:
+            body["service_principal"] = self.service_principal.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolveServicePrincipalResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_principal:
+            body["service_principal"] = self.service_principal
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolveServicePrincipalResponse:
+        """Deserializes the ResolveServicePrincipalResponse from a dictionary."""
+        return cls(service_principal=_from_dict(d, "service_principal", ServicePrincipal))
+
+
+@dataclass
+class ResolveUserResponse:
+    user: Optional[User] = None
+    """The user that was resolved."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResolveUserResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.user:
+            body["user"] = self.user.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolveUserResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.user:
+            body["user"] = self.user
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResolveUserResponse:
+        """Deserializes the ResolveUserResponse from a dictionary."""
+        return cls(user=_from_dict(d, "user", User))
+
+
+@dataclass
 class ServicePrincipal:
     """The details of a ServicePrincipal resource."""
 
@@ -226,7 +301,7 @@ class ServicePrincipal:
     """The parent account ID for the service principal in Databricks."""
 
     account_sp_status: Optional[State] = None
-    """The activity status of a sp in a Databricks account."""
+    """The activity status of a service principal in a Databricks account."""
 
     application_id: Optional[str] = None
     """Application ID of the service principal."""
@@ -292,81 +367,6 @@ class State(Enum):
 
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
-
-
-@dataclass
-class SyncGroupResponse:
-    group: Optional[Group] = None
-    """The group that was synced."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SyncGroupResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.group:
-            body["group"] = self.group.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SyncGroupResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.group:
-            body["group"] = self.group
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SyncGroupResponse:
-        """Deserializes the SyncGroupResponse from a dictionary."""
-        return cls(group=_from_dict(d, "group", Group))
-
-
-@dataclass
-class SyncServicePrincipalResponse:
-    service_principal: Optional[ServicePrincipal] = None
-    """The service principal that was synced."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SyncServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.service_principal:
-            body["service_principal"] = self.service_principal.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SyncServicePrincipalResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.service_principal:
-            body["service_principal"] = self.service_principal
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SyncServicePrincipalResponse:
-        """Deserializes the SyncServicePrincipalResponse from a dictionary."""
-        return cls(service_principal=_from_dict(d, "service_principal", ServicePrincipal))
-
-
-@dataclass
-class SyncUserResponse:
-    user: Optional[User] = None
-    """The user that was synced."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SyncUserResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.user:
-            body["user"] = self.user.as_dict()
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SyncUserResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.user:
-            body["user"] = self.user
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SyncUserResponse:
-        """Deserializes the SyncUserResponse from a dictionary."""
-        return cls(user=_from_dict(d, "user", User))
 
 
 @dataclass
@@ -928,17 +928,15 @@ class AccountIamV2API:
         )
         return ListWorkspaceAccessDetailsResponse.from_dict(res)
 
-    def sync_group(self, external_id: str) -> SyncGroupResponse:
-        """Syncs a group with the given external ID from the customer's IdP. If the group does not exist, it will
-        be created in the account. If the customer is not onboarded onto Automatic Identity Management (AIM),
-        this will return an error. Synced information is cached for 30 minutes, so subsequent calls to this
-        method will not result in a full sync unless the cache is stale. If this is triggered while the cache
-        is still valid, it will return the cached group information.
+    def resolve_group(self, external_id: str) -> ResolveGroupResponse:
+        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
+        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
+        (AIM), this will return an error.
 
         :param external_id: str
           Required. The external ID of the group in the customer's IdP.
 
-        :returns: :class:`SyncGroupResponse`
+        :returns: :class:`ResolveGroupResponse`
         """
         body = {}
         if external_id is not None:
@@ -950,23 +948,21 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/syncByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/groups/resolveByExternalId",
             body=body,
             headers=headers,
         )
-        return SyncGroupResponse.from_dict(res)
+        return ResolveGroupResponse.from_dict(res)
 
-    def sync_service_principal(self, external_id: str) -> SyncServicePrincipalResponse:
-        """Syncs a sp with the given external ID from the customer's IdP. If the sp does not exist, it will be
-        created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will return
-        an error. Synced information is cached for 30 minutes, so subsequent calls to this method will not
-        result in a full sync unless the cache is stale. If this is triggered while the cache is still valid,
-        it will return the cached SP information.
+    def resolve_service_principal(self, external_id: str) -> ResolveServicePrincipalResponse:
+        """Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
+        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error.
 
         :param external_id: str
           Required. The external ID of the service principal in the customer's IdP.
 
-        :returns: :class:`SyncServicePrincipalResponse`
+        :returns: :class:`ResolveServicePrincipalResponse`
         """
         body = {}
         if external_id is not None:
@@ -978,23 +974,21 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/syncByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/resolveByExternalId",
             body=body,
             headers=headers,
         )
-        return SyncServicePrincipalResponse.from_dict(res)
+        return ResolveServicePrincipalResponse.from_dict(res)
 
-    def sync_user(self, external_id: str) -> SyncUserResponse:
-        """Syncs a user with the given external ID from the customer's IdP. If the user does not exist, it will
-        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error. Synced information is cached for 30 minutes, so subsequent calls to this method will
-        not result in a full sync unless the cache is stale. If this is triggered while the cache is still
-        valid, it will return the cached user information.
+    def resolve_user(self, external_id: str) -> ResolveUserResponse:
+        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
+        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error.
 
         :param external_id: str
           Required. The external ID of the user in the customer's IdP.
 
-        :returns: :class:`SyncUserResponse`
+        :returns: :class:`ResolveUserResponse`
         """
         body = {}
         if external_id is not None:
@@ -1006,11 +1000,11 @@ class AccountIamV2API:
 
         res = self._api.do(
             "POST",
-            f"/api/2.0/identity/accounts/{self._api.account_id}/users/syncByExternalId",
+            f"/api/2.0/identity/accounts/{self._api.account_id}/users/resolveByExternalId",
             body=body,
             headers=headers,
         )
-        return SyncUserResponse.from_dict(res)
+        return ResolveUserResponse.from_dict(res)
 
     def update_group(self, internal_id: int, group: Group, update_mask: str) -> Group:
         """TODO: Write description later when this method is implemented
@@ -1385,7 +1379,7 @@ class WorkspaceIamV2API:
         """TODO: Write description later when this method is implemented
 
         :param page_size: int (optional)
-          The maximum number of sps to return. The service may return fewer than this value.
+          The maximum number of SPs to return. The service may return fewer than this value.
         :param page_token: str (optional)
           A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
           subsequent page.
@@ -1457,17 +1451,15 @@ class WorkspaceIamV2API:
         res = self._api.do("GET", "/api/2.0/identity/workspaceAccessDetails", query=query, headers=headers)
         return ListWorkspaceAccessDetailsResponse.from_dict(res)
 
-    def sync_group_proxy(self, external_id: str) -> SyncGroupResponse:
-        """Syncs a group with the given external ID from the customer's IdP. If the group does not exist, it will
-        be created in the account. If the customer is not onboarded onto Automatic Identity Management (AIM),
-        this will return an error. Synced information is cached for 30 minutes, so subsequent calls to this
-        method will not result in a full sync unless the cache is stale. If this is triggered while the cache
-        is still valid, it will return the cached group information.
+    def resolve_group_proxy(self, external_id: str) -> ResolveGroupResponse:
+        """Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
+        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
+        (AIM), this will return an error.
 
         :param external_id: str
           Required. The external ID of the group in the customer's IdP.
 
-        :returns: :class:`SyncGroupResponse`
+        :returns: :class:`ResolveGroupResponse`
         """
         body = {}
         if external_id is not None:
@@ -1477,20 +1469,18 @@ class WorkspaceIamV2API:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/identity/groups/syncByExternalId", body=body, headers=headers)
-        return SyncGroupResponse.from_dict(res)
+        res = self._api.do("POST", "/api/2.0/identity/groups/resolveByExternalId", body=body, headers=headers)
+        return ResolveGroupResponse.from_dict(res)
 
-    def sync_service_principal_proxy(self, external_id: str) -> SyncServicePrincipalResponse:
-        """Syncs a sp with the given external ID from the customer's IdP. If the sp does not exist, it will be
-        created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will return
-        an error. Synced information is cached for 30 minutes, so subsequent calls to this method will not
-        result in a full sync unless the cache is stale. If this is triggered while the cache is still valid,
-        it will return the cached SP information.
+    def resolve_service_principal_proxy(self, external_id: str) -> ResolveServicePrincipalResponse:
+        """Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
+        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error.
 
         :param external_id: str
           Required. The external ID of the service principal in the customer's IdP.
 
-        :returns: :class:`SyncServicePrincipalResponse`
+        :returns: :class:`ResolveServicePrincipalResponse`
         """
         body = {}
         if external_id is not None:
@@ -1500,20 +1490,20 @@ class WorkspaceIamV2API:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/identity/servicePrincipals/syncByExternalId", body=body, headers=headers)
-        return SyncServicePrincipalResponse.from_dict(res)
+        res = self._api.do(
+            "POST", "/api/2.0/identity/servicePrincipals/resolveByExternalId", body=body, headers=headers
+        )
+        return ResolveServicePrincipalResponse.from_dict(res)
 
-    def sync_user_proxy(self, external_id: str) -> SyncUserResponse:
-        """Syncs a user with the given external ID from the customer's IdP. If the user does not exist, it will
-        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
-        return an error. Synced information is cached for 30 minutes, so subsequent calls to this method will
-        not result in a full sync unless the cache is stale. If this is triggered while the cache is still
-        valid, it will return the cached user information.
+    def resolve_user_proxy(self, external_id: str) -> ResolveUserResponse:
+        """Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
+        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
+        return an error.
 
         :param external_id: str
           Required. The external ID of the user in the customer's IdP.
 
-        :returns: :class:`SyncUserResponse`
+        :returns: :class:`ResolveUserResponse`
         """
         body = {}
         if external_id is not None:
@@ -1523,8 +1513,8 @@ class WorkspaceIamV2API:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/identity/users/syncByExternalId", body=body, headers=headers)
-        return SyncUserResponse.from_dict(res)
+        res = self._api.do("POST", "/api/2.0/identity/users/resolveByExternalId", body=body, headers=headers)
+        return ResolveUserResponse.from_dict(res)
 
     def update_group_proxy(self, internal_id: int, group: Group, update_mask: str) -> Group:
         """TODO: Write description later when this method is implemented

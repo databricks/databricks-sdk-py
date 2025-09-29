@@ -1857,59 +1857,32 @@ class SecurablePropertiesKvPairs:
 
 @dataclass
 class Share:
-    comment: Optional[str] = None
-    """The comment of the share."""
-
-    display_name: Optional[str] = None
-    """The display name of the share. If defined, it will be shown in the UI."""
-
     id: Optional[str] = None
 
     name: Optional[str] = None
 
-    tags: Optional[List[catalog.TagKeyValue]] = None
-    """The tags of the share."""
-
     def as_dict(self) -> dict:
         """Serializes the Share into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.tags:
-            body["tags"] = [v.as_dict() for v in self.tags]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Share into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None:
-            body["comment"] = self.comment
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
             body["name"] = self.name
-        if self.tags:
-            body["tags"] = self.tags
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Share:
         """Deserializes the Share from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            display_name=d.get("display_name", None),
-            id=d.get("id", None),
-            name=d.get("name", None),
-            tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
-        )
+        return cls(id=d.get("id", None), name=d.get("name", None))
 
 
 @dataclass
@@ -2373,6 +2346,9 @@ class Table:
 class TableInternalAttributes:
     """Internal information for D2D sharing that should not be disclosed to external users."""
 
+    auxiliary_managed_location: Optional[str] = None
+    """Managed Delta Metadata location for foreign iceberg tables."""
+
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2393,6 +2369,8 @@ class TableInternalAttributes:
     def as_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auxiliary_managed_location is not None:
+            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2406,6 +2384,8 @@ class TableInternalAttributes:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableInternalAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auxiliary_managed_location is not None:
+            body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2420,6 +2400,7 @@ class TableInternalAttributes:
     def from_dict(cls, d: Dict[str, Any]) -> TableInternalAttributes:
         """Deserializes the TableInternalAttributes from a dictionary."""
         return cls(
+            auxiliary_managed_location=d.get("auxiliary_managed_location", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),
@@ -2432,8 +2413,10 @@ class TableInternalAttributesSharedTableType(Enum):
     DELTA_ICEBERG_TABLE = "DELTA_ICEBERG_TABLE"
     DIRECTORY_BASED_TABLE = "DIRECTORY_BASED_TABLE"
     FILE_BASED_TABLE = "FILE_BASED_TABLE"
+    FOREIGN_ICEBERG_TABLE = "FOREIGN_ICEBERG_TABLE"
     FOREIGN_TABLE = "FOREIGN_TABLE"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
+    METRIC_VIEW = "METRIC_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
 
@@ -3441,7 +3424,9 @@ class SharesAPI:
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ShareInfo]:
+    def list_shares(
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[ShareInfo]:
         """Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
 

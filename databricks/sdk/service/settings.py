@@ -3587,8 +3587,32 @@ class LlmProxyPartnerPoweredWorkspace:
 
 @dataclass
 class MicrosoftTeamsConfig:
+    app_id: Optional[str] = None
+    """[Input-Only] App ID for Microsoft Teams App."""
+
+    app_id_set: Optional[bool] = None
+    """[Output-Only] Whether App ID is set."""
+
+    auth_secret: Optional[str] = None
+    """[Input-Only] Secret for Microsoft Teams App authentication."""
+
+    auth_secret_set: Optional[bool] = None
+    """[Output-Only] Whether secret is set."""
+
+    channel_url: Optional[str] = None
+    """[Input-Only] Channel URL for Microsoft Teams App."""
+
+    channel_url_set: Optional[bool] = None
+    """[Output-Only] Whether Channel URL is set."""
+
+    tenant_id: Optional[str] = None
+    """[Input-Only] Tenant ID for Microsoft Teams App."""
+
+    tenant_id_set: Optional[bool] = None
+    """[Output-Only] Whether Tenant ID is set."""
+
     url: Optional[str] = None
-    """[Input-Only] URL for Microsoft Teams."""
+    """[Input-Only] URL for Microsoft Teams webhook."""
 
     url_set: Optional[bool] = None
     """[Output-Only] Whether URL is set."""
@@ -3596,6 +3620,22 @@ class MicrosoftTeamsConfig:
     def as_dict(self) -> dict:
         """Serializes the MicrosoftTeamsConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.app_id is not None:
+            body["app_id"] = self.app_id
+        if self.app_id_set is not None:
+            body["app_id_set"] = self.app_id_set
+        if self.auth_secret is not None:
+            body["auth_secret"] = self.auth_secret
+        if self.auth_secret_set is not None:
+            body["auth_secret_set"] = self.auth_secret_set
+        if self.channel_url is not None:
+            body["channel_url"] = self.channel_url
+        if self.channel_url_set is not None:
+            body["channel_url_set"] = self.channel_url_set
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.tenant_id_set is not None:
+            body["tenant_id_set"] = self.tenant_id_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -3605,6 +3645,22 @@ class MicrosoftTeamsConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the MicrosoftTeamsConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.app_id is not None:
+            body["app_id"] = self.app_id
+        if self.app_id_set is not None:
+            body["app_id_set"] = self.app_id_set
+        if self.auth_secret is not None:
+            body["auth_secret"] = self.auth_secret
+        if self.auth_secret_set is not None:
+            body["auth_secret_set"] = self.auth_secret_set
+        if self.channel_url is not None:
+            body["channel_url"] = self.channel_url
+        if self.channel_url_set is not None:
+            body["channel_url_set"] = self.channel_url_set
+        if self.tenant_id is not None:
+            body["tenant_id"] = self.tenant_id
+        if self.tenant_id_set is not None:
+            body["tenant_id_set"] = self.tenant_id_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -3614,7 +3670,18 @@ class MicrosoftTeamsConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> MicrosoftTeamsConfig:
         """Deserializes the MicrosoftTeamsConfig from a dictionary."""
-        return cls(url=d.get("url", None), url_set=d.get("url_set", None))
+        return cls(
+            app_id=d.get("app_id", None),
+            app_id_set=d.get("app_id_set", None),
+            auth_secret=d.get("auth_secret", None),
+            auth_secret_set=d.get("auth_secret_set", None),
+            channel_url=d.get("channel_url", None),
+            channel_url_set=d.get("channel_url_set", None),
+            tenant_id=d.get("tenant_id", None),
+            tenant_id_set=d.get("tenant_id_set", None),
+            url=d.get("url", None),
+            url_set=d.get("url_set", None),
+        )
 
 
 @dataclass
@@ -4617,6 +4684,18 @@ class SetStatusResponse:
 
 @dataclass
 class SlackConfig:
+    channel_id: Optional[str] = None
+    """[Input-Only] Slack channel ID for notifications."""
+
+    channel_id_set: Optional[bool] = None
+    """[Output-Only] Whether channel ID is set."""
+
+    oauth_token: Optional[str] = None
+    """[Input-Only] OAuth token for Slack authentication."""
+
+    oauth_token_set: Optional[bool] = None
+    """[Output-Only] Whether OAuth token is set."""
+
     url: Optional[str] = None
     """[Input-Only] URL for Slack destination."""
 
@@ -4626,6 +4705,14 @@ class SlackConfig:
     def as_dict(self) -> dict:
         """Serializes the SlackConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.oauth_token is not None:
+            body["oauth_token"] = self.oauth_token
+        if self.oauth_token_set is not None:
+            body["oauth_token_set"] = self.oauth_token_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -4635,6 +4722,14 @@ class SlackConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the SlackConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.channel_id is not None:
+            body["channel_id"] = self.channel_id
+        if self.channel_id_set is not None:
+            body["channel_id_set"] = self.channel_id_set
+        if self.oauth_token is not None:
+            body["oauth_token"] = self.oauth_token
+        if self.oauth_token_set is not None:
+            body["oauth_token_set"] = self.oauth_token_set
         if self.url is not None:
             body["url"] = self.url
         if self.url_set is not None:
@@ -4644,7 +4739,14 @@ class SlackConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> SlackConfig:
         """Deserializes the SlackConfig from a dictionary."""
-        return cls(url=d.get("url", None), url_set=d.get("url_set", None))
+        return cls(
+            channel_id=d.get("channel_id", None),
+            channel_id_set=d.get("channel_id_set", None),
+            oauth_token=d.get("oauth_token", None),
+            oauth_token_set=d.get("oauth_token_set", None),
+            url=d.get("url", None),
+            url_set=d.get("url_set", None),
+        )
 
 
 @dataclass

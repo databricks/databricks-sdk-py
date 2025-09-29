@@ -325,6 +325,13 @@ class AzureAvailability(Enum):
     SPOT_WITH_FALLBACK_AZURE = "SPOT_WITH_FALLBACK_AZURE"
 
 
+class BaseEnvironmentType(Enum):
+    """If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto"""
+
+    CPU = "CPU"
+    GPU = "GPU"
+
+
 @dataclass
 class CancelResponse:
     def as_dict(self) -> dict:
@@ -2722,6 +2729,8 @@ class DbfsStorageInfo:
 class DefaultBaseEnvironment:
     base_environment_cache: Optional[List[DefaultBaseEnvironmentCache]] = None
 
+    base_environment_type: Optional[BaseEnvironmentType] = None
+
     created_timestamp: Optional[int] = None
 
     creator_user_id: Optional[int] = None
@@ -2753,6 +2762,8 @@ class DefaultBaseEnvironment:
         body = {}
         if self.base_environment_cache:
             body["base_environment_cache"] = [v.as_dict() for v in self.base_environment_cache]
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type.value
         if self.created_timestamp is not None:
             body["created_timestamp"] = self.created_timestamp
         if self.creator_user_id is not None:
@@ -2784,6 +2795,8 @@ class DefaultBaseEnvironment:
         body = {}
         if self.base_environment_cache:
             body["base_environment_cache"] = self.base_environment_cache
+        if self.base_environment_type is not None:
+            body["base_environment_type"] = self.base_environment_type
         if self.created_timestamp is not None:
             body["created_timestamp"] = self.created_timestamp
         if self.creator_user_id is not None:
@@ -2815,6 +2828,7 @@ class DefaultBaseEnvironment:
         """Deserializes the DefaultBaseEnvironment from a dictionary."""
         return cls(
             base_environment_cache=_repeated_dict(d, "base_environment_cache", DefaultBaseEnvironmentCache),
+            base_environment_type=_enum(d, "base_environment_type", BaseEnvironmentType),
             created_timestamp=d.get("created_timestamp", None),
             creator_user_id=d.get("creator_user_id", None),
             environment=_from_dict(d, "environment", Environment),
@@ -3307,6 +3321,9 @@ class Environment:
     version and a set of Python packages. The version is a string, consisting of an integer."""
 
     jar_dependencies: Optional[List[str]] = None
+    """Use `java_dependencies` instead."""
+
+    java_dependencies: Optional[List[str]] = None
     """List of jar dependencies, should be string representing volume paths. For example:
     `/Volumes/path/to/test.jar`."""
 
@@ -3321,6 +3338,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = [v for v in self.jar_dependencies]
+        if self.java_dependencies:
+            body["java_dependencies"] = [v for v in self.java_dependencies]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3334,6 +3353,8 @@ class Environment:
             body["environment_version"] = self.environment_version
         if self.jar_dependencies:
             body["jar_dependencies"] = self.jar_dependencies
+        if self.java_dependencies:
+            body["java_dependencies"] = self.java_dependencies
         return body
 
     @classmethod
@@ -3344,6 +3365,7 @@ class Environment:
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
             jar_dependencies=d.get("jar_dependencies", None),
+            java_dependencies=d.get("java_dependencies", None),
         )
 
 
@@ -3581,6 +3603,15 @@ class GcpAttributes:
     boot_disk_size: Optional[int] = None
     """Boot disk size in GB"""
 
+    first_on_demand: Optional[int] = None
+    """The first `first_on_demand` nodes of the cluster will be placed on on-demand instances. This
+    value should be greater than 0, to make sure the cluster driver node is placed on an on-demand
+    instance. If this value is greater than or equal to the current cluster size, all nodes will be
+    placed on on-demand instances. If this value is less than the current cluster size,
+    `first_on_demand` nodes will be placed on on-demand instances and the remainder will be placed
+    on `availability` instances. Note that this value does not affect cluster size and cannot
+    currently be mutated over the lifetime of a cluster."""
+
     google_service_account: Optional[str] = None
     """If provided, the cluster will impersonate the google service account when accessing gcloud
     services (like GCS). The google service account must have previously been added to the
@@ -3612,6 +3643,8 @@ class GcpAttributes:
             body["availability"] = self.availability.value
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
             body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
@@ -3629,6 +3662,8 @@ class GcpAttributes:
             body["availability"] = self.availability
         if self.boot_disk_size is not None:
             body["boot_disk_size"] = self.boot_disk_size
+        if self.first_on_demand is not None:
+            body["first_on_demand"] = self.first_on_demand
         if self.google_service_account is not None:
             body["google_service_account"] = self.google_service_account
         if self.local_ssd_count is not None:
@@ -3645,6 +3680,7 @@ class GcpAttributes:
         return cls(
             availability=_enum(d, "availability", GcpAvailability),
             boot_disk_size=d.get("boot_disk_size", None),
+            first_on_demand=d.get("first_on_demand", None),
             google_service_account=d.get("google_service_account", None),
             local_ssd_count=d.get("local_ssd_count", None),
             use_preemptible_executors=d.get("use_preemptible_executors", None),
@@ -5016,6 +5052,16 @@ class InstancePoolAwsAttributes:
     availability: Optional[InstancePoolAwsAttributesAvailability] = None
     """Availability type used for the spot nodes."""
 
+    instance_profile_arn: Optional[str] = None
+    """All AWS instances belonging to the instance pool will have this instance profile. If omitted,
+    instances will initially be launched with the workspace's default instance profile. If defined,
+    clusters that use the pool will inherit the instance profile, and must not specify their own
+    instance profile on cluster creation or update. If the pool does not specify an instance
+    profile, clusters using the pool may specify any instance profile. The instance profile must
+    have previously been added to the Databricks environment by an account administrator.
+    
+    This feature may only be available to certain customer plans."""
+
     spot_bid_price_percent: Optional[int] = None
     """Calculates the bid price for AWS spot instances, as a percentage of the corresponding instance
     type's on-demand price. For example, if this field is set to 50, and the cluster needs a new
@@ -5038,6 +5084,8 @@ class InstancePoolAwsAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability.value
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
             body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
@@ -5049,6 +5097,8 @@ class InstancePoolAwsAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
             body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
@@ -5060,6 +5110,7 @@ class InstancePoolAwsAttributes:
         """Deserializes the InstancePoolAwsAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAwsAttributesAvailability),
+            instance_profile_arn=d.get("instance_profile_arn", None),
             spot_bid_price_percent=d.get("spot_bid_price_percent", None),
             zone_id=d.get("zone_id", None),
         )
@@ -7457,6 +7508,8 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE = "NETWORK_CHECK_STORAGE_FAILURE"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
+    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -7495,6 +7548,7 @@ class TerminationReasonCode(Enum):
     UNKNOWN = "UNKNOWN"
     UNSUPPORTED_INSTANCE_TYPE = "UNSUPPORTED_INSTANCE_TYPE"
     UPDATE_INSTANCE_PROFILE_FAILURE = "UPDATE_INSTANCE_PROFILE_FAILURE"
+    USAGE_POLICY_ENTITLEMENT_DENIED = "USAGE_POLICY_ENTITLEMENT_DENIED"
     USER_INITIATED_VM_TERMINATION = "USER_INITIATED_VM_TERMINATION"
     USER_REQUEST = "USER_REQUEST"
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
@@ -10735,6 +10789,26 @@ class LibrariesAPI:
 
         self._api.do("DELETE", f"/api/2.0/default-base-environments/{id}", headers=headers)
 
+    def get_default_base_environment(self, id: str) -> DefaultBaseEnvironment:
+        """Return the default base environment details for a given ID.
+
+        :param id: str
+
+        :returns: :class:`DefaultBaseEnvironment`
+        """
+
+        query = {}
+        if id is not None:
+            query["id"] = id
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", "/api/2.0/default-base-environments:getDefaultBaseEnvironment", query=query, headers=headers
+        )
+        return DefaultBaseEnvironment.from_dict(res)
+
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
         after the completion of this request.
@@ -10829,13 +10903,13 @@ class LibrariesAPI:
         self._api.do("POST", "/api/2.0/libraries/uninstall", body=body, headers=headers)
 
     def update_default_base_environment(
-        self, id: str, *, default_base_environment: Optional[DefaultBaseEnvironment] = None
+        self, id: str, default_base_environment: DefaultBaseEnvironment
     ) -> DefaultBaseEnvironment:
         """Update the default base environment for the given ID. This process will asynchronously regenerate the
         cache. The existing cache remains available until it expires.
 
         :param id: str
-        :param default_base_environment: :class:`DefaultBaseEnvironment` (optional)
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
 
         :returns: :class:`DefaultBaseEnvironment`
         """
@@ -10850,15 +10924,20 @@ class LibrariesAPI:
         res = self._api.do("PATCH", f"/api/2.0/default-base-environments/{id}", body=body, headers=headers)
         return DefaultBaseEnvironment.from_dict(res)
 
-    def update_default_default_base_environment(self, id: str) -> DefaultBaseEnvironment:
+    def update_default_default_base_environment(
+        self, *, base_environment_type: Optional[BaseEnvironmentType] = None, id: Optional[str] = None
+    ) -> DefaultBaseEnvironment:
         """Set the default base environment for the workspace. This marks the specified DBE as the workspace
         default.
 
-        :param id: str
+        :param base_environment_type: :class:`BaseEnvironmentType` (optional)
+        :param id: str (optional)
 
         :returns: :class:`DefaultBaseEnvironment`
         """
         body = {}
+        if base_environment_type is not None:
+            body["base_environment_type"] = base_environment_type.value
         if id is not None:
             body["id"] = id
         headers = {
@@ -10866,7 +10945,7 @@ class LibrariesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PATCH", "/api/2.0/default-base-environments/default", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/default-base-environments:setDefault", body=body, headers=headers)
         return DefaultBaseEnvironment.from_dict(res)
 
 

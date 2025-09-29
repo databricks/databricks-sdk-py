@@ -3382,6 +3382,9 @@ class ServingEndpoint:
     task: Optional[str] = None
     """The task type of the serving endpoint."""
 
+    usage_policy_id: Optional[str] = None
+    """The usage policy associated with serving endpoint."""
+
     def as_dict(self) -> dict:
         """Serializes the ServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3409,6 +3412,8 @@ class ServingEndpoint:
             body["tags"] = [v.as_dict() for v in self.tags]
         if self.task is not None:
             body["task"] = self.task
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3438,6 +3443,8 @@ class ServingEndpoint:
             body["tags"] = self.tags
         if self.task is not None:
             body["task"] = self.task
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -3456,6 +3463,7 @@ class ServingEndpoint:
             state=_from_dict(d, "state", EndpointState),
             tags=_repeated_dict(d, "tags", EndpointTag),
             task=d.get("task", None),
+            usage_policy_id=d.get("usage_policy_id", None),
         )
 
 
@@ -3895,6 +3903,38 @@ class TrafficConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, "routes", Route))
+
+
+@dataclass
+class UpdateInferenceEndpointNotificationsResponse:
+    email_notifications: Optional[EmailNotifications] = None
+
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateInferenceEndpointNotificationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateInferenceEndpointNotificationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.email_notifications:
+            body["email_notifications"] = self.email_notifications
+        if self.name is not None:
+            body["name"] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInferenceEndpointNotificationsResponse:
+        """Deserializes the UpdateInferenceEndpointNotificationsResponse from a dictionary."""
+        return cls(
+            email_notifications=_from_dict(d, "email_notifications", EmailNotifications), name=d.get("name", None)
+        )
 
 
 @dataclass
@@ -4482,6 +4522,7 @@ class ServingEndpointsAPI:
         self,
         name: str,
         *,
+        client_request_id: Optional[str] = None,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
         extra_params: Optional[Dict[str, str]] = None,
@@ -4495,11 +4536,15 @@ class ServingEndpointsAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        usage_context: Optional[Dict[str, str]] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4541,10 +4586,14 @@ class ServingEndpointsAPI:
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         """
         body = {}
+        if client_request_id is not None:
+            body["client_request_id"] = client_request_id
         if dataframe_records is not None:
             body["dataframe_records"] = [v for v in dataframe_records]
         if dataframe_split is not None:
@@ -4571,6 +4620,8 @@ class ServingEndpointsAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if usage_context is not None:
+            body["usage_context"] = usage_context
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -4687,6 +4738,30 @@ class ServingEndpointsAPI:
             traffic_config=traffic_config,
         ).result(timeout=timeout)
 
+    def update_notifications(
+        self, name: str, *, email_notifications: Optional[EmailNotifications] = None
+    ) -> UpdateInferenceEndpointNotificationsResponse:
+        """Updates the email and webhook notification settings for an endpoint.
+
+        :param name: str
+          The name of the serving endpoint whose notifications are being updated. This field is required.
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          The email notification settings to update. Specify email addresses to notify when endpoint state
+          changes occur.
+
+        :returns: :class:`UpdateInferenceEndpointNotificationsResponse`
+        """
+        body = {}
+        if email_notifications is not None:
+            body["email_notifications"] = email_notifications.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/notifications", body=body, headers=headers)
+        return UpdateInferenceEndpointNotificationsResponse.from_dict(res)
+
     def update_permissions(
         self,
         serving_endpoint_id: str,
@@ -4785,6 +4860,7 @@ class ServingEndpointsDataPlaneAPI:
         self,
         name: str,
         *,
+        client_request_id: Optional[str] = None,
         dataframe_records: Optional[List[Any]] = None,
         dataframe_split: Optional[DataframeSplitInput] = None,
         extra_params: Optional[Dict[str, str]] = None,
@@ -4798,11 +4874,15 @@ class ServingEndpointsDataPlaneAPI:
         stop: Optional[List[str]] = None,
         stream: Optional[bool] = None,
         temperature: Optional[float] = None,
+        usage_context: Optional[Dict[str, str]] = None,
     ) -> QueryEndpointResponse:
         """Query a serving endpoint
 
         :param name: str
           The name of the serving endpoint. This field is required and is provided via the path parameter.
+        :param client_request_id: str (optional)
+          Optional user-provided request identifier that will be recorded in the inference table and the usage
+          tracking table.
         :param dataframe_records: List[Any] (optional)
           Pandas Dataframe input in the records orientation.
         :param dataframe_split: :class:`DataframeSplitInput` (optional)
@@ -4844,10 +4924,14 @@ class ServingEndpointsDataPlaneAPI:
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
+        :param usage_context: Dict[str,str] (optional)
+          Optional user-provided context that will be recorded in the usage tracking table.
 
         :returns: :class:`QueryEndpointResponse`
         """
         body = {}
+        if client_request_id is not None:
+            body["client_request_id"] = client_request_id
         if dataframe_records is not None:
             body["dataframe_records"] = [v for v in dataframe_records]
         if dataframe_split is not None:
@@ -4874,6 +4958,8 @@ class ServingEndpointsDataPlaneAPI:
             body["stream"] = stream
         if temperature is not None:
             body["temperature"] = temperature
+        if usage_context is not None:
+            body["usage_context"] = usage_context
         data_plane_info = self._data_plane_info_query(
             name=name,
         )
