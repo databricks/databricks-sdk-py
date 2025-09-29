@@ -12,7 +12,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import google.auth  # type: ignore
 import requests
@@ -360,33 +360,47 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
-def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+def _oidc_credentials_provider(
+    cfg: "Config", supplier_factory: Callable[[], Any], provider_name: str
+) -> Optional[CredentialsProvider]:
     """
-    DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
-    it for a Databricks Token.
+    Generic OIDC credentials provider that works with any OIDC token supplier.
 
-    Supported suppliers:
-    - GitHub OIDC
+    Args:
+        cfg: Databricks configuration
+        supplier_factory: Callable that returns an OIDC token supplier instance
+        provider_name: Human-readable name (e.g., "GitHub OIDC", "Azure DevOps OIDC")
+
+    Returns:
+        OAuthCredentialsProvider if successful, None if supplier unavailable or token retrieval fails
     """
-    supplier = oidc_token_supplier.GitHubOIDCTokenSupplier()
+    # Try to create the supplier
+    try:
+        supplier = supplier_factory()
+    except Exception as e:
+        logger.debug(f"{provider_name}: {str(e)}")
+        return None
 
+    # Determine the audience for token exchange
     audience = cfg.token_audience
     if audience is None and cfg.is_account_client:
         audience = cfg.account_id
     if audience is None and not cfg.is_account_client:
         audience = cfg.oidc_endpoints.token_endpoint
 
-    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
+    # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
     id_token = supplier.get_oidc_token(audience)
     if not id_token:
+        logger.debug(f"{provider_name}: no token available, skipping authentication method")
         return None
+
+    logger.info(f"Configured {provider_name} authentication")
 
     def token_source_for(audience: str) -> oauth.TokenSource:
         id_token = supplier.get_oidc_token(audience)
         if not id_token:
             # Should not happen, since we checked it above.
-            raise Exception("Cannot get OIDC token")
+            raise Exception(f"Cannot get {provider_name} token")
 
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
@@ -410,6 +424,19 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
+
+
+@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
+def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    GitHub OIDC authentication uses a Token Supplier to get a JWT Token and exchanges
+    it for a Databricks Token.
+
+    Supported in GitHub Actions with OIDC service connections.
+    """
+    return _oidc_credentials_provider(
+        cfg=cfg, supplier_factory=lambda: oidc_token_supplier.GitHubOIDCTokenSupplier(), provider_name="GitHub OIDC"
+    )
 
 
 @oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"])
@@ -420,54 +447,11 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
 
     Supported in Azure DevOps pipelines with OIDC service connections.
     """
-    try:
-        supplier = oidc_token_supplier.AzureDevOpsOIDCTokenSupplier()
-    except ValueError as e:
-        logger.debug(str(e))
-        return None
-
-    audience = cfg.token_audience
-    if audience is None and cfg.is_account_client:
-        audience = cfg.account_id
-    if audience is None and not cfg.is_account_client:
-        audience = cfg.oidc_endpoints.token_endpoint
-
-    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
-    id_token = supplier.get_oidc_token(audience)
-    if not id_token:
-        logger.debug("Azure DevOps OIDC: no token available, skipping authentication method")
-        return None
-
-    logger.info("Configured Azure DevOps OIDC authentication")
-
-    def token_source_for(audience: str) -> oauth.TokenSource:
-        id_token = supplier.get_oidc_token(audience)
-        if not id_token:
-            # Should not happen, since we checked it above.
-            raise Exception("Cannot get Azure DevOps OIDC token")
-
-        return oauth.ClientCredentials(
-            client_id=cfg.client_id,
-            client_secret="",  # we have no (rotatable) secrets in OIDC flow
-            token_url=cfg.oidc_endpoints.token_endpoint,
-            endpoint_params={
-                "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
-                "subject_token": id_token,
-                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-            },
-            scopes=["all-apis"],
-            use_params=True,
-            disable_async=cfg.disable_async_token_refresh,
-        )
-
-    def refreshed_headers() -> Dict[str, str]:
-        token = token_source_for(audience).token()
-        return {"Authorization": f"{token.token_type} {token.access_token}"}
-
-    def token() -> oauth.Token:
-        return token_source_for(audience).token()
-
-    return OAuthCredentialsProvider(refreshed_headers, token)
+    return _oidc_credentials_provider(
+        cfg=cfg,
+        supplier_factory=lambda: oidc_token_supplier.AzureDevOpsOIDCTokenSupplier(),
+        provider_name="Azure DevOps OIDC",
+    )
 
 
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
@@ -1078,10 +1062,10 @@ class DefaultCredentials:
             env_oidc,
             file_oidc,
             github_oidc,
-            azure_devops_oidc,
             azure_service_principal,
             github_oidc_azure,
             azure_cli,
+            azure_devops_oidc,
             external_browser,
             databricks_cli,
             runtime_native_auth,
