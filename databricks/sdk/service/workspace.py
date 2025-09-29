@@ -228,24 +228,6 @@ class CreateRepoResponse:
 
 
 @dataclass
-class CreateScopeResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateScopeResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateScopeResponse:
-        """Deserializes the CreateScopeResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CredentialInfo:
     credential_id: int
     """ID of the credential object in the workspace."""
@@ -306,24 +288,6 @@ class CredentialInfo:
 
 
 @dataclass
-class DeleteAclResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAclResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAclResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAclResponse:
-        """Deserializes the DeleteAclResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeleteCredentialsResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -374,24 +338,6 @@ class DeleteResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteScopeResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteScopeResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
-        """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
 
 
@@ -997,42 +943,6 @@ class ObjectType(Enum):
     LIBRARY = "LIBRARY"
     NOTEBOOK = "NOTEBOOK"
     REPO = "REPO"
-
-
-@dataclass
-class PutAclResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutAclResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
-        """Deserializes the PutAclResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class PutSecretResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PutSecretResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutSecretResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutSecretResponse:
-        """Deserializes the PutSecretResponse from a dictionary."""
-        return cls()
 
 
 @dataclass

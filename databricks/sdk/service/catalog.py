@@ -2296,15 +2296,15 @@ class CreateFunctionSqlDataAccess(Enum):
 
 @dataclass
 class CreateMetastoreAssignment:
+    workspace_id: int
+    """A workspace ID."""
+
     metastore_id: str
     """The unique ID of the metastore."""
 
     default_catalog_name: str
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
-
-    workspace_id: Optional[int] = None
-    """A workspace ID."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -2778,24 +2778,6 @@ class DatabricksGcpServiceAccountResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get("credential_id", None), email=d.get("email", None))
-
-
-@dataclass
-class DeleteAliasResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAliasResponse:
-        """Deserializes the DeleteAliasResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -10215,15 +10197,15 @@ class UpdateCatalogWorkspaceBindingsResponse:
 
 @dataclass
 class UpdateMetastoreAssignment:
+    workspace_id: int
+    """A workspace ID."""
+
     default_catalog_name: Optional[str] = None
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
 
     metastore_id: Optional[str] = None
     """The unique ID of the metastore."""
-
-    workspace_id: Optional[int] = None
-    """A workspace ID."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
