@@ -277,10 +277,17 @@ def get_local_notebook_path():
     return value
 
 
+def not_supported_method_err_msg(methodName):
+    return f"Method '{methodName}' is not supported in the SDK version of DBUtils"
+
+
 class _OverrideProxyUtil:
 
     @classmethod
     def new(cls, path: str):
+        if path in cls.not_supported_override_paths:
+            raise ValueError(cls.not_supported_override_paths[path])
+
         if len(cls.__get_matching_overrides(path)) > 0:
             return _OverrideProxyUtil(path)
         return None
@@ -295,6 +302,16 @@ class _OverrideProxyUtil:
     # are being proxied to remote dbutils currently.
     proxy_override_paths = {
         "notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()": get_local_notebook_path,
+    }
+
+    # These paths work the same as 'proxy_override_paths' but instead of using a local implementation we raise an exception.
+    not_supported_override_paths = {
+        # The object returned by 'credentials.getServiceCredentialProvider()' can't be serialized to JSON.
+        # Without this override, the command would fail with an error 'TypeError: Object of type Session is not JSON serializable'.
+        # We override it to show a better error message
+        "credentials.getServiceCredentialsProvider": not_supported_method_err_msg(
+            "credentials.getServiceCredentialsProvider"
+        ),
     }
 
     @classmethod
