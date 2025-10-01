@@ -435,7 +435,9 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     Supported in GitHub Actions with OIDC service connections.
     """
     return _oidc_credentials_provider(
-        cfg=cfg, supplier_factory=lambda: oidc_token_supplier.GitHubOIDCTokenSupplier(), provider_name="GitHub OIDC"
+        cfg=cfg,
+        supplier_factory=lambda: oidc_token_supplier.GitHubOIDCTokenSupplier(),
+        provider_name="GitHub OIDC",
     )
 
 

@@ -7,6 +7,7 @@ import requests
 logger = logging.getLogger("databricks.sdk")
 
 
+# TODO: Check the required environment variables while creating the instance rather than in the get_oidc_token method to allow early return.
 class GitHubOIDCTokenSupplier:
     """
     Supplies OIDC tokens from GitHub Actions.
