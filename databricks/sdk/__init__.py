@@ -299,6 +299,7 @@ class WorkspaceClient:
         self._feature_engineering = pkg_ml.FeatureEngineeringAPI(self._api_client)
         self._feature_store = pkg_ml.FeatureStoreAPI(self._api_client)
         self._files = _make_files_client(self._api_client, self._config)
+        self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
         self._functions = pkg_catalog.FunctionsAPI(self._api_client)
         self._genie = pkg_dashboards.GenieAPI(self._api_client)
         self._git_credentials = pkg_workspace.GitCredentialsAPI(self._api_client)
@@ -383,9 +384,8 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
-        self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
-        self._forecasting = pkg_ml.ForecastingAPI(self._api_client)
         self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
+        self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._groups = pkg_iam.GroupsAPI(self._api_client)
         self._service_principals = pkg_iam.ServicePrincipalsAPI(self._api_client)
         self._users = pkg_iam.UsersAPI(self._api_client)
@@ -616,6 +616,11 @@ class WorkspaceClient:
     def files(self) -> pkg_files.FilesAPI:
         """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
         return self._files
+
+    @property
+    def forecasting(self) -> pkg_ml.ForecastingAPI:
+        """The Forecasting API allows you to create and get serverless forecasting experiments."""
+        return self._forecasting
 
     @property
     def functions(self) -> pkg_catalog.FunctionsAPI:
@@ -1003,19 +1008,14 @@ class WorkspaceClient:
         return self._workspace_conf
 
     @property
-    def workspace_settings_v2(self) -> pkg_settingsv2.WorkspaceSettingsV2API:
-        """APIs to manage workspace level settings."""
-        return self._workspace_settings_v2
-
-    @property
-    def forecasting(self) -> pkg_ml.ForecastingAPI:
-        """The Forecasting API allows you to create and get serverless forecasting experiments."""
-        return self._forecasting
-
-    @property
     def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
         """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
         return self._workspace_iam_v2
+
+    @property
+    def workspace_settings_v2(self) -> pkg_settingsv2.WorkspaceSettingsV2API:
+        """APIs to manage workspace level settings."""
+        return self._workspace_settings_v2
 
     @property
     def groups(self) -> pkg_iam.GroupsAPI:
@@ -1109,11 +1109,13 @@ class AccountClient:
         self._access_control = pkg_iam.AccountAccessControlAPI(self._api_client)
         self._billable_usage = pkg_billing.BillableUsageAPI(self._api_client)
         self._budget_policy = pkg_billing.BudgetPolicyAPI(self._api_client)
+        self._budgets = pkg_billing.BudgetsAPI(self._api_client)
         self._credentials = pkg_provisioning.CredentialsAPI(self._api_client)
         self._custom_app_integration = pkg_oauth2.CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = pkg_provisioning.EncryptionKeysAPI(self._api_client)
         self._federation_policy = pkg_oauth2.AccountFederationPolicyAPI(self._api_client)
         self._groups_v2 = pkg_iam.AccountGroupsV2API(self._api_client)
+        self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
         self._ip_access_lists = pkg_settings.AccountIpAccessListsAPI(self._api_client)
         self._log_delivery = pkg_billing.LogDeliveryAPI(self._api_client)
         self._metastore_assignments = pkg_catalog.AccountMetastoreAssignmentsAPI(self._api_client)
@@ -1138,8 +1140,6 @@ class AccountClient:
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
         self._workspace_network_configuration = pkg_settings.WorkspaceNetworkConfigurationAPI(self._api_client)
         self._workspaces = pkg_provisioning.WorkspacesAPI(self._api_client)
-        self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
-        self._budgets = pkg_billing.BudgetsAPI(self._api_client)
         self._groups = pkg_iam.AccountGroupsAPI(self._api_client)
         self._service_principals = pkg_iam.AccountServicePrincipalsAPI(self._api_client)
         self._users = pkg_iam.AccountUsersAPI(self._api_client)
@@ -1168,6 +1168,11 @@ class AccountClient:
         return self._budget_policy
 
     @property
+    def budgets(self) -> pkg_billing.BudgetsAPI:
+        """These APIs manage budget configurations for this account."""
+        return self._budgets
+
+    @property
     def credentials(self) -> pkg_provisioning.CredentialsAPI:
         """These APIs manage credential configurations for this workspace."""
         return self._credentials
@@ -1191,6 +1196,11 @@ class AccountClient:
     def groups_v2(self) -> pkg_iam.AccountGroupsV2API:
         """Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects."""
         return self._groups_v2
+
+    @property
+    def iam_v2(self) -> pkg_iamv2.AccountIamV2API:
+        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
+        return self._iam_v2
 
     @property
     def ip_access_lists(self) -> pkg_settings.AccountIpAccessListsAPI:
@@ -1311,16 +1321,6 @@ class AccountClient:
     def workspaces(self) -> pkg_provisioning.WorkspacesAPI:
         """These APIs manage workspaces for this account."""
         return self._workspaces
-
-    @property
-    def iam_v2(self) -> pkg_iamv2.AccountIamV2API:
-        """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
-        return self._iam_v2
-
-    @property
-    def budgets(self) -> pkg_billing.BudgetsAPI:
-        """These APIs manage budget configurations for this account."""
-        return self._budgets
 
     @property
     def groups(self) -> pkg_iam.AccountGroupsAPI:

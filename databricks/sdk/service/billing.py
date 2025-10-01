@@ -1112,9 +1112,6 @@ class LogDeliveryConfiguration:
     [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
 
-    account_id: str
-    """Databricks account ID."""
-
     credentials_id: str
     """The ID for a method:credentials/create that represents the AWS IAM role with policy and trust
     relationship as described in the main billable usage documentation page. See [Configure billable
@@ -1127,6 +1124,9 @@ class LogDeliveryConfiguration:
     in the main billable usage documentation page. See [Configure billable usage delivery].
     
     [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
+    account_id: Optional[str] = None
+    """Databricks account ID."""
 
     config_id: Optional[str] = None
     """The unique UUID of log delivery configuration"""

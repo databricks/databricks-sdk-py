@@ -502,24 +502,6 @@ class ConsistencyToken:
 
 
 @dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeleteWorkspacePermissionAssignmentResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteWorkspacePermissionAssignmentResponse into a dictionary suitable for use as a JSON request body."""
@@ -1463,24 +1445,6 @@ class PatchOp(Enum):
     ADD = "add"
     REMOVE = "remove"
     REPLACE = "replace"
-
-
-@dataclass
-class PatchResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PatchResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PatchResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PatchResponse:
-        """Deserializes the PatchResponse from a dictionary."""
-        return cls()
 
 
 class PatchSchema(Enum):

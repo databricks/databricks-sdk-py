@@ -57,24 +57,6 @@ class ColumnTypeName(Enum):
 
 
 @dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeltaSharingDependency:
     """Represents a UC dependency."""
 
@@ -3472,7 +3454,7 @@ class SharesAPI:
         owner of the share.
 
         :param name: str
-          The name of the share.
+          The name of the Recipient.
         :param max_results: int (optional)
           Maximum number of permissions to return. - when set to 0, the page length is set to a server
           configured value (recommended); - when set to a value greater than 0, the page length is the minimum

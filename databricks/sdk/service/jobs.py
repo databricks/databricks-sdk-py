@@ -459,42 +459,6 @@ class BaseRun:
         )
 
 
-@dataclass
-class CancelAllRunsResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRunsResponse:
-        """Deserializes the CancelAllRunsResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class CancelRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelRunResponse:
-        """Deserializes the CancelRunResponse from a dictionary."""
-        return cls()
-
-
 class CleanRoomTaskRunLifeCycleState(Enum):
     """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to
     remove coupling with jobs API definition"""
@@ -1520,42 +1484,6 @@ class DbtTask:
             source=_enum(d, "source", Source),
             warehouse_id=d.get("warehouse_id", None),
         )
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
-        """Deserializes the DeleteRunResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -4307,24 +4235,6 @@ class RepairRunResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get("repair_id", None))
-
-
-@dataclass
-class ResetResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResetResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResetResponse:
-        """Deserializes the ResetResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8263,24 +8173,6 @@ class TriggerType(Enum):
     RETRY = "RETRY"
     RUN_JOB_TASK = "RUN_JOB_TASK"
     TABLE = "TABLE"
-
-
-@dataclass
-class UpdateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
