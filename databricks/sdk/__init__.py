@@ -21,6 +21,7 @@ from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
+from databricks.sdk.service import dataquality as pkg_dataquality
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
@@ -43,7 +44,7 @@ from databricks.sdk.service.agentbricks import AgentBricksAPI
 from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
-                                            UsageDashboardsAPI)
+                                            UsageDashboardsAPI, UsagePolicyAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -77,8 +78,10 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
-                                               LakeviewEmbeddedAPI)
-from databricks.sdk.service.database import DatabaseAPI
+                                               LakeviewEmbeddedAPI,
+                                               QueryExecutionAPI)
+from databricks.sdk.service.database import DatabaseAPI, DatabaseProjectAPI
+from databricks.sdk.service.dataquality import DataQualityAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -152,7 +155,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
-from databricks.sdk.service.tags import TagPoliciesAPI
+from databricks.sdk.service.tags import TagAssignmentsAPI, TagPoliciesAPI
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -282,8 +285,10 @@ class WorkspaceClient:
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
+        self._data_quality = pkg_dataquality.DataQualityAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
         self._database = pkg_database.DatabaseAPI(self._api_client)
+        self._database_project = pkg_database.DatabaseProjectAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = pkg_sql.DbsqlPermissionsAPI(self._api_client)
         self._entity_tag_assignments = pkg_catalog.EntityTagAssignmentsAPI(self._api_client)
@@ -334,6 +339,7 @@ class WorkspaceClient:
         self._quality_monitors = pkg_catalog.QualityMonitorsAPI(self._api_client)
         self._queries = pkg_sql.QueriesAPI(self._api_client)
         self._queries_legacy = pkg_sql.QueriesLegacyAPI(self._api_client)
+        self._query_execution = pkg_dashboards.QueryExecutionAPI(self._api_client)
         self._query_history = pkg_sql.QueryHistoryAPI(self._api_client)
         self._query_visualizations = pkg_sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = pkg_sql.QueryVisualizationsLegacyAPI(self._api_client)
@@ -363,6 +369,7 @@ class WorkspaceClient:
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
+        self._tag_assignments = pkg_tags.TagAssignmentsAPI(self._api_client)
         self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
@@ -541,6 +548,11 @@ class WorkspaceClient:
         return self._dashboards
 
     @property
+    def data_quality(self) -> pkg_dataquality.DataQualityAPI:
+        """Manage the data quality of Unity Catalog objects (currently support `schema` and `table`)."""
+        return self._data_quality
+
+    @property
     def data_sources(self) -> pkg_sql.DataSourcesAPI:
         """This API is provided to assist you in making new query objects."""
         return self._data_sources
@@ -549,6 +561,11 @@ class WorkspaceClient:
     def database(self) -> pkg_database.DatabaseAPI:
         """Database Instances provide access to a database via REST API or direct SQL."""
         return self._database
+
+    @property
+    def database_project(self) -> pkg_database.DatabaseProjectAPI:
+        """Database Projects provide access to a database via REST API or direct SQL."""
+        return self._database_project
 
     @property
     def dbfs(self) -> DbfsExt:
@@ -791,6 +808,11 @@ class WorkspaceClient:
         return self._queries_legacy
 
     @property
+    def query_execution(self) -> pkg_dashboards.QueryExecutionAPI:
+        """Query execution APIs for AI / BI Dashboards."""
+        return self._query_execution
+
+    @property
     def query_history(self) -> pkg_sql.QueryHistoryAPI:
         """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
@@ -909,6 +931,11 @@ class WorkspaceClient:
     def tables(self) -> pkg_catalog.TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def tag_assignments(self) -> pkg_tags.TagAssignmentsAPI:
+        """Manage tag assignments on workspace-scoped objects."""
+        return self._tag_assignments
 
     @property
     def tag_policies(self) -> pkg_tags.TagPoliciesAPI:
@@ -1105,6 +1132,7 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
+        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1253,6 +1281,11 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
+
+    @property
+    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
+        """A service serves REST API about Usage policies."""
+        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:

@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1862,6 +1864,31 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
+class GetLoggedModelsRequestResponse:
+    models: Optional[List[LoggedModel]] = None
+    """The retrieved logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
+        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -5669,6 +5696,25 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
+
+    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
+        """Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        """
+
+        query = {}
+        if model_ids is not None:
+            query["model_ids"] = [v for v in model_ids]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
+        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
