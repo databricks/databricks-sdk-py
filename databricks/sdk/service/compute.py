@@ -8836,11 +8836,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_terminated,
-            response=DeleteClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
-        )
+        return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
@@ -9102,9 +9098,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def edit_and_wait(
         self,
@@ -9466,9 +9460,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def resize_and_wait(
         self,
@@ -9503,9 +9495,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def restart_and_wait(
         self, cluster_id: str, *, restart_user: Optional[str] = None, timeout=timedelta(minutes=20)
@@ -9572,9 +9562,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
@@ -9645,9 +9633,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def update_and_wait(
         self,
@@ -9828,7 +9814,6 @@ class CommandExecutionAPI:
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
         return Wait(
             self.wait_command_status_command_execution_cancelled,
-            response=CancelResponse.from_dict(op_response),
             cluster_id=cluster_id,
             command_id=command_id,
             context_id=context_id,

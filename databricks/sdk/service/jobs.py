@@ -8554,11 +8554,7 @@ class JobsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
-        return Wait(
-            self.wait_get_run_job_terminated_or_skipped,
-            response=CancelRunResponse.from_dict(op_response),
-            run_id=run_id,
-        )
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)
