@@ -32,10 +32,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Write release notes to file
+        run: |
+          RELEASE_NOTES_DIR=/tmp/release-notes
+          mkdir -p "$RELEASE_NOTES_DIR"
+          RELEASE_NOTES_FILE="$RELEASE_NOTES_DIR/release-notes.md"
+          git for-each-ref --format='%(contents)' ${{ github.ref }} > "$RELEASE_NOTES_FILE"
+          echo "Release notes file: $RELEASE_NOTES_FILE"
+          echo "Release notes contents:"
+          cat "$RELEASE_NOTES_FILE"
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          draft: true
+          body_path: /tmp/release-notes/release-notes.md
           files: |
             dist/databricks_*.whl
             dist/databricks_*.tar.gz
