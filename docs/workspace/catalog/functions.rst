@@ -36,7 +36,7 @@
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          __catalog_name__.__schema_name__.__function__name__) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -101,7 +101,7 @@
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param owner: str (optional)
-          Username of current owner of function.
+          Username of current owner of the function.
 
         :returns: :class:`FunctionInfo`
         

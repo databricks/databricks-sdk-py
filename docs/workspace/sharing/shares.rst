@@ -81,7 +81,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
+    .. py:method:: list_shares( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
 
 
         Usage:

@@ -12,6 +12,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AzureKeyInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: AzureWorkspaceInfo
    :members:
    :undoc-members:
@@ -40,22 +44,33 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CustomerFacingComputeMode
+
+   Corresponds to compute mode defined here: https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
+
+   .. py:attribute:: HYBRID
+      :value: "HYBRID"
+
+   .. py:attribute:: SERVERLESS
+      :value: "SERVERLESS"
+
 .. autoclass:: CustomerFacingGcpCloudResourceContainer
    :members:
    :undoc-members:
+
+.. py:class:: CustomerFacingStorageMode
+
+   .. py:attribute:: CUSTOMER_HOSTED
+      :value: "CUSTOMER_HOSTED"
+
+   .. py:attribute:: DEFAULT_STORAGE
+      :value: "DEFAULT_STORAGE"
 
 .. autoclass:: CustomerManagedKey
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
 .. py:class:: EndpointUseCase
-
-   This enumeration represents the type of Databricks VPC [endpoint service] that was used when creating this VPC endpoint.
-   [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
 
    .. py:attribute:: DATAPLANE_RELAY_ACCESS
       :value: "DATAPLANE_RELAY_ACCESS"
@@ -65,7 +80,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ErrorType
 
-   The AWS resource associated with this error: credentials, VPC, subnet, security group, or network ACL.
+   ErrorType and WarningType are used to represent the type of error or warning by NetworkHealth and NetworkWarning defined in central/api/accounts/accounts.proto
 
    .. py:attribute:: CREDENTIALS
       :value: "CREDENTIALS"
@@ -82,7 +97,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VPC
       :value: "VPC"
 
-.. autoclass:: ExternalCustomerInfo
+.. autoclass:: GcpCommonNetworkConfig
    :members:
    :undoc-members:
 
@@ -118,9 +133,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PUBLIC_NODE_PUBLIC_MASTER
       :value: "PUBLIC_NODE_PUBLIC_MASTER"
 
-.. py:class:: KeyUseCase
+.. autoclass:: KeyAccessConfiguration
+   :members:
+   :undoc-members:
 
-   Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and, optionally, cluster EBS volumes.
+.. py:class:: KeyUseCase
 
    .. py:attribute:: MANAGED_SERVICES
       :value: "MANAGED_SERVICES"
@@ -146,9 +163,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PricingTier
 
-   The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-   [AWS Pricing]: https://databricks.com/product/aws-pricing
-
    .. py:attribute:: COMMUNITY_EDITION
       :value: "COMMUNITY_EDITION"
 
@@ -169,8 +183,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PrivateAccessLevel
 
-   The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. * `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
-
    .. py:attribute:: ACCOUNT
       :value: "ACCOUNT"
 
@@ -178,10 +190,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "ENDPOINT"
 
 .. autoclass:: PrivateAccessSettings
-   :members:
-   :undoc-members:
-
-.. autoclass:: ReplaceResponse
    :members:
    :undoc-members:
 
@@ -197,17 +205,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: VpcEndpoint
    :members:
    :undoc-members:
 
 .. py:class:: VpcStatus
-
-   The status of this network configuration object in terms of its use in a workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned.
 
    .. py:attribute:: BROKEN
       :value: "BROKEN"
@@ -223,8 +225,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WarningType
 
-   The AWS resource associated with this warning: a subnet or a security group.
-
    .. py:attribute:: SECURITY_GROUP
       :value: "SECURITY_GROUP"
 
@@ -235,9 +235,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: WorkspaceNetwork
+   :members:
+   :undoc-members:
+
 .. py:class:: WorkspaceStatus
 
-   The status of the workspace. For workspace creation, usually it is set to `PROVISIONING` initially. Continue to check the status until the status is `RUNNING`.
+   The different statuses of a workspace. The following represents the current set of valid transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING -> RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid. TODO(PLAT-5867): add a transition from CANCELLED to some other value (e.g. RECOVERING)
 
    .. py:attribute:: BANNED
       :value: "BANNED"

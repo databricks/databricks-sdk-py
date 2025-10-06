@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -32,6 +34,8 @@ class App:
     app_status: Optional[ApplicationStatus] = None
 
     budget_policy_id: Optional[str] = None
+
+    compute_size: Optional[ComputeSize] = None
 
     compute_status: Optional[ComputeStatus] = None
 
@@ -93,6 +97,8 @@ class App:
             body["app_status"] = self.app_status.as_dict()
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_size is not None:
+            body["compute_size"] = self.compute_size.value
         if self.compute_status:
             body["compute_status"] = self.compute_status.as_dict()
         if self.create_time is not None:
@@ -144,6 +150,8 @@ class App:
             body["app_status"] = self.app_status
         if self.budget_policy_id is not None:
             body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_size is not None:
+            body["compute_size"] = self.compute_size
         if self.compute_status:
             body["compute_status"] = self.compute_status
         if self.create_time is not None:
@@ -193,6 +201,7 @@ class App:
             active_deployment=_from_dict(d, "active_deployment", AppDeployment),
             app_status=_from_dict(d, "app_status", ApplicationStatus),
             budget_policy_id=d.get("budget_policy_id", None),
+            compute_size=_enum(d, "compute_size", ComputeSize),
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
@@ -918,6 +927,8 @@ class AppResource:
     description: Optional[str] = None
     """Description of the App Resource."""
 
+    genie_space: Optional[AppResourceGenieSpace] = None
+
     job: Optional[AppResourceJob] = None
 
     secret: Optional[AppResourceSecret] = None
@@ -935,6 +946,8 @@ class AppResource:
             body["database"] = self.database.as_dict()
         if self.description is not None:
             body["description"] = self.description
+        if self.genie_space:
+            body["genie_space"] = self.genie_space.as_dict()
         if self.job:
             body["job"] = self.job.as_dict()
         if self.name is not None:
@@ -956,6 +969,8 @@ class AppResource:
             body["database"] = self.database
         if self.description is not None:
             body["description"] = self.description
+        if self.genie_space:
+            body["genie_space"] = self.genie_space
         if self.job:
             body["job"] = self.job
         if self.name is not None:
@@ -976,6 +991,7 @@ class AppResource:
         return cls(
             database=_from_dict(d, "database", AppResourceDatabase),
             description=d.get("description", None),
+            genie_space=_from_dict(d, "genie_space", AppResourceGenieSpace),
             job=_from_dict(d, "job", AppResourceJob),
             name=d.get("name", None),
             secret=_from_dict(d, "secret", AppResourceSecret),
@@ -1028,6 +1044,54 @@ class AppResourceDatabase:
 class AppResourceDatabaseDatabasePermission(Enum):
 
     CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
+
+
+@dataclass
+class AppResourceGenieSpace:
+    name: str
+
+    space_id: str
+
+    permission: AppResourceGenieSpaceGenieSpacePermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceGenieSpace into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceGenieSpace into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.permission is not None:
+            body["permission"] = self.permission
+        if self.space_id is not None:
+            body["space_id"] = self.space_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceGenieSpace:
+        """Deserializes the AppResourceGenieSpace from a dictionary."""
+        return cls(
+            name=d.get("name", None),
+            permission=_enum(d, "permission", AppResourceGenieSpaceGenieSpacePermission),
+            space_id=d.get("space_id", None),
+        )
+
+
+class AppResourceGenieSpaceGenieSpacePermission(Enum):
+
+    CAN_EDIT = "CAN_EDIT"
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_RUN = "CAN_RUN"
+    CAN_VIEW = "CAN_VIEW"
 
 
 @dataclass
@@ -1259,6 +1323,112 @@ class AppResourceUcSecurableUcSecurableType(Enum):
     VOLUME = "VOLUME"
 
 
+@dataclass
+class AppUpdate:
+    budget_policy_id: Optional[str] = None
+
+    compute_size: Optional[ComputeSize] = None
+
+    description: Optional[str] = None
+
+    resources: Optional[List[AppResource]] = None
+
+    status: Optional[AppUpdateUpdateStatus] = None
+
+    usage_policy_id: Optional[str] = None
+
+    user_api_scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppUpdate into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_size is not None:
+            body["compute_size"] = self.compute_size.value
+        if self.description is not None:
+            body["description"] = self.description
+        if self.resources:
+            body["resources"] = [v.as_dict() for v in self.resources]
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = [v for v in self.user_api_scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppUpdate into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_size is not None:
+            body["compute_size"] = self.compute_size
+        if self.description is not None:
+            body["description"] = self.description
+        if self.resources:
+            body["resources"] = self.resources
+        if self.status:
+            body["status"] = self.status
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = self.user_api_scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppUpdate:
+        """Deserializes the AppUpdate from a dictionary."""
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            compute_size=_enum(d, "compute_size", ComputeSize),
+            description=d.get("description", None),
+            resources=_repeated_dict(d, "resources", AppResource),
+            status=_from_dict(d, "status", AppUpdateUpdateStatus),
+            usage_policy_id=d.get("usage_policy_id", None),
+            user_api_scopes=d.get("user_api_scopes", None),
+        )
+
+
+@dataclass
+class AppUpdateUpdateStatus:
+    message: Optional[str] = None
+
+    state: Optional[AppUpdateUpdateStatusUpdateState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppUpdateUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppUpdateUpdateStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppUpdateUpdateStatus:
+        """Deserializes the AppUpdateUpdateStatus from a dictionary."""
+        return cls(message=d.get("message", None), state=_enum(d, "state", AppUpdateUpdateStatusUpdateState))
+
+
+class AppUpdateUpdateStatusUpdateState(Enum):
+
+    FAILED = "FAILED"
+    IN_PROGRESS = "IN_PROGRESS"
+    NOT_UPDATED = "NOT_UPDATED"
+    SUCCEEDED = "SUCCEEDED"
+
+
 class ApplicationState(Enum):
 
     CRASHED = "CRASHED"
@@ -1297,6 +1467,13 @@ class ApplicationStatus:
     def from_dict(cls, d: Dict[str, Any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
         return cls(message=d.get("message", None), state=_enum(d, "state", ApplicationState))
+
+
+class ComputeSize(Enum):
+
+    LARGE = "LARGE"
+    LIQUID = "LIQUID"
+    MEDIUM = "MEDIUM"
 
 
 class ComputeState(Enum):
@@ -1582,6 +1759,37 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
+    def wait_get_update_app_succeeded(
+        self, app_name: str, timeout=timedelta(minutes=20), callback: Optional[Callable[[AppUpdate], None]] = None
+    ) -> AppUpdate:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (AppUpdateUpdateStatusUpdateState.SUCCEEDED,)
+        failure_states = (AppUpdateUpdateStatusUpdateState.FAILED,)
+        status_message = "polling..."
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_update(app_name=app_name)
+            status = poll.status.state
+            status_message = f"current status: {status}"
+            if poll.status:
+                status_message = poll.status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f"failed to reach SUCCEEDED, got {status}: {status_message}"
+                raise OperationFailed(msg)
+            prefix = f"app_name={app_name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f"{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)")
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
     def wait_get_deployment_app_succeeded(
         self,
         app_name: str,
@@ -1673,6 +1881,45 @@ class AppsAPI:
 
     def create_and_wait(self, app: App, *, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)) -> App:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
+
+    def create_update(self, app_name: str, update_mask: str, *, app: Optional[App] = None) -> Wait[AppUpdate]:
+        """Creates an app update and starts the update process. The update process is asynchronous and the status
+        of the update can be checked with the GetAppUpdate method.
+
+        :param app_name: str
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        :param app: :class:`App` (optional)
+
+        :returns:
+          Long-running operation waiter for :class:`AppUpdate`.
+          See :method:wait_get_update_app_succeeded for more details.
+        """
+        body = {}
+        if app is not None:
+            body["app"] = app.as_dict()
+        if update_mask is not None:
+            body["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/update", body=body, headers=headers)
+        return Wait(self.wait_get_update_app_succeeded, response=AppUpdate.from_dict(op_response), app_name=app_name)
+
+    def create_update_and_wait(
+        self, app_name: str, update_mask: str, *, app: Optional[App] = None, timeout=timedelta(minutes=20)
+    ) -> AppUpdate:
+        return self.create_update(app=app, app_name=app_name, update_mask=update_mask).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
         """Deletes an app.
@@ -1786,6 +2033,22 @@ class AppsAPI:
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
         return AppPermissions.from_dict(res)
+
+    def get_update(self, app_name: str) -> AppUpdate:
+        """Gets the status of an app update.
+
+        :param app_name: str
+          The name of the app.
+
+        :returns: :class:`AppUpdate`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/apps/{app_name}/update", headers=headers)
+        return AppUpdate.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
         """Lists all apps in the workspace.

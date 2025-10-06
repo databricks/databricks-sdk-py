@@ -32,11 +32,11 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             # cleanup
-            w.storage_credentials.delete(delete=created.name)
+            w.storage_credentials.delete(name=created.name)
 
         Creates a new storage credential.
 
@@ -115,7 +115,7 @@
         :returns: :class:`StorageCredentialInfo`
         
 
-    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[StorageCredentialInfo]
+    .. py:method:: list( [, include_unbound: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[StorageCredentialInfo]
 
 
         Usage:
@@ -123,16 +123,20 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.storage_credentials.list()
+            all = w.storage_credentials.list(catalog.ListStorageCredentialsRequest())
 
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
 
+        :param include_unbound: bool (optional)
+          Whether to include credentials not bound to the workspace. Effective only if the user has permission
+          to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
           returned (not recommended). - when set to a value greater than 0, the page length is the minimum of

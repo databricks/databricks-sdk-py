@@ -12,6 +12,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AccountGroup
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountServicePrincipal
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountUser
+   :members:
+   :undoc-members:
+
 .. autoclass:: Actor
    :members:
    :undoc-members:
@@ -68,6 +80,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP"
+
+.. autoclass:: ListAccountGroupsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAccountServicePrincipalsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAccountUsersResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListGroupsResponse
    :members:
@@ -282,10 +306,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL"
-
-.. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
 
 .. autoclass:: User
    :members:

@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -44,6 +45,7 @@ class AssetType(Enum):
     ASSET_TYPE_APP = "ASSET_TYPE_APP"
     ASSET_TYPE_DATA_TABLE = "ASSET_TYPE_DATA_TABLE"
     ASSET_TYPE_GIT_REPO = "ASSET_TYPE_GIT_REPO"
+    ASSET_TYPE_MCP = "ASSET_TYPE_MCP"
     ASSET_TYPE_MEDIA = "ASSET_TYPE_MEDIA"
     ASSET_TYPE_MODEL = "ASSET_TYPE_MODEL"
     ASSET_TYPE_NOTEBOOK = "ASSET_TYPE_NOTEBOOK"

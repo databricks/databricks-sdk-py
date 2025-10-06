@@ -99,7 +99,7 @@
         :returns: :class:`CatalogInfo`
         
 
-    .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[CatalogInfo]
+    .. py:method:: list( [, include_browse: Optional[bool], include_unbound: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[CatalogInfo]
 
 
         Usage:
@@ -121,6 +121,9 @@
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective
           metadata for
+        :param include_unbound: bool (optional)
+          Whether to include catalogs not bound to the workspace. Effective only if the user has permission to
+          update the catalog–workspace binding.
         :param max_results: int (optional)
           Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
           value (recommended); - when set to a value greater than 0, the page length is the minimum of this
