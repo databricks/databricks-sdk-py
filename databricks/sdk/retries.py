@@ -109,7 +109,7 @@ def poll(
     """Poll a function until it succeeds or times out.
 
     The backoff is linear backoff and jitter.
-    
+
     This function is not meant to be used directly by users.
     It is used internally by the SDK to poll for the result of an operation.
     It can be changed in the future without any notice.
