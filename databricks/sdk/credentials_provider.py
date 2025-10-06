@@ -12,7 +12,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import google.auth  # type: ignore
 import requests
@@ -89,7 +89,6 @@ def credentials_strategy(name: str, require: List[str]):
         @functools.wraps(func)
         def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
             for attr in require:
-                getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -103,7 +102,12 @@ def credentials_strategy(name: str, require: List[str]):
 def oauth_credentials_strategy(name: str, require: List[str]):
     """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called."""
+    attribute names to be present for this function to be called.
+
+    Args:
+        name: The name of the authentication strategy
+        require: List of config attributes that must be present
+    """
 
     def inner(
         func: Callable[["Config"], OAuthCredentialsProvider],
@@ -356,33 +360,47 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
-def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+def _oidc_credentials_provider(
+    cfg: "Config", supplier_factory: Callable[[], Any], provider_name: str
+) -> Optional[CredentialsProvider]:
     """
-    DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
-    it for a Databricks Token.
+    Generic OIDC credentials provider that works with any OIDC token supplier.
 
-    Supported suppliers:
-    - GitHub OIDC
+    Args:
+        cfg: Databricks configuration
+        supplier_factory: Callable that returns an OIDC token supplier instance
+        provider_name: Human-readable name (e.g., "GitHub OIDC", "Azure DevOps OIDC")
+
+    Returns:
+        OAuthCredentialsProvider if successful, None if supplier unavailable or token retrieval fails
     """
-    supplier = oidc_token_supplier.GitHubOIDCTokenSupplier()
+    # Try to create the supplier
+    try:
+        supplier = supplier_factory()
+    except Exception as e:
+        logger.debug(f"{provider_name}: {str(e)}")
+        return None
 
+    # Determine the audience for token exchange
     audience = cfg.token_audience
     if audience is None and cfg.is_account_client:
         audience = cfg.account_id
     if audience is None and not cfg.is_account_client:
         audience = cfg.oidc_endpoints.token_endpoint
 
-    # Try to get an idToken. If no supplier returns a token, we cannot use this authentication mode.
+    # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
     id_token = supplier.get_oidc_token(audience)
     if not id_token:
+        logger.debug(f"{provider_name}: no token available, skipping authentication method")
         return None
+
+    logger.info(f"Configured {provider_name} authentication")
 
     def token_source_for(audience: str) -> oauth.TokenSource:
         id_token = supplier.get_oidc_token(audience)
         if not id_token:
             # Should not happen, since we checked it above.
-            raise Exception("Cannot get OIDC token")
+            raise Exception(f"Cannot get {provider_name} token")
 
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
@@ -406,6 +424,36 @@ def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
         return token_source_for(audience).token()
 
     return OAuthCredentialsProvider(refreshed_headers, token)
+
+
+@oauth_credentials_strategy("github-oidc", ["host", "client_id"])
+def github_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    GitHub OIDC authentication uses a Token Supplier to get a JWT Token and exchanges
+    it for a Databricks Token.
+
+    Supported in GitHub Actions with OIDC service connections.
+    """
+    return _oidc_credentials_provider(
+        cfg=cfg,
+        supplier_factory=lambda: oidc_token_supplier.GitHubOIDCTokenSupplier(),
+        provider_name="GitHub OIDC",
+    )
+
+
+@oauth_credentials_strategy("azure-devops-oidc", ["host", "client_id"])
+def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
+    """
+    Azure DevOps OIDC authentication uses a Token Supplier to get a JWT Token
+    and exchanges it for a Databricks Token.
+
+    Supported in Azure DevOps pipelines with OIDC service connections.
+    """
+    return _oidc_credentials_provider(
+        cfg=cfg,
+        supplier_factory=lambda: oidc_token_supplier.AzureDevOpsOIDCTokenSupplier(),
+        provider_name="Azure DevOps OIDC",
+    )
 
 
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
@@ -1019,6 +1067,7 @@ class DefaultCredentials:
             azure_service_principal,
             github_oidc_azure,
             azure_cli,
+            azure_devops_oidc,
             external_browser,
             databricks_cli,
             runtime_native_auth,
