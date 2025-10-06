@@ -7,6 +7,7 @@
 * Add native support for authentication through Azure DevOps OIDC
 
 ### Bug Fixes
+- Improving the error message that is shown when the unsupported `dbutils.credentials.getServiceCredentialsProvider` method is used. This method can only be used inside of a notebook.
 
 ### Documentation
 
