@@ -2,7 +2,7 @@ import functools
 import logging
 from datetime import timedelta
 from random import random, uniform
-from typing import Callable, Optional, Sequence, Type, TypeVar
+from typing import Callable, Optional, Sequence, Tuple, Type, TypeVar
 
 from .clock import Clock, RealClock
 
@@ -105,7 +105,7 @@ def _backoff(attempt: int) -> float:
 # It is used internally by the SDK to poll for the result of an operation.
 # It can be changed in the future without any notice.
 def poll(
-    fn: Callable[[], tuple[Optional[T], Optional[RetryError]]],
+    fn: Callable[[], Tuple[Optional[T], Optional[RetryError]]],
     timeout: timedelta = timedelta(minutes=20),
     clock: Optional[Clock] = None,
 ) -> T:

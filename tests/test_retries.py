@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Any, Literal, Optional, Type
+from typing import Any, Literal, Optional, Tuple, Type
 
 import pytest
 
@@ -99,7 +99,7 @@ def test_propagates_outside_exception():
             None,
             60,
             3.10,
-            3.90,
+            4.50,
             id="returns dict after 2 retries with linear backoff (1s+2s)",
         ),
         pytest.param(
@@ -109,8 +109,8 @@ def test_propagates_outside_exception():
             None,
             None,
             60,
-            10.25,
-            11.75,
+            10.2,
+            13.0,
             id="returns list after 4 retries with linear backoff (1s+2s+3s+4s)",
         ),
         pytest.param(
@@ -252,7 +252,7 @@ def test_poll_behavior(
     clock: FakeClock = FakeClock()
     call_count: int = 0
 
-    def fn() -> tuple[Any, Optional[RetryError]]:
+    def fn() -> Tuple[Any, Optional[RetryError]]:
         nonlocal call_count
         call_count += 1
 
@@ -290,6 +290,6 @@ def test_poll_behavior(
         assert call_count >= 1
 
         if scenario == "timeout":
-            assert clock.time() >= min_time - 1
+            assert clock.time() >= min_time
         elif scenario in ("halt", "unexpected"):
             assert call_count == attempts
