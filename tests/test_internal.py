@@ -61,15 +61,21 @@ def test_escape_multi_segment_path_parameter():
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_json,description",
+    "input_dict,field_name,expected_result,expected_timestamp,description",
     [
-        ({"field": "2023-01-01T12:00:00Z"}, "field", "timestamp_object", "2023-01-01T12:00:00Z", "valid timestamp"),
+        (
+            {"field": "2023-01-01T12:00:00Z"},
+            "field",
+            "timestamp_object",
+            Timestamp(seconds=1672574400),
+            "valid timestamp",
+        ),
         ({}, "field", None, None, "missing field"),
         ({"field": None}, "field", None, None, "None value"),
         ({"field": ""}, "field", None, None, "empty value"),
     ],
 )
-def test_timestamp(input_dict, field_name, expected_result, expected_json, description):
+def test_timestamp(input_dict, field_name, expected_result, expected_timestamp, description):
     """Test _timestamp function with various input scenarios."""
     result = _timestamp(input_dict, field_name)
 
@@ -77,18 +83,16 @@ def test_timestamp(input_dict, field_name, expected_result, expected_json, descr
         assert result is None
     else:
         assert isinstance(result, Timestamp)
-        ts = Timestamp()
-        ts.FromJsonString(expected_json)
-        assert result == ts
+        assert result == expected_timestamp
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_json_list,description",
+    "input_dict,field_name,expected_timestamp_list,description",
     [
         (
             {"field": ["2023-01-01T12:00:00Z", "2023-01-02T12:00:00Z"]},
             "field",
-            ["2023-01-01T12:00:00Z", "2023-01-02T12:00:00Z"],
+            [Timestamp(seconds=1672574400), Timestamp(seconds=1672660800)],
             "valid repeated timestamps",
         ),
         ({}, "field", [], "missing field"),
@@ -96,31 +100,29 @@ def test_timestamp(input_dict, field_name, expected_result, expected_json, descr
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_timestamp(input_dict, field_name, expected_json_list, description):
+def test_repeated_timestamp(input_dict, field_name, expected_timestamp_list, description):
     """Test _repeated_timestamp function with various input scenarios."""
     result = _repeated_timestamp(input_dict, field_name)
 
-    if expected_json_list is None or len(expected_json_list) == 0:
+    if expected_timestamp_list is None or len(expected_timestamp_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_json_list)
+        assert len(result) == len(expected_timestamp_list)
         assert all(isinstance(ts, Timestamp) for ts in result)
-        for i, expected_json in enumerate(expected_json_list):
-            ts = Timestamp()
-            ts.FromJsonString(expected_json)
-            assert result[i] == ts
+        for i, expected_timestamp in enumerate(expected_timestamp_list):
+            assert result[i] == expected_timestamp
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_json,description",
+    "input_dict,field_name,expected_result,expected_duration,description",
     [
-        ({"field": "3600s"}, "field", "duration_object", "3600s", "valid duration"),
+        ({"field": "3600s"}, "field", "duration_object", Duration(seconds=3600), "valid duration"),
         ({}, "field", None, None, "missing field"),
         ({"field": None}, "field", None, None, "None value"),
         ({"field": ""}, "field", None, None, "empty value"),
     ],
 )
-def test_duration(input_dict, field_name, expected_result, expected_json, description):
+def test_duration(input_dict, field_name, expected_result, expected_duration, description):
     """Test _duration function with various input scenarios."""
     result = _duration(input_dict, field_name)
 
@@ -128,45 +130,52 @@ def test_duration(input_dict, field_name, expected_result, expected_json, descri
         assert result is None
     else:
         assert isinstance(result, Duration)
-        dur = Duration()
-        dur.FromJsonString(expected_json)
-        assert result == dur
+        assert result == expected_duration
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_json_list,description",
+    "input_dict,field_name,expected_duration_list,description",
     [
-        ({"field": ["3600s", "7200s"]}, "field", ["3600s", "7200s"], "valid repeated durations"),
+        (
+            {"field": ["3600s", "7200s"]},
+            "field",
+            [Duration(seconds=3600), Duration(seconds=7200)],
+            "valid repeated durations",
+        ),
         ({}, "field", [], "missing field"),
         ({"field": None}, "field", None, "None value"),
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_duration(input_dict, field_name, expected_json_list, description):
+def test_repeated_duration(input_dict, field_name, expected_duration_list, description):
     """Test _repeated_duration function with various input scenarios."""
     result = _repeated_duration(input_dict, field_name)
 
-    if expected_json_list is None or len(expected_json_list) == 0:
+    if expected_duration_list is None or len(expected_duration_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_json_list)
+        assert len(result) == len(expected_duration_list)
         assert all(isinstance(dur, Duration) for dur in result)
-        for i, expected_json in enumerate(expected_json_list):
-            dur = Duration()
-            dur.FromJsonString(expected_json)
-            assert result[i] == dur
+        for i, expected_duration in enumerate(expected_duration_list):
+            assert result[i] == expected_duration
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_json,description",
+    "input_dict,field_name,expected_result,expected_fieldmask,description",
     [
-        ({"field": "path1,path2"}, "field", "fieldmask_object", "path1,path2", "valid fieldmask"),
+        (
+            {"field": "path1,path2"},
+            "field",
+            "fieldmask_object",
+            FieldMask(field_mask=["path1", "path2"]),
+            "valid fieldmask",
+        ),
         ({}, "field", None, None, "missing field"),
         ({"field": None}, "field", None, None, "None value"),
         ({"field": ""}, "field", None, None, "empty value"),
     ],
 )
-def test_fieldmask(input_dict, field_name, expected_result, expected_json, description):
+def test_fieldmask(input_dict, field_name, expected_result, expected_fieldmask, description):
     """Test _fieldmask function with various input scenarios."""
     result = _fieldmask(input_dict, field_name)
 
@@ -174,18 +183,16 @@ def test_fieldmask(input_dict, field_name, expected_result, expected_json, descr
         assert result is None
     else:
         assert isinstance(result, FieldMask)
-        fm = FieldMask()
-        fm.FromJsonString(expected_json)
-        assert result == fm
+        assert result == expected_fieldmask
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_json_list,description",
+    "input_dict,field_name,expected_fieldmask_list,description",
     [
         (
             {"field": ["path1,path2", "path3,path4"]},
             "field",
-            ["path1,path2", "path3,path4"],
+            [FieldMask(field_mask=["path1", "path2"]), FieldMask(field_mask=["path3", "path4"])],
             "valid repeated fieldmasks",
         ),
         ({}, "field", [], "missing field"),
@@ -193,16 +200,14 @@ def test_fieldmask(input_dict, field_name, expected_result, expected_json, descr
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_fieldmask(input_dict, field_name, expected_json_list, description):
+def test_repeated_fieldmask(input_dict, field_name, expected_fieldmask_list, description):
     """Test _repeated_fieldmask function with various input scenarios."""
     result = _repeated_fieldmask(input_dict, field_name)
 
-    if expected_json_list is None or len(expected_json_list) == 0:
+    if expected_fieldmask_list is None or len(expected_fieldmask_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_json_list)
+        assert len(result) == len(expected_fieldmask_list)
         assert all(isinstance(fm, FieldMask) for fm in result)
-        for i, expected_json in enumerate(expected_json_list):
-            fm = FieldMask()
-            fm.FromJsonString(expected_json)
-            assert result[i] == fm
+        for i, expected_fieldmask in enumerate(expected_fieldmask_list):
+            assert result[i] == expected_fieldmask

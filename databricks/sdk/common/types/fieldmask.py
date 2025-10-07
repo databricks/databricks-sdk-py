@@ -6,9 +6,10 @@ class FieldMask(object):
     # The original implementation only works with proto generated classes.
     # Since our classes are not generated from proto files, we need to implement it manually.
 
-    def __init__(self):
-        """Initialize FieldMask with empty paths."""
-        self.paths = []
+    def __init__(self, field_mask=None):
+        """Initializes the FieldMask."""
+        if field_mask:
+            self.paths = field_mask
 
     def ToJsonString(self) -> str:
         """Converts FieldMask to string."""
