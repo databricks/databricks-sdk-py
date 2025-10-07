@@ -375,7 +375,7 @@ def test_get_api_error(test_case: TestCase):
 
 def test_debug_headers_disabled_by_default():
     """Test that debug_headers=False by default does not leak sensitive headers in unparseable errors."""
-    # Create a response with Authorization header that cannot be parsed
+    # Create a response with Authorization header that cannot be parsed.
     resp = requests.Response()
     resp.status_code = 400
     resp.reason = "Bad Request"
@@ -388,7 +388,7 @@ def test_debug_headers_disabled_by_default():
     error = parser.get_api_error(resp)
 
     error_message = str(error)
-    # Verify that sensitive tokens are NOT in the error message
+    # Verify that sensitive tokens are NOT in the error message.
     assert "secret-token-12345" not in error_message
     assert "secret-azure-token-67890" not in error_message
     assert "Authorization" not in error_message
@@ -397,7 +397,7 @@ def test_debug_headers_disabled_by_default():
 
 def test_debug_headers_enabled_shows_headers():
     """Test that debug_headers=True includes headers in unparseable error messages."""
-    # Create a response with Authorization header that cannot be parsed
+    # Create a response with Authorization header that cannot be parsed.
     resp = requests.Response()
     resp.status_code = 400
     resp.reason = "Bad Request"
@@ -410,7 +410,7 @@ def test_debug_headers_enabled_shows_headers():
     error = parser.get_api_error(resp)
 
     error_message = str(error)
-    # Verify that headers ARE included when explicitly enabled
+    # Verify that headers ARE included when explicitly enabled.
     assert "Authorization" in error_message
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message

@@ -4,10 +4,10 @@
 
 ### New Features and Improvements
 
-* Add native support for authentication through Azure DevOps OIDC
+* Add native support for authentication through Azure DevOps OIDC.
 
 ### Bug Fixes
-* Fix bearer tokens logged in exception messages
+* Fix a security issue that resulted in bearer tokens being logged in exception messages.
 
 ### Documentation
 

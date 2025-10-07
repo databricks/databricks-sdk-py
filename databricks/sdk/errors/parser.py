@@ -37,7 +37,7 @@ def _unknown_error(response: requests.Response, debug_headers: bool = False) -> 
     This error message includes a link to the issue tracker for the SDK for users to report the issue to us.
 
     :param response: The response object from the API request.
-    :param debug_headers: Whether to include headers in the request log. Defaults to False for security.
+    :param debug_headers: Whether to include headers in the request log. Defaults to False to defensively handle cases where request headers might contain sensitive data (e.g. tokens).
     """
     request_log = RoundTrip(response, debug_headers=debug_headers, debug_truncate_bytes=10 * 1024).generate()
     return (
