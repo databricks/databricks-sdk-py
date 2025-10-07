@@ -52,6 +52,11 @@ def _escape_multi_segment_path_parameter(param: str) -> str:
 
 
 def _timestamp(d: Dict[str, any], field: str) -> Optional[Timestamp]:
+    """
+    Helper function to convert a timestamp string to a Timestamp object.
+    It takes a dictionary and a field name, and returns a Timestamp object.
+    The field name is the key in the dictionary that contains the timestamp string.
+    """
     if field not in d or not d[field]:
         return None
     ts = Timestamp()
@@ -60,6 +65,11 @@ def _timestamp(d: Dict[str, any], field: str) -> Optional[Timestamp]:
 
 
 def _repeated_timestamp(d: Dict[str, any], field: str) -> Optional[List[Timestamp]]:
+    """
+    Helper function to convert a list of timestamp strings to a list of Timestamp objects.
+    It takes a dictionary and a field name, and returns a list of Timestamp objects.
+    The field name is the key in the dictionary that contains the list of timestamp strings.
+    """
     if field not in d or not d[field]:
         return None
     result = []
@@ -71,6 +81,11 @@ def _repeated_timestamp(d: Dict[str, any], field: str) -> Optional[List[Timestam
 
 
 def _duration(d: Dict[str, any], field: str) -> Optional[Duration]:
+    """
+    Helper function to convert a duration string to a Duration object.
+    It takes a dictionary and a field name, and returns a Duration object.
+    The field name is the key in the dictionary that contains the duration string.
+    """
     if field not in d or not d[field]:
         return None
     dur = Duration()
@@ -79,6 +94,11 @@ def _duration(d: Dict[str, any], field: str) -> Optional[Duration]:
 
 
 def _repeated_duration(d: Dict[str, any], field: str) -> Optional[List[Duration]]:
+    """
+    Helper function to convert a list of duration strings to a list of Duration objects.
+    It takes a dictionary and a field name, and returns a list of Duration objects.
+    The field name is the key in the dictionary that contains the list of duration strings.
+    """
     if field not in d or not d[field]:
         return None
     result = []
@@ -90,6 +110,11 @@ def _repeated_duration(d: Dict[str, any], field: str) -> Optional[List[Duration]
 
 
 def _fieldmask(d: Dict[str, any], field: str) -> Optional[FieldMask]:
+    """
+    Helper function to convert a fieldmask string to a FieldMask object.
+    It takes a dictionary and a field name, and returns a FieldMask object.
+    The field name is the key in the dictionary that contains the fieldmask string.
+    """
     if field not in d or not d[field]:
         return None
     fm = FieldMask()
@@ -98,6 +123,11 @@ def _fieldmask(d: Dict[str, any], field: str) -> Optional[FieldMask]:
 
 
 def _repeated_fieldmask(d: Dict[str, any], field: str) -> Optional[List[FieldMask]]:
+    """
+    Helper function to convert a list of fieldmask strings to a list of FieldMask objects.
+    It takes a dictionary and a field name, and returns a list of FieldMask objects.
+    The field name is the key in the dictionary that contains the list of fieldmask strings.
+    """
     if field not in d or not d[field]:
         return None
     result = []
