@@ -1,5 +1,6 @@
 class FieldMask(object):
     """Class for FieldMask message type."""
+
     # This is based on the base implementation from protobuf.
     # https://pigweed.googlesource.com/third_party/github/protocolbuffers/protobuf/+/HEAD/python/google/protobuf/internal/field_mask.py
     # The original implementation only works with proto generated classes.
