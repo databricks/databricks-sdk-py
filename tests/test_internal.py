@@ -61,25 +61,24 @@ def test_escape_multi_segment_path_parameter():
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_timestamp,description",
+    "input_dict,field_name,expected_timestamp,description",
     [
         (
             {"field": "2023-01-01T12:00:00Z"},
             "field",
-            "timestamp_object",
             Timestamp(seconds=1672574400),
             "valid timestamp",
         ),
-        ({}, "field", None, None, "missing field"),
-        ({"field": None}, "field", None, None, "None value"),
-        ({"field": ""}, "field", None, None, "empty value"),
+        ({}, "field", None, "missing field"),
+        ({"field": None}, "field", None, "None value"),
+        ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_timestamp(input_dict, field_name, expected_result, expected_timestamp, description):
+def test_timestamp(input_dict, field_name, expected_timestamp, description):
     """Test _timestamp function with various input scenarios."""
     result = _timestamp(input_dict, field_name)
 
-    if expected_result is None:
+    if expected_timestamp is None:
         assert result is None
     else:
         assert isinstance(result, Timestamp)
@@ -96,7 +95,7 @@ def test_timestamp(input_dict, field_name, expected_result, expected_timestamp, 
             "valid repeated timestamps",
         ),
         ({}, "field", [], "missing field"),
-        ({"field": None}, "field", None, "None value"),
+        ({"field": None}, "field", [], "None value"),
         ({"field": []}, "field", [], "empty list"),
     ],
 )
@@ -114,19 +113,19 @@ def test_repeated_timestamp(input_dict, field_name, expected_timestamp_list, des
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_duration,description",
+    "input_dict,field_name,expected_duration,description",
     [
-        ({"field": "3600s"}, "field", "duration_object", Duration(seconds=3600), "valid duration"),
-        ({}, "field", None, None, "missing field"),
-        ({"field": None}, "field", None, None, "None value"),
-        ({"field": ""}, "field", None, None, "empty value"),
+        ({"field": "3600s"}, "field", Duration(seconds=3600), "valid duration"),
+        ({}, "field", None, "missing field"),
+        ({"field": None}, "field", None, "None value"),
+        ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_duration(input_dict, field_name, expected_result, expected_duration, description):
+def test_duration(input_dict, field_name, expected_duration, description):
     """Test _duration function with various input scenarios."""
     result = _duration(input_dict, field_name)
 
-    if expected_result is None:
+    if expected_duration is None:
         assert result is None
     else:
         assert isinstance(result, Duration)
@@ -161,25 +160,24 @@ def test_repeated_duration(input_dict, field_name, expected_duration_list, descr
 
 
 @pytest.mark.parametrize(
-    "input_dict,field_name,expected_result,expected_fieldmask,description",
+    "input_dict,field_name,expected_fieldmask,description",
     [
         (
             {"field": "path1,path2"},
             "field",
-            "fieldmask_object",
             FieldMask(field_mask=["path1", "path2"]),
             "valid fieldmask",
         ),
-        ({}, "field", None, None, "missing field"),
-        ({"field": None}, "field", None, None, "None value"),
-        ({"field": ""}, "field", None, None, "empty value"),
+        ({}, "field", None, "missing field"),
+        ({"field": None}, "field", None, "None value"),
+        ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_fieldmask(input_dict, field_name, expected_result, expected_fieldmask, description):
+def test_fieldmask(input_dict, field_name, expected_fieldmask, description):
     """Test _fieldmask function with various input scenarios."""
     result = _fieldmask(input_dict, field_name)
 
-    if expected_result is None:
+    if expected_fieldmask is None:
         assert result is None
     else:
         assert isinstance(result, FieldMask)
