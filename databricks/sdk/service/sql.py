@@ -792,7 +792,8 @@ class AlertV2Evaluation:
     """Operator used for comparison in alert evaluation."""
 
     empty_result_state: Optional[AlertEvaluationState] = None
-    """Alert state if result is empty."""
+    """Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because
+    `UNKNOWN` state is planned to be deprecated."""
 
     last_evaluated_at: Optional[str] = None
     """Timestamp of the last evaluation."""
@@ -3914,13 +3915,18 @@ class ListAlertsResponseAlert:
 
 @dataclass
 class ListAlertsV2Response:
+    alerts: Optional[List[AlertV2]] = None
+
     next_page_token: Optional[str] = None
 
     results: Optional[List[AlertV2]] = None
+    """Deprecated. Use `alerts` instead."""
 
     def as_dict(self) -> dict:
         """Serializes the ListAlertsV2Response into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.alerts:
+            body["alerts"] = [v.as_dict() for v in self.alerts]
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
         if self.results:
@@ -3930,6 +3936,8 @@ class ListAlertsV2Response:
     def as_shallow_dict(self) -> dict:
         """Serializes the ListAlertsV2Response into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.alerts:
+            body["alerts"] = self.alerts
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
         if self.results:
@@ -3939,7 +3947,11 @@ class ListAlertsV2Response:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2Response:
         """Deserializes the ListAlertsV2Response from a dictionary."""
-        return cls(next_page_token=d.get("next_page_token", None), results=_repeated_dict(d, "results", AlertV2))
+        return cls(
+            alerts=_repeated_dict(d, "alerts", AlertV2),
+            next_page_token=d.get("next_page_token", None),
+            results=_repeated_dict(d, "results", AlertV2),
+        )
 
 
 class ListOrder(Enum):
@@ -9534,7 +9546,7 @@ class WarehousesAPI:
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
     def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
-        """Lists all SQL warehouses that a user has manager permissions on.
+        """Lists all SQL warehouses that a user has access to.
 
         :param run_as_user_id: int (optional)
           Service Principal which will be used to fetch the list of warehouses. If not specified, the user

@@ -1,10 +1,10 @@
 # NEXT CHANGELOG
 
-## Release v0.66.0
+## Release v0.68.0
 
 ### New Features and Improvements
 
-* Add a public helper function to build a `CredentialsProvider` directly from an `IdTokenSource`.
+* Add native support for authentication through Azure DevOps OIDC
 
 ### Bug Fixes
 

@@ -263,6 +263,9 @@ class GenieAttachment:
     query: Optional[GenieQueryAttachment] = None
     """Query Attachment if Genie responds with a SQL query"""
 
+    suggested_questions: Optional[GenieSuggestedQuestionsAttachment] = None
+    """Follow-up questions suggested by Genie"""
+
     text: Optional[TextAttachment] = None
     """Text Attachment if Genie responds with text"""
 
@@ -273,6 +276,8 @@ class GenieAttachment:
             body["attachment_id"] = self.attachment_id
         if self.query:
             body["query"] = self.query.as_dict()
+        if self.suggested_questions:
+            body["suggested_questions"] = self.suggested_questions.as_dict()
         if self.text:
             body["text"] = self.text.as_dict()
         return body
@@ -284,6 +289,8 @@ class GenieAttachment:
             body["attachment_id"] = self.attachment_id
         if self.query:
             body["query"] = self.query
+        if self.suggested_questions:
+            body["suggested_questions"] = self.suggested_questions
         if self.text:
             body["text"] = self.text
         return body
@@ -294,6 +301,7 @@ class GenieAttachment:
         return cls(
             attachment_id=d.get("attachment_id", None),
             query=_from_dict(d, "query", GenieQueryAttachment),
+            suggested_questions=_from_dict(d, "suggested_questions", GenieSuggestedQuestionsAttachment),
             text=_from_dict(d, "text", TextAttachment),
         )
 
@@ -411,6 +419,33 @@ class GenieConversationSummary:
             created_timestamp=d.get("created_timestamp", None),
             title=d.get("title", None),
         )
+
+
+@dataclass
+class GenieFeedback:
+    """Feedback containing rating and optional comment"""
+
+    rating: Optional[GenieFeedbackRating] = None
+    """The feedback rating"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieFeedback into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.rating is not None:
+            body["rating"] = self.rating.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieFeedback into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.rating is not None:
+            body["rating"] = self.rating
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieFeedback:
+        """Deserializes the GenieFeedback from a dictionary."""
+        return cls(rating=_enum(d, "rating", GenieFeedbackRating))
 
 
 class GenieFeedbackRating(Enum):
@@ -572,6 +607,9 @@ class GenieMessage:
     error: Optional[MessageError] = None
     """Error message if Genie failed to respond to the message"""
 
+    feedback: Optional[GenieFeedback] = None
+    """User feedback for the message if provided"""
+
     last_updated_timestamp: Optional[int] = None
     """Timestamp when the message was last updated"""
 
@@ -597,6 +635,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error.as_dict()
+        if self.feedback:
+            body["feedback"] = self.feedback.as_dict()
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -626,6 +666,8 @@ class GenieMessage:
             body["created_timestamp"] = self.created_timestamp
         if self.error:
             body["error"] = self.error
+        if self.feedback:
+            body["feedback"] = self.feedback
         if self.id is not None:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
@@ -651,6 +693,7 @@ class GenieMessage:
             conversation_id=d.get("conversation_id", None),
             created_timestamp=d.get("created_timestamp", None),
             error=_from_dict(d, "error", MessageError),
+            feedback=_from_dict(d, "feedback", GenieFeedback),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
             message_id=d.get("message_id", None),
@@ -670,6 +713,8 @@ class GenieQueryAttachment:
 
     last_updated_timestamp: Optional[int] = None
     """Time when the user updated the query last"""
+
+    parameters: Optional[List[QueryAttachmentParameter]] = None
 
     query: Optional[str] = None
     """AI generated SQL query"""
@@ -693,6 +738,8 @@ class GenieQueryAttachment:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.parameters:
+            body["parameters"] = [v.as_dict() for v in self.parameters]
         if self.query is not None:
             body["query"] = self.query
         if self.query_result_metadata:
@@ -712,6 +759,8 @@ class GenieQueryAttachment:
             body["id"] = self.id
         if self.last_updated_timestamp is not None:
             body["last_updated_timestamp"] = self.last_updated_timestamp
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.query is not None:
             body["query"] = self.query
         if self.query_result_metadata:
@@ -729,6 +778,7 @@ class GenieQueryAttachment:
             description=d.get("description", None),
             id=d.get("id", None),
             last_updated_timestamp=d.get("last_updated_timestamp", None),
+            parameters=_repeated_dict(d, "parameters", QueryAttachmentParameter),
             query=d.get("query", None),
             query_result_metadata=_from_dict(d, "query_result_metadata", GenieResultMetadata),
             statement_id=d.get("statement_id", None),
@@ -779,6 +829,9 @@ class GenieSpace:
     description: Optional[str] = None
     """Description of the Genie Space"""
 
+    warehouse_id: Optional[str] = None
+    """Warehouse associated with the Genie Space"""
+
     def as_dict(self) -> dict:
         """Serializes the GenieSpace into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -788,6 +841,8 @@ class GenieSpace:
             body["space_id"] = self.space_id
         if self.title is not None:
             body["title"] = self.title
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -799,12 +854,19 @@ class GenieSpace:
             body["space_id"] = self.space_id
         if self.title is not None:
             body["title"] = self.title
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
-        return cls(description=d.get("description", None), space_id=d.get("space_id", None), title=d.get("title", None))
+        return cls(
+            description=d.get("description", None),
+            space_id=d.get("space_id", None),
+            title=d.get("title", None),
+            warehouse_id=d.get("warehouse_id", None),
+        )
 
 
 @dataclass
@@ -854,6 +916,33 @@ class GenieStartConversationResponse:
             message=_from_dict(d, "message", GenieMessage),
             message_id=d.get("message_id", None),
         )
+
+
+@dataclass
+class GenieSuggestedQuestionsAttachment:
+    """Follow-up questions suggested by Genie"""
+
+    questions: Optional[List[str]] = None
+    """The suggested follow-up questions"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenieSuggestedQuestionsAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.questions:
+            body["questions"] = [v for v in self.questions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieSuggestedQuestionsAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.questions:
+            body["questions"] = self.questions
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GenieSuggestedQuestionsAttachment:
+        """Deserializes the GenieSuggestedQuestionsAttachment from a dictionary."""
+        return cls(questions=d.get("questions", None))
 
 
 @dataclass
@@ -1053,6 +1142,7 @@ class MessageErrorType(Enum):
     DESCRIBE_QUERY_INVALID_SQL_ERROR = "DESCRIBE_QUERY_INVALID_SQL_ERROR"
     DESCRIBE_QUERY_TIMEOUT = "DESCRIBE_QUERY_TIMEOUT"
     DESCRIBE_QUERY_UNEXPECTED_FAILURE = "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
+    EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION = "EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION"
     FUNCTIONS_NOT_AVAILABLE_EXCEPTION = "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_EXCEPTION"
     FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION = "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION"
@@ -1063,6 +1153,8 @@ class MessageErrorType(Enum):
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
     GENERIC_SQL_EXEC_API_CALL_EXCEPTION = "GENERIC_SQL_EXEC_API_CALL_EXCEPTION"
     ILLEGAL_PARAMETER_DEFINITION_EXCEPTION = "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
+    INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION = "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION"
+    INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
     INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
@@ -1174,6 +1266,42 @@ class PublishedDashboard:
             revision_create_time=d.get("revision_create_time", None),
             warehouse_id=d.get("warehouse_id", None),
         )
+
+
+@dataclass
+class QueryAttachmentParameter:
+    keyword: Optional[str] = None
+
+    sql_type: Optional[str] = None
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryAttachmentParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.keyword is not None:
+            body["keyword"] = self.keyword
+        if self.sql_type is not None:
+            body["sql_type"] = self.sql_type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryAttachmentParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.keyword is not None:
+            body["keyword"] = self.keyword
+        if self.sql_type is not None:
+            body["sql_type"] = self.sql_type
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QueryAttachmentParameter:
+        """Deserializes the QueryAttachmentParameter from a dictionary."""
+        return cls(keyword=d.get("keyword", None), sql_type=d.get("sql_type", None), value=d.get("value", None))
 
 
 @dataclass
@@ -1921,8 +2049,8 @@ class GenieAPI:
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
         :param include_all: bool (optional)
-          Include all conversations in the space across all users. Requires "Can Manage" permission on the
-          space.
+          Include all conversations in the space across all users. Requires at least CAN MANAGE permission on
+          the space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)
@@ -1970,15 +2098,7 @@ class GenieAPI:
         res = self._api.do("GET", "/api/2.0/genie/spaces", query=query, headers=headers)
         return GenieListSpacesResponse.from_dict(res)
 
-    def send_message_feedback(
-        self,
-        space_id: str,
-        conversation_id: str,
-        message_id: str,
-        rating: GenieFeedbackRating,
-        *,
-        comment: Optional[str] = None,
-    ):
+    def send_message_feedback(self, space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating):
         """Send feedback for a message.
 
         :param space_id: str
@@ -1989,14 +2109,10 @@ class GenieAPI:
           The ID associated with the message to provide feedback for.
         :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
-        :param comment: str (optional)
-          Optional text feedback that will be stored as a comment.
 
 
         """
         body = {}
-        if comment is not None:
-            body["comment"] = comment
         if rating is not None:
             body["rating"] = rating.value
         headers = {

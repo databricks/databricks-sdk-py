@@ -1651,9 +1651,7 @@ class ExportRunOutput:
 
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
-    the JSON response, download and run this [Python script].
-    
-    [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
+    the JSON response, download and run this [Python script](/_static/examples/extract.py)."""
 
     def as_dict(self) -> dict:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
@@ -5659,7 +5657,7 @@ class RunTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -5695,9 +5693,6 @@ class RunTask:
 
     description: Optional[str] = None
     """An optional description for this task."""
-
-    disabled: Optional[bool] = None
-    """Deprecated, field was never used in production."""
 
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
@@ -5810,21 +5805,9 @@ class RunTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -5873,8 +5856,6 @@ class RunTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -5972,8 +5953,6 @@ class RunTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6061,7 +6040,6 @@ class RunTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
-            disabled=d.get("disabled", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -6916,7 +6894,7 @@ class SubmitTask:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -7003,21 +6981,9 @@ class SubmitTask:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7407,7 +7373,7 @@ class Task:
     clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
     """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
     
-    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+    [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -7437,6 +7403,10 @@ class Task:
 
     disable_auto_optimization: Optional[bool] = None
     """An option to disable auto optimization in serverless"""
+
+    disabled: Optional[bool] = None
+    """An optional flag to disable the task. If set to true, the task will not run even if it is part
+    of a job."""
 
     email_notifications: Optional[TaskEmailNotifications] = None
     """An optional set of email addresses that is notified when runs of this task begin or complete as
@@ -7520,21 +7490,9 @@ class Task:
     """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
-    This task can run only on new clusters and is not compatible with serverless compute.
-    
-    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
-    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
-    configurations.
-    
-    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
-    _cannot_ specify them in parameters.
-    
-    By default, the Spark submit job uses all available memory (excluding reserved memory for
-    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
-    to leave some room for off-heap usage.
-    
-    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+    """(Legacy) The task runs the spark-submit script when the spark_submit_task field is present.
+    Databricks recommends using the spark_jar_task instead; see [Spark Submit task for
+    jobs](/jobs/spark-submit)."""
 
     sql_task: Optional[SqlTask] = None
     """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
@@ -7568,6 +7526,8 @@ class Task:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7643,6 +7603,8 @@ class Task:
             body["description"] = self.description
         if self.disable_auto_optimization is not None:
             body["disable_auto_optimization"] = self.disable_auto_optimization
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7710,6 +7672,7 @@ class Task:
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
             disable_auto_optimization=d.get("disable_auto_optimization", None),
+            disabled=d.get("disabled", None),
             email_notifications=_from_dict(d, "email_notifications", TaskEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
