@@ -210,7 +210,7 @@ class _JobsUtil:
 class RemoteDbUtils:
 
     def __init__(self, config: "Config" = None):
-        # Create a shallow copy of the config to allow the use of a custom 
+        # Create a shallow copy of the config to allow the use of a custom
         # user-agent while avoiding modifying the original config.
         self._config = Config() if not config else config.copy()
         self._config.with_user_agent_extra("dbutils", "remote")

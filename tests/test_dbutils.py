@@ -297,5 +297,5 @@ def test_dbutils_adds_user_agent(config):
 
     # Create dbutils and check that user-agent includes sdk-feature/dbutils
     dbutils = RemoteDbUtils(config)
-    
-    assert "sdk-feature/dbutils" in dbutils._config.user_agent
+
+    assert "dbutils/remote" in dbutils._config.user_agent
