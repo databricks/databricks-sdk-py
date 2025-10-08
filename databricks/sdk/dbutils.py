@@ -213,7 +213,7 @@ class RemoteDbUtils:
         # Create a shallow copy of the config to allow the use of a custom 
         # user-agent while avoiding modifying the original config.
         self._config = Config() if not config else config.copy()
-        self._config.with_user_agent_extra("sdk-feature", "dbutils")
+        self._config.with_user_agent_extra("dbutils", "remote")
 
         self._client = ApiClient(self._config)
         self._clusters = compute_ext.ClustersExt(self._client)
