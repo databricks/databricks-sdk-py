@@ -290,3 +290,12 @@ def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):
         return_value="test_cluster_id",
     )
     assert dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get() == "test_source_file"
+
+
+def test_dbutils_adds_user_agent(config):
+    from databricks.sdk.dbutils import RemoteDbUtils
+
+    # Create dbutils and check that user-agent includes sdk-feature/dbutils
+    dbutils = RemoteDbUtils(config)
+    
+    assert "sdk-feature/dbutils" in dbutils._config.user_agent
