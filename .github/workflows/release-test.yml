@@ -1,0 +1,37 @@
+name: Release (TestPyPI)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
+
+    environment: release-test
+
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build wheel
+        run: python -m build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        name: Publish package distributions to TestPyPI
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          # See https://github.com/pypa/gh-action-pypi-publish#tolerating-release-package-file-duplicates
+          skip-existing: true
