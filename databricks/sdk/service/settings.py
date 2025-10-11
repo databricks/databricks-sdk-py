@@ -661,7 +661,8 @@ class ComplianceSecurityProfileSetting:
 
 
 class ComplianceStandard(Enum):
-    """Compliance stardard for SHIELD customers"""
+    """Compliance standard for SHIELD customers. See README.md for how instructions of how to add new
+    standards."""
 
     CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
     CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
@@ -845,6 +846,8 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
 
     group_id: Optional[str] = None
@@ -870,6 +873,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
@@ -887,6 +892,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
@@ -903,6 +910,7 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
@@ -4087,6 +4095,8 @@ class NccPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
 
     group_id: Optional[str] = None
@@ -4139,6 +4149,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
@@ -4178,6 +4190,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
@@ -4209,6 +4223,7 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
@@ -4222,6 +4237,8 @@ class NccPrivateEndpointRule:
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -5203,6 +5220,8 @@ class UpdatePrivateEndpointRule:
     Update this field to activate/deactivate this private endpoint to allow egress access from
     serverless compute resources."""
 
+    error_message: Optional[str] = None
+
     gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
 
     resource_names: Optional[List[str]] = None
@@ -5219,6 +5238,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.resource_names:
@@ -5232,6 +5253,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.gcp_endpoint_spec:
             body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.resource_names:
@@ -5244,6 +5267,7 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
             gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             resource_names=d.get("resource_names", None),
         )

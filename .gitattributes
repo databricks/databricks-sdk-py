@@ -14,6 +14,7 @@ databricks/sdk/service/files.py linguist-generated=true
 databricks/sdk/service/httpcallv2.py linguist-generated=true
 databricks/sdk/service/iam.py linguist-generated=true
 databricks/sdk/service/iamv2.py linguist-generated=true
+databricks/sdk/service/idempotencytesting.py linguist-generated=true
 databricks/sdk/service/jobs.py linguist-generated=true
 databricks/sdk/service/jsonmarshallv2.py linguist-generated=true
 databricks/sdk/service/lrotesting.py linguist-generated=true
