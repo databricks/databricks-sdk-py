@@ -11,12 +11,8 @@ from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.common.types.fieldmask import FieldMask
-from databricks.sdk.service._internal import (_duration, _enum, _fieldmask,
-                                              _from_dict, _repeated_dict,
-                                              _repeated_duration,
-                                              _repeated_enum,
-                                              _repeated_fieldmask,
-                                              _repeated_timestamp, _timestamp)
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
