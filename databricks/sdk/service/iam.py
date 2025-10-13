@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -498,24 +499,6 @@ class ConsistencyToken:
     def from_dict(cls, d: Dict[str, Any]) -> ConsistencyToken:
         """Deserializes the ConsistencyToken from a dictionary."""
         return cls(value=d.get("value", None))
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -1462,24 +1445,6 @@ class PatchOp(Enum):
     ADD = "add"
     REMOVE = "remove"
     REPLACE = "replace"
-
-
-@dataclass
-class PatchResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PatchResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PatchResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PatchResponse:
-        """Deserializes the PatchResponse from a dictionary."""
-        return cls()
 
 
 class PatchSchema(Enum):

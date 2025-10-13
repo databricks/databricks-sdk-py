@@ -10,12 +10,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from databricks.sdk.service import catalog, jobs, settings, sharing
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import catalog, jobs, settings, sharing
 
 # all definitions in this file are in alphabetical order
 
@@ -1080,7 +1080,7 @@ class ComplianceSecurityProfile:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_standards:
-            body["compliance_standards"] = [v.as_dict() for v in self.compliance_standards]
+            body["compliance_standards"] = [v.value for v in self.compliance_standards]
         if self.is_enabled is not None:
             body["is_enabled"] = self.is_enabled
         return body
@@ -1098,7 +1098,7 @@ class ComplianceSecurityProfile:
     def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
-            compliance_standards=_repeated_dict(d, "compliance_standards", settings.ComplianceStandard),
+            compliance_standards=_repeated_enum(d, "compliance_standards", settings.ComplianceStandard),
             is_enabled=d.get("is_enabled", None),
         )
 

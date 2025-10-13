@@ -10,7 +10,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -51,6 +52,137 @@ class CustomTag:
 
 
 @dataclass
+class DatabaseBranch:
+    project_id: str
+
+    branch_id: Optional[str] = None
+
+    create_time: Optional[str] = None
+    """A timestamp indicating when the branch was created."""
+
+    current_state: Optional[str] = None
+    """The branch’s state, indicating if it is initializing, ready for use, or archived."""
+
+    default: Optional[bool] = None
+    """Whether the branch is the project's default branch. This field is only returned on create/update
+    responses. See effective_default for the value that is actually applied to the database branch."""
+
+    effective_default: Optional[bool] = None
+    """Whether the branch is the project's default branch."""
+
+    is_protected: Optional[bool] = None
+    """Whether the branch is protected."""
+
+    logical_size_bytes: Optional[int] = None
+    """The logical size of the branch."""
+
+    parent_id: Optional[str] = None
+    """The id of the parent branch"""
+
+    parent_lsn: Optional[str] = None
+    """The Log Sequence Number (LSN) on the parent branch from which this branch was created. When
+    restoring a branch using the Restore Database Branch endpoint, this value isn’t finalized
+    until all operations related to the restore have completed successfully."""
+
+    parent_time: Optional[str] = None
+    """The point in time on the parent branch from which this branch was created."""
+
+    pending_state: Optional[str] = None
+
+    state_change_time: Optional[str] = None
+    """A timestamp indicating when the `current_state` began."""
+
+    update_time: Optional[str] = None
+    """A timestamp indicating when the branch was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseBranch into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.default is not None:
+            body["default"] = self.default
+        if self.effective_default is not None:
+            body["effective_default"] = self.effective_default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.logical_size_bytes is not None:
+            body["logical_size_bytes"] = self.logical_size_bytes
+        if self.parent_id is not None:
+            body["parent_id"] = self.parent_id
+        if self.parent_lsn is not None:
+            body["parent_lsn"] = self.parent_lsn
+        if self.parent_time is not None:
+            body["parent_time"] = self.parent_time
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.state_change_time is not None:
+            body["state_change_time"] = self.state_change_time
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseBranch into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.default is not None:
+            body["default"] = self.default
+        if self.effective_default is not None:
+            body["effective_default"] = self.effective_default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.logical_size_bytes is not None:
+            body["logical_size_bytes"] = self.logical_size_bytes
+        if self.parent_id is not None:
+            body["parent_id"] = self.parent_id
+        if self.parent_lsn is not None:
+            body["parent_lsn"] = self.parent_lsn
+        if self.parent_time is not None:
+            body["parent_time"] = self.parent_time
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.state_change_time is not None:
+            body["state_change_time"] = self.state_change_time
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseBranch:
+        """Deserializes the DatabaseBranch from a dictionary."""
+        return cls(
+            branch_id=d.get("branch_id", None),
+            create_time=d.get("create_time", None),
+            current_state=d.get("current_state", None),
+            default=d.get("default", None),
+            effective_default=d.get("effective_default", None),
+            is_protected=d.get("is_protected", None),
+            logical_size_bytes=d.get("logical_size_bytes", None),
+            parent_id=d.get("parent_id", None),
+            parent_lsn=d.get("parent_lsn", None),
+            parent_time=d.get("parent_time", None),
+            pending_state=d.get("pending_state", None),
+            project_id=d.get("project_id", None),
+            state_change_time=d.get("state_change_time", None),
+            update_time=d.get("update_time", None),
+        )
+
+
+@dataclass
 class DatabaseCatalog:
     name: str
     """The name of the catalog in UC."""
@@ -63,6 +195,12 @@ class DatabaseCatalog:
 
     create_database_if_not_exists: Optional[bool] = None
 
+    database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the catalog."""
+
+    database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the catalog."""
+
     uid: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -70,10 +208,14 @@ class DatabaseCatalog:
         body = {}
         if self.create_database_if_not_exists is not None:
             body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
         if self.database_name is not None:
             body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
         if self.name is not None:
             body["name"] = self.name
         if self.uid is not None:
@@ -85,10 +227,14 @@ class DatabaseCatalog:
         body = {}
         if self.create_database_if_not_exists is not None:
             body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
         if self.database_name is not None:
             body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
         if self.name is not None:
             body["name"] = self.name
         if self.uid is not None:
@@ -100,8 +246,10 @@ class DatabaseCatalog:
         """Deserializes the DatabaseCatalog from a dictionary."""
         return cls(
             create_database_if_not_exists=d.get("create_database_if_not_exists", None),
+            database_branch_id=d.get("database_branch_id", None),
             database_instance_name=d.get("database_instance_name", None),
             database_name=d.get("database_name", None),
+            database_project_id=d.get("database_project_id", None),
             name=d.get("name", None),
             uid=d.get("uid", None),
         )
@@ -135,6 +283,221 @@ class DatabaseCredential:
     def from_dict(cls, d: Dict[str, Any]) -> DatabaseCredential:
         """Deserializes the DatabaseCredential from a dictionary."""
         return cls(expiration_time=d.get("expiration_time", None), token=d.get("token", None))
+
+
+@dataclass
+class DatabaseEndpoint:
+    project_id: str
+
+    branch_id: str
+
+    autoscaling_limit_max_cu: Optional[float] = None
+    """The maximum number of Compute Units."""
+
+    autoscaling_limit_min_cu: Optional[float] = None
+    """The minimum number of Compute Units."""
+
+    create_time: Optional[str] = None
+    """A timestamp indicating when the compute endpoint was created."""
+
+    current_state: Optional[DatabaseEndpointState] = None
+
+    disabled: Optional[bool] = None
+    """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
+    suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
+    console action."""
+
+    endpoint_id: Optional[str] = None
+
+    host: Optional[str] = None
+    """The hostname of the compute endpoint. This is the hostname specified when connecting to a
+    database."""
+
+    last_active_time: Optional[str] = None
+    """A timestamp indicating when the compute endpoint was last active."""
+
+    pending_state: Optional[DatabaseEndpointState] = None
+
+    pooler_mode: Optional[DatabaseEndpointPoolerMode] = None
+
+    settings: Optional[DatabaseEndpointSettings] = None
+
+    start_time: Optional[str] = None
+    """A timestamp indicating when the compute endpoint was last started."""
+
+    suspend_time: Optional[str] = None
+    """A timestamp indicating when the compute endpoint was last suspended."""
+
+    suspend_timeout_duration: Optional[str] = None
+    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+
+    type: Optional[DatabaseEndpointType] = None
+    """NOTE: if want type to default to some value set the server then an effective_type field OR make
+    this field REQUIRED"""
+
+    update_time: Optional[str] = None
+    """A timestamp indicating when the compute endpoint was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
+        if self.host is not None:
+            body["host"] = self.host
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state.value
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode.value
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        if self.type is not None:
+            body["type"] = self.type.value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.branch_id is not None:
+            body["branch_id"] = self.branch_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_id is not None:
+            body["endpoint_id"] = self.endpoint_id
+        if self.host is not None:
+            body["host"] = self.host
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.settings:
+            body["settings"] = self.settings
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        if self.type is not None:
+            body["type"] = self.type
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseEndpoint:
+        """Deserializes the DatabaseEndpoint from a dictionary."""
+        return cls(
+            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
+            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            branch_id=d.get("branch_id", None),
+            create_time=d.get("create_time", None),
+            current_state=_enum(d, "current_state", DatabaseEndpointState),
+            disabled=d.get("disabled", None),
+            endpoint_id=d.get("endpoint_id", None),
+            host=d.get("host", None),
+            last_active_time=d.get("last_active_time", None),
+            pending_state=_enum(d, "pending_state", DatabaseEndpointState),
+            pooler_mode=_enum(d, "pooler_mode", DatabaseEndpointPoolerMode),
+            project_id=d.get("project_id", None),
+            settings=_from_dict(d, "settings", DatabaseEndpointSettings),
+            start_time=d.get("start_time", None),
+            suspend_time=d.get("suspend_time", None),
+            suspend_timeout_duration=d.get("suspend_timeout_duration", None),
+            type=_enum(d, "type", DatabaseEndpointType),
+            update_time=d.get("update_time", None),
+        )
+
+
+class DatabaseEndpointPoolerMode(Enum):
+    """The connection pooler mode. Lakebase supports PgBouncer in `transaction` mode only."""
+
+    TRANSACTION = "TRANSACTION"
+
+
+@dataclass
+class DatabaseEndpointSettings:
+    """A collection of settings for a compute endpoint"""
+
+    pg_settings: Optional[Dict[str, str]] = None
+    """A raw representation of Postgres settings."""
+
+    pgbouncer_settings: Optional[Dict[str, str]] = None
+    """A raw representation of PgBouncer settings."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseEndpointSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pg_settings:
+            body["pg_settings"] = self.pg_settings
+        if self.pgbouncer_settings:
+            body["pgbouncer_settings"] = self.pgbouncer_settings
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseEndpointSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pg_settings:
+            body["pg_settings"] = self.pg_settings
+        if self.pgbouncer_settings:
+            body["pgbouncer_settings"] = self.pgbouncer_settings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseEndpointSettings:
+        """Deserializes the DatabaseEndpointSettings from a dictionary."""
+        return cls(pg_settings=d.get("pg_settings", None), pgbouncer_settings=d.get("pgbouncer_settings", None))
+
+
+class DatabaseEndpointState(Enum):
+    """The state of the compute endpoint"""
+
+    ACTIVE = "ACTIVE"
+    IDLE = "IDLE"
+    INIT = "INIT"
+
+
+class DatabaseEndpointType(Enum):
+    """The compute endpoint type. Either `read_write` or `read_only`."""
+
+    READ_ONLY = "READ_ONLY"
+    READ_WRITE = "READ_WRITE"
 
 
 @dataclass
@@ -588,6 +951,296 @@ class DatabaseInstanceState(Enum):
 
 
 @dataclass
+class DatabaseProject:
+    branch_logical_size_limit_bytes: Optional[int] = None
+    """The logical size limit for a branch."""
+
+    budget_policy_id: Optional[str] = None
+    """The desired budget policy to associate with the instance. This field is only returned on
+    create/update responses, and represents the customer provided budget policy. See
+    effective_budget_policy_id for the policy that is actually applied to the instance."""
+
+    compute_last_active_time: Optional[str] = None
+    """The most recent time when any endpoint of this project was active."""
+
+    create_time: Optional[str] = None
+    """A timestamp indicating when the project was created."""
+
+    custom_tags: Optional[List[DatabaseProjectCustomTag]] = None
+    """Custom tags associated with the instance."""
+
+    default_endpoint_settings: Optional[DatabaseProjectDefaultEndpointSettings] = None
+
+    display_name: Optional[str] = None
+    """Human-readable project name."""
+
+    effective_budget_policy_id: Optional[str] = None
+    """The policy that is applied to the instance."""
+
+    effective_default_endpoint_settings: Optional[DatabaseProjectDefaultEndpointSettings] = None
+
+    effective_display_name: Optional[str] = None
+
+    effective_history_retention_duration: Optional[str] = None
+
+    effective_pg_version: Optional[int] = None
+
+    effective_settings: Optional[DatabaseProjectSettings] = None
+
+    history_retention_duration: Optional[str] = None
+    """The number of seconds to retain the shared history for point in time recovery for all branches
+    in this project."""
+
+    pg_version: Optional[int] = None
+    """The major Postgres version number."""
+
+    project_id: Optional[str] = None
+
+    settings: Optional[DatabaseProjectSettings] = None
+
+    synthetic_storage_size_bytes: Optional[int] = None
+    """The current space occupied by the project in storage. Synthetic storage size combines the
+    logical data size and Write-Ahead Log (WAL) size for all branches in a project."""
+
+    update_time: Optional[str] = None
+    """A timestamp indicating when the project was last updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseProject into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch_logical_size_limit_bytes is not None:
+            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_default_endpoint_settings:
+            body["effective_default_endpoint_settings"] = self.effective_default_endpoint_settings.as_dict()
+        if self.effective_display_name is not None:
+            body["effective_display_name"] = self.effective_display_name
+        if self.effective_history_retention_duration is not None:
+            body["effective_history_retention_duration"] = self.effective_history_retention_duration
+        if self.effective_pg_version is not None:
+            body["effective_pg_version"] = self.effective_pg_version
+        if self.effective_settings:
+            body["effective_settings"] = self.effective_settings.as_dict()
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        if self.synthetic_storage_size_bytes is not None:
+            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseProject into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch_logical_size_limit_bytes is not None:
+            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_default_endpoint_settings:
+            body["effective_default_endpoint_settings"] = self.effective_default_endpoint_settings
+        if self.effective_display_name is not None:
+            body["effective_display_name"] = self.effective_display_name
+        if self.effective_history_retention_duration is not None:
+            body["effective_history_retention_duration"] = self.effective_history_retention_duration
+        if self.effective_pg_version is not None:
+            body["effective_pg_version"] = self.effective_pg_version
+        if self.effective_settings:
+            body["effective_settings"] = self.effective_settings
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.project_id is not None:
+            body["project_id"] = self.project_id
+        if self.settings:
+            body["settings"] = self.settings
+        if self.synthetic_storage_size_bytes is not None:
+            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseProject:
+        """Deserializes the DatabaseProject from a dictionary."""
+        return cls(
+            branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
+            budget_policy_id=d.get("budget_policy_id", None),
+            compute_last_active_time=d.get("compute_last_active_time", None),
+            create_time=d.get("create_time", None),
+            custom_tags=_repeated_dict(d, "custom_tags", DatabaseProjectCustomTag),
+            default_endpoint_settings=_from_dict(
+                d, "default_endpoint_settings", DatabaseProjectDefaultEndpointSettings
+            ),
+            display_name=d.get("display_name", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_default_endpoint_settings=_from_dict(
+                d, "effective_default_endpoint_settings", DatabaseProjectDefaultEndpointSettings
+            ),
+            effective_display_name=d.get("effective_display_name", None),
+            effective_history_retention_duration=d.get("effective_history_retention_duration", None),
+            effective_pg_version=d.get("effective_pg_version", None),
+            effective_settings=_from_dict(d, "effective_settings", DatabaseProjectSettings),
+            history_retention_duration=d.get("history_retention_duration", None),
+            pg_version=d.get("pg_version", None),
+            project_id=d.get("project_id", None),
+            settings=_from_dict(d, "settings", DatabaseProjectSettings),
+            synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
+            update_time=d.get("update_time", None),
+        )
+
+
+@dataclass
+class DatabaseProjectCustomTag:
+    key: Optional[str] = None
+    """The key of the custom tag."""
+
+    value: Optional[str] = None
+    """The value of the custom tag."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseProjectCustomTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseProjectCustomTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseProjectCustomTag:
+        """Deserializes the DatabaseProjectCustomTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class DatabaseProjectDefaultEndpointSettings:
+    """A collection of settings for a database endpoint."""
+
+    autoscaling_limit_max_cu: Optional[float] = None
+    """The maximum number of Compute Units."""
+
+    autoscaling_limit_min_cu: Optional[float] = None
+    """The minimum number of Compute Units."""
+
+    pg_settings: Optional[Dict[str, str]] = None
+    """A raw representation of Postgres settings."""
+
+    pgbouncer_settings: Optional[Dict[str, str]] = None
+    """A raw representation of PgBouncer settings."""
+
+    suspend_timeout_duration: Optional[str] = None
+    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.pg_settings:
+            body["pg_settings"] = self.pg_settings
+        if self.pgbouncer_settings:
+            body["pgbouncer_settings"] = self.pgbouncer_settings
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseProjectDefaultEndpointSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.pg_settings:
+            body["pg_settings"] = self.pg_settings
+        if self.pgbouncer_settings:
+            body["pgbouncer_settings"] = self.pgbouncer_settings
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseProjectDefaultEndpointSettings:
+        """Deserializes the DatabaseProjectDefaultEndpointSettings from a dictionary."""
+        return cls(
+            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
+            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            pg_settings=d.get("pg_settings", None),
+            pgbouncer_settings=d.get("pgbouncer_settings", None),
+            suspend_timeout_duration=d.get("suspend_timeout_duration", None),
+        )
+
+
+@dataclass
+class DatabaseProjectSettings:
+    enable_logical_replication: Optional[bool] = None
+    """Sets wal_level=logical for all compute endpoints in this project. All active endpoints will be
+    suspended. Once enabled, logical replication cannot be disabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseProjectSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_logical_replication is not None:
+            body["enable_logical_replication"] = self.enable_logical_replication
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseProjectSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_logical_replication is not None:
+            body["enable_logical_replication"] = self.enable_logical_replication
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseProjectSettings:
+        """Deserializes the DatabaseProjectSettings from a dictionary."""
+        return cls(enable_logical_replication=d.get("enable_logical_replication", None))
+
+
+@dataclass
 class DatabaseTable:
     """Next field marker: 13"""
 
@@ -611,6 +1264,9 @@ class DatabaseTable:
     When creating a table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database."""
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -620,6 +1276,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -631,6 +1289,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     @classmethod
@@ -640,6 +1300,7 @@ class DatabaseTable:
             database_instance_name=d.get("database_instance_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
+            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -680,6 +1341,41 @@ class DeltaTableSyncInfo:
 
 
 @dataclass
+class ListDatabaseBranchesResponse:
+    database_branches: Optional[List[DatabaseBranch]] = None
+    """List of branches."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of instances."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseBranchesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_branches:
+            body["database_branches"] = [v.as_dict() for v in self.database_branches]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseBranchesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_branches:
+            body["database_branches"] = self.database_branches
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseBranchesResponse:
+        """Deserializes the ListDatabaseBranchesResponse from a dictionary."""
+        return cls(
+            database_branches=_repeated_dict(d, "database_branches", DatabaseBranch),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListDatabaseCatalogsResponse:
     database_catalogs: Optional[List[DatabaseCatalog]] = None
 
@@ -709,6 +1405,41 @@ class ListDatabaseCatalogsResponse:
         """Deserializes the ListDatabaseCatalogsResponse from a dictionary."""
         return cls(
             database_catalogs=_repeated_dict(d, "database_catalogs", DatabaseCatalog),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
+class ListDatabaseEndpointsResponse:
+    database_endpoints: Optional[List[DatabaseEndpoint]] = None
+    """List of endpoints."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of instances."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseEndpointsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_endpoints:
+            body["database_endpoints"] = [v.as_dict() for v in self.database_endpoints]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseEndpointsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_endpoints:
+            body["database_endpoints"] = self.database_endpoints
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseEndpointsResponse:
+        """Deserializes the ListDatabaseEndpointsResponse from a dictionary."""
+        return cls(
+            database_endpoints=_repeated_dict(d, "database_endpoints", DatabaseEndpoint),
             next_page_token=d.get("next_page_token", None),
         )
 
@@ -784,6 +1515,41 @@ class ListDatabaseInstancesResponse:
 
 
 @dataclass
+class ListDatabaseProjectsResponse:
+    database_projects: Optional[List[DatabaseProject]] = None
+    """List of projects."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of instances."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDatabaseProjectsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.database_projects:
+            body["database_projects"] = [v.as_dict() for v in self.database_projects]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDatabaseProjectsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.database_projects:
+            body["database_projects"] = self.database_projects
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDatabaseProjectsResponse:
+        """Deserializes the ListDatabaseProjectsResponse from a dictionary."""
+        return cls(
+            database_projects=_repeated_dict(d, "database_projects", DatabaseProject),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListSyncedDatabaseTablesResponse:
     next_page_token: Optional[str] = None
     """Pagination token to request the next page of synced tables."""
@@ -822,6 +1588,9 @@ class NewPipelineSpec:
     """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
     fields of pipeline are still inferred by table def internally"""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.
     
@@ -837,6 +1606,8 @@ class NewPipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -846,6 +1617,8 @@ class NewPipelineSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -855,7 +1628,11 @@ class NewPipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 class ProvisioningInfoState(Enum):
@@ -948,13 +1725,16 @@ class RequestedResource:
 
 @dataclass
 class SyncedDatabaseTable:
-    """Next field marker: 14"""
+    """Next field marker: 18"""
 
     name: str
     """Full three-part (catalog, schema, table) name of the table."""
 
     data_synchronization_status: Optional[SyncedTableStatus] = None
     """Synced Table data synchronization status"""
+
+    database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the table."""
 
     database_instance_name: Optional[str] = None
     """Name of the target database instance. This is required when creating synced database tables in
@@ -963,10 +1743,19 @@ class SyncedDatabaseTable:
     database instance name MUST match that of the registered catalog (or the request will be
     rejected)."""
 
+    database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the table."""
+
+    effective_database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the table."""
+
     effective_database_instance_name: Optional[str] = None
     """The name of the database instance that this table is registered to. This field is always
     returned, and for tables inside database catalogs is inferred database instance associated with
     the catalog."""
+
+    effective_database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the table."""
 
     effective_logical_database_name: Optional[str] = None
     """The name of the logical database that this table is registered to."""
@@ -985,6 +1774,9 @@ class SyncedDatabaseTable:
 
     spec: Optional[SyncedTableSpec] = None
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
     state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
@@ -995,10 +1787,18 @@ class SyncedDatabaseTable:
         body = {}
         if self.data_synchronization_status:
             body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.effective_database_branch_id is not None:
+            body["effective_database_branch_id"] = self.effective_database_branch_id
         if self.effective_database_instance_name is not None:
             body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_database_project_id is not None:
+            body["effective_database_project_id"] = self.effective_database_project_id
         if self.effective_logical_database_name is not None:
             body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
@@ -1007,6 +1807,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -1016,10 +1818,18 @@ class SyncedDatabaseTable:
         body = {}
         if self.data_synchronization_status:
             body["data_synchronization_status"] = self.data_synchronization_status
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.effective_database_branch_id is not None:
+            body["effective_database_branch_id"] = self.effective_database_branch_id
         if self.effective_database_instance_name is not None:
             body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_database_project_id is not None:
+            body["effective_database_project_id"] = self.effective_database_project_id
         if self.effective_logical_database_name is not None:
             body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
@@ -1028,6 +1838,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -1037,12 +1849,17 @@ class SyncedDatabaseTable:
         """Deserializes the SyncedDatabaseTable from a dictionary."""
         return cls(
             data_synchronization_status=_from_dict(d, "data_synchronization_status", SyncedTableStatus),
+            database_branch_id=d.get("database_branch_id", None),
             database_instance_name=d.get("database_instance_name", None),
+            database_project_id=d.get("database_project_id", None),
+            effective_database_branch_id=d.get("effective_database_branch_id", None),
             effective_database_instance_name=d.get("effective_database_instance_name", None),
+            effective_database_project_id=d.get("effective_database_project_id", None),
             effective_logical_database_name=d.get("effective_logical_database_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 
@@ -1768,6 +2585,28 @@ class DatabaseAPI:
 
         self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
 
+    def failover_database_instance(
+        self, name: str, *, failover_target_database_instance_name: Optional[str] = None
+    ) -> DatabaseInstance:
+        """Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        """
+        body = {}
+        if failover_target_database_instance_name is not None:
+            body["failover_target_database_instance_name"] = failover_target_database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/instances/{name}/failover", body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
+
     def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
         """Find a Database Instance by uid.
 
@@ -2086,6 +2925,42 @@ class DatabaseAPI:
         res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
         return DatabaseInstance.from_dict(res)
 
+    def update_database_instance_role(
+        self,
+        instance_name: str,
+        name: str,
+        database_instance_role: DatabaseInstanceRole,
+        *,
+        database_instance_name: Optional[str] = None,
+    ) -> DatabaseInstanceRole:
+        """Update a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+          The name of the role. This is the unique identifier for the role in an instance.
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+        :param database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstanceRole`
+        """
+        body = database_instance_role.as_dict()
+        query = {}
+        if database_instance_name is not None:
+            query["database_instance_name"] = database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/database/instances/{instance_name}/roles/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return DatabaseInstanceRole.from_dict(res)
+
     def update_synced_database_table(
         self, name: str, synced_table: SyncedDatabaseTable, update_mask: str
     ) -> SyncedDatabaseTable:
@@ -2111,3 +2986,381 @@ class DatabaseAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/database/synced_tables/{name}", query=query, body=body, headers=headers)
         return SyncedDatabaseTable.from_dict(res)
+
+
+class DatabaseProjectAPI:
+    """Database Projects provide access to a database via REST API or direct SQL."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create_database_branch(self, project_id: str, database_branch: DatabaseBranch) -> DatabaseBranch:
+        """Create a Database Branch.
+
+        :param project_id: str
+        :param database_branch: :class:`DatabaseBranch`
+
+        :returns: :class:`DatabaseBranch`
+        """
+        body = database_branch.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/projects/{project_id}/branches", body=body, headers=headers)
+        return DatabaseBranch.from_dict(res)
+
+    def create_database_endpoint(
+        self, project_id: str, branch_id: str, database_endpoint: DatabaseEndpoint
+    ) -> DatabaseEndpoint:
+        """Create a Database Endpoint.
+
+        :param project_id: str
+        :param branch_id: str
+        :param database_endpoint: :class:`DatabaseEndpoint`
+
+        :returns: :class:`DatabaseEndpoint`
+        """
+        body = database_endpoint.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints",
+            body=body,
+            headers=headers,
+        )
+        return DatabaseEndpoint.from_dict(res)
+
+    def create_database_project(self, database_project: DatabaseProject) -> DatabaseProject:
+        """Create a Database Project.
+
+        :param database_project: :class:`DatabaseProject`
+
+        :returns: :class:`DatabaseProject`
+        """
+        body = database_project.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/database/projects", body=body, headers=headers)
+        return DatabaseProject.from_dict(res)
+
+    def delete_database_branch(self, project_id: str, branch_id: str):
+        """Delete a Database Branch.
+
+        :param project_id: str
+        :param branch_id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/database/projects/{project_id}/branches/{branch_id}", headers=headers)
+
+    def delete_database_endpoint(self, project_id: str, branch_id: str, endpoint_id: str):
+        """Delete a Database Endpoint.
+
+        :param project_id: str
+        :param branch_id: str
+        :param endpoint_id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}",
+            headers=headers,
+        )
+
+    def delete_database_project(self, project_id: str):
+        """Delete a Database Project.
+
+        :param project_id: str
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/database/projects/{project_id}", headers=headers)
+
+    def get_database_branch(self, project_id: str, branch_id: str) -> DatabaseBranch:
+        """Get a Database Branch.
+
+        :param project_id: str
+        :param branch_id: str
+
+        :returns: :class:`DatabaseBranch`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/projects/{project_id}/branches/{branch_id}", headers=headers)
+        return DatabaseBranch.from_dict(res)
+
+    def get_database_endpoint(self, project_id: str, branch_id: str, endpoint_id: str) -> DatabaseEndpoint:
+        """Get a Database Endpoint.
+
+        :param project_id: str
+        :param branch_id: str
+        :param endpoint_id: str
+
+        :returns: :class:`DatabaseEndpoint`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}",
+            headers=headers,
+        )
+        return DatabaseEndpoint.from_dict(res)
+
+    def get_database_project(self, project_id: str) -> DatabaseProject:
+        """Get a Database Project.
+
+        :param project_id: str
+
+        :returns: :class:`DatabaseProject`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/database/projects/{project_id}", headers=headers)
+        return DatabaseProject.from_dict(res)
+
+    def list_database_branches(
+        self, project_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseBranch]:
+        """List Database Branches.
+
+        :param project_id: str
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Branches. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseBranch`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", f"/api/2.0/database/projects/{project_id}/branches", query=query, headers=headers
+            )
+            if "database_branches" in json:
+                for v in json["database_branches"]:
+                    yield DatabaseBranch.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_database_endpoints(
+        self, project_id: str, branch_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseEndpoint]:
+        """List Database Endpoints.
+
+        :param project_id: str
+        :param branch_id: str
+        :param page_size: int (optional)
+          Upper bound for items returned. If specified must be at least 10.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Endpoints. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseEndpoint`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints",
+                query=query,
+                headers=headers,
+            )
+            if "database_endpoints" in json:
+                for v in json["database_endpoints"]:
+                    yield DatabaseEndpoint.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_database_projects(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DatabaseProject]:
+        """List Database Instances.
+
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Database Projects. Requests first page if absent.
+
+        :returns: Iterator over :class:`DatabaseProject`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/database/projects", query=query, headers=headers)
+            if "database_projects" in json:
+                for v in json["database_projects"]:
+                    yield DatabaseProject.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def restart_database_endpoint(self, project_id: str, branch_id: str, endpoint_id: str) -> DatabaseEndpoint:
+        """Restart a Database Endpoint. TODO: should return databricks.longrunning.Operation
+
+        :param project_id: str
+        :param branch_id: str
+        :param endpoint_id: str
+
+        :returns: :class:`DatabaseEndpoint`
+        """
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}/restart",
+            headers=headers,
+        )
+        return DatabaseEndpoint.from_dict(res)
+
+    def update_database_branch(
+        self, project_id: str, branch_id: str, database_branch: DatabaseBranch, update_mask: str
+    ) -> DatabaseBranch:
+        """Update a Database Branch.
+
+        :param project_id: str
+        :param branch_id: str
+        :param database_branch: :class:`DatabaseBranch`
+        :param update_mask: str
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`DatabaseBranch`
+        """
+        body = database_branch.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return DatabaseBranch.from_dict(res)
+
+    def update_database_endpoint(
+        self, project_id: str, branch_id: str, endpoint_id: str, database_endpoint: DatabaseEndpoint, update_mask: str
+    ) -> DatabaseEndpoint:
+        """Update a Database Endpoint. TODO: should return databricks.longrunning.Operation {
+
+        :param project_id: str
+        :param branch_id: str
+        :param endpoint_id: str
+        :param database_endpoint: :class:`DatabaseEndpoint`
+        :param update_mask: str
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`DatabaseEndpoint`
+        """
+        body = database_endpoint.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/database/projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return DatabaseEndpoint.from_dict(res)
+
+    def update_database_project(
+        self, project_id: str, database_project: DatabaseProject, update_mask: str
+    ) -> DatabaseProject:
+        """Update a Database Project.
+
+        :param project_id: str
+        :param database_project: :class:`DatabaseProject`
+        :param update_mask: str
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`DatabaseProject`
+        """
+        body = database_project.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/database/projects/{project_id}", query=query, body=body, headers=headers)
+        return DatabaseProject.from_dict(res)

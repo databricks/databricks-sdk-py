@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -660,7 +661,8 @@ class ComplianceSecurityProfileSetting:
 
 
 class ComplianceStandard(Enum):
-    """Compliance stardard for SHIELD customers"""
+    """Compliance standard for SHIELD customers. See README.md for how instructions of how to add new
+    standards."""
 
     CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
     CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
@@ -668,6 +670,7 @@ class ComplianceStandard(Enum):
     FEDRAMP_IL5 = "FEDRAMP_IL5"
     FEDRAMP_MODERATE = "FEDRAMP_MODERATE"
     GERMANY_C5 = "GERMANY_C5"
+    GERMANY_TISAX = "GERMANY_TISAX"
     HIPAA = "HIPAA"
     HITRUST = "HITRUST"
     IRAP_PROTECTED = "IRAP_PROTECTED"
@@ -843,6 +846,10 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -866,6 +873,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -881,6 +892,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -895,6 +910,8 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1692,24 +1709,6 @@ class DeletePersonalComputeSettingResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -2896,6 +2895,41 @@ class FetchIpAccessListResponse:
 
 
 @dataclass
+class GcpEndpointSpec:
+    psc_endpoint_uri: Optional[str] = None
+    """Output only. The URI of the created PSC endpoint."""
+
+    service_attachment: Optional[str] = None
+    """The full url of the target service attachment. Example:
+    projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpEndpointSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpEndpointSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpEndpointSpec:
+        """Deserializes the GcpEndpointSpec from a dictionary."""
+        return cls(
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+        )
+
+
+@dataclass
 class GenericWebhookConfig:
     password: Optional[str] = None
     """[Input-Only][Optional] Password for webhook."""
@@ -3941,6 +3975,8 @@ class NccEgressDefaultRules:
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
 
+    gcp_project_id_rule: Optional[NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule] = None
+
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3948,6 +3984,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule.as_dict()
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3957,6 +3995,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule
         return body
 
     @classmethod
@@ -3965,6 +4005,9 @@ class NccEgressDefaultRules:
         return cls(
             aws_stable_ip_rule=_from_dict(d, "aws_stable_ip_rule", NccAwsStableIpRule),
             azure_service_endpoint_rule=_from_dict(d, "azure_service_endpoint_rule", NccAzureServiceEndpointRule),
+            gcp_project_id_rule=_from_dict(
+                d, "gcp_project_id_rule", NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
+            ),
         )
 
 
@@ -4052,6 +4095,10 @@ class NccPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -4102,6 +4149,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4139,6 +4190,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4168,6 +4223,8 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -4180,11 +4237,39 @@ class NccPrivateEndpointRule:
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
+
+
+@dataclass
+class NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+    project_ids: Optional[List[str]] = None
+    """A list of Databricks internal project IDs from where network access originates for serverless
+    DBSQL, This list is stable and will not change once the NCC object is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = [v for v in self.project_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = self.project_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+        """Deserializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule from a dictionary."""
+        return cls(project_ids=d.get("project_ids", None))
 
 
 @dataclass
@@ -4549,24 +4634,6 @@ class PublicTokenInfo:
 
 
 @dataclass
-class ReplaceResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplaceResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplaceResponse:
-        """Deserializes the ReplaceResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
@@ -4661,24 +4728,6 @@ class RevokeTokenResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenResponse:
         """Deserializes the RevokeTokenResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class SetStatusResponse:
-    def as_dict(self) -> dict:
-        """Serializes the SetStatusResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetStatusResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetStatusResponse:
-        """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
 
 
@@ -5171,6 +5220,10 @@ class UpdatePrivateEndpointRule:
     Update this field to activate/deactivate this private endpoint to allow egress access from
     serverless compute resources."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5185,6 +5238,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5196,6 +5253,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5206,26 +5267,10 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             resource_names=d.get("resource_names", None),
         )
-
-
-@dataclass
-class UpdateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
 
 
 WorkspaceConf = Dict[str, str]
