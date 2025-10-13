@@ -13,8 +13,10 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1035,24 +1037,6 @@ class DataframeSplitInput:
 
 
 @dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class EmailNotifications:
     on_update_failure: Optional[List[str]] = None
     """A list of email addresses to be notified when an endpoint fails to update its configuration or
@@ -1139,14 +1123,14 @@ class EmbeddingsV1ResponseEmbeddingElementObject(Enum):
 
 @dataclass
 class EndpointCoreConfigInput:
+    name: str
+    """The name of the serving endpoint to update. This field is required."""
+
     auto_capture_config: Optional[AutoCaptureConfigInput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity
     Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
     updating existing provisioned throughput endpoints that never have inference table configured;
     in these cases please use AI Gateway to manage inference tables."""
-
-    name: Optional[str] = None
-    """The name of the serving endpoint to update. This field is required."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
     """The list of served entities under the serving endpoint config."""

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -17,6 +17,9 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AnomalyDetectionConfig:
+    job_type: Optional[AnomalyDetectionJobType] = None
+    """The type of the last run of the workflow."""
+
     last_run_id: Optional[str] = None
     """Run id of the last run of the workflow"""
 
@@ -26,6 +29,8 @@ class AnomalyDetectionConfig:
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.job_type is not None:
+            body["job_type"] = self.job_type.value
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
@@ -35,6 +40,8 @@ class AnomalyDetectionConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.job_type is not None:
+            body["job_type"] = self.job_type
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
@@ -45,9 +52,16 @@ class AnomalyDetectionConfig:
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
         return cls(
+            job_type=_enum(d, "job_type", AnomalyDetectionJobType),
             last_run_id=d.get("last_run_id", None),
             latest_run_status=_enum(d, "latest_run_status", AnomalyDetectionRunStatus),
         )
+
+
+class AnomalyDetectionJobType(Enum):
+
+    ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN = "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN"
+    ANOMALY_DETECTION_JOB_TYPE_NORMAL = "ANOMALY_DETECTION_JOB_TYPE_NORMAL"
 
 
 class AnomalyDetectionRunStatus(Enum):

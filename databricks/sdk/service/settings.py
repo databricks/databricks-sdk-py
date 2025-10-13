@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1692,24 +1693,6 @@ class DeletePersonalComputeSettingResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
         return cls(etag=d.get("etag", None))
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -4549,24 +4532,6 @@ class PublicTokenInfo:
 
 
 @dataclass
-class ReplaceResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ReplaceResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ReplaceResponse:
-        """Deserializes the ReplaceResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
@@ -4661,24 +4626,6 @@ class RevokeTokenResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenResponse:
         """Deserializes the RevokeTokenResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class SetStatusResponse:
-    def as_dict(self) -> dict:
-        """Serializes the SetStatusResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the SetStatusResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> SetStatusResponse:
-        """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
 
 
@@ -5208,24 +5155,6 @@ class UpdatePrivateEndpointRule:
             enabled=d.get("enabled", None),
             resource_names=d.get("resource_names", None),
         )
-
-
-@dataclass
-class UpdateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
 
 
 WorkspaceConf = Dict[str, str]
