@@ -183,8 +183,8 @@
         :param space_id: str
           The ID of the Genie space to retrieve conversations from.
         :param include_all: bool (optional)
-          Include all conversations in the space across all users. Requires "Can Manage" permission on the
-          space.
+          Include all conversations in the space across all users. Requires at least CAN MANAGE permission on
+          the space.
         :param page_size: int (optional)
           Maximum number of conversations to return per page
         :param page_token: str (optional)
@@ -205,7 +205,7 @@
         :returns: :class:`GenieListSpacesResponse`
         
 
-    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
+    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating)
 
         Send feedback for a message.
 
@@ -217,8 +217,6 @@
           The ID associated with the message to provide feedback for.
         :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
-        :param comment: str (optional)
-          Optional text feedback that will be stored as a comment.
 
 
         

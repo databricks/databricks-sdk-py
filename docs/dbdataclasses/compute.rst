@@ -1129,6 +1129,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BUDGET_POLICY_RESOLUTION_FAILURE
       :value: "BUDGET_POLICY_RESOLUTION_FAILURE"
 
+   .. py:attribute:: CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED
+      :value: "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
+
    .. py:attribute:: CLOUD_ACCOUNT_SETUP_FAILURE
       :value: "CLOUD_ACCOUNT_SETUP_FAILURE"
 
@@ -1360,6 +1363,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: JOB_FINISHED
       :value: "JOB_FINISHED"
 
+   .. py:attribute:: K8S_ACTIVE_POD_QUOTA_EXCEEDED
+      :value: "K8S_ACTIVE_POD_QUOTA_EXCEEDED"
+
    .. py:attribute:: K8S_AUTOSCALING_FAILURE
       :value: "K8S_AUTOSCALING_FAILURE"
 
@@ -1404,6 +1410,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
+
+   .. py:attribute:: NO_ACTIVATED_K8S
+      :value: "NO_ACTIVATED_K8S"
+
+   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
+      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
 
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
@@ -1518,6 +1530,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UPDATE_INSTANCE_PROFILE_FAILURE
       :value: "UPDATE_INSTANCE_PROFILE_FAILURE"
+
+   .. py:attribute:: USAGE_POLICY_ENTITLEMENT_DENIED
+      :value: "USAGE_POLICY_ENTITLEMENT_DENIED"
 
    .. py:attribute:: USER_INITIATED_VM_TERMINATION
       :value: "USER_INITIATED_VM_TERMINATION"

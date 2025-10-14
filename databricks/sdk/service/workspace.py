@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict
+from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -100,9 +100,17 @@ class CreateCredentialsResponse:
     git_provider: str
     """The Git provider associated with the credential."""
 
+    git_email: Optional[str] = None
+    """The authenticating email associated with your Git provider user account. Used for authentication
+    with the remote repository and also sets the author & committer identity for commits. Required
+    for most Git providers except AWS CodeCommit. Learn more at
+    https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
+
     git_username: Optional[str] = None
-    """The username or email provided with your Git provider account and associated with the
-    credential."""
+    """The username provided with your Git provider account and associated with the credential. For
+    most Git providers it is only used to set the Git committer & author names for commits, however
+    it may be required for authentication depending on your Git provider / token requirements.
+    Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
     """if the credential is the default for the given provider"""
@@ -115,6 +123,8 @@ class CreateCredentialsResponse:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -130,6 +140,8 @@ class CreateCredentialsResponse:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -145,6 +157,7 @@ class CreateCredentialsResponse:
         """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
+            git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
             is_default_for_provider=d.get("is_default_for_provider", None),
@@ -250,12 +263,20 @@ class CredentialInfo:
     credential_id: int
     """ID of the credential object in the workspace."""
 
+    git_email: Optional[str] = None
+    """The authenticating email associated with your Git provider user account. Used for authentication
+    with the remote repository and also sets the author & committer identity for commits. Required
+    for most Git providers except AWS CodeCommit. Learn more at
+    https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
+
     git_provider: Optional[str] = None
     """The Git provider associated with the credential."""
 
     git_username: Optional[str] = None
-    """The username or email provided with your Git provider account and associated with the
-    credential."""
+    """The username provided with your Git provider account and associated with the credential. For
+    most Git providers it is only used to set the Git committer & author names for commits, however
+    it may be required for authentication depending on your Git provider / token requirements.
+    Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
     """if the credential is the default for the given provider"""
@@ -268,6 +289,8 @@ class CredentialInfo:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -283,6 +306,8 @@ class CredentialInfo:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -298,6 +323,7 @@ class CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
+            git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
             is_default_for_provider=d.get("is_default_for_provider", None),
@@ -466,12 +492,20 @@ class GetCredentialsResponse:
     credential_id: int
     """ID of the credential object in the workspace."""
 
+    git_email: Optional[str] = None
+    """The authenticating email associated with your Git provider user account. Used for authentication
+    with the remote repository and also sets the author & committer identity for commits. Required
+    for most Git providers except AWS CodeCommit. Learn more at
+    https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"""
+
     git_provider: Optional[str] = None
     """The Git provider associated with the credential."""
 
     git_username: Optional[str] = None
-    """The username or email provided with your Git provider account and associated with the
-    credential."""
+    """The username provided with your Git provider account and associated with the credential. For
+    most Git providers it is only used to set the Git committer & author names for commits, however
+    it may be required for authentication depending on your Git provider / token requirements.
+    Required for AWS CodeCommit."""
 
     is_default_for_provider: Optional[bool] = None
     """if the credential is the default for the given provider"""
@@ -484,6 +518,8 @@ class GetCredentialsResponse:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -499,6 +535,8 @@ class GetCredentialsResponse:
         body = {}
         if self.credential_id is not None:
             body["credential_id"] = self.credential_id
+        if self.git_email is not None:
+            body["git_email"] = self.git_email
         if self.git_provider is not None:
             body["git_provider"] = self.git_provider
         if self.git_username is not None:
@@ -514,6 +552,7 @@ class GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
         return cls(
             credential_id=d.get("credential_id", None),
+            git_email=d.get("git_email", None),
             git_provider=d.get("git_provider", None),
             git_username=d.get("git_username", None),
             is_default_for_provider=d.get("is_default_for_provider", None),
@@ -1765,6 +1804,7 @@ class GitCredentialsAPI:
         self,
         git_provider: str,
         *,
+        git_email: Optional[str] = None,
         git_username: Optional[str] = None,
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
@@ -1778,12 +1818,16 @@ class GitCredentialsAPI:
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
           `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
           `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        :param git_email: str (optional)
+          The authenticating email associated with your Git provider user account. Used for authentication
+          with the remote repository and also sets the author & committer identity for commits. Required for
+          most Git providers except AWS CodeCommit. Learn more at
+          https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
         :param git_username: str (optional)
-          The username or email provided with your Git provider account, depending on which provider you are
-          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
-          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
-          BitBucket Server, username must be used. For all other providers please see your provider's Personal
-          Access Token authentication documentation to see what is supported.
+          The username provided with your Git provider account and associated with the credential. For most
+          Git providers it is only used to set the Git committer & author names for commits, however it may be
+          required for authentication depending on your Git provider / token requirements. Required for AWS
+          CodeCommit.
         :param is_default_for_provider: bool (optional)
           if the credential is the default for the given provider
         :param name: str (optional)
@@ -1797,6 +1841,8 @@ class GitCredentialsAPI:
         :returns: :class:`CreateCredentialsResponse`
         """
         body = {}
+        if git_email is not None:
+            body["git_email"] = git_email
         if git_provider is not None:
             body["git_provider"] = git_provider
         if git_username is not None:
@@ -1866,6 +1912,7 @@ class GitCredentialsAPI:
         credential_id: int,
         git_provider: str,
         *,
+        git_email: Optional[str] = None,
         git_username: Optional[str] = None,
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
@@ -1879,12 +1926,16 @@ class GitCredentialsAPI:
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
           `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
           `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        :param git_email: str (optional)
+          The authenticating email associated with your Git provider user account. Used for authentication
+          with the remote repository and also sets the author & committer identity for commits. Required for
+          most Git providers except AWS CodeCommit. Learn more at
+          https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
         :param git_username: str (optional)
-          The username or email provided with your Git provider account, depending on which provider you are
-          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
-          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
-          BitBucket Server, username must be used. For all other providers please see your provider's Personal
-          Access Token authentication documentation to see what is supported.
+          The username provided with your Git provider account and associated with the credential. For most
+          Git providers it is only used to set the Git committer & author names for commits, however it may be
+          required for authentication depending on your Git provider / token requirements. Required for AWS
+          CodeCommit.
         :param is_default_for_provider: bool (optional)
           if the credential is the default for the given provider
         :param name: str (optional)
@@ -1898,6 +1949,8 @@ class GitCredentialsAPI:
 
         """
         body = {}
+        if git_email is not None:
+            body["git_email"] = git_email
         if git_provider is not None:
             body["git_provider"] = git_provider
         if git_username is not None:

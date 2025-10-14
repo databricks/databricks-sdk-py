@@ -14,8 +14,10 @@ These APIs are available from WorkspaceClient
    compute/index
    dashboards/index
    database/index
+   dataquality/index
    files/index
    iam/index
+   iamv2/index
    jobs/index
    marketplace/index
    ml/index

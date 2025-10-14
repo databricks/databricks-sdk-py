@@ -10,6 +10,7 @@ These APIs are available from AccountClient
    billing/index
    catalog/index
    iam/index
+   iamv2/index
    oauth2/index
    provisioning/index
    settings/index

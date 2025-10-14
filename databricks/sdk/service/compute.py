@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -3135,12 +3137,9 @@ class Environment:
     """Required. Environment version used by the environment. Each version comes with a specific Python
     version and a set of Python packages. The version is a string, consisting of an integer."""
 
-    jar_dependencies: Optional[List[str]] = None
-    """Use `java_dependencies` instead."""
-
     java_dependencies: Optional[List[str]] = None
-    """List of jar dependencies, should be string representing volume paths. For example:
-    `/Volumes/path/to/test.jar`."""
+    """List of java dependencies. Each dependency is a string representing a java library path. For
+    example: `/Volumes/path/to/test.jar`."""
 
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
@@ -3151,8 +3150,6 @@ class Environment:
             body["dependencies"] = [v for v in self.dependencies]
         if self.environment_version is not None:
             body["environment_version"] = self.environment_version
-        if self.jar_dependencies:
-            body["jar_dependencies"] = [v for v in self.jar_dependencies]
         if self.java_dependencies:
             body["java_dependencies"] = [v for v in self.java_dependencies]
         return body
@@ -3166,8 +3163,6 @@ class Environment:
             body["dependencies"] = self.dependencies
         if self.environment_version is not None:
             body["environment_version"] = self.environment_version
-        if self.jar_dependencies:
-            body["jar_dependencies"] = self.jar_dependencies
         if self.java_dependencies:
             body["java_dependencies"] = self.java_dependencies
         return body
@@ -3179,7 +3174,6 @@ class Environment:
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
-            jar_dependencies=d.get("jar_dependencies", None),
             java_dependencies=d.get("java_dependencies", None),
         )
 
@@ -6621,9 +6615,16 @@ class Results:
     data: Optional[Any] = None
 
     file_name: Optional[str] = None
-    """The image filename"""
+    """The image data in one of the following formats:
+    
+    1. A Data URL with base64-encoded image data: `data:image/{type};base64,{base64-data}`. Example:
+    `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...`
+    
+    2. A FileStore file path for large images: `/plots/{filename}.png`. Example:
+    `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`"""
 
     file_names: Optional[List[str]] = None
+    """List of image data for multiple images. Each element follows the same format as file_name."""
 
     is_json_schema: Optional[bool] = None
     """true if a JSON schema is returned instead of a string representation of the Hive type."""
@@ -7067,6 +7068,7 @@ class TerminationReasonCode(Enum):
     BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
     BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
     BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
+    CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
     CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
     CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
     CLOUD_PROVIDER_DISK_SETUP_FAILURE = "CLOUD_PROVIDER_DISK_SETUP_FAILURE"
@@ -7144,6 +7146,7 @@ class TerminationReasonCode(Enum):
     IN_PENALTY_BOX = "IN_PENALTY_BOX"
     IP_EXHAUSTION_FAILURE = "IP_EXHAUSTION_FAILURE"
     JOB_FINISHED = "JOB_FINISHED"
+    K8S_ACTIVE_POD_QUOTA_EXCEEDED = "K8S_ACTIVE_POD_QUOTA_EXCEEDED"
     K8S_AUTOSCALING_FAILURE = "K8S_AUTOSCALING_FAILURE"
     K8S_DBR_CLUSTER_LAUNCH_TIMEOUT = "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT"
     LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
@@ -8493,11 +8496,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/delete", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_terminated,
-            response=DeleteClusterResponse.from_dict(op_response),
-            cluster_id=cluster_id,
-        )
+        return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
@@ -8759,9 +8758,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/edit", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=EditClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def edit_and_wait(
         self,
@@ -9123,9 +9120,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/resize", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=ResizeClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def resize_and_wait(
         self,
@@ -9160,9 +9155,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/restart", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=RestartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def restart_and_wait(
         self, cluster_id: str, *, restart_user: Optional[str] = None, timeout=timedelta(minutes=20)
@@ -9229,9 +9222,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/start", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=StartClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
@@ -9302,9 +9293,7 @@ class ClustersAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.1/clusters/update", body=body, headers=headers)
-        return Wait(
-            self.wait_get_cluster_running, response=UpdateClusterResponse.from_dict(op_response), cluster_id=cluster_id
-        )
+        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
 
     def update_and_wait(
         self,
@@ -9485,7 +9474,6 @@ class CommandExecutionAPI:
         op_response = self._api.do("POST", "/api/1.2/commands/cancel", body=body, headers=headers)
         return Wait(
             self.wait_command_status_command_execution_cancelled,
-            response=CancelResponse.from_dict(op_response),
             cluster_id=cluster_id,
             command_id=command_id,
             context_id=context_id,

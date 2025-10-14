@@ -40,8 +40,7 @@
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
-          non-serverless warehouses - 0 indicates no autostop.
+          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -66,7 +65,7 @@
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          Supported values: - Must be >= min_num_clusters - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -82,12 +81,15 @@
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -169,13 +171,13 @@
 
           Defaults to false.
         :param enable_serverless_compute: bool (optional)
-          Configures whether the warehouse should use serverless compute.
+          Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          Supported values: - Must be >= min_num_clusters - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -191,12 +193,15 @@
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -272,7 +277,7 @@
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
         
 
-    .. py:method:: list( [, run_as_user_id: Optional[int]]) -> Iterator[EndpointInfo]
+    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], run_as_user_id: Optional[int]]) -> Iterator[EndpointInfo]
 
 
         Usage:
@@ -286,11 +291,19 @@
             
             all = w.warehouses.list(sql.ListWarehousesRequest())
 
-        Lists all SQL warehouses that a user has manager permissions on.
+        Lists all SQL warehouses that a user has access to.
 
+        :param page_size: int (optional)
+          The max number of warehouses to return.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the
+          subsequent page; otherwise the first will be retrieved.
+
+          When paginating, all other parameters provided to `ListWarehouses` must match the call that provided
+          the page token.
         :param run_as_user_id: int (optional)
-          Service Principal which will be used to fetch the list of warehouses. If not specified, the user
-          from the session header is used.
+          Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway
+          will use the user from the session header.
 
         :returns: Iterator over :class:`EndpointInfo`
         
@@ -307,7 +320,7 @@
         :returns: :class:`WarehousePermissions`
         
 
-    .. py:method:: set_workspace_warehouse_config( [, channel: Optional[Channel], config_param: Optional[RepeatedEndpointConfPairs], data_access_config: Optional[List[EndpointConfPair]], enabled_warehouse_types: Optional[List[WarehouseTypePair]], global_param: Optional[RepeatedEndpointConfPairs], google_service_account: Optional[str], instance_profile_arn: Optional[str], security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy], sql_configuration_parameters: Optional[RepeatedEndpointConfPairs]])
+    .. py:method:: set_workspace_warehouse_config( [, channel: Optional[Channel], config_param: Optional[RepeatedEndpointConfPairs], data_access_config: Optional[List[EndpointConfPair]], enable_serverless_compute: Optional[bool], enabled_warehouse_types: Optional[List[WarehouseTypePair]], global_param: Optional[RepeatedEndpointConfPairs], google_service_account: Optional[str], instance_profile_arn: Optional[str], security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy], sql_configuration_parameters: Optional[RepeatedEndpointConfPairs]])
 
         Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
@@ -317,6 +330,8 @@
           Deprecated: Use sql_configuration_parameters
         :param data_access_config: List[:class:`EndpointConfPair`] (optional)
           Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
+        :param enable_serverless_compute: bool (optional)
+          Enable Serverless compute for SQL warehouses
         :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
           List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
           CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
@@ -328,7 +343,8 @@
         :param google_service_account: str (optional)
           GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
         :param instance_profile_arn: str (optional)
-          AWS Only: Instance profile used to pass IAM role to the cluster
+          AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is
+          also applied to the workspace's serverless compute for notebooks and jobs.
         :param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)
           Security policy for warehouses
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)

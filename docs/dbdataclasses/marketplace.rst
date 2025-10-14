@@ -19,6 +19,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ASSET_TYPE_GIT_REPO
       :value: "ASSET_TYPE_GIT_REPO"
 
+   .. py:attribute:: ASSET_TYPE_MCP
+      :value: "ASSET_TYPE_MCP"
+
    .. py:attribute:: ASSET_TYPE_MEDIA
       :value: "ASSET_TYPE_MEDIA"
 

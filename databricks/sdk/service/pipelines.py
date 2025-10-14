@@ -10,13 +10,14 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service import compute
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -3775,9 +3776,7 @@ class PipelinesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
-        return Wait(
-            self.wait_get_pipeline_idle, response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
-        )
+        return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
 
     def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
