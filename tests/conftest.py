@@ -5,8 +5,8 @@ import platform
 import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
+from .clock import FakeClock
 from databricks.sdk.core import Config
-from databricks.sdk.clock import FakeClock
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .integration.conftest import restorable_env  # type: ignore
