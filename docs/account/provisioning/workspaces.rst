@@ -11,7 +11,7 @@
     These endpoints are available if your account is on the E2 version of the platform or on a select custom
     plan that allows multiple workspaces per account.
 
-    .. py:method:: create( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str]]) -> Wait[Workspace]
+    .. py:method:: create( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str]]) -> Wait[Workspace]
 
 
         Usage:
@@ -84,6 +84,12 @@
         :param cloud: str (optional)
           The cloud name. This field always has the value `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
+        :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
+          If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured
+          with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS
+          experience. This means you don't need to provide any resources managed by you, such as credentials,
+          storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic
+          workspace is created that uses customer-managed resources.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
         :param custom_tags: Dict[str,str] (optional)
@@ -141,7 +147,7 @@
           See :method:wait_get_workspace_running for more details.
         
 
-    .. py:method:: create_and_wait( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
+    .. py:method:: create_and_wait( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
 
 
     .. py:method:: delete(workspace_id: int) -> Workspace

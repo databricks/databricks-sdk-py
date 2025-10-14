@@ -11,7 +11,7 @@
         Cancels a data quality monitor refresh. Currently only supported for the `table` `object_type`.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -49,7 +49,7 @@
         owner of the table
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: table.
+          The type of the monitored object. Can be one of the following: `schema`or `table`.
         :param object_id: str
           The UUID of the request object. For example, table id.
         :param refresh: :class:`Refresh`
@@ -71,7 +71,7 @@
         be manually cleaned up (if desired).
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
 
@@ -83,7 +83,7 @@
         (Unimplemented) Delete a refresh
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -106,7 +106,7 @@
         workspace than where the monitor was created.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
 
@@ -123,7 +123,7 @@
         the table's parent schema - **SELECT** privilege on the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -152,7 +152,7 @@
         the table's parent schema - **SELECT** privilege on the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param page_size: int (optional)
@@ -171,13 +171,14 @@
         the table's parent schema - be an owner of the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param monitor: :class:`Monitor`
           The monitor to update.
         :param update_mask: str
-          The field mask to specify which fields to update.
+          The field mask to specify which fields to update as a comma-separated list. Example value:
+          `data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression`
 
         :returns: :class:`Monitor`
         
@@ -187,7 +188,7 @@
         (Unimplemented) Update a refresh
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
