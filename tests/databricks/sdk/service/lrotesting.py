@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.common import lro
+from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import _enum, _from_dict
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -266,6 +269,40 @@ class TestResource:
         return cls(id=d.get("id", None), name=d.get("name", None))
 
 
+@dataclass
+class TestResourceOperationMetadata:
+    """Metadata for test resource operations"""
+
+    progress_percent: Optional[int] = None
+    """Progress percentage (0-100)"""
+
+    resource_id: Optional[str] = None
+    """ID of the resource being operated on"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TestResourceOperationMetadata into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.progress_percent is not None:
+            body["progress_percent"] = self.progress_percent
+        if self.resource_id is not None:
+            body["resource_id"] = self.resource_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TestResourceOperationMetadata into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.progress_percent is not None:
+            body["progress_percent"] = self.progress_percent
+        if self.resource_id is not None:
+            body["resource_id"] = self.resource_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TestResourceOperationMetadata:
+        """Deserializes the TestResourceOperationMetadata from a dictionary."""
+        return cls(progress_percent=d.get("progress_percent", None), resource_id=d.get("resource_id", None))
+
+
 class LroTestingAPI:
     """Test service for Long Running Operations"""
 
@@ -280,7 +317,7 @@ class LroTestingAPI:
 
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
-    def create_test_resource(self, resource: TestResource) -> Operation:
+    def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
         """Simple method to create test resource for LRO testing
 
         :param resource: :class:`TestResource`
@@ -295,7 +332,8 @@ class LroTestingAPI:
         }
 
         res = self._api.do("POST", "/api/2.0/lro-testing/resources", body=body, headers=headers)
-        return Operation.from_dict(res)
+        operation = Operation.from_dict(res)
+        return CreateTestResourceOperation(self, operation)
 
     def get_operation(self, name: str) -> Operation:
 
@@ -321,3 +359,86 @@ class LroTestingAPI:
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         return TestResource.from_dict(res)
+
+
+class CreateTestResourceOperation:
+    """Long-running operation for create_test_resource"""
+
+    def __init__(self, impl: LroTestingAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> TestResource:
+        """Wait blocks until the long-running operation is completed with default 20 min
+        timeout. If the operation didn't finish within the timeout, this function will
+        raise an error of type TimeoutError, otherwise returns successful response and
+        any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: 20 minutes)
+
+        :returns: :class:`TestResource`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            test_resource = TestResource.from_dict(operation.response)
+
+            return test_resource, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else timedelta(minutes=20))
+
+    def cancel(self):
+        """Starts asynchronous cancellation on a long-running operation. The server
+        makes a best effort to cancel the operation, but success is not guaranteed.
+        """
+        self._impl.cancel_operation(name=self._operation.name)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> TestResourceOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`TestResourceOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return TestResourceOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
