@@ -243,3 +243,13 @@
 * [Breaking] Remove `aws_region`, `credentials_id`, `custom_tags`, `managed_services_customer_managed_key_id`, `network_connectivity_config_id`, `network_id`, `private_access_settings_id`, `storage_configuration_id` and `storage_customer_managed_key_id` fields for `databricks.sdk.service.provisioning.UpdateWorkspaceRequest`.
 * [Breaking] Remove `external_customer_info` and `is_no_public_ip_enabled` fields for `databricks.sdk.service.provisioning.Workspace`.
 * [Breaking] Remove `status_unspecified` enum value for `databricks.sdk.service.sql.Status`.
+* Add `compute_mode` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+* Add `expected_workspace_status` field for `databricks.sdk.service.provisioning.Workspace`.
+* Add `dependency_storage_locations` field for `databricks.sdk.service.sharing.TableInternalAttributes`.
+* Add `git_email` field for `databricks.sdk.service.workspace.CreateCredentialsRequest`.
+* Add `git_email` field for `databricks.sdk.service.workspace.CreateCredentialsResponse`.
+* Add `git_email` field for `databricks.sdk.service.workspace.CredentialInfo`.
+* Add `git_email` field for `databricks.sdk.service.workspace.GetCredentialsResponse`.
+* Add `git_email` field for `databricks.sdk.service.workspace.UpdateCredentialsRequest`.
+* Add `germany_tisax` enum value for `databricks.sdk.service.settings.ComplianceStandard`.
+* [Breaking] Remove `prediction_probability_column` field for `databricks.sdk.service.dataquality.InferenceLogConfig`.

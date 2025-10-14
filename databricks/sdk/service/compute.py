@@ -6615,9 +6615,16 @@ class Results:
     data: Optional[Any] = None
 
     file_name: Optional[str] = None
-    """The image filename"""
+    """The image data in one of the following formats:
+    
+    1. A Data URL with base64-encoded image data: `data:image/{type};base64,{base64-data}`. Example:
+    `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...`
+    
+    2. A FileStore file path for large images: `/plots/{filename}.png`. Example:
+    `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`"""
 
     file_names: Optional[List[str]] = None
+    """List of image data for multiple images. Each element follows the same format as file_name."""
 
     is_json_schema: Optional[bool] = None
     """true if a JSON schema is returned instead of a string representation of the Hive type."""

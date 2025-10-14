@@ -11179,6 +11179,14 @@ class CatalogsAPI:
         **USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the
         elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective
           metadata for
@@ -11376,6 +11384,14 @@ class ConnectionsAPI:
 
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
         """List all connections.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
 
         :param max_results: int (optional)
           Maximum number of connections to return. - If not set, all connections are returned (not
@@ -12254,6 +12270,14 @@ class ExternalLocationsAPI:
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
           selective metadata for
@@ -12618,6 +12642,14 @@ class FunctionsAPI:
         functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
         no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param catalog_name: str
           Name of parent catalog for functions of interest.
         :param schema_name: str
@@ -12961,6 +12993,14 @@ class MetastoresAPI:
     def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[MetastoreInfo]:
         """Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
 
         :param max_results: int (optional)
           Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
@@ -14759,6 +14799,14 @@ class SchemasAPI:
         owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
         There is no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param catalog_name: str
           Parent catalog for schemas of interest.
         :param include_browse: bool (optional)
@@ -14980,6 +15028,14 @@ class StorageCredentialsAPI:
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
         elements in the array.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
 
         :param include_unbound: bool (optional)
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
@@ -15233,6 +15289,14 @@ class SystemSchemasAPI:
     ) -> Iterator[SystemSchemaInfo]:
         """Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
         admin.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
 
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
@@ -15529,6 +15593,14 @@ class TablesAPI:
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
 
         :param catalog_name: str
           Name of parent catalog for tables of interest.
@@ -16158,9 +16230,11 @@ class WorkspaceBindingsAPI:
         :param securable_name: str
           The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings.
+          List of workspace bindings to add. If a binding for the workspace already exists with a different
+          binding_type, adding it again with a new binding_type will update the existing binding (e.g., from
+          READ_WRITE to READ_ONLY).
         :param remove: List[:class:`WorkspaceBinding`] (optional)
-          List of workspace bindings.
+          List of workspace bindings to remove.
 
         :returns: :class:`UpdateWorkspaceBindingsResponse`
         """

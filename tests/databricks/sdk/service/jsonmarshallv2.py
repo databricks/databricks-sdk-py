@@ -7,6 +7,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
+
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -18,21 +22,21 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class NestedMessage:
-    optional_duration: Optional[str] = None
+    optional_duration: Optional[Duration] = None
 
     optional_string: Optional[str] = None
 
-    optional_timestamp: Optional[str] = None
+    optional_timestamp: Optional[Timestamp] = None
 
     def as_dict(self) -> dict:
         """Serializes the NestedMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.optional_duration is not None:
-            body["optional_duration"] = self.optional_duration
+            body["optional_duration"] = self.optional_duration.ToJsonString()
         if self.optional_string is not None:
             body["optional_string"] = self.optional_string
         if self.optional_timestamp is not None:
-            body["optional_timestamp"] = self.optional_timestamp
+            body["optional_timestamp"] = self.optional_timestamp.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -50,17 +54,17 @@ class NestedMessage:
     def from_dict(cls, d: Dict[str, Any]) -> NestedMessage:
         """Deserializes the NestedMessage from a dictionary."""
         return cls(
-            optional_duration=d.get("optional_duration", None),
+            optional_duration=_duration(d, "optional_duration"),
             optional_string=d.get("optional_string", None),
-            optional_timestamp=d.get("optional_timestamp", None),
+            optional_timestamp=_timestamp(d, "optional_timestamp"),
         )
 
 
 @dataclass
 class OptionalFields:
-    duration: Optional[str] = None
+    duration: Optional[Duration] = None
 
-    field_mask: Optional[str] = None
+    field_mask: Optional[FieldMask] = None
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
     The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
     (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
@@ -98,7 +102,7 @@ class OptionalFields:
 
     test_enum: Optional[TestEnum] = None
 
-    timestamp: Optional[str] = None
+    timestamp: Optional[Timestamp] = None
 
     value: Optional[any] = None
 
@@ -106,9 +110,9 @@ class OptionalFields:
         """Serializes the OptionalFields into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.duration is not None:
-            body["duration"] = self.duration
+            body["duration"] = self.duration.ToJsonString()
         if self.field_mask is not None:
-            body["field_mask"] = self.field_mask
+            body["field_mask"] = self.field_mask.ToJsonString()
         if self.legacy_duration is not None:
             body["legacy_duration"] = self.legacy_duration
         if self.legacy_field_mask is not None:
@@ -134,7 +138,7 @@ class OptionalFields:
         if self.test_enum is not None:
             body["test_enum"] = self.test_enum.value
         if self.timestamp is not None:
-            body["timestamp"] = self.timestamp
+            body["timestamp"] = self.timestamp.ToJsonString()
         if self.value:
             body["value"] = self.value
         return body
@@ -180,8 +184,8 @@ class OptionalFields:
     def from_dict(cls, d: Dict[str, Any]) -> OptionalFields:
         """Deserializes the OptionalFields from a dictionary."""
         return cls(
-            duration=d.get("duration", None),
-            field_mask=d.get("field_mask", None),
+            duration=_duration(d, "duration"),
+            field_mask=_fieldmask(d, "field_mask"),
             legacy_duration=d.get("legacy_duration", None),
             legacy_field_mask=d.get("legacy_field_mask", None),
             legacy_timestamp=d.get("legacy_timestamp", None),
@@ -194,7 +198,7 @@ class OptionalFields:
             optional_string=d.get("optional_string", None),
             struct=d.get("struct", None),
             test_enum=_enum(d, "test_enum", TestEnum),
-            timestamp=d.get("timestamp", None),
+            timestamp=_timestamp(d, "timestamp"),
             value=d.get("value", None),
         )
 
@@ -203,9 +207,9 @@ class OptionalFields:
 class RepeatedFields:
     repeated_bool: Optional[List[bool]] = None
 
-    repeated_duration: Optional[List[str]] = None
+    repeated_duration: Optional[List[Duration]] = None
 
-    repeated_field_mask: Optional[List[str]] = None
+    repeated_field_mask: Optional[List[FieldMask]] = None
 
     repeated_int32: Optional[List[int]] = None
 
@@ -219,7 +223,7 @@ class RepeatedFields:
 
     repeated_struct: Optional[List[Dict[str, any]]] = None
 
-    repeated_timestamp: Optional[List[str]] = None
+    repeated_timestamp: Optional[List[Timestamp]] = None
 
     repeated_value: Optional[List[any]] = None
 
@@ -231,9 +235,9 @@ class RepeatedFields:
         if self.repeated_bool:
             body["repeated_bool"] = [v for v in self.repeated_bool]
         if self.repeated_duration:
-            body["repeated_duration"] = [v for v in self.repeated_duration]
+            body["repeated_duration"] = [v.ToJsonString() for v in self.repeated_duration]
         if self.repeated_field_mask:
-            body["repeated_field_mask"] = [v for v in self.repeated_field_mask]
+            body["repeated_field_mask"] = [v.ToJsonString() for v in self.repeated_field_mask]
         if self.repeated_int32:
             body["repeated_int32"] = [v for v in self.repeated_int32]
         if self.repeated_int64:
@@ -247,7 +251,7 @@ class RepeatedFields:
         if self.repeated_struct:
             body["repeated_struct"] = [v for v in self.repeated_struct]
         if self.repeated_timestamp:
-            body["repeated_timestamp"] = [v for v in self.repeated_timestamp]
+            body["repeated_timestamp"] = [v.ToJsonString() for v in self.repeated_timestamp]
         if self.repeated_value:
             body["repeated_value"] = [v for v in self.repeated_value]
         if self.test_repeated_enum:
@@ -288,15 +292,15 @@ class RepeatedFields:
         """Deserializes the RepeatedFields from a dictionary."""
         return cls(
             repeated_bool=d.get("repeated_bool", None),
-            repeated_duration=d.get("repeated_duration", None),
-            repeated_field_mask=d.get("repeated_field_mask", None),
+            repeated_duration=_repeated_duration(d, "repeated_duration"),
+            repeated_field_mask=_repeated_fieldmask(d, "repeated_field_mask"),
             repeated_int32=d.get("repeated_int32", None),
             repeated_int64=d.get("repeated_int64", None),
             repeated_list_value=d.get("repeated_list_value", None),
             repeated_message=_repeated_dict(d, "repeated_message", NestedMessage),
             repeated_string=d.get("repeated_string", None),
             repeated_struct=d.get("repeated_struct", None),
-            repeated_timestamp=d.get("repeated_timestamp", None),
+            repeated_timestamp=_repeated_timestamp(d, "repeated_timestamp"),
             repeated_value=d.get("repeated_value", None),
             test_repeated_enum=_repeated_enum(d, "test_repeated_enum", TestEnum),
         )
@@ -316,16 +320,16 @@ class RequiredFields:
 
     test_required_enum: TestEnum
 
-    required_duration: str
+    required_duration: Duration
 
-    required_field_mask: str
+    required_field_mask: FieldMask
     """The field mask must be a single string, with multiple fields separated by commas (no spaces).
     The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
     (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
     as only the entire collection field can be specified. Field names must exactly match the
     resource field names."""
 
-    required_timestamp: str
+    required_timestamp: Timestamp
 
     required_value: any
 
@@ -339,9 +343,9 @@ class RequiredFields:
         if self.required_bool is not None:
             body["required_bool"] = self.required_bool
         if self.required_duration is not None:
-            body["required_duration"] = self.required_duration
+            body["required_duration"] = self.required_duration.ToJsonString()
         if self.required_field_mask is not None:
-            body["required_field_mask"] = self.required_field_mask
+            body["required_field_mask"] = self.required_field_mask.ToJsonString()
         if self.required_int32 is not None:
             body["required_int32"] = self.required_int32
         if self.required_int64 is not None:
@@ -355,7 +359,7 @@ class RequiredFields:
         if self.required_struct:
             body["required_struct"] = self.required_struct
         if self.required_timestamp is not None:
-            body["required_timestamp"] = self.required_timestamp
+            body["required_timestamp"] = self.required_timestamp.ToJsonString()
         if self.required_value:
             body["required_value"] = self.required_value
         if self.test_required_enum is not None:
@@ -396,15 +400,15 @@ class RequiredFields:
         """Deserializes the RequiredFields from a dictionary."""
         return cls(
             required_bool=d.get("required_bool", None),
-            required_duration=d.get("required_duration", None),
-            required_field_mask=d.get("required_field_mask", None),
+            required_duration=_duration(d, "required_duration"),
+            required_field_mask=_fieldmask(d, "required_field_mask"),
             required_int32=d.get("required_int32", None),
             required_int64=d.get("required_int64", None),
             required_list_value=d.get("required_list_value", None),
             required_message=_from_dict(d, "required_message", NestedMessage),
             required_string=d.get("required_string", None),
             required_struct=d.get("required_struct", None),
-            required_timestamp=d.get("required_timestamp", None),
+            required_timestamp=_timestamp(d, "required_timestamp"),
             required_value=d.get("required_value", None),
             test_required_enum=_enum(d, "test_required_enum", TestEnum),
         )

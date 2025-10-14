@@ -1456,6 +1456,10 @@ class Workspace:
 
     deployment_name: Optional[str] = None
 
+    expected_workspace_status: Optional[WorkspaceStatus] = None
+    """A client owned field used to indicate the workspace status that the client expects to be in. For
+    now this is only used to unblock Temporal workflow for GCP least privileged workspace."""
+
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
 
     gke_config: Optional[GkeConfig] = None
@@ -1535,6 +1539,8 @@ class Workspace:
             body["custom_tags"] = self.custom_tags
         if self.deployment_name is not None:
             body["deployment_name"] = self.deployment_name
+        if self.expected_workspace_status is not None:
+            body["expected_workspace_status"] = self.expected_workspace_status.value
         if self.gcp_managed_network_config:
             body["gcp_managed_network_config"] = self.gcp_managed_network_config.as_dict()
         if self.gke_config:
@@ -1592,6 +1598,8 @@ class Workspace:
             body["custom_tags"] = self.custom_tags
         if self.deployment_name is not None:
             body["deployment_name"] = self.deployment_name
+        if self.expected_workspace_status is not None:
+            body["expected_workspace_status"] = self.expected_workspace_status
         if self.gcp_managed_network_config:
             body["gcp_managed_network_config"] = self.gcp_managed_network_config
         if self.gke_config:
@@ -1640,6 +1648,7 @@ class Workspace:
             credentials_id=d.get("credentials_id", None),
             custom_tags=d.get("custom_tags", None),
             deployment_name=d.get("deployment_name", None),
+            expected_workspace_status=_enum(d, "expected_workspace_status", WorkspaceStatus),
             gcp_managed_network_config=_from_dict(d, "gcp_managed_network_config", GcpManagedNetworkConfig),
             gke_config=_from_dict(d, "gke_config", GkeConfig),
             location=d.get("location", None),
@@ -2470,6 +2479,7 @@ class WorkspacesAPI:
         aws_region: Optional[str] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
+        compute_mode: Optional[CustomerFacingComputeMode] = None,
         credentials_id: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         deployment_name: Optional[str] = None,
@@ -2518,6 +2528,12 @@ class WorkspacesAPI:
         :param cloud: str (optional)
           The cloud name. This field always has the value `gcp`.
         :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
+        :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
+          If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured
+          with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS
+          experience. This means you don't need to provide any resources managed by you, such as credentials,
+          storage, or network. If the compute mode is `HYBRID` (which is the default option), a classic
+          workspace is created that uses customer-managed resources.
         :param credentials_id: str (optional)
           ID of the workspace's credential configuration object.
         :param custom_tags: Dict[str,str] (optional)
@@ -2581,6 +2597,8 @@ class WorkspacesAPI:
             body["cloud"] = cloud
         if cloud_resource_container is not None:
             body["cloud_resource_container"] = cloud_resource_container.as_dict()
+        if compute_mode is not None:
+            body["compute_mode"] = compute_mode.value
         if credentials_id is not None:
             body["credentials_id"] = credentials_id
         if custom_tags is not None:
@@ -2627,6 +2645,7 @@ class WorkspacesAPI:
         aws_region: Optional[str] = None,
         cloud: Optional[str] = None,
         cloud_resource_container: Optional[CloudResourceContainer] = None,
+        compute_mode: Optional[CustomerFacingComputeMode] = None,
         credentials_id: Optional[str] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         deployment_name: Optional[str] = None,
@@ -2646,6 +2665,7 @@ class WorkspacesAPI:
             aws_region=aws_region,
             cloud=cloud,
             cloud_resource_container=cloud_resource_container,
+            compute_mode=compute_mode,
             credentials_id=credentials_id,
             custom_tags=custom_tags,
             deployment_name=deployment_name,

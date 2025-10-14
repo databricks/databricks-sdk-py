@@ -4,12 +4,34 @@ import json
 from typing import Any
 
 import pytest
+from google.protobuf.duration_pb2 import Duration
+from google.protobuf.timestamp_pb2 import Timestamp
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
                                                          OptionalFields,
                                                          RepeatedFields,
                                                          RequiredFields,
                                                          TestEnum)
+
+
+# Helper methods for well known types
+def _duration(d: str) -> Duration:
+    dur = Duration()
+    dur.FromJsonString(d)
+    return dur
+
+
+def _timestamp(d: str) -> Timestamp:
+    ts = Timestamp()
+    ts.FromJsonString(d)
+    return ts
+
+
+def _fieldmask(d: str) -> FieldMask:
+    fm = FieldMask()
+    fm.FromJsonString(d)
+    return fm
 
 
 @pytest.mark.parametrize(
@@ -91,7 +113,7 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
         (
             OptionalFields.from_dict,
             OptionalFields(
-                duration="3600s",
+                duration=_duration("3600s"),
             ),
             """{
 				"duration": "3600s"
@@ -100,7 +122,7 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
         (
             OptionalFields.from_dict,
             OptionalFields(
-                field_mask="optional_string,optional_int32",
+                field_mask=_fieldmask("optional_string,optional_int32"),
             ),
             """{
 				"field_mask": "optional_string,optional_int32"
@@ -109,7 +131,7 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
         (
             OptionalFields.from_dict,
             OptionalFields(
-                timestamp="2023-01-01T00:00:00Z",
+                timestamp=_timestamp("2023-01-01T00:00:00Z"),
             ),
             """{
 				"timestamp": "2023-01-01T00:00:00Z"
@@ -132,15 +154,15 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
             RequiredFields.from_dict,
             RequiredFields(
                 required_bool=False,
-                required_duration="0s",
-                required_field_mask="",
+                required_duration=_duration("0s"),
+                required_field_mask=None,
                 required_int32=0,
                 required_int64=0,
                 required_list_value=[],
                 required_message=NestedMessage(),
                 required_string="",
                 required_struct={},
-                required_timestamp="1970-01-01T00:00:00Z",
+                required_timestamp=_timestamp("1970-01-01T00:00:00Z"),
                 required_value=json.loads("{}"),
                 test_required_enum=TestEnum.TEST_ENUM_ONE,
             ),
@@ -152,7 +174,6 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
 					"required_message": {},
 					"test_required_enum": "TEST_ENUM_ONE",
 					"required_duration": "0s",
-					"required_field_mask": "",
 					"required_timestamp": "1970-01-01T00:00:00Z"
 				}""",
         ),
@@ -160,15 +181,15 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
             RequiredFields.from_dict,
             RequiredFields(
                 required_bool=True,
-                required_duration="7200s",
-                required_field_mask="required_string,required_int32",
+                required_duration=_duration("7200s"),
+                required_field_mask=_fieldmask("required_string,required_int32"),
                 required_int32=42,
                 required_int64=1234567890123456789,
                 required_list_value=[],
                 required_message=NestedMessage(),
                 required_string="non_default_string",
                 required_struct={},
-                required_timestamp="2023-12-31T23:59:59Z",
+                required_timestamp=_timestamp("2023-12-31T23:59:59Z"),
                 required_value=json.loads("{}"),
                 test_required_enum=TestEnum.TEST_ENUM_TWO,
             ),
@@ -276,9 +297,9 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
             RepeatedFields.from_dict,
             RepeatedFields(
                 repeated_duration=[
-                    "60s",
-                    "120s",
-                    "180s",
+                    _duration("60s"),
+                    _duration("120s"),
+                    _duration("180s"),
                 ],
             ),
             """{
@@ -289,8 +310,8 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
             RepeatedFields.from_dict,
             RepeatedFields(
                 repeated_field_mask=[
-                    "field1",
-                    "field2,field3",
+                    _fieldmask("field1"),
+                    _fieldmask("field2,field3"),
                 ],
             ),
             """{
@@ -301,8 +322,8 @@ from tests.databricks.sdk.service.jsonmarshallv2 import (NestedMessage,
             RepeatedFields.from_dict,
             RepeatedFields(
                 repeated_timestamp=[
-                    "2023-01-01T00:00:00Z",
-                    "2023-01-02T00:00:00Z",
+                    _timestamp("2023-01-01T00:00:00Z"),
+                    _timestamp("2023-01-02T00:00:00Z"),
                 ],
             ),
             """{

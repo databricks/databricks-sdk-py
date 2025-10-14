@@ -6,6 +6,8 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.common.types.fieldmask import FieldMask
+
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -140,7 +142,7 @@ class HttpCallV2API:
         path_param_int: int,
         path_param_bool: bool,
         *,
-        field_mask: Optional[str] = None,
+        field_mask: Optional[FieldMask] = None,
         optional_complex_query_param: Optional[ComplexQueryParam] = None,
         query_param_bool: Optional[bool] = None,
         query_param_int: Optional[int] = None,
@@ -151,7 +153,7 @@ class HttpCallV2API:
 
         query = {}
         if field_mask is not None:
-            query["field_mask"] = field_mask
+            query["field_mask"] = field_mask.ToJsonString()
         if optional_complex_query_param is not None:
             query["optional_complex_query_param"] = optional_complex_query_param.as_dict()
         if query_param_bool is not None:
@@ -183,7 +185,7 @@ class HttpCallV2API:
         nested_path_param_bool: bool,
         resource: Resource,
         *,
-        field_mask: Optional[str] = None,
+        field_mask: Optional[FieldMask] = None,
         optional_complex_query_param: Optional[ComplexQueryParam] = None,
         query_param_bool: Optional[bool] = None,
         query_param_int: Optional[int] = None,
@@ -198,7 +200,7 @@ class HttpCallV2API:
         :param nested_path_param_bool: bool
         :param resource: :class:`Resource`
           Body element
-        :param field_mask: str (optional)
+        :param field_mask: FieldMask (optional)
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
           `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
@@ -216,7 +218,7 @@ class HttpCallV2API:
         body = resource.as_dict()
         query = {}
         if field_mask is not None:
-            query["field_mask"] = field_mask
+            query["field_mask"] = field_mask.ToJsonString()
         if optional_complex_query_param is not None:
             query["optional_complex_query_param"] = optional_complex_query_param.as_dict()
         if query_param_bool is not None:

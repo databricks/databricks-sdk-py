@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service import compute
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict)
 
@@ -17,8 +18,6 @@ from ..errors import OperationFailed
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -7320,7 +7319,7 @@ class TableUpdateTriggerConfiguration:
     last time the trigger fired. The minimum allowed value is 60 seconds."""
 
     table_names: Optional[List[str]] = None
-    """A list of Delta tables to monitor for changes. The table name must be in the format
+    """A list of tables to monitor for changes. The table name must be in the format
     `catalog_name.schema_name.table_name`."""
 
     wait_after_last_change_seconds: Optional[int] = None

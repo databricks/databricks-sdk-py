@@ -430,9 +430,6 @@ class InferenceLogConfig:
     label_column: Optional[str] = None
     """Column for the label."""
 
-    prediction_probability_column: Optional[str] = None
-    """Column for prediction probabilities"""
-
     def as_dict(self) -> dict:
         """Serializes the InferenceLogConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -444,8 +441,6 @@ class InferenceLogConfig:
             body["model_id_column"] = self.model_id_column
         if self.prediction_column is not None:
             body["prediction_column"] = self.prediction_column
-        if self.prediction_probability_column is not None:
-            body["prediction_probability_column"] = self.prediction_probability_column
         if self.problem_type is not None:
             body["problem_type"] = self.problem_type.value
         if self.timestamp_column is not None:
@@ -463,8 +458,6 @@ class InferenceLogConfig:
             body["model_id_column"] = self.model_id_column
         if self.prediction_column is not None:
             body["prediction_column"] = self.prediction_column
-        if self.prediction_probability_column is not None:
-            body["prediction_probability_column"] = self.prediction_probability_column
         if self.problem_type is not None:
             body["problem_type"] = self.problem_type
         if self.timestamp_column is not None:
@@ -479,7 +472,6 @@ class InferenceLogConfig:
             label_column=d.get("label_column", None),
             model_id_column=d.get("model_id_column", None),
             prediction_column=d.get("prediction_column", None),
-            prediction_probability_column=d.get("prediction_probability_column", None),
             problem_type=_enum(d, "problem_type", InferenceProblemType),
             timestamp_column=d.get("timestamp_column", None),
         )
@@ -561,7 +553,7 @@ class Monitor:
     """Monitor for the data quality of unity catalog entities such as schema or table."""
 
     object_type: str
-    """The type of the monitored object. Can be one of the following: schema or table."""
+    """The type of the monitored object. Can be one of the following: `schema` or `table`."""
 
     object_id: str
     """The UUID of the request object. For example, schema id."""
@@ -669,7 +661,7 @@ class Refresh:
     """The Refresh object gives information on a refresh of the data quality monitoring pipeline."""
 
     object_type: str
-    """The type of the monitored object. Can be one of the following: table."""
+    """The type of the monitored object. Can be one of the following: `schema`or `table`."""
 
     object_id: str
     """The UUID of the request object. For example, table id."""
@@ -837,7 +829,7 @@ class DataQualityAPI:
         """Cancels a data quality monitor refresh. Currently only supported for the `table` `object_type`.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -893,7 +885,7 @@ class DataQualityAPI:
         owner of the table
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: table.
+          The type of the monitored object. Can be one of the following: `schema`or `table`.
         :param object_id: str
           The UUID of the request object. For example, table id.
         :param refresh: :class:`Refresh`
@@ -924,7 +916,7 @@ class DataQualityAPI:
         be manually cleaned up (if desired).
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
 
@@ -941,7 +933,7 @@ class DataQualityAPI:
         """(Unimplemented) Delete a refresh
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -971,7 +963,7 @@ class DataQualityAPI:
         workspace than where the monitor was created.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
 
@@ -994,7 +986,7 @@ class DataQualityAPI:
         the table's parent schema - **SELECT** privilege on the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
@@ -1050,7 +1042,7 @@ class DataQualityAPI:
         the table's parent schema - **SELECT** privilege on the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param page_size: int (optional)
@@ -1091,13 +1083,14 @@ class DataQualityAPI:
         the table's parent schema - be an owner of the table.
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param monitor: :class:`Monitor`
           The monitor to update.
         :param update_mask: str
-          The field mask to specify which fields to update.
+          The field mask to specify which fields to update as a comma-separated list. Example value:
+          `data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression`
 
         :returns: :class:`Monitor`
         """
@@ -1121,7 +1114,7 @@ class DataQualityAPI:
         """(Unimplemented) Update a refresh
 
         :param object_type: str
-          The type of the monitored object. Can be one of the following: schema or table.
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
         :param object_id: str
           The UUID of the request object. For example, schema id.
         :param refresh_id: int
