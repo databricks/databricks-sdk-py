@@ -6,6 +6,7 @@ import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from databricks.sdk.core import Config
+from databricks.sdk.clock import FakeClock
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .integration.conftest import restorable_env  # type: ignore
@@ -18,7 +19,7 @@ def noop_credentials(_: any):
 
 @pytest.fixture
 def config():
-    return Config(host="http://localhost", credentials_strategy=noop_credentials)
+    return Config(host="http://localhost", credentials_strategy=noop_credentials, clock=FakeClock())
 
 
 @pytest.fixture
