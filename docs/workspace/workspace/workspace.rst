@@ -79,7 +79,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
@@ -175,18 +175,11 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                path=notebook_path,
-                overwrite=True,
+                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.PYTHON,
-                content=base64.b64encode(
-                    (
-                        """import time
-            time.sleep(10)
-            dbutils.notebook.exit('hello')
-            """
-                    ).encode()
-                ).decode(),
+                language=workspace.Language.SQL,
+                overwrite=true_,
+                path=notebook_path,
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
