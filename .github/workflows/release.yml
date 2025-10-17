@@ -37,7 +37,7 @@ jobs:
           RELEASE_NOTES_DIR=/tmp/release-notes
           mkdir -p "$RELEASE_NOTES_DIR"
           RELEASE_NOTES_FILE="$RELEASE_NOTES_DIR/release-notes.md"
-          git for-each-ref --format='%(contents)' ${{ github.ref }} > "$RELEASE_NOTES_FILE"
+          git for-each-ref --format='%(body)' ${{ github.ref }} > "$RELEASE_NOTES_FILE"
           echo "Release notes file: $RELEASE_NOTES_FILE"
           echo "Release notes contents:"
           cat "$RELEASE_NOTES_FILE"
