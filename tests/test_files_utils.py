@@ -2,7 +2,7 @@ import logging
 import os
 from abc import ABC, abstractmethod
 from io import BytesIO, RawIOBase, UnsupportedOperation
-from typing import BinaryIO, Callable, Optional, Tuple, List
+from typing import BinaryIO, Callable, List, Optional, Tuple
 
 import pytest
 

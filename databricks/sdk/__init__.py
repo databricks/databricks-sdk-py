@@ -600,11 +600,6 @@ class WorkspaceClient:
         return self._feature_store
 
     @property
-    def files(self) -> pkg_files.FilesAPI:
-        """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
-        return self._files
-
-    @property
     def functions(self) -> pkg_catalog.FunctionsAPI:
         """Functions implement User-Defined Functions (UDFs) in Unity Catalog."""
         return self._functions
@@ -1008,6 +1003,11 @@ class WorkspaceClient:
     def users(self) -> pkg_iam.UsersAPI:
         """User identities recognized by Databricks and represented by email addresses."""
         return self._users
+
+    @property
+    def files(self) -> FilesExt:
+        """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
+        return self._files
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""

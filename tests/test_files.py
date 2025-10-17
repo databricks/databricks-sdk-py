@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from enum import Enum
 from tempfile import NamedTemporaryFile
 from threading import Lock
-from typing import Any, Callable, List, Optional, Type, Union, Dict
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 from urllib.parse import parse_qs, urlparse
 
 import pytest
