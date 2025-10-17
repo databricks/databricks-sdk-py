@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1080,9 +1082,6 @@ class AlertV2Subscription:
 
 @dataclass
 class BaseChunkInfo:
-    """Describes metadata for a particular chunk, within a result set; this structure is used both
-    within a manifest, and when fetching individual chunk data or links."""
-
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
     disposition."""
@@ -1686,8 +1685,6 @@ class CreateVisualizationRequestVisualization:
 
 
 class CreateWarehouseRequestWarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     CLASSIC = "CLASSIC"
     PRO = "PRO"
@@ -2251,8 +2248,6 @@ class Disposition(Enum):
 
 
 class EditWarehouseRequestWarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     CLASSIC = "CLASSIC"
     PRO = "PRO"
@@ -2341,6 +2336,7 @@ class EndpointHealth:
     """Deprecated. split into summary and details for security"""
 
     status: Optional[Status] = None
+    """Health status of the endpoint."""
 
     summary: Optional[str] = None
     """A short summary of the health status in case of degraded/failed warehouses."""
@@ -2434,7 +2430,7 @@ class EndpointInfo:
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     
-    Supported values: - Must be >= min_num_clusters - Must be <= 30.
+    Supported values: - Must be >= min_num_clusters - Must be <= 40.
     
     Defaults to min_clusters if unset."""
 
@@ -2463,8 +2459,10 @@ class EndpointInfo:
     """ODBC parameters for the SQL warehouse"""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
+    """Configurations whether the endpoint should use spot instances."""
 
     state: Optional[State] = None
+    """state of the endpoint"""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -2594,8 +2592,6 @@ class EndpointInfo:
 
 
 class EndpointInfoWarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     CLASSIC = "CLASSIC"
     PRO = "PRO"
@@ -2725,6 +2721,9 @@ class ExternalLink:
     which point a new `external_link` must be requested."""
 
     external_link: Optional[str] = None
+    """A URL pointing to a chunk of result data, hosted by an external service, with a short expiration
+    time (<= 15 minutes). As this URL contains a temporary credential, it should be considered
+    sensitive and the client should not expose this URL in a log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the `external_link`. Each header is
@@ -2735,7 +2734,7 @@ class ExternalLink:
     next_chunk_index: Optional[int] = None
     """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
-    :method:statementexecution/getStatementResultChunkN request."""
+    :method:statementexecution/getstatementresultchunkn request."""
 
     next_chunk_internal_link: Optional[str] = None
     """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
@@ -3048,7 +3047,7 @@ class GetWarehouseResponse:
     max_num_clusters: Optional[int] = None
     """Maximum number of clusters that the autoscaler will create to handle concurrent queries.
     
-    Supported values: - Must be >= min_num_clusters - Must be <= 30.
+    Supported values: - Must be >= min_num_clusters - Must be <= 40.
     
     Defaults to min_clusters if unset."""
 
@@ -3077,8 +3076,10 @@ class GetWarehouseResponse:
     """ODBC parameters for the SQL warehouse"""
 
     spot_instance_policy: Optional[SpotInstancePolicy] = None
+    """Configurations whether the endpoint should use spot instances."""
 
     state: Optional[State] = None
+    """state of the endpoint"""
 
     tags: Optional[EndpointTags] = None
     """A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS
@@ -3087,6 +3088,8 @@ class GetWarehouseResponse:
     Supported values: - Number of tags < 45."""
 
     warehouse_type: Optional[GetWarehouseResponseWarehouseType] = None
+    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
+    and also set the field `enable_serverless_compute` to `true`."""
 
     def as_dict(self) -> dict:
         """Serializes the GetWarehouseResponse into a dictionary suitable for use as a JSON request body."""
@@ -3206,8 +3209,6 @@ class GetWarehouseResponse:
 
 
 class GetWarehouseResponseWarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`."""
 
     CLASSIC = "CLASSIC"
     PRO = "PRO"
@@ -3226,6 +3227,9 @@ class GetWorkspaceWarehouseConfigResponse:
     """Spark confs for external hive metastore configuration JSON serialized size must be less than <=
     512K"""
 
+    enable_serverless_compute: Optional[bool] = None
+    """Enable Serverless compute for SQL warehouses"""
+
     enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None
     """List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
     CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
@@ -3240,7 +3244,8 @@ class GetWorkspaceWarehouseConfigResponse:
     """GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage"""
 
     instance_profile_arn: Optional[str] = None
-    """AWS Only: Instance profile used to pass IAM role to the cluster"""
+    """AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This
+    configuration is also applied to the workspace's serverless compute for notebooks and jobs."""
 
     security_policy: Optional[GetWorkspaceWarehouseConfigResponseSecurityPolicy] = None
     """Security policy for warehouses"""
@@ -3257,6 +3262,8 @@ class GetWorkspaceWarehouseConfigResponse:
             body["config_param"] = self.config_param.as_dict()
         if self.data_access_config:
             body["data_access_config"] = [v.as_dict() for v in self.data_access_config]
+        if self.enable_serverless_compute is not None:
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
             body["enabled_warehouse_types"] = [v.as_dict() for v in self.enabled_warehouse_types]
         if self.global_param:
@@ -3280,6 +3287,8 @@ class GetWorkspaceWarehouseConfigResponse:
             body["config_param"] = self.config_param
         if self.data_access_config:
             body["data_access_config"] = self.data_access_config
+        if self.enable_serverless_compute is not None:
+            body["enable_serverless_compute"] = self.enable_serverless_compute
         if self.enabled_warehouse_types:
             body["enabled_warehouse_types"] = self.enabled_warehouse_types
         if self.global_param:
@@ -3301,6 +3310,7 @@ class GetWorkspaceWarehouseConfigResponse:
             channel=_from_dict(d, "channel", Channel),
             config_param=_from_dict(d, "config_param", RepeatedEndpointConfPairs),
             data_access_config=_repeated_dict(d, "data_access_config", EndpointConfPair),
+            enable_serverless_compute=d.get("enable_serverless_compute", None),
             enabled_warehouse_types=_repeated_dict(d, "enabled_warehouse_types", WarehouseTypePair),
             global_param=_from_dict(d, "global_param", RepeatedEndpointConfPairs),
             google_service_account=d.get("google_service_account", None),
@@ -3311,7 +3321,7 @@ class GetWorkspaceWarehouseConfigResponse:
 
 
 class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
-    """Security policy for warehouses"""
+    """Security policy to be used for warehouses"""
 
     DATA_ACCESS_CONTROL = "DATA_ACCESS_CONTROL"
     NONE = "NONE"
@@ -4264,12 +4274,18 @@ class ListVisualizationsForQueryResponse:
 
 @dataclass
 class ListWarehousesResponse:
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
     warehouses: Optional[List[EndpointInfo]] = None
     """A list of warehouses and their configurations."""
 
     def as_dict(self) -> dict:
         """Serializes the ListWarehousesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.warehouses:
             body["warehouses"] = [v.as_dict() for v in self.warehouses]
         return body
@@ -4277,6 +4293,8 @@ class ListWarehousesResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the ListWarehousesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         if self.warehouses:
             body["warehouses"] = self.warehouses
         return body
@@ -4284,7 +4302,9 @@ class ListWarehousesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListWarehousesResponse:
         """Deserializes the ListWarehousesResponse from a dictionary."""
-        return cls(warehouses=_repeated_dict(d, "warehouses", EndpointInfo))
+        return cls(
+            next_page_token=d.get("next_page_token", None), warehouses=_repeated_dict(d, "warehouses", EndpointInfo)
+        )
 
 
 @dataclass
@@ -5551,6 +5571,12 @@ class RestoreResponse:
 
 @dataclass
 class ResultData:
+    """Contains the result data of a single chunk when using `INLINE` disposition. When using
+    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide URLs to the
+    result data in cloud storage. Exactly one of these alternatives is used. (While the
+    `external_links` array prepares the API to return multiple links in a single response. Currently
+    only a single link is returned.)"""
+
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
     disposition."""
@@ -5567,7 +5593,7 @@ class ResultData:
     next_chunk_index: Optional[int] = None
     """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
     no more chunks. The next chunk can be fetched with a
-    :method:statementexecution/getStatementResultChunkN request."""
+    :method:statementexecution/getstatementresultchunkn request."""
 
     next_chunk_internal_link: Optional[str] = None
     """When fetching, provides a link to fetch the _next_ chunk. If absent, indicates there are no more
@@ -5855,7 +5881,7 @@ class SetResponse:
 
 
 class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
-    """Security policy for warehouses"""
+    """Security policy to be used for warehouses"""
 
     DATA_ACCESS_CONTROL = "DATA_ACCESS_CONTROL"
     NONE = "NONE"
@@ -5881,7 +5907,20 @@ class SetWorkspaceWarehouseConfigResponse:
 
 
 class SpotInstancePolicy(Enum):
-    """Configurations whether the warehouse should use spot instances."""
+    """EndpointSpotInstancePolicy configures whether the endpoint should use spot instances.
+
+    The breakdown of how the EndpointSpotInstancePolicy converts to per cloud configurations is:
+
+    +-------+--------------------------------------+--------------------------------+ | Cloud |
+    COST_OPTIMIZED | RELIABILITY_OPTIMIZED |
+    +-------+--------------------------------------+--------------------------------+ | AWS | On
+    Demand Driver with Spot Executors | On Demand Driver and Executors | | AZURE | On Demand Driver
+    and Executors | On Demand Driver and Executors |
+    +-------+--------------------------------------+--------------------------------+
+
+    While including "spot" in the enum name may limit the the future extensibility of this field
+    because it limits this enum to denoting "spot or not", this is the field that PM recommends
+    after discussion with customers per SC-48783."""
 
     COST_OPTIMIZED = "COST_OPTIMIZED"
     POLICY_UNSPECIFIED = "POLICY_UNSPECIFIED"
@@ -5907,7 +5946,7 @@ class StartWarehouseResponse:
 
 
 class State(Enum):
-    """State of the warehouse"""
+    """* State of a warehouse."""
 
     DELETED = "DELETED"
     DELETING = "DELETING"
@@ -6011,11 +6050,6 @@ class StatementResponse:
 
 
 class StatementState(Enum):
-    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
-    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
-    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
-    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
-    execution successful, and statement closed; result no longer available for fetch"""
 
     CANCELED = "CANCELED"
     CLOSED = "CLOSED"
@@ -6032,6 +6066,11 @@ class StatementStatus:
     error: Optional[ServiceError] = None
 
     state: Optional[StatementState] = None
+    """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
+    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
+    failed; reason for failure described in accompanying error message - `CANCELED`: user canceled;
+    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
+    execution successful, and statement closed; result no longer available for fetch"""
 
     def as_dict(self) -> dict:
         """Serializes the StatementStatus into a dictionary suitable for use as a JSON request body."""
@@ -6058,12 +6097,10 @@ class StatementStatus:
 
 
 class Status(Enum):
-    """Health status of the warehouse."""
 
     DEGRADED = "DEGRADED"
     FAILED = "FAILED"
     HEALTHY = "HEALTHY"
-    STATUS_UNSPECIFIED = "STATUS_UNSPECIFIED"
 
 
 @dataclass
@@ -6214,20 +6251,35 @@ class TerminationReason:
 
 
 class TerminationReasonCode(Enum):
-    """status code indicating why the cluster was terminated"""
+    """The status code indicating why the cluster was terminated"""
 
     ABUSE_DETECTED = "ABUSE_DETECTED"
+    ACCESS_TOKEN_FAILURE = "ACCESS_TOKEN_FAILURE"
+    ALLOCATION_TIMEOUT = "ALLOCATION_TIMEOUT"
+    ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY = "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY"
+    ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS = "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS"
+    ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS"
+    ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS = "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS"
+    ALLOCATION_TIMEOUT_NO_READY_CLUSTERS = "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS"
+    ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS = "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS"
+    ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS = "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS"
     ATTACH_PROJECT_FAILURE = "ATTACH_PROJECT_FAILURE"
     AWS_AUTHORIZATION_FAILURE = "AWS_AUTHORIZATION_FAILURE"
+    AWS_INACCESSIBLE_KMS_KEY_FAILURE = "AWS_INACCESSIBLE_KMS_KEY_FAILURE"
+    AWS_INSTANCE_PROFILE_UPDATE_FAILURE = "AWS_INSTANCE_PROFILE_UPDATE_FAILURE"
     AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE = "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE"
     AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE = "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE"
+    AWS_INVALID_KEY_PAIR = "AWS_INVALID_KEY_PAIR"
+    AWS_INVALID_KMS_KEY_STATE = "AWS_INVALID_KMS_KEY_STATE"
     AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE = "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE"
     AWS_REQUEST_LIMIT_EXCEEDED = "AWS_REQUEST_LIMIT_EXCEEDED"
+    AWS_RESOURCE_QUOTA_EXCEEDED = "AWS_RESOURCE_QUOTA_EXCEEDED"
     AWS_UNSUPPORTED_FAILURE = "AWS_UNSUPPORTED_FAILURE"
     AZURE_BYOK_KEY_PERMISSION_FAILURE = "AZURE_BYOK_KEY_PERMISSION_FAILURE"
     AZURE_EPHEMERAL_DISK_FAILURE = "AZURE_EPHEMERAL_DISK_FAILURE"
     AZURE_INVALID_DEPLOYMENT_TEMPLATE = "AZURE_INVALID_DEPLOYMENT_TEMPLATE"
     AZURE_OPERATION_NOT_ALLOWED_EXCEPTION = "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION"
+    AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE = "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE"
     AZURE_QUOTA_EXCEEDED_EXCEPTION = "AZURE_QUOTA_EXCEEDED_EXCEPTION"
     AZURE_RESOURCE_MANAGER_THROTTLING = "AZURE_RESOURCE_MANAGER_THROTTLING"
     AZURE_RESOURCE_PROVIDER_THROTTLING = "AZURE_RESOURCE_PROVIDER_THROTTLING"
@@ -6236,65 +6288,150 @@ class TerminationReasonCode(Enum):
     AZURE_VNET_CONFIGURATION_FAILURE = "AZURE_VNET_CONFIGURATION_FAILURE"
     BOOTSTRAP_TIMEOUT = "BOOTSTRAP_TIMEOUT"
     BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION = "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION"
+    BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG = "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG"
+    BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED = "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED"
+    BUDGET_POLICY_RESOLUTION_FAILURE = "BUDGET_POLICY_RESOLUTION_FAILURE"
+    CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED = "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED"
+    CLOUD_ACCOUNT_SETUP_FAILURE = "CLOUD_ACCOUNT_SETUP_FAILURE"
+    CLOUD_OPERATION_CANCELLED = "CLOUD_OPERATION_CANCELLED"
     CLOUD_PROVIDER_DISK_SETUP_FAILURE = "CLOUD_PROVIDER_DISK_SETUP_FAILURE"
+    CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED = "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED"
     CLOUD_PROVIDER_LAUNCH_FAILURE = "CLOUD_PROVIDER_LAUNCH_FAILURE"
+    CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG = "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG"
     CLOUD_PROVIDER_RESOURCE_STOCKOUT = "CLOUD_PROVIDER_RESOURCE_STOCKOUT"
+    CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG = "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG"
     CLOUD_PROVIDER_SHUTDOWN = "CLOUD_PROVIDER_SHUTDOWN"
+    CLUSTER_OPERATION_THROTTLED = "CLUSTER_OPERATION_THROTTLED"
+    CLUSTER_OPERATION_TIMEOUT = "CLUSTER_OPERATION_TIMEOUT"
     COMMUNICATION_LOST = "COMMUNICATION_LOST"
     CONTAINER_LAUNCH_FAILURE = "CONTAINER_LAUNCH_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
+    CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
+    DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
+    DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
+    DNS_RESOLUTION_ERROR = "DNS_RESOLUTION_ERROR"
+    DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
+    DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
+    DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
+    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
+    DRIVER_EVICTION = "DRIVER_EVICTION"
+    DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
+    DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
+    DRIVER_OUT_OF_DISK = "DRIVER_OUT_OF_DISK"
+    DRIVER_OUT_OF_MEMORY = "DRIVER_OUT_OF_MEMORY"
+    DRIVER_POD_CREATION_FAILURE = "DRIVER_POD_CREATION_FAILURE"
+    DRIVER_UNEXPECTED_FAILURE = "DRIVER_UNEXPECTED_FAILURE"
+    DRIVER_UNHEALTHY = "DRIVER_UNHEALTHY"
     DRIVER_UNREACHABLE = "DRIVER_UNREACHABLE"
     DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE"
+    DYNAMIC_SPARK_CONF_SIZE_EXCEEDED = "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED"
+    EOS_SPARK_IMAGE = "EOS_SPARK_IMAGE"
     EXECUTION_COMPONENT_UNHEALTHY = "EXECUTION_COMPONENT_UNHEALTHY"
+    EXECUTOR_POD_UNSCHEDULED = "EXECUTOR_POD_UNSCHEDULED"
+    GCP_API_RATE_QUOTA_EXCEEDED = "GCP_API_RATE_QUOTA_EXCEEDED"
+    GCP_DENIED_BY_ORG_POLICY = "GCP_DENIED_BY_ORG_POLICY"
+    GCP_FORBIDDEN = "GCP_FORBIDDEN"
+    GCP_IAM_TIMEOUT = "GCP_IAM_TIMEOUT"
+    GCP_INACCESSIBLE_KMS_KEY_FAILURE = "GCP_INACCESSIBLE_KMS_KEY_FAILURE"
+    GCP_INSUFFICIENT_CAPACITY = "GCP_INSUFFICIENT_CAPACITY"
+    GCP_IP_SPACE_EXHAUSTED = "GCP_IP_SPACE_EXHAUSTED"
+    GCP_KMS_KEY_PERMISSION_DENIED = "GCP_KMS_KEY_PERMISSION_DENIED"
+    GCP_NOT_FOUND = "GCP_NOT_FOUND"
     GCP_QUOTA_EXCEEDED = "GCP_QUOTA_EXCEEDED"
+    GCP_RESOURCE_QUOTA_EXCEEDED = "GCP_RESOURCE_QUOTA_EXCEEDED"
+    GCP_SERVICE_ACCOUNT_ACCESS_DENIED = "GCP_SERVICE_ACCOUNT_ACCESS_DENIED"
     GCP_SERVICE_ACCOUNT_DELETED = "GCP_SERVICE_ACCOUNT_DELETED"
+    GCP_SERVICE_ACCOUNT_NOT_FOUND = "GCP_SERVICE_ACCOUNT_NOT_FOUND"
+    GCP_SUBNET_NOT_READY = "GCP_SUBNET_NOT_READY"
+    GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED = "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED"
+    GKE_BASED_CLUSTER_TERMINATION = "GKE_BASED_CLUSTER_TERMINATION"
     GLOBAL_INIT_SCRIPT_FAILURE = "GLOBAL_INIT_SCRIPT_FAILURE"
     HIVE_METASTORE_PROVISIONING_FAILURE = "HIVE_METASTORE_PROVISIONING_FAILURE"
     IMAGE_PULL_PERMISSION_DENIED = "IMAGE_PULL_PERMISSION_DENIED"
     INACTIVITY = "INACTIVITY"
+    INIT_CONTAINER_NOT_FINISHED = "INIT_CONTAINER_NOT_FINISHED"
     INIT_SCRIPT_FAILURE = "INIT_SCRIPT_FAILURE"
     INSTANCE_POOL_CLUSTER_FAILURE = "INSTANCE_POOL_CLUSTER_FAILURE"
+    INSTANCE_POOL_MAX_CAPACITY_REACHED = "INSTANCE_POOL_MAX_CAPACITY_REACHED"
+    INSTANCE_POOL_NOT_FOUND = "INSTANCE_POOL_NOT_FOUND"
     INSTANCE_UNREACHABLE = "INSTANCE_UNREACHABLE"
+    INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG = "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG"
+    INTERNAL_CAPACITY_FAILURE = "INTERNAL_CAPACITY_FAILURE"
     INTERNAL_ERROR = "INTERNAL_ERROR"
     INVALID_ARGUMENT = "INVALID_ARGUMENT"
+    INVALID_AWS_PARAMETER = "INVALID_AWS_PARAMETER"
+    INVALID_INSTANCE_PLACEMENT_PROTOCOL = "INVALID_INSTANCE_PLACEMENT_PROTOCOL"
     INVALID_SPARK_IMAGE = "INVALID_SPARK_IMAGE"
+    INVALID_WORKER_IMAGE_FAILURE = "INVALID_WORKER_IMAGE_FAILURE"
+    IN_PENALTY_BOX = "IN_PENALTY_BOX"
     IP_EXHAUSTION_FAILURE = "IP_EXHAUSTION_FAILURE"
     JOB_FINISHED = "JOB_FINISHED"
+    K8S_ACTIVE_POD_QUOTA_EXCEEDED = "K8S_ACTIVE_POD_QUOTA_EXCEEDED"
     K8S_AUTOSCALING_FAILURE = "K8S_AUTOSCALING_FAILURE"
     K8S_DBR_CLUSTER_LAUNCH_TIMEOUT = "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT"
+    LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
+    MAINTENANCE_MODE = "MAINTENANCE_MODE"
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
+    NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
+    NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
+    NETWORK_CHECK_DNS_SERVER_FAILURE = "NETWORK_CHECK_DNS_SERVER_FAILURE"
+    NETWORK_CHECK_METADATA_ENDPOINT_FAILURE = "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE"
+    NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE = "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE"
+    NETWORK_CHECK_NIC_FAILURE = "NETWORK_CHECK_NIC_FAILURE"
+    NETWORK_CHECK_STORAGE_FAILURE = "NETWORK_CHECK_STORAGE_FAILURE"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
+    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
+    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
+    NO_MATCHED_K8S = "NO_MATCHED_K8S"
+    NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
     NPIP_TUNNEL_TOKEN_FAILURE = "NPIP_TUNNEL_TOKEN_FAILURE"
+    POD_ASSIGNMENT_FAILURE = "POD_ASSIGNMENT_FAILURE"
+    POD_SCHEDULING_FAILURE = "POD_SCHEDULING_FAILURE"
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
+    RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
+    SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
+    SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
+    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
+    SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
     SKIPPED_SLOW_NODES = "SKIPPED_SLOW_NODES"
     SLOW_IMAGE_DOWNLOAD = "SLOW_IMAGE_DOWNLOAD"
     SPARK_ERROR = "SPARK_ERROR"
     SPARK_IMAGE_DOWNLOAD_FAILURE = "SPARK_IMAGE_DOWNLOAD_FAILURE"
+    SPARK_IMAGE_DOWNLOAD_THROTTLED = "SPARK_IMAGE_DOWNLOAD_THROTTLED"
+    SPARK_IMAGE_NOT_FOUND = "SPARK_IMAGE_NOT_FOUND"
     SPARK_STARTUP_FAILURE = "SPARK_STARTUP_FAILURE"
     SPOT_INSTANCE_TERMINATION = "SPOT_INSTANCE_TERMINATION"
+    SSH_BOOTSTRAP_FAILURE = "SSH_BOOTSTRAP_FAILURE"
     STORAGE_DOWNLOAD_FAILURE = "STORAGE_DOWNLOAD_FAILURE"
+    STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG = "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG"
+    STORAGE_DOWNLOAD_FAILURE_SLOW = "STORAGE_DOWNLOAD_FAILURE_SLOW"
+    STORAGE_DOWNLOAD_FAILURE_THROTTLED = "STORAGE_DOWNLOAD_FAILURE_THROTTLED"
     STS_CLIENT_SETUP_FAILURE = "STS_CLIENT_SETUP_FAILURE"
     SUBNET_EXHAUSTED_FAILURE = "SUBNET_EXHAUSTED_FAILURE"
     TEMPORARILY_UNAVAILABLE = "TEMPORARILY_UNAVAILABLE"
     TRIAL_EXPIRED = "TRIAL_EXPIRED"
     UNEXPECTED_LAUNCH_FAILURE = "UNEXPECTED_LAUNCH_FAILURE"
+    UNEXPECTED_POD_RECREATION = "UNEXPECTED_POD_RECREATION"
     UNKNOWN = "UNKNOWN"
     UNSUPPORTED_INSTANCE_TYPE = "UNSUPPORTED_INSTANCE_TYPE"
     UPDATE_INSTANCE_PROFILE_FAILURE = "UPDATE_INSTANCE_PROFILE_FAILURE"
+    USAGE_POLICY_ENTITLEMENT_DENIED = "USAGE_POLICY_ENTITLEMENT_DENIED"
+    USER_INITIATED_VM_TERMINATION = "USER_INITIATED_VM_TERMINATION"
     USER_REQUEST = "USER_REQUEST"
     WORKER_SETUP_FAILURE = "WORKER_SETUP_FAILURE"
     WORKSPACE_CANCELLED_ERROR = "WORKSPACE_CANCELLED_ERROR"
     WORKSPACE_CONFIGURATION_ERROR = "WORKSPACE_CONFIGURATION_ERROR"
+    WORKSPACE_UPDATE = "WORKSPACE_UPDATE"
 
 
 class TerminationReasonType(Enum):
@@ -7008,12 +7145,14 @@ class WarehousePermissionsDescription:
 
 @dataclass
 class WarehouseTypePair:
+    """* Configuration values to enable or disable the access to specific warehouse types in the
+    workspace."""
+
     enabled: Optional[bool] = None
     """If set to false the specific warehouse type will not be be allowed as a value for warehouse_type
     in CreateWarehouse and EditWarehouse"""
 
     warehouse_type: Optional[WarehouseTypePairWarehouseType] = None
-    """Warehouse type: `PRO` or `CLASSIC`."""
 
     def as_dict(self) -> dict:
         """Serializes the WarehouseTypePair into a dictionary suitable for use as a JSON request body."""
@@ -7042,7 +7181,6 @@ class WarehouseTypePair:
 
 
 class WarehouseTypePairWarehouseType(Enum):
-    """Warehouse type: `PRO` or `CLASSIC`."""
 
     CLASSIC = "CLASSIC"
     PRO = "PRO"
@@ -8819,17 +8957,17 @@ class StatementExecutionAPI:
     the statement execution has not yet finished. This can be set to either `CONTINUE`, to fallback to
     asynchronous mode, or it can be set to `CANCEL`, which cancels the statement.
 
-    In summary: - Synchronous mode - `wait_timeout=30s` and `on_wait_timeout=CANCEL` - The call waits up to 30
-    seconds; if the statement execution finishes within this time, the result data is returned directly in the
-    response. If the execution takes longer than 30 seconds, the execution is canceled and the call returns
-    with a `CANCELED` state. - Asynchronous mode - `wait_timeout=0s` (`on_wait_timeout` is ignored) - The call
-    doesn't wait for the statement to finish but returns directly with a statement ID. The status of the
-    statement execution can be polled by issuing :method:statementexecution/getStatement with the statement
-    ID. Once the execution has succeeded, this call also returns the result and metadata in the response. -
-    Hybrid mode (default) - `wait_timeout=10s` and `on_wait_timeout=CONTINUE` - The call waits for up to 10
-    seconds; if the statement execution finishes within this time, the result data is returned directly in the
-    response. If the execution takes longer than 10 seconds, a statement ID is returned. The statement ID can
-    be used to fetch status and results in the same way as in the asynchronous mode.
+    In summary: - **Synchronous mode** (`wait_timeout=30s` and `on_wait_timeout=CANCEL`): The call waits up to
+    30 seconds; if the statement execution finishes within this time, the result data is returned directly in
+    the response. If the execution takes longer than 30 seconds, the execution is canceled and the call
+    returns with a `CANCELED` state. - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout` is
+    ignored): The call doesn't wait for the statement to finish but returns directly with a statement ID. The
+    status of the statement execution can be polled by issuing :method:statementexecution/getStatement with
+    the statement ID. Once the execution has succeeded, this call also returns the result and metadata in the
+    response. - **[Default] Hybrid mode** (`wait_timeout=10s` and `on_wait_timeout=CONTINUE`): The call waits
+    for up to 10 seconds; if the statement execution finishes within this time, the result data is returned
+    directly in the response. If the execution takes longer than 10 seconds, a statement ID is returned. The
+    statement ID can be used to fetch status and results in the same way as in the asynchronous mode.
 
     Depending on the size, the result can be split into multiple chunks. If the statement execution is
     successful, the statement response contains a manifest and the first chunk of the result. The manifest
@@ -8884,7 +9022,7 @@ class StatementExecutionAPI:
 
     def cancel_execution(self, statement_id: str):
         """Requests that an executing statement be canceled. Callers must poll for status to see the terminal
-        state.
+        state. Cancel response is empty; receiving response indicates successful receipt.
 
         :param statement_id: str
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -8912,7 +9050,52 @@ class StatementExecutionAPI:
         schema: Optional[str] = None,
         wait_timeout: Optional[str] = None,
     ) -> StatementResponse:
-        """Execute a SQL statement
+        """Execute a SQL statement and optionally await its results for a specified time.
+
+        **Use case: small result sets with INLINE + JSON_ARRAY**
+
+        For flows that generate small and predictable result sets (<= 25 MiB), `INLINE` responses of
+        `JSON_ARRAY` result data are typically the simplest way to execute and fetch result data.
+
+        **Use case: large result sets with EXTERNAL_LINKS**
+
+        Using `EXTERNAL_LINKS` to fetch result data allows you to fetch large result sets efficiently. The
+        main differences from using `INLINE` disposition are that the result data is accessed with URLs, and
+        that there are 3 supported formats: `JSON_ARRAY`, `ARROW_STREAM` and `CSV` compared to only
+        `JSON_ARRAY` with `INLINE`.
+
+        ** URLs**
+
+        External links point to data stored within your workspace's internal storage, in the form of a URL.
+        The URLs are valid for only a short period, <= 15 minutes. Alongside each `external_link` is an
+        expiration field indicating the time at which the URL is no longer valid. In `EXTERNAL_LINKS` mode,
+        chunks can be resolved and fetched multiple times and in parallel.
+
+        ----
+
+        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        `EXTERNAL_LINKS` disposition.**
+
+        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        download the results directly from . As a short-lived is embedded in this URL, you should protect the
+        URL.
+
+        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        header in the download requests.
+
+        The `EXTERNAL_LINKS` disposition can be disabled upon request by creating a support case.
+
+        See also [Security best practices].
+
+        ----
+
+        StatementResponse contains `statement_id` and `status`; other fields might be absent or present
+        depending on context. If the SQL warehouse fails to execute the provided statement, a 200 response is
+        returned with `status.state` set to `FAILED` (in contrast to a failure when accepting the request,
+        which results in a non-200 response). Details of the error can be found at `status.error` in case of
+        execution failures.
+
+        [Security best practices]: https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices
 
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The
@@ -8926,12 +9109,32 @@ class StatementExecutionAPI:
           representations and might not match the final size in the requested `format`. If the result was
           truncated due to the byte limit, then `truncated` in the response is set to `true`. When using
           `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not
-          explcitly set.
+          explicitly set.
         :param catalog: str (optional)
           Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
 
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
+          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
+
+          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
+          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
+          MiB, that statement execution is aborted, and no result set will be available.
+
+          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
+          might not match the sizes visible in JSON responses.
+
+          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
+          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
+          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
+          resulting links have two important properties:
+
+          1. They point to resources _external_ to the Databricks compute; therefore any associated
+          authentication information (typically a personal access token, OAuth token, or similar) _must be
+          removed_ when fetching from these links.
+
+          2. These are URLs with a specific expiration, indicated in the response. The behavior when
+          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.
@@ -8982,13 +9185,13 @@ class StatementExecutionAPI:
 
           For example, the following statement contains two parameters, `my_name` and `my_date`:
 
-          SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+          ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
 
           The parameters can be passed in the request body as follows:
 
-          { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
           "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-          "2020-01-01", "type": "DATE" } ] }
+          "2020-01-01", "type": "DATE" } ] } `
 
           Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL
           Statement Execution API.
@@ -9049,15 +9252,16 @@ class StatementExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/sql/statements/", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/sql/statements", body=body, headers=headers)
         return StatementResponse.from_dict(res)
 
     def get_statement(self, statement_id: str) -> StatementResponse:
-        """This request can be used to poll for the statement's status. When the `status.state` field is
-        `SUCCEEDED` it will also return the result manifest and the first chunk of the result data. When the
-        statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
-        state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
-        further calls will receive an HTTP 404 response.
+        """This request can be used to poll for the statement's status. StatementResponse contains `statement_id`
+        and `status`; other fields might be absent or present depending on context. When the `status.state`
+        field is `SUCCEEDED` it will also return the result manifest and the first chunk of the result data.
+        When the statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200
+        with the state set. After at least 12 hours in terminal state, the statement is removed from the
+        warehouse and further calls will receive an HTTP 404 response.
 
         **NOTE** This call currently might take up to 5 seconds to get the latest status and result.
 
@@ -9082,6 +9286,7 @@ class StatementExecutionAPI:
         can be used to fetch subsequent chunks. The response structure is identical to the nested `result`
         element described in the :method:statementexecution/getStatement request, and similarly includes the
         `next_chunk_index` and `next_chunk_internal_link` fields for simple iteration through the result set.
+        Depending on `disposition`, the response returns chunks of data either inline, or as links.
 
         :param statement_id: str
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -9192,8 +9397,7 @@ class WarehousesAPI:
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
 
-          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
-          non-serverless warehouses - 0 indicates no autostop.
+          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -9218,7 +9422,7 @@ class WarehousesAPI:
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          Supported values: - Must be >= min_num_clusters - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -9234,12 +9438,15 @@ class WarehousesAPI:
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -9378,13 +9585,13 @@ class WarehousesAPI:
 
           Defaults to false.
         :param enable_serverless_compute: bool (optional)
-          Configures whether the warehouse should use serverless compute.
+          Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
           Deprecated. Instance profile used to pass IAM role to the cluster
         :param max_num_clusters: int (optional)
           Maximum number of clusters that the autoscaler will create to handle concurrent queries.
 
-          Supported values: - Must be >= min_num_clusters - Must be <= 30.
+          Supported values: - Must be >= min_num_clusters - Must be <= 40.
 
           Defaults to min_clusters if unset.
         :param min_num_clusters: int (optional)
@@ -9400,12 +9607,15 @@ class WarehousesAPI:
 
           Supported values: - Must be unique within an org. - Must be less than 100 characters.
         :param spot_instance_policy: :class:`SpotInstancePolicy` (optional)
+          Configurations whether the endpoint should use spot instances.
         :param tags: :class:`EndpointTags` (optional)
           A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)
           associated with this SQL warehouse.
 
           Supported values: - Number of tags < 45.
         :param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)
+          Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and
+          also set the field `enable_serverless_compute` to `true`.
 
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
@@ -9444,7 +9654,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=EditWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def edit_and_wait(
         self,
@@ -9545,26 +9755,45 @@ class WarehousesAPI:
         res = self._api.do("GET", "/api/2.0/sql/config/warehouses", headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
-    def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
+    def list(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, run_as_user_id: Optional[int] = None
+    ) -> Iterator[EndpointInfo]:
         """Lists all SQL warehouses that a user has access to.
 
+        :param page_size: int (optional)
+          The max number of warehouses to return.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the
+          subsequent page; otherwise the first will be retrieved.
+
+          When paginating, all other parameters provided to `ListWarehouses` must match the call that provided
+          the page token.
         :param run_as_user_id: int (optional)
-          Service Principal which will be used to fetch the list of warehouses. If not specified, the user
-          from the session header is used.
+          Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway
+          will use the user from the session header.
 
         :returns: Iterator over :class:`EndpointInfo`
         """
 
         query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
         if run_as_user_id is not None:
             query["run_as_user_id"] = run_as_user_id
         headers = {
             "Accept": "application/json",
         }
 
-        json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
-        parsed = ListWarehousesResponse.from_dict(json).warehouses
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
+            if "warehouses" in json:
+                for v in json["warehouses"]:
+                    yield EndpointInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
 
     def set_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
@@ -9595,6 +9824,7 @@ class WarehousesAPI:
         channel: Optional[Channel] = None,
         config_param: Optional[RepeatedEndpointConfPairs] = None,
         data_access_config: Optional[List[EndpointConfPair]] = None,
+        enable_serverless_compute: Optional[bool] = None,
         enabled_warehouse_types: Optional[List[WarehouseTypePair]] = None,
         global_param: Optional[RepeatedEndpointConfPairs] = None,
         google_service_account: Optional[str] = None,
@@ -9610,6 +9840,8 @@ class WarehousesAPI:
           Deprecated: Use sql_configuration_parameters
         :param data_access_config: List[:class:`EndpointConfPair`] (optional)
           Spark confs for external hive metastore configuration JSON serialized size must be less than <= 512K
+        :param enable_serverless_compute: bool (optional)
+          Enable Serverless compute for SQL warehouses
         :param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)
           List of Warehouse Types allowed in this workspace (limits allowed value of the type field in
           CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be
@@ -9621,7 +9853,8 @@ class WarehousesAPI:
         :param google_service_account: str (optional)
           GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage
         :param instance_profile_arn: str (optional)
-          AWS Only: Instance profile used to pass IAM role to the cluster
+          AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is
+          also applied to the workspace's serverless compute for notebooks and jobs.
         :param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)
           Security policy for warehouses
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
@@ -9636,6 +9869,8 @@ class WarehousesAPI:
             body["config_param"] = config_param.as_dict()
         if data_access_config is not None:
             body["data_access_config"] = [v.as_dict() for v in data_access_config]
+        if enable_serverless_compute is not None:
+            body["enable_serverless_compute"] = enable_serverless_compute
         if enabled_warehouse_types is not None:
             body["enabled_warehouse_types"] = [v.as_dict() for v in enabled_warehouse_types]
         if global_param is not None:
@@ -9671,7 +9906,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
-        return Wait(self.wait_get_warehouse_running, response=StartWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_running, id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -9692,7 +9927,7 @@ class WarehousesAPI:
         }
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
-        return Wait(self.wait_get_warehouse_stopped, response=StopWarehouseResponse.from_dict(op_response), id=id)
+        return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)

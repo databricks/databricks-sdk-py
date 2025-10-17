@@ -8,15 +8,55 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AccountsCreateMetastoreAssignmentResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsCreateMetastoreResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsCreateStorageCredentialInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsDeleteMetastoreAssignmentResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsDeleteMetastoreResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsDeleteStorageCredentialResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsGetMetastoreResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsListMetastoresResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: AccountsMetastoreAssignment
    :members:
    :undoc-members:
 
-.. autoclass:: AccountsMetastoreInfo
+.. autoclass:: AccountsStorageCredentialInfo
    :members:
    :undoc-members:
 
-.. autoclass:: AccountsStorageCredentialInfo
+.. autoclass:: AccountsUpdateMetastoreAssignmentResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsUpdateMetastoreResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AccountsUpdateStorageCredentialResponse
    :members:
    :undoc-members:
 
@@ -239,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 37
+   Next Id: 38
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -264,6 +304,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
+
+   .. py:attribute:: PALANTIR
+      :value: "PALANTIR"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -313,20 +356,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateAccountsMetastore
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateAccountsStorageCredential
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateFunction
    :members:
    :undoc-members:
 
 .. py:class:: CreateFunctionParameterStyle
 
-   Function parameter style. **S** is the value for SQL.
-
    .. py:attribute:: S
       :value: "S"
 
 .. py:class:: CreateFunctionRoutineBody
-
-   Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the __external_language__ field, and the __return_params__ of the function cannot be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be **NO_SQL**.
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"
@@ -336,14 +383,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreateFunctionSecurityType
 
-   The security type of the function.
-
    .. py:attribute:: DEFINER
       :value: "DEFINER"
 
 .. py:class:: CreateFunctionSqlDataAccess
-
-   Function SQL data access.
 
    .. py:attribute:: CONTAINS_SQL
       :value: "CONTAINS_SQL"
@@ -354,23 +397,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READS_SQL_DATA
       :value: "READS_SQL_DATA"
 
-.. autoclass:: CreateMetastore
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateMetastoreAssignment
    :members:
    :undoc-members:
 
 .. autoclass:: CreateRequestExternalLineage
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateStorageCredential
    :members:
    :undoc-members:
 
@@ -622,8 +653,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EffectivePredictiveOptimizationFlagInheritedFromType
 
-   The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank.
-
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
@@ -743,14 +772,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionInfoParameterStyle
 
-   Function parameter style. **S** is the value for SQL.
-
    .. py:attribute:: S
       :value: "S"
 
 .. py:class:: FunctionInfoRoutineBody
-
-   Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the __external_language__ field, and the __return_params__ of the function cannot be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be **NO_SQL**.
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"
@@ -760,14 +785,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionInfoSecurityType
 
-   The security type of the function.
-
    .. py:attribute:: DEFINER
       :value: "DEFINER"
 
 .. py:class:: FunctionInfoSqlDataAccess
-
-   Function SQL data access.
 
    .. py:attribute:: CONTAINS_SQL
       :value: "CONTAINS_SQL"
@@ -788,14 +809,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionParameterMode
 
-   The mode of the function parameter.
-
    .. py:attribute:: IN
       :value: "IN"
 
 .. py:class:: FunctionParameterType
-
-   The type of function parameter.
 
    .. py:attribute:: COLUMN
       :value: "COLUMN"
@@ -972,10 +989,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ModelVersionInfoStatus
 
-   Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served.
-
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"
+
+   .. py:attribute:: MODEL_VERSION_STATUS_UNKNOWN
+      :value: "MODEL_VERSION_STATUS_UNKNOWN"
 
    .. py:attribute:: PENDING_REGISTRATION
       :value: "PENDING_REGISTRATION"
@@ -1351,6 +1369,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXECUTE_CLEAN_ROOM_TASK
       :value: "EXECUTE_CLEAN_ROOM_TASK"
 
+   .. py:attribute:: EXTERNAL_USE_SCHEMA
+      :value: "EXTERNAL_USE_SCHEMA"
+
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
@@ -1480,6 +1501,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
+   Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266
+
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
 
@@ -1506,6 +1529,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL"
+
+   .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING
+      :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING"
 
    .. py:attribute:: TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL
       :value: "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL"
@@ -1579,6 +1605,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
 
+   .. py:attribute:: TABLE_FOREIGN_PALANTIR
+      :value: "TABLE_FOREIGN_PALANTIR"
+
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"
 
@@ -1629,6 +1658,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_METRIC_VIEW
       :value: "TABLE_METRIC_VIEW"
+
+   .. py:attribute:: TABLE_METRIC_VIEW_DELTASHARING
+      :value: "TABLE_METRIC_VIEW_DELTASHARING"
 
    .. py:attribute:: TABLE_ONLINE_VECTOR_INDEX_DIRECT
       :value: "TABLE_ONLINE_VECTOR_INDEX_DIRECT"
@@ -1819,6 +1851,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SNOWFLAKE
       :value: "SNOWFLAKE"
 
+   .. py:attribute:: STREAM_NATIVE
+      :value: "STREAM_NATIVE"
+
    .. py:attribute:: TABLEAU
       :value: "TABLEAU"
 
@@ -1905,15 +1940,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateAccountsMetastore
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAccountsStorageCredential
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateAssignmentResponse
    :members:
    :undoc-members:
 
 .. autoclass:: UpdateCatalogWorkspaceBindingsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateMetastore
    :members:
    :undoc-members:
 
@@ -1930,10 +1969,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateStorageCredential
    :members:
    :undoc-members:
 
@@ -2003,9 +2038,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: VolumeType
-
-   The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more]
-   [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"

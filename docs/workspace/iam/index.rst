@@ -10,8 +10,8 @@ Manage users, service principals, groups and their permissions in Accounts and W
    access_control
    account_access_control_proxy
    current_user
-   groups
+   groups_v2
    permission_migration
    permissions
-   service_principals
-   users
+   service_principals_v2
+   users_v2

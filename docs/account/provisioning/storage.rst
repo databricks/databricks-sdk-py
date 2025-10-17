@@ -9,14 +9,13 @@
     root storage S3 bucket for storage of non-production DBFS data. A storage configuration encapsulates this
     bucket information, and its ID is used when creating a new workspace.
 
-    .. py:method:: create(storage_configuration_name: str, root_bucket_info: RootBucketInfo) -> StorageConfiguration
+    .. py:method:: create(storage_configuration_name: str, root_bucket_info: RootBucketInfo [, role_arn: Optional[str]]) -> StorageConfiguration
 
 
         Usage:
 
         .. code-block::
 
-            import os
             import time
             
             from databricks.sdk import AccountClient
@@ -26,38 +25,33 @@
             
             storage = a.storage.create(
                 storage_configuration_name=f"sdk-{time.time_ns()}",
-                root_bucket_info=provisioning.RootBucketInfo(bucket_name=os.environ["TEST_ROOT_BUCKET"]),
+                root_bucket_info=provisioning.RootBucketInfo(bucket_name=f"sdk-{time.time_ns()}"),
             )
-            
-            # cleanup
-            a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
 
-        Creates new storage configuration for an account, specified by ID. Uploads a storage configuration
-        object that represents the root AWS S3 bucket in your account. Databricks stores related workspace
-        assets including DBFS, cluster logs, and job results. For the AWS S3 bucket, you need to configure the
-        required bucket policy.
-
-        For information about how to create a new workspace with this API, see [Create a new workspace using
-        the Account API]
-
-        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
+        Creates a Databricks storage configuration for an account.
 
         :param storage_configuration_name: str
           The human-readable name of the storage configuration.
         :param root_bucket_info: :class:`RootBucketInfo`
+          Root S3 bucket information.
+        :param role_arn: str (optional)
+          Optional IAM role that is used to access the workspace catalog which is created during workspace
+          creation for UC by Default. If a storage configuration with this field populated is used to create a
+          workspace, then a workspace catalog is created together with the workspace. The workspace catalog
+          shares the root bucket with internal workspace storage (including DBFS root) but uses a dedicated
+          bucket path prefix.
 
         :returns: :class:`StorageConfiguration`
         
 
-    .. py:method:: delete(storage_configuration_id: str)
+    .. py:method:: delete(storage_configuration_id: str) -> StorageConfiguration
 
         Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
 
         :param storage_configuration_id: str
-          Databricks Account API storage configuration ID.
 
-
+        :returns: :class:`StorageConfiguration`
         
 
     .. py:method:: get(storage_configuration_id: str) -> StorageConfiguration
@@ -84,7 +78,6 @@
         Gets a Databricks storage configuration for an account, both specified by ID.
 
         :param storage_configuration_id: str
-          Databricks Account API storage configuration ID.
 
         :returns: :class:`StorageConfiguration`
         
@@ -102,7 +95,7 @@
             
             configs = a.storage.list()
 
-        Gets a list of all Databricks storage configurations for your account, specified by ID.
+        Lists Databricks storage configurations for an account, specified by ID.
 
 
         :returns: Iterator over :class:`StorageConfiguration`

@@ -93,21 +93,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DefaultDataSecurityModeMessage
-   :members:
-   :undoc-members:
-
-.. py:class:: DefaultDataSecurityModeMessageStatus
-
-   .. py:attribute:: NOT_SET
-      :value: "NOT_SET"
-
-   .. py:attribute:: SINGLE_USER
-      :value: "SINGLE_USER"
-
-   .. py:attribute:: USER_ISOLATION
-      :value: "USER_ISOLATION"
-
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:

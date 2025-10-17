@@ -21,6 +21,7 @@ from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
+from databricks.sdk.service import dataquality as pkg_dataquality
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
@@ -79,6 +80,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
                                                LakeviewEmbeddedAPI)
 from databricks.sdk.service.database import DatabaseAPI
+from databricks.sdk.service.dataquality import DataQualityAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -282,6 +284,7 @@ class WorkspaceClient:
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
+        self._data_quality = pkg_dataquality.DataQualityAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
@@ -539,6 +542,11 @@ class WorkspaceClient:
     def dashboards(self) -> pkg_sql.DashboardsAPI:
         """In general, there is little need to modify dashboards using the API."""
         return self._dashboards
+
+    @property
+    def data_quality(self) -> pkg_dataquality.DataQualityAPI:
+        """Manage the data quality of Unity Catalog objects (currently support `schema` and `table`)."""
+        return self._data_quality
 
     @property
     def data_sources(self) -> pkg_sql.DataSourcesAPI:

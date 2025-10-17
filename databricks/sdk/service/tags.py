@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _repeated_dict
+from databricks.sdk.service._internal import _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 

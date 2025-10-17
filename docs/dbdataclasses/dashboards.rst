@@ -37,6 +37,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenieFeedback
+   :members:
+   :undoc-members:
+
 .. py:class:: GenieFeedbackRating
 
    Feedback rating for Genie messages
@@ -83,6 +87,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieStartConversationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieSuggestedQuestionsAttachment
    :members:
    :undoc-members:
 
@@ -152,6 +160,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DESCRIBE_QUERY_UNEXPECTED_FAILURE
       :value: "DESCRIBE_QUERY_UNEXPECTED_FAILURE"
 
+   .. py:attribute:: EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION
+      :value: "EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION"
+
    .. py:attribute:: FUNCTIONS_NOT_AVAILABLE_EXCEPTION
       :value: "FUNCTIONS_NOT_AVAILABLE_EXCEPTION"
 
@@ -181,6 +192,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ILLEGAL_PARAMETER_DEFINITION_EXCEPTION
       :value: "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
+
+   .. py:attribute:: INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION
+      :value: "INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION"
+
+   .. py:attribute:: INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION
+      :value: "INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION"
+
+   .. py:attribute:: INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION
+      :value: "INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION"
+
+   .. py:attribute:: INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION
+      :value: "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION"
+
+   .. py:attribute:: INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION
+      :value: "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
 
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
@@ -313,6 +339,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SUBMITTED"
 
 .. autoclass:: PublishedDashboard
+   :members:
+   :undoc-members:
+
+.. autoclass:: QueryAttachmentParameter
    :members:
    :undoc-members:
 

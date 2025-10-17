@@ -517,6 +517,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateInferenceEndpointNotificationsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: V1ResponseChoiceElement
    :members:
    :undoc-members:

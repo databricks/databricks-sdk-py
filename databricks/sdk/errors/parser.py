@@ -31,12 +31,15 @@ _error_customizers = [
 ]
 
 
-def _unknown_error(response: requests.Response) -> str:
+def _unknown_error(response: requests.Response, debug_headers: bool = False) -> str:
     """A standard error message that can be shown when an API response cannot be parsed.
 
     This error message includes a link to the issue tracker for the SDK for users to report the issue to us.
+
+    :param response: The response object from the API request.
+    :param debug_headers: Whether to include headers in the request log. Defaults to False to defensively handle cases where request headers might contain sensitive data (e.g. tokens).
     """
-    request_log = RoundTrip(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
+    request_log = RoundTrip(response, debug_headers=debug_headers, debug_truncate_bytes=10 * 1024).generate()
     return (
         "This is likely a bug in the Databricks SDK for Python or the underlying "
         "API. Please report this issue with the following debugging information to the SDK issue tracker at "
@@ -56,11 +59,13 @@ class _Parser:
         self,
         extra_error_parsers: List[_ErrorDeserializer] = [],
         extra_error_customizers: List[_ErrorCustomizer] = [],
+        debug_headers: bool = False,
     ):
         self._error_parsers = _error_deserializers + (extra_error_parsers if extra_error_parsers is not None else [])
         self._error_customizers = _error_customizers + (
             extra_error_customizers if extra_error_customizers is not None else []
         )
+        self._debug_headers = debug_headers
 
     def get_api_error(self, response: requests.Response) -> Optional[DatabricksError]:
         """
@@ -84,7 +89,7 @@ class _Parser:
                     )
             return _error_mapper(
                 response,
-                {"message": "unable to parse response. " + _unknown_error(response)},
+                {"message": "unable to parse response. " + _unknown_error(response, self._debug_headers)},
             )
 
         # Private link failures happen via a redirect to the login page. From a requests-perspective, the request

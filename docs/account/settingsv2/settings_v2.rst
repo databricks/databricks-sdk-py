@@ -8,7 +8,8 @@
 
     .. py:method:: get_public_account_setting(name: str) -> Setting
 
-        Get a setting value at account level
+        Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
+        setting available via public APIs at account level.
 
         :param name: str
 
@@ -17,9 +18,8 @@
 
     .. py:method:: list_account_settings_metadata( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SettingsMetadata]
 
-        List valid setting keys and metadata. These settings are available to referenced via [GET
-        /api/2.1/settings/{name}](#~1api~1account~1settingsv2~1getpublicaccountsetting) and [PATCH
-        /api/2.1/settings/{name}](#~1api~1account~1settingsv2~patchpublicaccountsetting) APIs
+        List valid setting keys and metadata. These settings are available to be referenced via GET
+        :method:settingsv2/getpublicaccountsetting and PATCH :method:settingsv2/patchpublicaccountsetting APIs
 
         :param page_size: int (optional)
           The maximum number of settings to return. The service may return fewer than this value. If
@@ -37,7 +37,8 @@
 
     .. py:method:: patch_public_account_setting(name: str, setting: Setting) -> Setting
 
-        Patch a setting value at account level
+        Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
+        setting available via public APIs at account level.
 
         :param name: str
         :param setting: :class:`Setting`

@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -660,7 +661,8 @@ class ComplianceSecurityProfileSetting:
 
 
 class ComplianceStandard(Enum):
-    """Compliance stardard for SHIELD customers"""
+    """Compliance standard for SHIELD customers. See README.md for how instructions of how to add new
+    standards."""
 
     CANADA_PROTECTED_B = "CANADA_PROTECTED_B"
     CYBER_ESSENTIAL_PLUS = "CYBER_ESSENTIAL_PLUS"
@@ -668,6 +670,7 @@ class ComplianceStandard(Enum):
     FEDRAMP_IL5 = "FEDRAMP_IL5"
     FEDRAMP_MODERATE = "FEDRAMP_MODERATE"
     GERMANY_C5 = "GERMANY_C5"
+    GERMANY_TISAX = "GERMANY_TISAX"
     HIPAA = "HIPAA"
     HITRUST = "HITRUST"
     IRAP_PROTECTED = "IRAP_PROTECTED"

@@ -23,6 +23,32 @@
     .. py:method:: create_and_wait(app: App [, no_compute: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
+    .. py:method:: create_update(app_name: str, update_mask: str [, app: Optional[App]]) -> Wait[AppUpdate]
+
+        Creates an app update and starts the update process. The update process is asynchronous and the status
+        of the update can be checked with the GetAppUpdate method.
+
+        :param app_name: str
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        :param app: :class:`App` (optional)
+
+        :returns:
+          Long-running operation waiter for :class:`AppUpdate`.
+          See :method:wait_get_update_app_succeeded for more details.
+        
+
+    .. py:method:: create_update_and_wait(app_name: str, update_mask: str [, app: Optional[App], timeout: datetime.timedelta = 0:20:00]) -> AppUpdate
+
+
     .. py:method:: delete(name: str) -> App
 
         Deletes an app.
@@ -90,6 +116,16 @@
           The app for which to get or manage permissions.
 
         :returns: :class:`AppPermissions`
+        
+
+    .. py:method:: get_update(app_name: str) -> AppUpdate
+
+        Gets the status of an app update.
+
+        :param app_name: str
+          The name of the app.
+
+        :returns: :class:`AppUpdate`
         
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[App]
@@ -190,3 +226,6 @@
 
 
     .. py:method:: wait_get_deployment_app_succeeded(app_name: str, deployment_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[AppDeployment], None]]) -> AppDeployment
+
+
+    .. py:method:: wait_get_update_app_succeeded(app_name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[AppUpdate], None]]) -> AppUpdate

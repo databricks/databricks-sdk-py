@@ -6,7 +6,7 @@
 
     These APIs manage VPC endpoint configurations for this account.
 
-    .. py:method:: create(vpc_endpoint_name: str [, aws_vpc_endpoint_id: Optional[str], gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo], region: Optional[str]]) -> VpcEndpoint
+    .. py:method:: create( [, aws_vpc_endpoint_id: Optional[str], gcp_vpc_endpoint_info: Optional[GcpVpcEndpointInfo], region: Optional[str], vpc_endpoint_name: Optional[str]]) -> VpcEndpoint
 
 
         Usage:
@@ -42,32 +42,26 @@
         [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
         [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
 
-        :param vpc_endpoint_name: str
-          The human-readable name of the storage configuration.
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
         :param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)
+          The cloud info of this vpc endpoint.
         :param region: str (optional)
-          The AWS region in which this VPC endpoint object exists.
+          The region in which this VPC endpoint object exists.
+        :param vpc_endpoint_name: str (optional)
+          The human-readable name of the storage configuration.
 
         :returns: :class:`VpcEndpoint`
         
 
-    .. py:method:: delete(vpc_endpoint_id: str)
+    .. py:method:: delete(vpc_endpoint_id: str) -> VpcEndpoint
 
-        Deletes a VPC endpoint configuration, which represents an [AWS VPC endpoint] that can communicate
-        privately with Databricks over [AWS PrivateLink].
-
-        Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-
-        [AWS PrivateLink]: https://aws.amazon.com/privatelink
-        [AWS VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that
+        is associated with any workspace.
 
         :param vpc_endpoint_id: str
-          Databricks VPC endpoint ID.
 
-
+        :returns: :class:`VpcEndpoint`
         
 
     .. py:method:: get(vpc_endpoint_id: str) -> VpcEndpoint
@@ -120,11 +114,7 @@
             
             all = a.vpc_endpoints.list()
 
-        Gets a list of all VPC endpoints for an account, specified by ID.
-
-        Before configuring PrivateLink, read the [Databricks article about PrivateLink].
-
-        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        Lists Databricks VPC endpoint configurations for an account.
 
 
         :returns: Iterator over :class:`VpcEndpoint`

@@ -10,13 +10,14 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service import sql
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import sql
 
 # all definitions in this file are in alphabetical order
 
@@ -1153,6 +1154,9 @@ class MessageErrorType(Enum):
     GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION = "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION"
     GENERIC_SQL_EXEC_API_CALL_EXCEPTION = "GENERIC_SQL_EXEC_API_CALL_EXCEPTION"
     ILLEGAL_PARAMETER_DEFINITION_EXCEPTION = "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION"
+    INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION = "INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION"
+    INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION = "INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION"
+    INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION = "INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION"
     INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION = "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION"
     INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
