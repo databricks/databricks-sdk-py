@@ -181,11 +181,7 @@ def _make_dbutils(config: client.Config):
 
 
 def _make_files_client(apiClient: client.ApiClient, config: client.Config):
-    if config.enable_experimental_files_api_client:
-        _LOG.info("Experimental Files API client is enabled")
-        return FilesExt(apiClient, config)
-    else:
-        return FilesAPI(apiClient)
+    return FilesExt(apiClient, config)
 
 
 class WorkspaceClient:

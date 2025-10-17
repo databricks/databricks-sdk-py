@@ -796,6 +796,9 @@ class FilesExt(files.FilesAPI):
 
         :returns: :class:`DownloadResponse`
         """
+        if self._config.disable_experimental_files_api_client:
+            _LOG.info("Disable experimental files API client, will use the original download method.")
+            return super().download(file_path)
 
         initial_response: DownloadResponse = self._open_download_stream(
             file_path=file_path, start_byte_offset=0, if_unmodified_since_timestamp=None
@@ -829,6 +832,11 @@ class FilesExt(files.FilesAPI):
 
         :returns: :class:`DownloadFileResult`
         """
+        if self._config.disable_experimental_files_api_client:
+            raise NotImplementedError(
+                "Experimental files API features are disabled, download_to is not supported. Please use download instead."
+            )
+
         # The existence of the target file is checked before starting the download. This is a best-effort check
         # to avoid overwriting an existing file. However, there is nothing preventing a file from being created
         # at the destination path after this check and before the file is written, and no way to prevent other
@@ -1086,6 +1094,11 @@ class FilesExt(files.FilesAPI):
         :returns: :class:`UploadStreamResult`
         """
 
+        if self._config.disable_experimental_files_api_client:
+            _LOG.info("Disable experimental files API client, will use the original upload method.")
+            super().upload(file_path=file_path, contents=content, overwrite=overwrite)
+            return UploadStreamResult()
+
         _LOG.debug(f"Uploading file from BinaryIO stream")
         if parallelism is not None and not use_parallel:
             raise ValueError("parallelism can only be set if use_parallel is True")
@@ -1163,6 +1176,10 @@ class FilesExt(files.FilesAPI):
 
         :returns: :class:`UploadFileResult`
         """
+        if self._config.disable_experimental_files_api_client:
+            raise NotImplementedError(
+                "Experimental files API features are disabled, upload_from is not supported. Please use upload instead."
+            )
 
         _LOG.debug(f"Uploading file from local path: {source_path}")
 

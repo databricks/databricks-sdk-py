@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from enum import Enum
 from tempfile import NamedTemporaryFile
 from threading import Lock
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, List, Optional, Type, Union, Dict
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -203,7 +203,7 @@ class FilesApiDownloadTestCase:
         if self.use_parallel and platform.system() == "Windows":
             pytest.skip("Skipping parallel download tests on Windows")
         config = config.copy()
-        config.enable_experimental_files_api_client = self.enable_new_client
+        config.disable_experimental_files_api_client = not self.enable_new_client
         config.files_ext_client_download_max_total_recovers = self.max_recovers_total
         config.files_ext_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing
         config.enable_presigned_download_api = False
@@ -950,7 +950,6 @@ class PresignedUrlDownloadTestCase:
             logger.debug("Parallel download is not supported on Windows. Falling back to sequential download.")
             return
         config = config.copy()
-        config.enable_experimental_files_api_client = True
         config.enable_presigned_download_api = True
         config._clock = FakeClock()
         if self.parallel_download_min_file_size is not None:
@@ -1323,7 +1322,6 @@ class UploadTestCase:
         logger.debug(f"Running test case: {self.name}, source_type={source_type}, use_parallel={use_parallel}")
         config = config.copy()
         config._clock = FakeClock()
-        config.enable_experimental_files_api_client = True
 
         if self.cloud:
             config.databricks_environment = DatabricksEnvironment(self.cloud, "")

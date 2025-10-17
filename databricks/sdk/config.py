@@ -6,7 +6,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, Optional, List
 
 import requests
 
@@ -110,7 +110,7 @@ class Config:
 
     disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")
 
-    enable_experimental_files_api_client: bool = ConfigAttribute(env="DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT")
+    disable_experimental_files_api_client: bool = ConfigAttribute(env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT")
 
     files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
 
