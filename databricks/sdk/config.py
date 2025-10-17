@@ -6,7 +6,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, List, Optional
 
 import requests
 
@@ -110,18 +110,27 @@ class Config:
 
     disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")
 
-    enable_experimental_files_api_client: bool = ConfigAttribute(env="DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT")
-    files_api_client_download_max_total_recovers = None
-    files_api_client_download_max_total_recovers_without_progressing = 1
+    disable_experimental_files_api_client: bool = ConfigAttribute(
+        env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
+    )
 
-    # File multipart upload parameters
+    files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
+
+    # When downloading a file, the maximum number of attempts to retry downloading the whole file. Default is no limit.
+    files_ext_client_download_max_total_recovers: Optional[int] = None
+
+    # When downloading a file, the maximum number of attempts to retry downloading from the same offset without progressing.
+    # This is to avoid infinite retrying when the download is not making any progress. Default is 1.
+    files_ext_client_download_max_total_recovers_without_progressing = 1
+
+    # File multipart upload/download parameters
     # ----------------------
 
     # Minimal input stream size (bytes) to use multipart / resumable uploads.
     # For small files it's more efficient to make one single-shot upload request.
     # When uploading a file, SDK will initially buffer this many bytes from input stream.
     # This parameter can be less or bigger than multipart_upload_chunk_size.
-    multipart_upload_min_stream_size: int = 5 * 1024 * 1024
+    files_ext_multipart_upload_min_stream_size: int = 50 * 1024 * 1024
 
     # Maximum number of presigned URLs that can be requested at a time.
     #
@@ -131,23 +140,59 @@ class Config:
     # the stream back. In case of a non-seekable stream we cannot rewind, so we'll abort
     # the upload. To reduce the chance of this, we're requesting presigned URLs one by one
     # and using them immediately.
-    multipart_upload_batch_url_count: int = 1
+    files_ext_multipart_upload_batch_url_count: int = 1
 
-    # Size of the chunk to use for multipart uploads.
+    # Size of the chunk to use for multipart uploads & downloads.
     #
     # The smaller chunk is, the less chance for network errors (or URL get expired),
     # but the more requests we'll make.
     # For AWS, minimum is 5Mb: https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
     # For GCP, minimum is 256 KiB (and also recommended multiple is 256 KiB)
     # boto uses 8Mb: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/customizations/s3.html#boto3.s3.transfer.TransferConfig
-    multipart_upload_chunk_size: int = 10 * 1024 * 1024
+    files_ext_multipart_upload_default_part_size: int = 10 * 1024 * 1024  # 10 MiB
 
-    # use maximum duration of 1 hour
-    multipart_upload_url_expiration_duration: datetime.timedelta = datetime.timedelta(hours=1)
+    # List of multipart upload part sizes that can be automatically selected
+    files_ext_multipart_upload_part_size_options: List[int] = [
+        10 * 1024 * 1024,  # 10 MiB
+        20 * 1024 * 1024,  # 20 MiB
+        50 * 1024 * 1024,  # 50 MiB
+        100 * 1024 * 1024,  # 100 MiB
+        200 * 1024 * 1024,  # 200 MiB
+        500 * 1024 * 1024,  # 500 MiB
+        1 * 1024 * 1024 * 1024,  # 1 GiB
+        2 * 1024 * 1024 * 1024,  # 2 GiB
+        4 * 1024 * 1024 * 1024,  # 4 GiB
+    ]
+
+    # Maximum size of a single part in multipart upload.
+    # For AWS, maximum is 5 GiB: https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
+    # For Azure, maximum is 4 GiB: https://learn.microsoft.com/en-us/rest/api/storageservices/put-block
+    # For CloudFlare R2, maximum is 5 GiB: https://developers.cloudflare.com/r2/objects/multipart-objects/
+    files_ext_multipart_upload_max_part_size: int = 4 * 1024 * 1024 * 1024  # 4 GiB
+
+    # Default parallel multipart upload concurrency. Set to 10 because of the experiment results show that it
+    # gives good performance result.
+    files_ext_multipart_upload_default_parallelism: int = 10
+
+    # The expiration duration for presigned URLs used in multipart uploads and downloads.
+    # The client will request new presigned URLs if the previous one is expired. The duration should be long enough
+    # to complete the upload or download of a single part.
+    files_ext_multipart_upload_url_expiration_duration: datetime.timedelta = datetime.timedelta(hours=1)
+    files_ext_presigned_download_url_expiration_duration: datetime.timedelta = datetime.timedelta(hours=1)
+
+    # When downloading a file in parallel, how many worker threads to use.
+    files_ext_parallel_download_default_parallelism: int = 10
+
+    # When downloading a file, if the file size is smaller than this threshold,
+    # We'll use a single-threaded download even if the parallel download is enabled.
+    files_ext_parallel_download_min_file_size: int = 50 * 1024 * 1024  # 50 MiB
+
+    # Default chunk size to use when downloading a file in parallel. Not effective for single threaded download.
+    files_ext_parallel_download_default_part_size: int = 10 * 1024 * 1024  # 10 MiB
 
     # This is not a "wall time" cutoff for the whole upload request,
     # but a maximum time between consecutive data reception events (even 1 byte) from the server
-    multipart_upload_single_chunk_upload_timeout_seconds: float = 60
+    files_ext_network_transfer_inactivity_timeout_seconds: float = 60
 
     # Cap on the number of custom retries during incremental uploads:
     # 1) multipart: upload part URL is expired, so new upload URLs must be requested to continue upload
@@ -155,7 +200,10 @@ class Config:
     # retrieved to continue the upload.
     # In these two cases standard SDK retries (which are capped by the `retry_timeout_seconds` option) are not used.
     # Note that retry counter is reset when upload is successfully resumed.
-    multipart_upload_max_retries = 3
+    files_ext_multipart_upload_max_retries = 3
+
+    # Cap on the number of custom retries during parallel downloads.
+    files_ext_parallel_download_max_retries = 3
 
     def __init__(
         self,

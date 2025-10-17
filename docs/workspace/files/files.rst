@@ -2,7 +2,7 @@
 ==================
 .. currentmodule:: databricks.sdk.service.files
 
-.. py:class:: FilesAPI
+.. py:class:: FilesExt
 
     The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
@@ -61,13 +61,37 @@
 
     .. py:method:: download(file_path: str) -> DownloadResponse
 
-        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
-        a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
+        Download a file.
+
+        Downloads a file of any size. The file contents are the response body.
+        This is a standard HTTP file download, not a JSON RPC.
+
+        It is strongly recommended, for fault tolerance reasons,
+        to iteratively consume from the stream with a maximum read(size)
+        defined instead of using indefinite-size reads.
 
         :param file_path: str
-          The absolute path of the file.
+          The remote path of the file, e.g. /Volumes/path/to/your/file
 
         :returns: :class:`DownloadResponse`
+        
+
+    .. py:method:: download_to(file_path: str, destination: str [, overwrite: bool = True, use_parallel: bool = False, parallelism: Optional[int]]) -> DownloadFileResult
+
+        Download a file to a local path. There would be no responses returned if the download is successful.
+
+        :param file_path: str
+          The remote path of the file, e.g. /Volumes/path/to/your/file
+        :param destination: str
+          The local path where the file will be saved.
+        :param overwrite: bool
+          If true, an existing file will be overwritten. When not specified, assumed True.
+        :param use_parallel: bool
+          If true, the download will be performed using multiple threads.
+        :param parallelism: int
+          The number of parallel threads to use for downloading. If not specified, defaults to the number of CPU cores.
+
+        :returns: :class:`DownloadFileResult`
         
 
     .. py:method:: get_directory_metadata(directory_path: str)
@@ -124,19 +148,48 @@
         :returns: Iterator over :class:`DirectoryEntry`
         
 
-    .. py:method:: upload(file_path: str, contents: BinaryIO [, overwrite: Optional[bool]])
+    .. py:method:: upload(file_path: str, content: BinaryIO [, overwrite: Optional[bool], part_size: Optional[int], use_parallel: bool = True, parallelism: Optional[int]]) -> UploadStreamResult
 
-        Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
-        octet stream); do not encode or otherwise modify the bytes before sending. The contents of the
-        resulting file will be exactly the bytes sent in the request body. If the request is successful, there
-        is no response body.
+        
+        Upload a file with stream interface.
 
         :param file_path: str
-          The absolute path of the file.
-        :param contents: BinaryIO
+            The absolute remote path of the target file, e.g. /Volumes/path/to/your/file
+        :param content: BinaryIO
+            The contents of the file to upload. This must be a BinaryIO stream.
         :param overwrite: bool (optional)
-          If true or unspecified, an existing file will be overwritten. If false, an error will be returned if
-          the path points to an existing file.
+            If true, an existing file will be overwritten. When not specified, assumed True.
+        :param part_size: int (optional)
+            If set, multipart upload will use the value as its size per uploading part.
+        :param use_parallel: bool (optional)
+            If true, the upload will be performed using multiple threads. Be aware that this will consume more memory
+            because multiple parts will be buffered in memory before being uploaded. The amount of memory used is proportional
+            to `parallelism * part_size`.
+            If false, the upload will be performed in a single thread.
+            Default is True.
+        :param parallelism: int (optional)
+            The number of threads to use for parallel uploads. This is only used if `use_parallel` is True.
 
+        :returns: :class:`UploadStreamResult`
+        
 
+    .. py:method:: upload_from(file_path: str, source_path: str [, overwrite: Optional[bool], part_size: Optional[int], use_parallel: bool = True, parallelism: Optional[int]]) -> UploadFileResult
+
+        Upload a file directly from a local path.
+
+        :param file_path: str
+          The absolute remote path of the target file.
+        :param source_path: str
+          The local path of the file to upload. This must be a path to a local file.
+        :param part_size: int
+          The size of each part in bytes for multipart upload. This is a required parameter for multipart uploads.
+        :param overwrite: bool (optional)
+          If true, an existing file will be overwritten. When not specified, assumed True.
+        :param use_parallel: bool (optional)
+          If true, the upload will be performed using multiple threads. Default is True.
+        :param parallelism: int (optional)
+          The number of threads to use for parallel uploads. This is only used if `use_parallel` is True.
+          If not specified, the default parallelism will be set to config.multipart_upload_default_parallelism
+
+        :returns: :class:`UploadFileResult`
         
