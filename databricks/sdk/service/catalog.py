@@ -1740,7 +1740,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 38"""
+    """Next Id: 46"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -2542,12 +2542,13 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 13"""
+    """Next Id: 14"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
     OAUTH_M2M = "OAUTH_M2M"
+    OAUTH_MTLS = "OAUTH_MTLS"
     OAUTH_REFRESH_TOKEN = "OAUTH_REFRESH_TOKEN"
     OAUTH_RESOURCE_OWNER_PASSWORD = "OAUTH_RESOURCE_OWNER_PASSWORD"
     OAUTH_U2M = "OAUTH_U2M"
@@ -8549,7 +8550,7 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 40"""
+    """Next ID: 41"""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -8762,7 +8763,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266"""
+    """Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

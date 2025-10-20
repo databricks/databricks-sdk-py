@@ -2987,44 +2987,6 @@ class RecipientFederationPoliciesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(
-        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
-    ) -> FederationPolicy:
-        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
-        recipient.
-
-        :param recipient_name: str
-          Name of the recipient. This is the name of the recipient for which the policy is being updated.
-        :param name: str
-          Name of the policy. This is the name of the current name of the policy.
-        :param policy: :class:`FederationPolicy`
-        :param update_mask: str (optional)
-          The field mask specifies which fields of the policy to update. To specify multiple fields in the
-          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
-          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
-          in the update request will overwrite the corresponding fields in the existing policy. Example value:
-          'comment,oidc_policy.audiences'.
-
-        :returns: :class:`FederationPolicy`
-        """
-        body = policy.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
-            query=query,
-            body=body,
-            headers=headers,
-        )
-        return FederationPolicy.from_dict(res)
-
 
 class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you

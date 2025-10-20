@@ -2,7 +2,7 @@
 ==================
 .. currentmodule:: databricks.sdk.service.files
 
-.. py:class:: FilesAPI
+.. py:class:: FilesExt
 
     The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
@@ -61,11 +61,17 @@
 
     .. py:method:: download(file_path: str) -> DownloadResponse
 
-        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
-        a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
+        Download a file.
+
+        Downloads a file of any size. The file contents are the response body.
+        This is a standard HTTP file download, not a JSON RPC.
+
+        It is strongly recommended, for fault tolerance reasons,
+        to iteratively consume from the stream with a maximum read(size)
+        defined instead of using indefinite-size reads.
 
         :param file_path: str
-          The absolute path of the file.
+          The remote path of the file, e.g. /Volumes/path/to/your/file
 
         :returns: :class:`DownloadResponse`
         
@@ -126,17 +132,16 @@
 
     .. py:method:: upload(file_path: str, contents: BinaryIO [, overwrite: Optional[bool]])
 
-        Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
+        Upload a file.
+
+        Uploads a file. The file contents should be sent as the request body as raw bytes (an
         octet stream); do not encode or otherwise modify the bytes before sending. The contents of the
         resulting file will be exactly the bytes sent in the request body. If the request is successful, there
         is no response body.
 
         :param file_path: str
-          The absolute path of the file.
+          The absolute remote path of the target file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
-          If true or unspecified, an existing file will be overwritten. If false, an error will be returned if
-          the path points to an existing file.
-
-
+          If true, an existing file will be overwritten. When not specified, assumed True.
         
