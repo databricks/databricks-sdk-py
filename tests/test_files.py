@@ -4,13 +4,16 @@ import io
 import json
 import logging
 import os
+import platform
 import random
 import re
 import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from tempfile import mkstemp
-from typing import Callable, List, Optional, Type, Union
+from enum import Enum
+from tempfile import NamedTemporaryFile
+from threading import Lock
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -20,498 +23,17 @@ from requests import RequestException
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
+from databricks.sdk.environments import Cloud, DatabricksEnvironment
 from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
-                                            InternalError, PermissionDenied,
-                                            TooManyRequests)
+                                            InternalError, NotImplemented,
+                                            PermissionDenied, TooManyRequests)
+from databricks.sdk.mixins.files import FallbackToDownloadUsingFilesApi
+from databricks.sdk.mixins.files_utils import CreateDownloadUrlResponse
+from tests.clock import FakeClock
+
+from .test_files_utils import Utils
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class RequestData:
-
-    def __init__(self, offset: int):
-        self._offset: int = offset
-
-
-class DownloadTestCase:
-
-    def __init__(
-        self,
-        name: str,
-        enable_new_client: bool,
-        file_size: int,
-        failure_at_absolute_offset: List[int],
-        max_recovers_total: Union[int, None],
-        max_recovers_without_progressing: Union[int, None],
-        expected_success: bool,
-        expected_requested_offsets: List[int],
-    ):
-        self.name = name
-        self.enable_new_client = enable_new_client
-        self.file_size = file_size
-        self.failure_at_absolute_offset = failure_at_absolute_offset
-        self.max_recovers_total = max_recovers_total
-        self.max_recovers_without_progressing = max_recovers_without_progressing
-        self.expected_success = expected_success
-        self.expected_requested_offsets = expected_requested_offsets
-
-    @staticmethod
-    def to_string(test_case: "DownloadTestCase") -> str:
-        return test_case.name
-
-    def run(self, config: Config) -> None:
-        config = config.copy()
-        config.enable_experimental_files_api_client = self.enable_new_client
-        config.files_api_client_download_max_total_recovers = self.max_recovers_total
-        config.files_api_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing
-
-        w = WorkspaceClient(config=config)
-
-        session = MockSession(self)
-        w.files._api._api_client._session = session
-
-        response = w.files.download("/test").contents
-        if self.expected_success:
-            actual_content = response.read()
-            assert len(actual_content) == len(session.content)
-            assert actual_content == session.content
-        else:
-            with pytest.raises(RequestException):
-                response.read()
-
-        received_requests = session.received_requests
-
-        assert len(self.expected_requested_offsets) == len(received_requests)
-        for idx, requested_offset in enumerate(self.expected_requested_offsets):
-            assert requested_offset == received_requests[idx]._offset
-
-
-class MockSession:
-
-    def __init__(self, test_case: DownloadTestCase):
-        self.test_case: DownloadTestCase = test_case
-        self.received_requests: List[RequestData] = []
-        self.content: bytes = os.urandom(self.test_case.file_size)
-        self.failure_pointer = 0
-        self.last_modified = "Thu, 28 Nov 2024 16:39:14 GMT"
-
-    # following the signature of Session.request()
-    def request(
-        self,
-        method: str,
-        url: str,
-        params=None,
-        data=None,
-        headers=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=None,
-        allow_redirects: bool = True,
-        proxies=None,
-        hooks=None,
-        stream: bool = None,
-        verify=None,
-        cert=None,
-        json=None,
-    ) -> "MockResponse":
-        assert method == "GET"
-        assert stream == True
-
-        offset = 0
-        if "Range" in headers:
-            range = headers["Range"]
-            match = re.search("^bytes=(\\d+)-$", range)
-            if match:
-                offset = int(match.group(1))
-            else:
-                raise Exception("Unexpected range header: " + range)
-
-            if "If-Unmodified-Since" in headers:
-                assert headers["If-Unmodified-Since"] == self.last_modified
-            else:
-                raise Exception("If-Unmodified-Since header should be passed along with Range")
-
-        logger.info("Client requested offset: %s", offset)
-
-        if offset > len(self.content):
-            raise Exception("Offset %s exceeds file length %s", offset, len(self.content))
-
-        self.received_requests.append(RequestData(offset))
-        return MockResponse(self, offset, MockRequest(url))
-
-
-# required only for correct logging
-class MockRequest:
-
-    def __init__(self, url: str):
-        self.url = url
-        self.method = "GET"
-        self.headers = dict()
-        self.body = None
-
-
-class MockResponse:
-
-    def __init__(self, session: MockSession, offset: int, request: MockRequest):
-        self.session = session
-        self.offset = offset
-        self.request = request
-        self.status_code = 200
-        self.reason = "OK"
-        self.headers = dict()
-        self.headers["Content-Length"] = len(session.content) - offset
-        self.headers["Content-Type"] = "application/octet-stream"
-        self.headers["Last-Modified"] = session.last_modified
-        self.ok = True
-        self.url = request.url
-
-    def iter_content(self, chunk_size: int, decode_unicode: bool) -> "MockIterator":
-        assert decode_unicode == False
-        return MockIterator(self, chunk_size)
-
-
-class MockIterator:
-
-    def __init__(self, response: MockResponse, chunk_size: int):
-        self.response = response
-        self.chunk_size = chunk_size
-        self.offset = 0
-
-    def __next__(self) -> bytes:
-        start_offset = self.response.offset + self.offset
-        if start_offset == len(self.response.session.content):
-            raise StopIteration
-
-        end_offset = start_offset + self.chunk_size  # exclusive, might be out of range
-
-        if self.response.session.failure_pointer < len(self.response.session.test_case.failure_at_absolute_offset):
-            failure_after_byte = self.response.session.test_case.failure_at_absolute_offset[
-                self.response.session.failure_pointer
-            ]
-            if failure_after_byte < end_offset:
-                self.response.session.failure_pointer += 1
-                raise RequestException("Fake error")
-
-        result = self.response.session.content[start_offset:end_offset]
-        self.offset += len(result)
-        return result
-
-    def close(self) -> None:
-        pass
-
-
-class _Constants:
-    underlying_chunk_size = 1024 * 1024  # see ticket #832
-
-
-@pytest.mark.parametrize(
-    "test_case",
-    [
-        DownloadTestCase(
-            name="Old client: no failures, file of 5 bytes",
-            enable_new_client=False,
-            file_size=5,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="Old client: no failures, file of 1.5 chunks",
-            enable_new_client=False,
-            file_size=int(1.5 * _Constants.underlying_chunk_size),
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="Old client: failure",
-            enable_new_client=False,
-            file_size=1024,
-            failure_at_absolute_offset=[100],
-            max_recovers_total=None,  # unlimited but ignored
-            max_recovers_without_progressing=None,  # unlimited but ignored
-            expected_success=False,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: no failures, file of 5 bytes",
-            enable_new_client=True,
-            file_size=5,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: no failures, file of 1 Kb",
-            enable_new_client=True,
-            file_size=1024,
-            max_recovers_total=None,
-            max_recovers_without_progressing=None,
-            failure_at_absolute_offset=[],
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: no failures, file of 1.5 chunks",
-            enable_new_client=True,
-            file_size=int(1.5 * _Constants.underlying_chunk_size),
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: no failures, file of 10 parts",
-            enable_new_client=True,
-            file_size=10 * _Constants.underlying_chunk_size,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: recovers are disabled, first failure leads to download abort",
-            enable_new_client=True,
-            file_size=10000,
-            failure_at_absolute_offset=[5],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=False,
-            expected_requested_offsets=[0],
-        ),
-        DownloadTestCase(
-            name="New client: unlimited recovers allowed",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 5,
-            # causes errors on requesting the third chunk
-            failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size + 1,
-                _Constants.underlying_chunk_size * 3,
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=None,
-            expected_success=True,
-            expected_requested_offsets=[
-                0,
-                0,
-                0,
-                0,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size * 3,
-            ],
-        ),
-        DownloadTestCase(
-            name="New client: we respect limit on total recovers when progressing",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[
-                1,
-                _Constants.underlying_chunk_size + 1,  # progressing
-                _Constants.underlying_chunk_size * 2 + 1,  # progressing
-                _Constants.underlying_chunk_size * 3 + 1,  # progressing
-            ],
-            max_recovers_total=3,
-            max_recovers_without_progressing=None,
-            expected_success=False,
-            expected_requested_offsets=[
-                0,
-                0,
-                _Constants.underlying_chunk_size * 1,
-                _Constants.underlying_chunk_size * 2,
-            ],
-        ),
-        DownloadTestCase(
-            name="New client: we respect limit on total recovers when not progressing",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[1, 1, 1, 1],
-            max_recovers_total=3,
-            max_recovers_without_progressing=None,
-            expected_success=False,
-            expected_requested_offsets=[0, 0, 0, 0],
-        ),
-        DownloadTestCase(
-            name="New client: we respect limit on non-progressing recovers",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 2,
-            failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=3,
-            expected_success=False,
-            expected_requested_offsets=[0, 0, 0, 0],
-        ),
-        DownloadTestCase(
-            name="New client: non-progressing recovers count is reset when progressing",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size + 1,  # this recover is after progressing
-                _Constants.underlying_chunk_size + 1,  # this is not
-                _Constants.underlying_chunk_size * 2 + 1,  # this recover is after progressing
-                _Constants.underlying_chunk_size * 2 + 1,  # this is not
-                _Constants.underlying_chunk_size * 2 + 1,  # this is not, we abort here
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=2,
-            expected_success=False,
-            expected_requested_offsets=[
-                0,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size * 2,
-                _Constants.underlying_chunk_size * 2,
-            ],
-        ),
-        DownloadTestCase(
-            name="New client: non-progressing recovers count is reset when progressing - 2",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[
-                1,
-                _Constants.underlying_chunk_size + 1,
-                _Constants.underlying_chunk_size * 2 + 1,
-                _Constants.underlying_chunk_size * 3 + 1,
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=1,
-            expected_success=True,
-            expected_requested_offsets=[
-                0,
-                0,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size * 2,
-                _Constants.underlying_chunk_size * 3,
-            ],
-        ),
-    ],
-    ids=DownloadTestCase.to_string,
-)
-def test_download_recover(config: Config, test_case: DownloadTestCase) -> None:
-    test_case.run(config)
-
-
-class FileContent:
-
-    def __init__(self, length: int, checksum: str):
-        self._length = length
-        self.checksum = checksum
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> "FileContent":
-        sha256 = hashlib.sha256()
-        sha256.update(data)
-        return FileContent(len(data), sha256.hexdigest())
-
-    def __repr__(self) -> str:
-        return f"Length: {self._length}, checksum: {self.checksum}"
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, FileContent):
-            return NotImplemented
-        return self._length == other._length and self.checksum == other.checksum
-
-
-class MultipartUploadServerState:
-    """This server state is updated on multipart upload (AWS, Azure)"""
-
-    upload_part_url_prefix = "https://cloud_provider.com/upload-part/"
-    abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
-
-    def __init__(self):
-        self.issued_multipart_urls = {}  # part_number -> expiration_time
-        self.uploaded_parts = {}  # part_number -> [part file path, etag]
-        self.session_token = "token-" + MultipartUploadServerState.randomstr()
-        self.file_content = None
-        self.issued_abort_url_expire_time = None
-        self.aborted = False
-
-    def create_upload_part_url(self, path: str, part_number: int, expire_time: datetime) -> str:
-        assert not self.aborted
-        # client may have requested a URL for the same part if retrying on network error
-        self.issued_multipart_urls[part_number] = expire_time
-        return f"{self.upload_part_url_prefix}{path}/{part_number}"
-
-    def create_abort_url(self, path: str, expire_time: datetime) -> str:
-        assert not self.aborted
-        self.issued_abort_url_expire_time = expire_time
-        return f"{self.abort_upload_url_prefix}{path}"
-
-    def save_part(self, part_number: int, part_content: bytes, etag: str) -> None:
-        assert not self.aborted
-        assert len(part_content) > 0
-
-        logger.info(f"Saving part {part_number} of size {len(part_content)}")
-
-        # part might already have been uploaded
-        existing_part = self.uploaded_parts.get(part_number)
-        if existing_part:
-            part_file = existing_part[0]
-            with open(part_file, "wb") as f:  # overwrite
-                f.write(part_content)
-        else:
-            fd, part_file = mkstemp()
-            with open(fd, "wb") as f:
-                f.write(part_content)
-
-        self.uploaded_parts[part_number] = [part_file, etag]
-
-    def cleanup(self) -> None:
-        for [file, _] in self.uploaded_parts.values():
-            os.remove(file)
-
-    def get_file_content(self) -> Optional[FileContent]:
-        if self.aborted:
-            assert not self.file_content
-
-        # content may be None even for a non-aborted upload,
-        # in case single-shot upload was used due to small stream size.
-        return self.file_content
-
-    def upload_complete(self, etags: dict) -> None:
-        assert not self.aborted
-        # validate etags
-        expected_etags = {}
-        for part_number in self.uploaded_parts.keys():
-            expected_etags[part_number] = self.uploaded_parts[part_number][1]
-        assert etags == expected_etags
-
-        size = 0
-        sha256 = hashlib.sha256()
-
-        sorted_parts = sorted(self.uploaded_parts.keys())
-        for part_number in sorted_parts:
-            [part_path, _] = self.uploaded_parts[part_number]
-            size += os.path.getsize(part_path)
-            with open(part_path, "rb") as f:
-                part_content = f.read()
-                sha256.update(part_content)
-
-        self.file_content = FileContent(size, sha256.hexdigest())
-
-    def abort_upload(self) -> None:
-        self.aborted = True
-
-    @staticmethod
-    def randomstr() -> str:
-        return f"{random.randrange(10000)}-{int(time.time())}"
 
 
 class CustomResponse:
@@ -543,6 +65,8 @@ class CustomResponse:
         last_invocation: Optional[int] = None,
         # Only invocation (1-based) at which return custom response
         only_invocation: Optional[int] = None,
+        # If set, response is delayed by given number of seconds
+        delayed_response_seconds: Optional[float] = None,
     ):
         self.enabled = enabled
         self.code = code
@@ -552,6 +76,7 @@ class CustomResponse:
         self.first_invocation = first_invocation
         self.last_invocation = last_invocation
         self.only_invocation = only_invocation
+        self.delayed_response_seconds = delayed_response_seconds
 
         if self.only_invocation and (self.first_invocation or self.last_invocation):
             raise ValueError("Cannot set both only invocation and first/last invocation")
@@ -576,7 +101,11 @@ class CustomResponse:
             return False
         return True
 
-    def generate_response(self, request: requests.Request, processor: Callable[[], list]) -> requests.Response:
+    def generate_response(
+        self, request: requests.Request, processor: Callable[[], list], stream=False
+    ) -> requests.Response:
+        if self.delayed_response_seconds:
+            time.sleep(self.delayed_response_seconds)
         activate_for_current_invocation = self.invocation_matches()
 
         if activate_for_current_invocation and self.exception and self.exception_happened_before_processing:
@@ -590,13 +119,13 @@ class CustomResponse:
             if self.code and 400 <= self.code < 500:
                 # if server returns client error, it's not supposed to change its state,
                 # so we're not calling processor()
-                [code, body, headers] = custom_response
+                [code, body_or_stream, headers] = custom_response
             else:
                 # we're calling processor() but override its response with the custom one
                 processor()
-                [code, body, headers] = custom_response
+                [code, body_or_stream, headers] = custom_response
         else:
-            [code, body, headers] = processor()
+            [code, body_or_stream, headers] = processor()
 
         if activate_for_current_invocation and self.exception:
             # self.exception_happened_before_processing is False
@@ -606,12 +135,1091 @@ class CustomResponse:
 
         resp.request = request
         resp.status_code = code
-        resp._content = body.encode()
+        if stream:
+            if type(body_or_stream) != bytes:
+                resp.raw = io.BytesIO(body_or_stream.encode())
+            else:
+                resp.raw = io.BytesIO(body_or_stream)
+        else:
+            resp._content = body_or_stream.encode()
 
         for key in headers:
             resp.headers[key] = headers[key]
 
         return resp
+
+    def clear_state(self):
+        self.invocation_count = 0
+
+
+@dataclass
+class RequestData:
+    offset: int
+    end_byte_offset: Optional[int] = None
+
+
+class DownloadMode(Enum):
+    """Download mode for the test case. Used to determine how to download the file."""
+
+    STREAM = "stream"  # download to a stream (existing behavior)
+    FILE = "file"  # download to a file (new download_to behavior)
+
+
+class FilesApiDownloadTestCase:
+
+    def __init__(
+        self,
+        name: str,
+        enable_new_client: bool,
+        file_size: int,
+        failure_at_absolute_offset: List[int],
+        max_recovers_total: Optional[int] = None,
+        max_recovers_without_progressing: Optional[int] = None,
+        expected_requested_offsets: Optional[List[int]] = None,
+        expected_exception: Optional[Type[BaseException]] = None,
+        download_mode: DownloadMode = DownloadMode.STREAM,
+        overwrite: bool = True,
+        use_parallel: bool = False,
+        parallelism: Optional[int] = None,
+    ):
+        self.name = name
+        self.enable_new_client = enable_new_client
+        self.file_size = file_size
+        self.failure_at_absolute_offset = failure_at_absolute_offset
+        self.max_recovers_total = max_recovers_total
+        self.max_recovers_without_progressing = max_recovers_without_progressing
+        self.expected_exception = expected_exception
+        self.expected_requested_offsets = expected_requested_offsets
+        self.download_mode = download_mode
+        self.overwrite = overwrite
+        self.use_parallel = use_parallel
+        self.parallelism = parallelism
+
+    @staticmethod
+    def to_string(test_case: "FilesApiDownloadTestCase") -> str:
+        return test_case.name
+
+    def run(self, config: Config, monkeypatch) -> None:
+        if self.use_parallel and platform.system() == "Windows":
+            pytest.skip("Skipping parallel download tests on Windows")
+        config = config.copy()
+        config.disable_experimental_files_api_client = not self.enable_new_client
+        config.files_ext_client_download_max_total_recovers = self.max_recovers_total
+        config.files_ext_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing
+        config.enable_presigned_download_api = False
+
+        w = WorkspaceClient(config=config)
+
+        session = MockFilesystemSession(self)
+        monkeypatch.setattr(w.files._api._api_client, "_session", session)
+
+        if self.download_mode == DownloadMode.STREAM:
+            if self.expected_exception is None:
+                response = w.files.download("/test").contents
+                actual_content = response.read()
+                assert len(actual_content) == len(session.content)
+                assert actual_content == session.content
+            else:
+                with pytest.raises(self.expected_exception):
+                    response = w.files.download("/test").contents
+                    response.read()
+        elif self.download_mode == DownloadMode.FILE:  # FILE mode
+            with NamedTemporaryFile(delete=False) as temp_file:
+                file_path = temp_file.name
+
+            # We can't use 'with' because Windows doesn't allow reopening the file, and `download_to` can open it
+            # only after we close it here.
+            try:
+                if self.expected_exception is None:
+                    w.files.download_to(
+                        "/test",
+                        file_path,
+                        overwrite=self.overwrite,
+                        use_parallel=self.use_parallel,
+                        parallelism=self.parallelism,
+                    )
+
+                    # Verify the downloaded file content
+                    with open(file_path, "rb") as f:
+                        actual_content = f.read()
+                    assert len(actual_content) == len(session.content)
+                    assert actual_content == session.content
+                else:
+                    with pytest.raises(self.expected_exception):
+                        w.files.download_to(
+                            "/test",
+                            file_path,
+                            overwrite=self.overwrite,
+                            use_parallel=self.use_parallel,
+                            parallelism=self.parallelism,
+                        )
+            finally:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+
+        received_requests = session.received_requests
+
+        if self.expected_requested_offsets is not None:
+            assert len(received_requests) == len(self.expected_requested_offsets)
+            for idx, requested_offset in enumerate(self.expected_requested_offsets):
+                assert received_requests[idx].offset == requested_offset
+
+
+class MockFilesystemSession:
+
+    def __init__(self, test_case: FilesApiDownloadTestCase):
+        self.test_case: FilesApiDownloadTestCase = test_case
+        self.received_requests: List[RequestData] = []
+        self.content: bytes = fast_random_bytes(self.test_case.file_size)
+        self.failure_pointer = 0
+        self.planned_failures = copy.deepcopy(self.test_case.failure_at_absolute_offset)
+        self.lock = Lock()
+        self.last_modified = "Thu, 28 Nov 2024 16:39:14 GMT"
+
+    # following the signature of Session.request()
+    def request(
+        self,
+        method: str,
+        url: str,
+        params=None,
+        data=None,
+        headers=None,
+        cookies=None,
+        files=None,
+        auth=None,
+        timeout=None,
+        allow_redirects: bool = True,
+        proxies=None,
+        hooks=None,
+        stream: bool = None,
+        verify=None,
+        cert=None,
+        json=None,
+    ) -> "MockFilesApiDownloadResponse":
+
+        if method == "GET":
+            assert stream is True
+            return self._handle_get_file(headers, url)
+        elif method == "HEAD":
+            return self._handle_head_file(headers, url)
+        else:
+            raise FallbackToDownloadUsingFilesApi("method must be HEAD or GET")
+
+    def _handle_head_file(self, headers: Dict[str, str], url: str) -> "MockFilesApiDownloadResponse":
+        if "If-Unmodified-Since" in headers:
+            assert headers["If-Unmodified-Since"] == self.last_modified
+        resp = MockFilesApiDownloadResponse(self, 0, None, MockFilesApiDownloadRequest(url))
+        resp.content = ""
+        return resp
+
+    def _handle_get_file(self, headers: Dict[str, str], url: str) -> "MockFilesApiDownloadResponse":
+        offset = 0
+        end_byte_offset = None
+        if "Range" in headers:
+            offset, end_byte_offset = Utils.parse_range_header(headers["Range"], len(self.content))
+
+        logger.debug("Client requested range: %s-%s", offset, end_byte_offset)
+
+        if offset > len(self.content):
+            raise Exception("Offset %s exceeds file length %s", offset, len(self.content))
+        if end_byte_offset is not None and end_byte_offset >= len(self.content):
+            raise Exception("End offset %s exceeds file length %s", end_byte_offset, len(self.content))
+        if end_byte_offset is not None and offset > end_byte_offset:
+            raise Exception("Begin offset %s exceeds end offset %s", offset, end_byte_offset)
+
+        self.received_requests.append(RequestData(offset))
+        return MockFilesApiDownloadResponse(self, offset, end_byte_offset, MockFilesApiDownloadRequest(url))
+
+    def get_content(self, offset: int, end_byte_offset: int) -> bytes:
+        with self.lock:
+            for failure_after_byte in self.planned_failures:
+                if offset <= failure_after_byte < end_byte_offset:
+                    self.planned_failures.remove(failure_after_byte)
+                    raise RequestException("Fake error")
+        return self.content[offset:end_byte_offset]
+
+
+# required only for correct logging
+class MockFilesApiDownloadRequest:
+
+    def __init__(self, url: str):
+        self.url = url
+        self.method = "GET"
+        self.headers = dict()
+        self.body = None
+
+
+class MockFilesApiDownloadResponse:
+
+    def __init__(
+        self,
+        session: MockFilesystemSession,
+        offset: int,
+        end_byte_offset: Optional[int],
+        request: MockFilesApiDownloadRequest,
+    ):
+        self.session = session
+        self.offset = offset
+        self.end_byte_offset = end_byte_offset
+        self.request = request
+        self.status_code = 200
+        self.reason = "OK"
+        self.headers = dict()
+        self.headers["Content-Length"] = (
+            len(session.content) if end_byte_offset is None else end_byte_offset + 1
+        ) - offset
+        self.headers["Content-Type"] = "application/octet-stream"
+        self.headers["Last-Modified"] = session.last_modified
+        self.ok = True
+        self.url = request.url
+
+    def iter_content(self, chunk_size: int, decode_unicode: bool) -> "MockIterator":
+        assert decode_unicode == False
+        return MockIterator(self, chunk_size)
+
+
+class MockIterator:
+
+    def __init__(self, response: MockFilesApiDownloadResponse, chunk_size: int):
+        self.response = response
+        self.chunk_size = chunk_size
+        self.offset = 0
+
+    def __next__(self) -> bytes:
+        start_offset = self.response.offset + self.offset
+
+        if self.response.end_byte_offset is not None:
+            end_offset = min(
+                start_offset + self.chunk_size, self.response.end_byte_offset + 1
+            )  # This is an exclusive index that might be out of range
+        else:
+            end_offset = start_offset + self.chunk_size  # This is an exclusive index that might be out of range
+
+        if start_offset == len(self.response.session.content) or start_offset == end_offset:
+            raise StopIteration
+
+        result = self.response.session.get_content(start_offset, end_offset)
+        self.offset += len(result)
+        return result
+
+    def close(self) -> None:
+        pass
+
+
+class _Constants:
+    underlying_chunk_size = 1024 * 1024  # see ticket #832
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    [
+        FilesApiDownloadTestCase(
+            name="Old files client: no failures, file of 5 bytes",
+            enable_new_client=False,
+            file_size=5,
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="Old files client: no failures, file of 1.5 chunks",
+            enable_new_client=False,
+            file_size=int(1.5 * _Constants.underlying_chunk_size),
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="Old files client: failure",
+            enable_new_client=False,
+            file_size=1024,
+            failure_at_absolute_offset=[100],
+            max_recovers_total=None,  # unlimited but ignored
+            max_recovers_without_progressing=None,  # unlimited but ignored
+            expected_exception=RequestException,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: no failures, file of 5 bytes",
+            enable_new_client=True,
+            file_size=5,
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: no failures, file of 1 Kb",
+            enable_new_client=True,
+            file_size=1024,
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            failure_at_absolute_offset=[],
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: no failures, file of 1.5 parts",
+            enable_new_client=True,
+            file_size=int(1.5 * _Constants.underlying_chunk_size),
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: no failures, file of 10 parts",
+            enable_new_client=True,
+            file_size=10 * _Constants.underlying_chunk_size,
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: recovers are disabled, first failure leads to download abort",
+            enable_new_client=True,
+            file_size=10000,
+            failure_at_absolute_offset=[5],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_exception=RequestException,
+            expected_requested_offsets=[0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: unlimited recovers allowed",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 5,
+            # causes errors on requesting the third chunk
+            failure_at_absolute_offset=[
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size + 1,
+                _Constants.underlying_chunk_size * 3,
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            expected_requested_offsets=[
+                0,
+                0,
+                0,
+                0,
+                _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size * 3,
+            ],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: we respect limit on total recovers when progressing",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 10,
+            failure_at_absolute_offset=[
+                1,
+                _Constants.underlying_chunk_size + 1,  # progressing
+                _Constants.underlying_chunk_size * 2 + 1,  # progressing
+                _Constants.underlying_chunk_size * 3 + 1,  # progressing
+            ],
+            max_recovers_total=3,
+            max_recovers_without_progressing=None,
+            expected_exception=RequestException,
+            expected_requested_offsets=[
+                0,
+                0,
+                _Constants.underlying_chunk_size * 1,
+                _Constants.underlying_chunk_size * 2,
+            ],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: we respect limit on total recovers when not progressing",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 10,
+            failure_at_absolute_offset=[1, 1, 1, 1],
+            max_recovers_total=3,
+            max_recovers_without_progressing=None,
+            expected_exception=RequestException,
+            expected_requested_offsets=[0, 0, 0, 0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: we respect limit on non-progressing recovers",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 2,
+            failure_at_absolute_offset=[
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1,
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=3,
+            expected_exception=RequestException,
+            expected_requested_offsets=[0, 0, 0, 0],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: non-progressing recovers count is reset when progressing",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 10,
+            failure_at_absolute_offset=[
+                _Constants.underlying_chunk_size + 1,  # this recover is after progressing
+                _Constants.underlying_chunk_size + 1,  # this is not
+                _Constants.underlying_chunk_size * 2 + 1,  # this recover is after progressing
+                _Constants.underlying_chunk_size * 2 + 1,  # this is not
+                _Constants.underlying_chunk_size * 2 + 1,  # this is not, we abort here
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=2,
+            expected_exception=RequestException,
+            expected_requested_offsets=[
+                0,
+                _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size * 2,
+                _Constants.underlying_chunk_size * 2,
+            ],
+        ),
+        FilesApiDownloadTestCase(
+            name="New files client: non-progressing recovers count is reset when progressing - 2",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 10,
+            failure_at_absolute_offset=[
+                1,
+                _Constants.underlying_chunk_size + 1,
+                _Constants.underlying_chunk_size * 2 + 1,
+                _Constants.underlying_chunk_size * 3 + 1,
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=1,
+            expected_requested_offsets=[
+                0,
+                0,
+                _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size * 2,
+                _Constants.underlying_chunk_size * 3,
+            ],
+        ),
+        # Test cases for download_to functionality
+        FilesApiDownloadTestCase(
+            name="Download to file: New files client, no failures, file of 1 Kb",
+            enable_new_client=True,
+            file_size=1024,
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            failure_at_absolute_offset=[],
+            expected_requested_offsets=[0],
+            download_mode=DownloadMode.FILE,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel (1 thread): New files client, no failures, file of 1 Kb",
+            enable_new_client=True,
+            file_size=1024,
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            failure_at_absolute_offset=[],
+            expected_requested_offsets=[0],
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=1,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel (4 threads): New files client, no failures, file of 1 Kb",
+            enable_new_client=True,
+            file_size=1024,
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            failure_at_absolute_offset=[],
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=4,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file: New files client, no failures, file of 10 parts",
+            enable_new_client=True,
+            file_size=10 * _Constants.underlying_chunk_size,
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_requested_offsets=[0],
+            download_mode=DownloadMode.FILE,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel: New files client, no failures, file of 10 parts",
+            enable_new_client=True,
+            file_size=10 * _Constants.underlying_chunk_size,
+            failure_at_absolute_offset=[],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file: New files client, failure with recovery",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 5,
+            failure_at_absolute_offset=[
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size + 1,
+                _Constants.underlying_chunk_size * 3,
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            expected_requested_offsets=[
+                0,
+                0,
+                _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size * 3,
+            ],
+            download_mode=DownloadMode.FILE,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel: New files client, failure with recovery",
+            enable_new_client=True,
+            file_size=_Constants.underlying_chunk_size * 5,
+            failure_at_absolute_offset=[
+                _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size + 1,
+                _Constants.underlying_chunk_size * 3,
+            ],
+            max_recovers_total=None,
+            max_recovers_without_progressing=None,
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=2,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file: New files client, failure without recovery",
+            enable_new_client=True,
+            file_size=10000,
+            failure_at_absolute_offset=[5],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_exception=RequestException,
+            expected_requested_offsets=[0],
+            download_mode=DownloadMode.FILE,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel: New files client, failure without recovery",
+            enable_new_client=True,
+            file_size=10000,
+            failure_at_absolute_offset=[5],
+            max_recovers_total=0,
+            max_recovers_without_progressing=0,
+            expected_exception=RequestException,
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file: New files client, overwrite = False",
+            enable_new_client=True,
+            file_size=100,
+            failure_at_absolute_offset=[5],
+            expected_exception=IOError,
+            download_mode=DownloadMode.FILE,
+            overwrite=False,
+        ),
+        FilesApiDownloadTestCase(
+            name="Download to file in parallel: New files client, overwrite = False",
+            enable_new_client=True,
+            file_size=100,
+            failure_at_absolute_offset=[5],
+            expected_exception=IOError,
+            download_mode=DownloadMode.FILE,
+            overwrite=False,
+            use_parallel=True,
+        ),
+    ],
+    ids=FilesApiDownloadTestCase.to_string,
+)
+def test_download_recover(config: Config, test_case: FilesApiDownloadTestCase, monkeypatch):
+    test_case.run(config, monkeypatch)
+
+
+class PresignedUrlDownloadServerState:
+    HOSTNAME = "mock-presigned-url.com"
+
+    def __init__(self, file_size: int, last_modified: str):
+        self.file_size = file_size
+        self.content = fast_random_bytes(file_size)
+        self.requested = False
+        self.api_used: Optional[str] = None
+        self.last_modified = last_modified
+
+    def get_presigned_url(self, path: str):
+        return f"https://{PresignedUrlDownloadServerState.HOSTNAME}{path}"
+
+    def get_content(self, request: requests.Request, api_used: str):
+        self.requested = True
+        self.api_used = api_used
+        offset = 0
+        end_byte_offset = len(self.content) - 1
+
+        if "Range" in request.headers:
+            offset, end_byte_offset = Utils.parse_range_header(request.headers["Range"], len(self.content))
+
+        resp = self.get_header(request)
+        resp.status_code = 206 if "Range" in request.headers else 200
+        resp._content = self.content[offset : end_byte_offset + 1]
+        resp.headers["Content_Length"] = str(len(resp._content))
+        return resp
+
+    def get_header(self, request: requests.Request) -> requests.Response:
+        resp = requests.Response()
+        resp.status_code = 200
+        resp._content = b""
+        resp.request = request
+        resp.headers["Content-Length"] = str(self.file_size)
+        resp.headers["Content-Type"] = "application/octet-stream"
+        resp.headers["Last-Modified"] = self.last_modified
+        return resp
+
+
+class PresignedUrlDownloadTestCase:
+    _FILE_PATH = "/testfile/remote/path"  # A fake path for the remote location of the file to be downloaded
+    presigned_url_disabled_response = """
+        {
+          "error_code": "PERMISSION_DENIED",
+          "message": "Presigned URLs API is not enabled",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "FILES_API_API_IS_NOT_ENABLED",
+              "domain": "filesystem.databricks.com",
+              "metadata": {
+                "api_name": "Presigned URLs"
+              }
+            },
+            {
+              "@type": "type.googleapis.com/google.rpc.RequestInfo",
+              "request_id": "9ccb2aa8-621e-42f7-a815-828b70653bf6",
+              "serving_data": ""
+            }
+          ]
+        }
+    """
+
+    expired_url_aws_response = (
+        '<?xml version="1.0" encoding="utf-8"?><Error><Code>'
+        "AuthenticationFailed</Code><Message>Server failed to authenticate "
+        "the request. Make sure the value of Authorization header is formed "
+        "correctly including the signature.\nRequestId:1abde581-601e-0028-"
+        "4a6d-5c3952000000\nTime:2025-01-01T16:54:20.5343181Z</Message"
+        "><AuthenticationErrorDetail>Signature not valid in the specified "
+        "time frame: Start [Wed, 01 Jan 2025 16:38:41 GMT] - Expiry [Wed, "
+        "01 Jan 2025 16:53:45 GMT] - Current [Wed, 01 Jan 2025 16:54:20 "
+        "GMT]</AuthenticationErrorDetail></Error>"
+    )
+
+    expired_url_azure_response: str = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n<Error><Code>AccessDenied'
+        "</Code><Message>Request has expired</Message><X-Amz-Expires>"
+        "14</X-Amz-Expires><Expires>2025-01-01T17:47:13Z</Expires>"
+        "<ServerTime>2025-01-01T17:48:01Z</ServerTime><RequestId>"
+        "JY66KDXM4CXBZ7X2</RequestId><HostId>n8Qayqg60rbvut9P7pk0</HostId>"
+        "</Error>"
+    )
+
+    def __init__(
+        self,
+        name: str,
+        file_size: int,
+        custom_response_get_file_status_api: Optional[CustomResponse] = CustomResponse(enabled=False),
+        custom_response_create_presigned_url: Optional[CustomResponse] = CustomResponse(enabled=False),
+        custom_response_download_from_url: Optional[CustomResponse] = CustomResponse(enabled=False),
+        custom_response_download_from_files_api: Optional[CustomResponse] = CustomResponse(enabled=False),
+        download_mode: Optional[Union[DownloadMode, List[DownloadMode]]] = None,
+        overwrite: bool = True,
+        use_parallel: Optional[Union[bool, List[bool]]] = None,
+        parallelism: Optional[int] = None,
+        parallel_download_min_file_size: Optional[int] = None,
+        parallel_upload_part_size: Optional[int] = None,
+        expected_exception_type: Optional[Type[BaseException]] = None,
+        expected_download_api: Optional[str] = None,
+    ):
+        # Metadata
+        self.name = name
+        self.file_size = file_size
+        self.last_modified = "Thu, 28 Nov 2024 16:39:14 GMT"
+
+        # Function stubs to customize responses for various API calls
+        self.custom_response_get_file_status_api = custom_response_get_file_status_api
+        self.custom_response_create_presigned_url = custom_response_create_presigned_url
+        self.custom_response_download_from_url = custom_response_download_from_url
+        self.custom_response_download_from_files_api = custom_response_download_from_files_api
+
+        # Parameters
+        #  - By default, we would like to test both download modes for every test case.
+        if download_mode is None:
+            self.download_mode = [DownloadMode.STREAM, DownloadMode.FILE]
+        elif not isinstance(download_mode, list):
+            self.download_mode = [download_mode]
+        else:
+            self.download_mode = download_mode
+        self.overwrite = overwrite
+        #  - By default, we would like to test both parallel and non-parallel downloads for every test case.
+        if use_parallel is None:
+            self.use_parallel = [False, True]
+        elif not isinstance(use_parallel, list):
+            self.use_parallel = [use_parallel]
+        else:
+            self.use_parallel = use_parallel
+        self.parallelism = parallelism
+
+        # Expected results
+        self.expected_exception_type = expected_exception_type
+        self.expected_download_api = expected_download_api
+
+        # Config overrides
+        self.parallel_download_min_file_size = parallel_download_min_file_size
+        self.parallel_upload_part_size = parallel_upload_part_size
+
+    def _clear_state(self):
+        self.custom_response_get_file_status_api.clear_state()
+        self.custom_response_create_presigned_url.clear_state()
+        self.custom_response_download_from_files_api.clear_state()
+        self.custom_response_download_from_url.clear_state()
+
+    def __str__(self) -> str:
+        return self.name
+
+    @staticmethod
+    def to_string(test_case) -> str:
+        return str(test_case)
+
+    def match_request_to_response(
+        self, request: requests.Request, server_state: PresignedUrlDownloadServerState
+    ) -> Optional[requests.Response]:
+        """Match the request to the server state and return a mock response."""
+        request_url = urlparse(request.url)
+        request_query = parse_qs(request_url.query)
+
+        # Create Download URL request
+        if (
+            request_url.hostname == "localhost"
+            and request.method == "POST"
+            and request_url.path == "/api/2.0/fs/create-download-url"
+        ):
+            assert "path" in request_query, "Expected 'path' in query parameters"
+            file_path = request_query.get("path")[0]
+
+            def processor() -> list:
+                url = server_state.get_presigned_url(file_path)
+                return [200, json.dumps({"url": url, "headers": {}}), {}]
+
+            return self.custom_response_create_presigned_url.generate_response(request, processor)
+
+        # Get files status request
+        elif (
+            request_url.hostname == "localhost"
+            and request.method == "HEAD"
+            and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
+        ):
+            # HEAD request to check if file exists
+            def processor() -> list:
+                resp = server_state.get_header(request)
+                return [resp.status_code, resp._content, resp.headers]
+
+            return self.custom_response_get_file_status_api.generate_response(request, processor, stream=True)
+
+        # Direct Files API download request
+        elif (
+            request_url.hostname == "localhost"
+            and request.method == "GET"
+            and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
+        ):
+
+            def processor() -> list:
+                resp = server_state.get_content(request, api_used="files_api")
+                return [resp.status_code, resp._content, resp.headers]
+
+            return self.custom_response_download_from_files_api.generate_response(request, processor, stream=True)
+
+        # Download from Presigned URL request
+        elif request_url.hostname == PresignedUrlDownloadServerState.HOSTNAME and request.method == "GET":
+            logger.debug(f"headers = {request.headers}")
+
+            def processor() -> list:
+                resp = server_state.get_content(request, api_used="presigned_url")
+                return [resp.status_code, resp._content, resp.headers]
+
+            return self.custom_response_download_from_url.generate_response(request, processor, stream=True)
+
+        else:
+            raise RuntimeError("Unexpected request " + str(request))
+
+    def run_one_case(self, config: Config, monkeypatch, download_mode: DownloadMode, use_parallel: bool) -> None:
+        if use_parallel and platform.system() == "Windows":
+            logger.debug("Parallel download is not supported on Windows. Falling back to sequential download.")
+            return
+        config = config.copy()
+        config.enable_presigned_download_api = True
+        config._clock = FakeClock()
+        if self.parallel_download_min_file_size is not None:
+            config.files_ext_parallel_download_min_file_size = self.parallel_download_min_file_size
+        if self.parallel_upload_part_size is not None:
+            config.files_ext_parallel_upload_part_size = self.parallel_upload_part_size
+
+        w = WorkspaceClient(config=config)
+        state = PresignedUrlDownloadServerState(self.file_size, self.last_modified)
+
+        with requests_mock.Mocker() as session_mock:
+
+            def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
+                """Custom matcher to handle requests and return mock responses."""
+                return self.match_request_to_response(request, state)
+
+            session_mock.add_matcher(custom_matcher)
+
+            if download_mode == DownloadMode.STREAM:
+                if self.expected_exception_type is not None:
+                    with pytest.raises(self.expected_exception_type):
+                        w.files.download(PresignedUrlDownloadTestCase._FILE_PATH)
+                else:
+                    download_resp = w.files.download(PresignedUrlDownloadTestCase._FILE_PATH)
+                    assert download_resp.content_length == self.file_size
+                    assert download_resp.contents.read() == state.content
+                    if self.expected_download_api is not None:
+                        assert state.api_used == self.expected_download_api
+            elif download_mode == DownloadMode.FILE:
+                with NamedTemporaryFile(delete=False) as temp_file:
+                    file_path = temp_file.name
+
+                # We can't use 'with' because Windows doesn't allow reopening the file, and `download_to` can open it
+                # only after we close it here.
+                try:
+                    if self.expected_exception_type is not None:
+                        with pytest.raises(self.expected_exception_type):
+                            w.files.download_to(
+                                PresignedUrlDownloadTestCase._FILE_PATH,
+                                file_path,
+                                overwrite=self.overwrite,
+                                use_parallel=use_parallel,
+                                parallelism=self.parallelism,
+                            )
+                    else:
+                        w.files.download_to(
+                            PresignedUrlDownloadTestCase._FILE_PATH,
+                            file_path,
+                            overwrite=self.overwrite,
+                            use_parallel=use_parallel,
+                            parallelism=self.parallelism,
+                        )
+                        with open(file_path, "rb") as f:
+                            actual_content = f.read()
+                        assert len(actual_content) == len(state.content)
+                        assert actual_content == state.content
+                        if self.expected_download_api is not None:
+                            assert state.api_used == self.expected_download_api
+                finally:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+            else:
+                raise ValueError("Unexpected download mode")
+
+    def run(self, config: Config, monkeypatch) -> None:
+        # Run all combinations of download modes and parallelism settings
+        for download_mode in self.download_mode:
+            for use_parallel in self.use_parallel:
+                logger.info(f"Downloading {download_mode.name} with parallelism={use_parallel}")
+                self.run_one_case(config, monkeypatch, download_mode, use_parallel)
+                self._clear_state()
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    [
+        # Happy cases
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download succeeds",
+            file_size=100 * 1024 * 1024,
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download to File succeeds",
+            file_size=100 * 1024 * 1024,
+            download_mode=DownloadMode.FILE,
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download to File in parallel succeeds",
+            file_size=100 * 1024 * 1024,
+            download_mode=DownloadMode.FILE,
+            use_parallel=True,
+            parallelism=2,
+        ),
+        # Sad cases
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download fails with 403",
+            file_size=100 * 1024 * 1024,
+            expected_exception_type=PermissionDenied,
+            custom_response_create_presigned_url=CustomResponse(code=403, only_invocation=1),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download fails with 500 when creating presigned URL",
+            file_size=100 * 1024 * 1024,
+            expected_exception_type=InternalError,
+            custom_response_create_presigned_url=CustomResponse(code=500, only_invocation=1),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL download fails with 500 when downloading from URL",
+            file_size=100 * 1024 * 1024,
+            expected_exception_type=TimeoutError,  # TimeoutError is raised after retries are exhausted
+            custom_response_download_from_url=CustomResponse(code=500),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Intermittent error fails after retry: Presigned URL expires with 403 when downloading from URL",
+            file_size=100 * 1024 * 1024,
+            expected_exception_type=ValueError,
+            custom_response_download_from_url=CustomResponse(
+                code=403, body=PresignedUrlDownloadTestCase.expired_url_aws_response
+            ),
+            expected_download_api="presigned_url",
+            use_parallel=True,
+            download_mode=DownloadMode.FILE,
+        ),
+        # Recoverable errors
+        PresignedUrlDownloadTestCase(
+            name="Intermittent error should succeed after retry: Presigned URL download fails with 500 when downloading from URL",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(code=500, only_invocation=1),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Intermittent error should succeed after retry: Presigned URL expires with 403 when downloading from URL",
+            file_size=100 * 1024 * 1024,
+            custom_response_download_from_url=CustomResponse(
+                code=403,
+                first_invocation=2,
+                last_invocation=4,
+                body=PresignedUrlDownloadTestCase.expired_url_aws_response,
+            ),
+        ),
+        # Test fallback to Files API
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL is disabled, should fallback to Files API",
+            file_size=100 * 1024 * 1024,
+            expected_download_api="files_api",
+            custom_response_create_presigned_url=CustomResponse(
+                code=403, only_invocation=1, body=PresignedUrlDownloadTestCase.presigned_url_disabled_response
+            ),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL fails with 403 when downloading, should fallback to Files API",
+            file_size=100 * 1024 * 1024,
+            expected_download_api="files_api",
+            custom_response_download_from_url=CustomResponse(code=403, only_invocation=1),
+        ),
+    ],
+    ids=PresignedUrlDownloadTestCase.to_string,
+)
+def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadTestCase, monkeypatch) -> None:
+    test_case.run(config, monkeypatch)
+
+
+class FileContent:
+
+    def __init__(self, length: int, checksum: str):
+        self._length = length
+        self.checksum = checksum
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> "FileContent":
+        sha256 = hashlib.sha256()
+        sha256.update(data)
+        return FileContent(len(data), sha256.hexdigest())
+
+    def __repr__(self) -> str:
+        return f"Length: {self._length}, checksum: {self.checksum}"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, FileContent):
+            return NotImplemented
+        return self._length == other._length and self.checksum == other.checksum
+
+
+class MultipartUploadServerState:
+    """This server state is updated on multipart upload (AWS, Azure)"""
+
+    upload_part_url_prefix = "https://cloud_provider.com/upload-part/"
+    abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
+
+    def __init__(self, expected_part_size: Optional[int] = None):
+        self.issued_multipart_urls = {}  # part_number -> expiration_time
+        self.uploaded_parts = {}  # part_number -> [part file path, etag]
+        self.session_token = "token-" + MultipartUploadServerState.randomstr()
+        self.file_content = None
+        self.issued_abort_url_expire_time = None
+        self.aborted = False
+        self.expected_part_size = expected_part_size
+        self.global_lock = Lock()
+
+    def create_upload_part_url(self, path: str, part_number: int, expire_time: datetime) -> str:
+        assert not self.aborted
+        # client may have requested a URL for the same part if retrying on network error
+        self.issued_multipart_urls[part_number] = expire_time
+        return f"{self.upload_part_url_prefix}{path}/{part_number}"
+
+    def create_abort_url(self, path: str, expire_time: datetime) -> str:
+        assert not self.aborted
+        self.issued_abort_url_expire_time = expire_time
+        return f"{self.abort_upload_url_prefix}{path}"
+
+    def save_part(self, part_number: int, part_content: bytes, etag: str) -> None:
+        assert not self.aborted
+        assert len(part_content) > 0
+        if self.expected_part_size is not None:
+            assert len(part_content) <= self.expected_part_size
+
+        logger.info(f"Saving part {part_number} of size {len(part_content)}")
+
+        # part might already have been uploaded
+        with self.global_lock:
+            if part_number not in self.uploaded_parts:
+                with NamedTemporaryFile(mode="wb", delete=False) as f:
+                    part_file = f.name
+                self.uploaded_parts[part_number] = [part_file, etag, Lock()]
+            existing_part = self.uploaded_parts[part_number]
+        with existing_part[2]:  # lock per part
+            part_file = existing_part[0]
+            with open(part_file, "wb") as f:  # overwrite
+                f.write(part_content)
+            existing_part[1] = etag  # update etag
+
+    def cleanup(self) -> None:
+        for [file, _, _] in self.uploaded_parts.values():
+            os.remove(file)
+
+    def get_file_content(self) -> Optional[FileContent]:
+        if self.aborted:
+            assert not self.file_content, "File content should not be set if upload was aborted"
+
+        # content may be None even for a non-aborted upload,
+        # in case single-shot upload was used due to small stream size.
+        return self.file_content
+
+    def upload_complete(self, etags: dict) -> None:
+        assert not self.aborted
+        # validate etags
+        expected_etags = {}
+        with self.global_lock:
+            for part_number in self.uploaded_parts.keys():
+                expected_etags[part_number] = self.uploaded_parts[part_number][1]
+            assert etags == expected_etags
+
+            size = 0
+            sha256 = hashlib.sha256()
+
+            sorted_parts = sorted(self.uploaded_parts.keys())
+            for part_number in sorted_parts:
+                part_path = self.uploaded_parts[part_number][0]
+                size += os.path.getsize(part_path)
+                with open(part_path, "rb") as f:
+                    part_content = f.read()
+                    sha256.update(part_content)
+
+        self.file_content = FileContent(size, sha256.hexdigest())
+
+    def abort_upload(self) -> None:
+        self.aborted = True
+
+    @staticmethod
+    def randomstr() -> str:
+        return f"{random.randrange(10000)}-{int(time.time())}"
 
 
 class SingleShotUploadServerState:
@@ -637,9 +1245,13 @@ class UploadTestCase:
         self,
         name: str,
         stream_size: int,
+        cloud: Cloud,
         overwrite: bool,
+        source_type: List["UploadSourceType"],
+        use_parallel: List[bool],
+        parallelism: Optional[int],
         multipart_upload_min_stream_size: int,
-        multipart_upload_chunk_size: Optional[int],
+        multipart_upload_part_size: Optional[int],
         sdk_retry_timeout_seconds: Optional[int],
         multipart_upload_max_retries: Optional[int],
         custom_response_on_single_shot_upload: CustomResponse,
@@ -651,9 +1263,13 @@ class UploadTestCase:
     ):
         self.name = name
         self.stream_size = stream_size
+        self.cloud = cloud
         self.overwrite = overwrite
+        self.source_type = source_type
+        self.use_parallel = use_parallel
+        self.parallelism = parallelism
         self.multipart_upload_min_stream_size = multipart_upload_min_stream_size
-        self.multipart_upload_chunk_size = multipart_upload_chunk_size
+        self.multipart_upload_part_size = multipart_upload_part_size
         self.sdk_retry_timeout_seconds = sdk_retry_timeout_seconds
         self.multipart_upload_max_retries = multipart_upload_max_retries
         self.custom_response_on_single_shot_upload = custom_response_on_single_shot_upload
@@ -662,6 +1278,7 @@ class UploadTestCase:
         self.expected_single_shot_upload = expected_single_shot_upload
 
         self.path = "/test.txt"
+        self.created_temp_files = []
 
     def customize_config(self, config: Config) -> None:
         pass
@@ -669,23 +1286,54 @@ class UploadTestCase:
     def create_multipart_upload_server_state(self) -> Union[MultipartUploadServerState, "ResumableUploadServerState"]:
         raise NotImplementedError
 
+    def clear_state(self) -> None:
+        for file_path in self.created_temp_files:
+            try:
+                os.remove(file_path)
+            except OSError:
+                logger.warning("Failed to remove temp file: %s", file_path)
+        self.created_temp_files = []
+
+    def get_upload_file(self, content: bytes, source_type: "UploadSourceType") -> Union[str, io.BytesIO]:
+        """Returns a file or stream to upload based on the source type."""
+        if source_type == UploadSourceType.FILE:
+            with NamedTemporaryFile(mode="wb", delete=False) as f:
+                f.write(content)
+                file_path = f.name
+            self.created_temp_files.append(file_path)
+            return file_path
+        elif source_type == UploadSourceType.STREAM:
+            return io.BytesIO(content)
+        else:
+            raise ValueError(f"Unknown source type: {source_type}")
+
     def match_request_to_response(
         self, request: requests.Request, server_state: Union[MultipartUploadServerState, "ResumableUploadServerState"]
     ) -> Optional[requests.Response]:
         raise NotImplementedError
 
     def run(self, config: Config) -> None:
+        for source_type in self.source_type:
+            for use_parallel in self.use_parallel:
+                self.run_one_case(config, use_parallel, source_type)
+
+    def run_one_case(self, config: Config, use_parallel: bool, source_type: "UploadSourceType") -> None:
+
+        logger.debug(f"Running test case: {self.name}, source_type={source_type}, use_parallel={use_parallel}")
         config = config.copy()
-        config.enable_experimental_files_api_client = True
+        config._clock = FakeClock()
+
+        if self.cloud:
+            config.databricks_environment = DatabricksEnvironment(self.cloud, "")
 
         if self.sdk_retry_timeout_seconds:
             config.retry_timeout_seconds = self.sdk_retry_timeout_seconds
-        if self.multipart_upload_chunk_size:
-            config.multipart_upload_chunk_size = self.multipart_upload_chunk_size
+        if self.multipart_upload_part_size:
+            config.multipart_upload_part_size = self.multipart_upload_part_size
         if self.multipart_upload_max_retries:
-            config.multipart_upload_max_retries = self.multipart_upload_max_retries
+            config.files_ext_multipart_upload_max_retries = self.multipart_upload_max_retries
 
-        config.multipart_upload_min_stream_size = self.multipart_upload_min_stream_size
+        config.files_ext_multipart_upload_min_stream_size = self.multipart_upload_min_stream_size
 
         pat_token = "some_pat_token"
         config._header_factory = lambda: {"Authorization": f"Bearer {pat_token}"}
@@ -695,7 +1343,8 @@ class UploadTestCase:
         multipart_server_state = self.create_multipart_upload_server_state()
         single_shot_server_state = SingleShotUploadServerState()
 
-        file_content = os.urandom(self.stream_size)
+        file_content = fast_random_bytes(self.stream_size)
+        content_or_source = self.get_upload_file(file_content, source_type)
         w = WorkspaceClient(config=config)
 
         try:
@@ -724,30 +1373,67 @@ class UploadTestCase:
                 session_mock.add_matcher(matcher=custom_matcher)
 
                 def upload() -> None:
-                    w.files.upload(self.path, io.BytesIO(file_content), overwrite=self.overwrite)
+                    if source_type == UploadSourceType.FILE:
+                        w.files.upload_from(
+                            self.path,
+                            content_or_source,
+                            overwrite=self.overwrite,
+                            part_size=self.multipart_upload_part_size,
+                            use_parallel=use_parallel,
+                            parallelism=self.parallelism,
+                        )
+                    else:
+                        w.files.upload(
+                            self.path,
+                            content_or_source,
+                            overwrite=self.overwrite,
+                            part_size=self.multipart_upload_part_size,
+                            use_parallel=use_parallel,
+                            parallelism=self.parallelism,
+                        )
 
                 if self.expected_exception_type is not None:
                     with pytest.raises(self.expected_exception_type):
                         upload()
-                    assert not single_shot_server_state.get_file_content()
-                    assert not multipart_server_state.get_file_content()
+                    assert (
+                        not single_shot_server_state.get_file_content()
+                    ), "Single-shot upload should not have succeeded"
+                    assert not multipart_server_state.get_file_content(), "Multipart upload should not have succeeded"
                 else:
                     upload()
                     if self.expected_single_shot_upload:
-                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(file_content)
-                        assert not multipart_server_state.get_file_content()
+                        assert single_shot_server_state.get_file_content() == FileContent.from_bytes(
+                            file_content
+                        ), "Single-shot upload should have succeeded"
+                        assert (
+                            not multipart_server_state.get_file_content()
+                        ), "Multipart upload should not have succeeded"
                     else:
-                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(file_content)
-                        assert not single_shot_server_state.get_file_content()
+                        assert multipart_server_state.get_file_content() == FileContent.from_bytes(
+                            file_content
+                        ), "Multipart upload should have succeeded"
+                        assert (
+                            not single_shot_server_state.get_file_content()
+                        ), "Single-shot upload should not have succeeded"
 
-            assert multipart_server_state.aborted == self.expected_multipart_upload_aborted
+            assert (
+                multipart_server_state.aborted == self.expected_multipart_upload_aborted
+            ), "Multipart upload aborted state mismatch"
 
         finally:
             multipart_server_state.cleanup()
+            self.clear_state()
 
     @staticmethod
     def is_auth_header_present(r: requests.Request) -> bool:
         return r.headers.get("Authorization") is not None
+
+
+class UploadSourceType(Enum):
+    """Source type for the upload. Used to determine how to upload the file."""
+
+    FILE = "file"  # upload from a file on disk
+    STREAM = "stream"  # upload from a stream (e.g. BytesIO)
 
 
 class MultipartUploadTestCase(UploadTestCase):
@@ -767,7 +1453,7 @@ class MultipartUploadTestCase(UploadTestCase):
     Response of each call can be modified by parameterising a respective `CustomResponse` object.
     """
 
-    expired_url_aws_response: str = (
+    expired_url_aws_response = (
         '<?xml version="1.0" encoding="utf-8"?><Error><Code>'
         "AuthenticationFailed</Code><Message>Server failed to authenticate "
         "the request. Make sure the value of Authorization header is formed "
@@ -788,13 +1474,39 @@ class MultipartUploadTestCase(UploadTestCase):
         "</Error>"
     )
 
+    presigned_url_disabled_response = """
+        {
+          "error_code": "PERMISSION_DENIED",
+          "message": "Presigned URLs API is not enabled",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "FILES_API_API_IS_NOT_ENABLED",
+              "domain": "filesystem.databricks.com",
+              "metadata": {
+                "api_name": "Presigned URLs"
+              }
+            },
+            {
+              "@type": "type.googleapis.com/google.rpc.RequestInfo",
+              "request_id": "9ccb2aa8-621e-42f7-a815-828b70653bf6",
+              "serving_data": ""
+            }
+          ]
+        }
+    """
+
     def __init__(
         self,
         name: str,
-        stream_size: int,  # size of uploaded file or, technically, stream
-        overwrite: bool = True,  # TODO test for overwrite = false
+        content_size: int,  # size of uploaded file or, technically, stream
+        cloud: Cloud = Cloud.AWS,
+        overwrite: bool = True,
         multipart_upload_min_stream_size: int = 0,  # disable single-shot uploads by default
-        multipart_upload_chunk_size: Optional[int] = None,
+        source_type: Optional[List[UploadSourceType]] = None,
+        use_parallel: Optional[List[bool]] = None,
+        parallelism: Optional[int] = None,
+        multipart_upload_part_size: Optional[int] = None,
         sdk_retry_timeout_seconds: Optional[int] = None,
         multipart_upload_max_retries: Optional[int] = None,
         multipart_upload_batch_url_count: Optional[int] = None,
@@ -808,15 +1520,21 @@ class MultipartUploadTestCase(UploadTestCase):
         # exception which is expected to be thrown (so upload is expected to have failed)
         expected_exception_type: Optional[Type[BaseException]] = None,
         # if abort is expected to be called
+        # expected part size
+        expected_part_size: Optional[int] = None,
         expected_multipart_upload_aborted: bool = False,
         expected_single_shot_upload: bool = False,
     ):
         super().__init__(
             name,
-            stream_size,
+            content_size,
+            cloud,
             overwrite,
+            source_type or [UploadSourceType.FILE, UploadSourceType.STREAM],
+            use_parallel or [False, True],
+            parallelism,
             multipart_upload_min_stream_size,
-            multipart_upload_chunk_size,
+            multipart_upload_part_size,
             sdk_retry_timeout_seconds,
             multipart_upload_max_retries,
             custom_response_on_single_shot_upload,
@@ -832,13 +1550,24 @@ class MultipartUploadTestCase(UploadTestCase):
         self.custom_response_on_complete = copy.deepcopy(custom_response_on_complete)
         self.custom_response_on_create_abort_url = copy.deepcopy(custom_response_on_create_abort_url)
         self.custom_response_on_abort = copy.deepcopy(custom_response_on_abort)
+        self.expected_exception_type = expected_exception_type
+        self.expected_part_size = expected_part_size
 
     def customize_config(self, config: Config) -> None:
         if self.multipart_upload_batch_url_count:
-            config.multipart_upload_batch_url_count = self.multipart_upload_batch_url_count
+            config.files_ext_multipart_upload_batch_url_count = self.multipart_upload_batch_url_count
 
     def create_multipart_upload_server_state(self) -> MultipartUploadServerState:
-        return MultipartUploadServerState()
+        return MultipartUploadServerState(self.expected_part_size)
+
+    def clear_state(self) -> None:
+        super().clear_state()
+        self.custom_response_on_initiate.clear_state()
+        self.custom_response_on_create_multipart_url.clear_state()
+        self.custom_response_on_upload.clear_state()
+        self.custom_response_on_complete.clear_state()
+        self.custom_response_on_create_abort_url.clear_state()
+        self.custom_response_on_abort.clear_state()
 
     def match_request_to_response(
         self, request: requests.Request, server_state: MultipartUploadServerState
@@ -970,6 +1699,21 @@ class MultipartUploadTestCase(UploadTestCase):
 
             return self.custom_response_on_abort.generate_response(request, processor)
 
+        # direct upload (single-shot upload)
+        elif (
+            request_url.hostname == "localhost"
+            and request_url.path == f"/api/2.0/fs/files{self.path}"
+            and request.method == "PUT"
+        ):
+            assert MultipartUploadTestCase.is_auth_header_present(request)
+            assert request.content is not None
+
+            def processor():
+                server_state.file_content = FileContent.from_bytes(request.content)
+                return [200, "", {}]
+
+            return self.custom_response_on_upload.generate_response(request, processor)
+
         return None
 
     @staticmethod
@@ -992,10 +1736,50 @@ class MultipartUploadTestCase(UploadTestCase):
 @pytest.mark.parametrize(
     "test_case",
     [
+        # -------------------------- happy cases --------------------------
+        MultipartUploadTestCase(
+            "Multipart upload successful: single part",
+            content_size=1024 * 1024,  # less than part size
+            multipart_upload_part_size=10 * 1024 * 1024,
+            expected_part_size=1024 * 1024,  # chunk size is used
+        ),
+        MultipartUploadTestCase(
+            "Multipart upload successful: multiple parts (aligned)",
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            expected_part_size=10 * 1024 * 1024,  # chunk size is used
+        ),
+        MultipartUploadTestCase(
+            "Multipart upload successful: multiple parts (aligned), upload urls by 3",
+            multipart_upload_batch_url_count=3,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            expected_part_size=10 * 1024 * 1024,  # chunk size is used
+        ),
+        MultipartUploadTestCase(
+            "Multipart upload successful: multiple chunks (not aligned), upload urls by 1",
+            content_size=100 * 1024 * 1024 + 1566,  # 14 full chunks + remainder
+            multipart_upload_part_size=7 * 1024 * 1024 - 17,
+            expected_part_size=7 * 1024 * 1024 - 17,  # chunk size is used
+        ),
+        MultipartUploadTestCase(
+            "Multipart upload successful: multiple parts (not aligned), upload urls by 5",
+            multipart_upload_batch_url_count=5,
+            content_size=100 * 1024 * 1024 + 1566,  # 14 full parts + remainder
+            multipart_upload_part_size=7 * 1024 * 1024 - 17,
+        ),
+        MultipartUploadTestCase(
+            "Small stream, single-shot upload used",
+            content_size=1024 * 1024,
+            multipart_upload_min_stream_size=1024 * 1024 + 1,
+            expected_multipart_upload_aborted=False,
+            expected_single_shot_upload=True,
+            use_parallel=[False],
+        ),
         # -------------------------- failures on "initiate upload" --------------------------
         MultipartUploadTestCase(
             "Initiate: 400 response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             multipart_upload_min_stream_size=1024 * 1024,  # still multipart upload is used
             custom_response_on_initiate=CustomResponse(code=400, only_invocation=1),
             expected_exception_type=BadRequest,
@@ -1003,35 +1787,35 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Initiate: 403 response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(code=403, only_invocation=1),
             expected_exception_type=PermissionDenied,
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         MultipartUploadTestCase(
             "Initiate: 500 response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(code=500, only_invocation=1),
             expected_exception_type=InternalError,
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         MultipartUploadTestCase(
             "Initiate: non-JSON response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(body="this is not a JSON", only_invocation=1),
             expected_exception_type=requests.exceptions.JSONDecodeError,
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         MultipartUploadTestCase(
             "Initiate: meaningless JSON response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(body='{"foo": 123}', only_invocation=1),
             expected_exception_type=ValueError,
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         MultipartUploadTestCase(
             "Initiate: no session token in response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 body='{"multipart_upload":{"session_token1": "token123"}}', only_invocation=1
             ),
@@ -1040,15 +1824,14 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Initiate: permanent retryable exception",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(exception=requests.ConnectionError),
-            sdk_retry_timeout_seconds=30,  # let's not wait 5 min (SDK default timeout)
             expected_exception_type=TimeoutError,  # SDK throws this if retries are taking too long
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         MultipartUploadTestCase(
             "Initiate: intermittent retryable exception",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 exception=requests.ConnectionError,
                 # 3 calls fail, but request is successfully retried
@@ -1059,7 +1842,7 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Initiate: intermittent retryable status code",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_initiate=CustomResponse(
                 code=429,
                 # 3 calls fail, then retry succeeds
@@ -1071,7 +1854,7 @@ class MultipartUploadTestCase(UploadTestCase):
         # -------------------------- failures on "create upload URL" --------------------------
         MultipartUploadTestCase(
             "Create upload URL: 400 response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 code=400,
                 # 1 failure is enough
@@ -1082,52 +1865,62 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Create upload URL: 403 response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
+            custom_response_on_create_multipart_url=CustomResponse(
+                code=403,
+                # 1 failure is enough
+                only_invocation=1,
+            ),
+            expected_exception_type=PermissionDenied,
+            expected_multipart_upload_aborted=True,
+        ),
+        MultipartUploadTestCase(
+            "Create upload URL: internal error is not retried",
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=500, only_invocation=1),
             expected_exception_type=InternalError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: non-JSON response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body="this is not a JSON", only_invocation=1),
             expected_exception_type=requests.exceptions.JSONDecodeError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: meaningless JSON response is not retried",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body='{"foo":123}', only_invocation=1),
             expected_exception_type=ValueError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: meaningless JSON response is not retried 2",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body='{"upload_part_urls":[]}', only_invocation=1),
             expected_exception_type=ValueError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: meaningless JSON response is not retried 3",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 body='{"upload_part_urls":[{"url":""}]}', only_invocation=1
             ),
-            expected_exception_type=KeyError,  # TODO we might want to make JSON parsing more reliable
+            expected_exception_type=KeyError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: permanent retryable exception",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(exception=requests.ConnectionError),
-            sdk_retry_timeout_seconds=30,  # don't wait for 5 min (SDK default timeout)
             expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: intermittent retryable exception",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 exception=requests.Timeout,
                 # happens only once, retry succeeds
@@ -1137,8 +1930,8 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Create upload URL: intermittent retryable exception 2",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 exception=requests.Timeout,
                 # 4th request for multipart URLs fails 3 times, then retry succeeds
@@ -1149,8 +1942,8 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Create upload URL: intermittent retryable exception 3",
-            stream_size=1024 * 1024,
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=1024 * 1024,
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 code=500,
                 first_invocation=4,
@@ -1158,23 +1951,75 @@ class MultipartUploadTestCase(UploadTestCase):
             ),
             expected_multipart_upload_aborted=False,
         ),
+        MultipartUploadTestCase(
+            "Create upload URL: fallback to single-shot upload when presigned URLs are disabled",
+            content_size=1024 * 1024,
+            custom_response_on_create_multipart_url=CustomResponse(
+                code=403,
+                body=MultipartUploadTestCase.presigned_url_disabled_response,
+                # 1 failure is enough
+                only_invocation=1,
+            ),
+            expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
+        ),
         # -------------------------- failures on part upload --------------------------
         MultipartUploadTestCase(
-            "Upload part: 403 response is not retried",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            "Upload part: 403 response will trigger fallback to single-shot upload on Azure",
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=403,
                 # fail only once
                 only_invocation=1,
             ),
+            expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
+        ),
+        MultipartUploadTestCase(
+            "Upload part: 403 response will trigger fallback to single-shot upload on AWS",
+            cloud=Cloud.AWS,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            custom_response_on_upload=CustomResponse(
+                code=403,
+                # fail only once on the first part
+                only_invocation=1,
+            ),
+            expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
+        ),
+        MultipartUploadTestCase(
+            "Upload part: fallback to single-shot upload when Azure Firewall denies first part upload",
+            cloud=Cloud.AZURE,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            custom_response_on_upload=CustomResponse(
+                code=403,
+                # fail only once on the first part
+                only_invocation=1,
+            ),
+            expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
+        ),
+        MultipartUploadTestCase(
+            "Upload part: 403 response on the second part on Azure causes permission denied",
+            cloud=Cloud.AZURE,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            custom_response_on_upload=CustomResponse(
+                code=403,
+                # fail only once on the second part
+                only_invocation=2,
+            ),
             expected_exception_type=PermissionDenied,
             expected_multipart_upload_aborted=True,
+            use_parallel=[False],  # "Second part" is not well-defined when using parallel upload
         ),
         MultipartUploadTestCase(
             "Upload part: 400 response is not retried",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 chunks
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=400,
                 # fail once, but not on the first part
@@ -1185,8 +2030,8 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Upload part: expired URL is retried on AWS",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=403, body=MultipartUploadTestCase.expired_url_aws_response, only_invocation=2
             ),
@@ -1195,8 +2040,8 @@ class MultipartUploadTestCase(UploadTestCase):
         MultipartUploadTestCase(
             "Upload part: expired URL is retried on Azure",
             multipart_upload_max_retries=3,
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=403,
                 body=MultipartUploadTestCase.expired_url_azure_response,
@@ -1210,8 +2055,8 @@ class MultipartUploadTestCase(UploadTestCase):
             "Upload part: expired URL is retried on Azure, requesting urls by 6",
             multipart_upload_max_retries=3,
             multipart_upload_batch_url_count=6,
-            stream_size=100 * 1024 * 1024,  # 100 chunks
-            multipart_upload_chunk_size=1 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 100 chunks
+            multipart_upload_part_size=1 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=403,
                 body=MultipartUploadTestCase.expired_url_azure_response,
@@ -1224,8 +2069,8 @@ class MultipartUploadTestCase(UploadTestCase):
         MultipartUploadTestCase(
             "Upload part: expired URL retry is exhausted",
             multipart_upload_max_retries=3,
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 code=403,
                 body=MultipartUploadTestCase.expired_url_azure_response,
@@ -1235,29 +2080,42 @@ class MultipartUploadTestCase(UploadTestCase):
             ),
             expected_exception_type=ValueError,
             expected_multipart_upload_aborted=True,
+            use_parallel=[False],  # to make "retry is exhausted" well-defined
+        ),
+        MultipartUploadTestCase(
+            "Upload part in parallel: expired URL retry is exhausted",
+            multipart_upload_max_retries=3,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
+            custom_response_on_upload=CustomResponse(
+                code=403,
+                body=MultipartUploadTestCase.expired_url_azure_response,
+                first_invocation=2,  # to exhaust retries for parallel uploading, failure must happen infinitely
+            ),
+            expected_exception_type=ValueError,
+            expected_multipart_upload_aborted=True,
+            use_parallel=[True],  # to make "retry is exhausted" well-defined
         ),
         MultipartUploadTestCase(
             "Upload part: permanent retryable error",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
-            sdk_retry_timeout_seconds=30,  # don't wait for 5 min (SDK default timeout)
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(exception=requests.ConnectionError, first_invocation=8),
             expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Upload part: permanent retryable status code",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
-            sdk_retry_timeout_seconds=30,  # don't wait for 5 min (SDK default timeout)
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(code=429, first_invocation=8),
             expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
             "Upload part: intermittent retryable error",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
                 exception=requests.ConnectionError, first_invocation=2, last_invocation=5
             ),
@@ -1265,50 +2123,30 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Upload part: intermittent retryable status code 429",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(code=429, first_invocation=2, last_invocation=4),
             expected_multipart_upload_aborted=False,
         ),
         MultipartUploadTestCase(
             "Upload chunk: intermittent retryable status code 500",
-            stream_size=100 * 1024 * 1024,  # 10 chunks
-            multipart_upload_chunk_size=10 * 1024 * 1024,
+            content_size=100 * 1024 * 1024,  # 10 parts
+            multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(code=500, first_invocation=2, last_invocation=4),
             expected_multipart_upload_aborted=False,
         ),
         # -------------------------- failures on abort --------------------------
         MultipartUploadTestCase(
-            "Abort URL: 403 response",
-            stream_size=1024 * 1024,
-            custom_response_on_upload=CustomResponse(code=403, only_invocation=1),
-            custom_response_on_create_abort_url=CustomResponse(code=403),
-            expected_exception_type=PermissionDenied,  # original error
-            expected_multipart_upload_aborted=False,  # server state didn't change to record abort
-        ),
-        MultipartUploadTestCase(
             "Abort URL: intermittent retryable error",
-            stream_size=1024 * 1024,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=403, only_invocation=1),
             custom_response_on_create_abort_url=CustomResponse(code=429, first_invocation=1, last_invocation=3),
             expected_exception_type=PermissionDenied,  # original error
             expected_multipart_upload_aborted=True,  # abort successfully called after abort URL creation is retried
         ),
         MultipartUploadTestCase(
-            "Abort URL: intermittent retryable error 2",
-            stream_size=1024 * 1024,
-            custom_response_on_create_multipart_url=CustomResponse(code=403, only_invocation=1),
-            custom_response_on_create_abort_url=CustomResponse(
-                exception=requests.Timeout, first_invocation=1, last_invocation=3
-            ),
-            expected_exception_type=PermissionDenied,  # original error
-            expected_multipart_upload_aborted=True,  # abort successfully called after abort URL creation is retried
-        ),
-        MultipartUploadTestCase(
             "Abort: exception",
-            stream_size=1024 * 1024,
-            # don't wait for 5 min (SDK default timeout)
-            sdk_retry_timeout_seconds=30,
+            content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=403, only_invocation=1),
             custom_response_on_abort=CustomResponse(
                 exception=requests.Timeout,
@@ -1318,40 +2156,22 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_exception_type=PermissionDenied,  # original error is reported
             expected_multipart_upload_aborted=True,
         ),
-        # -------------------------- happy cases --------------------------
+        # -------------------------- Parallel Upload for Streams --------------------------
         MultipartUploadTestCase(
-            "Multipart upload successful: single part",
-            stream_size=1024 * 1024,  # less than part size
-            multipart_upload_chunk_size=10 * 1024 * 1024,
-        ),
-        MultipartUploadTestCase(
-            "Multipart upload successful: multiple parts (aligned)",
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
-        ),
-        MultipartUploadTestCase(
-            "Multipart upload successful: multiple parts (aligned), upload urls by 3",
-            multipart_upload_batch_url_count=3,
-            stream_size=100 * 1024 * 1024,  # 10 parts
-            multipart_upload_chunk_size=10 * 1024 * 1024,
-        ),
-        MultipartUploadTestCase(
-            "Multipart upload successful: multiple parts (not aligned), upload urls by 1",
-            stream_size=100 * 1024 * 1024 + 1566,  # 14 full parts + remainder
-            multipart_upload_chunk_size=7 * 1024 * 1024 - 17,
-        ),
-        MultipartUploadTestCase(
-            "Multipart upload successful: multiple parts (not aligned), upload urls by 5",
-            multipart_upload_batch_url_count=5,
-            stream_size=100 * 1024 * 1024 + 1566,  # 14 full parts + remainder
-            multipart_upload_chunk_size=7 * 1024 * 1024 - 17,
-        ),
-        MultipartUploadTestCase(
-            "Small stream, single-shot upload used",
-            stream_size=1024 * 1024,
-            multipart_upload_min_stream_size=1024 * 1024 + 1,
-            expected_multipart_upload_aborted=False,
-            expected_single_shot_upload=True,
+            "Multipart parallel upload for stream: Upload errors are not retried",
+            content_size=10 * 1024 * 1024,
+            multipart_upload_part_size=1024 * 1024,
+            source_type=[UploadSourceType.STREAM],
+            use_parallel=[True],
+            parallelism=1,
+            custom_response_on_upload=CustomResponse(
+                code=501,
+                first_invocation=2,
+                last_invocation=4,
+                delayed_response_seconds=0.1,
+            ),
+            expected_exception_type=NotImplemented,
+            expected_multipart_upload_aborted=True,
         ),
     ],
     ids=MultipartUploadTestCase.to_string,
@@ -1366,18 +2186,22 @@ class ResumableUploadServerState:
     resumable_upload_url_prefix = "https://cloud_provider.com/resumable-upload/"
     abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
 
-    def __init__(self, unconfirmed_delta: Union[int, list]):
+    def __init__(self, unconfirmed_delta: Union[int, list], expected_part_size: Optional[int]):
         self.unconfirmed_delta = unconfirmed_delta
         self.confirmed_last_byte: Optional[int] = None  # inclusive
         self.uploaded_parts = []
         self.session_token = "token-" + MultipartUploadServerState.randomstr()
         self.file_content: Optional[FileContent] = None
         self.aborted = False
+        self.expected_part_size = expected_part_size
 
     def save_part(self, start_offset: int, end_offset_incl: int, part_content: bytes, file_size_s: str) -> None:
         assert not self.aborted
 
         assert len(part_content) > 0
+        if self.expected_part_size is not None:
+            assert len(part_content) <= self.expected_part_size
+
         if self.confirmed_last_byte:
             assert start_offset == self.confirmed_last_byte + 1
         else:
@@ -1408,8 +2232,8 @@ class ResumableUploadServerState:
         if unconfirmed_delta > 0:
             part_content = part_content[:-unconfirmed_delta]
 
-        fd, part_file = mkstemp()
-        with open(fd, "wb") as f:
+        with NamedTemporaryFile(mode="wb", delete=False) as f:
+            part_file = f.name
             f.write(part_content)
 
         self.uploaded_parts.append(part_file)
@@ -1468,9 +2292,13 @@ class ResumableUploadTestCase(UploadTestCase):
         self,
         name: str,
         stream_size: int,
+        cloud: Cloud = None,
         overwrite: bool = True,
+        source_type: Optional[List[UploadSourceType]] = None,
+        use_parallel: Optional[List[bool]] = None,
+        parallelism: Optional[int] = None,
         multipart_upload_min_stream_size: int = 0,  # disable single-shot uploads by default
-        multipart_upload_chunk_size: Optional[int] = None,
+        multipart_upload_part_size: Optional[int] = None,
         sdk_retry_timeout_seconds: Optional[int] = None,
         multipart_upload_max_retries: Optional[int] = None,
         # In resumable upload, when replying to part upload request, server returns
@@ -1490,13 +2318,19 @@ class ResumableUploadTestCase(UploadTestCase):
         # if abort is expected to be called
         expected_multipart_upload_aborted: bool = False,
         expected_single_shot_upload: bool = False,
+        expected_part_size: Optional[int] = None,
     ):
         super().__init__(
             name,
             stream_size,
+            cloud,
             overwrite,
+            source_type or [UploadSourceType.FILE, UploadSourceType.STREAM],
+            use_parallel
+            or [True, False],  # Resumable Upload doesn't support parallel uploading of parts, but fallback should work
+            parallelism,
             multipart_upload_min_stream_size,
-            multipart_upload_chunk_size,
+            multipart_upload_part_size,
             sdk_retry_timeout_seconds,
             multipart_upload_max_retries,
             custom_response_on_single_shot_upload,
@@ -1510,9 +2344,18 @@ class ResumableUploadTestCase(UploadTestCase):
         self.custom_response_on_upload = copy.deepcopy(custom_response_on_upload)
         self.custom_response_on_status_check = copy.deepcopy(custom_response_on_status_check)
         self.custom_response_on_abort = copy.deepcopy(custom_response_on_abort)
+        self.expected_exception_type = expected_exception_type
+        self.expected_part_size = expected_part_size
 
     def create_multipart_upload_server_state(self) -> ResumableUploadServerState:
-        return ResumableUploadServerState(self.unconfirmed_delta)
+        return ResumableUploadServerState(self.unconfirmed_delta, self.expected_part_size)
+
+    def clear_state(self) -> None:
+        super().clear_state()
+        self.custom_response_on_create_resumable_url.clear_state()
+        self.custom_response_on_upload.clear_state()
+        self.custom_response_on_status_check.clear_state()
+        self.custom_response_on_abort.clear_state()
 
     def match_request_to_response(
         self, request: requests.Request, server_state: ResumableUploadServerState
@@ -1651,6 +2494,15 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
         ResumableUploadTestCase(
+            "Create resumable URL: fallback to single-shot upload when presigned URLs are disabled",
+            stream_size=1024 * 1024,
+            custom_response_on_create_resumable_url=CustomResponse(
+                code=403, body=MultipartUploadTestCase.presigned_url_disabled_response, only_invocation=1
+            ),
+            expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
+        ),
+        ResumableUploadTestCase(
             "Create resumable URL: 500 response is not retried",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=500, only_invocation=1),
@@ -1677,7 +2529,6 @@ class ResumableUploadTestCase(UploadTestCase):
             "Create resumable URL: permanent retryable status code",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=429),
-            sdk_retry_timeout_seconds=30,  # don't wait for 5 min (SDK default timeout)
             expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=False,  # upload didn't start
         ),
@@ -1739,7 +2590,7 @@ class ResumableUploadTestCase(UploadTestCase):
         ResumableUploadTestCase(
             "Upload: intermittent 429 response: retried",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=7 * 1024 * 1024,
+            multipart_upload_part_size=7 * 1024 * 1024,
             multipart_upload_max_retries=3,
             custom_response_on_upload=CustomResponse(
                 code=429,
@@ -1752,7 +2603,7 @@ class ResumableUploadTestCase(UploadTestCase):
         ResumableUploadTestCase(
             "Upload: intermittent 429 response: retry exhausted",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=1 * 1024 * 1024,
+            multipart_upload_part_size=1 * 1024 * 1024,
             multipart_upload_max_retries=3,
             custom_response_on_upload=CustomResponse(
                 code=429,
@@ -1770,7 +2621,7 @@ class ResumableUploadTestCase(UploadTestCase):
             # prevent part from being uploaded
             custom_response_on_upload=CustomResponse(code=403),
             # internal server error does not prevent server state change
-            custom_response_on_abort=CustomResponse(code=500),
+            custom_response_on_abort=CustomResponse(code=501),
             expected_exception_type=PermissionDenied,
             # abort returned error but was actually processed
             expected_multipart_upload_aborted=True,
@@ -1788,31 +2639,34 @@ class ResumableUploadTestCase(UploadTestCase):
         ResumableUploadTestCase(
             "Multiple parts, zero unconfirmed delta",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=7 * 1024 * 1024 + 566,
+            multipart_upload_part_size=7 * 1024 * 1024 + 566,
             # server accepts all the parts in full
             unconfirmed_delta=0,
             expected_multipart_upload_aborted=False,
+            expected_part_size=7 * 1024 * 1024 + 566,  # chunk size is used
         ),
         ResumableUploadTestCase(
             "Multiple small parts, zero unconfirmed delta",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=100 * 1024,
+            multipart_upload_part_size=100 * 1024,
             # server accepts all the parts in full
             unconfirmed_delta=0,
             expected_multipart_upload_aborted=False,
+            expected_part_size=100 * 1024,  # chunk size is used
         ),
         ResumableUploadTestCase(
             "Multiple parts, non-zero unconfirmed delta",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=7 * 1024 * 1024 + 566,
+            multipart_upload_part_size=7 * 1024 * 1024 + 566,
             # for every part, server accepts all except last 239 bytes
             unconfirmed_delta=239,
             expected_multipart_upload_aborted=False,
+            expected_part_size=7 * 1024 * 1024 + 566,  # chunk size is used
         ),
         ResumableUploadTestCase(
             "Multiple parts, variable unconfirmed delta",
             stream_size=100 * 1024 * 1024,
-            multipart_upload_chunk_size=7 * 1024 * 1024 + 566,
+            multipart_upload_part_size=7 * 1024 * 1024 + 566,
             # for the first part, server accepts all except last 15Kib
             # for the second part, server accepts it all
             # for the 3rd part, server accepts all except last 25000 bytes
@@ -1820,6 +2674,7 @@ class ResumableUploadTestCase(UploadTestCase):
             # for the 5th part onwards server accepts all except last 5 bytes
             unconfirmed_delta=[15 * 1024, 0, 25000, 7 * 1024 * 1024, 5],
             expected_multipart_upload_aborted=False,
+            expected_part_size=7 * 1024 * 1024 + 566,  # chunk size is used
         ),
         ResumableUploadTestCase(
             "Small stream, single-shot upload used",
@@ -1833,3 +2688,70 @@ class ResumableUploadTestCase(UploadTestCase):
 )
 def test_resumable_upload(config: Config, test_case: ResumableUploadTestCase) -> None:
     test_case.run(config)
+
+
+@dataclass
+class CreateDownloadUrlResponseTestCase:
+    data: Dict[str, Any]
+    expected_parsed_url: Optional[str] = None
+    expected_parsed_headers: Optional[Dict[str, str]] = None
+    expected_exception: Optional[Type[BaseException]] = None
+
+    def run(self) -> None:
+
+        if self.expected_exception:
+            with pytest.raises(self.expected_exception):
+                CreateDownloadUrlResponse.from_dict(self.data)
+        else:
+            response = CreateDownloadUrlResponse.from_dict(self.data)
+            assert response.url == self.expected_parsed_url
+            assert response.headers == (self.expected_parsed_headers or {})
+
+    def __str__(self) -> str:
+        return f"CreateDownloadUrlResponseTestCase(data={self.data})"
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    [
+        CreateDownloadUrlResponseTestCase(
+            data={
+                "url": "https://example.com/download",
+                "headers": [
+                    {"name": "Authorization", "value": "Bearer token123"},
+                    {"name": "Content-Type", "value": "application/octet-stream"},
+                ],
+            },
+            expected_parsed_url="https://example.com/download",
+            expected_parsed_headers={
+                "Authorization": "Bearer token123",
+                "Content-Type": "application/octet-stream",
+            },
+        ),
+        CreateDownloadUrlResponseTestCase(
+            data={"url": "https://example.com/download"},
+            expected_parsed_url="https://example.com/download",
+            expected_parsed_headers={},
+        ),
+        CreateDownloadUrlResponseTestCase(
+            data={"url": "https://example.com/download", "headers": []},
+            expected_parsed_url="https://example.com/download",
+            expected_parsed_headers={},
+        ),
+        CreateDownloadUrlResponseTestCase(
+            data={"headers": [{"name": "Content-Type", "value": "application/octet-stream"}]},
+            expected_exception=ValueError,
+        ),
+    ],
+    ids=str,
+)
+def test_create_download_url_response(test_case: CreateDownloadUrlResponseTestCase) -> None:
+    """Run a test case for CreateDownloadUrlResponse."""
+    test_case.run()
+
+
+def fast_random_bytes(n: int, chunk_size: int = 1024) -> bytes:
+    # Generate a small random chunk
+    chunk = os.urandom(chunk_size)
+    # Repeat it until we reach n bytes
+    return (chunk * (n // chunk_size + 1))[:n]
