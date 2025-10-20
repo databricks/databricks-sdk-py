@@ -10601,6 +10601,7 @@ class AccountMetastoreAssignmentsAPI:
 
         :returns: :class:`AccountsCreateMetastoreAssignmentResponse`
         """
+
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
@@ -10692,6 +10693,7 @@ class AccountMetastoreAssignmentsAPI:
 
         :returns: :class:`AccountsUpdateMetastoreAssignmentResponse`
         """
+
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
@@ -10723,6 +10725,7 @@ class AccountMetastoresAPI:
 
         :returns: :class:`AccountsCreateMetastoreResponse`
         """
+
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
@@ -10805,6 +10808,7 @@ class AccountMetastoresAPI:
 
         :returns: :class:`AccountsUpdateMetastoreResponse`
         """
+
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
@@ -10848,6 +10852,7 @@ class AccountStorageCredentialsAPI:
 
         :returns: :class:`AccountsCreateStorageCredentialInfo`
         """
+
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
@@ -10962,6 +10967,7 @@ class AccountStorageCredentialsAPI:
 
         :returns: :class:`AccountsUpdateStorageCredentialResponse`
         """
+
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
@@ -11031,6 +11037,7 @@ class ArtifactAllowlistsAPI:
 
         :returns: :class:`ArtifactAllowlistInfo`
         """
+
         body = {}
         if artifact_matchers is not None:
             body["artifact_matchers"] = [v.as_dict() for v in artifact_matchers]
@@ -11098,6 +11105,7 @@ class CatalogsAPI:
 
         :returns: :class:`CatalogInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11264,6 +11272,7 @@ class CatalogsAPI:
 
         :returns: :class:`CatalogInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11331,6 +11340,7 @@ class ConnectionsAPI:
 
         :returns: :class:`ConnectionInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11439,6 +11449,7 @@ class ConnectionsAPI:
 
         :returns: :class:`ConnectionInfo`
         """
+
         body = {}
         if new_name is not None:
             body["new_name"] = new_name
@@ -11509,6 +11520,7 @@ class CredentialsAPI:
 
         :returns: :class:`CredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11575,6 +11587,7 @@ class CredentialsAPI:
 
         :returns: :class:`TemporaryCredentials`
         """
+
         body = {}
         if azure_options is not None:
             body["azure_options"] = azure_options.as_dict()
@@ -11709,6 +11722,7 @@ class CredentialsAPI:
 
         :returns: :class:`CredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11784,6 +11798,7 @@ class CredentialsAPI:
 
         :returns: :class:`ValidateCredentialResponse`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11835,6 +11850,7 @@ class EntityTagAssignmentsAPI:
 
         :returns: :class:`EntityTagAssignment`
         """
+
         body = tag_assignment.as_dict()
         headers = {
             "Accept": "application/json",
@@ -11978,6 +11994,7 @@ class EntityTagAssignmentsAPI:
 
         :returns: :class:`EntityTagAssignment`
         """
+
         body = tag_assignment.as_dict()
         query = {}
         if update_mask is not None:
@@ -12018,6 +12035,7 @@ class ExternalLineageAPI:
 
         :returns: :class:`ExternalLineageRelationship`
         """
+
         body = external_lineage_relationship.as_dict()
         headers = {
             "Accept": "application/json",
@@ -12113,6 +12131,7 @@ class ExternalLineageAPI:
 
         :returns: :class:`ExternalLineageRelationship`
         """
+
         body = external_lineage_relationship.as_dict()
         query = {}
         if update_mask is not None:
@@ -12186,6 +12205,7 @@ class ExternalLocationsAPI:
 
         :returns: :class:`ExternalLocationInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -12372,6 +12392,7 @@ class ExternalLocationsAPI:
 
         :returns: :class:`ExternalLocationInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -12428,6 +12449,7 @@ class ExternalMetadataAPI:
 
         :returns: :class:`ExternalMetadata`
         """
+
         body = external_metadata.as_dict()
         headers = {
             "Accept": "application/json",
@@ -12527,6 +12549,7 @@ class ExternalMetadataAPI:
 
         :returns: :class:`ExternalMetadata`
         """
+
         body = external_metadata.as_dict()
         query = {}
         if update_mask is not None:
@@ -12566,6 +12589,7 @@ class FunctionsAPI:
 
         :returns: :class:`FunctionInfo`
         """
+
         body = {}
         if function_info is not None:
             body["function_info"] = function_info.as_dict()
@@ -12709,6 +12733,7 @@ class FunctionsAPI:
 
         :returns: :class:`FunctionInfo`
         """
+
         body = {}
         if owner is not None:
             body["owner"] = owner
@@ -12853,6 +12878,7 @@ class GrantsAPI:
 
         :returns: :class:`UpdatePermissionsResponse`
         """
+
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
@@ -12898,6 +12924,7 @@ class MetastoresAPI:
 
 
         """
+
         body = {}
         if default_catalog_name is not None:
             body["default_catalog_name"] = default_catalog_name
@@ -12925,6 +12952,7 @@ class MetastoresAPI:
 
         :returns: :class:`MetastoreInfo`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -13107,6 +13135,7 @@ class MetastoresAPI:
 
         :returns: :class:`MetastoreInfo`
         """
+
         body = {}
         if delta_sharing_organization_name is not None:
             body["delta_sharing_organization_name"] = delta_sharing_organization_name
@@ -13150,6 +13179,7 @@ class MetastoresAPI:
 
 
         """
+
         body = {}
         if default_catalog_name is not None:
             body["default_catalog_name"] = default_catalog_name
@@ -13397,6 +13427,7 @@ class ModelVersionsAPI:
 
         :returns: :class:`ModelVersionInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -13488,6 +13519,7 @@ class OnlineTablesAPI:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
         """
+
         body = table.as_dict()
         headers = {
             "Accept": "application/json",
@@ -13555,6 +13587,7 @@ class PoliciesAPI:
 
         :returns: :class:`PolicyInfo`
         """
+
         body = policy_info.as_dict()
         headers = {
             "Accept": "application/json",
@@ -13696,6 +13729,7 @@ class PoliciesAPI:
 
         :returns: :class:`PolicyInfo`
         """
+
         body = policy_info.as_dict()
         query = {}
         if update_mask is not None:
@@ -13815,6 +13849,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`MonitorInfo`
         """
+
         body = {}
         if assets_dir is not None:
             body["assets_dir"] = assets_dir
@@ -13978,6 +14013,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`RegenerateDashboardResponse`
         """
+
         body = {}
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
@@ -14082,6 +14118,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`MonitorInfo`
         """
+
         body = {}
         if baseline_table_name is not None:
             body["baseline_table_name"] = baseline_table_name
@@ -14205,6 +14242,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -14399,6 +14437,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelAlias`
         """
+
         body = {}
         if version_num is not None:
             body["version_num"] = version_num
@@ -14473,6 +14512,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -14613,6 +14653,7 @@ class RfaAPI:
 
         :returns: :class:`BatchCreateAccessRequestsResponse`
         """
+
         body = {}
         if requests is not None:
             body["requests"] = [v.as_dict() for v in requests]
@@ -14677,6 +14718,7 @@ class RfaAPI:
 
         :returns: :class:`AccessRequestDestinations`
         """
+
         body = access_request_destinations.as_dict()
         query = {}
         if update_mask is not None:
@@ -14724,6 +14766,7 @@ class SchemasAPI:
 
         :returns: :class:`SchemaInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -14876,6 +14919,7 @@ class SchemasAPI:
 
         :returns: :class:`SchemaInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -14952,6 +14996,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`StorageCredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15125,6 +15170,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`StorageCredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15202,6 +15248,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`ValidateStorageCredentialResponse`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15270,6 +15317,7 @@ class SystemSchemasAPI:
 
 
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -15364,6 +15412,7 @@ class TableConstraintsAPI:
 
         :returns: :class:`TableConstraint`
         """
+
         body = {}
         if constraint is not None:
             body["constraint"] = constraint.as_dict()
@@ -15471,6 +15520,7 @@ class TablesAPI:
 
         :returns: :class:`TableInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -15742,6 +15792,7 @@ class TablesAPI:
 
 
         """
+
         body = {}
         if owner is not None:
             body["owner"] = owner
@@ -15803,6 +15854,7 @@ class TemporaryPathCredentialsAPI:
 
         :returns: :class:`GenerateTemporaryPathCredentialResponse`
         """
+
         body = {}
         if dry_run is not None:
             body["dry_run"] = dry_run
@@ -15853,6 +15905,7 @@ class TemporaryTableCredentialsAPI:
 
         :returns: :class:`GenerateTemporaryTableCredentialResponse`
         """
+
         body = {}
         if operation is not None:
             body["operation"] = operation.value
@@ -15923,6 +15976,7 @@ class VolumesAPI:
 
         :returns: :class:`VolumeInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -16078,6 +16132,7 @@ class VolumesAPI:
 
         :returns: :class:`VolumeInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -16199,6 +16254,7 @@ class WorkspaceBindingsAPI:
 
         :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         """
+
         body = {}
         if assign_workspaces is not None:
             body["assign_workspaces"] = [v for v in assign_workspaces]
@@ -16239,6 +16295,7 @@ class WorkspaceBindingsAPI:
 
         :returns: :class:`UpdateWorkspaceBindingsResponse`
         """
+
         body = {}
         if add is not None:
             body["add"] = [v.as_dict() for v in add]

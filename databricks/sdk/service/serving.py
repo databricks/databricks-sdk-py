@@ -4109,6 +4109,7 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
+
         body = {}
         if ai_gateway is not None:
             body["ai_gateway"] = ai_gateway.as_dict()
@@ -4196,6 +4197,7 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
+
         body = {}
         if ai_gateway is not None:
             body["ai_gateway"] = ai_gateway.as_dict()
@@ -4366,6 +4368,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`HttpRequestResponse`
         """
+
         body = {}
         if connection_name is not None:
             body["connection_name"] = connection_name
@@ -4436,6 +4439,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`EndpointTags`
         """
+
         body = {}
         if add_tags is not None:
             body["add_tags"] = [v.as_dict() for v in add_tags]
@@ -4459,6 +4463,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`PutResponse`
         """
+
         body = {}
         if rate_limits is not None:
             body["rate_limits"] = [v.as_dict() for v in rate_limits]
@@ -4501,6 +4506,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`PutAiGatewayResponse`
         """
+
         body = {}
         if fallback_config is not None:
             body["fallback_config"] = fallback_config.as_dict()
@@ -4593,6 +4599,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`QueryEndpointResponse`
         """
+
         body = {}
         if client_request_id is not None:
             body["client_request_id"] = client_request_id
@@ -4656,6 +4663,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`ServingEndpointPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -4701,6 +4709,7 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
+
         body = {}
         if auto_capture_config is not None:
             body["auto_capture_config"] = auto_capture_config.as_dict()
@@ -4753,6 +4762,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`UpdateInferenceEndpointNotificationsResponse`
         """
+
         body = {}
         if email_notifications is not None:
             body["email_notifications"] = email_notifications.as_dict()
@@ -4779,6 +4789,7 @@ class ServingEndpointsAPI:
 
         :returns: :class:`ServingEndpointPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -4807,6 +4818,7 @@ class ServingEndpointsAPI:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
+
         body = {}
         if config is not None:
             body["config"] = config.as_dict()
@@ -4931,6 +4943,7 @@ class ServingEndpointsDataPlaneAPI:
 
         :returns: :class:`QueryEndpointResponse`
         """
+
         body = {}
         if client_request_id is not None:
             body["client_request_id"] = client_request_id

@@ -1495,6 +1495,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CleanRoomAsset`
         """
+
         body = asset.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1524,6 +1525,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CreateCleanRoomAssetReviewResponse`
         """
+
         body = {}
         if notebook_review is not None:
             body["notebook_review"] = notebook_review.as_dict()
@@ -1635,6 +1637,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CleanRoomAsset`
         """
+
         body = asset.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1666,6 +1669,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         :returns: :class:`CleanRoomAutoApprovalRule`
         """
+
         body = {}
         if auto_approval_rule is not None:
             body["auto_approval_rule"] = auto_approval_rule.as_dict()
@@ -1760,6 +1764,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         :returns: :class:`CleanRoomAutoApprovalRule`
         """
+
         body = auto_approval_rule.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1869,6 +1874,7 @@ class CleanRoomsAPI:
           Long-running operation waiter for :class:`CleanRoom`.
           See :method:wait_get_clean_room_active for more details.
         """
+
         body = clean_room.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1894,6 +1900,7 @@ class CleanRoomsAPI:
 
         :returns: :class:`CreateCleanRoomOutputCatalogResponse`
         """
+
         body = output_catalog.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1979,6 +1986,7 @@ class CleanRoomsAPI:
 
         :returns: :class:`CleanRoom`
         """
+
         body = {}
         if clean_room is not None:
             body["clean_room"] = clean_room.as_dict()

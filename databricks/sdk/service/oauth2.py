@@ -1013,6 +1013,7 @@ class AccountFederationPolicyAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         query = {}
         if policy_id is not None:
@@ -1112,6 +1113,7 @@ class AccountFederationPolicyAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         query = {}
         if update_mask is not None:
@@ -1169,6 +1171,7 @@ class CustomAppIntegrationAPI:
 
         :returns: :class:`CreateCustomAppIntegrationOutput`
         """
+
         body = {}
         if confidential is not None:
             body["confidential"] = confidential
@@ -1301,6 +1304,7 @@ class CustomAppIntegrationAPI:
 
 
         """
+
         body = {}
         if redirect_urls is not None:
             body["redirect_urls"] = [v for v in redirect_urls]
@@ -1386,6 +1390,7 @@ class PublishedAppIntegrationAPI:
 
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         """
+
         body = {}
         if app_id is not None:
             body["app_id"] = app_id
@@ -1486,6 +1491,7 @@ class PublishedAppIntegrationAPI:
 
 
         """
+
         body = {}
         if token_access_policy is not None:
             body["token_access_policy"] = token_access_policy.as_dict()
@@ -1561,6 +1567,7 @@ class ServicePrincipalFederationPolicyAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         query = {}
         if policy_id is not None:
@@ -1677,6 +1684,7 @@ class ServicePrincipalFederationPolicyAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         query = {}
         if update_mask is not None:
@@ -1726,6 +1734,7 @@ class ServicePrincipalSecretsAPI:
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
+
         body = {}
         if lifetime is not None:
             body["lifetime"] = lifetime
@@ -1836,6 +1845,7 @@ class ServicePrincipalSecretsProxyAPI:
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
+
         body = {}
         if lifetime is not None:
             body["lifetime"] = lifetime

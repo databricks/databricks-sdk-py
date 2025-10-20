@@ -2563,6 +2563,7 @@ class ProvidersAPI:
 
         :returns: :class:`ProviderInfo`
         """
+
         body = {}
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
@@ -2778,6 +2779,7 @@ class ProvidersAPI:
 
         :returns: :class:`ProviderInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -2898,6 +2900,7 @@ class RecipientFederationPoliciesAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         headers = {
             "Accept": "application/json",
@@ -3047,6 +3050,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
@@ -3169,6 +3173,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if existing_token_expire_in_seconds is not None:
             body["existing_token_expire_in_seconds"] = existing_token_expire_in_seconds
@@ -3250,6 +3255,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3294,6 +3300,7 @@ class SharesAPI:
 
         :returns: :class:`ShareInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3459,6 +3466,7 @@ class SharesAPI:
 
         :returns: :class:`ShareInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3500,6 +3508,7 @@ class SharesAPI:
 
         :returns: :class:`UpdateSharePermissionsResponse`
         """
+
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]

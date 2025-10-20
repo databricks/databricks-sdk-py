@@ -1840,6 +1840,7 @@ class GitCredentialsAPI:
 
         :returns: :class:`CreateCredentialsResponse`
         """
+
         body = {}
         if git_email is not None:
             body["git_email"] = git_email
@@ -1948,6 +1949,7 @@ class GitCredentialsAPI:
 
 
         """
+
         body = {}
         if git_email is not None:
             body["git_email"] = git_email
@@ -2004,6 +2006,7 @@ class ReposAPI:
 
         :returns: :class:`CreateRepoResponse`
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2129,6 +2132,7 @@ class ReposAPI:
 
         :returns: :class:`RepoPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2165,6 +2169,7 @@ class ReposAPI:
 
 
         """
+
         body = {}
         if branch is not None:
             body["branch"] = branch
@@ -2190,6 +2195,7 @@ class ReposAPI:
 
         :returns: :class:`RepoPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2268,6 +2274,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if backend_azure_keyvault is not None:
             body["backend_azure_keyvault"] = backend_azure_keyvault.as_dict()
@@ -2305,6 +2312,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if principal is not None:
             body["principal"] = principal
@@ -2334,6 +2342,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if scope is not None:
             body["scope"] = scope
@@ -2365,6 +2374,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -2586,6 +2596,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if permission is not None:
             body["permission"] = permission.value
@@ -2637,6 +2648,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if bytes_value is not None:
             body["bytes_value"] = bytes_value
@@ -2679,6 +2691,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2836,6 +2849,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if content is not None:
             body["content"] = content
@@ -2893,6 +2907,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2922,6 +2937,7 @@ class WorkspaceAPI:
 
         :returns: :class:`WorkspaceObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2953,6 +2969,7 @@ class WorkspaceAPI:
 
         :returns: :class:`WorkspaceObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]

@@ -534,6 +534,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if data is not None:
             body["data"] = data
@@ -555,6 +556,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if handle is not None:
             body["handle"] = handle
@@ -582,6 +584,7 @@ class DbfsAPI:
 
         :returns: :class:`CreateResponse`
         """
+
         body = {}
         if overwrite is not None:
             body["overwrite"] = overwrite
@@ -619,6 +622,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -690,6 +694,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -713,6 +718,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if destination_path is not None:
             body["destination_path"] = destination_path
@@ -746,6 +752,7 @@ class DbfsAPI:
 
 
         """
+
         body = {}
         if contents is not None:
             body["contents"] = contents

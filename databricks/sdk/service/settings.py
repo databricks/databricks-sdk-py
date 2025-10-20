@@ -5317,6 +5317,7 @@ class AccountIpAccessListsAPI:
 
         :returns: :class:`CreateIpAccessListResponse`
         """
+
         body = {}
         if ip_addresses is not None:
             body["ip_addresses"] = [v for v in ip_addresses]
@@ -5412,6 +5413,7 @@ class AccountIpAccessListsAPI:
 
 
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -5466,6 +5468,7 @@ class AccountIpAccessListsAPI:
 
 
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -5619,6 +5622,7 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
 
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -5723,6 +5727,7 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
 
         :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -5800,6 +5805,7 @@ class AutomaticClusterUpdateAPI:
 
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -5876,6 +5882,7 @@ class ComplianceSecurityProfileAPI:
 
         :returns: :class:`ComplianceSecurityProfileSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -5916,6 +5923,7 @@ class CredentialsManagerAPI:
 
         :returns: :class:`ExchangeTokenResponse`
         """
+
         body = {}
         if partition_id is not None:
             body["partitionId"] = partition_id.as_dict()
@@ -5992,6 +6000,7 @@ class CspEnablementAccountAPI:
 
         :returns: :class:`CspEnablementAccountSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6095,6 +6104,7 @@ class DashboardEmailSubscriptionsAPI:
 
         :returns: :class:`DashboardEmailSubscriptions`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6205,6 +6215,7 @@ class DefaultNamespaceAPI:
 
         :returns: :class:`DefaultNamespaceSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6299,6 +6310,7 @@ class DefaultWarehouseIdAPI:
 
         :returns: :class:`DefaultWarehouseId`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6396,6 +6408,7 @@ class DisableLegacyAccessAPI:
 
         :returns: :class:`DisableLegacyAccess`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6496,6 +6509,7 @@ class DisableLegacyDbfsAPI:
 
         :returns: :class:`DisableLegacyDbfs`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6599,6 +6613,7 @@ class DisableLegacyFeaturesAPI:
 
         :returns: :class:`DisableLegacyFeatures`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6663,6 +6678,7 @@ class EnableExportNotebookAPI:
 
         :returns: :class:`EnableExportNotebook`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6763,6 +6779,7 @@ class EnableIpAccessListsAPI:
 
         :returns: :class:`AccountIpAccessEnable`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6829,6 +6846,7 @@ class EnableNotebookTableClipboardAPI:
 
         :returns: :class:`EnableNotebookTableClipboard`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6889,6 +6907,7 @@ class EnableResultsDownloadingAPI:
 
         :returns: :class:`EnableResultsDownloading`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -6967,6 +6986,7 @@ class EnhancedSecurityMonitoringAPI:
 
         :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -7042,6 +7062,7 @@ class EsmEnablementAccountAPI:
 
         :returns: :class:`EsmEnablementAccountSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -7110,6 +7131,7 @@ class IpAccessListsAPI:
 
         :returns: :class:`CreateIpAccessListResponse`
         """
+
         body = {}
         if ip_addresses is not None:
             body["ip_addresses"] = [v for v in ip_addresses]
@@ -7200,6 +7222,7 @@ class IpAccessListsAPI:
 
 
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -7250,6 +7273,7 @@ class IpAccessListsAPI:
 
 
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -7321,6 +7345,7 @@ class LlmProxyPartnerPoweredAccountAPI:
 
         :returns: :class:`LlmProxyPartnerPoweredAccount`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -7398,6 +7423,7 @@ class LlmProxyPartnerPoweredEnforceAPI:
 
         :returns: :class:`LlmProxyPartnerPoweredEnforce`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -7496,6 +7522,7 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
 
         :returns: :class:`LlmProxyPartnerPoweredWorkspace`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -7546,6 +7573,7 @@ class NetworkConnectivityAPI:
 
         :returns: :class:`NetworkConnectivityConfiguration`
         """
+
         body = network_connectivity_config.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7576,6 +7604,7 @@ class NetworkConnectivityAPI:
 
         :returns: :class:`NccPrivateEndpointRule`
         """
+
         body = private_endpoint_rule.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7773,6 +7802,7 @@ class NetworkConnectivityAPI:
 
         :returns: :class:`NccPrivateEndpointRule`
         """
+
         body = private_endpoint_rule.as_dict()
         query = {}
         if update_mask is not None:
@@ -7812,6 +7842,7 @@ class NetworkPoliciesAPI:
 
         :returns: :class:`AccountNetworkPolicy`
         """
+
         body = network_policy.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7897,6 +7928,7 @@ class NetworkPoliciesAPI:
 
         :returns: :class:`AccountNetworkPolicy`
         """
+
         body = network_policy.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7931,6 +7963,7 @@ class NotificationDestinationsAPI:
 
         :returns: :class:`NotificationDestination`
         """
+
         body = {}
         if config is not None:
             body["config"] = config.as_dict()
@@ -8017,6 +8050,7 @@ class NotificationDestinationsAPI:
 
         :returns: :class:`NotificationDestination`
         """
+
         body = {}
         if config is not None:
             body["config"] = config.as_dict()
@@ -8118,6 +8152,7 @@ class PersonalComputeAPI:
 
         :returns: :class:`PersonalComputeSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -8230,6 +8265,7 @@ class RestrictWorkspaceAdminsAPI:
 
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -8428,6 +8464,7 @@ class SqlResultsDownloadAPI:
 
         :returns: :class:`SqlResultsDownload`
         """
+
         body = {}
         if allow_missing is not None:
             body["allow_missing"] = allow_missing
@@ -8467,6 +8504,7 @@ class TokenManagementAPI:
 
         :returns: :class:`CreateOboTokenResponse`
         """
+
         body = {}
         if application_id is not None:
             body["application_id"] = application_id
@@ -8575,6 +8613,7 @@ class TokenManagementAPI:
 
         :returns: :class:`TokenPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8595,6 +8634,7 @@ class TokenManagementAPI:
 
         :returns: :class:`TokenPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8628,6 +8668,7 @@ class TokensAPI:
 
         :returns: :class:`CreateTokenResponse`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -8651,6 +8692,7 @@ class TokensAPI:
 
 
         """
+
         body = {}
         if token_id is not None:
             body["token_id"] = token_id
@@ -8753,6 +8795,7 @@ class WorkspaceNetworkConfigurationAPI:
 
         :returns: :class:`WorkspaceNetworkOption`
         """
+
         body = workspace_network_option.as_dict()
         headers = {
             "Accept": "application/json",

@@ -909,6 +909,7 @@ class DataQualityAPI:
 
         :returns: :class:`Monitor`
         """
+
         body = monitor.as_dict()
         headers = {
             "Accept": "application/json",
@@ -946,6 +947,7 @@ class DataQualityAPI:
 
         :returns: :class:`Refresh`
         """
+
         body = refresh.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1229,6 +1231,7 @@ class DataQualityAPI:
 
         :returns: :class:`Monitor`
         """
+
         body = monitor.as_dict()
         query = {}
         if update_mask is not None:
@@ -1271,6 +1274,7 @@ class DataQualityAPI:
 
         :returns: :class:`Refresh`
         """
+
         body = refresh.as_dict()
         query = {}
         if update_mask is not None:

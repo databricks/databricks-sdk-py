@@ -2338,6 +2338,7 @@ class AccountAccessControlAPI:
 
         :returns: :class:`RuleSetResponse`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -2444,6 +2445,7 @@ class AccountAccessControlProxyAPI:
 
         :returns: :class:`RuleSetResponse`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -2494,6 +2496,7 @@ class AccountGroupsV2API:
 
         :returns: :class:`AccountGroup`
         """
+
         body = {}
         if display_name is not None:
             body["displayName"] = display_name
@@ -2628,6 +2631,7 @@ class AccountGroupsV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -2666,6 +2670,7 @@ class AccountGroupsV2API:
 
 
         """
+
         body = {}
         if display_name is not None:
             body["displayName"] = display_name
@@ -2721,6 +2726,7 @@ class AccountServicePrincipalsV2API:
 
         :returns: :class:`AccountServicePrincipal`
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -2860,6 +2866,7 @@ class AccountServicePrincipalsV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -2905,6 +2912,7 @@ class AccountServicePrincipalsV2API:
 
 
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -2976,6 +2984,7 @@ class AccountUsersV2API:
 
         :returns: :class:`AccountUser`
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -3162,6 +3171,7 @@ class AccountUsersV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -3208,6 +3218,7 @@ class AccountUsersV2API:
 
 
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -3299,6 +3310,7 @@ class GroupsV2API:
 
         :returns: :class:`Group`
         """
+
         body = {}
         if display_name is not None:
             body["displayName"] = display_name
@@ -3433,6 +3445,7 @@ class GroupsV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -3481,6 +3494,7 @@ class GroupsV2API:
 
 
         """
+
         body = {}
         if display_name is not None:
             body["displayName"] = display_name
@@ -3533,6 +3547,7 @@ class PermissionMigrationAPI:
 
         :returns: :class:`MigratePermissionsResponse`
         """
+
         body = {}
         if from_workspace_group_name is not None:
             body["from_workspace_group_name"] = from_workspace_group_name
@@ -3644,6 +3659,7 @@ class PermissionsAPI:
 
         :returns: :class:`ObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -3678,6 +3694,7 @@ class PermissionsAPI:
 
         :returns: :class:`ObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -3739,6 +3756,7 @@ class ServicePrincipalsV2API:
 
         :returns: :class:`ServicePrincipal`
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -3873,6 +3891,7 @@ class ServicePrincipalsV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -3924,6 +3943,7 @@ class ServicePrincipalsV2API:
 
 
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -4010,6 +4030,7 @@ class UsersV2API:
 
         :returns: :class:`User`
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -4224,6 +4245,7 @@ class UsersV2API:
 
 
         """
+
         body = {}
         if operations is not None:
             body["Operations"] = [v.as_dict() for v in operations]
@@ -4246,6 +4268,7 @@ class UsersV2API:
 
         :returns: :class:`PasswordPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -4303,6 +4326,7 @@ class UsersV2API:
 
 
         """
+
         body = {}
         if active is not None:
             body["active"] = active
@@ -4340,6 +4364,7 @@ class UsersV2API:
 
         :returns: :class:`PasswordPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -4441,6 +4466,7 @@ class WorkspaceAssignmentAPI:
 
         :returns: :class:`PermissionAssignment`
         """
+
         body = {}
         if permissions is not None:
             body["permissions"] = [v.value for v in permissions]

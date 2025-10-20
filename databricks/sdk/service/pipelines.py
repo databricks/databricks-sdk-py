@@ -3391,6 +3391,7 @@ class PipelinesAPI:
 
         :returns: :class:`CreatePipelineResponse`
         """
+
         body = {}
         if allow_duplicate_names is not None:
             body["allow_duplicate_names"] = allow_duplicate_names
@@ -3699,6 +3700,7 @@ class PipelinesAPI:
 
         :returns: :class:`PipelinePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -3741,6 +3743,7 @@ class PipelinesAPI:
 
         :returns: :class:`StartUpdateResponse`
         """
+
         body = {}
         if cause is not None:
             body["cause"] = cause.value
@@ -3891,6 +3894,7 @@ class PipelinesAPI:
 
 
         """
+
         body = {}
         if allow_duplicate_names is not None:
             body["allow_duplicate_names"] = allow_duplicate_names
@@ -3970,6 +3974,7 @@ class PipelinesAPI:
 
         :returns: :class:`PipelinePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
