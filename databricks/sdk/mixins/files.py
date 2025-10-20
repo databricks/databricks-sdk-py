@@ -1337,6 +1337,7 @@ class FilesExt(files.FilesAPI):
             # where we believe request didn't reach the server
             is_retryable=extended_is_retryable,
             before_retry=before_retry,
+            clock=self._config.clock,
         )(delegate)()
 
     def _open_download_stream(

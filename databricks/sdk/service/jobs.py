@@ -10,13 +10,14 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service import compute
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -7318,7 +7319,7 @@ class TableUpdateTriggerConfiguration:
     last time the trigger fired. The minimum allowed value is 60 seconds."""
 
     table_names: Optional[List[str]] = None
-    """A list of Delta tables to monitor for changes. The table name must be in the format
+    """A list of tables to monitor for changes. The table name must be in the format
     `catalog_name.schema_name.table_name`."""
 
     wait_after_last_change_seconds: Optional[int] = None
@@ -8428,11 +8429,7 @@ class JobsAPI:
         }
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
-        return Wait(
-            self.wait_get_run_job_terminated_or_skipped,
-            response=CancelRunResponse.from_dict(op_response),
-            run_id=run_id,
-        )
+        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)

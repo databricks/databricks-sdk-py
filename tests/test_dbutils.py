@@ -291,7 +291,6 @@ def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):
     )
     assert dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get() == "test_source_file"
 
-
 @raises("Method 'credentials.getServiceCredentialsProvider' is not supported in the SDK version of DBUtils")
 def test_dbutils_credentials_get_service_credential_provider(config, mocker):
     from databricks.sdk.dbutils import RemoteDbUtils
@@ -300,3 +299,11 @@ def test_dbutils_credentials_get_service_credential_provider(config, mocker):
     dbutils = RemoteDbUtils(config)
 
     dbutils.credentials.getServiceCredentialsProvider("creds")
+
+def test_dbutils_adds_user_agent(config):
+    from databricks.sdk.dbutils import RemoteDbUtils
+
+    # Create dbutils and check that user-agent includes sdk-feature/dbutils
+    dbutils = RemoteDbUtils(config)
+
+    assert "dbutils/remote" in dbutils._config.user_agent

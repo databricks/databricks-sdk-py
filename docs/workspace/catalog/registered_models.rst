@@ -26,10 +26,10 @@
     new model version, or update permissions on the registered model, users must be owners of the registered
     model.
 
-    Note: The securable type for models is "FUNCTION". When using REST APIs (e.g. tagging, grants) that
-    specify a securable type, use "FUNCTION" as the securable type.
+    Note: The securable type for models is FUNCTION. When using REST APIs (e.g. tagging, grants) that specify
+    a securable type, use FUNCTION as the securable type.
 
-    .. py:method:: create(catalog_name: str, schema_name: str, name: str [, comment: Optional[str], storage_location: Optional[str]]) -> RegisteredModelInfo
+    .. py:method:: create( [, aliases: Optional[List[RegisteredModelAlias]], browse_only: Optional[bool], catalog_name: Optional[str], comment: Optional[str], created_at: Optional[int], created_by: Optional[str], full_name: Optional[str], metastore_id: Optional[str], name: Optional[str], owner: Optional[str], schema_name: Optional[str], storage_location: Optional[str], updated_at: Optional[int], updated_by: Optional[str]]) -> RegisteredModelInfo
 
         Creates a new registered model in Unity Catalog.
 
@@ -41,16 +41,35 @@
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
 
-        :param catalog_name: str
+        :param aliases: List[:class:`RegisteredModelAlias`] (optional)
+          List of aliases associated with the registered model
+        :param browse_only: bool (optional)
+          Indicates whether the principal is limited to retrieving metadata for the associated object through
+          the BROWSE privilege when include_browse is enabled in the request.
+        :param catalog_name: str (optional)
           The name of the catalog where the schema and the registered model reside
-        :param schema_name: str
-          The name of the schema where the registered model resides
-        :param name: str
-          The name of the registered model
         :param comment: str (optional)
           The comment attached to the registered model
+        :param created_at: int (optional)
+          Creation timestamp of the registered model in milliseconds since the Unix epoch
+        :param created_by: str (optional)
+          The identifier of the user who created the registered model
+        :param full_name: str (optional)
+          The three-level (fully qualified) name of the registered model
+        :param metastore_id: str (optional)
+          The unique identifier of the metastore
+        :param name: str (optional)
+          The name of the registered model
+        :param owner: str (optional)
+          The identifier of the user who owns the registered model
+        :param schema_name: str (optional)
+          The name of the schema where the registered model resides
         :param storage_location: str (optional)
           The storage location on the cloud under which model version data files are stored
+        :param updated_at: int (optional)
+          Last-update timestamp of the registered model in milliseconds since the Unix epoch
+        :param updated_by: str (optional)
+          The identifier of the user who updated the registered model last time
 
         :returns: :class:`RegisteredModelInfo`
         
@@ -155,7 +174,7 @@
         **USE_SCHEMA** privilege on the parent schema.
 
         :param full_name: str
-          Full name of the registered model
+          The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
         :param version_num: int
@@ -164,7 +183,7 @@
         :returns: :class:`RegisteredModelAlias`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> RegisteredModelInfo
+    .. py:method:: update(full_name: str [, aliases: Optional[List[RegisteredModelAlias]], browse_only: Optional[bool], catalog_name: Optional[str], comment: Optional[str], created_at: Optional[int], created_by: Optional[str], metastore_id: Optional[str], name: Optional[str], new_name: Optional[str], owner: Optional[str], schema_name: Optional[str], storage_location: Optional[str], updated_at: Optional[int], updated_by: Optional[str]]) -> RegisteredModelInfo
 
         Updates the specified registered model.
 
@@ -176,12 +195,35 @@
 
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param aliases: List[:class:`RegisteredModelAlias`] (optional)
+          List of aliases associated with the registered model
+        :param browse_only: bool (optional)
+          Indicates whether the principal is limited to retrieving metadata for the associated object through
+          the BROWSE privilege when include_browse is enabled in the request.
+        :param catalog_name: str (optional)
+          The name of the catalog where the schema and the registered model reside
         :param comment: str (optional)
           The comment attached to the registered model
+        :param created_at: int (optional)
+          Creation timestamp of the registered model in milliseconds since the Unix epoch
+        :param created_by: str (optional)
+          The identifier of the user who created the registered model
+        :param metastore_id: str (optional)
+          The unique identifier of the metastore
+        :param name: str (optional)
+          The name of the registered model
         :param new_name: str (optional)
           New name for the registered model.
         :param owner: str (optional)
           The identifier of the user who owns the registered model
+        :param schema_name: str (optional)
+          The name of the schema where the registered model resides
+        :param storage_location: str (optional)
+          The storage location on the cloud under which model version data files are stored
+        :param updated_at: int (optional)
+          Last-update timestamp of the registered model in milliseconds since the Unix epoch
+        :param updated_by: str (optional)
+          The identifier of the user who updated the registered model last time
 
         :returns: :class:`RegisteredModelInfo`
         

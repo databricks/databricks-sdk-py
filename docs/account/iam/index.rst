@@ -8,7 +8,7 @@ Manage users, service principals, groups and their permissions in Accounts and W
    :maxdepth: 1
 
    access_control
-   groups
-   service_principals
-   users
+   groups_v2
+   service_principals_v2
+   users_v2
    workspace_assignment

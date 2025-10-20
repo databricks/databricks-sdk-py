@@ -29,17 +29,17 @@
     the statement execution has not yet finished. This can be set to either `CONTINUE`, to fallback to
     asynchronous mode, or it can be set to `CANCEL`, which cancels the statement.
 
-    In summary: - Synchronous mode - `wait_timeout=30s` and `on_wait_timeout=CANCEL` - The call waits up to 30
-    seconds; if the statement execution finishes within this time, the result data is returned directly in the
-    response. If the execution takes longer than 30 seconds, the execution is canceled and the call returns
-    with a `CANCELED` state. - Asynchronous mode - `wait_timeout=0s` (`on_wait_timeout` is ignored) - The call
-    doesn't wait for the statement to finish but returns directly with a statement ID. The status of the
-    statement execution can be polled by issuing :method:statementexecution/getStatement with the statement
-    ID. Once the execution has succeeded, this call also returns the result and metadata in the response. -
-    Hybrid mode (default) - `wait_timeout=10s` and `on_wait_timeout=CONTINUE` - The call waits for up to 10
-    seconds; if the statement execution finishes within this time, the result data is returned directly in the
-    response. If the execution takes longer than 10 seconds, a statement ID is returned. The statement ID can
-    be used to fetch status and results in the same way as in the asynchronous mode.
+    In summary: - **Synchronous mode** (`wait_timeout=30s` and `on_wait_timeout=CANCEL`): The call waits up to
+    30 seconds; if the statement execution finishes within this time, the result data is returned directly in
+    the response. If the execution takes longer than 30 seconds, the execution is canceled and the call
+    returns with a `CANCELED` state. - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout` is
+    ignored): The call doesn't wait for the statement to finish but returns directly with a statement ID. The
+    status of the statement execution can be polled by issuing :method:statementexecution/getStatement with
+    the statement ID. Once the execution has succeeded, this call also returns the result and metadata in the
+    response. - **[Default] Hybrid mode** (`wait_timeout=10s` and `on_wait_timeout=CONTINUE`): The call waits
+    for up to 10 seconds; if the statement execution finishes within this time, the result data is returned
+    directly in the response. If the execution takes longer than 10 seconds, a statement ID is returned. The
+    statement ID can be used to fetch status and results in the same way as in the asynchronous mode.
 
     Depending on the size, the result can be split into multiple chunks. If the statement execution is
     successful, the statement response contains a manifest and the first chunk of the result. The manifest
@@ -92,7 +92,7 @@
     .. py:method:: cancel_execution(statement_id: str)
 
         Requests that an executing statement be canceled. Callers must poll for status to see the terminal
-        state.
+        state. Cancel response is empty; receiving response indicates successful receipt.
 
         :param statement_id: str
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -103,7 +103,52 @@
 
     .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
 
-        Execute a SQL statement
+        Execute a SQL statement and optionally await its results for a specified time.
+
+        **Use case: small result sets with INLINE + JSON_ARRAY**
+
+        For flows that generate small and predictable result sets (<= 25 MiB), `INLINE` responses of
+        `JSON_ARRAY` result data are typically the simplest way to execute and fetch result data.
+
+        **Use case: large result sets with EXTERNAL_LINKS**
+
+        Using `EXTERNAL_LINKS` to fetch result data allows you to fetch large result sets efficiently. The
+        main differences from using `INLINE` disposition are that the result data is accessed with URLs, and
+        that there are 3 supported formats: `JSON_ARRAY`, `ARROW_STREAM` and `CSV` compared to only
+        `JSON_ARRAY` with `INLINE`.
+
+        ** URLs**
+
+        External links point to data stored within your workspace's internal storage, in the form of a URL.
+        The URLs are valid for only a short period, <= 15 minutes. Alongside each `external_link` is an
+        expiration field indicating the time at which the URL is no longer valid. In `EXTERNAL_LINKS` mode,
+        chunks can be resolved and fetched multiple times and in parallel.
+
+        ----
+
+        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        `EXTERNAL_LINKS` disposition.**
+
+        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        download the results directly from . As a short-lived is embedded in this URL, you should protect the
+        URL.
+
+        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        header in the download requests.
+
+        The `EXTERNAL_LINKS` disposition can be disabled upon request by creating a support case.
+
+        See also [Security best practices].
+
+        ----
+
+        StatementResponse contains `statement_id` and `status`; other fields might be absent or present
+        depending on context. If the SQL warehouse fails to execute the provided statement, a 200 response is
+        returned with `status.state` set to `FAILED` (in contrast to a failure when accepting the request,
+        which results in a non-200 response). Details of the error can be found at `status.error` in case of
+        execution failures.
+
+        [Security best practices]: https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices
 
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`. The
@@ -117,12 +162,32 @@
           representations and might not match the final size in the requested `format`. If the result was
           truncated due to the byte limit, then `truncated` in the response is set to `true`. When using
           `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is applied if `byte_limit` is not
-          explcitly set.
+          explicitly set.
         :param catalog: str (optional)
           Sets default catalog for statement execution, similar to [`USE CATALOG`] in SQL.
 
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
+          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
+
+          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
+          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
+          MiB, that statement execution is aborted, and no result set will be available.
+
+          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
+          might not match the sizes visible in JSON responses.
+
+          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
+          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
+          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
+          resulting links have two important properties:
+
+          1. They point to resources _external_ to the Databricks compute; therefore any associated
+          authentication information (typically a personal access token, OAuth token, or similar) _must be
+          removed_ when fetching from these links.
+
+          2. These are URLs with a specific expiration, indicated in the response. The behavior when
+          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.
@@ -173,13 +238,13 @@
 
           For example, the following statement contains two parameters, `my_name` and `my_date`:
 
-          SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+          ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
 
           The parameters can be passed in the request body as follows:
 
-          { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
+          ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND date = :my_date",
           "parameters": [ { "name": "my_name", "value": "the name" }, { "name": "my_date", "value":
-          "2020-01-01", "type": "DATE" } ] }
+          "2020-01-01", "type": "DATE" } ] } `
 
           Currently, positional parameters denoted by a `?` marker are not supported by the Databricks SQL
           Statement Execution API.
@@ -215,11 +280,12 @@
 
     .. py:method:: get_statement(statement_id: str) -> StatementResponse
 
-        This request can be used to poll for the statement's status. When the `status.state` field is
-        `SUCCEEDED` it will also return the result manifest and the first chunk of the result data. When the
-        statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
-        state set. After at least 12 hours in terminal state, the statement is removed from the warehouse and
-        further calls will receive an HTTP 404 response.
+        This request can be used to poll for the statement's status. StatementResponse contains `statement_id`
+        and `status`; other fields might be absent or present depending on context. When the `status.state`
+        field is `SUCCEEDED` it will also return the result manifest and the first chunk of the result data.
+        When the statement is in the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200
+        with the state set. After at least 12 hours in terminal state, the statement is removed from the
+        warehouse and further calls will receive an HTTP 404 response.
 
         **NOTE** This call currently might take up to 5 seconds to get the latest status and result.
 
@@ -238,6 +304,7 @@
         can be used to fetch subsequent chunks. The response structure is identical to the nested `result`
         element described in the :method:statementexecution/getStatement request, and similarly includes the
         `next_chunk_index` and `next_chunk_internal_link` fields for simple iteration through the result set.
+        Depending on `disposition`, the response returns chunks of data either inline, or as links.
 
         :param statement_id: str
           The statement ID is returned upon successfully submitting a SQL statement, and is a required

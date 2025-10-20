@@ -178,6 +178,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_CONNECT_AND_CREATE
       :value: "CAN_CONNECT_AND_CREATE"
 
+.. autoclass:: AppResourceGenieSpace
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceGenieSpaceGenieSpacePermission
+
+   .. py:attribute:: CAN_EDIT
+      :value: "CAN_EDIT"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_RUN
+      :value: "CAN_RUN"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
 .. autoclass:: AppResourceJob
    :members:
    :undoc-members:
@@ -260,6 +278,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VOLUME
       :value: "VOLUME"
 
+.. autoclass:: AppUpdate
+   :members:
+   :undoc-members:
+
+.. autoclass:: AppUpdateUpdateStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: AppUpdateUpdateStatusUpdateState
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
+
+   .. py:attribute:: NOT_UPDATED
+      :value: "NOT_UPDATED"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
 .. py:class:: ApplicationState
 
    .. py:attribute:: CRASHED
@@ -277,6 +317,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ApplicationStatus
    :members:
    :undoc-members:
+
+.. py:class:: ComputeSize
+
+   .. py:attribute:: LARGE
+      :value: "LARGE"
+
+   .. py:attribute:: LIQUID
+      :value: "LIQUID"
+
+   .. py:attribute:: MEDIUM
+      :value: "MEDIUM"
 
 .. py:class:: ComputeState
 

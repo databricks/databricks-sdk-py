@@ -120,6 +120,14 @@
         owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
         There is no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param catalog_name: str
           Parent catalog for schemas of interest.
         :param include_browse: bool (optional)

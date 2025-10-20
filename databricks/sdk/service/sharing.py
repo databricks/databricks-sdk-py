@@ -7,12 +7,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service import catalog
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
 
@@ -2310,6 +2310,10 @@ class TableInternalAttributes:
     auxiliary_managed_location: Optional[str] = None
     """Managed Delta Metadata location for foreign iceberg tables."""
 
+    dependency_storage_locations: Optional[List[str]] = None
+    """Storage locations of all table dependencies for shared views. Used on the recipient side for SEG
+    (Secure Egress Gateway) whitelisting."""
+
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2332,6 +2336,8 @@ class TableInternalAttributes:
         body = {}
         if self.auxiliary_managed_location is not None:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
+        if self.dependency_storage_locations:
+            body["dependency_storage_locations"] = [v for v in self.dependency_storage_locations]
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2347,6 +2353,8 @@ class TableInternalAttributes:
         body = {}
         if self.auxiliary_managed_location is not None:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
+        if self.dependency_storage_locations:
+            body["dependency_storage_locations"] = self.dependency_storage_locations
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2362,6 +2370,7 @@ class TableInternalAttributes:
         """Deserializes the TableInternalAttributes from a dictionary."""
         return cls(
             auxiliary_managed_location=d.get("auxiliary_managed_location", None),
+            dependency_storage_locations=d.get("dependency_storage_locations", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),

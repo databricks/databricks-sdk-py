@@ -54,7 +54,7 @@
         :returns: :class:`Credential`
         
 
-    .. py:method:: delete(credentials_id: str)
+    .. py:method:: delete(credentials_id: str) -> Credential
 
         Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
         delete a credential that is associated with any workspace.
@@ -62,7 +62,7 @@
         :param credentials_id: str
           Databricks Account API credential configuration ID
 
-
+        :returns: :class:`Credential`
         
 
     .. py:method:: get(credentials_id: str) -> Credential
@@ -95,7 +95,7 @@
         Gets a Databricks credential configuration object for an account, both specified by ID.
 
         :param credentials_id: str
-          Databricks Account API credential configuration ID
+          Credential configuration ID
 
         :returns: :class:`Credential`
         
@@ -113,7 +113,7 @@
             
             configs = a.credentials.list()
 
-        Gets all Databricks credential configurations associated with an account specified by ID.
+        List Databricks credential configuration objects for an account, specified by ID.
 
 
         :returns: Iterator over :class:`Credential`

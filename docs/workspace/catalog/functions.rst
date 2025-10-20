@@ -36,7 +36,7 @@
 
         :param name: str
           The fully-qualified name of the function (of the form
-          __catalog_name__.__schema_name__.__function__name__).
+          __catalog_name__.__schema_name__.__function__name__) .
         :param force: bool (optional)
           Force deletion even if the function is notempty.
 
@@ -70,6 +70,14 @@
         functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
         no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param catalog_name: str
           Name of parent catalog for functions of interest.
         :param schema_name: str
@@ -101,7 +109,7 @@
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param owner: str (optional)
-          Username of current owner of function.
+          Username of current owner of the function.
 
         :returns: :class:`FunctionInfo`
         

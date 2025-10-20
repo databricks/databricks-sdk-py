@@ -13,8 +13,10 @@ Dataclasses
    compute
    dashboards
    database
+   dataquality
    files
    iam
+   iamv2
    jobs
    marketplace
    ml
