@@ -149,6 +149,7 @@ class TagPoliciesAPI:
 
         :returns: :class:`TagPolicy`
         """
+
         body = tag_policy.as_dict()
         headers = {
             "Accept": "application/json",
@@ -238,6 +239,7 @@ class TagPoliciesAPI:
 
         :returns: :class:`TagPolicy`
         """
+
         body = tag_policy.as_dict()
         query = {}
         if update_mask is not None:

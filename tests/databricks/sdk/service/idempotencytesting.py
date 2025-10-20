@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import uuid
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -50,6 +51,8 @@ class IdempotencyTestingAPI:
 
     def create_test_resource(self, test_resource: TestResource, *, request_id: Optional[str] = None) -> TestResource:
 
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
         body = test_resource.as_dict()
         query = {}
         if request_id is not None:

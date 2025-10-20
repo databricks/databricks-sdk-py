@@ -120,6 +120,7 @@ class HttpCallV2API:
 
         :returns: :class:`Resource`
         """
+
         body = {}
         if body_field is not None:
             body["body_field"] = body_field
@@ -215,6 +216,7 @@ class HttpCallV2API:
 
         :returns: :class:`Resource`
         """
+
         body = resource.as_dict()
         query = {}
         if field_mask is not None:

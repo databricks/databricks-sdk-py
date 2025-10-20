@@ -1429,6 +1429,7 @@ class VectorSearchEndpointsAPI:
           Long-running operation waiter for :class:`EndpointInfo`.
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
         """
+
         body = {}
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
@@ -1529,6 +1530,7 @@ class VectorSearchEndpointsAPI:
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         """
+
         body = {}
         if budget_policy_id is not None:
             body["budget_policy_id"] = budget_policy_id
@@ -1554,6 +1556,7 @@ class VectorSearchEndpointsAPI:
 
         :returns: :class:`UpdateEndpointCustomTagsResponse`
         """
+
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = [v.as_dict() for v in custom_tags]
@@ -1606,6 +1609,7 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`VectorIndex`
         """
+
         body = {}
         if delta_sync_index_spec is not None:
             body["delta_sync_index_spec"] = delta_sync_index_spec.as_dict()
@@ -1762,6 +1766,7 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`QueryVectorIndexResponse`
         """
+
         body = {}
         if columns is not None:
             body["columns"] = [v for v in columns]
@@ -1804,6 +1809,7 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`QueryVectorIndexResponse`
         """
+
         body = {}
         if endpoint_name is not None:
             body["endpoint_name"] = endpoint_name
@@ -1834,6 +1840,7 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`ScanVectorIndexResponse`
         """
+
         body = {}
         if last_primary_key is not None:
             body["last_primary_key"] = last_primary_key
@@ -1872,6 +1879,7 @@ class VectorSearchIndexesAPI:
 
         :returns: :class:`UpsertDataVectorIndexResponse`
         """
+
         body = {}
         if inputs_json is not None:
             body["inputs_json"] = inputs_json

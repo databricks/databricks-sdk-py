@@ -7410,6 +7410,7 @@ class AlertsAPI:
 
         :returns: :class:`Alert`
         """
+
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
@@ -7512,6 +7513,7 @@ class AlertsAPI:
 
         :returns: :class:`Alert`
         """
+
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
@@ -7573,6 +7575,7 @@ class AlertsLegacyAPI:
 
         :returns: :class:`LegacyAlert`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -7672,6 +7675,7 @@ class AlertsLegacyAPI:
 
 
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -7702,6 +7706,7 @@ class AlertsV2API:
 
         :returns: :class:`AlertV2`
         """
+
         body = alert.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7788,6 +7793,7 @@ class AlertsV2API:
 
         :returns: :class:`AlertV2`
         """
+
         body = alert.as_dict()
         query = {}
         if update_mask is not None:
@@ -7832,6 +7838,7 @@ class DashboardWidgetsAPI:
 
         :returns: :class:`Widget`
         """
+
         body = {}
         if dashboard_id is not None:
             body["dashboard_id"] = dashboard_id
@@ -7893,6 +7900,7 @@ class DashboardWidgetsAPI:
 
         :returns: :class:`Widget`
         """
+
         body = {}
         if dashboard_id is not None:
             body["dashboard_id"] = dashboard_id
@@ -8038,6 +8046,7 @@ class DashboardsAPI:
 
         :returns: :class:`Dashboard`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -8158,6 +8167,7 @@ class DbsqlPermissionsAPI:
 
         :returns: :class:`SetResponse`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8190,6 +8200,7 @@ class DbsqlPermissionsAPI:
 
         :returns: :class:`Success`
         """
+
         body = {}
         if new_owner is not None:
             body["new_owner"] = new_owner
@@ -8227,6 +8238,7 @@ class QueriesAPI:
 
         :returns: :class:`Query`
         """
+
         body = {}
         if auto_resolve_display_name is not None:
             body["auto_resolve_display_name"] = auto_resolve_display_name
@@ -8359,6 +8371,7 @@ class QueriesAPI:
 
         :returns: :class:`Query`
         """
+
         body = {}
         if auto_resolve_display_name is not None:
             body["auto_resolve_display_name"] = auto_resolve_display_name
@@ -8438,6 +8451,7 @@ class QueriesLegacyAPI:
 
         :returns: :class:`LegacyQuery`
         """
+
         body = {}
         if data_source_id is not None:
             body["data_source_id"] = data_source_id
@@ -8633,6 +8647,7 @@ class QueriesLegacyAPI:
 
         :returns: :class:`LegacyQuery`
         """
+
         body = {}
         if data_source_id is not None:
             body["data_source_id"] = data_source_id
@@ -8726,6 +8741,7 @@ class QueryVisualizationsAPI:
 
         :returns: :class:`Visualization`
         """
+
         body = {}
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
@@ -8771,6 +8787,7 @@ class QueryVisualizationsAPI:
 
         :returns: :class:`Visualization`
         """
+
         body = {}
         if update_mask is not None:
             body["update_mask"] = update_mask
@@ -8821,6 +8838,7 @@ class QueryVisualizationsLegacyAPI:
 
         :returns: :class:`LegacyVisualization`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -8896,6 +8914,7 @@ class QueryVisualizationsLegacyAPI:
 
         :returns: :class:`LegacyVisualization`
         """
+
         body = {}
         if created_at is not None:
             body["created_at"] = created_at
@@ -9234,6 +9253,7 @@ class StatementExecutionAPI:
 
         :returns: :class:`StatementResponse`
         """
+
         body = {}
         if byte_limit is not None:
             body["byte_limit"] = byte_limit
@@ -9462,6 +9482,7 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
+
         body = {}
         if auto_stop_mins is not None:
             body["auto_stop_mins"] = auto_stop_mins
@@ -9631,6 +9652,7 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
+
         body = {}
         if auto_stop_mins is not None:
             body["auto_stop_mins"] = auto_stop_mins
@@ -9817,6 +9839,7 @@ class WarehousesAPI:
 
         :returns: :class:`WarehousePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9872,6 +9895,7 @@ class WarehousesAPI:
 
 
         """
+
         body = {}
         if channel is not None:
             body["channel"] = channel.as_dict()
@@ -9954,6 +9978,7 @@ class WarehousesAPI:
 
         :returns: :class:`WarehousePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]

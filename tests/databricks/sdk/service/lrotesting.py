@@ -325,6 +325,7 @@ class LroTestingAPI:
 
         :returns: :class:`Operation`
         """
+
         body = resource.as_dict()
         headers = {
             "Accept": "application/json",

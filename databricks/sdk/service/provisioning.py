@@ -1765,6 +1765,7 @@ class CredentialsAPI:
 
         :returns: :class:`Credential`
         """
+
         body = {}
         if aws_credentials is not None:
             body["aws_credentials"] = aws_credentials.as_dict()
@@ -1876,6 +1877,7 @@ class EncryptionKeysAPI:
 
         :returns: :class:`CustomerManagedKey`
         """
+
         body = {}
         if aws_key_info is not None:
             body["aws_key_info"] = aws_key_info.as_dict()
@@ -1996,6 +1998,7 @@ class NetworksAPI:
 
         :returns: :class:`Network`
         """
+
         body = {}
         if gcp_network_info is not None:
             body["gcp_network_info"] = gcp_network_info.as_dict()
@@ -2111,6 +2114,7 @@ class PrivateAccessAPI:
 
         :returns: :class:`PrivateAccessSettings`
         """
+
         body = {}
         if allowed_vpc_endpoint_ids is not None:
             body["allowed_vpc_endpoint_ids"] = [v for v in allowed_vpc_endpoint_ids]
@@ -2205,6 +2209,7 @@ class PrivateAccessAPI:
 
         :returns: :class:`PrivateAccessSettings`
         """
+
         body = customer_facing_private_access_settings.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2247,6 +2252,7 @@ class StorageAPI:
 
         :returns: :class:`StorageConfiguration`
         """
+
         body = {}
         if role_arn is not None:
             body["role_arn"] = role_arn
@@ -2356,6 +2362,7 @@ class VpcEndpointsAPI:
 
         :returns: :class:`VpcEndpoint`
         """
+
         body = {}
         if aws_vpc_endpoint_id is not None:
             body["aws_vpc_endpoint_id"] = aws_vpc_endpoint_id
@@ -2595,6 +2602,7 @@ class WorkspacesAPI:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
+
         body = {}
         if aws_region is not None:
             body["aws_region"] = aws_region
@@ -2768,6 +2776,7 @@ class WorkspacesAPI:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
         """
+
         body = customer_facing_workspace.as_dict()
         query = {}
         if update_mask is not None:

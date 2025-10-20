@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import random
 import time
+import uuid
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
@@ -1570,6 +1571,7 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseCatalog`
         """
+
         body = catalog.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1589,6 +1591,7 @@ class DatabaseAPI:
           Long-running operation waiter for :class:`DatabaseInstance`.
           See :method:wait_get_database_instance_database_available for more details.
         """
+
         body = database_instance.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1622,6 +1625,7 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseInstanceRole`
         """
+
         body = database_instance_role.as_dict()
         query = {}
         if database_instance_name is not None:
@@ -1644,6 +1648,7 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseTable`
         """
+
         body = table.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1660,6 +1665,7 @@ class DatabaseAPI:
 
         :returns: :class:`SyncedDatabaseTable`
         """
+
         body = synced_table.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1806,6 +1812,9 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseCredential`
         """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
         body = {}
         if claims is not None:
             body["claims"] = [v.as_dict() for v in claims]
@@ -2049,6 +2058,7 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseCatalog`
         """
+
         body = database_catalog.as_dict()
         query = {}
         if update_mask is not None:
@@ -2075,6 +2085,7 @@ class DatabaseAPI:
 
         :returns: :class:`DatabaseInstance`
         """
+
         body = database_instance.as_dict()
         query = {}
         if update_mask is not None:
@@ -2101,6 +2112,7 @@ class DatabaseAPI:
 
         :returns: :class:`SyncedDatabaseTable`
         """
+
         body = synced_table.as_dict()
         query = {}
         if update_mask is not None:
