@@ -50,10 +50,9 @@
         object.
 
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, alertsv2, authorization,
-          clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,
-          instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or
-          warehouses.
+          The type of the request object. Can be one of the following: alerts, alertsv2, apps, authorization, clusters, cluster-policies, dashboards, database-instances, 
+          database-projects, dbsql-dashboards, directories, experiments, files, genie, instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, 
+          serving-endpoints, warehouses, vector-search-endpoints.
         :param request_object_id: str
           The id of the request object.
 
