@@ -113,7 +113,7 @@ class RoundTrip:
         if not isinstance(body, str):
             return "unsupported body type"
         if len(body) == 0:
-            return ""  
+            return ""
         try:
             # Unmarshal body into primitive types.
             tmp = json.loads(body)
