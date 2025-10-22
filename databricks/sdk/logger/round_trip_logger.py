@@ -110,8 +110,11 @@ class RoundTrip:
             return v
 
     def _redacted_dump(self, prefix: str, body: str) -> str:
-        if len(body) == 0:
-            return "body has no length"
+        try:
+            if len(body) == 0:
+                return "body has no length"
+        except TypeError:
+            return "unsupported body type"
         try:
             # Unmarshal body into primitive types.
             tmp = json.loads(body)
