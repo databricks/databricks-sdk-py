@@ -636,6 +636,19 @@ class AlertState(Enum):
 
 @dataclass
 class AlertV2:
+    display_name: str
+    """The display name of the alert."""
+
+    query_text: str
+    """Text of the query to be run."""
+
+    warehouse_id: str
+    """ID of the SQL warehouse attached to the alert."""
+
+    evaluation: AlertV2Evaluation
+
+    schedule: CronSchedule
+
     create_time: Optional[str] = None
     """The timestamp indicating when the alert was created."""
 
@@ -645,14 +658,9 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
-    display_name: Optional[str] = None
-    """The display name of the alert."""
-
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
-
-    evaluation: Optional[AlertV2Evaluation] = None
 
     id: Optional[str] = None
     """UUID identifying the alert."""
@@ -667,9 +675,6 @@ class AlertV2:
     """The workspace path of the folder containing the alert. Can only be set on create, and cannot be
     updated."""
 
-    query_text: Optional[str] = None
-    """Text of the query to be run."""
-
     run_as: Optional[AlertV2RunAs] = None
     """Specifies the identity that will be used to run the alert. This field allows you to configure
     alerts to run as a specific user or service principal. - For user identity: Set `user_name` to
@@ -683,13 +688,8 @@ class AlertV2:
     servicePrincipal/user role. Deprecated: Use `run_as` field instead. This field will be removed
     in a future release."""
 
-    schedule: Optional[CronSchedule] = None
-
     update_time: Optional[str] = None
     """The timestamp indicating when the alert was updated."""
-
-    warehouse_id: Optional[str] = None
-    """ID of the SQL warehouse attached to the alert."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2 into a dictionary suitable for use as a JSON request body."""
@@ -790,7 +790,10 @@ class AlertV2:
 
 @dataclass
 class AlertV2Evaluation:
-    comparison_operator: Optional[ComparisonOperator] = None
+    source: AlertV2OperandColumn
+    """Source column from result to use to evaluate alert"""
+
+    comparison_operator: ComparisonOperator
     """Operator used for comparison in alert evaluation."""
 
     empty_result_state: Optional[AlertEvaluationState] = None
@@ -802,9 +805,6 @@ class AlertV2Evaluation:
 
     notification: Optional[AlertV2Notification] = None
     """User or Notification Destination to notify when alert is triggered."""
-
-    source: Optional[AlertV2OperandColumn] = None
-    """Source column from result to use to evaluate alert"""
 
     state: Optional[AlertEvaluationState] = None
     """Latest state of alert evaluation."""
@@ -941,11 +941,11 @@ class AlertV2Operand:
 
 @dataclass
 class AlertV2OperandColumn:
+    name: str
+
     aggregation: Optional[Aggregation] = None
 
     display: Optional[str] = None
-
-    name: Optional[str] = None
 
     def as_dict(self) -> dict:
         """Serializes the AlertV2OperandColumn into a dictionary suitable for use as a JSON request body."""
@@ -1718,19 +1718,19 @@ class CreateWarehouseResponse:
 
 @dataclass
 class CronSchedule:
-    pause_status: Optional[SchedulePauseStatus] = None
-    """Indicate whether this schedule is paused or not."""
-
-    quartz_cron_schedule: Optional[str] = None
+    quartz_cron_schedule: str
     """A cron expression using quartz syntax that specifies the schedule for this pipeline. Should use
     the quartz format described here:
     http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html"""
 
-    timezone_id: Optional[str] = None
+    timezone_id: str
     """A Java timezone id. The schedule will be resolved using this timezone. This will be combined
     with the quartz_cron_schedule to determine the schedule. See
     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
     for details."""
+
+    pause_status: Optional[SchedulePauseStatus] = None
+    """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
@@ -3929,9 +3929,6 @@ class ListAlertsV2Response:
 
     next_page_token: Optional[str] = None
 
-    results: Optional[List[AlertV2]] = None
-    """Deprecated. Use `alerts` instead."""
-
     def as_dict(self) -> dict:
         """Serializes the ListAlertsV2Response into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3939,8 +3936,6 @@ class ListAlertsV2Response:
             body["alerts"] = [v.as_dict() for v in self.alerts]
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
-        if self.results:
-            body["results"] = [v.as_dict() for v in self.results]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3950,18 +3945,12 @@ class ListAlertsV2Response:
             body["alerts"] = self.alerts
         if self.next_page_token is not None:
             body["next_page_token"] = self.next_page_token
-        if self.results:
-            body["results"] = self.results
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2Response:
         """Deserializes the ListAlertsV2Response from a dictionary."""
-        return cls(
-            alerts=_repeated_dict(d, "alerts", AlertV2),
-            next_page_token=d.get("next_page_token", None),
-            results=_repeated_dict(d, "results", AlertV2),
-        )
+        return cls(alerts=_repeated_dict(d, "alerts", AlertV2), next_page_token=d.get("next_page_token", None))
 
 
 class ListOrder(Enum):
@@ -6378,11 +6367,21 @@ class TerminationReasonCode(Enum):
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
     NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
     NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
+    NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CHECK_DNS_SERVER_FAILURE = "NETWORK_CHECK_DNS_SERVER_FAILURE"
+    NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CHECK_METADATA_ENDPOINT_FAILURE = "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE"
+    NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG = (
+        "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG"
+    )
     NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE = "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE"
+    NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG = (
+        "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG"
+    )
     NETWORK_CHECK_NIC_FAILURE = "NETWORK_CHECK_NIC_FAILURE"
+    NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CHECK_STORAGE_FAILURE = "NETWORK_CHECK_STORAGE_FAILURE"
+    NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
     NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
@@ -7736,8 +7735,8 @@ class AlertsV2API:
 
         while True:
             json = self._api.do("GET", "/api/2.0/alerts", query=query, headers=headers)
-            if "results" in json:
-                for v in json["results"]:
+            if "alerts" in json:
+                for v in json["alerts"]:
                     yield AlertV2.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return

@@ -335,6 +335,16 @@ class LroTestingAPI:
         operation = Operation.from_dict(res)
         return CreateTestResourceOperation(self, operation)
 
+    def delete_test_resource(self, resource_id: str) -> DeleteTestResourceOperation:
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("DELETE", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteTestResourceOperation(self, operation)
+
     def get_operation(self, name: str) -> Operation:
 
         headers = {
@@ -404,6 +414,87 @@ class CreateTestResourceOperation:
             return test_resource, None
 
         return poll(poll_operation, timeout=opts.timeout if opts is not None else timedelta(minutes=20))
+
+    def cancel(self):
+        """Starts asynchronous cancellation on a long-running operation. The server
+        makes a best effort to cancel the operation, but success is not guaranteed.
+        """
+        self._impl.cancel_operation(name=self._operation.name)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> TestResourceOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`TestResourceOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return TestResourceOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteTestResourceOperation:
+    """Long-running operation for delete_test_resource"""
+
+    def __init__(self, impl: LroTestingAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed with default 20 min
+        timeout. If the operation didn't finish within the timeout, this function will
+        raise an error of type TimeoutError, otherwise returns successful response and
+        any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: 20 minutes)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else timedelta(minutes=20))
 
     def cancel(self):
         """Starts asynchronous cancellation on a long-running operation. The server

@@ -429,6 +429,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListMaterializedFeaturesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListModelsResponse
    :members:
    :undoc-members:
@@ -506,6 +510,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializedFeature
+   :members:
+   :undoc-members:
+
+.. py:class:: MaterializedFeaturePipelineScheduleState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: PAUSED
+      :value: "PAUSED"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
 .. autoclass:: Metric
    :members:
    :undoc-members:
@@ -554,6 +573,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "READY"
 
 .. autoclass:: ModelVersionTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: OfflineStoreConfig
    :members:
    :undoc-members:
 

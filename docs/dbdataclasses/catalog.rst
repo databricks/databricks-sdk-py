@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 38
+   Next Id: 46
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -423,7 +423,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 13
+   Next Id: 14
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -436,6 +436,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: OAUTH_M2M
       :value: "OAUTH_M2M"
+
+   .. py:attribute:: OAUTH_MTLS
+      :value: "OAUTH_MTLS"
 
    .. py:attribute:: OAUTH_REFRESH_TOKEN
       :value: "OAUTH_REFRESH_TOKEN"
@@ -1501,7 +1504,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266
+   Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

@@ -98,7 +98,7 @@ def _fieldmask(d: str) -> FieldMask:
         ),
         (
             lambda requests_mock: requests_mock.patch(
-                "http://localhost/api/2.0/http-call/update_string/789/True?optional_complex_query_param.nested_optional_query_param=nested_optional"
+                "http://localhost/api/2.0/http-call/update_string/789/true?optional_complex_query_param.nested_optional_query_param=nested_optional"
             ),
             lambda client: client.update_resource(
                 resource=Resource(
@@ -116,7 +116,7 @@ def _fieldmask(d: str) -> FieldMask:
         ),
         (
             lambda requests_mock: requests_mock.patch(
-                "http://localhost/api/2.0/http-call/update_string/789/True?repeated_query_param=item1&repeated_query_param=item2&repeated_query_param=item3"
+                "http://localhost/api/2.0/http-call/update_string/789/true?repeated_query_param=item1&repeated_query_param=item2&repeated_query_param=item3"
             ),
             lambda client: client.update_resource(
                 resource=Resource(
