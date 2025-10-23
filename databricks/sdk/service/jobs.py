@@ -9629,7 +9629,7 @@ class JobsAPI:
         self._api.do("POST", "/api/2.2/jobs/update", body=body, headers=headers)
 
     def update_permissions(
-        self, job_id: str, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
+        self, job_id: int, *, access_control_list: Optional[List[JobAccessControlRequest]] = None
     ) -> JobPermissions:
         """Updates the permissions on a job. Jobs can inherit permissions from their root object.
 
