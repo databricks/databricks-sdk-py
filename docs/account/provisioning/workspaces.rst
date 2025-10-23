@@ -11,7 +11,7 @@
     These endpoints are available if your account is on the E2 version of the platform or on a select custom
     plan that allows multiple workspaces per account.
 
-    .. py:method:: create( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str]]) -> Wait[Workspace]
+    .. py:method:: create( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str]]) -> Wait[Workspace]
 
 
         Usage:
@@ -121,6 +121,10 @@
           The ID of the workspace's managed services encryption key configuration object. This is used to help
           protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
           history. The provided key configuration object property use_cases must contain MANAGED_SERVICES.
+        :param network_connectivity_config_id: str (optional)
+          The object ID of network connectivity config. Once assigned, the workspace serverless compute
+          resources use the same set of stable IP CIDR blocks and optional private link to access your
+          resources.
         :param network_id: str (optional)
           The ID of the workspace's network configuration object. To use AWS PrivateLink, this field is
           required.
@@ -147,7 +151,7 @@
           See :method:wait_get_workspace_running for more details.
         
 
-    .. py:method:: create_and_wait( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
+    .. py:method:: create_and_wait( [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], compute_mode: Optional[CustomerFacingComputeMode], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], workspace_name: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
 
 
     .. py:method:: delete(workspace_id: int) -> Workspace

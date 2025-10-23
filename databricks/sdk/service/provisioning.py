@@ -1436,7 +1436,7 @@ class Workspace:
     azure_workspace_info: Optional[AzureWorkspaceInfo] = None
 
     cloud: Optional[str] = None
-    """The cloud name. This field always has the value `gcp`."""
+    """The cloud name. This field can have values like `azure`, `gcp`."""
 
     cloud_resource_container: Optional[CloudResourceContainer] = None
 
@@ -2487,6 +2487,7 @@ class WorkspacesAPI:
         gke_config: Optional[GkeConfig] = None,
         location: Optional[str] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
+        network_connectivity_config_id: Optional[str] = None,
         network_id: Optional[str] = None,
         pricing_tier: Optional[PricingTier] = None,
         private_access_settings_id: Optional[str] = None,
@@ -2565,6 +2566,10 @@ class WorkspacesAPI:
           The ID of the workspace's managed services encryption key configuration object. This is used to help
           protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and query
           history. The provided key configuration object property use_cases must contain MANAGED_SERVICES.
+        :param network_connectivity_config_id: str (optional)
+          The object ID of network connectivity config. Once assigned, the workspace serverless compute
+          resources use the same set of stable IP CIDR blocks and optional private link to access your
+          resources.
         :param network_id: str (optional)
           The ID of the workspace's network configuration object. To use AWS PrivateLink, this field is
           required.
@@ -2613,6 +2618,8 @@ class WorkspacesAPI:
             body["location"] = location
         if managed_services_customer_managed_key_id is not None:
             body["managed_services_customer_managed_key_id"] = managed_services_customer_managed_key_id
+        if network_connectivity_config_id is not None:
+            body["network_connectivity_config_id"] = network_connectivity_config_id
         if network_id is not None:
             body["network_id"] = network_id
         if pricing_tier is not None:
@@ -2653,6 +2660,7 @@ class WorkspacesAPI:
         gke_config: Optional[GkeConfig] = None,
         location: Optional[str] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
+        network_connectivity_config_id: Optional[str] = None,
         network_id: Optional[str] = None,
         pricing_tier: Optional[PricingTier] = None,
         private_access_settings_id: Optional[str] = None,
@@ -2673,6 +2681,7 @@ class WorkspacesAPI:
             gke_config=gke_config,
             location=location,
             managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
+            network_connectivity_config_id=network_connectivity_config_id,
             network_id=network_id,
             pricing_tier=pricing_tier,
             private_access_settings_id=private_access_settings_id,

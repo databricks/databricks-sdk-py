@@ -561,6 +561,9 @@ class CleanRoomTaskRunState:
 
 @dataclass
 class CleanRoomsNotebookTask:
+    """Clean Rooms notebook task for V1 Clean Room service (GA). Replaces the deprecated
+    CleanRoomNotebookTask (defined above) which was for V0 service."""
+
     clean_room_name: str
     """The clean room that the notebook belongs to."""
 
@@ -5016,7 +5019,11 @@ class RunJobTask:
 
     dbt_commands: Optional[List[str]] = None
     """An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
-    deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`"""
+    deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
+    
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+    
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     jar_params: Optional[List[str]] = None
     """A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
@@ -5025,9 +5032,9 @@ class RunJobTask:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used to trigger the job."""
@@ -5041,13 +5048,13 @@ class RunJobTask:
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -5060,7 +5067,7 @@ class RunJobTask:
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     Important
     
@@ -5068,7 +5075,7 @@ class RunJobTask:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     spark_submit_params: Optional[List[str]] = None
     """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
@@ -5077,7 +5084,7 @@ class RunJobTask:
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     Important
     
@@ -5085,11 +5092,15 @@ class RunJobTask:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     sql_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
-    doe", "age": "35"}`. The SQL alert task does not support custom parameters."""
+    doe", "age": "35"}`. The SQL alert task does not support custom parameters.
+    
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+    
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     def as_dict(self) -> dict:
         """Serializes the RunJobTask into a dictionary suitable for use as a JSON request body."""
@@ -5377,7 +5388,11 @@ class RunOutput:
 class RunParameters:
     dbt_commands: Optional[List[str]] = None
     """An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
-    deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`"""
+    deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
+    
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+    
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     jar_params: Optional[List[str]] = None
     """A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
@@ -5386,9 +5401,9 @@ class RunParameters:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     notebook_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
@@ -5399,13 +5414,13 @@ class RunParameters:
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -5418,7 +5433,7 @@ class RunParameters:
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     Important
     
@@ -5426,7 +5441,7 @@ class RunParameters:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     spark_submit_params: Optional[List[str]] = None
     """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
@@ -5435,7 +5450,7 @@ class RunParameters:
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
     
     Important
     
@@ -5443,11 +5458,15 @@ class RunParameters:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     sql_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
-    doe", "age": "35"}`. The SQL alert task does not support custom parameters."""
+    doe", "age": "35"}`. The SQL alert task does not support custom parameters.
+    
+    ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+    
+    [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown"""
 
     def as_dict(self) -> dict:
         """Serializes the RunParameters into a dictionary suitable for use as a JSON request body."""
@@ -8981,6 +9000,10 @@ class JobsAPI:
         :param dbt_commands: List[str] (optional)
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
           deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
+
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
           The parameters are used to invoke the main function of the main class specified in the Spark JAR
@@ -8988,9 +9011,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -9005,13 +9028,13 @@ class JobsAPI:
 
           notebook_params cannot be specified in conjunction with jar_params.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. The performance target determines the level of compute
           performance or cost-efficiency for the run. This field overrides the performance target defined on
@@ -9029,7 +9052,7 @@ class JobsAPI:
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           Important
 
@@ -9037,7 +9060,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param rerun_all_failed_tasks: bool (optional)
           If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
         :param rerun_dependent_tasks: bool (optional)
@@ -9052,7 +9075,7 @@ class JobsAPI:
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           Important
 
@@ -9060,10 +9083,14 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
+
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 
         :returns:
           Long-running operation waiter for :class:`Run`.
@@ -9200,6 +9227,10 @@ class JobsAPI:
         :param dbt_commands: List[str] (optional)
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
           deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
+
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
@@ -9220,9 +9251,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -9234,13 +9265,13 @@ class JobsAPI:
 
           notebook_params cannot be specified in conjunction with jar_params.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param only: List[str] (optional)
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
@@ -9261,7 +9292,7 @@ class JobsAPI:
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           Important
 
@@ -9269,7 +9300,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
@@ -9279,7 +9310,7 @@ class JobsAPI:
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
 
-          Use [Task parameter variables] to set parameters containing information about job runs
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
 
           Important
 
@@ -9287,10 +9318,14 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
 
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
+
+          ⚠ **Deprecation note** Use [job parameters] to pass information down to tasks.
+
+          [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 
         :returns:
           Long-running operation waiter for :class:`Run`.
