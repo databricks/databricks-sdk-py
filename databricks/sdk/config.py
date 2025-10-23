@@ -11,7 +11,7 @@ from typing import Dict, Iterable, List, Optional
 import requests
 
 from . import useragent
-from ._base_client import _fix_host_if_needed
+from ._base_client import _BaseClient, _fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
                                    OAuthCredentialsProvider)
@@ -392,8 +392,12 @@ class Config:
         if self.is_azure and self.azure_client_id:
             return get_azure_entra_id_workspace_endpoints(self.host)
         if self.is_account_client and self.account_id:
-            return get_account_endpoints(self.host, self.account_id)
-        return get_workspace_endpoints(self.host)
+            return get_account_endpoints(
+                self.host,
+                self.account_id,
+                client=_BaseClient(retry_timeout_seconds=self.retry_timeout_seconds)
+            )
+        return get_workspace_endpoints(self.host, client=_BaseClient(retry_timeout_seconds=self.retry_timeout_seconds))
 
     def debug_string(self) -> str:
         """Returns log-friendly representation of configured attributes"""
