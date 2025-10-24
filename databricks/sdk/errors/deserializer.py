@@ -118,6 +118,7 @@ class _HtmlErrorDeserializer(_ErrorDeserializer):
         logging.debug("_HtmlErrorParser: no <pre> tag found in error response")
         return None
 
+
 class _ProtobufErrorDeserializer(_ErrorDeserializer):
     """
     Parses errors from the Databricks REST API in Protobuf format.

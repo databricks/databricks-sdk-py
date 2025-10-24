@@ -5,10 +5,10 @@ from typing import Any, List, Optional
 
 import pytest
 import requests
+from google.rpc import status_pb2
 
 from databricks.sdk import errors
 from databricks.sdk.errors import details
-from google.rpc import status_pb2
 
 
 def fake_response(
@@ -416,6 +416,7 @@ def test_debug_headers_enabled_shows_headers():
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message
     assert "debug-azure-token-67890" in error_message
+
 
 def test_protobuf_error_deserializer_valid_protobuf():
     # Create a valid protobuf Status message

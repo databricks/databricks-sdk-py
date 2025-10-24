@@ -7,8 +7,9 @@ from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
 from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,
-                           _HtmlErrorDeserializer, _StandardErrorDeserializer,
-                           _StringErrorDeserializer, _ProtobufErrorDeserializer)
+                           _HtmlErrorDeserializer, _ProtobufErrorDeserializer,
+                           _StandardErrorDeserializer,
+                           _StringErrorDeserializer)
 from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
