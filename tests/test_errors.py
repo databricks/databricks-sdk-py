@@ -8,6 +8,7 @@ import requests
 
 from databricks.sdk import errors
 from databricks.sdk.errors import details
+from google.rpc import status_pb2
 
 
 def fake_response(
@@ -415,3 +416,93 @@ def test_debug_headers_enabled_shows_headers():
     assert "debug-token-12345" in error_message
     assert "X-Databricks-Azure-SP-Management-Token" in error_message
     assert "debug-azure-token-67890" in error_message
+
+def test_protobuf_error_deserializer_valid_protobuf():
+    # Create a valid protobuf Status message
+    status = status_pb2.Status()
+    status.code = 3  # INVALID_ARGUMENT
+    status.message = "Invalid parameter provided"
+    serialized_status = status.SerializeToString()
+
+    resp = fake_raw_response(
+        method="POST",
+        status_code=400,
+        response_body=serialized_status,
+    )
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.BadRequest)
+    assert str(error) == "Invalid parameter provided"
+
+
+def test_protobuf_error_deserializer_invalid_protobuf():
+    # Create a response with invalid protobuf data that should fall through to other parsers
+    resp = fake_raw_response(
+        method="POST",
+        status_code=400,
+        response_body=b"\x00\x01\x02\x03\x04\x05",  # Invalid protobuf
+    )
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    # Should fall back to the generic error handler
+    assert isinstance(error, errors.BadRequest)
+    assert "unable to parse response" in str(error)
+
+
+def test_protobuf_error_deserializer_empty_message():
+    # Create a protobuf Status message with empty message
+    status = status_pb2.Status()
+    status.code = 5  # NOT_FOUND
+    status.message = ""
+    serialized_status = status.SerializeToString()
+
+    resp = fake_raw_response(
+        method="GET",
+        status_code=404,
+        response_body=serialized_status,
+    )
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.NotFound)
+    assert str(error) == "None"
+
+
+def test_protobuf_error_deserializer_with_details():
+    # Create a protobuf Status message with details
+    status = status_pb2.Status()
+    status.code = 9  # FAILED_PRECONDITION
+    status.message = "Resource is in an invalid state"
+    serialized_status = status.SerializeToString()
+
+    resp = fake_raw_response(
+        method="POST",
+        status_code=400,
+        response_body=serialized_status,
+    )
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.BadRequest)
+    assert str(error) == "Resource is in an invalid state"
+
+
+def test_protobuf_error_deserializer_priority():
+    resp = fake_valid_response(
+        method="POST",
+        status_code=400,
+        error_code="INVALID_REQUEST",
+        message="Invalid request body",
+    )
+
+    parser = errors._Parser()
+    error = parser.get_api_error(resp)
+
+    assert isinstance(error, errors.BadRequest)
+    assert str(error) == "Invalid request body"

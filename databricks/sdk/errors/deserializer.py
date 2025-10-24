@@ -117,3 +117,22 @@ class _HtmlErrorDeserializer(_ErrorDeserializer):
                 }
         logging.debug("_HtmlErrorParser: no <pre> tag found in error response")
         return None
+
+class _ProtobufErrorDeserializer(_ErrorDeserializer):
+    """
+    Parses errors from the Databricks REST API in Protobuf format.
+    """
+
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+        try:
+            from google.rpc import status_pb2
+
+            status = status_pb2.Status()
+            status.ParseFromString(response_body)
+            return {
+                "message": status.message,
+                "error_code": response.status_code,
+            }
+        except Exception as e:
+            logging.debug("_ProtobufErrorParser: unable to parse response as Protobuf", exc_info=e)
+            return None
