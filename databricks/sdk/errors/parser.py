@@ -43,7 +43,7 @@ def _unknown_error(response: requests.Response, debug_headers: bool = False) -> 
     return (
         "This is likely a bug in the Databricks SDK for Python or the underlying "
         "API. Please report this issue with the following debugging information to the SDK issue tracker at "
-        f"https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```"
+        f"https://github.com/databricks/databricks-sdk-py/issues. Request log:```{request_log}```"
     )
 
 
