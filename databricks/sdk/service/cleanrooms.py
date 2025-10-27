@@ -10,12 +10,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from databricks.sdk.service import catalog, jobs, settings, sharing
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict)
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import catalog, jobs, settings, sharing
 
 # all definitions in this file are in alphabetical order
 

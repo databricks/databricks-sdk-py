@@ -18,7 +18,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: DayOfWeek
 
-   Days of week in which the restart is allowed to happen (within a five-hour window starting at start_hour). If not specified all days of the week will be used.
+   Days of week in which the window is allowed to happen. If not specified all days of the week will be used.
 
    .. py:attribute:: FRIDAY
       :value: "FRIDAY"
@@ -126,6 +126,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionPipelineDefinitionWorkdayReportParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue
+   :members:
+   :undoc-members:
+
 .. py:class:: IngestionSourceType
 
    .. py:attribute:: BIGQUERY
@@ -136,6 +144,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
+
+   .. py:attribute:: FOREIGN_CATALOG
+      :value: "FOREIGN_CATALOG"
 
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"

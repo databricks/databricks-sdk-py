@@ -10,7 +10,7 @@
 
     [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 
-    .. py:method:: create(git_provider: str [, git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]]) -> CreateCredentialsResponse
+    .. py:method:: create(git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]]) -> CreateCredentialsResponse
 
 
         Usage:
@@ -34,12 +34,16 @@
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
           `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
           `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        :param git_email: str (optional)
+          The authenticating email associated with your Git provider user account. Used for authentication
+          with the remote repository and also sets the author & committer identity for commits. Required for
+          most Git providers except AWS CodeCommit. Learn more at
+          https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
         :param git_username: str (optional)
-          The username or email provided with your Git provider account, depending on which provider you are
-          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
-          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
-          BitBucket Server, username must be used. For all other providers please see your provider's Personal
-          Access Token authentication documentation to see what is supported.
+          The username provided with your Git provider account and associated with the credential. For most
+          Git providers it is only used to set the Git committer & author names for commits, however it may be
+          required for authentication depending on your Git provider / token requirements. Required for AWS
+          CodeCommit.
         :param is_default_for_provider: bool (optional)
           if the credential is the default for the given provider
         :param name: str (optional)
@@ -108,7 +112,7 @@
         :returns: Iterator over :class:`CredentialInfo`
         
 
-    .. py:method:: update(credential_id: int, git_provider: str [, git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]])
+    .. py:method:: update(credential_id: int, git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]])
 
 
         Usage:
@@ -141,12 +145,16 @@
           Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
           `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
           `gitLabEnterpriseEdition` and `awsCodeCommit`.
+        :param git_email: str (optional)
+          The authenticating email associated with your Git provider user account. Used for authentication
+          with the remote repository and also sets the author & committer identity for commits. Required for
+          most Git providers except AWS CodeCommit. Learn more at
+          https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider
         :param git_username: str (optional)
-          The username or email provided with your Git provider account, depending on which provider you are
-          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
-          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
-          BitBucket Server, username must be used. For all other providers please see your provider's Personal
-          Access Token authentication documentation to see what is supported.
+          The username provided with your Git provider account and associated with the credential. For most
+          Git providers it is only used to set the Git committer & author names for commits, however it may be
+          required for authentication depending on your Git provider / token requirements. Required for AWS
+          CodeCommit.
         :param is_default_for_provider: bool (optional)
           if the credential is the default for the given provider
         :param name: str (optional)

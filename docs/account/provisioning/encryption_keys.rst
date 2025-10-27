@@ -65,7 +65,7 @@
         :returns: :class:`CustomerManagedKey`
         
 
-    .. py:method:: delete(customer_managed_key_id: str)
+    .. py:method:: delete(customer_managed_key_id: str) -> CustomerManagedKey
 
         Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
         that is associated with a running workspace.
@@ -73,7 +73,7 @@
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
 
-
+        :returns: :class:`CustomerManagedKey`
         
 
     .. py:method:: get(customer_managed_key_id: str) -> CustomerManagedKey
@@ -135,16 +135,7 @@
             
             all = a.encryption_keys.list()
 
-        Gets all customer-managed key configuration objects for an account. If the key is specified as a
-        workspace's managed services customer-managed key, Databricks uses the key to encrypt the workspace's
-        notebooks and secrets in the control plane, in addition to Databricks SQL queries and query history.
-        If the key is specified as a workspace's storage customer-managed key, the key is used to encrypt the
-        workspace's root S3 bucket and optionally can encrypt cluster EBS volumes data in the data plane.
-
-        **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
-        and AWS regions.
-
-        This operation is available only if your account is on the E2 version of the platform.
+        Lists Databricks customer-managed key configurations for an account.
 
 
         :returns: Iterator over :class:`CustomerManagedKey`

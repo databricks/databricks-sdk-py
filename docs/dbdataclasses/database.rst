@@ -4,6 +4,10 @@ Database Instances
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.database`` module.
 
 .. py:currentmodule:: databricks.sdk.service.database
+.. autoclass:: CustomTag
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabaseCatalog
    :members:
    :undoc-members:

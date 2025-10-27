@@ -10,8 +10,10 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
+
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1297,11 +1299,16 @@ class Feature:
     description: Optional[str] = None
     """The description of the feature."""
 
+    filter_condition: Optional[str] = None
+    """The filter condition applied to the source data before aggregation."""
+
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
@@ -1319,6 +1326,8 @@ class Feature:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.filter_condition is not None:
+            body["filter_condition"] = self.filter_condition
         if self.full_name is not None:
             body["full_name"] = self.full_name
         if self.function:
@@ -1336,6 +1345,7 @@ class Feature:
         """Deserializes the Feature from a dictionary."""
         return cls(
             description=d.get("description", None),
+            filter_condition=d.get("filter_condition", None),
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
             inputs=d.get("inputs", None),
@@ -2418,6 +2428,41 @@ class ListFeaturesResponse:
 
 
 @dataclass
+class ListMaterializedFeaturesResponse:
+    materialized_features: Optional[List[MaterializedFeature]] = None
+    """List of materialized features."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListMaterializedFeaturesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.materialized_features:
+            body["materialized_features"] = [v.as_dict() for v in self.materialized_features]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListMaterializedFeaturesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.materialized_features:
+            body["materialized_features"] = self.materialized_features
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListMaterializedFeaturesResponse:
+        """Deserializes the ListMaterializedFeaturesResponse from a dictionary."""
+        return cls(
+            materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ListModelsResponse:
     next_page_token: Optional[str] = None
     """Pagination token to request next page of models for the same query."""
@@ -2933,6 +2978,90 @@ class LoggedModelTag:
     def from_dict(cls, d: Dict[str, Any]) -> LoggedModelTag:
         """Deserializes the LoggedModelTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class MaterializedFeature:
+    """A materialized feature represents a feature that is continuously computed and stored."""
+
+    feature_name: str
+    """The full name of the feature in Unity Catalog."""
+
+    offline_store_config: OfflineStoreConfig
+
+    online_store_config: OnlineStore
+
+    last_materialization_time: Optional[str] = None
+    """The timestamp when the pipeline last ran and updated the materialized feature values. If the
+    pipeline has not run yet, this field will be null."""
+
+    materialized_feature_id: Optional[str] = None
+    """Unique identifier for the materialized feature."""
+
+    pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
+    """The schedule state of the materialization pipeline."""
+
+    table_name: Optional[str] = None
+    """The fully qualified Unity Catalog path to the table containing the materialized feature (Delta
+    table or Lakebase table). Output only."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.last_materialization_time is not None:
+            body["last_materialization_time"] = self.last_materialization_time
+        if self.materialized_feature_id is not None:
+            body["materialized_feature_id"] = self.materialized_feature_id
+        if self.offline_store_config:
+            body["offline_store_config"] = self.offline_store_config.as_dict()
+        if self.online_store_config:
+            body["online_store_config"] = self.online_store_config.as_dict()
+        if self.pipeline_schedule_state is not None:
+            body["pipeline_schedule_state"] = self.pipeline_schedule_state.value
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.feature_name is not None:
+            body["feature_name"] = self.feature_name
+        if self.last_materialization_time is not None:
+            body["last_materialization_time"] = self.last_materialization_time
+        if self.materialized_feature_id is not None:
+            body["materialized_feature_id"] = self.materialized_feature_id
+        if self.offline_store_config:
+            body["offline_store_config"] = self.offline_store_config
+        if self.online_store_config:
+            body["online_store_config"] = self.online_store_config
+        if self.pipeline_schedule_state is not None:
+            body["pipeline_schedule_state"] = self.pipeline_schedule_state
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
+        """Deserializes the MaterializedFeature from a dictionary."""
+        return cls(
+            feature_name=d.get("feature_name", None),
+            last_materialization_time=d.get("last_materialization_time", None),
+            materialized_feature_id=d.get("materialized_feature_id", None),
+            offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
+            online_store_config=_from_dict(d, "online_store_config", OnlineStore),
+            pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
+            table_name=d.get("table_name", None),
+        )
+
+
+class MaterializedFeaturePipelineScheduleState(Enum):
+
+    ACTIVE = "ACTIVE"
+    PAUSED = "PAUSED"
+    SNAPSHOT = "SNAPSHOT"
 
 
 @dataclass
@@ -3609,6 +3738,52 @@ class ModelVersionTag:
     def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
+class OfflineStoreConfig:
+    """Configuration for offline store destination."""
+
+    catalog_name: str
+    """The Unity Catalog catalog name."""
+
+    schema_name: str
+    """The Unity Catalog schema name."""
+
+    table_name_prefix: str
+    """Prefix for Unity Catalog table name. The materialized feature will be stored in a table with
+    this prefix and a generated postfix."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OfflineStoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OfflineStoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OfflineStoreConfig:
+        """Deserializes the OfflineStoreConfig from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            schema_name=d.get("schema_name", None),
+            table_name_prefix=d.get("table_name_prefix", None),
+        )
 
 
 @dataclass
@@ -6561,6 +6736,23 @@ class FeatureEngineeringAPI:
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
 
+    def create_materialized_feature(self, materialized_feature: MaterializedFeature) -> MaterializedFeature:
+        """Create a materialized feature.
+
+        :param materialized_feature: :class:`MaterializedFeature`
+          The materialized feature to create.
+
+        :returns: :class:`MaterializedFeature`
+        """
+        body = materialized_feature.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/materialized-features", body=body, headers=headers)
+        return MaterializedFeature.from_dict(res)
+
     def delete_feature(self, full_name: str):
         """Delete a Feature.
 
@@ -6575,6 +6767,23 @@ class FeatureEngineeringAPI:
         }
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
+
+    def delete_materialized_feature(self, materialized_feature_id: str):
+        """Delete a materialized feature.
+
+        :param materialized_feature_id: str
+          The ID of the materialized feature to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do(
+            "DELETE", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
+        )
 
     def get_feature(self, full_name: str) -> Feature:
         """Get a Feature.
@@ -6591,6 +6800,24 @@ class FeatureEngineeringAPI:
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
+
+    def get_materialized_feature(self, materialized_feature_id: str) -> MaterializedFeature:
+        """Get a materialized feature.
+
+        :param materialized_feature_id: str
+          The ID of the materialized feature.
+
+        :returns: :class:`MaterializedFeature`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
+        )
+        return MaterializedFeature.from_dict(res)
 
     def list_features(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Feature]:
         """List Features.
@@ -6621,6 +6848,45 @@ class FeatureEngineeringAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_materialized_features(
+        self, *, feature_name: Optional[str] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[MaterializedFeature]:
+        """List materialized features.
+
+        :param feature_name: str (optional)
+          Filter by feature name. If specified, only materialized features materialized from this feature will
+          be returned.
+        :param page_size: int (optional)
+          The maximum number of results to return. Defaults to 100 if not specified. Cannot be greater than
+          1000.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`MaterializedFeature`
+        """
+
+        query = {}
+        if feature_name is not None:
+            query["feature_name"] = feature_name
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", "/api/2.0/feature-engineering/materialized-features", query=query, headers=headers
+            )
+            if "materialized_features" in json:
+                for v in json["materialized_features"]:
+                    yield MaterializedFeature.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def update_feature(self, full_name: str, feature: Feature, update_mask: str) -> Feature:
         """Update a Feature.
 
@@ -6646,6 +6912,39 @@ class FeatureEngineeringAPI:
             "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
         )
         return Feature.from_dict(res)
+
+    def update_materialized_feature(
+        self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
+    ) -> MaterializedFeature:
+        """Update a materialized feature (pause/resume).
+
+        :param materialized_feature_id: str
+          Unique identifier for the materialized feature.
+        :param materialized_feature: :class:`MaterializedFeature`
+          The materialized feature to update.
+        :param update_mask: str
+          Provide the materialization feature fields which should be updated. Currently, only the
+          pipeline_state field can be updated.
+
+        :returns: :class:`MaterializedFeature`
+        """
+        body = materialized_feature.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return MaterializedFeature.from_dict(res)
 
 
 class FeatureStoreAPI:

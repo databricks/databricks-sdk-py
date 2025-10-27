@@ -67,7 +67,8 @@
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -133,7 +134,7 @@
         :returns: :class:`ExternalLocationInfo`
         
 
-    .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLocationInfo]
+    .. py:method:: list( [, include_browse: Optional[bool], include_unbound: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLocationInfo]
 
 
         Usage:
@@ -151,9 +152,20 @@
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. There is no guarantee of a specific ordering of the elements in the array.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached. This behavior follows
+        Google AIP-158 guidelines.
+
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
           selective metadata for
+        :param include_unbound: bool (optional)
+          Whether to include external locations not bound to the workspace. Effective only if the user has
+          permission to update the location–workspace binding.
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
           (not recommended). - when set to a value greater than 0, the page length is the minimum of this
@@ -219,7 +231,8 @@
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings.
+          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
+          of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

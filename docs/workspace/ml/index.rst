@@ -8,6 +8,7 @@ Create and manage experiments, features, and other machine learning artifacts
    :maxdepth: 1
 
    experiments
+   feature_engineering
    feature_store
    forecasting
    materialized_features

@@ -82,7 +82,7 @@
         :returns: :class:`CredentialInfo`
         
 
-    .. py:method:: list_credentials( [, max_results: Optional[int], page_token: Optional[str], purpose: Optional[CredentialPurpose]]) -> Iterator[CredentialInfo]
+    .. py:method:: list_credentials( [, include_unbound: Optional[bool], max_results: Optional[int], page_token: Optional[str], purpose: Optional[CredentialPurpose]]) -> Iterator[CredentialInfo]
 
         Gets an array of credentials (as __CredentialInfo__ objects).
 
@@ -90,6 +90,9 @@
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
         ordering of the elements in the array.
 
+        :param include_unbound: bool (optional)
+          Whether to include credentials not bound to the workspace. Effective only if the user has permission
+          to update the credential–workspace binding.
         :param max_results: int (optional)
           Maximum number of credentials to return. - If not set, the default max page size is used. - When set
           to a value greater than 0, the page length is the minimum of this value and a server-configured

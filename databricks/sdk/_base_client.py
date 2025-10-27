@@ -99,7 +99,10 @@ class _BaseClient:
         # Default to 60 seconds
         self._http_timeout_seconds = http_timeout_seconds or 60
 
-        self._error_parser = _Parser(extra_error_customizers=extra_error_customizers)
+        self._error_parser = _Parser(
+            extra_error_customizers=extra_error_customizers,
+            debug_headers=debug_headers,
+        )
 
     def _authenticate(self, r: requests.PreparedRequest) -> requests.PreparedRequest:
         if self._header_factory:

@@ -270,7 +270,12 @@ class Generator:
             "iamv2",
             "Identity and Access Management",
             "Manage identities and workspace access."
-        )
+        ),
+        Package(
+            "dataquality",
+            "Data Quality",
+            "Manage data quality monitoring on Unity Catalog objects."
+        ),
     ]
 
     def __init__(self):
@@ -298,7 +303,7 @@ class Generator:
                 clean_parent_service = parent_service.lower().removeprefix("account")
                 key = f"{key}.{clean_parent_service}"
 
-            key = f"{key}.{tag['x-databricks-service']}".lower()
+            key = f"{key}.{tag['x-databricks-service'].replace("_", "")}".lower()
             package = tag['x-databricks-package']
             t = Tag(name=tag['name'],
                     service=tag['x-databricks-service'],

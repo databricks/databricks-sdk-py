@@ -30,12 +30,13 @@
     .. py:method:: create_database_instance_and_wait(database_instance: DatabaseInstance, timeout: datetime.timedelta = 0:20:00) -> DatabaseInstance
 
 
-    .. py:method:: create_database_instance_role(instance_name: str, database_instance_role: DatabaseInstanceRole) -> DatabaseInstanceRole
+    .. py:method:: create_database_instance_role(instance_name: str, database_instance_role: DatabaseInstanceRole [, database_instance_name: Optional[str]]) -> DatabaseInstanceRole
 
         Create a role for a Database Instance.
 
         :param instance_name: str
         :param database_instance_role: :class:`DatabaseInstanceRole`
+        :param database_instance_name: str (optional)
 
         :returns: :class:`DatabaseInstanceRole`
         
@@ -78,12 +79,8 @@
           By default, a instance cannot be deleted if it has descendant instances created via PITR. If this
           flag is specified as true, all descendent instances will be deleted as well.
         :param purge: bool (optional)
-          Note purge=false is in development. If false, the database instance is soft deleted (implementation
-          pending). Soft deleted instances behave as if they are deleted, and cannot be used for CRUD
-          operations nor connected to. However they can be undeleted by calling the undelete API for a limited
-          time (implementation pending). If true, the database instance is hard deleted and cannot be
-          undeleted. For the time being, setting this value to true is required to delete an instance (soft
-          delete is not yet supported).
+          Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.
+          Setting a value of false will throw a bad request.
 
 
         

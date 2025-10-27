@@ -1,10 +1,8 @@
 # NEXT CHANGELOG
 
-## Release v0.68.0
+## Release v0.71.0
 
 ### New Features and Improvements
-
-* Add native support for authentication through Azure DevOps OIDC
 
 ### Bug Fixes
 

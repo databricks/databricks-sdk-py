@@ -494,11 +494,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILE_BASED_TABLE
       :value: "FILE_BASED_TABLE"
 
+   .. py:attribute:: FOREIGN_ICEBERG_TABLE
+      :value: "FOREIGN_ICEBERG_TABLE"
+
    .. py:attribute:: FOREIGN_TABLE
       :value: "FOREIGN_TABLE"
 
    .. py:attribute:: MATERIALIZED_VIEW
       :value: "MATERIALIZED_VIEW"
+
+   .. py:attribute:: METRIC_VIEW
+      :value: "METRIC_VIEW"
 
    .. py:attribute:: STREAMING_TABLE
       :value: "STREAMING_TABLE"

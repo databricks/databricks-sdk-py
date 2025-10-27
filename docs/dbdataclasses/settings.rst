@@ -123,7 +123,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ComplianceStandard
 
-   Compliance stardard for SHIELD customers
+   Compliance standard for SHIELD customers. See README.md for how instructions of how to add new standards.
 
    .. py:attribute:: CANADA_PROTECTED_B
       :value: "CANADA_PROTECTED_B"
@@ -142,6 +142,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: GERMANY_C5
       :value: "GERMANY_C5"
+
+   .. py:attribute:: GERMANY_TISAX
+      :value: "GERMANY_TISAX"
 
    .. py:attribute:: HIPAA
       :value: "HIPAA"
@@ -641,6 +644,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: NccPrivateEndpointRulePrivateLinkConnectionState
+
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"

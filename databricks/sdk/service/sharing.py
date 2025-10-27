@@ -7,12 +7,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from databricks.sdk.service import catalog
+from databricks.sdk.service._internal import (_enum, _from_dict,
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
-
-from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
 
@@ -2310,6 +2310,10 @@ class TableInternalAttributes:
     auxiliary_managed_location: Optional[str] = None
     """Managed Delta Metadata location for foreign iceberg tables."""
 
+    dependency_storage_locations: Optional[List[str]] = None
+    """Storage locations of all table dependencies for shared views. Used on the recipient side for SEG
+    (Secure Egress Gateway) whitelisting."""
+
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2332,6 +2336,8 @@ class TableInternalAttributes:
         body = {}
         if self.auxiliary_managed_location is not None:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
+        if self.dependency_storage_locations:
+            body["dependency_storage_locations"] = [v for v in self.dependency_storage_locations]
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2347,6 +2353,8 @@ class TableInternalAttributes:
         body = {}
         if self.auxiliary_managed_location is not None:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
+        if self.dependency_storage_locations:
+            body["dependency_storage_locations"] = self.dependency_storage_locations
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2362,6 +2370,7 @@ class TableInternalAttributes:
         """Deserializes the TableInternalAttributes from a dictionary."""
         return cls(
             auxiliary_managed_location=d.get("auxiliary_managed_location", None),
+            dependency_storage_locations=d.get("dependency_storage_locations", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),
@@ -2977,44 +2986,6 @@ class RecipientFederationPoliciesAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
-
-    def update(
-        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
-    ) -> FederationPolicy:
-        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
-        recipient.
-
-        :param recipient_name: str
-          Name of the recipient. This is the name of the recipient for which the policy is being updated.
-        :param name: str
-          Name of the policy. This is the name of the current name of the policy.
-        :param policy: :class:`FederationPolicy`
-        :param update_mask: str (optional)
-          The field mask specifies which fields of the policy to update. To specify multiple fields in the
-          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
-          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
-          in the update request will overwrite the corresponding fields in the existing policy. Example value:
-          'comment,oidc_policy.audiences'.
-
-        :returns: :class:`FederationPolicy`
-        """
-        body = policy.as_dict()
-        query = {}
-        if update_mask is not None:
-            query["update_mask"] = update_mask
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
-            query=query,
-            body=body,
-            headers=headers,
-        )
-        return FederationPolicy.from_dict(res)
 
 
 class RecipientsAPI:

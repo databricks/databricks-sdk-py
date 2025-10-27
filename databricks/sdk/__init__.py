@@ -21,6 +21,7 @@ from databricks.sdk.service import cleanrooms as pkg_cleanrooms
 from databricks.sdk.service import compute as pkg_compute
 from databricks.sdk.service import dashboards as pkg_dashboards
 from databricks.sdk.service import database as pkg_database
+from databricks.sdk.service import dataquality as pkg_dataquality
 from databricks.sdk.service import files as pkg_files
 from databricks.sdk.service import iam as pkg_iam
 from databricks.sdk.service import iamv2 as pkg_iamv2
@@ -79,6 +80,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
                                                LakeviewEmbeddedAPI)
 from databricks.sdk.service.database import DatabaseAPI
+from databricks.sdk.service.dataquality import DataQualityAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -179,11 +181,7 @@ def _make_dbutils(config: client.Config):
 
 
 def _make_files_client(apiClient: client.ApiClient, config: client.Config):
-    if config.enable_experimental_files_api_client:
-        _LOG.info("Experimental Files API client is enabled")
-        return FilesExt(apiClient, config)
-    else:
-        return FilesAPI(apiClient)
+    return FilesExt(apiClient, config)
 
 
 class WorkspaceClient:
@@ -282,6 +280,7 @@ class WorkspaceClient:
         self._current_user = pkg_iam.CurrentUserAPI(self._api_client)
         self._dashboard_widgets = pkg_sql.DashboardWidgetsAPI(self._api_client)
         self._dashboards = pkg_sql.DashboardsAPI(self._api_client)
+        self._data_quality = pkg_dataquality.DataQualityAPI(self._api_client)
         self._data_sources = pkg_sql.DataSourcesAPI(self._api_client)
         self._database = pkg_database.DatabaseAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
@@ -541,6 +540,11 @@ class WorkspaceClient:
         return self._dashboards
 
     @property
+    def data_quality(self) -> pkg_dataquality.DataQualityAPI:
+        """Manage the data quality of Unity Catalog objects (currently support `schema` and `table`)."""
+        return self._data_quality
+
+    @property
     def data_sources(self) -> pkg_sql.DataSourcesAPI:
         """This API is provided to assist you in making new query objects."""
         return self._data_sources
@@ -594,11 +598,6 @@ class WorkspaceClient:
     def feature_store(self) -> pkg_ml.FeatureStoreAPI:
         """A feature store is a centralized repository that enables data scientists to find and share features."""
         return self._feature_store
-
-    @property
-    def files(self) -> pkg_files.FilesAPI:
-        """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
-        return self._files
 
     @property
     def functions(self) -> pkg_catalog.FunctionsAPI:
@@ -1004,6 +1003,11 @@ class WorkspaceClient:
     def users(self) -> pkg_iam.UsersAPI:
         """User identities recognized by Databricks and represented by email addresses."""
         return self._users
+
+    @property
+    def files(self) -> FilesExt:
+        """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
+        return self._files
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""

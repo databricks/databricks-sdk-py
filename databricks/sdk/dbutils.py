@@ -210,7 +210,11 @@ class _JobsUtil:
 class RemoteDbUtils:
 
     def __init__(self, config: "Config" = None):
-        self._config = Config() if not config else config
+        # Create a shallow copy of the config to allow the use of a custom
+        # user-agent while avoiding modifying the original config.
+        self._config = Config() if not config else config.copy()
+        self._config.with_user_agent_extra("dbutils", "remote")
+
         self._client = ApiClient(self._config)
         self._clusters = compute_ext.ClustersExt(self._client)
         self._commands = compute.CommandExecutionAPI(self._client)
@@ -277,10 +281,17 @@ def get_local_notebook_path():
     return value
 
 
+def not_supported_method_err_msg(methodName):
+    return f"Method '{methodName}' is not supported in the SDK version of DBUtils"
+
+
 class _OverrideProxyUtil:
 
     @classmethod
     def new(cls, path: str):
+        if path in cls.not_supported_override_paths:
+            raise ValueError(cls.not_supported_override_paths[path])
+
         if len(cls.__get_matching_overrides(path)) > 0:
             return _OverrideProxyUtil(path)
         return None
@@ -295,6 +306,16 @@ class _OverrideProxyUtil:
     # are being proxied to remote dbutils currently.
     proxy_override_paths = {
         "notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()": get_local_notebook_path,
+    }
+
+    # These paths work the same as 'proxy_override_paths' but instead of using a local implementation we raise an exception.
+    not_supported_override_paths = {
+        # The object returned by 'credentials.getServiceCredentialProvider()' can't be serialized to JSON.
+        # Without this override, the command would fail with an error 'TypeError: Object of type Session is not JSON serializable'.
+        # We override it to show a better error message
+        "credentials.getServiceCredentialsProvider": not_supported_method_err_msg(
+            "credentials.getServiceCredentialsProvider"
+        ),
     }
 
     @classmethod

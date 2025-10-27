@@ -376,6 +376,19 @@
     .. py:method:: update_config_and_wait(name: str [, auto_capture_config: Optional[AutoCaptureConfigInput], served_entities: Optional[List[ServedEntityInput]], served_models: Optional[List[ServedModelInput]], traffic_config: Optional[TrafficConfig], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
+    .. py:method:: update_notifications(name: str [, email_notifications: Optional[EmailNotifications]]) -> UpdateInferenceEndpointNotificationsResponse
+
+        Updates the email and webhook notification settings for an endpoint.
+
+        :param name: str
+          The name of the serving endpoint whose notifications are being updated. This field is required.
+        :param email_notifications: :class:`EmailNotifications` (optional)
+          The email notification settings to update. Specify email addresses to notify when endpoint state
+          changes occur.
+
+        :returns: :class:`UpdateInferenceEndpointNotificationsResponse`
+        
+
     .. py:method:: update_permissions(serving_endpoint_id: str [, access_control_list: Optional[List[ServingEndpointAccessControlRequest]]]) -> ServingEndpointPermissions
 
         Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their

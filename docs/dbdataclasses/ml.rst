@@ -130,6 +130,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DataSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: Dataset
    :members:
    :undoc-members:
@@ -190,6 +194,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeltaTableSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: Experiment
    :members:
    :undoc-members:
@@ -228,6 +236,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ExperimentTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: Feature
    :members:
    :undoc-members:
 
@@ -283,6 +295,55 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
+
+.. autoclass:: Function
+   :members:
+   :undoc-members:
+
+.. autoclass:: FunctionExtraParameter
+   :members:
+   :undoc-members:
+
+.. py:class:: FunctionFunctionType
+
+   .. py:attribute:: APPROX_COUNT_DISTINCT
+      :value: "APPROX_COUNT_DISTINCT"
+
+   .. py:attribute:: APPROX_PERCENTILE
+      :value: "APPROX_PERCENTILE"
+
+   .. py:attribute:: AVG
+      :value: "AVG"
+
+   .. py:attribute:: COUNT
+      :value: "COUNT"
+
+   .. py:attribute:: FIRST
+      :value: "FIRST"
+
+   .. py:attribute:: LAST
+      :value: "LAST"
+
+   .. py:attribute:: MAX
+      :value: "MAX"
+
+   .. py:attribute:: MIN
+      :value: "MIN"
+
+   .. py:attribute:: STDDEV_POP
+      :value: "STDDEV_POP"
+
+   .. py:attribute:: STDDEV_SAMP
+      :value: "STDDEV_SAMP"
+
+   .. py:attribute:: SUM
+      :value: "SUM"
+
+   .. py:attribute:: VAR_POP
+      :value: "VAR_POP"
+
+   .. py:attribute:: VAR_SAMP
+      :value: "VAR_SAMP"
 
 .. autoclass:: GetExperimentByNameResponse
    :members:
@@ -364,6 +425,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListFeaturesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListMaterializedFeaturesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListModelsResponse
    :members:
    :undoc-members:
@@ -441,6 +510,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializedFeature
+   :members:
+   :undoc-members:
+
+.. py:class:: MaterializedFeaturePipelineScheduleState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: PAUSED
+      :value: "PAUSED"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
 .. autoclass:: Metric
    :members:
    :undoc-members:
@@ -489,6 +573,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "READY"
 
 .. autoclass:: ModelVersionTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: OfflineStoreConfig
    :members:
    :undoc-members:
 
@@ -796,6 +884,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "READY"
 
 .. autoclass:: TestRegistryWebhookResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: TimeWindow
    :members:
    :undoc-members:
 
