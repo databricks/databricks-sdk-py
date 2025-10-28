@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import requests
 import requests.auth
@@ -30,6 +30,30 @@ JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class AuthorizationDetail:
+    type: str
+    object_type: str
+    object_path: str
+    actions: list[str]
+
+    def as_dict(self) -> dict:
+        return {
+            "type": self.type,
+            "object_type": self.object_type,
+            "object_path": self.object_path,
+            "actions": self.actions,
+        }
+
+    def from_dict(self, d: dict) -> "AuthorizationDetail":
+        return AuthorizationDetail(
+            type=d.get("type"),
+            object_type=d.get("object_type"),
+            object_path=d.get("object_path"),
+            actions=d.get("actions"),
+        )
 
 
 class IgnoreNetrcAuth(requests.auth.AuthBase):
@@ -706,10 +730,11 @@ class ClientCredentials(Refreshable):
     client_secret: str
     token_url: str
     endpoint_params: dict = None
-    scopes: List[str] = None
+    scopes: str = None
     use_params: bool = False
     use_header: bool = False
     disable_async: bool = True
+    authorization_details: str = None
 
     def __post_init__(self):
         super().__init__(disable_async=self.disable_async)
@@ -717,7 +742,9 @@ class ClientCredentials(Refreshable):
     def refresh(self) -> Token:
         params = {"grant_type": "client_credentials"}
         if self.scopes:
-            params["scope"] = " ".join(self.scopes)
+            params["scope"] = self.scopes
+        if self.authorization_details:
+            params["authorization_details"] = self.authorization_details
         if self.endpoint_params:
             for k, v in self.endpoint_params.items():
                 params[k] = v
@@ -729,6 +756,51 @@ class ClientCredentials(Refreshable):
             use_params=self.use_params,
             use_header=self.use_header,
         )
+
+
+@dataclass
+class PATOAuthTokenExchange(Refreshable):
+    get_original_token: Callable[[], Optional[str]]
+    host: str
+    scopes: str
+    authorization_details: str = None
+    disable_async: bool = True
+
+    def __post_init__(self):
+        super().__init__(disable_async=self.disable_async)
+
+    def refresh(self) -> Token:
+        token_exchange_url = f"{self.host}/oidc/v1/token"
+        params = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+            "subject_token": self.get_original_token(),
+            "subject_token_type": "urn:databricks:params:oauth:token-type:personal-access-token",
+            "requested_token_type": "urn:ietf:params:oauth:token-type:access_token",
+            "scope": self.scopes,
+        }
+        if self.authorization_details:
+            params["authorization_details"] = self.authorization_details
+
+        resp = requests.post(token_exchange_url, params)
+        if not resp.ok:
+            if resp.headers["Content-Type"].startswith("application/json"):
+                err = resp.json()
+                code = err.get("errorCode", err.get("error", "unknown"))
+                summary = err.get("errorSummary", err.get("error_description", "unknown"))
+                summary = summary.replace("\r\n", " ")
+                raise ValueError(f"{code}: {summary}")
+            raise ValueError(resp.content)
+        try:
+            j = resp.json()
+            expires_in = int(j["expires_in"])
+            expiry = datetime.now() + timedelta(seconds=expires_in)
+            return Token(
+                access_token=j["access_token"],
+                expiry=expiry,
+                token_type=j["token_type"],
+            )
+        except Exception as e:
+            raise ValueError(f"Failed to exchange PAT for OAuth token: {e}")
 
 
 class TokenCache:
